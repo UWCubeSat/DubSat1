@@ -18,6 +18,59 @@ void i2cInit(uint8_t slaveaddr)
     UCB2CTLW1 |= UCASTP_2;                                      // Automatic stop generated after transmission complete
 }
 
+void i2cCombinedAddressWriteThenRead(uint8_t registeraddr, uint8_t * buff, uint8_t szToRead)
+{
+    uint8_t indexBuff = 0;
+
+    i2cWaitForStopComplete();
+
+    // Set total number of bytes
+    // TODO:  BUG BUG - need to check combined operation behavior for byte counts (reset?  need szToRead + 1?)
+    i2cHoldReset();
+    i2cAutoStopSetTotalBytes(szToRead);
+    i2cReleaseReset();
+
+    // First, send "cursor move" write -> an address, but no payload data
+    // TODO:  Add hw-conditional logic if slave doesn't support auto-advance of address
+    i2cMasterTransmitStart();
+    i2cWaitForStartComplete();
+    i2cWaitReadyToTransmitByte();
+    i2cLoadTransmitBuffer(registeraddr);
+    i2cWaitReadyToTransmitByte();
+
+    // Now send Restart condition, switching over to receive mode
+    i2cMasterReceiveStart();
+    i2cWaitForStartComplete();
+
+    //  Stop bit will be auto-set once we read szToRead bytes
+    while ( (UCB2IFG & UCSTPIFG) == 0)
+    {
+        if ( (UCB2IFG & UCRXIFG) != 0)
+            buff[indexBuff++] = i2cRetrieveReceiveBuffer();
+    }
+}
+
+void i2cRawWrite(uint8_t * buff, uint8_t szToWrite)
+{
+    i2cHoldReset();
+    i2cAutoStopSetTotalBytes(szToWrite);
+    i2cReleaseReset();
+
+    i2cWaitForStopComplete();
+    i2cMasterTransmitStart();
+    i2cWaitForStartComplete();
+
+    uint8_t i;
+    for (i = 0; i < szToWrite; i++)
+    {
+        i2cWaitReadyToTransmitByte();
+        i2cLoadTransmitBuffer(buff[i]);
+    }
+
+    // TODO:  NEED TO CONVERGE I2C SUPPORT FUNCTIONS:  use own byte counter or eUSCI?
+    // Auto-Stop should kick in after this and set Stop condition on the bus
+}
+
 // Primary interrupt vector for I2C on module B2 on the 430
 #pragma vector = EUSCI_B2_VECTOR
 __interrupt void USCI_B2_ISR(void)

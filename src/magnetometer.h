@@ -25,10 +25,17 @@
 #endif  /* MAGNETOMETER */
 
 
+typedef struct  {
+    int16_t rawX;
+    int16_t rawY;
+    int16_t rawZ;
+} MagnetometerData;
+
 
 // Main entry points
 void magInit();
-void magReadBytesFromRegisters(uint8_t registeraddr, uint8_t * buff, uint8_t szToRead);
+MagnetometerData *magReadXZYData();
+
 
 
 #endif /* MAGNETOMETER_H_ */

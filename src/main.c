@@ -7,10 +7,7 @@
 
 #define MAX_BUFF_SIZE   0x10
 
-uint8_t szBuff;
-uint8_t readBuff[MAX_BUFF_SIZE];
 
-int16_t magDataX, magDataY, magDataZ;
 
 #define I2C_PORTSEL0        P7SEL0
 #define I2C_PORTSEL1        P7SEL1
@@ -21,6 +18,7 @@ int16_t magDataX, magDataY, magDataZ;
 #define LED_PORT_DIR        P1DIR
 #define LED_PIN             BIT0
 
+MagnetometerData *pMagData;
 
 int main(void)
 {
@@ -49,14 +47,8 @@ int main(void)
     for (;;)
     {
         P1OUT ^= BIT0;
+        pMagData = magReadXZYData();
         //__delay_cycles(50000);  // Delay just to see LED flash - not necessary for communication timing
-
-        magReadBytesFromRegisters(MAG_DATA_OUTPUT_ADDRESS_START, readBuff, 6);
-
-        // NOTE:  Order of X/Z/Y is, unfortunately, intentional ...
-        magDataX = (int16_t)(readBuff[1] | ((int16_t)readBuff[0] << 8));
-        magDataZ = (int16_t)(readBuff[3] | ((int16_t)readBuff[2] << 8));
-        magDataY = (int16_t)(readBuff[5] | ((int16_t)readBuff[4] << 8));
 
         //__bis_SR_register(LPM0_bits | GIE); // Enter LPM0 w/ interrupts
 

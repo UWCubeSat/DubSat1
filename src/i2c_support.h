@@ -38,6 +38,12 @@ void inline i2cWaitForStartComplete() { while (UCB2CTLW0 & UCTXSTT); }
 void inline i2cWaitReadyToTransmitByte()  { while ( (UCB2IFG & UCTXIFG0) == 0); }
 void inline i2cWaitReadyToReceiveByte()  { while ( (UCB2IFG & UCRXIFG) == 0); }
 
+/***************************/
+/* I2C MID-LEVEL FUNCTIONS */
+/***************************/
+void i2cCombinedAddressWriteThenRead(uint8_t registeraddr, uint8_t * buff, uint8_t szToRead);
+void i2cRawWrite(uint8_t * buff, uint8_t szToWrite);
+
 #endif /* DISABLE_SYNC_I2C_CALLS */
 
 // TODO:  Add "async" interrupt-based alternative to synchronous versions
