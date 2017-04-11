@@ -7,7 +7,6 @@
 
 #define MAX_BUFF_SIZE   0x10
 
-volatile uint8_t indexBuff;
 uint8_t szBuff;
 uint8_t readBuff[MAX_BUFF_SIZE];
 
@@ -18,14 +17,18 @@ int16_t magDataX, magDataY, magDataZ;
 #define I2C_SDA_BIT         BIT0
 #define I2C_SCL_BIT         BIT1
 
+#define LED_PORT            P1OUT
+#define LED_PORT_DIR        P1DIR
+#define LED_PIN             BIT0
+
 
 int main(void)
 {
     WDTCTL = WDTPW | WDTHOLD;
 
     // Configure GPIO for status LED
-    P1OUT &= ~BIT0;                         // Clear P1.0 output latch
-    P1DIR |= BIT0;                          // For LED
+    LED_PORT &= ~LED_PIN;                         // Clear P1.0 output latch
+    LED_PORT_DIR |= LED_PIN;                          // For LED
 
     // Configure I2C pins - Goal:  '01' for both 7.0 (SDA) and 7.1 (SCL)
     // NOTE:  P7DIR not necessary, direction set by eUSCI module
@@ -40,15 +43,13 @@ int main(void)
 
     // NOTE:  Order important, MUST clear software reset, THEN enable interrupts
     i2cReleaseReset();
-    //UCB2IE |= I2C_MASTER_TRANSMIT_INTERRUPT_MASK;
-
     magInit();
 
     // Main loop - repeatedly write the buffer
     for (;;)
     {
         P1OUT ^= BIT0;
-        __delay_cycles(5000);
+        //__delay_cycles(50000);  // Delay just to see LED flash - not necessary for communication timing
 
         magReadBytesFromRegisters(MAG_DATA_OUTPUT_ADDRESS_START, readBuff, 6);
 

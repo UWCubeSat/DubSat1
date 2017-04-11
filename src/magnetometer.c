@@ -9,7 +9,7 @@
 #include "magnetometer.h"
 
 
-#define MAX_BUFF_SIZE   25
+#define MAX_BUFF_SIZE   0xFF
 
 void magInit()
 {
@@ -28,6 +28,7 @@ void magInit()
     // TODO:  Do the MAG3110 setup
     // ...
     // szBuff = whatever;
+#else
 #error Unknown - or no - magnetometer specified.  Use MAGNETOMETER to set type.
 #endif  /* MAGNETOMETER == HMC5883 */
 
@@ -73,10 +74,9 @@ void magReadBytesFromRegisters(uint8_t registeraddr, uint8_t * buff, uint8_t szT
     i2cWaitForStartComplete();
 
     //  Stop bit will be auto-set once we read szToRead bytes
-    // TODO:  Add logic to handle edge case issues
     while ( (UCB2IFG & UCSTPIFG) == 0)
     {
-        i2cWaitReadyToReceiveByte();
-        buff[indexBuff++] = i2cRetrieveReceiveBuffer();
+        if ( (UCB2IFG & UCRXIFG) != 0)
+            buff[indexBuff++] = i2cRetrieveReceiveBuffer();
     }
 }

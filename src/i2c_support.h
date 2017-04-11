@@ -4,12 +4,10 @@
  *  Created on: Apr 9, 2017
  *      Author: jeffc
  */
-
-#include <msp430.h>
-
 #ifndef I2C_SUPPORT_H_
 #define I2C_SUPPORT_H_
 
+#include <msp430.h>
 
 // TODO:  Introduce pre-processor hackery to "build up" each register name based on
 // passed in USCI_MODULE selected.
@@ -18,7 +16,9 @@
 #define I2C_MASTER_RECEIVE_INTERRUPT_MASK     (UCRXEIE | UCNACKIE )
 #define I2C_MASTER_TRANSMIT_INTERRUPT_MASK    (UCTXIE2 | UCNACKIE )
 
-// Helper functions
+/***************************/
+/* I2C LOW-LEVEL FUNCTIONS */
+/***************************/
 void inline i2cHoldReset()  { UCB2CTLW0 |= UCSWRST; }
 void inline i2cReleaseReset()  { UCB2CTL1 &= ~UCSWRST; }
 void inline i2cMasterTransmitStart()  { UCB2CTL1 |= UCTR | UCTXSTT; }
@@ -32,7 +32,7 @@ void inline i2cAutoStopSetTotalBytes(uint8_t count)  { UCB2TBCNT = count; }  // 
 #ifndef DISABLE_SYNC_I2C_CALLS
 
 #warning Synchronous calls to I2C are inefficient - consider disabling sync calls and \
-using the async interrupt-based API instead, with ENABLE_ASYNC_I2C_CALLS.
+using the async interrupt-based API instead, with DISABLE_SYNC_I2C_CALLS.
 void inline i2cWaitForStopComplete()  { while (UCB2CTLW0 & UCTXSTP); }
 void inline i2cWaitForStartComplete() { while (UCB2CTLW0 & UCTXSTT); }
 void inline i2cWaitReadyToTransmitByte()  { while ( (UCB2IFG & UCTXIFG0) == 0); }
