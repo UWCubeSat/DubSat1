@@ -1,0 +1,1 @@
+These folders will be the eventual home of the subsystem-specific flight software.  Each subsystem should deploy their "release" code in this top-level directory.  Include references should be relative paths up and back "down" a directory in the core-release folder (and the subfolders below that).

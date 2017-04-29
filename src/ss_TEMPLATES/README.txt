@@ -1,0 +1,1 @@
+This folder will eventually have starting templates for subsystems.  This will include both source files as well as Code Composer Studio "starter" files.  The CCS files should take care of referencing the "core-release" folder in an appropriate (i.e. relative path) manner, as well as set any predefined symbols for hardware (e.g. magnetometer hardware, board type).
