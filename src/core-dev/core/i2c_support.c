@@ -11,7 +11,7 @@
 void i2cInit(uint8_t slaveaddr)
 {
     // USCI Configuration:  Common for both TX and RX
-    i2cHoldReset();                                             // Software reset enabled
+    i2cDisable();                                             // Software reset enabled
     UCB2CTLW0 |= UCMODE_3 | UCMST | UCSYNC | UCSSEL__SMCLK;     // I2C, master, synchronous, use SMCLK
     UCB2BRW = 12;                                               // Baudrate = SMCLK / 12
     UCB2I2CSA = slaveaddr;                                      // Slave address
@@ -26,9 +26,9 @@ void i2cCombinedAddressWriteThenRead(uint8_t registeraddr, uint8_t * buff, uint8
 
     // Set total number of bytes
     // TODO:  BUG BUG - need to check combined operation behavior for byte counts (reset?  need szToRead + 1?)
-    i2cHoldReset();
+    i2cDisable();
     i2cAutoStopSetTotalBytes(szToRead);
-    i2cReleaseReset();
+    i2cEnable();
 
     // First, send "cursor move" write -> an address, but no payload data
     // TODO:  Add hw-conditional logic if slave doesn't support auto-advance of address
@@ -52,23 +52,22 @@ void i2cCombinedAddressWriteThenRead(uint8_t registeraddr, uint8_t * buff, uint8
 
 void i2cRawWrite(uint8_t * buff, uint8_t szToWrite)
 {
-    i2cHoldReset();
+    i2cDisable();
     i2cAutoStopSetTotalBytes(szToWrite);
-    i2cReleaseReset();
+    i2cEnable();
 
     i2cWaitForStopComplete();
     i2cMasterTransmitStart();
     i2cWaitForStartComplete();
 
-    uint8_t i;
-    for (i = 0; i < szToWrite; i++)
+    uint8_t index = 0;
+    while ( (UCB2IFG & UCSTPIFG) == 0)
     {
-        i2cWaitReadyToTransmitByte();
-        i2cLoadTransmitBuffer(buff[i]);
+        if ( (UCB2IFG & UCTXIFG0) != 0)
+        {
+            UCB2TXBUF = buff[index++];
+        }
     }
-
-    // TODO:  NEED TO CONVERGE I2C SUPPORT FUNCTIONS:  use own byte counter or eUSCI?
-    // Auto-Stop should kick in after this and set Stop condition on the bus
 }
 
 // Primary interrupt vector for I2C on module B2 on the 430

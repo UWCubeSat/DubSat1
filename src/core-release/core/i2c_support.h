@@ -8,6 +8,7 @@
 #define I2C_SUPPORT_H_
 
 #include <msp430.h>
+#include <stdint.h>
 
 // TODO:  Introduce pre-processor hackery to "build up" each register name based on
 // passed in USCI_MODULE selected.
@@ -19,8 +20,8 @@
 /***************************/
 /* I2C LOW-LEVEL FUNCTIONS */
 /***************************/
-void inline i2cHoldReset()  { UCB2CTLW0 |= UCSWRST; }
-void inline i2cReleaseReset()  { UCB2CTL1 &= ~UCSWRST; }
+void inline i2cDisable()  { UCB2CTLW0 |= UCSWRST; }
+void inline i2cEnable()  { UCB2CTL1 &= ~UCSWRST; }
 void inline i2cMasterTransmitStart()  { UCB2CTL1 |= UCTR | UCTXSTT; }
 void inline i2cMasterReceiveStart()  { UCB2CTL1 &= ~UCTR;  UCB2CTL1 |= UCTXSTT;  }
 void inline i2cLoadTransmitBuffer(uint8_t input)  {  UCB2TXBUF = input; }
