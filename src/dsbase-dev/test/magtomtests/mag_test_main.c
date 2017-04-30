@@ -2,8 +2,7 @@
 #include <stdint.h>
 
 // TODO:  Support '#define USCI_MODULE  B2' or similar
-#include "i2c_support.h"
-#include "magnetometer.h"
+#include "../sensors/magnetometer.h"
 
 
 #define I2C_PORTSEL0        P7SEL0
