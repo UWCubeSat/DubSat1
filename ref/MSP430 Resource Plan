@@ -1,0 +1,29 @@
+Below are the current peripheral and pin assignments for the MSP430's being tested on LaunchPads.  Ideally, we will stick with these when we move over to test and then final flight hardware.
+
+Empty peripherals listed based on choice of MSP430FR5994 80-pin LQFP version.  Substantial differences exist on lower-pin-count devices.
+
+eUSCI Peripherals (A blocks = UART/SPI/Irda, B blocks =SPI/I2C)
+- A0:  Backchannel UART
+- A1:  
+- A2:  
+- A3:  
+
+- B0:  
+- B1:  SPI (and therefore CAN)
+- B2:  I2C
+- B3:  
+
+Timer Blocks:
+- A0 (3 CCRs):  Main timer driving BDot controller >>> let's use this for any timers needed for subsystem-specific use
+- A1 (3 CCRs):  
+- A2 (2 CCRs):  
+- A3 (2 CCRs):
+- A4 (2 CCRs): 
+
+- B0 (7(!!) CCRs) - Probably reserve for PWM due to enhancements over A blocks?
+
+
+Ports/Pins in Use:
+- FR5994 LaunchPad built-ins:  P1.0 (LED1), P1.1 (LED2), P5.6 (Button S1), P5.5 (Button S2)
+- I2C:  P7.0 (SDA), P7.1 (SCL)
+
