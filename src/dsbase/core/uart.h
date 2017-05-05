@@ -22,7 +22,7 @@ typedef struct {
 
     uint8_t txOverrunCount;
     uint8_t txBufferOverflowCount;
-} UART_Status;
+} bus_status_UART;
 
 
 #endif /* UART_H_ */

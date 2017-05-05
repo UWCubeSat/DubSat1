@@ -6,7 +6,7 @@
  */
 
 #include <stdint.h>
-#include "i2c_support.h"
+#include "i2c.h"
 
 void i2cInit(uint8_t slaveaddr)
 {

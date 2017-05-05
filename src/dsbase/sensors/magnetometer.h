@@ -9,14 +9,11 @@
 #define MAGNETOMETER_H_
 
 #include <stdint.h>
-#include "i2c_support.h"
 
-#ifndef HW_MAGTOM
-#warning  No magnetometer specified in HW_MAGTOM - defaulting to MAG3110.
-#define HW_MAGTOM  3110
-#endif  /* HW_MGTOM */
+#include "../core/i2c.h"
 
-#if HW_MAGTOM == 5883   // Honeywell HMC5883L
+
+#if defined(__BSP_HW_MAGTOM_HMC5883L__)   // Honeywell HMC5883L
 #include "HMC5883L_Magnetometer.h"
 
 #define MAG_I2C_7BIT_ADDRESS                        MAG_HMC5883L_I2C_7BIT_ADDRESS
@@ -24,7 +21,7 @@
 #define MAG_CONVERSION_FACTOR_RAW_TO_NANOTESLAS     HMC5883L_CONVERSION_FACTOR_RAW_TO_NANOTESLAS
 #define MAG_CONVERSION_FACTOR_RAW_TO_TESLAS         HMC5883L_CONVERSION_FACTOR_RAW_TO_TESLAS
 
-#elif HW_MAGTOM == 3110  // Freescale MAG3110
+#elif defined( __BSP_HW_MAGTOM_MAG3110__)  // Freescale MAG3110
 
 #include "MAG3110_Magnetometer.h"
 
@@ -34,7 +31,9 @@
 #define MAG_CONVERSION_FACTOR_RAW_TO_TESLAS         MAG3110_CONVERSION_FACTOR_RAW_TO_TESLAS
 
 #else
-#error Unknown - or no - magnetometer specified.  Use HW_MAGTOM to set valid type.
+
+#error  Unknown - or no - magnetometer specified.  Please see magnetometer.h for definition options.
+
 #endif  /* MAGNETOMETER */
 
 

@@ -14,6 +14,6 @@
 #warning  Header debugtools.h included, but __DEBUG__ flag not set.
 #endif  /* __DEBUG__ */
 
-void debug_print(char * buff, uint8_t szBuff);
+void debug_print(uint8_t * buff, uint8_t szBuff);
 
 #endif /* DEBUGTOOLS_H_ */
