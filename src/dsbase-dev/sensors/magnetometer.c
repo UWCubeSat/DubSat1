@@ -28,7 +28,7 @@ void magInit()
     i2cEnable();
     i2cInit(MAG_I2C_7BIT_ADDRESS);
 
-#if HW_MAGTOM == 5883  /* */
+#if defined(__BSP_HW_MAGTOM_HMC5883L__)  /* */
 
     // HMC5883 pattern is to address
     i2cBuff[0] = MAG_HMC5883L_REG_ADDR_CRA;
@@ -40,7 +40,7 @@ void magInit()
 
     i2cRawWrite(i2cBuff, 6);
 
-#elif HW_MAGTOM == 3110
+#elif defined( __BSP_HW_MAGTOM_MAG3110__)
 
     // MAG3110 auto increments the address pointer, so no need to tweak address as long as you do things in sequence
     i2cBuff[0] = MAG_MAG3110_REG_ADDR_CTRL_REG2;
@@ -64,14 +64,14 @@ MagnetometerData *magReadXYZData(UnitConversionMode desiredConversion)
     mdata.conversionMode = desiredConversion;
     i2cCombinedAddressWriteThenRead(MAG_XYZ_OUTPUT_REG_ADDR_START, i2cBuff, 6 );
 
-#if HW_MAGTOM == 5883
+#if defined(__BSP_HW_MAGTOM_HMC5883L__)
 
     // NOTE:  Order of X/Z/Y on HMC5883 is, unfortunately, intentional ...
     mdata.rawX = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
     mdata.rawZ = (int16_t)(i2cBuff[3] | ((int16_t)i2cBuff[2] << 8));
     mdata.rawY = (int16_t)(i2cBuff[5] | ((int16_t)i2cBuff[4] << 8));
 
-#elif HW_MAGTOM == 3110
+#elif defined( __BSP_HW_MAGTOM_MAG3110__)
 
     mdata.rawX = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
     mdata.rawY = (int16_t)(i2cBuff[3] | ((int16_t)i2cBuff[2] << 8));

@@ -7,17 +7,17 @@
 
 #include <msp430.h>
 #include <stdio.h>
+#include "utils.h"
 #include "uart.h"
 
+FILE_STATIC uint8_t txBuff[MAX_BUFFER_SIZE];
+FILE_STATIC uint8_t rxBuff[MAX_BUFFER_SIZE];
+FILE_STATIC volatile uint8_t currentTxIndex = INDEX_OP_COMPLETE;
+FILE_STATIC uint8_t currentTxNumBytes;
+FILE_STATIC volatile uint8_t currentRxIndex = INDEX_OP_COMPLETE;
+FILE_STATIC uint8_t currentRxNumBytes;
 
-static uint8_t txBuff[MAX_BUFFER_SIZE];
-static uint8_t rxBuff[MAX_BUFFER_SIZE];
-static volatile uint8_t currentTxIndex = INDEX_OP_COMPLETE;
-static uint8_t currentTxNumBytes;
-static volatile uint8_t currentRxIndex = INDEX_OP_COMPLETE;
-static uint8_t currentRxNumBytes;
-
-static UART_Status uart_status;
+FILE_STATIC bus_status_UART uart_status;
 
 // TODO:  Add macro magic to select which UART peripheral to use
 // TODO:  Add configuration parameters for speed

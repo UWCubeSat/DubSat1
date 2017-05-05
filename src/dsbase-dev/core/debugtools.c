@@ -13,7 +13,7 @@
 // should go away when compiled for release
 #ifdef __DEBUG__
 
-void debug_print(char * buff, uint8_t szBuff)
+void debug_print(uint8_t * buff, uint8_t szBuff)
 {
     uartInit();
     uartTransmit(buff, szBuff);
@@ -21,7 +21,7 @@ void debug_print(char * buff, uint8_t szBuff)
 
 #else  /* __DEBUG__ not specified, therefore nop debug operations */
 
-void debug_print(char * buff, uint8_t szBuff) {}
+void debug_print(uint8_t * buff, uint8_t szBuff) {}
 
 
 #endif /* __DEBUG__ */
