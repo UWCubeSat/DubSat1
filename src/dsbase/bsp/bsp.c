@@ -30,7 +30,12 @@ void bspInit()
         CSCTL3 = DIVA__1 | DIVS__1 | DIVM__1;   // Set all dividers to 1 for 8MHz operation
         CSCTL0_H = 0;                           // Lock CS Registers
 
+        // Disable the GPIO power-on default high-impedance mode to activate
+        // previously configured port settings
+        PM5CTL0 &= ~LOCKLPM5;
 }
+
+
 
 #else
 
