@@ -28,6 +28,8 @@ void uartInit()
         return;
 
     uart_status.initialized = 1;
+    BACKCHANNEL_UART_SEL0 &= ~BACKCHANNEL_UART_BITS;
+    BACKCHANNEL_UART_SEL1 |= BACKCHANNEL_UART_BITS;
 
     // TODO:  Add logic to rejigger the dividers based on current clock
     // setting ... these currently ASSUME A 8MHz CLOCK!

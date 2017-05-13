@@ -9,9 +9,10 @@
 #define UART_H_
 
 #include <stdint.h>
+#include "bsp/bsp.h"
 
 
-#define MAX_BUFFER_SIZE     32
+#define MAX_BUFFER_SIZE     250
 #define INDEX_OP_COMPLETE  MAX_BUFFER_SIZE+1
 
 void uartInit();

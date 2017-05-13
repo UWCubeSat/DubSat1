@@ -14,6 +14,7 @@
 
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)   // Honeywell HMC5883L
+
 #include "HMC5883L_Magnetometer.h"
 
 #define MAG_I2C_7BIT_ADDRESS                        MAG_HMC5883L_I2C_7BIT_ADDRESS
@@ -21,7 +22,7 @@
 #define MAG_CONVERSION_FACTOR_RAW_TO_NANOTESLAS     HMC5883L_CONVERSION_FACTOR_RAW_TO_NANOTESLAS
 #define MAG_CONVERSION_FACTOR_RAW_TO_TESLAS         HMC5883L_CONVERSION_FACTOR_RAW_TO_TESLAS
 
-#elif defined( __BSP_HW_MAGTOM_MAG3110__)  // Freescale MAG3110
+#elif defined(__BSP_HW_MAGTOM_MAG3110__)  // Freescale MAG3110
 
 #include "MAG3110_Magnetometer.h"
 
