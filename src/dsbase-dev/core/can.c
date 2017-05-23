@@ -31,7 +31,7 @@ uint8_t canInit() {
 
     // Set the interrupt pin low when the following occurs
     // Interrupts for receive
-    // TODO: Enable support for error on send
+    // Enable support for error on send
     bitModify(MCP_CANINTE, 0x3,0xFF);
 
 	//step 3: set mode to normal
@@ -43,7 +43,7 @@ uint8_t canInit() {
     readRegister(MCP_CANSTAT, &canMode);
 
     // Set a dummy callback
-    setReceiveCallback(DummyCallback)
+    setReceiveCallback(DummyCallback);
     return canMode;
 }
 
@@ -188,7 +188,7 @@ uint8_t readRXStatus(uint8_t *status) {
 }
 
 void setReceiveCallback(void (*ReceiveCallbackArg)(uint8_t, uint8_t*)) {
-    ReceiveCallback = ReceiveCallbackArg
+    ReceiveCallback = ReceiveCallbackArg;
 }
 
 // Interrupt handler for Receive Buffer
@@ -206,7 +206,7 @@ __interrupt void ReceivedMsg(void) {
     // Receive buffer 0 full
     if (rx0if) {
         // Standard Frame Remote Transmit Request Receive
-        uint8_t rxb0dlc // rxb0sidl contains if extended or not extended can , rxb0dlc contains length of received message from bits 3:0
+        uint8_t rxb0dlc; // rxb0sidl contains if extended or not extended can , rxb0dlc contains length of received message from bits 3:0
         res = readRegister(MCP_RXB0DLC, &rxb0dlc);
 
         if (res == 0) {
@@ -225,11 +225,11 @@ __interrupt void ReceivedMsg(void) {
     // Receive buffer 1 full
     if (rx1if) {
         // Standard Frame Remote Transmit Request Receive
-        uint8_t rxb1dlc // rxb0sidl contains if extended or not extended can , rxb0dlc contains length of received message from bits 3:0
+        uint8_t rxb1dlc; // rxb0sidl contains if extended or not extended can , rxb0dlc contains length of received message from bits 3:0
         res = readRegister(MCP_RXB1DLC, &rxb1dlc);
 
         if (res == 0) {
-            length = rxb0dlc & 0x3;  // Data received in bytes
+            length = rxb1dlc & 0x3;  // Data received in bytes
 
             // Read from receive buffer
             uint8_t buf[8 + 1];
