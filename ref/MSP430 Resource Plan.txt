@@ -26,4 +26,13 @@ Timer Blocks:
 Ports/Pins in Use:
 - FR5994 LaunchPad built-ins:  P1.0 (LED1), P1.1 (LED2), P5.6 (Button S1), P5.5 (Button S2)
 - I2C:  P7.0 (SDA), P7.1 (SCL)
+- MCP25625 CAN Controller: 
+-	MSP-EXP430FR5994------MCP25625
+-   	+3.3V-------------->3V3		Power (3.3 Volts)
+-   	GND<----------------GND		Ground
+-   	P8.0 (CS)---------->CS		SPI Chip Select
+-   	P5.2 (SPI CLK)----->SCK		SPI Clock
+-   	P5.0 (MOSI)-------->SDI		SPI Data Output (From MSP430 Perspective - MOSI)
+-   	P5.1 (MISO)<--------SDO		SPI Data Input (From MSP430 Perspective - MISO)
+-				   <--------INT		Interrupt
 
