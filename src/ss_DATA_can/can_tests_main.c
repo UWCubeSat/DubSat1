@@ -1,16 +1,18 @@
 #include <msp430.h> 
-
+#include <stdio.h>
 #include "bsp/bsp.h"
 #include "core/can.h"
 #include "core/spi.h"
 
-int transmitNum;
+ volatile int transmitNum;
 
 // Send back the same reply
 void SendbackSameMessage(uint8_t length, uint8_t* data){
     if (transmitNum++ < 5) {
-        uint8_t tech[5] = {0,0,0,0,0x08};
-        uint8_t msg[8];
+        printf("TransmitNum: %d\n", transmitNum);
+        printf("Recv Msg Length %d, Data:%x,%x,%x,%x,%x,%x,%x,\n", length, data[0], data[1],data[2],data[3],data[4],data[5],data[6]);
+        uint8_t tech[5] = {0,0,0,0,length};
+        uint8_t msg[8] ={0,0,0,0,0,0,0,0};
 
         uint8_t i;
         for( i = 0; i < length; i++) {
@@ -18,7 +20,6 @@ void SendbackSameMessage(uint8_t length, uint8_t* data){
         }
 
         canSend(0,tech, msg);
-        printf("Received and sent back the same message\n");
     }
 }
 
@@ -66,63 +67,6 @@ void testSend() {
     }
 }
 
-// Send over CAN and Read Status Register
-uint8_t testReadStatus() {
-    uint8_t status = 0x0;
-    readStatus(&status);
-
-    // CANINTF = Interrupt flag
-        // RXnIF = Receive buffer n full interrupt flag bit
-            // Must be cleared by MCU to reset interrupt
-        // TxnIF = Transmit Buffer n Empty Interrupt Flag bit
-    // TXBnCTRL = Transmit Buffer n Control Register
-        // TXREQ = Msg Transmit Req bit
-           // 1 = buffer is currently pending transmission
-           // 0 = buffer not pending transmission
-
-    // Bits
-    // 0 RX0IF (CANINTF) pg 50
-    // 1 RX1IF (CANINTFL)
-    // 2 TXREQ (TXB0CNTRL) pg 32
-    // 3 TX0IF (CANINTF)
-    // 4 TXREQ (TXB1CNTRL)
-    // 5 TX1IF (CANINTF)
-    // 6 TXREQ (TXB2CNTRL)
-    // 7 TX2IF (CANINTF)
-    uint8_t rx0if, rx1if, txreq0, tx0if, txreq1, tx1if,txreq2,tx2if;
-    printf("Status: %x", status);
-    /*
-    rx0if = status & 0x01;
-    rx1if = status & 1<<1;
-    txreq0 = status & 1<<2;
-    tx0if = status & 1<<3;
-    txreq1 = status & 1<<4;
-    tx1if = status & 1<<5;
-    txreq2 =status & 1<<6;
-    tx2if = status & 1<<7;
-
-    printf("RX0IF:%x ",rx0if);
-    printf("RX1IF:%x ",rx1if);
-    printf("TXREQ for TXB0CNTRL:%x ",txreq0);
-    printf("TX0IF:%x ",tx0if);
-    printf("TXREQ for TXB1CNTRL:%x ",txreq1);
-    printf("TX1IF:%x ",tx1if);
-    printf("TXREQ for TXB2CNTRL:%x ",txreq2);
-    printf("TX2IF:%x \n",tx2if);
-*/
-    int i;
-    for(i = 0; i < 10; ++i) {
-        testSend();
-        readStatus(&status);
-
-        if (status != 0) {
-            printf("Something changed \n");
-        }
-    }
-
-    return 0;
-}
-
 // Test read and write to a register
 uint8_t writeAndReadAddr() {
     uint8_t addr = 0x2C;
@@ -143,11 +87,10 @@ int main(void) {
     PM5CTL0 &= ~LOCKLPM5;       // For the GPIO pins
     canInit();
 
-    //testReadStatus();
-
     transmitNum = 0;
-    //Set in Interrupt
-    // TODO: Enable individual interrupt for Port 1
+    printf("Test Print %d\n", transmitNum);
+
+    // Enable individual interrupt for Port 1
     //       pg 26 in Interrupts Workshop
     P1IE |= 0x10; // P1.4 interrupt enabled
     P1IES |= 0x10; // P1.4 Hi/lo edge
@@ -158,13 +101,27 @@ int main(void) {
     //  Need to set general interrupt enable (GIE) in status register(SR)
     __bis_SR_register(GIE);
 
+    testSend();
 
     // Set the receive buffer callback
     setReceiveCallback(SendbackSameMessage);
-    transmitNum = 0;
-    while (1) {
-    }
+    uint8_t msg[8] = {0x1,0x2,0x3,0x4,0x5,0x6,0x7,0x8};
+    SendbackSameMessage(8,msg);
+    printf("Message Sent\n");
 
+    int i = 0;
+    for(i=10000;i>0;i--){}
+
+
+    // TODO: Bug where INT pin never goes back up to high after
+    // an initial interrupt
+    int oldNum = transmitNum;
+    while (transmitNum < 5) {
+        if (oldNum != transmitNum) {
+            printf("Value changed\n");
+            oldNum = transmitNum;
+        }
+    }
     return 0;
 }
 
