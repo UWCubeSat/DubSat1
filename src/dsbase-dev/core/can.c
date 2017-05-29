@@ -6,6 +6,9 @@
  *      Author: UW Satellite Team
  */
 #include "can.h"
+// Dummy callback used in place until we set a
+// callback method
+void DummyCallback(uint8_t length, uint8_t* data){}
 
 uint8_t canInit() {
     spiInit(BIT0);
@@ -27,8 +30,8 @@ uint8_t canInit() {
 
     // Set the interrupt pin low when the following occurs
     // Interrupts for receive
-    // TODO: Enable support for error on send
-    bitModify(MCP_CANINTE, 0x3,0xFF);
+    // Enable support for error on send
+    bitModify(MCP_CANINTE, 0x3,0x3);
 
 	//step 3: set mode to normal
     bitModify(MCP_CANCTRL, 0xE0, 0x00);
@@ -37,6 +40,9 @@ uint8_t canInit() {
     // a: verify normal mode by reading OPMOD bits in the CANCTRL register
     uint8_t canMode;
     readRegister(MCP_CANSTAT, &canMode);
+
+    // Set a dummy callback
+    setReceiveCallback(DummyCallback);
     return canMode;
 }
 
@@ -76,6 +82,7 @@ uint8_t canSend(uint8_t bufNum, uint8_t* tech, uint8_t* msg) {
     uint8_t sendBuf2[9];
     uint8_t txBuf;
 
+    // Modifying bits for which buffer to write to.
     switch (bufNum)
         {
         case 0:
@@ -167,6 +174,7 @@ uint8_t readStatus(uint8_t *status) {
     buf[1] = 0x00;
 
     spiTransceive(buf, buf, 2, BIT0);
+    *status= buf[1];
     return 0;
 }
 
@@ -179,30 +187,63 @@ uint8_t readRXStatus(uint8_t *status) {
     return 0;
 }
 
+void setReceiveCallback(void (*ReceiveCallbackArg)(uint8_t, uint8_t*)) {
+    ReceiveCallback = ReceiveCallbackArg;
+}
+
 // Interrupt handler for Receive Buffer
 // PORT1_VECTOR defined in C:\ti\ccsv7\ccs_base\msp430\include\msp430fr5994.h
 // GPIO port interrupts are all grouped together.
 #pragma vector=PORT1_VECTOR
 __interrupt void ReceivedMsg(void) {
-    // TODO: Find which buffer got filled
-    uint8_t status, rx0if, rx1if;
+    uint8_t status, rx0if, rx1if, res, length;
     readStatus(&status);
-
     rx0if = status & 0x01;
     rx1if = status & 1<<1;
 
     // Receive buffer 0 full
     if (rx0if) {
-        // TODO: Do something with data at RXBnDM but need to check RXBnDLC
-        // Standard Frame Remote Transmit Request Receive
-        bitModify(MCP_CANINTF, 0x1, 0x0);
+        uint8_t rxb0dlc; // rxb0sidl contains if extended or not extended can , rxb0dlc contains length of received message from bits 3:0
+        res = readRegister(MCP_RXB0DLC, &rxb0dlc);
+
+        if (res == 0) {
+            // Data received in bytes
+            length = rxb0dlc & 0xF;
+
+            // Read from receive buffer
+            uint8_t buf[8 + 1], msg[8];
+
+            // Read from receive buffer SPI instruction
+            buf[0] = 0x92;
+            spiTransceive(buf, buf, 9, BIT0);
+
+            // Clear out the interrupt flag for receive buffer 0
+            bitModify(MCP_CANINTF, 0x1, 0x0);
+            int i = 0;
+            for (i = 0; i < length; i++){
+                msg[i] = buf[i+1];
+            }
+            ReceiveCallback(length, msg);
+        }
     }
 
     // Receive buffer 1 full
     if (rx1if) {
-        // TODO: Do something with data at RXBnDM but need to check RXBnDLC
-        // Standard Frame Remote Transmit Request Receive
-        bitModify(MCP_CANINTF, 0x2, 0x0);
+        uint8_t rxb1dlc;
+        res = readRegister(MCP_RXB1DLC, &rxb1dlc);
+
+        if (res == 0) {
+            length = rxb1dlc & 0xF;
+            uint8_t buf[8 + 1], msg[8];
+            buf[0] = 0x96;
+            spiTransceive(buf, buf, 9, BIT0);
+            bitModify(MCP_CANINTF, 0x2, 0x0);
+            int i = 0;
+            for (i = 0; i < length; i++){
+                msg[i] = buf[i+1];
+            }
+            ReceiveCallback(length, msg);
+        }
     }
 }
 

@@ -17,6 +17,10 @@
 #include <inttypes.h>
 #include "spi.h"
 
+// Global function pointer to point to the function
+// when data is received through CAN
+void (*ReceiveCallback)(uint8_t, uint8_t*);
+
 // Static fields
 uint8_t mcpMode;
 
@@ -90,6 +94,13 @@ uint8_t readRXStatus(uint8_t *status);
  */
 uint8_t bitModify(uint8_t address, uint8_t mask, uint8_t data);
 
+
+/* Set the callback function when we receive a message
+ * Input: a function pointer that takes a int and an array of int and
+ *        returns void
+ */
+void setReceiveCallback(void (*ReceiveCallbackArg)(uint8_t, uint8_t*));
+
 // OUTPUT CONSTANTS
 #define CAN_OK             (0)
 #define CAN_FAILINIT       (1)
@@ -159,8 +170,10 @@ uint8_t bitModify(uint8_t address, uint8_t mask, uint8_t data);
 
 // Receive Buffer
 #define MCP_RXB0SIDH    0x61
+#define MCP_RXB0DLC     0x65
 #define MCP_RXB0D0      0x66
 #define MCP_RXB1SIDH    0x71
+#define MCP_RXB1DLC     0x75
 #define MCP_RXB1D0      0x76
 
 // Transmit Buffer

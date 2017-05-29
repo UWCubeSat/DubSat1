@@ -8,6 +8,19 @@
 
 int transmitNum;
 
+// Send back the same reply
+void SendbackSameMessage(uint8_t length, uint8_t* data){
+    uint8_t tech[5] = {0,0,0,0,0x08};
+    uint8_t msg[8];
+
+    uint8_t i;
+    for( i = 0; i < length; i++) {
+        msg[i] = data[i];
+    }
+
+    canSend(0,tech, msg);
+}
+
 // Test Sending over CAN
 void testSend() {
     // TXB0SIDH pg 33
@@ -21,9 +34,7 @@ void testSend() {
     uint8_t msg[8];
     uint8_t msgt[8];
     int i;
-//    for (i = 0; i < 8; i++) {
-//        msg[i] = 0x55;
-//    }
+
     msg[0] = 0x48;
     msg[1] = 0x45;
     msg[2] = 0x4C;
@@ -147,10 +158,9 @@ int main(void) {
     // TODO: Need to set general interrupt enable (GIE) in status register(SR)
     __bis_SR_register(GIE);
 
-    int i;
-    for (i = 0; i < 50; ++i) {
-        //testSend();
-    }
+
+    // Set the receive buffer callback
+    setReceiveCallback(SendbackSameMessage);
 
     while (1) {
         if (transmitNum > 0) {
@@ -163,7 +173,6 @@ int main(void) {
 }
 
 /*
- *
 Appendix at the end of MSP430FR5994 Launchpad Interrupt Worksheet
 has useful information.
 Interrupt Macros may come in handy
