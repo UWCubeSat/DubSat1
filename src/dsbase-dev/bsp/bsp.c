@@ -37,6 +37,10 @@ void bspInit()
 
 #endif
 
+#if defined(__DEBUG__)
+    debugInit();
+#endif __DEBUG__
+
 
 }
 

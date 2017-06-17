@@ -8,6 +8,8 @@
 int main(void) {
 
     bspInit();
-	
+
+    while (1) {}
+
 	return 0;
 }
