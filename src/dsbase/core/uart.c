@@ -36,13 +36,20 @@ void uartInit()
     // Configure USCI_A0 for UART mode
     UCA0CTLW0 = UCSWRST;                    // Put eUSCI in reset
     UCA0CTLW0 |= UCSSEL__SMCLK;             // CLK = SMCLK
-    // Baud Rate calculation
+    // ORIGINAL Baud Rate calculation
     // 8000000/(16*9600) = 52.083
     // Fractional portion = 0.083
     // User's Guide Table 21-4: UCBRSx = 0x04
     // UCBRFx = int ( (52.083-52)*16) = 1
-    UCA0BRW = 52;                           // 8000000/16/9600
-    UCA0MCTLW |= UCOS16 | UCBRF_1 | 0x4900;
+    //UCA0BRW = 52;                           // 8000000/16/9600
+    //UCA0MCTLW |= UCOS16 | UCBRF_1 | 0x4900;
+
+    // Now using 115.2kbps for baud rate (see table 24-5 in Family Guide)
+    // Seems relatively stable
+    UCA0BRW = 4;
+    UCA0MCTLW |= UCOS16 | UCBRF_5 | 0x55;
+
+
     UCA0CTLW0 &= ~UCSWRST;                  // Initialize eUSCI
     UCA0IE |= UCRXIE | UCTXIE;              // Enable USCI_A0 RX interrupt
 }
@@ -80,8 +87,8 @@ __interrupt void USCI_A0_ISR(void)
     {
         case USCI_NONE: break;
         case USCI_UART_UCRXIFG:   // Complete character recv'd
-            while(!(UCA0IFG&UCTXIFG));
-            UCA0TXBUF = UCA0RXBUF;
+            //while(!(UCA0IFG&UCTXIFG));
+            //UCA0TXBUF = UCA0RXBUF;
             __no_operation();
             break;
         case USCI_UART_UCTXIFG:     // Set when tx buff is empty
