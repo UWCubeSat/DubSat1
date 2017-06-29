@@ -6,9 +6,15 @@
  */
 
 #include "bsp/bsp.h"
+#include "interfaces/systeminfo.h"
 
-void bspInit()
+
+FILE_STATIC SubsystemModule ssModule;
+
+
+void bspInit(SubsystemModule mod)
 {
+    ssModule = mod;
 
 #if defined(__BSP_Board_MSP430FR5994LaunchPad__)
 
@@ -39,9 +45,14 @@ void bspInit()
 
 #if defined(__DEBUG__)
     debugInit();
-#endif __DEBUG__
+#endif // __DEBUG__
 
 
+}
+
+SubsystemModule bspGetModule()
+{
+    return ssModule;
 }
 
 

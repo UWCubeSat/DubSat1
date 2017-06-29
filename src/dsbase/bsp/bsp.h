@@ -11,7 +11,8 @@
 #include "../core/i2c.h"
 #include "../core/debugtools.h"
 #include "../core/uart.h"
-#include "../sensors/magnetometer.h"
+#include "../core/utils.h"
+#include "../interfaces/systeminfo.h"
 
 // Hard-wired assignments for a given board are stashed in these #if defined(...)
 // blocks
@@ -80,8 +81,7 @@
 #define I2C_SDA_BIT         BIT0
 #define I2C_SCL_BIT         BIT1
 
-
-void bspInit();
-
+void bspInit(SubsystemModule mod);
+SubsystemModule bspGetModule();
 
 #endif /* BSP_BSP_H_ */

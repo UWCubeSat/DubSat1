@@ -10,19 +10,28 @@
 
 #include <stdint.h>
 #include "bsp/bsp.h"
-
-
-#define MAX_BUFFER_SIZE     250
-#define INDEX_OP_COMPLETE  MAX_BUFFER_SIZE+1
+#include "config/config_bus_uart.h"
 
 void uartInit();
 void uartTransmit(uint8_t * buff, uint8_t szBuff);
+void uartRegisterRxCallback(void (*rxcallback)(uint8_t rcvdbyte));
 
 typedef struct {
     uint8_t initialized;
+    uint8_t echo_on;
 
-    uint8_t txOverrunCount;
-    uint8_t txBufferOverflowCount;
+    uint8_t tx_in_use;
+    uint8_t rx_in_use;
+
+    uint16_t tx_bytes_sent;
+    uint8_t tx_error_count;
+    uint8_t tx_error_overrun_count;
+    uint8_t tx_error_underrun_count;
+    uint8_t tx_error_buffer_overflow_count;
+
+    uint16_t rx_bytes_rcvd;
+    uint8_t rx_error_count;
+    uint8_t rx_error_missinghandler_count;
 } bus_status_UART;
 
 

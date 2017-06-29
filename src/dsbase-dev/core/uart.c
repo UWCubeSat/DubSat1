@@ -9,15 +9,17 @@
 #include <stdio.h>
 #include "utils.h"
 #include "uart.h"
+#include "config/config.h"
 
-FILE_STATIC uint8_t txBuff[MAX_BUFFER_SIZE];
-FILE_STATIC uint8_t rxBuff[MAX_BUFFER_SIZE];
-FILE_STATIC volatile uint8_t currentTxIndex = INDEX_OP_COMPLETE;
+FILE_STATIC uint8_t txBuff[CONFIGM_uart_txbuffsize];
+FILE_STATIC uint8_t rxBuff[CONFIGM_uart_rxbuffsize];
+FILE_STATIC volatile uint8_t currentTxIndex = 0;
 FILE_STATIC uint8_t currentTxNumBytes;
-FILE_STATIC volatile uint8_t currentRxIndex = INDEX_OP_COMPLETE;
+FILE_STATIC volatile uint8_t currentRxIndex = 0;
 FILE_STATIC uint8_t currentRxNumBytes;
 
 FILE_STATIC bus_status_UART uart_status;
+FILE_STATIC void (*rxCallback)() = 0;
 
 // TODO:  Add macro magic to select which UART peripheral to use
 // TODO:  Add configuration parameters for speed
@@ -28,6 +30,9 @@ void uartInit()
         return;
 
     uart_status.initialized = 1;
+    uart_status.echo_on = 1;
+    uart_status.tx_in_use = 0;
+    uart_status.rx_in_use = 0;
     BACKCHANNEL_UART_SEL0 &= ~BACKCHANNEL_UART_BITS;
     BACKCHANNEL_UART_SEL1 |= BACKCHANNEL_UART_BITS;
 
@@ -57,14 +62,16 @@ void uartInit()
 void uartTransmit(uint8_t * srcBuff, uint8_t szBuff)
 {
     // Check for overlong transmission or transmission in progress
-    if (currentTxIndex != INDEX_OP_COMPLETE)
+    if (uart_status.tx_in_use != 0)
     {
-        uart_status.txOverrunCount++;
+        uart_status.tx_error_count++;
+        uart_status.tx_error_overrun_count++;
         return;
     }
-    if (szBuff > MAX_BUFFER_SIZE)
+    if (szBuff > CONFIGM_uart_txbuffsize)
     {
-        uart_status.txBufferOverflowCount++;
+        uart_status.tx_error_count++;
+        uart_status.tx_error_buffer_overflow_count++;
         return;
     }
 
@@ -72,33 +79,62 @@ void uartTransmit(uint8_t * srcBuff, uint8_t szBuff)
     memcpy(txBuff, srcBuff, szBuff);
     currentTxIndex = 0;
     currentTxNumBytes = szBuff;
+    uart_status.tx_in_use = 1;
 
     // Start write process
     UCA0TXBUF = txBuff[currentTxIndex++];
+    uart_status.tx_bytes_sent++;
 
     __bis_SR_register(GIE);     // Interrupts enabled
 
 }
 
+void uartRegisterRxCallback(void (*callback)(uint8_t rcvdbyte))
+{
+    rxCallback = callback;
+}
+
 #pragma vector=EUSCI_A0_VECTOR
 __interrupt void USCI_A0_ISR(void)
 {
+    uint8_t rcvdbyte;
+
     switch(__even_in_range(UCA0IV, USCI_UART_UCTXCPTIFG))
     {
         case USCI_NONE: break;
-        case USCI_UART_UCRXIFG:   // Complete character recv'd
-            //while(!(UCA0IFG&UCTXIFG));
-            //UCA0TXBUF = UCA0RXBUF;
-            __no_operation();
+        case USCI_UART_UCRXIFG:
+            rcvdbyte = UCA0RXBUF;
+            uart_status.rx_bytes_rcvd++;
+
+            if (uart_status.echo_on == 1)
+            {
+                UCA0TXBUF = rcvdbyte;
+            }
+
+            if (rxCallback == 0)
+            {
+                uart_status.rx_error_count++;
+                uart_status.rx_error_missinghandler_count++;
+                return;
+            }
+            (*rxCallback)(rcvdbyte);
             break;
         case USCI_UART_UCTXIFG:     // Set when tx buff is empty
+            if (uart_status.tx_in_use == 0)
+            {
+                uart_status.tx_error_count++;
+                uart_status.tx_error_underrun_count++;
+            }
+
             if (currentTxIndex < currentTxNumBytes)
             {
                 UCA0TXBUF = txBuff[currentTxIndex++];
+                uart_status.tx_bytes_sent++;
             }
             else
             {
-                currentTxIndex = INDEX_OP_COMPLETE;
+                currentTxIndex++;
+                uart_status.tx_in_use = 0;
             }
             break;
         case USCI_UART_UCSTTIFG: break;  // Set after start received
