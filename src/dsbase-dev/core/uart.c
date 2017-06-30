@@ -12,14 +12,12 @@
 #include "config/config.h"
 
 FILE_STATIC uint8_t txBuff[CONFIGM_uart_txbuffsize];
-FILE_STATIC uint8_t rxBuff[CONFIGM_uart_rxbuffsize];
 FILE_STATIC volatile uint8_t currentTxIndex = 0;
 FILE_STATIC uint8_t currentTxNumBytes;
 FILE_STATIC volatile uint8_t currentRxIndex = 0;
-FILE_STATIC uint8_t currentRxNumBytes;
 
 FILE_STATIC bus_status_UART uart_status;
-FILE_STATIC void (*rxCallback)() = 0;
+FILE_STATIC void (*rxCallback)(uint8_t) = 0;
 
 // TODO:  Add macro magic to select which UART peripheral to use
 // TODO:  Add configuration parameters for speed

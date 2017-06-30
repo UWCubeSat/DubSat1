@@ -32,8 +32,9 @@ void inline i2cAutoStopSetTotalBytes(uint8_t count)  { UCB2TBCNT = count; }  // 
 // TODO:  Add NACK and other edge-case support to busy/waits
 #ifndef DISABLE_SYNC_I2C_CALLS
 
-#warning Synchronous calls to I2C are inefficient - consider disabling sync calls and \
-using the async interrupt-based API instead, with DISABLE_SYNC_I2C_CALLS.
+// TODO:  Re-enable this warning once there is actually an option to do async :)
+//#warning Synchronous calls to I2C are inefficient - consider disabling sync calls and \
+//using the async interrupt-based API instead, with DISABLE_SYNC_I2C_CALLS.
 void inline i2cWaitForStopComplete()  { while (UCB2CTLW0 & UCTXSTP); }
 void inline i2cWaitForStartComplete() { while (UCB2CTLW0 & UCTXSTT); }
 void inline i2cWaitReadyToTransmitByte()  { while ( (UCB2IFG & UCTXIFG0) == 0); }

@@ -43,7 +43,7 @@ void debugPrintF(const char *_format, ...)
     va_list argptr;
     va_start(argptr, _format);
     numBytes = vsnprintf(debugWriteOutputBuff, CONFIGM_debug_outputbuffsize, _format, argptr);
-    uartTransmit(debugWriteOutputBuff, numBytes + 1);
+    uartTransmit((uint8_t *)debugWriteOutputBuff, numBytes + 1);
 }
 
 void debugTrace(uint8_t level, uint8_t * buff, uint8_t szBuff)
@@ -61,7 +61,7 @@ void debugTraceF(uint8_t level, const char *_format, ...)
         va_list argptr;
         va_start(argptr, _format);
         numBytes = vsnprintf(debugWriteOutputBuff, CONFIGM_debug_outputbuffsize, _format, argptr);
-        uartTransmit(debugWriteOutputBuff, numBytes + 1);
+        uartTransmit((uint8_t *)debugWriteOutputBuff, numBytes + 1);
     }
 }
 
@@ -79,7 +79,7 @@ void debugReadCallback(uint8_t rcvdbyte)
     {
         consoleBytesRead++;
         consoleBuildingCommand = 0;
-        processCommand(debugConsoleInputBuff, consoleBytesRead);
+        processCommand((uint8_t *)debugConsoleInputBuff, consoleBytesRead);
     }
     else
     {
@@ -118,9 +118,9 @@ void processCommand(uint8_t * cmdbuff, uint8_t cmdlength)
 uint8_t validTraceLevel(uint8_t lvl)
 {
     uint8_t vallvl = lvl;
-    if (vallvl < 0)
-        vallvl = 0;
-    else if (vallvl > MAX_TRACE_LEVEL)
+
+    // Normalize to proper range (note:  it's unsigned, so don't need to check for < 0)
+    if (vallvl > MAX_TRACE_LEVEL)
         vallvl = MAX_TRACE_LEVEL;
     return vallvl;
 }
