@@ -16,8 +16,8 @@ Standardized APIs that other subsystems can use such
 as I2C, SPI, and CAN to communicate with other subsystems and
 sensors.
 
-### /ss_[Subsystem]_[Submodule]
-Code for each subsystem and submodule if applicable.
+### /ssmods/ss_[Subsystem]_[Submodule]
+Code for each subsystem and submodule if applicable.  Each subfolder under /ssmods maps to an individual MSP43x on the satellite.
 
-### /ss_TEST
-Test code for any of the components above.
+### /ssmods/ss_TEST
+Specifically for working out template and CCS build issues - do not use as base for new projects until notified.
