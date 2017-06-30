@@ -1,1 +1,0 @@
-"./SUBSYSTEMNAME_main.obj" "./support/bsp/bsp.obj" "./support/core/debugtools.obj" "./support/core/i2c.obj" "./support/core/uart.obj" "./support/sensors/magnetometer.obj" "../lnk_msp430fr5994.cmd" -llibmpu_init.a -llibmath.a -llibc.a 
