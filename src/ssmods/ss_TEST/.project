@@ -26,22 +26,27 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>support/bsp</name>
+			<name>dsbase/bsp</name>
 			<type>2</type>
 			<locationURI>DSBASE/bsp</locationURI>
 		</link>
 		<link>
-			<name>support/core</name>
+			<name>dsbase/config</name>
+			<type>2</type>
+			<locationURI>DSBASE/config</locationURI>
+		</link>
+		<link>
+			<name>dsbase/core</name>
 			<type>2</type>
 			<locationURI>DSBASE/core</locationURI>
 		</link>
 		<link>
-			<name>support/interfaces</name>
+			<name>dsbase/interfaces</name>
 			<type>2</type>
 			<locationURI>DSBASE/interfaces</locationURI>
 		</link>
 		<link>
-			<name>support/sensors</name>
+			<name>dsbase/sensors</name>
 			<type>2</type>
 			<locationURI>DSBASE/sensors</locationURI>
 		</link>
@@ -49,7 +54,7 @@
 	<variableList>
 		<variable>
 			<name>DSBASE</name>
-			<value>$%7BPARENT-1-PROJECT_LOC%7D/dsbase</value>
+			<value>$%7BPARENT-2-PROJECT_LOC%7D/dsbase</value>
 		</variable>
 	</variableList>
 </projectDescription>

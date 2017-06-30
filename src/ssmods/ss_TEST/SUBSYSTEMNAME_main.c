@@ -7,9 +7,7 @@
  */
 int main(void) {
 
-    bspInit();
-
-    while (1) {}
-
+    bspInit(Module_Test);
+	
 	return 0;
 }
