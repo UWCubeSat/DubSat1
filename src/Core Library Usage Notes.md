@@ -1,3 +1,4 @@
+# Core Library Usage Notes
 This document is a place to record any important notes to others about how core (i.e. anything in dsbase) should or should not be used, coding patterns that are important to follow, etc.  Ideally, API information will eventually be moved to design capture documents.
 
 Important coding patterns
@@ -35,24 +36,24 @@ Various notes:
 Other Usage Notes
 -----------------
 
-*General UART usage:
+### General UART usage:
 - In general, use the stuff in debugtools.h/.c instead of the uart.c/.h interface directly, there's support there, and more support planned
 - Bumped default speed from 9600bps to max for 8Mhz, which is 115.2kbps ... but if you find stability starts to suffer, please let me know
 - Expanded default and supported tx/rx buffer sizes (8- --> 16-bit indexers now)
 - Fixed my original lame in-use status tracking mechanism
 - All interesting status being stored in a struct
 
-Known issues:
+### Known issues:
 - for some reason, there is quite a bit of latency in the UART code stack - Jeff is tracking this down (TODO)
 - the current implementation throws away in UART write requests that occur while a write is already in progress - eventually this needs to be fixed by adding it to the transmit buffer instead (TODO)
 
-Status storage/sharing patterns:
+### Status storage/sharing patterns:
 - The idea is that each entity - a bus, for instance - will have a relatively-consistent way of storing relevant status in a structure or set of structures
 - Each entity will also implement a small set of status accessors that will allow the debug console to get full dumps of all this info
 - Note that these same structs are what store data that will be shared in the satellite-wide CAN packets, but due to limited space, that data will only be a subset of the stored information
 - Eventually (aka soon aka probably sprint 2) we'll add a "pluggable" mechanism in so that entities can "register" with the debug console, should make things cleaner.  Nothing fancy required, just an array of function pointers that get called in sequence by the debug console command processor, each invoked function would simply debugPrintF their spew (either with fields, if interactive mode, or without fields if headless).  Presto, you're done.
 
-New simple configuration pattern:
+### New simple configuration pattern:
 - Created new folder and file set for storing configuration in orderly way, setting us up for automatic config file generation
 - See ../core/uart.c and .h, and ../config/* for a demonstration of how to use
 - Currently, there are three LEVELS of config, with an implied 4th:
