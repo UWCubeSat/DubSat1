@@ -36,9 +36,9 @@ Important symbols include (note:  underbars are DOUBLED (i.e. '__') for the begi
 
 * Other hardware selection (optional, if a given piece of hardware is used):
     * Magnetometer sensor:
-    * `__BSP_HW_MAGTOM_HMC5883L__`:  Honeywell HMC 5883L magnetometer (default if no magtom symbol defined
-    * `__BSP_HW_MAGTOM_MAG3110__`:  Freescale MAG3110
-    * TODO:  the closely related HMC5983L will likely get its own definition and code chunks ... 
+        * `__BSP_HW_MAGTOM_HMC5883L__`:  Honeywell HMC 5883L magnetometer (default if no magtom symbol defined
+        * `__BSP_HW_MAGTOM_MAG3110__`:  Freescale MAG3110
+        * TODO:  the closely related HMC5983L will likely get its own definition and code chunks ... 
 
 ## Workspace Creation Strategy
 
