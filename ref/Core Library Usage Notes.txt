@@ -1,3 +1,0 @@
-This document is a place to record any important notes to others about how core (i.e. anything in dsbase) should or should not be used, coding patterns that are important to follow, etc.  Ideally, API information will eventually be moved to design capture documents.
-
-Configuration:

@@ -1,2 +1,0 @@
-This document is designed to capture notes about how best to setup Code Composer Studio to work the DubSat1 code.  Some of these notes are just suggestions, while others are hard-and-fast rules that need to be adopted to preserve everyone's sanity. 
-
