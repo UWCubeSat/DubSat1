@@ -14,17 +14,17 @@
 uint8_t szBuff;
 uint8_t i2cBuff[MAX_BUFF_SIZE];
 
-uint8_t i2cInitialized = 0;
+uint8_t magInitialized = 0;
 
 MagnetometerData mdata;
 
 void magInit()
 {
     // Initialize once and only once for this device
-    if (i2cInitialized != 0)
+    if (magInitialized != 0)
         return;
 
-    i2cInitialized = 1;
+    magInitialized = 1;
     i2cEnable();
     i2cInit(MAG_I2C_7BIT_ADDRESS);
 

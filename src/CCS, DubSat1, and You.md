@@ -34,11 +34,14 @@ Important symbols include (note:  underbars are DOUBLED (i.e. '__') for the begi
     * `__BSP_Board_MSP430FR5994_CANMSPBlockv1__`:  New (as of 5/12/17) boards for testing custom boards.
     * TODO:  MSP432 symbol will be needed very shortly
 
-* Other hardware selection (optional, if a given piece of hardware is used):
-    * Magnetometer sensor:
-        * `__BSP_HW_MAGTOM_HMC5883L__`:  Honeywell HMC 5883L magnetometer (default if no magtom symbol defined
+* Other hardware selection (optional, if a given piece of hardware is used - i.e. if the header is included and the define isn't included, you get a compile error):
+
+    * Magnetometer sensor (for magnetometer.c/.h):
+        * `__BSP_HW_MAGTOM_HMC5883L__`:  Honeywell HMC 5883L magnetometer
         * `__BSP_HW_MAGTOM_MAG3110__`:  Freescale MAG3110
         * TODO:  the closely related HMC5983L will likely get its own definition and code chunks ... 
+    * IMU sensor (for imu.c/.h):
+        * `__BSP_HW_IMU_BMI160__`:  Bosch BMI160 IMU (default if no imu symbol defined)
 
 ## Workspace Creation Strategy
 

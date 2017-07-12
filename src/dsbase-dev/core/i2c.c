@@ -27,7 +27,7 @@ void i2cCombinedAddressWriteThenRead(uint8_t registeraddr, uint8_t * buff, uint8
     // Set total number of bytes
     // TODO:  BUG BUG - need to check combined operation behavior for byte counts (reset?  need szToRead + 1?)
     i2cDisable();
-    i2cAutoStopSetTotalBytes(szToRead);
+    i2cAutoStopSetTotalBytes(szToRead+1);
     i2cEnable();
 
     // First, send "cursor move" write -> an address, but no payload data
@@ -46,7 +46,9 @@ void i2cCombinedAddressWriteThenRead(uint8_t registeraddr, uint8_t * buff, uint8
     while ( (UCB2IFG & UCSTPIFG) == 0)
     {
         if ( (UCB2IFG & UCRXIFG) != 0)
+        {
             buff[indexBuff++] = i2cRetrieveReceiveBuffer();
+        }
     }
 }
 
@@ -70,7 +72,7 @@ void i2cRawWrite(uint8_t * buff, uint8_t szToWrite)
     }
 }
 
-// Primary interrupt vector for I2C on module B2 on the 430
+// Primary interrupt vector for I2C on module B2 on the 430 - NOT CURRENTLY IN USE
 #pragma vector = EUSCI_B2_VECTOR
 __interrupt void USCI_B2_ISR(void)
 {
