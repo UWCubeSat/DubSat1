@@ -28,6 +28,7 @@ Last but not least, to make a project that will actually build correctly, there 
 Important symbols include (note:  underbars are DOUBLED (i.e. '__') for the beginning and end of most of these):
 
 * `__DEBUG__`   :  Should be set for debug builds.  All the debug printing and other infrastructure is keyed off of this
+* `__INITIAL_TRACE_LEVEL__`   :  Optional, defaults to 0 if not specified, and to 1 in standard templates.  Allows you to immediately pick up trace statements without having to change trace levels at startup.  
 
 * Board selection (ONE must be selected - it will help the dsbase infrastructure choose the right pins, and make other assumptions):
     * `__BSP_Board_MSP430FR5994LaunchPad__`:  The standard MSP430FR5994 LaunchPad board used for testing.

@@ -15,7 +15,7 @@ typedef enum _subsystemModule {
     Module_ADCS_BDot = 1,
 } SubsystemModule;
 
-void infoReport(DebugMode mode);
+uint8_t infoReport(DebugMode mode);
 uint8_t *getSubsystemModulePath();
 
 #endif /* INTERFACES_SYSTEMINFO_H_ */

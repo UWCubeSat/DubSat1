@@ -4,3 +4,6 @@ RemoteSystemsTempFiles/
 src/ss_TEST/Debug/
 src/ss_TEST/.launches/
 src/ssmods/ss_TEST/Debug/
+src/ssmods/imutest_1/
+src/ssmods/generaltest_1/
+src/ssmods/rwstest_1/

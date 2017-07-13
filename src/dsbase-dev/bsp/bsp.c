@@ -44,8 +44,17 @@ void bspInit(SubsystemModule mod)
 #endif
 
 #if defined(__DEBUG__)
+
     debugInit();
+
+    // Register the system info report function
+    // TODO:  Merge systeminfo and BSP, they aren't both needed
+    debugRegisterInfoHandler(infoReport);
+
+    debugTraceF(1,"\r\n-------------------------------------------------------\r\nBSP initialization routine complete.\r\n");
+
 #endif // __DEBUG__
+
 
 
 }

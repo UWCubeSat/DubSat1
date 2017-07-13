@@ -18,6 +18,12 @@
 
 #define MAX_TRACE_LEVEL  4
 
+#if !defined(__INITIAL_TRACE_LEVEL__)
+#define __INITIAL_TRACE_LEVEL__   0
+#endif
+
+
+
 void debugInit();
 
 void debugPrint(uint8_t * buff, uint8_t szBuff);
@@ -27,7 +33,7 @@ void debugTraceF(uint8_t level, const char *_format, ...);
 
 void debugReadCallback(uint8_t rcvdbyte);
 void processCommand(uint8_t * cmdbuff, uint8_t cmdlength);
-uint8_t validTraceLevel(uint8_t lvl);
+uint8_t normalizeTraceLevel(uint8_t lvl);
 void displayPrompt();
 
 typedef enum _debugmode {
@@ -35,5 +41,24 @@ typedef enum _debugmode {
     HeadlessMode,
 } DebugMode;
 
+typedef struct _svc_status_debug {
+    uint8_t initialized;
+
+    uint8_t num_info_handlers;
+    uint8_t num_status_handlers;
+    uint8_t num_action_handlers;
+
+    uint8_t registration_errors;
+
+    uint8_t trace_level;
+    DebugMode debug_mode;
+
+} svc_status_debug;
+
+// For dynamically allowing entities to register debug console functionality
+typedef uint8_t (*debug_handler)(DebugMode mode);
+void debugRegisterInfoHandler(debug_handler handler);
+void debugRegisterStatusHandler(debug_handler handler);
+void debugRegisterActionHandler(debug_handler handler);
 
 #endif /* DEBUGTOOLS_H_ */
