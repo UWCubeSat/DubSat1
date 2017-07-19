@@ -1,6 +1,6 @@
 # DubSat1 Repository
 
-This is the University of Washington CubeSat Club's DubSat1
+This is the University of Washington CubeSat Team's DubSat1
 library.
 
 More info about our club can be visited [here](http://earthweb.ess.washington.edu/space-propulsion/cubesat.php)
