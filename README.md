@@ -8,7 +8,7 @@ More info about our club can be visited [here](http://earthweb.ess.washington.ed
 ## Repository Contents
 DubSat1 is a repository containing configuration-managed assets for the University of Washington's Dubsat-1 (DS-1) satellite, scheduled to fly at the end of the summer 2018.  Assets included here include source code for all subsystems, PCB and schematic design files, and physical design and analysis assets.  
 
-## Repo Structure
+## Repository Structure
 ### /src
 Contains the source code designed to run on prototype, test, or flight hardware.  Sub-directories include:
 
