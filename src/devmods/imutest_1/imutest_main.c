@@ -47,7 +47,7 @@ int main(void)
 
     //__bis_SR_register(LPM0_bits | GIE); // Enter LPM0 w/ interrupts
 
-    __no_operation();
+
 }
 
 
