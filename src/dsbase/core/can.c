@@ -11,15 +11,15 @@
 void DummyCallback(uint8_t length, uint8_t* data){}
 
 uint8_t canInit() {
-    spiInit(BIT0);
+    spiInit(CS_1);
 
-	//Register values determined using online calculator.
+    //Register values determined using online calculator.
 
-	//step 1: reset CAN controller
+    //step 1: reset CAN controller
     uint8_t rstData[1] = {CAN_RESET};
-    spiTransceive(rstData, rstData, 1, BIT0);
+    spiTransceive(rstData, rstData, 1, CS_1);
 
-	//step 2: initialize buffers, masks, and filters
+    //step 2: initialize buffers, masks, and filters
     // a: CNF1, synchronization jump width length, baud rate prescaler
     //    ref: pg 45
     setRegister(MCP_CNF1, 0x47);
@@ -33,7 +33,13 @@ uint8_t canInit() {
     // Enable support for error on send
     bitModify(MCP_CANINTE, 0x3,0x3);
 
-	//step 3: set mode to normal
+    // Step 2.9 Acceptance Filters
+    // RXM0EID8
+    bitModify(MCP_RXM0EID8, 0xFF, 0xFF);
+    // RXF0EID8
+    bitModify(MCP_RXF0EID8, 0xFF, 0xFF);
+
+      //step 3: set mode to normal
     bitModify(MCP_CANCTRL, 0xE0, 0x00);
 
     // step 4: check on REQOP<2:0> on CANCTRL register
@@ -43,8 +49,21 @@ uint8_t canInit() {
 
     // Set a dummy callback
     setReceiveCallback(DummyCallback);
+
+    //Set in Interrupt
+    // TODO: Enable individual interrupt for Port 1
+    //       pg 26 in Interrupts Workshop
+    P5IE |= BIT5; // P5.5 interrupt enabled
+    P5IES |= BIT5; // P5.5 Hi/lo edge
+    P5IFG &= ~BIT5; // P5.5 IFG cleared
+    P5DIR &= ~BIT5; // Set P5.5 to input direction
+    // TODO: Need to set general interrupt enable (GIE) in status register(SR)
+    __bis_SR_register(GIE);
+
     return canMode;
 }
+
+
 
 uint8_t loadTxBuf(uint8_t address, uint8_t value)
 {
@@ -73,7 +92,7 @@ uint8_t loadTxBuf(uint8_t address, uint8_t value)
         return CAN_FAIL;
     }
     sendBuf[1] =  value;
-    spiTransceive(sendBuf, sendBuf, 2, BIT0);
+    spiTransceive(sendBuf, sendBuf, 2, CS_1);
     return 0;
 }
 
@@ -110,14 +129,14 @@ uint8_t canSend(uint8_t bufNum, uint8_t* tech, uint8_t* msg) {
     for(i = 0; i < 5; i++) {
         sendBuf[i+1] = tech[i];
     }
-    spiTransceive(sendBuf, sendBuf, 6, BIT0);
+    spiTransceive(sendBuf, sendBuf, 6, CS_1);
 
     // 1 byte for the LoadTX instruction
     // 8 bytes for the actual message.
     for (i = 0; i < 8; i++) {
        sendBuf2[i+1] = msg[i];
     }
-    spiTransceive(sendBuf2, sendBuf2, 9, BIT0);
+    spiTransceive(sendBuf2, sendBuf2, 9, CS_1);
 
     // Request CAN to transmit buffer bufNum
     requestToSend(txBuf);
@@ -126,7 +145,7 @@ uint8_t canSend(uint8_t bufNum, uint8_t* tech, uint8_t* msg) {
 
 uint8_t readRegister(uint8_t address, uint8_t* value) {
     uint8_t sendBuf[3] = {CAN_READ, address, 0x00 };
-    spiTransceive(sendBuf, sendBuf, 3, BIT0);
+    spiTransceive(sendBuf, sendBuf, 3, CS_1);
     *value = sendBuf[2];
     return 0;
 }
@@ -142,19 +161,19 @@ uint8_t setRegister(uint8_t address, uint8_t value) {
     // CAN Write Databyte
     sendBuf[2] = value;
 
-    spiTransceive(sendBuf, sendBuf, 3, BIT0);
+    spiTransceive(sendBuf, sendBuf, 3, CS_1);
     return 0;
 }
 
 uint8_t bitModify(uint8_t address, uint8_t mask, uint8_t data) {
-	uint8_t sendBuf[4];
-	sendBuf[0] = CAN_BITMODIFY; // Bit Modify Instruction
-	sendBuf[1] = address;
-	sendBuf[2] = mask;
-	sendBuf[3] = data;
+    uint8_t sendBuf[4];
+    sendBuf[0] = CAN_BITMODIFY; // Bit Modify Instruction
+    sendBuf[1] = address;
+    sendBuf[2] = mask;
+    sendBuf[3] = data;
 
-	spiTransceive(sendBuf, sendBuf, 4, BIT0);
-	return 0;
+    spiTransceive(sendBuf, sendBuf, 4, CS_1);
+    return 0;
 }
 
 uint8_t requestToSend(uint8_t n) {
@@ -164,7 +183,7 @@ uint8_t requestToSend(uint8_t n) {
     }
     instruc |= n;
 
-    spiTransceive(&instruc, &instruc, 1, BIT0);
+    spiTransceive(&instruc, &instruc, 1, CS_1);
     return 0;
 }
 
@@ -173,8 +192,9 @@ uint8_t readStatus(uint8_t *status) {
     buf[0] = CAN_STATUS;
     buf[1] = 0x00;
 
-    spiTransceive(buf, buf, 2, BIT0);
-    *status= buf[1];
+    spiTransceive(buf, buf, 2, CS_1);
+
+    *status = buf[1];
     return 0;
 }
 
@@ -183,7 +203,7 @@ uint8_t readRXStatus(uint8_t *status) {
     buf[0] = CAN_RX_STATUS;
     buf[1] = 0x00;
 
-    spiTransceive(buf, buf, 2, BIT0);
+    spiTransceive(buf, buf, 2, CS_1);
     return 0;
 }
 
@@ -194,12 +214,12 @@ void setReceiveCallback(void (*ReceiveCallbackArg)(uint8_t, uint8_t*)) {
 // Interrupt handler for Receive Buffer
 // PORT1_VECTOR defined in C:\ti\ccsv7\ccs_base\msp430\include\msp430fr5994.h
 // GPIO port interrupts are all grouped together.
-#pragma vector=PORT1_VECTOR
-__interrupt void ReceivedMsg(void) {
+#pragma vector=PORT5_VECTOR
+__interrupt void ReceivedMsgTwo(void) {
     uint8_t status, rx0if, rx1if, res, length;
     readStatus(&status);
     rx0if = status & 0x01;
-    rx1if = status & 1<<1;
+    rx1if = status & 0x02;
 
     // Receive buffer 0 full
     if (rx0if) {
@@ -215,7 +235,7 @@ __interrupt void ReceivedMsg(void) {
 
             // Read from receive buffer SPI instruction
             buf[0] = 0x92;
-            spiTransceive(buf, buf, 9, BIT0);
+            spiTransceive(buf, buf, 9, CS_1);
 
             // Clear out the interrupt flag for receive buffer 0
             bitModify(MCP_CANINTF, 0x1, 0x0);
@@ -236,7 +256,7 @@ __interrupt void ReceivedMsg(void) {
             length = rxb1dlc & 0xF;
             uint8_t buf[8 + 1], msg[8];
             buf[0] = 0x96;
-            spiTransceive(buf, buf, 9, BIT0);
+            spiTransceive(buf, buf, 9, CS_1);
             bitModify(MCP_CANINTF, 0x2, 0x0);
             int i = 0;
             for (i = 0; i < length; i++){
@@ -246,4 +266,3 @@ __interrupt void ReceivedMsg(void) {
         }
     }
 }
-

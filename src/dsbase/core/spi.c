@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "spi.h"
 
-void spiInit(uint16_t csPins)
+void spiInit(uint8_t csPins)
 {
 	/******************************************** UCB0CTLW0 ************************************************ 
 	/  [15]   UCCKPH:  0b = Data is changed on the first UCLK edge and captured on the following edge.
@@ -48,12 +48,27 @@ void spiInit(uint16_t csPins)
 	UCB1CTLW0 &= ~UCSWRST;
 
 	/* 6. Set P8 Direction to OUT */
-    P8DIR |= csPins;
-
+    if(csPins & 0x01){
+        P5DIR |= 0x08;
+    }
+    if(csPins & 0x02){
+        P4DIR |= 0x10;
+    }
+    if(csPins & 0x04){
+        P4DIR |= 0x20;
+    }
 	// Set CS (P8.0) high
-	P8OUT |= csPins;
+    if(csPins & 0x01){
+        P5OUT |= 0x08;
+    }
+    if(csPins & 0x02){
+        P4OUT |= 0x10;
+    }
+    if(csPins & 0x04){
+        P4OUT |= 0x20;
+    }
 }
-void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint16_t csPin){
+void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
 
 	// Clear the MSP430's rxBuffer of any junk data left over from previous transactions.
 	//*pRxBuf = UCB1RXBUF;
@@ -70,7 +85,15 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint16_t csPin)
 
 		// Drop CS Pin if it hasn't been dropped yet.
 		if (i == 0){
-			P8OUT &= ~csPin;
+            if(csPin & 0x01){
+                P5OUT &= ~0x08;
+            }
+            else if(csPin & 0x02){
+                P4OUT &= ~0x10;
+            }
+            else if(csPin & 0x04){
+                P4OUT &= ~0x20;
+            }
 		}
 
 		// Write to tx buffer.
@@ -78,7 +101,15 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint16_t csPin)
 
 		// Bring CS High again.
 		if (i == num - 1){
-			P8OUT |= csPin;
+            if(csPin & 0x01){
+                P5OUT |= 0x08;
+            }
+            else if(csPin & 0x02){
+                P4OUT |= 0x10;
+            }
+            else if(csPin & 0x04){
+                P4OUT |= 0x20;
+            }
 		}
 
 		// Wait for any previous rx to finish rx-ing.

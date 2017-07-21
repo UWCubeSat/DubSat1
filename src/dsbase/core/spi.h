@@ -14,6 +14,10 @@
 #define SPI_CLOCK_DIV 						 0x0000
 #define WAIT_TIME 			  				 0xFFFF
 
+#define CS_1                                  0x01
+#define CS_2                                  0x02
+#define CS_3                                  0x04
+
 /**
  * @brief Initialize SPI registers required to start transceiving.
  * @details Sets up the control block to reset the device.
@@ -23,7 +27,7 @@
  * 			Start device.
  * 			
  */
-void spiInit(uint16_t csPins);
+void spiInit(uint8_t csPins);
 
 /**
  * @brief reads/writes to/from SPI bus using buffers
@@ -37,7 +41,7 @@ void spiInit(uint16_t csPins);
  * @param pRxBuf A pointer to the receive buffer.
  * @param num Size of the transmit buffer in bytes.
  */
-void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint16_t csPin);
+void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin);
 
 
 #endif	/* SPI_H */
