@@ -8,7 +8,13 @@ More info about our club can be visited [here](http://earthweb.ess.washington.ed
 ## Repository Contents
 DubSat1 is a repository containing configuration-managed assets for the University of Washington's Dubsat-1 (DS-1) satellite, scheduled to fly at the end of the summer 2018.  Assets included here include source code for all subsystems, PCB and schematic design files, and physical design and analysis assets.  
 
-## Repository Structure
+## Repository Branches
+The following branches are maintained in the DubSat1 project.  Please follow the guidelines provided.
+* master:  Should ALWAYS be kept fully-functional, and ideally tagged to reflect completed milestones/sprint payloads, etc.  *NO CHECKINS SHOULD BE MADE DIRECTLY INTO THIS BRANCH* except by integration managers.
+* develop:  Most work should be either committed to this branch, or a feature/* branch based off of develop (see below).  Non-coding work (e.g. PCB board design or SolidWORKS iterations) can go into this branch directly.
+* feature/<featurename>:  Most significant chunks of coding work should be done in small, separate feature branches.  Feel free to create these as needed, but do name them using the indicated scheme e.g. "feature/I2Cv2".  However, *BE SURE TO BASE NEW FEATURE BRANCHES OFF OF DEVELOP* and not the master branch.  This helps quite a bit in certain merge scenarios down the road.
+
+## Repository Directories
 ### /src
 Contains the source code designed to run on prototype, test, or flight hardware.  Sub-directories include:
 
