@@ -1,0 +1,1 @@
+This folder is for itterations of the battery ballancer and documentation related 
