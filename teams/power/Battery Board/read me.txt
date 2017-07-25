@@ -1,1 +1,2 @@
-this is a test of creating folders on a personal directory then sending them to the repo
+This folder is for the Battery Board and associated assemblies.
+ 
