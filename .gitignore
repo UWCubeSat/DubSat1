@@ -7,3 +7,4 @@ src/ssmods/*/.launches/
 src/devmods/*/Debug/
 src/devmods/*/Release/
 src/devmods/*/.launches/
+test/unit-tests/build/
