@@ -1,0 +1,1 @@
+This folder is for center and side solar panels. Including assemblies and documantation related to solar panels. 
