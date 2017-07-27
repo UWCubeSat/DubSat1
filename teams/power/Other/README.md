@@ -1,0 +1,1 @@
+This folder is for usefull resources such as eagle libraries, cam processors and such. Not for documentation
