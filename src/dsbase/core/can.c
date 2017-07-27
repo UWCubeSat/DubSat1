@@ -10,6 +10,17 @@
 // callback method
 void DummyCallback(uint8_t length, uint8_t* data){}
 
+void setFilter(uint8_t address, uint16_t mask){
+    // Set mode to CFG
+    bitModify(MCP_CANCTRL, 0xE0, 0x80);
+    // Add Masks and Filters
+    setRegister(address, (uint8_t) mask);
+    setRegister(address + 2, (uint8_t) (mask >> 8));
+    //Set mode to Normal
+    bitModify(MCP_CANCTRL, 0xE0, 0x00);
+}
+
+
 uint8_t canInit() {
     spiInit(CS_1);
 
@@ -33,12 +44,6 @@ uint8_t canInit() {
     // Enable support for error on send
     bitModify(MCP_CANINTE, 0x3,0x3);
 
-    // Step 2.9 Acceptance Filters
-    // RXM0EID8
-    bitModify(MCP_RXM0EID8, 0xFF, 0xFF);
-    // RXF0EID8
-    bitModify(MCP_RXF0EID8, 0xFF, 0xFF);
-
       //step 3: set mode to normal
     bitModify(MCP_CANCTRL, 0xE0, 0x00);
 
@@ -48,7 +53,8 @@ uint8_t canInit() {
     readRegister(MCP_CANSTAT, &canMode);
 
     // Set a dummy callback
-    setReceiveCallback(DummyCallback);
+    setReceiveCallback0(DummyCallback);
+    setReceiveCallback1(DummyCallback);
 
     //Set in Interrupt
     // TODO: Enable individual interrupt for Port 1
@@ -207,15 +213,17 @@ uint8_t readRXStatus(uint8_t *status) {
     return 0;
 }
 
-void setReceiveCallback(void (*ReceiveCallbackArg)(uint8_t, uint8_t*)) {
-    ReceiveCallback = ReceiveCallbackArg;
+void setReceiveCallback0(void (*ReceiveCallbackArg)(uint8_t, uint8_t*)) {
+    ReceiveCallback0 = ReceiveCallbackArg;
 }
-
+void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*)) {
+    ReceiveCallback1 = ReceiveCallbackArg;
+}
 // Interrupt handler for Receive Buffer
 // PORT1_VECTOR defined in C:\ti\ccsv7\ccs_base\msp430\include\msp430fr5994.h
 // GPIO port interrupts are all grouped together.
 #pragma vector=PORT5_VECTOR
-__interrupt void ReceivedMsgTwo(void) {
+__interrupt void ReceivedMsg(void) {
     uint8_t status, rx0if, rx1if, res, length;
     readStatus(&status);
     rx0if = status & 0x01;
@@ -243,7 +251,7 @@ __interrupt void ReceivedMsgTwo(void) {
             for (i = 0; i < length; i++){
                 msg[i] = buf[i+1];
             }
-            ReceiveCallback(length, msg);
+            ReceiveCallback0(length, msg);
         }
     }
 
@@ -262,7 +270,7 @@ __interrupt void ReceivedMsgTwo(void) {
             for (i = 0; i < length; i++){
                 msg[i] = buf[i+1];
             }
-            ReceiveCallback(length, msg);
+            ReceiveCallback1(length, msg);
         }
     }
 }
