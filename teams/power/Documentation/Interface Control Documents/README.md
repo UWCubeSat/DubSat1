@@ -1,0 +1,1 @@
+This folder is for documents related to the ICD (Interface Control Document) and eventualy a final ICD.
