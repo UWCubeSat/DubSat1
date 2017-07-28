@@ -1,0 +1,1 @@
+This folder is for the coulomb counter. Including board designs and related documentation.
