@@ -1,4 +1,4 @@
-# This file ignores the junk files created by eagle. (only in the power team director)
+# This file ignores the junk files created by eagle.
 
 # Ignore locking files created by eagle version 7 and above.
 *.lck
