@@ -258,8 +258,13 @@
 <circle x="46.489" y="55.989" radius="2.3" width="0.254" layer="20"/>
 <circle x="57.989" y="55.989" radius="2.3" width="0.254" layer="20"/>
 <circle x="69.489" y="55.989" radius="2.3" width="0.254" layer="20"/>
-<rectangle x1="5.674" y1="203.831" x2="48.674" y2="217.831" layer="20"/>
-<rectangle x1="48.978" y1="199.508" x2="74.178" y2="224.708" layer="20"/>
+<circle x="59.5" y="208.172190625" radius="2.889" width="0.254" layer="20"/>
+<circle x="60.5" y="224.5" radius="2.889" width="0.254" layer="20"/>
+<circle x="19.5" y="208.172190625" radius="2.889" width="0.254" layer="20"/>
+<circle x="18.5" y="224.5" radius="2.889" width="0.254" layer="20"/>
+<wire x1="26.95" y1="209.5" x2="26.95" y2="184.62623125" width="0.254" layer="20"/>
+<wire x1="26.95" y1="184.62623125" x2="52.05" y2="184.62623125" width="0.254" layer="20"/>
+<wire x1="52.05" y1="184.62623125" x2="52.05" y2="209.5" width="0.254" layer="20"/>
 </plain>
 <libraries>
 <library name="CubeSat(V2.3)">
@@ -562,7 +567,7 @@ design rules under a new name.</description>
 <element name="SOLAR_4" library="CubeSat(V2.3)" package="SOLAR_CELL_3G30A_HALF_TAB" value="SOLAR_CELL_HALF_TABS" x="32.53284375" y="167.4369625"/>
 <element name="SOLAR_1" library="CubeSat(V2.3)" package="SOLAR_CELL_3G30A_HALF_TAB" value="SOLAR_CELL_HALF_TABS" x="32.44050625" y="24.531759375"/>
 <element name="SOLAR_2" library="CubeSat(V2.3)" package="SOLAR_CELL_3G30A_HALF_TAB" value="SOLAR_CELL_HALF_TABS" x="32.52900625" y="72.372325"/>
-<element name="SOLAR_5" library="CubeSat(V2.3)" package="SOLAR_CELL_3G30A_HALF_TAB" value="SOLAR_CELL_HALF_TABS" x="33.04711875" y="254.20733125"/>
+<element name="SOLAR_5" library="CubeSat(V2.3)" package="SOLAR_CELL_3G30A_HALF_TAB" value="SOLAR_CELL_HALF_TABS" x="32.54711875" y="259.70733125"/>
 <element name="J1" library="SparkFun-Connectors" package="1X02" value="" x="-7.512734375" y="266.016571875" rot="R180"/>
 <element name="J2" library="SparkFun-Connectors" package="1X02" value="" x="-10.107" y="107.25" rot="R180"/>
 <element name="J3" library="SparkFun-Connectors" package="1X02" value="" x="-9.78286875" y="258.6218125"/>
@@ -616,9 +621,9 @@ design rules under a new name.</description>
 <contactref element="SOLAR_5" pad="P$F3"/>
 <contactref element="SOLAR_4" pad="P$1"/>
 <contactref element="SOLAR_5" pad="P$F2"/>
-<wire x1="41.05711875" y1="227.02233125" x2="20.53711875" y2="227.02233125" width="0" layer="19" extent="1-1"/>
-<wire x1="61.58711875" y1="227.02233125" x2="41.05711875" y2="227.02233125" width="0" layer="19" extent="1-1"/>
-<wire x1="57.02284375" y1="186.4569625" x2="61.58711875" y2="227.02233125" width="0" layer="19" extent="1-1"/>
+<wire x1="40.55711875" y1="232.52233125" x2="20.03711875" y2="232.52233125" width="0" layer="19" extent="1-1"/>
+<wire x1="61.08711875" y1="232.52233125" x2="40.55711875" y2="232.52233125" width="0" layer="19" extent="1-1"/>
+<wire x1="57.02284375" y1="186.4569625" x2="61.08711875" y2="232.52233125" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="VOUT" class="1">
 <contactref element="SOLAR_5" pad="P$1"/>
@@ -627,7 +632,7 @@ design rules under a new name.</description>
 <contactref element="J3" pad="1"/>
 <contactref element="J4" pad="1"/>
 <wire x1="-7.512734375" y1="266.016571875" x2="-9.78286875" y2="258.6218125" width="0" layer="19" extent="1-1"/>
-<wire x1="57.53711875" y1="273.22733125" x2="-7.512734375" y2="266.016571875" width="0" layer="19" extent="1-1"/>
+<wire x1="57.03711875" y1="278.72733125" x2="-7.512734375" y2="266.016571875" width="0" layer="19" extent="1-1"/>
 <wire x1="-12.13" y1="115.26" x2="-9.78286875" y2="258.6218125" width="0" layer="19" extent="1-1"/>
 <wire x1="-10.107" y1="107.25" x2="-12.13" y2="115.26" width="0" layer="19" extent="1-1"/>
 </signal>
