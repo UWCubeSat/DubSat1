@@ -4,6 +4,6 @@
 *.lck
 
 # Ignore backup files
-*.l#?
-*.b#?
-*.s#?
+*.l#*
+*.b#*
+*.s#*
