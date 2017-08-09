@@ -11184,7 +11184,7 @@ This footprint was designed to help hold the alignment of a through-hole compone
 <part name="U$1" library="DubSat1 Components" deviceset="DRV10970" device=""/>
 <part name="U$2" library="DubSat1 Components" deviceset="MSP-CAN_BLOCK" device=""/>
 <part name="GND1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C1210" value="2.2uF"/>
+<part name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C1206" value="2.2uF"/>
 <part name="U$3" library="DubSat1 Components" deviceset="PROGRAM/DEBUG_PORT" device=""/>
 <part name="GND2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" value="3.3K"/>
@@ -11344,22 +11344,14 @@ This footprint was designed to help hold the alignment of a through-hole compone
 <wire x1="127" y1="63.5" x2="127" y2="111.76" width="0.1524" layer="91"/>
 <wire x1="127" y1="111.76" x2="231.14" y2="111.76" width="0.1524" layer="91"/>
 <wire x1="231.14" y1="111.76" x2="231.14" y2="93.98" width="0.1524" layer="91"/>
-<wire x1="231.14" y1="93.98" x2="238.76" y2="93.98" width="0.1524" layer="91"/>
 <pinref part="EXTERNAL_PWM" gate="G$1" pin="1"/>
-<wire x1="238.76" y1="93.98" x2="248.92" y2="93.98" width="0.1524" layer="91"/>
-<wire x1="248.92" y1="93.98" x2="259.08" y2="93.98" width="0.1524" layer="91"/>
+<wire x1="231.14" y1="93.98" x2="259.08" y2="93.98" width="0.1524" layer="91"/>
 <wire x1="127" y1="63.5" x2="121.92" y2="63.5" width="0.1524" layer="91"/>
 <wire x1="121.92" y1="63.5" x2="121.92" y2="40.64" width="0.1524" layer="91"/>
 <junction x="127" y="63.5"/>
 <pinref part="GND10" gate="1" pin="GND"/>
 <wire x1="127" y1="63.5" x2="127" y2="58.42" width="0.1524" layer="91"/>
 <pinref part="J1" gate="G$1" pin="2"/>
-<pinref part="C6" gate="G$1" pin="2"/>
-<wire x1="238.76" y1="99.06" x2="238.76" y2="93.98" width="0.1524" layer="91"/>
-<pinref part="C7" gate="G$1" pin="2"/>
-<wire x1="248.92" y1="99.06" x2="248.92" y2="93.98" width="0.1524" layer="91"/>
-<junction x="238.76" y="93.98"/>
-<junction x="248.92" y="93.98"/>
 </segment>
 <segment>
 <pinref part="GND11" gate="1" pin="GND"/>
@@ -11499,9 +11491,17 @@ This footprint was designed to help hold the alignment of a through-hole compone
 <wire x1="124.46" y1="66.04" x2="124.46" y2="114.3" width="0.1524" layer="91"/>
 <wire x1="124.46" y1="114.3" x2="233.68" y2="114.3" width="0.1524" layer="91"/>
 <wire x1="233.68" y1="114.3" x2="233.68" y2="96.52" width="0.1524" layer="91"/>
-<wire x1="233.68" y1="96.52" x2="259.08" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="233.68" y1="96.52" x2="238.76" y2="96.52" width="0.1524" layer="91"/>
 <junction x="58.42" y="17.78"/>
 <pinref part="J1" gate="G$1" pin="1"/>
+<pinref part="C6" gate="G$1" pin="2"/>
+<wire x1="238.76" y1="96.52" x2="248.92" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="248.92" y1="96.52" x2="259.08" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="238.76" y1="99.06" x2="238.76" y2="96.52" width="0.1524" layer="91"/>
+<pinref part="C7" gate="G$1" pin="2"/>
+<wire x1="248.92" y1="99.06" x2="248.92" y2="96.52" width="0.1524" layer="91"/>
+<junction x="238.76" y="96.52"/>
+<junction x="248.92" y="96.52"/>
 </segment>
 </net>
 <net name="N$17" class="0">
