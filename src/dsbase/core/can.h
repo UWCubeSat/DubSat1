@@ -19,8 +19,8 @@
 
 // Global function pointer to point to the function
 // when data is received through CAN
-void (*ReceiveCallback0)(uint8_t, uint8_t*);
-void (*ReceiveCallback1)(uint8_t, uint8_t*);
+void (*ReceiveCallback0)(uint8_t, uint8_t*, uint32_t);
+void (*ReceiveCallback1)(uint8_t, uint8_t*, uint32_t);
 
 
 // Static fields
@@ -101,8 +101,8 @@ uint8_t bitModify(uint8_t address, uint8_t mask, uint8_t data);
  * Input: a function pointer that takes a int and an array of int and
  *        returns void
  */
-void setReceiveCallback0(void (*ReceiveCallbackArg)(uint8_t, uint8_t*));
-void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*));
+void setReceiveCallback0(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t));
+void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t));
 
 /* Set a filter & mask
  * Inputs: which filter to use, a mask, and a condition, the message
@@ -120,27 +120,20 @@ void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*));
  *
  */
 
-void setFilter(uint8_t address, uint16_t filter);
+void setTheFilter(uint8_t address, uint32_t value);
 
 // MASK ADDRESSES
-#define CAN_MASK_0_ID       0x20; // RXM0SIDH and RXM0SIDL
-#define CAN_MASK_0_DATA     0x22; // RXM0EID8 and RXM0EID0
-#define CAN_MASK_1_ID       0x24; // RXM1SIDH and RXM1SIDL
-#define CAN_MASK_1_DATA     0x26; // RXM1EID8 and RXM1EID0
+#define CAN_MASK_0       0x20 // RXM0SIDH, RXM0SIDL, RXM0EID8, RXM0EID0
+#define CAN_MASK_1       0x24 // RXM1SIDH, RXM1SIDL, RXM1EID8, RXM1EID0
 
 // FILTER ADDRESSES
-#define CAN_FILTER_0_ID     0x00; // RXF0SIDH and RXF0SIDL
-#define CAN_FILTER_0_DATA   0x02; // RXF0EID8 and RXF0EID0
-#define CAN_FILTER_1_ID     0x04; // RXF1SIDH and RXF1SIDL
-#define CAN_FILTER_1_DATA   0x06; // RXF1EID8 and RXF1EID0
-#define CAN_FILTER_2_ID     0x08; // RXF2SIDH and RXF2SIDL
-#define CAN_FILTER_2_DATA   0x0A; // RXF2EID8 and RXF2EID0
-#define CAN_FILTER_3_ID     0x10; // RXF3SIDH and RXF3SIDL
-#define CAN_FILTER_3_DATA   0x12; // RXF3EID8 and RXF3EID0
-#define CAN_FILTER_4_ID     0x14; // RXF4SIDH and RXF4SIDL
-#define CAN_FILTER_4_DATA   0x16; // RXF4EID8 and RXF4EID0
-#define CAN_FILTER_5_ID     0x18; // RXF5SIDH and RXF5SIDL
-#define CAN_FILTER_5_DATA   0x1A; // RXF5EID8 and RXF5EID0
+#define CAN_FILTER_0     0x00 // RXF0SIDH, RXF0SIDL, RXF0EID8, RXF0EID0
+#define CAN_FILTER_1     0x04 // RXF1SIDH, RXF1SIDL, RXF1EID8, RXF1EID0
+#define CAN_FILTER_2     0x08 // RXF2SIDH, RXF2SIDL, RXF2EID8, RXF2EID0
+#define CAN_FILTER_3     0x10 // RXF3SIDH, RXF3SIDL, RXF3EID8, RXF3EID0
+#define CAN_FILTER_4     0x14 // RXF4SIDH, RXF4SIDL, RXF4EID8, RXF4EID0
+#define CAN_FILTER_5     0x18 // RXF5SIDH, RXF5SIDL, RXF5EID8, RXF5EID0
+
 
 // OUTPUT CONSTANTS
 #define CAN_OK             (0)
@@ -206,7 +199,6 @@ void setFilter(uint8_t address, uint16_t filter);
 #define MCP_TXB1CTRL    0x40
 #define MCP_TXB2CTRL    0x50
 #define MCP_RXB0CTRL    0x60
-
 #define MCP_RXB1CTRL    0x70
 
 // Receive Buffer

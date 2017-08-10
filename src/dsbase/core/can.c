@@ -8,14 +8,21 @@
 #include "can.h"
 // Dummy callback used in place until we set a
 // callback method
-void DummyCallback(uint8_t length, uint8_t* data){}
+void DummyCallback(uint8_t length, uint8_t* data, uint32_t id){}
 
-void setFilter(uint8_t address, uint16_t mask){
+void setTheFilter(uint8_t address, uint32_t value){
     // Set mode to CFG
     bitModify(MCP_CANCTRL, 0xE0, 0x80);
+
+    //Set The Registers
+    setRegister(address, (uint8_t) (value >> 21));
+    setRegister(address + 1, (uint8_t) (value >> 16) & 0x03 | (uint8_t) (value >> 13) & 0xE0 | 0x08);
+    setRegister(address + 2, (uint8_t) (value >> 8));
+    setRegister(address + 3, (uint8_t) value);
+    //readRegister(0x60, NULL);
+    //readRegister(0x70, NULL);
     // Add Masks and Filters
-    setRegister(address, (uint8_t) mask);
-    setRegister(address + 2, (uint8_t) (mask >> 8));
+
     //Set mode to Normal
     bitModify(MCP_CANCTRL, 0xE0, 0x00);
 }
@@ -44,6 +51,10 @@ uint8_t canInit() {
     // Enable support for error on send
     bitModify(MCP_CANINTE, 0x3,0x3);
 
+    // Acceptance Filters only on extended identifiers
+    bitModify(MCP_RXB0CTRL, 0x60,0x40);
+    bitModify(MCP_RXB1CTRL, 0x60,0x40);
+
       //step 3: set mode to normal
     bitModify(MCP_CANCTRL, 0xE0, 0x00);
 
@@ -59,10 +70,10 @@ uint8_t canInit() {
     //Set in Interrupt
     // TODO: Enable individual interrupt for Port 1
     //       pg 26 in Interrupts Workshop
-    P5IE |= BIT5; // P5.5 interrupt enabled
-    P5IES |= BIT5; // P5.5 Hi/lo edge
-    P5IFG &= ~BIT5; // P5.5 IFG cleared
-    P5DIR &= ~BIT5; // Set P5.5 to input direction
+    P5IE |= BIT7; // P5.7 interrupt enabled
+    P5IES |= BIT7; // P5.7 Hi/lo edge
+    P5IFG &= ~BIT7; // P5.7 IFG cleared
+    P5DIR &= ~BIT7; // Set P5.7 to input direction
     // TODO: Need to set general interrupt enable (GIE) in status register(SR)
     __bis_SR_register(GIE);
 
@@ -213,10 +224,10 @@ uint8_t readRXStatus(uint8_t *status) {
     return 0;
 }
 
-void setReceiveCallback0(void (*ReceiveCallbackArg)(uint8_t, uint8_t*)) {
+void setReceiveCallback0(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t)) {
     ReceiveCallback0 = ReceiveCallbackArg;
 }
-void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*)) {
+void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t)) {
     ReceiveCallback1 = ReceiveCallbackArg;
 }
 // Interrupt handler for Receive Buffer
@@ -245,13 +256,25 @@ __interrupt void ReceivedMsg(void) {
             buf[0] = 0x92;
             spiTransceive(buf, buf, 9, CS_1);
 
+            // Read incoming message ID
+            uint32_t id = 0;
+            uint8_t bufBuf = 0xFF;
+            readRegister(MCP_RXB0SIDH, &bufBuf);
+            id |= (uint32_t) bufBuf << 21;
+            readRegister(MCP_RXB0SIDH + 1, &bufBuf);
+            id |= (uint32_t) (bufBuf & 0xE0) << 13;
+            id |= (uint32_t) (bufBuf & 0x03) << 16;
+            readRegister(MCP_RXB0SIDH + 2, &bufBuf);
+            id |= (uint32_t) bufBuf << 8;
+            readRegister(MCP_RXB0SIDH + 3, &bufBuf);
+            id |= bufBuf;
             // Clear out the interrupt flag for receive buffer 0
             bitModify(MCP_CANINTF, 0x1, 0x0);
             int i = 0;
             for (i = 0; i < length; i++){
                 msg[i] = buf[i+1];
             }
-            ReceiveCallback0(length, msg);
+            ReceiveCallback0(length, msg, id);
         }
     }
 
@@ -265,12 +288,23 @@ __interrupt void ReceivedMsg(void) {
             uint8_t buf[8 + 1], msg[8];
             buf[0] = 0x96;
             spiTransceive(buf, buf, 9, CS_1);
+            uint32_t id = 0;
+            uint8_t bufBuf = 0xFF;
+            readRegister(MCP_RXB1SIDH, &bufBuf);
+            id |= (uint32_t) bufBuf << 21;
+            readRegister(MCP_RXB1SIDH + 1, &bufBuf);
+            id |= (uint32_t) (bufBuf & 0xE0) << 13;
+            id |= (uint32_t) (bufBuf & 0x03) << 16;
+            readRegister(MCP_RXB1SIDH + 2, &bufBuf);
+            id |= (uint32_t) bufBuf << 8;
+            readRegister(MCP_RXB1SIDH + 3, &bufBuf);
+            id |= bufBuf;
             bitModify(MCP_CANINTF, 0x2, 0x0);
             int i = 0;
             for (i = 0; i < length; i++){
                 msg[i] = buf[i+1];
             }
-            ReceiveCallback1(length, msg);
+            ReceiveCallback1(length, msg, id);
         }
     }
 }
