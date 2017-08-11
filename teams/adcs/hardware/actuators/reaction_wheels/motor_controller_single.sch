@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.2.2">
+<eagle version="8.3.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
+<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
@@ -11691,10 +11692,10 @@ This footprint was designed to help hold the alignment of a through-hole compone
 <pinref part="U$1" gate="G$1" pin="W"/>
 <wire x1="2.54" y1="27.94" x2="-7.62" y2="27.94" width="0.1524" layer="91"/>
 <wire x1="-7.62" y1="27.94" x2="-7.62" y2="17.78" width="0.1524" layer="91"/>
-<wire x1="-7.62" y1="17.78" x2="-40.64" y2="17.78" width="0.1524" layer="91"/>
-<wire x1="-40.64" y1="17.78" x2="-40.64" y2="50.8" width="0.1524" layer="91"/>
-<wire x1="-40.64" y1="50.8" x2="-60.96" y2="50.8" width="0.1524" layer="91"/>
-<pinref part="MOTOR" gate="G$1" pin="3"/>
+<wire x1="-7.62" y1="17.78" x2="-45.72" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="MOTOR" gate="G$1" pin="1"/>
+<wire x1="-45.72" y1="45.72" x2="-60.96" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="-45.72" y1="17.78" x2="-45.72" y2="45.72" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$30" class="0">
@@ -11702,20 +11703,9 @@ This footprint was designed to help hold the alignment of a through-hole compone
 <pinref part="U$1" gate="G$1" pin="V"/>
 <wire x1="43.18" y1="22.86" x2="43.18" y2="15.24" width="0.1524" layer="91"/>
 <wire x1="43.18" y1="15.24" x2="-43.18" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="-43.18" y1="15.24" x2="-43.18" y2="48.26" width="0.1524" layer="91"/>
-<wire x1="-43.18" y1="48.26" x2="-60.96" y2="48.26" width="0.1524" layer="91"/>
 <pinref part="MOTOR" gate="G$1" pin="2"/>
-</segment>
-</net>
-<net name="N$31" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="U"/>
-<wire x1="43.18" y1="27.94" x2="48.26" y2="27.94" width="0.1524" layer="91"/>
-<wire x1="48.26" y1="27.94" x2="48.26" y2="12.7" width="0.1524" layer="91"/>
-<wire x1="48.26" y1="12.7" x2="-45.72" y2="12.7" width="0.1524" layer="91"/>
-<wire x1="-45.72" y1="12.7" x2="-45.72" y2="45.72" width="0.1524" layer="91"/>
-<wire x1="-45.72" y1="45.72" x2="-60.96" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="MOTOR" gate="G$1" pin="1"/>
+<wire x1="-43.18" y1="48.26" x2="-60.96" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="15.24" x2="-43.18" y2="48.26" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$27" class="0">
@@ -11770,6 +11760,17 @@ This footprint was designed to help hold the alignment of a through-hole compone
 <wire x1="43.18" y1="43.18" x2="45.72" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
+<net name="N$34" class="0">
+<segment>
+<wire x1="-40.64" y1="50.8" x2="-60.96" y2="50.8" width="0.1524" layer="91"/>
+<pinref part="MOTOR" gate="G$1" pin="3"/>
+<pinref part="U$1" gate="G$1" pin="U"/>
+<wire x1="43.18" y1="27.94" x2="48.26" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="48.26" y1="27.94" x2="48.26" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="48.26" y1="12.7" x2="-40.64" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="-40.64" y1="50.8" x2="-40.64" y2="12.7" width="0.1524" layer="91"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>
@@ -11781,7 +11782,7 @@ Since Version 6.2.2 text objects can contain more than one line,
 which will not be processed correctly with this version.
 </note>
 <note version="8.2" severity="warning">
-Since Version 8.2, Eagle supports online libraries. The ids
+Since Version 8.2, EAGLE supports online libraries. The ids
 of those online libraries will not be understood (or retained)
 with this version.
 </note>
