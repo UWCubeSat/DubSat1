@@ -8,3 +8,9 @@ src/devmods/*/Debug/
 src/devmods/*/Release/
 src/devmods/*/.launches/
 test/unit-tests/build/
+
+# Ignore LaTeX build intermediates
+*.aux
+*.log
+*.synctex.gz
+*.toc
