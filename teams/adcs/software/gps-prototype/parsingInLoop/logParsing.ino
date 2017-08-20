@@ -7,13 +7,14 @@
    Parses BESTPOS data from binary starting after the header.
    Gives latitude and longitude in degrees, altitude in meters.
 */
-void parseBestpos() {
-  unsigned int solStatus = *((unsigned int*) buf);
-  double lat = *((double*) (buf + 8));
-  double lon = *((double*) (buf + 16));
-  double height = *((double*) (buf + 24));
+void parseBestpos(Stream *s) {  
+  unsigned int solStatus = readEnum(s);
+  double lat = readDouble(s);
+  double lon = readDouble(s);
+  double height = readDouble(s);
 
-  Serial.println("solution status: " + solStatus);
+  Serial.print("solution status: ");
+  Serial.println(solStatus);
   Serial.println(lat);
   Serial.println(lon);
   Serial.println(height);
@@ -25,13 +26,14 @@ void parseBestpos() {
    ECEF is easier to convert to orbital parameters and is potentially easier
    for the GPS to compute.
 */
-void parseBestxyz() {
-  unsigned int solStatus = *((unsigned int*) buf);
-  double x = *((double*) (buf + 8));
-  double y = *((double*) (buf + 16));
-  double z = *((double*) (buf + 24));
+void parseBestxyz(Stream *s) {
+  unsigned int solStatus = readEnum(s);
+  double x = readDouble(s);
+  double y = readDouble(s);
+  double z = readDouble(s);
 
-  Serial.println("solution status: " + solStatus);
+  Serial.print("solution status: ");
+  Serial.println(solStatus);
   Serial.println(x);
   Serial.println(y);
   Serial.println(z);
@@ -41,12 +43,22 @@ void parseBestxyz() {
    Parses TIME data from binary starting after the header.
    See page 715 of the firmware reference.
 */
-void parseTime() {
-  unsigned long year = *((unsigned long*) (buf + 28));
-  unsigned char month = *(buf + 32);
-  unsigned char day = *(buf + 33);
-  unsigned char hour = *(buf + 34);
-  unsigned char minute = *(buf + 35);
-  unsigned long ms = *((unsigned long*) (buf + 36));
+void parseTime(Stream *s) {
+  skip(s, 28);
+  
+  unsigned long year = readLong(s);
+  unsigned char month = readByte(s);
+  unsigned char day = readByte(s);
+  unsigned char hour = readByte(s);
+  unsigned char minute = readByte(s);
+  unsigned long ms = readLong(s);
+
+  Serial.println("date: ");
+  Serial.println(year);
+  Serial.println(month);
+  Serial.println(day);
+  Serial.println(hour);
+  Serial.println(minute);
+  Serial.println(ms);
 }
 
