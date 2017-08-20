@@ -42,6 +42,7 @@ void setup() {
 
   // request a repeated log
   // remember to use bestposb (binary) and not bestposa (ASCII)
+  gpsSerial.println("interfacemode com1 novatel novatelbinary on");
   gpsSerial.println("unlogall");
   gpsSerial.println("log timeb ontime 1");
 //  gpsSerial.println("log bestposb ontime 1");
