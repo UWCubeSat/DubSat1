@@ -16,14 +16,34 @@
 
 #define PIN_RX 10 // receive pin
 #define PIN_TX 11 // transmit pin
-#define PIN_RESET 2 // reset pin
 
 // The log ID numbers for the logs we know how to parse.
 // See page 364 of the firmware reference for a table of ID numbers.
 #define ID_BESTPOS 42
 #define ID_BESTXYZ 241
-#define ID_RXSTATUS 93
 #define ID_TIME 101
+
+// See page 734 for response IDs
+#define RESPONSE_ID_OK 1
+
+typedef long GPSec;
+typedef unsigned long ENUM;
+
+typedef struct {
+  unsigned char headerLength;
+  unsigned short messageId;
+  char messageType;
+  unsigned char portAddr;
+  unsigned short messageLength;
+  unsigned short sequence;
+  unsigned char idleTime;
+  unsigned char timeStatus;
+  unsigned short week;
+  GPSec ms;
+  unsigned long rxStatus;
+  unsigned short reserved;
+  unsigned short rxVersion;
+} Header;
 
 // The Arduino's hardware serial is already occupied by the USB cable.
 // This uses some digital pins on the Arduino to get a second serial.
@@ -74,17 +94,21 @@ unsigned short nextMessage() {
   // read until we reach the start of a header (just past the sync bits)
   sync();
 
-  // check the header length
-  unsigned char headerLength = readByte(&gpsSerial);
-  
-  // parse the message ID for the log
-  unsigned short messageID = readShort(&gpsSerial);
+  // read in the header and get messageId
+  Header *header = malloc(sizeof(Header));
+  readThing(&gpsSerial, header, sizeof(Header));
+  unsigned short messageId = header->messageId;
+  free(header);
 
-  // skip the rest of the header
-  // using headerLength - 6 because it already read 3 sync bits + the length bit + 2 messageID bits
-  skip(&gpsSerial, headerLength - 6);
+  // read the response ID and check if the command was received correctly
+  ENUM responseId = readEnum(&gpsSerial);
+  if (responseId != RESPONSE_ID_OK) {
+    Serial.print("bad response id: ");
+    Serial.println(responseId);
+    return 0; // error code
+  }
 
-  return messageID;
+  return messageId;
 }
 
 /**
@@ -96,14 +120,16 @@ void loop() {
     unsigned short messageID = nextMessage();
     switch (messageID) {
       case ID_BESTPOS:
-        parseBestpos(&gpsSerial);
+        parseBestPos(&gpsSerial);
         break;
       case ID_BESTXYZ:
-        parseBestxyz(&gpsSerial);
+        parseBestXYZ(&gpsSerial);
         break;
       case ID_TIME:
         parseTime(&gpsSerial);
         break;
+      case 0: // error case
+        return -1;
       default:
         Serial.print("unimplemented messageID: ");
         Serial.println(messageID);

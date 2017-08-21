@@ -9,13 +9,11 @@ double readDouble(Stream *s) {
   return d;
 }
 
-unsigned int readEnum(Stream *s) {
-  unsigned int e;
-  readThing(s, &e, sizeof(unsigned int));
-  return e;
+ENUM readEnum(Stream *s) {
+  return readLong(s);
 }
 
-unsigned char readByte(Stream *s) {
+unsigned char readChar(Stream *s) {
   unsigned char b;
   readThing(s, &b, sizeof(unsigned char));
   return b;
@@ -34,8 +32,6 @@ unsigned long readLong(Stream *s) {
 }
 
 void readThing(Stream *s, void *ptr, int size) {
-  char buf[size];
-  s->readBytes(buf, size);
-  memcpy(ptr, buf, size);
+  s->readBytes((char*) ptr, size);
 }
 
