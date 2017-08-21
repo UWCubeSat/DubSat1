@@ -16,8 +16,6 @@ void bspInit(SubsystemModule mod)
 {
     ssModule = mod;
 
-#if defined(__BSP_Board_MSP430FR5994LaunchPad__)
-
     // Stop watchdog timer
     WDTCTL = WDTPW | WDTHOLD;
 
@@ -41,6 +39,8 @@ void bspInit(SubsystemModule mod)
     // previously configured port settings
     PM5CTL0 &= ~LOCKLPM5;
 
+#if defined(__BSP_Board_MSP430FR5994LaunchPad__)
+    // Insert board-specific configuration here
 #endif
 
 #if defined(__DEBUG__)
