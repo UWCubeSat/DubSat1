@@ -3,6 +3,7 @@
 #include "SUBSYSTEMNAME_MODULENAME.h"
 #include "bsp/bsp.h"
 #include "core/can.h"
+#include "interfaces/canwrap.h"
 
 #define BOARD_NUM (0x05)
 
@@ -44,27 +45,15 @@ void blinkLight(uint8_t lightNum){
     }
 }
 void SendbackSameMessage(uint8_t length, uint8_t* data, uint32_t id){
+    struct CANPacket *p;
     blinkLight(LED_BLUE);
     if(data[0] == BOARD_NUM){
-        uint32_t identifier = 0x000CAFE0 | BOARD_NUM;
-        uint8_t length = 0x08;
-        uint8_t tech[5] = {
-           (uint8_t) (identifier >> 21),
-           (uint8_t) (identifier >> 16) & 0x03 | (uint8_t) (identifier >> 13) & 0xE0 | 0x08,
-           (uint8_t) (identifier >> 8),
-           (uint8_t) identifier,
-           length
-        };
-        uint8_t msg[8];
+        p->data[0] = 0xF0 | BOARD_NUM;
         uint8_t i;
-        msg[0] = 0xF0 | BOARD_NUM;
-        for( i = 1; i < 5; i++) {
-            msg[i] = (uint8_t) (id >> 8 * (4 - i));
+        for(i = 1; i < 8; i++) {
+            p->data[i] = i;
         }
-        for( i = 5; i < length; i++) {
-            msg[i] = data[i];
-        }
-        canSend(0,tech, msg);
+        canSendPacket(p);
         blinkLight(LED_YELLOW);
     }
 }
@@ -81,16 +70,6 @@ int main(void) {
     PJDIR |= 0x07;
     PJOUT &= ~0x07;
     blinkLight(LED_RED);
-
-    setTheFilter(CAN_MASK_0, 0x00000001);
-    setTheFilter(CAN_FILTER_0, 0x00000001);
-    setTheFilter(CAN_FILTER_1, 0x00000001);
-    setTheFilter(CAN_MASK_1, 0x00000001);
-    setTheFilter(CAN_FILTER_2, 0x00000001);
-    setTheFilter(CAN_FILTER_3, 0x00000001);
-    setTheFilter(CAN_FILTER_4, 0x00000001);
-    setTheFilter(CAN_FILTER_5, 0x00000001);
-
 
 #if defined(__DEBUG__)
 
