@@ -17,3 +17,5 @@ test/unit-tests/build/
 
 # Ignore IPython checkpoints
 .ipynb_checkpoints
+
+.DS_Store
