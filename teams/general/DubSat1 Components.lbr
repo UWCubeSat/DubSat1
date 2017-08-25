@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.3.0">
+<eagle version="8.3.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -1500,6 +1500,86 @@ chip</description>
 <hole x="67.945" y="5.715" drill="3.556"/>
 <hole x="67.945" y="40.005" drill="3.556"/>
 <text x="64.77" y="16.51" size="1.27" layer="21" font="vector" rot="R90">Novatel OEM 615</text>
+</package>
+<package name="PICOLOCK_4">
+<smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$4" x="4.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="MNT@1" x="-2.605" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="MNT@2" x="6.805" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+</package>
+<package name="PICOLOCK_5">
+<smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$4" x="4.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="MNT@1" x="-2.605" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="MNT@2" x="8.305" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="P$5" x="6" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+</package>
+<package name="PICOLOCK_6">
+<smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$4" x="4.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="MNT@1" x="-2.605" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="MNT@2" x="9.805" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="P$5" x="6" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$6" x="7.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+</package>
+<package name="PICOLOCK_7">
+<smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$4" x="4.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="MNT@1" x="-2.605" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="MNT@2" x="11.305" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="P$5" x="6" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$6" x="7.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$7" x="9" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+</package>
+<package name="PICOLOCK_8">
+<smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$4" x="4.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="MNT@1" x="-2.605" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="MNT@2" x="12.805" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="P$5" x="6" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$6" x="7.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$7" x="9" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$8" x="10.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+</package>
+<package name="PICOLOCK_10">
+<smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$4" x="4.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="MNT@1" x="-2.605" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="MNT@2" x="15.805" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="P$5" x="6" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$6" x="7.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$7" x="9" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$8" x="10.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$9" x="12" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$10" x="13.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+</package>
+<package name="PICOLOCK_12">
+<smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$4" x="4.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="MNT@1" x="-2.605" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="MNT@2" x="18.805" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="P$5" x="6" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$6" x="7.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$7" x="9" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$8" x="10.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$9" x="12" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$10" x="13.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$11" x="15" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$12" x="16.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 </package>
 </packages>
 <symbols>
@@ -3017,6 +3097,100 @@ SN74LVC2G14DBVR</text>
 <pin name="CAN2TX" x="17.78" y="-48.26" length="middle" rot="R180"/>
 <text x="-12.7" y="52.324" size="1.778" layer="95">NOVATEL OEM 615</text>
 </symbol>
+<symbol name="PICOLOCK_4">
+<pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$2" x="-7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$3" x="-2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$4" x="2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<wire x1="-15.24" y1="0" x2="5.08" y2="0" width="0.254" layer="94"/>
+<wire x1="5.08" y1="0" x2="5.08" y2="10.16" width="0.254" layer="94"/>
+<wire x1="5.08" y1="10.16" x2="-15.24" y2="10.16" width="0.254" layer="94"/>
+<wire x1="-15.24" y1="10.16" x2="-15.24" y2="0" width="0.254" layer="94"/>
+</symbol>
+<symbol name="PICOLOCK_5">
+<pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$2" x="-7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$3" x="-2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$4" x="2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<wire x1="-15.24" y1="0" x2="10.16" y2="0" width="0.254" layer="94"/>
+<wire x1="10.16" y1="0" x2="10.16" y2="10.16" width="0.254" layer="94"/>
+<wire x1="10.16" y1="10.16" x2="-15.24" y2="10.16" width="0.254" layer="94"/>
+<wire x1="-15.24" y1="10.16" x2="-15.24" y2="0" width="0.254" layer="94"/>
+<pin name="P$5" x="7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+</symbol>
+<symbol name="PICOLOCK_6">
+<pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$2" x="-7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$3" x="-2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$4" x="2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<wire x1="-15.24" y1="0" x2="15.24" y2="0" width="0.254" layer="94"/>
+<wire x1="15.24" y1="0" x2="15.24" y2="10.16" width="0.254" layer="94"/>
+<wire x1="15.24" y1="10.16" x2="-15.24" y2="10.16" width="0.254" layer="94"/>
+<wire x1="-15.24" y1="10.16" x2="-15.24" y2="0" width="0.254" layer="94"/>
+<pin name="P$5" x="7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$6" x="12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+</symbol>
+<symbol name="PICOLOCK_7">
+<pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$2" x="-7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$3" x="-2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$4" x="2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<wire x1="-15.24" y1="0" x2="20.32" y2="0" width="0.254" layer="94"/>
+<wire x1="20.32" y1="0" x2="20.32" y2="10.16" width="0.254" layer="94"/>
+<wire x1="20.32" y1="10.16" x2="-15.24" y2="10.16" width="0.254" layer="94"/>
+<wire x1="-15.24" y1="10.16" x2="-15.24" y2="0" width="0.254" layer="94"/>
+<pin name="P$5" x="7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$6" x="12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$7" x="17.78" y="-5.08" visible="pin" length="middle" rot="R90"/>
+</symbol>
+<symbol name="PICOLOCK_8">
+<pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$2" x="-7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$3" x="-2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$4" x="2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<wire x1="-15.24" y1="0" x2="25.4" y2="0" width="0.254" layer="94"/>
+<wire x1="25.4" y1="0" x2="25.4" y2="10.16" width="0.254" layer="94"/>
+<wire x1="25.4" y1="10.16" x2="-15.24" y2="10.16" width="0.254" layer="94"/>
+<wire x1="-15.24" y1="10.16" x2="-15.24" y2="0" width="0.254" layer="94"/>
+<pin name="P$5" x="7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$6" x="12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$7" x="17.78" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$8" x="22.86" y="-5.08" visible="pin" length="middle" rot="R90"/>
+</symbol>
+<symbol name="PICOLOCK_10">
+<pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$2" x="-7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$3" x="-2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$4" x="2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<wire x1="-15.24" y1="0" x2="35.56" y2="0" width="0.254" layer="94"/>
+<wire x1="35.56" y1="0" x2="35.56" y2="10.16" width="0.254" layer="94"/>
+<wire x1="35.56" y1="10.16" x2="-15.24" y2="10.16" width="0.254" layer="94"/>
+<wire x1="-15.24" y1="10.16" x2="-15.24" y2="0" width="0.254" layer="94"/>
+<pin name="P$5" x="7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$6" x="12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$7" x="17.78" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$8" x="22.86" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$9" x="27.94" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$10" x="33.02" y="-5.08" visible="pin" length="middle" rot="R90"/>
+</symbol>
+<symbol name="PICOLOCK_12">
+<pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$2" x="-7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$3" x="-2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$4" x="2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<wire x1="-15.24" y1="0" x2="45.72" y2="0" width="0.254" layer="94"/>
+<wire x1="45.72" y1="0" x2="45.72" y2="10.16" width="0.254" layer="94"/>
+<wire x1="45.72" y1="10.16" x2="-15.24" y2="10.16" width="0.254" layer="94"/>
+<wire x1="-15.24" y1="10.16" x2="-15.24" y2="0" width="0.254" layer="94"/>
+<pin name="P$5" x="7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$6" x="12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$7" x="17.78" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$8" x="22.86" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$9" x="27.94" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$10" x="33.02" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$11" x="38.1" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$12" x="43.18" y="-5.08" visible="pin" length="middle" rot="R90"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="LM57">
@@ -3946,6 +4120,156 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <connect gate="G$1" pin="USB_D+" pad="4"/>
 <connect gate="G$1" pin="USB_D-" pad="3"/>
 <connect gate="G$1" pin="USERVARF/CAN1RX" pad="6"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="PICOLOCK_4">
+<gates>
+<gate name="G$1" symbol="PICOLOCK_4" x="12.7" y="0"/>
+</gates>
+<devices>
+<device name="&quot;" package="PICOLOCK_4">
+<connects>
+<connect gate="G$1" pin="P$1" pad="P$1"/>
+<connect gate="G$1" pin="P$2" pad="P$2"/>
+<connect gate="G$1" pin="P$3" pad="P$3"/>
+<connect gate="G$1" pin="P$4" pad="P$4"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="PICOLOCK_5">
+<gates>
+<gate name="G$1" symbol="PICOLOCK_5" x="12.7" y="0"/>
+</gates>
+<devices>
+<device name="" package="PICOLOCK_5">
+<connects>
+<connect gate="G$1" pin="P$1" pad="P$1"/>
+<connect gate="G$1" pin="P$2" pad="P$2"/>
+<connect gate="G$1" pin="P$3" pad="P$3"/>
+<connect gate="G$1" pin="P$4" pad="P$4"/>
+<connect gate="G$1" pin="P$5" pad="P$5"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="PICOLOCK_6">
+<gates>
+<gate name="G$1" symbol="PICOLOCK_6" x="12.7" y="0"/>
+</gates>
+<devices>
+<device name="" package="PICOLOCK_6">
+<connects>
+<connect gate="G$1" pin="P$1" pad="P$1"/>
+<connect gate="G$1" pin="P$2" pad="P$2"/>
+<connect gate="G$1" pin="P$3" pad="P$3"/>
+<connect gate="G$1" pin="P$4" pad="P$4"/>
+<connect gate="G$1" pin="P$5" pad="P$5"/>
+<connect gate="G$1" pin="P$6" pad="P$6"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="PICOLOCK_7">
+<gates>
+<gate name="G$1" symbol="PICOLOCK_7" x="12.7" y="0"/>
+</gates>
+<devices>
+<device name="" package="PICOLOCK_7">
+<connects>
+<connect gate="G$1" pin="P$1" pad="P$1"/>
+<connect gate="G$1" pin="P$2" pad="P$2"/>
+<connect gate="G$1" pin="P$3" pad="P$3"/>
+<connect gate="G$1" pin="P$4" pad="P$4"/>
+<connect gate="G$1" pin="P$5" pad="P$5"/>
+<connect gate="G$1" pin="P$6" pad="P$6"/>
+<connect gate="G$1" pin="P$7" pad="P$7"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="PICOLOCK_8">
+<gates>
+<gate name="G$1" symbol="PICOLOCK_8" x="12.7" y="0"/>
+</gates>
+<devices>
+<device name="" package="PICOLOCK_8">
+<connects>
+<connect gate="G$1" pin="P$1" pad="P$1"/>
+<connect gate="G$1" pin="P$2" pad="P$2"/>
+<connect gate="G$1" pin="P$3" pad="P$3"/>
+<connect gate="G$1" pin="P$4" pad="P$4"/>
+<connect gate="G$1" pin="P$5" pad="P$5"/>
+<connect gate="G$1" pin="P$6" pad="P$6"/>
+<connect gate="G$1" pin="P$7" pad="P$7"/>
+<connect gate="G$1" pin="P$8" pad="P$8"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="PICOLOCK_10">
+<gates>
+<gate name="G$1" symbol="PICOLOCK_10" x="12.7" y="0"/>
+</gates>
+<devices>
+<device name="" package="PICOLOCK_10">
+<connects>
+<connect gate="G$1" pin="P$1" pad="P$1"/>
+<connect gate="G$1" pin="P$10" pad="P$10"/>
+<connect gate="G$1" pin="P$2" pad="P$2"/>
+<connect gate="G$1" pin="P$3" pad="P$3"/>
+<connect gate="G$1" pin="P$4" pad="P$4"/>
+<connect gate="G$1" pin="P$5" pad="P$5"/>
+<connect gate="G$1" pin="P$6" pad="P$6"/>
+<connect gate="G$1" pin="P$7" pad="P$7"/>
+<connect gate="G$1" pin="P$8" pad="P$8"/>
+<connect gate="G$1" pin="P$9" pad="P$9"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="PICOLOCK_12">
+<gates>
+<gate name="G$1" symbol="PICOLOCK_12" x="12.7" y="0"/>
+</gates>
+<devices>
+<device name="" package="PICOLOCK_12">
+<connects>
+<connect gate="G$1" pin="P$1" pad="P$1"/>
+<connect gate="G$1" pin="P$10" pad="P$10"/>
+<connect gate="G$1" pin="P$11" pad="P$11"/>
+<connect gate="G$1" pin="P$12" pad="P$12"/>
+<connect gate="G$1" pin="P$2" pad="P$2"/>
+<connect gate="G$1" pin="P$3" pad="P$3"/>
+<connect gate="G$1" pin="P$4" pad="P$4"/>
+<connect gate="G$1" pin="P$5" pad="P$5"/>
+<connect gate="G$1" pin="P$6" pad="P$6"/>
+<connect gate="G$1" pin="P$7" pad="P$7"/>
+<connect gate="G$1" pin="P$8" pad="P$8"/>
+<connect gate="G$1" pin="P$9" pad="P$9"/>
 </connects>
 <technologies>
 <technology name=""/>
