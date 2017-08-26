@@ -80,7 +80,7 @@ int main(void)
 {
     bspInit(Module_Test);
 
-    // Configure GPIO - Timer B
+    // Configure GPIO - Timer B - for PWM
     P1DIR |= BIT4 | BIT5;                   // P1.4 and P1.5 output
     P1SEL0 |= BIT4 | BIT5;                  // P1.4 and P1.5 options select
     P1SEL1 &= ~(BIT4 | BIT5);
