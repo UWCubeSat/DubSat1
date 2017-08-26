@@ -16,8 +16,6 @@ void bspInit(SubsystemModule mod)
 {
     ssModule = mod;
 
-#if defined(__BSP_Board_MSP430FR5994LaunchPad__)
-
     // Stop watchdog timer
     WDTCTL = WDTPW | WDTHOLD;
 
@@ -27,7 +25,7 @@ void bspInit(SubsystemModule mod)
     CSCTL0_H = CSKEY_H;                     // Unlock CS registers
     CSCTL1 = DCOFSEL_0;                     // Set DCO to 1MHz
     // Set SMCLK = MCLK = DCO, ACLK = VLOCLK
-    CSCTL2 = SELA__VLOCLK | SELS__DCOCLK | SELM__DCOCLK;
+    CSCTL2 = SELA__LFXTCLK | SELS__DCOCLK | SELM__DCOCLK;
 
     CSCTL3 = DIVA__4 | DIVS__4 | DIVM__4;   // Set all corresponding clk sources to divide by 4 for errata
     CSCTL1 = DCOFSEL_6;                     // Set DCO to 8MHz
@@ -41,6 +39,8 @@ void bspInit(SubsystemModule mod)
     // previously configured port settings
     PM5CTL0 &= ~LOCKLPM5;
 
+#if defined(__BSP_Board_MSP430FR5994LaunchPad__)
+    // Insert board-specific configuration here
 #endif
 
 #if defined(__DEBUG__)
