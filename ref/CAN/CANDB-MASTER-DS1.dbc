@@ -22,12 +22,32 @@ NS_ :
 	SIG_GROUP_
 	SIG_VALTYPE_
 	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
 
 BS_:
 
-BU_:
+BU_: ADCS_MTQ ADCS_STATEST ADCS_RW_XYZ ADCS_BDot
+VAL_TABLE_ ReactionWheelCommand 2 "RW_Cmd_OpenLoop" 1 "RW_Cmd_PID" 0 "RW_Cmd_Stop" ;
+VAL_TABLE_ SCAxis 2 "Z_Axis" 1 "Y_Axis" 0 "X_Axis" ;
+
+
+BO_ 512 ADCS_RW_Command: 4 ADCS_STATEST
+ SG_ CDH_GroupingID : 0|8@1+ (1,0) [0|255] ""  ADCS_RW_XYZ
+ SG_ RW_SetPoint : 16|16@1- (1,0) [-32768|32767] "rpm"  ADCS_RW_XYZ
+ SG_ RW_Command : 12|4@1+ (1,0) [0|2] ""  ADCS_RW_XYZ
+ SG_ RW_Axis : 8|4@1+ (1,0) [0|2] ""  ADCS_RW_XYZ
 
 
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 512 RW_Command 2 "RW_Cmd_OpenLoop" 1 "RW_Cmd_PID" 0 "RW_Cmd_Stop" ;
+VAL_ 512 RW_Axis 2 "Z_Axis" 1 "Y_Axis" 0 "X_Axis" ;
+
