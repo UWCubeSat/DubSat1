@@ -1,0 +1,55 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: ADCS_MTQ ADCS_STATEST ADCS_RW_XYZ ADCS_BDot
+VAL_TABLE_ ReactionWheelCommand 2 "RW_Cmd_OpenLoop" 1 "RW_Cmd_PID" 0 "RW_Cmd_Stop" ;
+
+
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ CDH_GroupingID : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 512 ADCS_RW_Command: 8 ADCS_STATEST
+ SG_ RW_SetPoint_Z : 40|16@1- (1,0) [-32768|32767] "rpm"  ADCS_RW_XYZ
+ SG_ RW_SetPoint_Y : 24|16@1- (1,0) [-32768|32767] "rpm"  ADCS_RW_XYZ
+ SG_ RW_SetPoint_X : 8|16@1- (1,0) [-32768|32767] "rpm"  ADCS_RW_XYZ
+ SG_ RW_Command : 0|4@1+ (1,0) [0|2] ""  ADCS_RW_XYZ
+
+
+
+CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 512 RW_Command 2 "RW_Cmd_OpenLoop" 1 "RW_Cmd_PID" 0 "RW_Cmd_Stop" ;
+
