@@ -4132,7 +4132,7 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <gate name="G$1" symbol="PICOLOCK_4" x="12.7" y="0"/>
 </gates>
 <devices>
-<device name="&quot;" package="PICOLOCK_4">
+<device name="PICOLOCK_4" package="PICOLOCK_4">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$2" pad="P$2"/>
