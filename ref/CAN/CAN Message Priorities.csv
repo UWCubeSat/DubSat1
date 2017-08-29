@@ -1,0 +1,5 @@
+﻿Priority Name,Bits,Implied Lower Bound (dec),Implied Upper Bound (dec),Example Usage,,
+Emergency,00,0,511,"RFR (request for reset), NOW (notification of wakeup)",,
+Time Sensitive,01,512,1023,Power state,,
+General ,10,1024,1535,Default priority,,
+Low-Pri Bulk Transfer,11,1536,2047,Photo data,,"Notes:  Lower/upper bounds assume first 2 bits for priority, then next 9 bits for ID"

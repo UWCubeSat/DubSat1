@@ -19,7 +19,9 @@
 
 // Global function pointer to point to the function
 // when data is received through CAN
-void (*ReceiveCallback)(uint8_t, uint8_t*);
+void (*ReceiveCallback0)(uint8_t, uint8_t*, uint32_t);
+void (*ReceiveCallback1)(uint8_t, uint8_t*, uint32_t);
+
 
 // Static fields
 uint8_t mcpMode;
@@ -99,7 +101,39 @@ uint8_t bitModify(uint8_t address, uint8_t mask, uint8_t data);
  * Input: a function pointer that takes a int and an array of int and
  *        returns void
  */
-void setReceiveCallback(void (*ReceiveCallbackArg)(uint8_t, uint8_t*));
+void setReceiveCallback0(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t));
+void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t));
+
+/* Set a filter & mask
+ * Inputs: which filter to use, a mask, and a condition, the message
+ * will be received in the buffer that meets the condition:
+ * (mask & filter == RECEIVED_DATA & mask)
+ *
+ * Filters 0 and 1 filter into RX0 buffer
+ * Filters 2, 3, 4, and 5 filter into RX1 buffer
+ *
+ * setReceiveCallback(...) will be replaced with setReceiveZeroCallback(...)
+ * and setReceiveOneCallback(...)
+ *
+ * I recommend configuring these filters ASAP because if it is called
+ * during a CAN packet, the packet will be lost.
+ *
+ */
+
+void setTheFilter(uint8_t address, uint32_t value);
+
+// MASK ADDRESSES
+#define CAN_MASK_0       0x20 // RXM0SIDH, RXM0SIDL, RXM0EID8, RXM0EID0
+#define CAN_MASK_1       0x24 // RXM1SIDH, RXM1SIDL, RXM1EID8, RXM1EID0
+
+// FILTER ADDRESSES
+#define CAN_FILTER_0     0x00 // RXF0SIDH, RXF0SIDL, RXF0EID8, RXF0EID0
+#define CAN_FILTER_1     0x04 // RXF1SIDH, RXF1SIDL, RXF1EID8, RXF1EID0
+#define CAN_FILTER_2     0x08 // RXF2SIDH, RXF2SIDL, RXF2EID8, RXF2EID0
+#define CAN_FILTER_3     0x10 // RXF3SIDH, RXF3SIDL, RXF3EID8, RXF3EID0
+#define CAN_FILTER_4     0x14 // RXF4SIDH, RXF4SIDL, RXF4EID8, RXF4EID0
+#define CAN_FILTER_5     0x18 // RXF5SIDH, RXF5SIDL, RXF5EID8, RXF5EID0
+
 
 // OUTPUT CONSTANTS
 #define CAN_OK             (0)
@@ -165,7 +199,6 @@ void setReceiveCallback(void (*ReceiveCallbackArg)(uint8_t, uint8_t*));
 #define MCP_TXB1CTRL    0x40
 #define MCP_TXB2CTRL    0x50
 #define MCP_RXB0CTRL    0x60
-
 #define MCP_RXB1CTRL    0x70
 
 // Receive Buffer
