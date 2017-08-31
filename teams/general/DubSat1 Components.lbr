@@ -3451,6 +3451,7 @@ SN74LVC2G14DBVR</text>
 <wire x1="-15.24" y1="10.16" x2="-15.24" y2="0" width="0.254" layer="94"/>
 <pin name="P$5" x="7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <pin name="P$6" x="12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<text x="-12.7" y="12.7" size="2.1844" layer="95">&gt;Name</text>
 </symbol>
 <symbol name="PICOLOCK_7">
 <pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
@@ -3464,6 +3465,7 @@ SN74LVC2G14DBVR</text>
 <pin name="P$5" x="7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <pin name="P$6" x="12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <pin name="P$7" x="17.78" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<text x="-12.7" y="12.7" size="2.1844" layer="95">&gt;Name</text>
 </symbol>
 <symbol name="PICOLOCK_8">
 <pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
@@ -3478,6 +3480,7 @@ SN74LVC2G14DBVR</text>
 <pin name="P$6" x="12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <pin name="P$7" x="17.78" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <pin name="P$8" x="22.86" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<text x="-12.7" y="12.7" size="2.1844" layer="95">&gt;Name</text>
 </symbol>
 <symbol name="PICOLOCK_10">
 <pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
@@ -3494,6 +3497,7 @@ SN74LVC2G14DBVR</text>
 <pin name="P$8" x="22.86" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <pin name="P$9" x="27.94" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <pin name="P$10" x="33.02" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<text x="-12.7" y="12.7" size="2.1844" layer="95">&gt;Name</text>
 </symbol>
 <symbol name="PICOLOCK_12">
 <pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
@@ -3512,6 +3516,7 @@ SN74LVC2G14DBVR</text>
 <pin name="P$10" x="33.02" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <pin name="P$11" x="38.1" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <pin name="P$12" x="43.18" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<text x="-12.7" y="12.7" size="2.1844" layer="95">&gt;Name</text>
 </symbol>
 </symbols>
 <devicesets>
