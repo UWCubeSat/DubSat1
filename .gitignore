@@ -19,3 +19,5 @@ test/unit-tests/build/
 .ipynb_checkpoints
 
 .DS_Store
+
+\.idea/
