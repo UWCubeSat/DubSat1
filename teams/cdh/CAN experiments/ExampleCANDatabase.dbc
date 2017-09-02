@@ -46,7 +46,7 @@ BO_ 2147483653 PPTTimingStatus: 6 PPT
  SG_ minutesSinceAttemptedFire : 16|16@1+ (1,0) [0|65536] "min" Vector__XXX
  SG_ medianChargeTime : 0|8@1+ (2,0) [0|512] "ms" Vector__XXX
 
-BO_ 4 FiringStatus: 6 Vector__XXX
+BO_ 2147483652 FiringStatus: 6 Vector__XXX
  SG_ successfullFires1 : 32|16@1+ (1,0) [0|65536] "" Vector__XXX
  SG_ successfulFires2 : 16|16@1- (1,0) [0|65536] "" Vector__XXX
  SG_ numberOfMisfires : 8|8@1+ (1,0) [0|256] "" Vector__XXX
