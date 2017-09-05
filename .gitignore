@@ -14,3 +14,10 @@ test/unit-tests/build/
 *.log
 *.synctex.gz
 *.toc
+
+# Ignore IPython checkpoints
+.ipynb_checkpoints
+
+.DS_Store
+
+\.idea/
