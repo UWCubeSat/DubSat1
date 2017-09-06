@@ -7,7 +7,7 @@
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="25" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
+<grid distance="12.5" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -158,25 +158,29 @@
 <board>
 <plain>
 <wire x1="17.145" y1="34.29" x2="-1.905" y2="34.29" width="0" layer="20"/>
-<hole x="3.175" y="3.175" drill="2.286"/>
-<hole x="11.43" y="3.175" drill="2.286"/>
+<hole x="3.175" y="2.2225" drill="2.286"/>
+<hole x="11.43" y="2.2225" drill="2.286"/>
 <hole x="17.145" y="31.115" drill="2.286"/>
 <hole x="-1.905" y="31.115" drill="2.286"/>
 <wire x1="-1.905" y1="27.94" x2="-1.27" y2="27.94" width="0" layer="20"/>
 <wire x1="-1.27" y1="27.94" x2="0.635" y2="26.035" width="0" layer="20" curve="-90"/>
-<wire x1="0.635" y1="26.035" x2="0.635" y2="5.08" width="0" layer="20"/>
+<wire x1="0.635" y1="26.035" x2="0.635" y2="4.1275" width="0" layer="20"/>
 <wire x1="17.145" y1="27.94" x2="15.875" y2="27.94" width="0" layer="20"/>
 <wire x1="15.875" y1="27.94" x2="13.97" y2="26.035" width="0" layer="20" curve="90"/>
-<wire x1="13.97" y1="26.035" x2="13.97" y2="5.08" width="0" layer="20"/>
+<wire x1="13.97" y1="26.035" x2="13.97" y2="4.1275" width="0" layer="20"/>
 <wire x1="-1.905" y1="34.29" x2="-1.905" y2="27.94" width="0" layer="20" curve="180"/>
 <wire x1="17.145" y1="34.29" x2="17.145" y2="27.94" width="0" layer="20" curve="-180"/>
-<wire x1="3.175" y1="0" x2="11.43" y2="0" width="0" layer="20"/>
-<wire x1="3.175" y1="0" x2="0.635" y2="5.08" width="0" layer="20" curve="-126.869898"/>
-<wire x1="11.43" y1="0" x2="13.97" y2="5.08" width="0" layer="20" curve="126.869898"/>
-<wire x1="1.905" y1="6.35" x2="12.7" y2="6.35" width="0.2032" layer="112"/>
-<wire x1="1.905" y1="6.35" x2="1.905" y2="33.02" width="0.2032" layer="112"/>
-<wire x1="12.7" y1="6.35" x2="12.7" y2="33.02" width="0.2032" layer="112"/>
-<wire x1="1.905" y1="33.02" x2="12.7" y2="33.02" width="0.2032" layer="112"/>
+<wire x1="3.175" y1="-0.9525" x2="11.43" y2="-0.9525" width="0" layer="20"/>
+<wire x1="3.175" y1="-0.9525" x2="0.635" y2="4.1275" width="0" layer="20" curve="-126.869898"/>
+<wire x1="11.43" y1="-0.9525" x2="13.97" y2="4.1275" width="0" layer="20" curve="126.869898"/>
+<wire x1="1.905" y1="6.35" x2="12.7" y2="6.35" width="0.2032" layer="51"/>
+<wire x1="1.905" y1="6.35" x2="1.905" y2="33.02" width="0.2032" layer="51"/>
+<wire x1="12.7" y1="6.35" x2="12.7" y2="33.02" width="0.2032" layer="51"/>
+<wire x1="1.905" y1="33.02" x2="12.7" y2="33.02" width="0.2032" layer="51"/>
+<circle x="-1.905" y="31.115" radius="2.54" width="0.1524" layer="51"/>
+<circle x="17.145" y="31.115" radius="2.54" width="0.1524" layer="51"/>
+<circle x="3.175" y="2.2225" radius="2.54" width="0.1524" layer="51"/>
+<circle x="11.43" y="2.2225" radius="2.54" width="0.1524" layer="51"/>
 </plain>
 <libraries>
 <library name="SparkFun-Capacitors">
@@ -710,8 +714,8 @@ design rules under a new name.</description>
 <wire x1="8.255" y1="13.16" x2="8.255" y2="12.573" width="0.2032" layer="16"/>
 <polygon width="0.2032" layer="1">
 <vertex x="-5.715" y="34.925"/>
-<vertex x="-5.715" y="-0.635"/>
-<vertex x="20.955" y="-0.635"/>
+<vertex x="-5.715" y="-1.5875"/>
+<vertex x="20.955" y="-1.5875"/>
 <vertex x="20.955" y="34.925"/>
 </polygon>
 </signal>
