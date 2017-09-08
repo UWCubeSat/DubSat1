@@ -1,0 +1,18 @@
+﻿Proposed Message/Signal Title,Message or Signal?,Proposed Priority,Proposed Type,Subsystems Who Use,Usage
+RFR (request for reset),Message makes more sense,00,Power Mgmt,All but power,Amounts to a request for EPS to power-cycle the subsystem module's power domain
+NOW (notification of wakeup),Message (will have other data),00,Power Mgmt,All but power,Announcement broadcast when 
+METUP (mission elapsed time),Message,01,Full Broadcast,All,Time update from either EPS or the GPS unit (or both)
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,`,

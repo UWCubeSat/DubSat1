@@ -54,7 +54,7 @@
 	<variableList>
 		<variable>
 			<name>DSBASE</name>
-			<value>$%7BPARENT-2-PROJECT_LOC%7D/dsbase-dev</value>
+			<value>$%7BPARENT-2-PROJECT_LOC%7D/dsbase</value>
 		</variable>
 	</variableList>
 </projectDescription>
