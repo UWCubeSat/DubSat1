@@ -136,13 +136,11 @@ def toPyObject(infile, outfileName, **options):
     return outdbs['']
 
 def createCHeader(candb, cFileName):
-    #print(candb.frames._list[0]._name)
+    # Macro Functions
     cFile = open(cFileName, "w")
-    cFile.write("#ifndef CANDB_HEADER\n#define CANDB_HEADER\n\n")
-    cFile.write("#include <stdint.h>\n\n")
     for frame in candb.frames:
-        cFile.write("typedef struct {\n")
-        for sig in frame:
+        cFile.write("typedef struct " + frame.name + " {\n")
+        for sig in frame.signals:
             if sig.is_signed:
                 cFile.write("\tint")
             else:
@@ -157,7 +155,41 @@ def createCHeader(candb, cFileName):
                 cFile.write("64_t ")
             cFile.write(sig.name + ";\n")
         cFile.write("} " + frame.name + ";\n\n")
-    cFile.write("\n#endif")
+    # Decode Functions
+    for frame in candb.frames:
+        cFile.write(frame.name + "* decode" + frame.name + "(CANPacket *input);\n\n")
+    # Encode Functions
+    for frame in candb.frames:
+        cFile.write("CANPacket* encode" + frame.name + "(" + frame.name + " *input);\n\n")
+    cFile.close()
+
+def createCMain(candb, cFileName):
+    # Macro Functions
+    cFile = open(cFileName, "w")
+    # Decode Functions
+    for frame in candb.frames:
+        cFile.write(frame.name + "* decode" + frame.name + "(CANPacket *input){\n")
+        cFile.write("    " + frame.name + " *p;\n")
+        cFile.write("    return p;\n")
+        cFile.write("}\n\n")
+    # Encode Functions
+    for frame in candb.frames:
+        cFile.write("CANPacket* encode" + frame.name + "(" + frame.name + " *input){\n")
+        cFile.write("    CANPacket *p;\n")
+        cFile.write("    p -> id = (uint64_t) "
+                    + hex((frame.id if frame.id != 2147483648 else 0) << 20).rstrip("L")
+                    + ";\n")
+        for sig in frame.signals:
+            # p -> data[1] = (uint16_t) ((input -> totalMisfires1 - OFFSET) / SCALE);
+            cFile.write( "    p -> data["
+                         + str(int(canmatrix.canmatrix.Signal.getStartbit(sig, 1, None) / 8))
+                         + "] = (" + ("u" if sig.is_signed else "") + "int" + str(sig.signalsize)
+                         + "_t) ((input -> " + sig.name + " - "
+                         + str(int(sig.offset) if sig.offset - int(sig.offset) == 0 else sig.offset) + ") / "
+                         + str(sig.factor) + ");\n")
+            # print(str(canmatrix.canmatrix.Signal.getStartbit(sig, 1, None)))
+        cFile.write("    return p;\n")
+        cFile.write("}\n\n")
     cFile.close()
 
 
@@ -312,7 +344,8 @@ def main():
     #set_log_level(logger, verbosity)
 
     CANObj = toPyObject(infile, outfileName, **cmdlineOptions.__dict__)
-    createCHeader(CANObj, "test.c")
+    createCHeader(CANObj, "test.h")
+    createCMain(CANObj, "test.c")
 
 
 if __name__ == '__main__':
