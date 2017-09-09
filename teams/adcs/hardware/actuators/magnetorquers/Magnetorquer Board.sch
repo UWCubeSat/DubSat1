@@ -9788,10 +9788,11 @@ PWM</text>
 </net>
 <net name="N$26" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P7.2_SYNC1"/>
-<wire x1="12.7" y1="-93.98" x2="12.7" y2="-109.22" width="0.1524" layer="91"/>
 <wire x1="12.7" y1="-109.22" x2="-50.8" y2="-109.22" width="0.1524" layer="91"/>
 <wire x1="-50.8" y1="-109.22" x2="-50.8" y2="58.42" width="0.1524" layer="91"/>
+<pinref part="U$7" gate="G$1" pin="P7.2_SYNC1"/>
+<wire x1="12.7" y1="-109.22" x2="12.7" y2="-93.98" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="G$1" pin="SYNC1"/>
 <wire x1="-50.8" y1="58.42" x2="-22.86" y2="58.42" width="0.1524" layer="91"/>
 </segment>
 </net>
