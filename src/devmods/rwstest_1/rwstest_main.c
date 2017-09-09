@@ -81,9 +81,10 @@ int main(void)
     bspInit(Module_Test);
 
     // Configure GPIO - Timer B - for PWM
-    P1DIR |= BIT4 | BIT5;                   // P1.4 and P1.5 output
-    P1SEL0 |= BIT4 | BIT5;                  // P1.4 and P1.5 options select
-    P1SEL1 &= ~(BIT4 | BIT5);
+    // NOTE:  P1.7 is hard-wired in the actual test board for the RW
+    P1DIR |= BIT4 | BIT5 | BIT7;                   // P1.4, P1.5, and P1.7 output
+    P1SEL0 |= BIT4 | BIT5 | BIT7;                  // P1.4, P1.5, and P1.7  options select
+    P1SEL1 &= ~(BIT4 | BIT5 | BIT7);
 
     // Configure GPIO - Timer A (to drive LEDs)
     P1DIR |= BIT0 | BIT1;                   // P1.0 and P1.1 output
@@ -120,8 +121,10 @@ int main(void)
     TIMER(CCR0) = 1000;
     TIMER(CCTL1) = OUTMOD_7;
     TIMER(CCTL2) = OUTMOD_7;
-    TIMER(CCR1) = 150;
-    TIMER(CCR2) = 150;
+    TIMER(CCTL4) = OUTMOD_7;
+    TIMER(CCR1) = 500;
+    TIMER(CCR2) = 500;
+    TIMER(CCR4) = 500;
     TIMER(CTL) = ROOT_TIMER(SSEL__SMCLK) | MC__UP | ROOT_TIMER(CLR);  // SMCLK, up mode, clear TAR
 
     __bis_SR_register(LPM0_bits);           // Enter LPM0
