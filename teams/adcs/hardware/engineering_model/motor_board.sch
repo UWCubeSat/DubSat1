@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.3.1">
+<eagle version="8.3.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -2164,12 +2164,50 @@ PWM</text>
 <text x="-2.54" y="-2.54" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="GND" x="0" y="2.54" visible="off" length="short" direction="sup" rot="R270"/>
 </symbol>
+<symbol name="+3V3" urn="urn:adsk.eagle:symbol:26950/1" library_version="1">
+<wire x1="1.27" y1="-1.905" x2="0" y2="0" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="-1.27" y2="-1.905" width="0.254" layer="94"/>
+<text x="-2.54" y="-5.08" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
+<pin name="+3V3" x="0" y="-2.54" visible="off" length="short" direction="sup" rot="R90"/>
+</symbol>
+<symbol name="+5V" urn="urn:adsk.eagle:symbol:26929/1" library_version="1">
+<wire x1="1.27" y1="-1.905" x2="0" y2="0" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="-1.27" y2="-1.905" width="0.254" layer="94"/>
+<text x="-2.54" y="-5.08" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
+<pin name="+5V" x="0" y="-2.54" visible="off" length="short" direction="sup" rot="R90"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="GND" urn="urn:adsk.eagle:component:26954/1" prefix="GND" library_version="1">
 <description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
 <gates>
 <gate name="1" symbol="GND" x="0" y="0"/>
+</gates>
+<devices>
+<device name="">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="+3V3" urn="urn:adsk.eagle:component:26981/1" prefix="+3V3" library_version="1">
+<description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
+<gates>
+<gate name="G$1" symbol="+3V3" x="0" y="0"/>
+</gates>
+<devices>
+<device name="">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="+5V" urn="urn:adsk.eagle:component:26963/1" prefix="P+" library_version="1">
+<description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
+<gates>
+<gate name="1" symbol="+5V" x="0" y="0"/>
 </gates>
 <devices>
 <device name="">
@@ -9109,6 +9147,12 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="MOTOR_X" library="DubSat1 Components" deviceset="PICOLOCK_8" device=""/>
 <part name="MOTOR_Y" library="DubSat1 Components" deviceset="PICOLOCK_8" device=""/>
 <part name="MOTOR_Z" library="DubSat1 Components" deviceset="PICOLOCK_8" device=""/>
+<part name="+3V1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
+<part name="P+1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
+<part name="+3V2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
+<part name="P+2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
+<part name="+3V3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
+<part name="P+3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -9212,6 +9256,12 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <instance part="MOTOR_X" gate="G$1" x="2.54" y="-162.56"/>
 <instance part="MOTOR_Y" gate="G$1" x="154.94" y="-157.48"/>
 <instance part="MOTOR_Z" gate="G$1" x="309.88" y="-160.02"/>
+<instance part="+3V1" gate="G$1" x="-63.5" y="-55.88" rot="R90"/>
+<instance part="P+1" gate="1" x="-63.5" y="-35.56" rot="R90"/>
+<instance part="+3V2" gate="G$1" x="88.9" y="-55.88" rot="R90"/>
+<instance part="P+2" gate="1" x="88.9" y="-35.56" rot="R90"/>
+<instance part="+3V3" gate="G$1" x="243.84" y="-58.42" rot="R90"/>
+<instance part="P+3" gate="1" x="243.84" y="-38.1" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -10584,6 +10634,79 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <pinref part="U$2" gate="G$1" pin="ADCS2_VBAT@83"/>
 <wire x1="38.1" y1="15.24" x2="33.02" y2="15.24" width="0.1524" layer="91"/>
 <label x="33.02" y="15.24" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="+3V3" class="0">
+<segment>
+<pinref part="+3V1" gate="G$1" pin="+3V3"/>
+<pinref part="U$3" gate="G$1" pin="3.3V_MSP-ANALOG@1"/>
+<wire x1="-60.96" y1="-55.88" x2="-45.72" y2="-55.88" width="0.1524" layer="91"/>
+<pinref part="U$3" gate="G$1" pin="3.3V_MSP@2"/>
+<wire x1="-45.72" y1="-55.88" x2="-40.64" y2="-55.88" width="0.1524" layer="91"/>
+<wire x1="-45.72" y1="-55.88" x2="-45.72" y2="-50.8" width="0.1524" layer="91"/>
+<wire x1="-45.72" y1="-50.8" x2="-40.64" y2="-50.8" width="0.1524" layer="91"/>
+<junction x="-45.72" y="-55.88"/>
+<pinref part="U$3" gate="G$1" pin="3.3V_MSP@3"/>
+<wire x1="-45.72" y1="-50.8" x2="-45.72" y2="-48.26" width="0.1524" layer="91"/>
+<wire x1="-45.72" y1="-48.26" x2="-40.64" y2="-48.26" width="0.1524" layer="91"/>
+<junction x="-45.72" y="-50.8"/>
+<pinref part="U$3" gate="G$1" pin="3.3V_CAN@1"/>
+<wire x1="-45.72" y1="-48.26" x2="-45.72" y2="-43.18" width="0.1524" layer="91"/>
+<wire x1="-45.72" y1="-43.18" x2="-40.64" y2="-43.18" width="0.1524" layer="91"/>
+<junction x="-45.72" y="-48.26"/>
+<pinref part="U$3" gate="G$1" pin="3.3V_CAN@2"/>
+<wire x1="-45.72" y1="-43.18" x2="-45.72" y2="-40.64" width="0.1524" layer="91"/>
+<wire x1="-45.72" y1="-40.64" x2="-40.64" y2="-40.64" width="0.1524" layer="91"/>
+<junction x="-45.72" y="-43.18"/>
+</segment>
+<segment>
+<pinref part="+3V2" gate="G$1" pin="+3V3"/>
+<wire x1="91.44" y1="-55.88" x2="106.68" y2="-55.88" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="-55.88" x2="111.76" y2="-55.88" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="-55.88" x2="106.68" y2="-50.8" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="-50.8" x2="111.76" y2="-50.8" width="0.1524" layer="91"/>
+<junction x="106.68" y="-55.88"/>
+<wire x1="106.68" y1="-50.8" x2="106.68" y2="-48.26" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="-48.26" x2="111.76" y2="-48.26" width="0.1524" layer="91"/>
+<junction x="106.68" y="-50.8"/>
+<wire x1="106.68" y1="-48.26" x2="106.68" y2="-43.18" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="-43.18" x2="111.76" y2="-43.18" width="0.1524" layer="91"/>
+<junction x="106.68" y="-48.26"/>
+<wire x1="106.68" y1="-43.18" x2="106.68" y2="-40.64" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="-40.64" x2="111.76" y2="-40.64" width="0.1524" layer="91"/>
+<junction x="106.68" y="-43.18"/>
+</segment>
+<segment>
+<pinref part="+3V3" gate="G$1" pin="+3V3"/>
+<wire x1="246.38" y1="-58.42" x2="261.62" y2="-58.42" width="0.1524" layer="91"/>
+<wire x1="261.62" y1="-58.42" x2="266.7" y2="-58.42" width="0.1524" layer="91"/>
+<wire x1="261.62" y1="-58.42" x2="261.62" y2="-53.34" width="0.1524" layer="91"/>
+<wire x1="261.62" y1="-53.34" x2="266.7" y2="-53.34" width="0.1524" layer="91"/>
+<junction x="261.62" y="-58.42"/>
+<wire x1="261.62" y1="-53.34" x2="261.62" y2="-50.8" width="0.1524" layer="91"/>
+<wire x1="261.62" y1="-50.8" x2="266.7" y2="-50.8" width="0.1524" layer="91"/>
+<junction x="261.62" y="-53.34"/>
+<wire x1="261.62" y1="-50.8" x2="261.62" y2="-45.72" width="0.1524" layer="91"/>
+<wire x1="261.62" y1="-45.72" x2="266.7" y2="-45.72" width="0.1524" layer="91"/>
+<junction x="261.62" y="-50.8"/>
+<wire x1="261.62" y1="-45.72" x2="261.62" y2="-43.18" width="0.1524" layer="91"/>
+<wire x1="261.62" y1="-43.18" x2="266.7" y2="-43.18" width="0.1524" layer="91"/>
+<junction x="261.62" y="-45.72"/>
+</segment>
+</net>
+<net name="+5V" class="0">
+<segment>
+<pinref part="U$3" gate="G$1" pin="5V_CAN"/>
+<pinref part="P+1" gate="1" pin="+5V"/>
+<wire x1="-40.64" y1="-35.56" x2="-60.96" y2="-35.56" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="P+2" gate="1" pin="+5V"/>
+<wire x1="111.76" y1="-35.56" x2="91.44" y2="-35.56" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="P+3" gate="1" pin="+5V"/>
+<wire x1="266.7" y1="-38.1" x2="246.38" y2="-38.1" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>

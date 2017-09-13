@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.3.1">
+<eagle version="8.3.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -2887,6 +2887,20 @@ design rules under a new name.</description>
 <contactref element="U$2" pad="P$81"/>
 <contactref element="U$2" pad="P$83"/>
 <wire x1="64.77" y1="77.6" x2="64.77" y2="82.68" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="+3V3">
+<contactref element="U$3" pad="3.3V_ANALOG@MSP2"/>
+<contactref element="U$3" pad="3.3V@MSP1"/>
+<contactref element="U$3" pad="3.3V@MSP2"/>
+<contactref element="U$3" pad="3.3V@CAN1"/>
+<contactref element="U$3" pad="3.3V@CAN2"/>
+<wire x1="66.8444" y1="73.2712" x2="77.835" y2="73.645" width="0" layer="19" extent="16-16"/>
+<wire x1="86.085" y1="61.395" x2="79.835" y2="73.645" width="0" layer="19" extent="16-16"/>
+<wire x1="66.8642" y1="56.2876" x2="66.8444" y2="73.2712" width="0" layer="19" extent="16-16"/>
+<wire x1="54.9976" y1="56.2368" x2="66.8642" y2="56.2876" width="0" layer="19" extent="16-16"/>
+</signal>
+<signal name="+5V">
+<contactref element="U$3" pad="5V"/>
 </signal>
 </signals>
 </board>
