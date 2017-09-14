@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.3.1">
+<eagle version="8.3.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -53,7 +53,7 @@
 <layer number="42" name="bRestrict" color="1" fill="10" visible="yes" active="yes"/>
 <layer number="43" name="vRestrict" color="2" fill="10" visible="yes" active="yes"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
-<layer number="45" name="Holes" color="7" fill="1" visible="no" active="yes"/>
+<layer number="45" name="Holes" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="46" name="Milling" color="3" fill="1" visible="no" active="yes"/>
 <layer number="47" name="Measures" color="7" fill="1" visible="no" active="yes"/>
 <layer number="48" name="Document" color="7" fill="1" visible="yes" active="yes"/>
@@ -2013,6 +2013,42 @@ Board Template: V2.1</text>
 <text x="-1.651" y="0" size="0.6096" layer="25" font="vector" ratio="20" rot="R90" align="bottom-center">&gt;NAME</text>
 <text x="1.651" y="0" size="0.6096" layer="27" font="vector" ratio="20" rot="R90" align="top-center">&gt;VALUE</text>
 </package>
+<package name="REACTION_WHEEL_BRACKET">
+<wire x1="16" y1="14" x2="29.35" y2="14" width="0.2" layer="21"/>
+<wire x1="14" y1="16" x2="16" y2="14" width="0.2" layer="21" curve="68.899707"/>
+<wire x1="14" y1="29.35" x2="14" y2="16" width="0.2" layer="21"/>
+<wire x1="14" y1="29.35" x2="6" y2="29.35" width="0.2" layer="21"/>
+<wire x1="6" y1="29.35" x2="6" y2="16" width="0.2" layer="21"/>
+<wire x1="-6" y1="16" x2="6" y2="16" width="0.2" layer="21"/>
+<wire x1="-6" y1="29.35" x2="-6" y2="16" width="0.2" layer="21"/>
+<wire x1="-14" y1="29.35" x2="-6" y2="29.35" width="0.2" layer="21"/>
+<wire x1="-14" y1="-14" x2="-14" y2="29.35" width="0.2" layer="21"/>
+<wire x1="29.35" y1="-14" x2="-14" y2="-14" width="0.2" layer="21"/>
+<wire x1="29.35" y1="-14" x2="29.35" y2="-6" width="0.2" layer="21"/>
+<wire x1="29.35" y1="-6" x2="16" y2="-6" width="0.2" layer="21"/>
+<wire x1="16" y1="6" x2="16" y2="-6" width="0.2" layer="21"/>
+<wire x1="29.35" y1="6" x2="16" y2="6" width="0.2" layer="21"/>
+<wire x1="29.35" y1="14" x2="29.35" y2="6" width="0.2" layer="21"/>
+<wire x1="-14" y1="29.35" x2="-14" y2="30.85" width="0.2" layer="21"/>
+<wire x1="-14" y1="30.85" x2="14" y2="30.85" width="0.2" layer="21"/>
+<wire x1="14" y1="30.85" x2="14" y2="29.35" width="0.2" layer="21"/>
+<wire x1="-6" y1="29.35" x2="6" y2="29.35" width="0.2" layer="21"/>
+<wire x1="29.35" y1="14" x2="30.85" y2="14" width="0.2" layer="21"/>
+<wire x1="30.85" y1="14" x2="30.85" y2="-14" width="0.2" layer="21"/>
+<wire x1="30.85" y1="-14" x2="29.35" y2="-14" width="0.2" layer="21"/>
+<wire x1="29.35" y1="6" x2="29.35" y2="-6" width="0.2" layer="21"/>
+<hole x="-11.5" y="-11.5" drill="2.18"/>
+<hole x="11.5" y="-11.5" drill="2.18"/>
+<hole x="11.5" y="11.5" drill="2.18"/>
+<hole x="-11.5" y="11.5" drill="2.18"/>
+<wire x1="-15" y1="-15" x2="-15" y2="31.85" width="0.2" layer="39"/>
+<wire x1="-15" y1="31.85" x2="15" y2="31.85" width="0.2" layer="39"/>
+<wire x1="15" y1="31.85" x2="15" y2="16.75" width="0.2" layer="39"/>
+<wire x1="16.75" y1="15" x2="31.85" y2="15" width="0.2" layer="39"/>
+<wire x1="31.85" y1="15" x2="31.85" y2="-15" width="0.2" layer="39"/>
+<wire x1="31.85" y1="-15" x2="-15" y2="-15" width="0.2" layer="39"/>
+<wire x1="15" y1="16.75" x2="16.75" y2="15" width="0.2" layer="39" curve="90"/>
+</package>
 </packages>
 <symbols>
 <symbol name="LM57">
@@ -3751,6 +3787,13 @@ Allows current flow when high potential at base.</description>
 <text x="2.54" y="0" size="1.778" layer="95" font="vector">&gt;NAME</text>
 <text x="2.54" y="-2.286" size="1.778" layer="96" font="vector">&gt;VALUE</text>
 </symbol>
+<symbol name="REACTION_WHEEL_BRACKET">
+<text x="-2.54" y="0" size="5.08" layer="94" align="center">REACTION WHEEL BRACKET</text>
+<wire x1="-53.34" y1="5.08" x2="-53.34" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="-53.34" y1="-5.08" x2="48.26" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="48.26" y1="-5.08" x2="48.26" y2="5.08" width="0.254" layer="94"/>
+<wire x1="48.26" y1="5.08" x2="-53.34" y2="5.08" width="0.254" layer="94"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="LM57">
@@ -5044,6 +5087,18 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 <attribute name="PROD_ID" value="TRANS-08049"/>
 <attribute name="VALUE" value="600mA/40V"/>
 </technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="REACTION_WHEEL_BRACKET">
+<gates>
+<gate name="G$1" symbol="REACTION_WHEEL_BRACKET" x="2.54" y="0"/>
+</gates>
+<devices>
+<device name="" package="REACTION_WHEEL_BRACKET">
+<technologies>
+<technology name=""/>
 </technologies>
 </device>
 </devices>
