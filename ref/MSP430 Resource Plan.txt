@@ -5,11 +5,11 @@ Empty peripherals listed based on choice of MSP430FR5994 80-pin LQFP version.  S
 eUSCI Peripherals (A blocks = UART/SPI/Irda, B blocks =SPI/I2C)
 - A0:  Backchannel UART
 - A1:  
-- A2:  
+- A2:  SPI (and therefore CAN)
 - A3:  
 
 - B0:  
-- B1:  SPI (and therefore CAN)
+- B1:  
 - B2:  I2C
 - B3:  
 
@@ -20,7 +20,7 @@ Timer Blocks:
 - A3 (2 CCRs):
 - A4 (2 CCRs): 
 
-- B0 (7(!!) CCRs) - Probably reserve for PWM due to enhancements over A blocks?
+- B0 (7(!!) CCRs) - Reserved for PWM on boards that need it (MTQ, RWs)
 
 
 Ports/Pins in Use:
