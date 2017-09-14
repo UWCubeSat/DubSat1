@@ -1941,7 +1941,6 @@ Board Template: V2.1</text>
 <wire x1="19.7" y1="8.4" x2="19.7" y2="6.4" width="0.127" layer="21"/>
 <text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
 </package>
-<<<<<<< HEAD
 <package name="RESISTOR_RWM0622">
 <wire x1="-9" y1="3.25" x2="9" y2="3.25" width="0.127" layer="21"/>
 <wire x1="9" y1="3.25" x2="9" y2="-3.25" width="0.127" layer="21"/>
@@ -2837,7 +2836,6 @@ Board Template: V2.1</text>
 <rectangle x1="36.5" y1="30" x2="43.5" y2="37" layer="31"/>
 <rectangle x1="57" y1="30" x2="64" y2="37" layer="31"/>
 <rectangle x1="46.5" y1="3" x2="53.5" y2="10" layer="31"/>
->>>>>>> f71e3d5410c4e8f08a8b9c5e9ca1196fb6be9c82
 </package>
 </packages>
 <symbols>
@@ -4536,7 +4534,6 @@ SN74LVC2G14DBVR</text>
 <pin name="P$12" x="43.18" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <text x="-12.7" y="12.7" size="2.1844" layer="95">&gt;Name</text>
 </symbol>
-<<<<<<< HEAD
 <symbol name="MSP432P401R_PZ_A">
 <pin name="P10.1_UCB3CLK" x="30.48" y="-30.48" length="middle" rot="R180"/>
 <pin name="P10.2_UCB3SIMO_UCB3SDA" x="30.48" y="-33.02" length="middle" rot="R180"/>
@@ -5039,7 +5036,6 @@ Allows current flow when high potential at base.</description>
 <wire x1="66.04" y1="22.86" x2="53.34" y2="35.56" width="0.254" layer="94"/>
 <wire x1="53.34" y1="35.56" x2="12.7" y2="35.56" width="0.254" layer="94"/>
 <text x="22.86" y="20.32" size="2.54" layer="94">&gt;NAME</text>
->>>>>>> f71e3d5410c4e8f08a8b9c5e9ca1196fb6be9c82
 </symbol>
 </symbols>
 <devicesets>
@@ -6268,7 +6264,6 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<<<<<<< HEAD
 <deviceset name="RWM06222R20JA15E1">
 <gates>
 <gate name="G$1" symbol="RESISTOR" x="0" y="0"/>
@@ -6289,7 +6284,6 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 <connect gate="G$1" pin="GND" pad="P$1"/>
 <connect gate="G$1" pin="SIG" pad="P$2"/>
 <connect gate="G$1" pin="VCC" pad="P$3"/>
->>>>>>> f71e3d5410c4e8f08a8b9c5e9ca1196fb6be9c82
 </connects>
 <technologies>
 <technology name=""/>
@@ -6297,7 +6291,6 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<<<<<<< HEAD
 <deviceset name="MSP432P401R_PZ" prefix="U">
 <gates>
 <gate name="A" symbol="MSP432P401R_PZ_A" x="-101.6" y="-15.24"/>
@@ -6438,12 +6431,10 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </connects>
 <technologies>
 <technology name=""/>
->>>>>>> f71e3d5410c4e8f08a8b9c5e9ca1196fb6be9c82
 </technologies>
 </device>
 </devices>
 </deviceset>
-<<<<<<< HEAD
 <deviceset name="EPSON_CRYSTAL_FA-238">
 <gates>
 <gate name="G$1" symbol="CRYSTAL_FA-238_48.0000MB-K3" x="0" y="0"/>
@@ -6496,13 +6487,11 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 <devices>
 <device name="" package="REACTION_WHEEL_BRACKET">
 <technologies>
->>>>>>> f71e3d5410c4e8f08a8b9c5e9ca1196fb6be9c82
 <technology name=""/>
 </technologies>
 </device>
 </devices>
 </deviceset>
-<<<<<<< HEAD
 <deviceset name="CAN_BLOCK">
 <gates>
 <gate name="G$1" symbol="CAN_BLOCK" x="7.62" y="-50.8"/>
@@ -6537,7 +6526,6 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 <connect gate="G$1" pin="OUT3" pad="6"/>
 <connect gate="G$1" pin="TBD3" pad="5"/>
 <connect gate="G$1" pin="VS" pad="4"/>
->>>>>>> f71e3d5410c4e8f08a8b9c5e9ca1196fb6be9c82
 </connects>
 <technologies>
 <technology name=""/>
@@ -6545,7 +6533,6 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<<<<<<< HEAD
 <deviceset name="LINEAR_LDO_LT1761-X">
 <gates>
 <gate name="G$1" symbol="LT1761" x="2.54" y="0"/>
@@ -6566,7 +6553,6 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </gates>
 <devices>
 <device name="" package="SOLAR_CELL_STENCIL">
->>>>>>> f71e3d5410c4e8f08a8b9c5e9ca1196fb6be9c82
 <technologies>
 <technology name=""/>
 </technologies>
