@@ -11,10 +11,11 @@ clear all; close all; clc;
 % Configure core parameters
 % slave_addr = '1Eh';   % 5883/5983 magnetometers
 slave_addr = '68h';    % Bosch BMI160 IMU
-total_time = 600;   % Seconds
+total_time = 10;   % Seconds
 period = 0.1;     % Seconds
 
-num_samps = floor(total_time/period);
+%num_samps = floor(total_time/period);
+num_samps = 500000;
 dut = i2c('aardvark', 0, slave_addr);
 fopen(dut);
 
@@ -25,9 +26,15 @@ fopen(dut);
 % fwrite(dut, [1 hex2dec('00')]);   % Maximum gain
 % fwrite(dut, [2 hex2dec('00')]);   % Continuous operating mode
 
-cmdreg = hex2dec('7E');
-fwrite(dut, [cmdreg hex2dec('15')]);
-fwrite(dut, [cmdreg hex2dec('11')]);
+% Configure IMU
+%  First, enable both the IMU and accelerometer
+GYR_CONF = hex2dec('42');
+GYR_RANGE = hex2dec('43');
+CMDREG = hex2dec('7E');
+fwrite(dut, [CMDREG hex2dec('15')]);
+fwrite(dut, [CMDREG hex2dec('11')]);
+fwrite(dut, [GYR_CONF 42]);  % ODR = 400Hz
+fwrite(dut, [GYR_RANGE 4]);  % Range at +/- 125dps (smallest/most sens.)
 
 %% Collect Data
 % Now collect data from the sensor.
@@ -56,7 +63,7 @@ for r = 1:num_samps
     gyroY = twos2decimal(hex2dec(gyroYstr), 16);
     gyroZ = twos2decimal(hex2dec(gyroZstr), 16);
     
-    disp([num2str(gyroX) ',' num2str(gyroY) ',' num2str(gyroZ)]);
+    %disp([num2str(gyroX) ',' num2str(gyroY) ',' num2str(gyroZ)]);
     results(r,:) = [now gyroX gyroY gyroZ];
     
 %     FOR MAGTOM:
@@ -72,9 +79,15 @@ for r = 1:num_samps
 %     disp([num2str(xval) ',' num2str(yval) ',' num2str(zval)]);
 %     results(r,:) = [now xval yval zval];
     
-    pause(period);
+    %pause(period);
 end
+totaltime = toc;
+samprate = (num_samps)/totaltime;
+disp(['Samples taken: ' num2str(num_samps)]);
+disp(['Elapsed time: ' num2str(totaltime) ' s']);
+disp(['Avg. sample rate: ' num2str(samprate) ' Hz']);
 
+%%
 fclose(dut);
 delete(dut);
 clear('magtom');
@@ -93,11 +106,14 @@ legend('X','Y','Z');
 % Use the standalone Allan calculation function to generate the Allan
 % variance/deviation, and then plot it.
 
+% Convert to engineering units (using most sensitive
+euresults = results(:,2:4) * .0038;
+
 pts = 100;
 fs = 1/period;
-[Tx, sigmax] = overlapped_allan_dev(results(:,2), fs, pts);
-[Ty, sigmay] = overlapped_allan_dev(results(:,3), fs, pts);
-[Tz, sigmaz] = overlapped_allan_dev(results(:,4), fs, pts);
+[Tx, sigmax] = overlapped_allan_dev(euresults(:,1), fs, pts);
+[Ty, sigmay] = overlapped_allan_dev(euresults(:,2), fs, pts);
+[Tz, sigmaz] = overlapped_allan_dev(euresults(:,3), fs, pts);
 
 %%
 figure();
