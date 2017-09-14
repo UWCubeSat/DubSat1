@@ -8,8 +8,7 @@
 #include <msp430.h>
 #include <stdint.h>
 #include <stdio.h>
-#include "core/uart.h" // for reading
-#include "core/debugtools.h" // for writing (wraps uart)
+#include "core/uart.h"
 #include "bsp/bsp.h"
 
 uint8_t syncBuf[3] = { 0, 0, 0 };
@@ -38,9 +37,12 @@ int main(void) {
     uartRegisterRxCallback(readCallback);
 
     // send configuration and commands to receiver
-    debugPrintF("interfacemode com1 novatel novatelbinary on\n\r");
-    debugPrintF("unlogall\n\r");
-    debugPrintF("log timeb ontime 1\n\r");
+    uint8_t *commandIntMode = "interfacemode com1 novatel novatelbinary on\n\r";
+    uartTransmit(commandIntMode, sizeof(*commandIntMode));
+    uint8_t *commandUnlog = "unlogall\n\r";
+    uartTransmit(commandUnlog, sizeof(*commandUnlog));
+    uint8_t *command = "log timeb ontime 1\n\r";
+    uartTransmit(command, sizeof(*command));
 
     for (;;) {
         // TODO this empty forever-loop seems bad
