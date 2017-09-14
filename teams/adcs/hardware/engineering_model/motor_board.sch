@@ -776,6 +776,42 @@ Board Template: V2.1</text>
 <wire x1="13.7" y1="8.4" x2="13.7" y2="6.4" width="0.127" layer="21"/>
 <text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
 </package>
+<package name="REACTION_WHEEL_BRACKET">
+<wire x1="16" y1="14" x2="29.35" y2="14" width="0.2" layer="21"/>
+<wire x1="14" y1="16" x2="16" y2="14" width="0.2" layer="21" curve="68.899707"/>
+<wire x1="14" y1="29.35" x2="14" y2="16" width="0.2" layer="21"/>
+<wire x1="14" y1="29.35" x2="6" y2="29.35" width="0.2" layer="21"/>
+<wire x1="6" y1="29.35" x2="6" y2="16" width="0.2" layer="21"/>
+<wire x1="-6" y1="16" x2="6" y2="16" width="0.2" layer="21"/>
+<wire x1="-6" y1="29.35" x2="-6" y2="16" width="0.2" layer="21"/>
+<wire x1="-14" y1="29.35" x2="-6" y2="29.35" width="0.2" layer="21"/>
+<wire x1="-14" y1="-14" x2="-14" y2="29.35" width="0.2" layer="21"/>
+<wire x1="29.35" y1="-14" x2="-14" y2="-14" width="0.2" layer="21"/>
+<wire x1="29.35" y1="-14" x2="29.35" y2="-6" width="0.2" layer="21"/>
+<wire x1="29.35" y1="-6" x2="16" y2="-6" width="0.2" layer="21"/>
+<wire x1="16" y1="6" x2="16" y2="-6" width="0.2" layer="21"/>
+<wire x1="29.35" y1="6" x2="16" y2="6" width="0.2" layer="21"/>
+<wire x1="29.35" y1="14" x2="29.35" y2="6" width="0.2" layer="21"/>
+<wire x1="-14" y1="29.35" x2="-14" y2="30.85" width="0.2" layer="21"/>
+<wire x1="-14" y1="30.85" x2="14" y2="30.85" width="0.2" layer="21"/>
+<wire x1="14" y1="30.85" x2="14" y2="29.35" width="0.2" layer="21"/>
+<wire x1="-6" y1="29.35" x2="6" y2="29.35" width="0.2" layer="21"/>
+<wire x1="29.35" y1="14" x2="30.85" y2="14" width="0.2" layer="21"/>
+<wire x1="30.85" y1="14" x2="30.85" y2="-14" width="0.2" layer="21"/>
+<wire x1="30.85" y1="-14" x2="29.35" y2="-14" width="0.2" layer="21"/>
+<wire x1="29.35" y1="6" x2="29.35" y2="-6" width="0.2" layer="21"/>
+<hole x="-11.5" y="-11.5" drill="2.18"/>
+<hole x="11.5" y="-11.5" drill="2.18"/>
+<hole x="11.5" y="11.5" drill="2.18"/>
+<hole x="-11.5" y="11.5" drill="2.18"/>
+<wire x1="-15" y1="-15" x2="-15" y2="31.85" width="0.2" layer="39"/>
+<wire x1="-15" y1="31.85" x2="15" y2="31.85" width="0.2" layer="39"/>
+<wire x1="15" y1="31.85" x2="15" y2="16.75" width="0.2" layer="39"/>
+<wire x1="16.75" y1="15" x2="31.85" y2="15" width="0.2" layer="39"/>
+<wire x1="31.85" y1="15" x2="31.85" y2="-15" width="0.2" layer="39"/>
+<wire x1="31.85" y1="-15" x2="-15" y2="-15" width="0.2" layer="39"/>
+<wire x1="15" y1="16.75" x2="16.75" y2="15" width="0.2" layer="39" curve="90"/>
+</package>
 </packages>
 <symbols>
 <symbol name="BOARD_TEMPLATE">
@@ -1852,6 +1888,13 @@ PWM</text>
 <pin name="P$8" x="22.86" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <text x="-12.7" y="12.7" size="2.1844" layer="95">&gt;Name</text>
 </symbol>
+<symbol name="REACTION_WHEEL_BRACKET">
+<text x="-2.54" y="0" size="5.08" layer="94" align="center">REACTION WHEEL BRACKET</text>
+<wire x1="-53.34" y1="5.08" x2="-53.34" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="-53.34" y1="-5.08" x2="48.26" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="48.26" y1="-5.08" x2="48.26" y2="5.08" width="0.254" layer="94"/>
+<wire x1="48.26" y1="5.08" x2="-53.34" y2="5.08" width="0.254" layer="94"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="BOARD_TEMPLATE">
@@ -2140,6 +2183,18 @@ PWM</text>
 <connect gate="G$1" pin="P$7" pad="P$7"/>
 <connect gate="G$1" pin="P$8" pad="P$8"/>
 </connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="REACTION_WHEEL_BRACKET">
+<gates>
+<gate name="G$1" symbol="REACTION_WHEEL_BRACKET" x="2.54" y="0"/>
+</gates>
+<devices>
+<device name="" package="REACTION_WHEEL_BRACKET">
 <technologies>
 <technology name=""/>
 </technologies>
@@ -9153,6 +9208,7 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="P+2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="+3V3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="P+3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
+<part name="U$9" library="DubSat1 Components" deviceset="REACTION_WHEEL_BRACKET" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -9262,6 +9318,7 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <instance part="P+2" gate="1" x="88.9" y="-35.56" rot="R90"/>
 <instance part="+3V3" gate="G$1" x="243.84" y="-58.42" rot="R90"/>
 <instance part="P+3" gate="1" x="243.84" y="-38.1" rot="R90"/>
+<instance part="U$9" gate="G$1" x="157.48" y="71.12"/>
 </instances>
 <busses>
 </busses>

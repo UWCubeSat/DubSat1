@@ -778,6 +778,42 @@ Board Template: V2.1</text>
 <wire x1="13.7" y1="8.4" x2="13.7" y2="6.4" width="0.127" layer="21"/>
 <text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
 </package>
+<package name="REACTION_WHEEL_BRACKET">
+<wire x1="16" y1="14" x2="29.35" y2="14" width="0.2" layer="21"/>
+<wire x1="14" y1="16" x2="16" y2="14" width="0.2" layer="21" curve="68.899707"/>
+<wire x1="14" y1="29.35" x2="14" y2="16" width="0.2" layer="21"/>
+<wire x1="14" y1="29.35" x2="6" y2="29.35" width="0.2" layer="21"/>
+<wire x1="6" y1="29.35" x2="6" y2="16" width="0.2" layer="21"/>
+<wire x1="-6" y1="16" x2="6" y2="16" width="0.2" layer="21"/>
+<wire x1="-6" y1="29.35" x2="-6" y2="16" width="0.2" layer="21"/>
+<wire x1="-14" y1="29.35" x2="-6" y2="29.35" width="0.2" layer="21"/>
+<wire x1="-14" y1="-14" x2="-14" y2="29.35" width="0.2" layer="21"/>
+<wire x1="29.35" y1="-14" x2="-14" y2="-14" width="0.2" layer="21"/>
+<wire x1="29.35" y1="-14" x2="29.35" y2="-6" width="0.2" layer="21"/>
+<wire x1="29.35" y1="-6" x2="16" y2="-6" width="0.2" layer="21"/>
+<wire x1="16" y1="6" x2="16" y2="-6" width="0.2" layer="21"/>
+<wire x1="29.35" y1="6" x2="16" y2="6" width="0.2" layer="21"/>
+<wire x1="29.35" y1="14" x2="29.35" y2="6" width="0.2" layer="21"/>
+<wire x1="-14" y1="29.35" x2="-14" y2="30.85" width="0.2" layer="21"/>
+<wire x1="-14" y1="30.85" x2="14" y2="30.85" width="0.2" layer="21"/>
+<wire x1="14" y1="30.85" x2="14" y2="29.35" width="0.2" layer="21"/>
+<wire x1="-6" y1="29.35" x2="6" y2="29.35" width="0.2" layer="21"/>
+<wire x1="29.35" y1="14" x2="30.85" y2="14" width="0.2" layer="21"/>
+<wire x1="30.85" y1="14" x2="30.85" y2="-14" width="0.2" layer="21"/>
+<wire x1="30.85" y1="-14" x2="29.35" y2="-14" width="0.2" layer="21"/>
+<wire x1="29.35" y1="6" x2="29.35" y2="-6" width="0.2" layer="21"/>
+<hole x="-11.5" y="-11.5" drill="2.18"/>
+<hole x="11.5" y="-11.5" drill="2.18"/>
+<hole x="11.5" y="11.5" drill="2.18"/>
+<hole x="-11.5" y="11.5" drill="2.18"/>
+<wire x1="-15" y1="-15" x2="-15" y2="31.85" width="0.2" layer="39"/>
+<wire x1="-15" y1="31.85" x2="15" y2="31.85" width="0.2" layer="39"/>
+<wire x1="15" y1="31.85" x2="15" y2="16.75" width="0.2" layer="39"/>
+<wire x1="16.75" y1="15" x2="31.85" y2="15" width="0.2" layer="39"/>
+<wire x1="31.85" y1="15" x2="31.85" y2="-15" width="0.2" layer="39"/>
+<wire x1="31.85" y1="-15" x2="-15" y2="-15" width="0.2" layer="39"/>
+<wire x1="15" y1="16.75" x2="16.75" y2="15" width="0.2" layer="39" curve="90"/>
+</package>
 </packages>
 </library>
 <library name="rcl" urn="urn:adsk.eagle:library:334">
@@ -2132,46 +2168,47 @@ design rules under a new name.</description>
 <element name="U$11" library="DubSat1 Components" package="1X08_CONNECTOR" value="PROGRAM/DEBUG_PORT" x="97.79" y="10.16" rot="R90"/>
 <element name="U$12" library="DubSat1 Components" package="DRV10970" value="DRV10970" x="16.1925" y="16.1925" rot="R180"/>
 <element name="U$2" library="DubSat1 Components" package="PC104_CONNECTOR" value="PC104_CONNECTOR" x="45.72" y="45.72"/>
-<element name="U$3" library="DubSat1 Components" package="MSP-CAN_BLOCK" value="MSP-CAN_BLOCK" x="60.96" y="64.77" rot="MR90"/>
+<element name="U$3" library="DubSat1 Components" package="MSP-CAN_BLOCK" value="MSP-CAN_BLOCK" x="60.96" y="61.9125" rot="MR90"/>
 <element name="U$4" library="DubSat1 Components" package="1X08_CONNECTOR" value="PROGRAM/DEBUG_PORT" x="99.06" y="55.88" rot="R90"/>
-<element name="U$5" library="DubSat1 Components" package="MSP-CAN_BLOCK" value="MSP-CAN_BLOCK" x="60.96" y="43.18" rot="MR90"/>
+<element name="U$5" library="DubSat1 Components" package="MSP-CAN_BLOCK" value="MSP-CAN_BLOCK" x="77.7875" y="21.9075" rot="MR0"/>
 <element name="U$6" library="DubSat1 Components" package="1X08_CONNECTOR" value="PROGRAM/DEBUG_PORT" x="97.79" y="33.02" rot="R90"/>
 <element name="U$7" library="DubSat1 Components" package="DRV10970" value="DRV10970" x="18.7325" y="60.6425" rot="R180"/>
-<element name="U$8" library="DubSat1 Components" package="MSP-CAN_BLOCK" value="MSP-CAN_BLOCK" x="60.96" y="21.59" rot="MR90"/>
+<element name="U$8" library="DubSat1 Components" package="MSP-CAN_BLOCK" value="MSP-CAN_BLOCK" x="30.48" y="16.51" rot="MR90"/>
 <element name="MOTOR_X" library="DubSat1 Components" package="PICOLOCK_8" value="PICOLOCK_8" x="11.43" y="36.83" rot="R90"/>
 <element name="MOTOR_Y" library="DubSat1 Components" package="PICOLOCK_8" value="PICOLOCK_8" x="12.7" y="59.69" rot="R90"/>
 <element name="MOTOR_Z" library="DubSat1 Components" package="PICOLOCK_8" value="PICOLOCK_8" x="10.16" y="15.24" rot="R90"/>
+<element name="U$9" library="DubSat1 Components" package="REACTION_WHEEL_BRACKET" value="REACTION_WHEEL_BRACKET" x="54.9275" y="16.1925" rot="R90"/>
 </elements>
 <signals>
 <signal name="N$1">
 <contactref element="U$3" pad="SBWTCK"/>
 <contactref element="U$4" pad="SBWTCK"/>
-<wire x1="55.36" y1="67.52" x2="98.933" y2="55.88" width="0" layer="19" extent="16-16"/>
+<wire x1="55.36" y1="64.6625" x2="98.933" y2="55.88" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$2">
 <contactref element="U$4" pad="2"/>
 <contactref element="U$3" pad="SBWTDIO"/>
-<wire x1="55.36" y1="68.02" x2="99.187" y2="58.42" width="0" layer="19" extent="16-16"/>
+<wire x1="55.36" y1="65.1625" x2="99.187" y2="58.42" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$3">
 <contactref element="U$3" pad="P2.0_TXD"/>
 <contactref element="U$4" pad="3"/>
-<wire x1="55.36" y1="68.52" x2="98.933" y2="60.96" width="0" layer="19" extent="16-16"/>
+<wire x1="55.36" y1="65.6625" x2="98.933" y2="60.96" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$4">
 <contactref element="U$4" pad="4"/>
 <contactref element="U$3" pad="P2.1_RXD"/>
-<wire x1="57.21" y1="70.37" x2="99.187" y2="63.5" width="0" layer="19" extent="16-16"/>
+<wire x1="57.21" y1="67.5125" x2="99.187" y2="63.5" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$5">
 <contactref element="U$4" pad="7"/>
 <contactref element="U$3" pad="P3.4_GPIO_DEBUG"/>
-<wire x1="58.21" y1="70.37" x2="98.933" y2="71.12" width="0" layer="19" extent="16-16"/>
+<wire x1="58.21" y1="67.5125" x2="98.933" y2="71.12" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$6">
 <contactref element="U$3" pad="P3.5_GPIO_DEBUG"/>
 <contactref element="U$4" pad="8"/>
-<wire x1="58.71" y1="70.37" x2="99.187" y2="73.66" width="0" layer="19" extent="16-16"/>
+<wire x1="58.71" y1="67.5125" x2="99.187" y2="73.66" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="GND">
 <contactref element="U$2" pad="P$82"/>
@@ -2370,7 +2407,7 @@ design rules under a new name.</description>
 <via x="11.43" y="23.8125" extent="1-16" drill="0.35" shape="square"/>
 <via x="11.43" y="24.4475" extent="1-16" drill="0.35" shape="square"/>
 <wire x1="98.933" y1="66.04" x2="99.187" y2="68.58" width="0" layer="19" extent="1-1"/>
-<wire x1="88.835" y1="61.395" x2="98.933" y2="66.04" width="0" layer="19" extent="1-1"/>
+<wire x1="88.835" y1="58.5375" x2="98.933" y2="66.04" width="0" layer="19" extent="1-1"/>
 <wire x1="43.18" y1="74.29" x2="42.8625" y2="74.93" width="0" layer="19" extent="1-1"/>
 <wire x1="38.73" y1="72.39" x2="39.37" y2="72.0725" width="0" layer="19" extent="1-1"/>
 <wire x1="32.38" y1="72.39" x2="33.02" y2="72.0725" width="0" layer="19" extent="1-1"/>
@@ -2400,11 +2437,11 @@ design rules under a new name.</description>
 <wire x1="22.2275" y1="19.685" x2="17.4625" y2="16.8275" width="0" layer="19" extent="1-1"/>
 <wire x1="26.54" y1="21.59" x2="22.2275" y2="19.685" width="0" layer="19" extent="1-1"/>
 <wire x1="25.27" y1="26.67" x2="26.54" y2="21.59" width="0" layer="19" extent="1-1"/>
-<wire x1="44.445" y1="14.605" x2="52.96" y2="14.34" width="0" layer="19" extent="1-1"/>
+<wire x1="44.445" y1="14.605" x2="22.48" y2="9.26" width="0" layer="19" extent="1-1"/>
 <wire x1="44.4525" y1="18.415" x2="44.445" y2="14.605" width="0" layer="19" extent="1-1"/>
-<wire x1="97.663" y1="20.32" x2="88.835" y2="18.215" width="0" layer="19" extent="1-1"/>
+<wire x1="97.663" y1="20.32" x2="58.355" y2="13.135" width="0" layer="19" extent="1-1"/>
 <wire x1="97.917" y1="22.86" x2="97.663" y2="20.32" width="0" layer="19" extent="1-1"/>
-<wire x1="97.663" y1="43.18" x2="88.835" y2="39.805" width="0" layer="19" extent="1-1"/>
+<wire x1="97.663" y1="43.18" x2="81.1625" y2="49.7825" width="0" layer="19" extent="1-1"/>
 <wire x1="97.917" y1="45.72" x2="97.663" y2="43.18" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="CANH">
@@ -2412,41 +2449,41 @@ design rules under a new name.</description>
 <contactref element="U$5" pad="CANH"/>
 <contactref element="U$8" pad="CANH"/>
 <contactref element="U$2" pad="P$53"/>
-<wire x1="82.92" y1="41.58" x2="82.92" y2="63.17" width="0" layer="19" extent="16-16"/>
-<wire x1="82.92" y1="19.99" x2="82.92" y2="41.58" width="0" layer="19" extent="16-16"/>
-<wire x1="46.99" y1="77.6" x2="82.92" y2="63.17" width="0" layer="19" extent="16-16"/>
+<wire x1="79.3875" y1="43.8675" x2="82.92" y2="60.3125" width="0" layer="19" extent="16-16"/>
+<wire x1="52.44" y1="14.91" x2="79.3875" y2="43.8675" width="0" layer="19" extent="16-16"/>
+<wire x1="46.99" y1="77.6" x2="82.92" y2="60.3125" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="CANL">
 <contactref element="U$3" pad="CANL"/>
 <contactref element="U$5" pad="CANL"/>
 <contactref element="U$8" pad="CANL"/>
 <contactref element="U$2" pad="P$57"/>
-<wire x1="83.57" y1="41.58" x2="83.57" y2="63.17" width="0" layer="19" extent="16-16"/>
-<wire x1="83.57" y1="19.99" x2="83.57" y2="41.58" width="0" layer="19" extent="16-16"/>
-<wire x1="49.53" y1="77.6" x2="83.57" y2="63.17" width="0" layer="19" extent="16-16"/>
+<wire x1="79.3875" y1="44.5175" x2="83.57" y2="60.3125" width="0" layer="19" extent="16-16"/>
+<wire x1="53.09" y1="14.91" x2="79.3875" y2="44.5175" width="0" layer="19" extent="16-16"/>
+<wire x1="49.53" y1="77.6" x2="83.57" y2="60.3125" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="SYNC2">
 <contactref element="U$3" pad="PJ.3_SYNC2"/>
 <contactref element="U$5" pad="PJ.3_SYNC2"/>
 <contactref element="U$8" pad="PJ.3_SYNC2"/>
 <contactref element="U$2" pad="P$49"/>
-<wire x1="55.36" y1="62.52" x2="44.45" y2="77.6" width="0" layer="19" extent="16-16"/>
-<wire x1="55.36" y1="40.93" x2="55.36" y2="62.52" width="0" layer="19" extent="16-16"/>
-<wire x1="55.36" y1="19.34" x2="55.36" y2="40.93" width="0" layer="19" extent="16-16"/>
+<wire x1="55.36" y1="59.6625" x2="44.45" y2="77.6" width="0" layer="19" extent="16-16"/>
+<wire x1="80.0375" y1="16.3075" x2="55.36" y2="59.6625" width="0" layer="19" extent="16-16"/>
+<wire x1="24.88" y1="14.26" x2="80.0375" y2="16.3075" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="SYNC1">
 <contactref element="U$3" pad="P7.2_SYNC1"/>
 <contactref element="U$5" pad="P7.2_SYNC1"/>
 <contactref element="U$8" pad="P7.2_SYNC1"/>
 <contactref element="U$2" pad="P$45"/>
-<wire x1="55.36" y1="63.02" x2="41.91" y2="77.6" width="0" layer="19" extent="16-16"/>
-<wire x1="55.36" y1="41.43" x2="55.36" y2="63.02" width="0" layer="19" extent="16-16"/>
-<wire x1="55.36" y1="19.84" x2="55.36" y2="41.43" width="0" layer="19" extent="16-16"/>
+<wire x1="55.36" y1="60.1625" x2="41.91" y2="77.6" width="0" layer="19" extent="16-16"/>
+<wire x1="79.5375" y1="16.3075" x2="55.36" y2="60.1625" width="0" layer="19" extent="16-16"/>
+<wire x1="24.88" y1="14.76" x2="79.5375" y2="16.3075" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="PWM_X">
 <contactref element="U$3" pad="P1.7_GPIO/PWM"/>
 <contactref element="U$10" pad="PWM"/>
-<wire x1="17.7625" y1="34.8575" x2="60.71" y2="70.37" width="0" layer="19" extent="1-16"/>
+<wire x1="17.7625" y1="34.8575" x2="60.71" y2="67.5125" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="N$20">
 <contactref element="U$10" pad="RETRY"/>
@@ -2457,20 +2494,20 @@ design rules under a new name.</description>
 <contactref element="U$10" pad="RD"/>
 <contactref element="R9" pad="1"/>
 <contactref element="U$3" pad="P4.0_GPIO"/>
-<wire x1="20.32" y1="44.765" x2="55.36" y2="64.52" width="0" layer="19" extent="1-16"/>
+<wire x1="20.32" y1="44.765" x2="55.36" y2="61.6625" width="0" layer="19" extent="1-16"/>
 <wire x1="17.1125" y1="34.8575" x2="20.32" y2="44.765" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FG_X">
 <contactref element="U$10" pad="FG"/>
 <contactref element="R17" pad="2"/>
 <contactref element="U$3" pad="P7.4_GPIO"/>
-<wire x1="33.02" y1="35.24" x2="55.36" y2="64.02" width="0" layer="19" extent="1-16"/>
+<wire x1="33.02" y1="35.24" x2="55.36" y2="61.1625" width="0" layer="19" extent="1-16"/>
 <wire x1="21.0125" y1="34.8575" x2="33.02" y2="35.24" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="FR_X">
 <contactref element="U$10" pad="FR"/>
 <contactref element="U$3" pad="P7.3_GPIO"/>
-<wire x1="20.3625" y1="34.8575" x2="55.36" y2="63.52" width="0" layer="19" extent="1-16"/>
+<wire x1="20.3625" y1="34.8575" x2="55.36" y2="60.6625" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="N$24">
 <contactref element="U$10" pad="VCP"/>
@@ -2597,32 +2634,32 @@ design rules under a new name.</description>
 <signal name="N$7">
 <contactref element="U$5" pad="SBWTCK"/>
 <contactref element="U$6" pad="SBWTCK"/>
-<wire x1="55.36" y1="45.93" x2="97.663" y2="33.02" width="0" layer="19" extent="16-16"/>
+<wire x1="75.0375" y1="16.3075" x2="97.663" y2="33.02" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$8">
 <contactref element="U$6" pad="2"/>
 <contactref element="U$5" pad="SBWTDIO"/>
-<wire x1="55.36" y1="46.43" x2="97.917" y2="35.56" width="0" layer="19" extent="16-16"/>
+<wire x1="74.5375" y1="16.3075" x2="97.917" y2="35.56" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$9">
 <contactref element="U$5" pad="P2.0_TXD"/>
 <contactref element="U$6" pad="3"/>
-<wire x1="55.36" y1="46.93" x2="97.663" y2="38.1" width="0" layer="19" extent="16-16"/>
+<wire x1="74.0375" y1="16.3075" x2="97.663" y2="38.1" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$10">
 <contactref element="U$6" pad="4"/>
 <contactref element="U$5" pad="P2.1_RXD"/>
-<wire x1="57.21" y1="48.78" x2="97.917" y2="40.64" width="0" layer="19" extent="16-16"/>
+<wire x1="72.1875" y1="18.1575" x2="97.917" y2="40.64" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$11">
 <contactref element="U$6" pad="7"/>
 <contactref element="U$5" pad="P3.4_GPIO_DEBUG"/>
-<wire x1="58.21" y1="48.78" x2="97.663" y2="48.26" width="0" layer="19" extent="16-16"/>
+<wire x1="72.1875" y1="19.1575" x2="97.663" y2="48.26" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$12">
 <contactref element="U$5" pad="P3.5_GPIO_DEBUG"/>
 <contactref element="U$6" pad="8"/>
-<wire x1="58.71" y1="48.78" x2="97.917" y2="50.8" width="0" layer="19" extent="16-16"/>
+<wire x1="72.1875" y1="19.6575" x2="97.917" y2="50.8" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$13">
 <contactref element="U$7" pad="RETRY"/>
@@ -2714,26 +2751,26 @@ design rules under a new name.</description>
 <signal name="FR_Y">
 <contactref element="U$5" pad="P7.3_GPIO"/>
 <contactref element="U$7" pad="FR"/>
-<wire x1="21.6325" y1="57.7175" x2="55.36" y2="41.93" width="0" layer="19" extent="1-16"/>
+<wire x1="21.6325" y1="57.7175" x2="79.0375" y2="16.3075" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="FG_Y">
 <contactref element="U$5" pad="P7.4_GPIO"/>
 <contactref element="U$7" pad="FG"/>
 <contactref element="R24" pad="2"/>
-<wire x1="27.94" y1="56.83" x2="55.36" y2="42.43" width="0" layer="19" extent="1-16"/>
+<wire x1="27.94" y1="56.83" x2="78.5375" y2="16.3075" width="0" layer="19" extent="1-16"/>
 <wire x1="22.2825" y1="57.7175" x2="27.94" y2="56.83" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="RD_Y">
 <contactref element="U$5" pad="P4.0_GPIO"/>
 <contactref element="U$7" pad="RD"/>
 <contactref element="R10" pad="1"/>
-<wire x1="26.67" y1="60.01" x2="55.36" y2="42.93" width="0" layer="19" extent="1-16"/>
+<wire x1="26.67" y1="60.01" x2="78.0375" y2="16.3075" width="0" layer="19" extent="1-16"/>
 <wire x1="18.3825" y1="57.7175" x2="26.67" y2="60.01" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="PWM_Y">
 <contactref element="U$5" pad="P1.7_GPIO/PWM"/>
 <contactref element="U$7" pad="PWM"/>
-<wire x1="19.0325" y1="57.7175" x2="60.71" y2="48.78" width="0" layer="19" extent="1-16"/>
+<wire x1="19.0325" y1="57.7175" x2="72.1875" y2="21.6575" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="VINT_Y">
 <contactref element="DAA_Y" pad="P$3"/>
@@ -2768,32 +2805,32 @@ design rules under a new name.</description>
 <signal name="N$63">
 <contactref element="U$8" pad="SBWTCK"/>
 <contactref element="U$11" pad="SBWTCK"/>
-<wire x1="55.36" y1="24.34" x2="97.663" y2="10.16" width="0" layer="19" extent="16-16"/>
+<wire x1="24.88" y1="19.26" x2="97.663" y2="10.16" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$64">
 <contactref element="U$11" pad="2"/>
 <contactref element="U$8" pad="SBWTDIO"/>
-<wire x1="55.36" y1="24.84" x2="97.917" y2="12.7" width="0" layer="19" extent="16-16"/>
+<wire x1="24.88" y1="19.76" x2="97.917" y2="12.7" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$65">
 <contactref element="U$8" pad="P2.0_TXD"/>
 <contactref element="U$11" pad="3"/>
-<wire x1="55.36" y1="25.34" x2="97.663" y2="15.24" width="0" layer="19" extent="16-16"/>
+<wire x1="24.88" y1="20.26" x2="97.663" y2="15.24" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$66">
 <contactref element="U$11" pad="4"/>
 <contactref element="U$8" pad="P2.1_RXD"/>
-<wire x1="57.21" y1="27.19" x2="97.917" y2="17.78" width="0" layer="19" extent="16-16"/>
+<wire x1="26.73" y1="22.11" x2="97.917" y2="17.78" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$67">
 <contactref element="U$11" pad="7"/>
 <contactref element="U$8" pad="P3.4_GPIO_DEBUG"/>
-<wire x1="58.21" y1="27.19" x2="97.663" y2="25.4" width="0" layer="19" extent="16-16"/>
+<wire x1="27.73" y1="22.11" x2="97.663" y2="25.4" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$68">
 <contactref element="U$8" pad="P3.5_GPIO_DEBUG"/>
 <contactref element="U$11" pad="8"/>
-<wire x1="58.71" y1="27.19" x2="97.917" y2="27.94" width="0" layer="19" extent="16-16"/>
+<wire x1="28.23" y1="22.11" x2="97.917" y2="27.94" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$69">
 <contactref element="U$12" pad="RETRY"/>
@@ -2943,26 +2980,26 @@ design rules under a new name.</description>
 <signal name="FR_Z">
 <contactref element="U$8" pad="P7.3_GPIO"/>
 <contactref element="U$12" pad="FR"/>
-<wire x1="19.0925" y1="13.2675" x2="55.36" y2="20.34" width="0" layer="19" extent="1-16"/>
+<wire x1="19.0925" y1="13.2675" x2="24.88" y2="15.26" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="FG_Z">
 <contactref element="U$8" pad="P7.4_GPIO"/>
 <contactref element="U$12" pad="FG"/>
 <contactref element="R32" pad="2"/>
-<wire x1="38.4175" y1="10.1575" x2="55.36" y2="20.84" width="0" layer="19" extent="1-16"/>
+<wire x1="38.4175" y1="10.1575" x2="24.88" y2="15.76" width="0" layer="19" extent="1-16"/>
 <wire x1="19.7425" y1="13.2675" x2="38.4175" y2="10.1575" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="RD_Z">
 <contactref element="U$8" pad="P4.0_GPIO"/>
 <contactref element="U$12" pad="RD"/>
 <contactref element="R25" pad="1"/>
-<wire x1="26.67" y1="7.94" x2="55.36" y2="21.34" width="0" layer="19" extent="1-16"/>
+<wire x1="26.67" y1="7.94" x2="24.88" y2="16.26" width="0" layer="19" extent="1-16"/>
 <wire x1="15.8425" y1="13.2675" x2="26.67" y2="7.94" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="PWM_Z">
 <contactref element="U$8" pad="P1.7_GPIO/PWM"/>
 <contactref element="U$12" pad="PWM"/>
-<wire x1="16.4925" y1="13.2675" x2="60.71" y2="27.19" width="0" layer="19" extent="1-16"/>
+<wire x1="16.4925" y1="13.2675" x2="30.23" y2="22.11" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="VINT_Z">
 <contactref element="DAA_Z" pad="P$3"/>
@@ -3029,10 +3066,10 @@ design rules under a new name.</description>
 <contactref element="U$3" pad="3.3V@MSP2"/>
 <contactref element="U$3" pad="3.3V@CAN1"/>
 <contactref element="U$3" pad="3.3V@CAN2"/>
-<wire x1="66.8444" y1="73.2712" x2="77.835" y2="73.645" width="0" layer="19" extent="16-16"/>
-<wire x1="86.085" y1="61.395" x2="79.835" y2="73.645" width="0" layer="19" extent="16-16"/>
-<wire x1="66.8642" y1="56.2876" x2="66.8444" y2="73.2712" width="0" layer="19" extent="16-16"/>
-<wire x1="54.9976" y1="56.2368" x2="66.8642" y2="56.2876" width="0" layer="19" extent="16-16"/>
+<wire x1="66.8444" y1="70.4137" x2="77.835" y2="70.7875" width="0" layer="19" extent="16-16"/>
+<wire x1="86.085" y1="58.5375" x2="79.835" y2="70.7875" width="0" layer="19" extent="16-16"/>
+<wire x1="66.8642" y1="53.4301" x2="66.8444" y2="70.4137" width="0" layer="19" extent="16-16"/>
+<wire x1="54.9976" y1="53.3793" x2="66.8642" y2="53.4301" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="+5V">
 <contactref element="U$3" pad="5V"/>
