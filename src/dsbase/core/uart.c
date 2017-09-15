@@ -96,7 +96,10 @@ void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
     bus_ctx->tx_in_use = 1;
 
     // Start write process
-    UCA0TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
+    if (handle == BackchannelUART)
+        UCA0TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
+    else
+        UCA1TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
     bus_ctx->tx_bytes_sent++;
 
     __bis_SR_register(GIE);     // Interrupts enabled
@@ -191,7 +194,7 @@ __interrupt void USCI_A0_ISR(void)
     }
 }
 
-// Interrupt vector for BACKCHANNEL UART (A0-based)
+// Interrupt vector for APPLICATION UART (A1-based)
 #pragma vector=EUSCI_A1_VECTOR
 __interrupt void USCI_A1_ISR(void)
 {

@@ -6,16 +6,27 @@
 /*
  * main.c
  */
+
+uint8_t *outstr = "Hi there, said %d times!\r\n";
+
 int main(void) {
 
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
     bspInit(Module_Test);
 
-#if defined(__DEBUG__)
+    debugInit();
+    hBus h = uartInit(ApplicationUART);
 
-    // TODO:  Insert debug-specific stuff here, including registering info/status/action handlers, etc.
+    uint8_t outlen = strlen(outstr);
+    uint8_t count = 0;
 
-#endif  //  __DEBUG__
+    while(1)
+    {
+        debugPrintF(outstr, count);
+        uartTransmit(h, outstr, outlen);
+        count++;
+        __delay_cycles(8000000);
+    }
 	
 	return 0;
 }
