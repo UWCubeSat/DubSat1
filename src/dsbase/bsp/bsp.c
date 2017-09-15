@@ -43,7 +43,7 @@ void bspInit(SubsystemModule mod)
     // prevent out of spec operation from overshoot transient
     CSCTL0_H = CSKEY_H;                     // Unlock CS registers
     CSCTL1 = DCOFSEL_0;                     // Set DCO to 1MHz
-    // Set SMCLK = MCLK = DCO, ACLK = VLOCLK
+    // Set SMCLK = MCLK = DCO, ACLK = LFXTCLK (was VLOCLK earlier)
     CSCTL2 = SELA__LFXTCLK | SELS__DCOCLK | SELM__DCOCLK;
 
     CSCTL3 = DIVA__4 | DIVS__4 | DIVM__4;   // Set all corresponding clk sources to divide by 4 for errata
@@ -64,6 +64,13 @@ void bspInit(SubsystemModule mod)
 
 #if defined(__DEBUG__)
     debugInit();
+
+    // Register the system info report function
+    // TODO:  Merge systeminfo and BSP, they aren't both needed
+    debugRegisterEntity(Entity_BSP, '&', infoReport, NULL, NULL);
+
+    debugTraceF(1,"\r\n-------------------------------------------------------\r\nBSP initialization routine complete.\r\n");
+
 #endif // __DEBUG__
 
 }

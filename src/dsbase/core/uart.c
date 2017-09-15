@@ -13,6 +13,37 @@
 
 FILE_STATIC bus_context_UART buses[CONFIGM_uart_maxperipheralinstances];
 
+uint8_t uartReportStatus(DebugMode mode)
+{
+    int i;
+    bus_context_UART *bus_ctx;
+
+    // Run through report for each initialized UART
+    for (i=0; i<2; i++)
+    {
+        bus_ctx = &buses[i];
+        if (bus_ctx->initialized == 1)
+        {
+            if (mode == InteractiveMode)
+            {
+
+                debugPrintF("**UART %d Status:\r\n", i);
+                debugPrintF("*TX:\r\nBytes sent: %d\r\nErrors: %d\r\nBuffer overflow: %d\r\nBuffer underflow: %d\r\n\r\n",
+                        bus_ctx->tx_bytes_sent, bus_ctx->tx_error_count,
+                        bus_ctx->tx_error_buffer_overflow_count, bus_ctx->tx_error_underrun_count);
+                __delay_cycles(1000000);
+                debugPrintF("*RX:\r\nBytes rcvd: %d\r\nErrors: %d\r\nMissing handlers: %d\r\n", bus_ctx->rx_bytes_rcvd,
+                            bus_ctx->rx_error_count, bus_ctx->rx_error_missinghandler_count);
+            }
+            else
+            {
+                // Output just CSV fields, for telemetry consumption
+            }
+        }
+    }
+    return 1;
+}
+
 // TODO:  Add configuration parameters for speed
 hBus uartInit(bus_instance_UART instance)
 {
@@ -29,6 +60,8 @@ hBus uartInit(bus_instance_UART instance)
     bus_ctx->rx_in_use = 0;
 
     bspUARTInit(instance);
+    
+    debugRegisterEntity(Entity_UART, 'u', NULL, uartReportStatus, NULL);
 
     // TODO:  Add logic to rejigger the dividers based on current clock
     // setting ... these currently ASSUME A 8MHz CLOCK!

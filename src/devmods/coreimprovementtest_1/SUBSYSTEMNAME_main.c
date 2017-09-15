@@ -9,6 +9,7 @@
 
 uint8_t *outstr = "Hi there, said %d times!\r\n";
 
+// Use pins TX=2.5 and RX=2.6 to talk to application UART
 int main(void) {
 
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
@@ -22,8 +23,8 @@ int main(void) {
 
     while(1)
     {
-        debugPrintF(outstr, count);
-        uartTransmit(h, outstr, outlen);
+        debugTraceF(2,outstr, count);
+        //uartTransmit(h, outstr, outlen);
         count++;
         __delay_cycles(8000000);
     }

@@ -20,15 +20,20 @@ uint8_t *getSubsystemModulePath()
     return SubsystemModulePaths[(uint8_t)bspGetModule()];
 }
 
-void infoReport(DebugMode mode)
+uint8_t infoReport(DebugMode mode)
 {
     if (mode == InteractiveMode)
     {
-        debugPrintF("\r\nSubsystem Module: %s", getSubsystemModulePath());
-        debugPrintF("\r\nCompiler Version: %s", __TI_COMPILER_VERSION__);
+        debugPrintF("**Subsystem Module: \t%s\r\n", getSubsystemModulePath());
+        debugPrintF("Compiler Version:\t%d\r\n", __TI_COMPILER_VERSION__);
+        debugPrintF("Standard C Version:\t%d\r\n", __STDC_VERSION__);
+        debugPrintF("Date Compiled:\t\t%s\r\n", __DATE__);
+        debugPrintF("Time Compiled:\t\t%s\r\n", __TIME__);
+
     }
     else
     {
         debugPrintF("Stuff without as many words (e.g. just CSV)");
     }
+    return 1;
 }
