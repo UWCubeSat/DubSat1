@@ -14,6 +14,11 @@
 #include "../core/utils.h"
 #include "../interfaces/systeminfo.h"
 
+// Various helper functions
+void bspInit(SubsystemModule mod);
+void bspUARTInit(bus_instance_UART instance);
+SubsystemModule bspGetModule();
+
 // Hard-wired assignments for a given board are stashed in these #if defined(...)
 // blocks
 #if defined(__BSP_Board_MSP430FR5994LaunchPad__)
@@ -41,10 +46,12 @@
 #define LP5994_BACKCHANNEL_UART_SEL1    P2SEL1  // Maps to USCI A0
 #define LP5994_BACKCHANNEL_UART_BITS    (BIT0 | BIT1)
 
+// TX=P2.5, RX=P2.6
 #define APP_UART_SEL0   LP5994_A1_UART_SEL0
 #define APP_UART_SEL1   LP5994_A1_UART_SEL1
 #define APP_UART_BITS   LP5994_A1_UART_BITS
 
+// TX=P2.0, RX=P2.1 - Exposed on LaunchPad in jumper J101 TXD and RXD
 #define BACKCHANNEL_UART_SEL0   LP5994_BACKCHANNEL_UART_SEL0
 #define BACKCHANNEL_UART_SEL1   LP5994_BACKCHANNEL_UART_SEL1
 #define BACKCHANNEL_UART_BITS   LP5994_BACKCHANNEL_UART_BITS
@@ -89,8 +96,6 @@
 #define I2C_SDA_BIT         BIT0
 #define I2C_SCL_BIT         BIT1
 
-void bspInit(SubsystemModule mod);
-void bspUARTInit(bus_instance_UART instance);
-SubsystemModule bspGetModule();
+
 
 #endif /* BSP_BSP_H_ */

@@ -22,6 +22,9 @@ hBus uartInit(bus_instance_UART instance);
 void uartTransmit(hBus handle, uint8_t * buff, uint8_t szBuff);
 void uartRegisterRxCallback(hBus handle, void (*rxcallback)(uint8_t rcvdbyte));
 
+// Global error tallies (not per-bus)
+uint8_t error_bus_not_initialized;
+
 typedef struct {
     uint8_t initialized;
     uint8_t echo_on;
@@ -38,7 +41,14 @@ typedef struct {
     uint16_t rx_bytes_rcvd;
     uint8_t rx_error_count;
     uint8_t rx_error_missinghandler_count;
-} bus_status_UART;
+
+    uint8_t txBuff[CONFIGM_uart_txbuffsize];
+    volatile uint8_t currentTxIndex;
+    uint8_t currentTxNumBytes;
+    volatile uint8_t currentRxIndex;
+    void (*rxCallback)(uint8_t);
+
+} bus_context_UART;
 
 
 #endif /* UART_H_ */
