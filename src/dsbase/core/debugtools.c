@@ -25,15 +25,17 @@ FILE_STATIC uint8_t consoleBuildingCommand = 0;
 FILE_STATIC volatile uint8_t debugTraceLevel = 0;
 FILE_STATIC volatile DebugMode debugMode = InteractiveMode;
 
+FILE_STATIC hBus handle;
+
 void debugInit()
 {
-    uartInit();
-    uartRegisterRxCallback(debugReadCallback);
+    handle = uartInit(BackchannelUART);
+    uartRegisterRxCallback(handle, debugReadCallback);
 }
 
 void debugPrint(uint8_t * buff, uint8_t szBuff)
 {
-    uartTransmit(buff, szBuff);
+    uartTransmit(handle, buff, szBuff);
 }
 
 void debugPrintF(const char *_format, ...)
@@ -43,7 +45,7 @@ void debugPrintF(const char *_format, ...)
     va_list argptr;
     va_start(argptr, _format);
     numBytes = vsnprintf(debugWriteOutputBuff, CONFIGM_debug_outputbuffsize, _format, argptr);
-    uartTransmit((uint8_t *)debugWriteOutputBuff, numBytes + 1);
+    uartTransmit(handle, (uint8_t *)debugWriteOutputBuff, numBytes + 1);
 }
 
 void debugTrace(uint8_t level, uint8_t * buff, uint8_t szBuff)
@@ -61,7 +63,7 @@ void debugTraceF(uint8_t level, const char *_format, ...)
         va_list argptr;
         va_start(argptr, _format);
         numBytes = vsnprintf(debugWriteOutputBuff, CONFIGM_debug_outputbuffsize, _format, argptr);
-        uartTransmit((uint8_t *)debugWriteOutputBuff, numBytes + 1);
+        uartTransmit(handle, (uint8_t *)debugWriteOutputBuff, numBytes + 1);
     }
 }
 
@@ -132,7 +134,6 @@ void displayPrompt()
         //debugPrint("\r\n[DEBUG]>>", 9);
         debugPrintF("\r\n[%s]>>", getSubsystemModulePath());
     }
-
 }
 
 #else  /* __DEBUG__ not specified, therefore nop debug operations */

@@ -10,10 +10,10 @@
 #include "core/debugtools.h"
 #include "bsp/bsp.h"
 
+// NOTE:  KEEP PATH STRINGS IN SYNC WITH ENUM (in systeminfo.h)
 FILE_STATIC uint8_t *SubsystemModulePaths[] =
                                            { "TestModule",
                                              "ADCS/BDot" };
-
 
 uint8_t *getSubsystemModulePath()
 {

@@ -11,132 +11,207 @@
 #include "uart.h"
 #include "config/config.h"
 
-FILE_STATIC uint8_t txBuff[CONFIGM_uart_txbuffsize];
-FILE_STATIC volatile uint8_t currentTxIndex = 0;
-FILE_STATIC uint8_t currentTxNumBytes;
-FILE_STATIC volatile uint8_t currentRxIndex = 0;
+FILE_STATIC bus_context_UART buses[CONFIGM_uart_maxperipheralinstances];
 
-FILE_STATIC bus_status_UART uart_status;
-FILE_STATIC void (*rxCallback)(uint8_t) = 0;
-
-// TODO:  Add macro magic to select which UART peripheral to use
 // TODO:  Add configuration parameters for speed
-void uartInit()
+hBus uartInit(bus_instance_UART instance)
 {
-    // Only initialize once
-    if (uart_status.initialized != 0)
-        return;
+    hBus handle = (uint8_t)instance;
+    bus_context_UART *bus_ctx = &buses[handle];
 
-    uart_status.initialized = 1;
-    uart_status.echo_on = 1;
-    uart_status.tx_in_use = 0;
-    uart_status.rx_in_use = 0;
-    BACKCHANNEL_UART_SEL0 &= ~BACKCHANNEL_UART_BITS;
-    BACKCHANNEL_UART_SEL1 |= BACKCHANNEL_UART_BITS;
+    // Only initialize each instance once
+    if (bus_ctx->initialized != 0)
+        return handle;
+
+    bus_ctx->initialized = 1;
+    bus_ctx->echo_on = 1;
+    bus_ctx->tx_in_use = 0;
+    bus_ctx->rx_in_use = 0;
+
+    bspUARTInit(instance);
 
     // TODO:  Add logic to rejigger the dividers based on current clock
     // setting ... these currently ASSUME A 8MHz CLOCK!
-    // Configure USCI_A0 for UART mode
-    UCA0CTLW0 = UCSWRST;                    // Put eUSCI in reset
-    UCA0CTLW0 |= UCSSEL__SMCLK;             // CLK = SMCLK
-    // ORIGINAL Baud Rate calculation
-    // 8000000/(16*9600) = 52.083
-    // Fractional portion = 0.083
-    // User's Guide Table 21-4: UCBRSx = 0x04
-    // UCBRFx = int ( (52.083-52)*16) = 1
-    //UCA0BRW = 52;                           // 8000000/16/9600
-    //UCA0MCTLW |= UCOS16 | UCBRF_1 | 0x4900;
-
     // Now using 115.2kbps for baud rate (see table 24-5 in Family Guide)
     // Seems relatively stable
-    UCA0BRW = 4;
-    UCA0MCTLW |= UCOS16 | UCBRF_5 | 0x55;
+    // Configure USCI_An for UART mode, generally looks like:
+    /*
+     * UCA0CTLW0 = UCSWRST;                    // Put eUSCI in reset
+       UCA0CTLW0 |= UCSSEL__SMCLK;             // CLK = SMCLK
+       UCA0BRW = 4;
+       UCA0MCTLW |= UCOS16 | UCBRF_5 | 0x55;
+       UCA0CTLW0 &= ~UCSWRST;                  // Initialize eUSCI
+       UCA0IE |= UCRXIE | UCTXIE;              // Enable USCI_A0 RX interrupt
+     */
+    if (instance == BackchannelUART)
+    {
+        UCA0CTLW0 = UCSWRST;
+        UCA0CTLW0 |= UCSSEL__SMCLK;
+        UCA0BRW = 4;
+        UCA0MCTLW |= UCOS16 | UCBRF_5 | 0x55;
+        UCA0CTLW0 &= ~UCSWRST;
+        UCA0IE |= UCRXIE | UCTXIE;
+    }
+    else if (instance == ApplicationUART)
+    {
+        UCA1CTLW0 = UCSWRST;
+        UCA1CTLW0 |= UCSSEL__SMCLK;
+        UCA1BRW = 4;
+        UCA1MCTLW |= UCOS16 | UCBRF_5 | 0x55;
+        UCA1CTLW0 &= ~UCSWRST;
+        UCA1IE |= UCRXIE | UCTXIE;
+    }
 
-
-    UCA0CTLW0 &= ~UCSWRST;                  // Initialize eUSCI
-    UCA0IE |= UCRXIE | UCTXIE;              // Enable USCI_A0 RX interrupt
+    return handle;
 }
 
-void uartTransmit(uint8_t * srcBuff, uint8_t szBuff)
+void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
 {
-    // Check for overlong transmission or transmission in progress
-    if (uart_status.tx_in_use != 0)
+    bus_context_UART *bus_ctx = &buses[handle];
+
+    if (bus_ctx->initialized != 1)
     {
-        uart_status.tx_error_count++;
-        uart_status.tx_error_overrun_count++;
+        error_bus_not_initialized++;
+        return;
+    }
+
+    // Check for overlong transmission or transmission in progress
+    if (bus_ctx->tx_in_use != 0)
+    {
+        bus_ctx->tx_error_count++;
+        bus_ctx->tx_error_overrun_count++;
         return;
     }
     if (szBuff > CONFIGM_uart_txbuffsize)
     {
-        uart_status.tx_error_count++;
-        uart_status.tx_error_buffer_overflow_count++;
+        bus_ctx->tx_error_count++;
+        bus_ctx->tx_error_buffer_overflow_count++;
         return;
     }
 
     // Transmit is good, cache the data to be sent
-    memcpy(txBuff, srcBuff, szBuff);
-    currentTxIndex = 0;
-    currentTxNumBytes = szBuff;
-    uart_status.tx_in_use = 1;
+    memcpy(bus_ctx->txBuff, srcBuff, szBuff);
+    bus_ctx->currentTxIndex = 0;
+    bus_ctx->currentTxNumBytes = szBuff;
+    bus_ctx->tx_in_use = 1;
 
     // Start write process
-    UCA0TXBUF = txBuff[currentTxIndex++];
-    uart_status.tx_bytes_sent++;
+    if (handle == BackchannelUART)
+        UCA0TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
+    else
+        UCA1TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
+    bus_ctx->tx_bytes_sent++;
 
     __bis_SR_register(GIE);     // Interrupts enabled
 
 }
 
-void uartRegisterRxCallback(void (*callback)(uint8_t rcvdbyte))
+void uartRegisterRxCallback(hBus handle, void (*callback)(uint8_t rcvdbyte))
 {
-    rxCallback = callback;
+    bus_context_UART *bus_ctx = &buses[handle];
+
+    if (bus_ctx->initialized != 1)
+    {
+        error_bus_not_initialized++;
+        return;
+    }
+
+    bus_ctx->rxCallback = callback;
 }
 
+// Helpers for handling interrupts (shared code so less copy/pasting to support multiple UARTS)
+void handleUCRXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
+{
+    uint8_t rcvdbyte;
+
+    if (instance == BackchannelUART)
+        rcvdbyte = UCA0RXBUF;
+    else
+        rcvdbyte = UCA1RXBUF;
+
+    bus_ctx->rx_bytes_rcvd++;
+
+    if (bus_ctx->echo_on == 1)
+    {
+        if (instance == BackchannelUART)
+            UCA0TXBUF = rcvdbyte;
+        else
+            UCA1TXBUF = rcvdbyte;
+    }
+
+    if (bus_ctx->rxCallback == 0)
+    {
+        bus_ctx->rx_error_count++;
+        bus_ctx->rx_error_missinghandler_count++;
+        return;
+    }
+
+    (*(bus_ctx->rxCallback))(rcvdbyte);
+}
+
+void handleUCTXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
+{
+    if (bus_ctx->tx_in_use == 0)
+    {
+        bus_ctx->tx_error_count++;
+        bus_ctx->tx_error_underrun_count++;
+    }
+
+    if (bus_ctx->currentTxIndex < bus_ctx->currentTxNumBytes)
+    {
+        if (instance == BackchannelUART)
+            UCA0TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
+        else
+            UCA1TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
+        bus_ctx->tx_bytes_sent++;
+    }
+    else
+    {
+        bus_ctx->currentTxIndex++;
+        bus_ctx->tx_in_use = 0;
+    }
+}
+
+
+// Interrupt vector for BACKCHANNEL UART (A0-based)
 #pragma vector=EUSCI_A0_VECTOR
 __interrupt void USCI_A0_ISR(void)
 {
-    uint8_t rcvdbyte;
+    bus_context_UART *bus_ctx = &buses[BackchannelUART];
 
     switch(__even_in_range(UCA0IV, USCI_UART_UCTXCPTIFG))
     {
         case USCI_NONE: break;
         case USCI_UART_UCRXIFG:
-            rcvdbyte = UCA0RXBUF;
-            uart_status.rx_bytes_rcvd++;
-
-            if (uart_status.echo_on == 1)
-            {
-                UCA0TXBUF = rcvdbyte;
-            }
-
-            if (rxCallback == 0)
-            {
-                uart_status.rx_error_count++;
-                uart_status.rx_error_missinghandler_count++;
-                return;
-            }
-            (*rxCallback)(rcvdbyte);
+            handleUCRXIFG(bus_ctx, BackchannelUART);
             break;
         case USCI_UART_UCTXIFG:     // Set when tx buff is empty
-            if (uart_status.tx_in_use == 0)
-            {
-                uart_status.tx_error_count++;
-                uart_status.tx_error_underrun_count++;
-            }
-
-            if (currentTxIndex < currentTxNumBytes)
-            {
-                UCA0TXBUF = txBuff[currentTxIndex++];
-                uart_status.tx_bytes_sent++;
-            }
-            else
-            {
-                currentTxIndex++;
-                uart_status.tx_in_use = 0;
-            }
+            handleUCTXIFG(bus_ctx, BackchannelUART);
             break;
         case USCI_UART_UCSTTIFG: break;  // Set after start received
         case USCI_UART_UCTXCPTIFG: break;
         default: break;
     }
 }
+
+// Interrupt vector for APPLICATION UART (A1-based)
+#pragma vector=EUSCI_A1_VECTOR
+__interrupt void USCI_A1_ISR(void)
+{
+    bus_context_UART *bus_ctx = &buses[ApplicationUART];
+
+    switch(__even_in_range(UCA1IV, USCI_UART_UCTXCPTIFG))
+    {
+        case USCI_NONE: break;
+        case USCI_UART_UCRXIFG:
+            handleUCRXIFG(bus_ctx, ApplicationUART);
+            break;
+        case USCI_UART_UCTXIFG:     // Set when tx buff is empty
+            handleUCTXIFG(bus_ctx, ApplicationUART);
+            break;
+        case USCI_UART_UCSTTIFG: break;  // Set after start received
+        case USCI_UART_UCTXCPTIFG: break;
+        default: break;
+    }
+}
+

@@ -7,9 +7,28 @@
 
 #include "bsp/bsp.h"
 #include "interfaces/systeminfo.h"
+#include "core/uart.h"
 
 
 FILE_STATIC SubsystemModule ssModule;
+
+// TEMPLATE FUNCTION:  All functions in this file should look roughly like this
+/*
+void bspExampleInit(SubsystemModule mod)
+{
+    // General config, shared by all board types
+
+    // Specific board configuration steps
+
+#if defined(__BSP_Board_MSP430FR5994LaunchPad__)
+    // LaunchPad for MSP430FR5994
+
+#else
+#error Unspecified board hardware, unable to determine correct BSP implementation.  Please specify board.
+#endif
+
+}
+*/
 
 
 void bspInit(SubsystemModule mod)
@@ -47,8 +66,34 @@ void bspInit(SubsystemModule mod)
     debugInit();
 #endif // __DEBUG__
 
+}
+
+void bspUARTInit(bus_instance_UART instance)
+{
+    // General config, shared by all board types
+
+    // Specific board configuration steps
+
+#if defined(__BSP_Board_MSP430FR5994LaunchPad__)
+
+    // LaunchPad for MSP430FR5994
+    if (instance == BackchannelUART)
+    {
+        BACKCHANNEL_UART_SEL0 &= ~BACKCHANNEL_UART_BITS;
+        BACKCHANNEL_UART_SEL1 |= BACKCHANNEL_UART_BITS;
+    }
+    else if (instance == ApplicationUART)
+    {
+        APP_UART_SEL0 &= ~APP_UART_BITS;
+        APP_UART_SEL1 |= APP_UART_BITS;
+    }
+
+#else
+#error Unspecified board hardware, unable to determine correct BSP implementation.  Please specify board.
+#endif
 
 }
+
 
 SubsystemModule bspGetModule()
 {
