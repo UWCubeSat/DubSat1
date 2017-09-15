@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <cstring>
 #include "core/uart.h"
+#include "core/debugtools.h"
 #include "bsp/bsp.h"
 
 FILE_STATIC uint8_t syncBuf[3] = { 0, 0, 0 };
@@ -19,7 +20,6 @@ FILE_STATIC uint8_t headerBuf[32];
 FILE_STATIC uint8_t messageBuf[128];
 FILE_STATIC uint16_t bytesRead = 0;
 
-FILE_STATIC uint16_t messageId;
 FILE_STATIC uint16_t messageLength;
 
 typedef enum status {
@@ -32,49 +32,54 @@ FILE_STATIC Status status = Status_Sync;
 
 /**
  * Parse a message, assuming that message is stored in the messageBuf and messageId is set
- * TODO do something with the data (log it or send CAN packets)
+ * TODO send CAN packets
  */
-void parseMessage(void) {
+void parseMessage(uint16_t messageId) {
     switch (messageId) {
     case ID_BESTXYZ: {
         // position solution status
-        GPS_ENUM pSolStat = cast(GPS_ENUM, messageBuf);
+        const GPS_ENUM pSolStat = cast(GPS_ENUM, messageBuf);
 
         // position
-        double px = cast(double, messageBuf + 8);
-        double py = cast(double, messageBuf + 16);
-        double pz = cast(double, messageBuf + 24);
+        const double px = cast(double, messageBuf + 8);
+        const double py = cast(double, messageBuf + 16);
+        const double pz = cast(double, messageBuf + 24);
 
         // position std dev
-        float pxd = cast(float, messageBuf + 32);
-        float pyd = cast(float, messageBuf + 36);
-        float pzd = cast(float, messageBuf + 40);
+        const float pxd = cast(float, messageBuf + 32);
+        const float pyd = cast(float, messageBuf + 36);
+        const float pzd = cast(float, messageBuf + 40);
 
         // velocity solution status
-        GPS_ENUM vSolStat = cast(GPS_ENUM, messageBuf + 44);
+        const GPS_ENUM vSolStat = cast(GPS_ENUM, messageBuf + 44);
 
         // velocity
-        double vx = cast(double, messageBuf + 52);
-        double vy = cast(double, messageBuf + 60);
-        double vz = cast(double, messageBuf + 68);
+        const double vx = cast(double, messageBuf + 52);
+        const double vy = cast(double, messageBuf + 60);
+        const double vz = cast(double, messageBuf + 68);
 
         // velocity std dev
-        float vxd = cast(float, messageBuf + 76);
-        float vyd = cast(float, messageBuf + 80);
-        float vzd = cast(float, messageBuf + 84);
+        const float vxd = cast(float, messageBuf + 76);
+        const float vyd = cast(float, messageBuf + 80);
+        const float vzd = cast(float, messageBuf + 84);
+
+        debugTraceF(4, "BESTXYZ (%u)\n\tx: %e\n\ty: %e\n\tz: %e", pSolStat, px, py, pz);
+        break;
     }
     case ID_TIME: {
         // read basic time from header
-        uint16_t week = cast(uint16_t, headerBuf + 11);
-        GPSec ms = cast(GPSec, headerBuf + 13);
+        const uint16_t week = cast(uint16_t, headerBuf + 11);
+        const GPSec ms = cast(GPSec, headerBuf + 13);
 
         // read offset from message
-        GPS_ENUM clockStatus = cast(GPS_ENUM, messageBuf);
-        double offset = cast(double, messageBuf + 4);
+        const GPS_ENUM clockStatus = cast(GPS_ENUM, messageBuf);
+        const double offset = cast(double, messageBuf + 4);
+
+        debugTraceF(4, "TIME \n\tweek: %u \n\tms: %u", week, ms);
         break;
     }
     default:
-        // TODO handle unsupported IDs
+        debugTraceF(4, "unsupported message ID: %u\n", messageId);
         break;
     }
 }
@@ -87,6 +92,8 @@ void readCallback(uint8_t rcvdbyte) {
         syncBuf[1] = syncBuf[2];
         syncBuf[2] = rcvdbyte;
         if (syncBuf[0] == '\xAA' && syncBuf[1] == '\x44' && syncBuf[2] == '\x12') {
+            debugTraceF(4, "synced");
+
             syncBuf[0] = 0;
             syncBuf[1] = 0;
             syncBuf[2] = 0;
@@ -101,10 +108,13 @@ void readCallback(uint8_t rcvdbyte) {
         // Below assumes header length includes the response ID but not the sync bits
         // TODO confirm that assumption
         if (bytesRead == headerBuf[0]) {
-            messageId = cast(uint16_t, headerBuf + 1);
+            debugTraceF(4, "read header, length: %u", headerBuf[0]);
+
             messageLength = cast(uint16_t, headerBuf + 5);
-            if (cast(GPS_ENUM, headerBuf + 25) != RESPONSE_ID_OK) {
+            const GPS_ENUM responseId = cast(GPS_ENUM, headerBuf + 25);
+            if (responseId != RESPONSE_ID_OK) {
                 // TODO error handling
+                debugTraceF(4, "bad response ID: %u", responseId);
             }
             bytesRead = 0;
             status = Status_Message;
@@ -115,7 +125,10 @@ void readCallback(uint8_t rcvdbyte) {
         bytesRead++;
 
         if (bytesRead == messageLength) {
-            parseMessage();
+            debugTraceF(4, "read message, length: %u", messageLength);
+
+            const uint16_t messageId = cast(uint16_t, headerBuf + 1);
+            parseMessage(messageId);
             bytesRead = 0;
             status = Status_Sync;
         }
