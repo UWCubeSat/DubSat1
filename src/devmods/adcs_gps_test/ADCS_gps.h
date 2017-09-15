@@ -15,7 +15,7 @@
 void readCallback(uint8_t rcvdbyte);
 void parseMessage(void);
 
-typedef long GPSec;
-typedef unsigned long GPS_ENUM;
+typedef int32_t GPSec;
+typedef uint32_t GPS_ENUM;
 
 #endif /* ADCS_GPS_H_ */

@@ -3,6 +3,7 @@
 #include <msp430fr5994.h>
 
 #define __DEBUG__ 1
+#define cast(TYPE, PTR) (*((TYPE*) (PTR)))
 
 #include "ADCS_GPS.h"
 #include <msp430.h>
@@ -67,13 +68,13 @@ void readCallback(uint8_t rcvdbyte) {
         headerBuf[bytesRead] = rcvdbyte;
         bytesRead++;
 
-        // read through the header (messageBuf[0] is the header length)
+        // read through the header (headerBuf[0] is the header length)
         // Below assumes header length includes the response ID but not the sync bits
         // TODO confirm that assumption
         if (bytesRead == headerBuf[0]) {
-            messageId = (uint16_t) headerBuf[1];
-            messageLength = (uint16_t) headerBuf[5];
-            if ((GPS_ENUM) headerBuf[25] != RESPONSE_ID_OK) {
+            messageId = cast(uint16_t, headerBuf + 1);
+            messageLength = cast(uint16_t, headerBuf + 5);
+            if (cast(GPS_ENUM, headerBuf + 25) != RESPONSE_ID_OK) {
                 // TODO error handling
             }
             bytesRead = 0;
@@ -99,38 +100,41 @@ void readCallback(uint8_t rcvdbyte) {
  */
 void parseMessage(void) {
     switch (messageId) {
-    case ID_BESTPOS: {
-        GPS_ENUM solStat = (GPS_ENUM) messageBuf[0];
-        double lat = (double) messageBuf[8];
-        double lon = (double) messageBuf[16];
-        double hgt = (double) messageBuf[24];
-        break;
-    }
-    case ID_BESTVEL: {
-        GPS_ENUM solStat = (GPS_ENUM) messageBuf[0];
-        double horspd = (double) messageBuf[16];
-        double trkgnd = (double) messageBuf[24];
-        double vertspd = (double) messageBuf[32];
-        break;
-    }
     case ID_BESTXYZ: {
-        GPS_ENUM pSolStat = (GPS_ENUM) messageBuf[0];
-        double px = (double) messageBuf[8];
-        double py = (double) messageBuf[16];
-        double pz = (double) messageBuf[24];
-        GPS_ENUM vSolStatus = (GPS_ENUM) messageBuf[44];
-        double vx = (double) messageBuf[52];
-        double vy = (double) messageBuf[60];
-        double vz = (double) messageBuf[68];
+        // position solution status
+        GPS_ENUM pSolStat = cast(GPS_ENUM, messageBuf);
+
+        // position
+        double px = cast(double, messageBuf + 8);
+        double py = cast(double, messageBuf + 16);
+        double pz = cast(double, messageBuf + 24);
+
+        // position std dev
+        float pxd = cast(float, messageBuf + 32);
+        float pyd = cast(float, messageBuf + 36);
+        float pzd = cast(float, messageBuf + 40);
+
+        // velocity solution status
+        GPS_ENUM vSolStat = cast(GPS_ENUM, messageBuf + 44);
+
+        // velocity
+        double vx = cast(double, messageBuf + 52);
+        double vy = cast(double, messageBuf + 60);
+        double vz = cast(double, messageBuf + 68);
+
+        // velocity std dev
+        float vxd = cast(float, messageBuf + 76);
+        float vyd = cast(float, messageBuf + 80);
+        float vzd = cast(float, messageBuf + 84);
     }
     case ID_TIME: {
         // read basic time from header
-        unsigned short week = (unsigned short) headerBuf[11];
-        GPSec ms = (GPSec) headerBuf[13];
+        uint16_t week = cast(uint16_t, headerBuf + 11);
+        GPSec ms = cast(GPSec, headerBuf + 13);
 
         // read offset from message
-        GPS_ENUM clockStatus = (GPS_ENUM) messageBuf[0];
-        double offset = (double) messageBuf[4];
+        GPS_ENUM clockStatus = cast(GPS_ENUM, messageBuf);
+        double offset = cast(double, messageBuf + 4);
         break;
     }
     default:
