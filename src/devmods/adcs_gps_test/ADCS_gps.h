@@ -12,9 +12,6 @@
 
 #include <stdint.h>
 
-void readCallback(uint8_t rcvdbyte);
-void parseMessage(void);
-
 typedef int32_t GPSec;
 typedef uint32_t GPS_ENUM;
 
