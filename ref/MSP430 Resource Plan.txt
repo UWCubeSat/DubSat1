@@ -6,7 +6,7 @@ eUSCI Peripherals (A blocks = UART/SPI/Irda, B blocks =SPI/I2C)
 - A0:  Backchannel UART
 - A1:  
 - A2:  SPI (and therefore CAN)
-- A3:  
+- A3:  Application UART
 
 - B0:  
 - B1:  

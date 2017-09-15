@@ -9,12 +9,18 @@
 #define UART_H_
 
 #include <stdint.h>
+#include "utils.h"
 #include "bsp/bsp.h"
 #include "config/config_bus_uart.h"
 
-void uartInit();
-void uartTransmit(uint8_t * buff, uint8_t szBuff);
-void uartRegisterRxCallback(void (*rxcallback)(uint8_t rcvdbyte));
+typedef enum _bus_instance_UART {
+    BackchannelUART = 0,
+    ApplicationUART = 1,
+} bus_instance_UART;
+
+hBus uartInit(bus_instance_UART instance);
+void uartTransmit(hBus handle, uint8_t * buff, uint8_t szBuff);
+void uartRegisterRxCallback(hBus handle, void (*rxcallback)(uint8_t rcvdbyte));
 
 typedef struct {
     uint8_t initialized;

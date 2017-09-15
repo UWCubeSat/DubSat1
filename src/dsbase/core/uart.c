@@ -19,20 +19,24 @@ FILE_STATIC volatile uint8_t currentRxIndex = 0;
 FILE_STATIC bus_status_UART uart_status;
 FILE_STATIC void (*rxCallback)(uint8_t) = 0;
 
-// TODO:  Add macro magic to select which UART peripheral to use
-// TODO:  Add configuration parameters for speed
-void uartInit()
-{
-    // Only initialize once
-    if (uart_status.initialized != 0)
-        return;
+FILE_STATIC bus_status_UART bus_status[CONFIGM_uart_maxperipheralinstances];
 
-    uart_status.initialized = 1;
-    uart_status.echo_on = 1;
-    uart_status.tx_in_use = 0;
-    uart_status.rx_in_use = 0;
-    BACKCHANNEL_UART_SEL0 &= ~BACKCHANNEL_UART_BITS;
-    BACKCHANNEL_UART_SEL1 |= BACKCHANNEL_UART_BITS;
+// TODO:  Add configuration parameters for speed
+hBus uartInit(bus_instance_UART instance)
+{
+    hBus handle = (uint8_t)instance;
+    bus_status_UART *bus = &bus_status[handle];
+
+    // Only initialize each instance once
+    if (bus->initialized != 0)
+        return handle;
+
+    bus->initialized = 1;
+    bus->echo_on = 1;
+    bus->tx_in_use = 0;
+    bus->rx_in_use = 0;
+
+    bspUARTInit(instance);
 
     // TODO:  Add logic to rejigger the dividers based on current clock
     // setting ... these currently ASSUME A 8MHz CLOCK!
@@ -52,12 +56,13 @@ void uartInit()
     UCA0BRW = 4;
     UCA0MCTLW |= UCOS16 | UCBRF_5 | 0x55;
 
-
     UCA0CTLW0 &= ~UCSWRST;                  // Initialize eUSCI
     UCA0IE |= UCRXIE | UCTXIE;              // Enable USCI_A0 RX interrupt
+
+    return handle;
 }
 
-void uartTransmit(uint8_t * srcBuff, uint8_t szBuff)
+void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
 {
     // Check for overlong transmission or transmission in progress
     if (uart_status.tx_in_use != 0)
@@ -87,7 +92,7 @@ void uartTransmit(uint8_t * srcBuff, uint8_t szBuff)
 
 }
 
-void uartRegisterRxCallback(void (*callback)(uint8_t rcvdbyte))
+void uartRegisterRxCallback(hBus handle, void (*callback)(uint8_t rcvdbyte))
 {
     rxCallback = callback;
 }

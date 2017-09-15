@@ -33,9 +33,17 @@
 #define LED2_BIT            LP5994_LED2_BIT
 #define LED_BITS            LP5994_LED_BITS
 
+#define LP5994_A1_UART_SEL0     P2SEL0
+#define LP5994_A1_UART_SEL1     P2SEL1
+#define LP5994_A1_UART_BITS     (BIT5 | BIT6)
+
 #define LP5994_BACKCHANNEL_UART_SEL0    P2SEL0  // Maps to USCI A0
 #define LP5994_BACKCHANNEL_UART_SEL1    P2SEL1  // Maps to USCI A0
 #define LP5994_BACKCHANNEL_UART_BITS    (BIT0 | BIT1)
+
+#define APP_UART_SEL0   LP5994_A1_UART_SEL0
+#define APP_UART_SEL1   LP5994_A1_UART_SEL1
+#define APP_UART_BITS   LP5994_A1_UART_BITS
 
 #define BACKCHANNEL_UART_SEL0   LP5994_BACKCHANNEL_UART_SEL0
 #define BACKCHANNEL_UART_SEL1   LP5994_BACKCHANNEL_UART_SEL1
@@ -82,6 +90,7 @@
 #define I2C_SCL_BIT         BIT1
 
 void bspInit(SubsystemModule mod);
+void bspUARTInit(bus_instance_UART instance);
 SubsystemModule bspGetModule();
 
 #endif /* BSP_BSP_H_ */
