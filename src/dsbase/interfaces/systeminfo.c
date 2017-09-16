@@ -33,7 +33,7 @@ uint8_t infoReport(DebugMode mode)
     }
     else
     {
-        debugPrintF("Stuff without as many words (e.g. just CSV)");
+        // Output raw data in CSV form, without field names
     }
     return 1;
 }

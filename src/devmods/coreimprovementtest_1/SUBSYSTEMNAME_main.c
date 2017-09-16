@@ -24,7 +24,7 @@ int main(void) {
     while(1)
     {
         debugTraceF(2,outstr, count);
-        //uartTransmit(h, outstr, outlen);
+        uartTransmit(h, outstr, outlen);
         count++;
         __delay_cycles(8000000);
     }

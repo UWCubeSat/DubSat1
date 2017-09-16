@@ -12,6 +12,7 @@
 #include "config/config.h"
 
 FILE_STATIC bus_context_UART buses[CONFIGM_uart_maxperipheralinstances];
+FILE_STATIC buses_registered_with_debug = 0;  // Only need to register once with debug service for both buses
 
 uint8_t uartReportStatus(DebugMode mode)
 {
@@ -28,11 +29,11 @@ uint8_t uartReportStatus(DebugMode mode)
             {
 
                 debugPrintF("**UART %d Status:\r\n", i);
-                debugPrintF("*TX:\r\nBytes sent: %d\r\nErrors: %d\r\nBuffer overflow: %d\r\nBuffer underflow: %d\r\n\r\n",
-                        bus_ctx->tx_bytes_sent, bus_ctx->tx_error_count,
+                debugPrintF("*TX:\r\nBytes sent: %d\r\nErrors: %d\r\nBuffer OF: %d\r\nBuff UF: %d\r\nBuff overlapped: %d\r\n",
+                        bus_ctx->tx_overlapped_requests_fulfilled, bus_ctx->tx_bytes_sent, bus_ctx->tx_error_count,
                         bus_ctx->tx_error_buffer_overflow_count, bus_ctx->tx_error_underrun_count);
                 __delay_cycles(1000000);
-                debugPrintF("*RX:\r\nBytes rcvd: %d\r\nErrors: %d\r\nMissing handlers: %d\r\n", bus_ctx->rx_bytes_rcvd,
+                debugPrintF("*RX:\r\nBytes rcvd: %d\r\nErrors: %d\r\nMissing handlers: %d\r\n\r\n", bus_ctx->rx_bytes_rcvd,
                             bus_ctx->rx_error_count, bus_ctx->rx_error_missinghandler_count);
             }
             else
@@ -60,9 +61,12 @@ hBus uartInit(bus_instance_UART instance)
     bus_ctx->rx_in_use = 0;
 
     bspUARTInit(instance);
+    if (buses_registered_with_debug == 0)
+    {
+        buses_registered_with_debug = 1;
+        debugRegisterEntity(Entity_UART, 'u', NULL, uartReportStatus, NULL);
+    }
     
-    debugRegisterEntity(Entity_UART, 'u', NULL, uartReportStatus, NULL);
-
     // TODO:  Add logic to rejigger the dividers based on current clock
     // setting ... these currently ASSUME A 8MHz CLOCK!
     // Now using 115.2kbps for baud rate (see table 24-5 in Family Guide)
@@ -101,42 +105,55 @@ hBus uartInit(bus_instance_UART instance)
 void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
 {
     bus_context_UART *bus_ctx = &buses[handle];
-
+    
     if (bus_ctx->initialized != 1)
     {
         error_bus_not_initialized++;
         return;
     }
-
-    // Check for overlong transmission or transmission in progress
+    
+    // Are we adding more to the current transmit buffer, or starting fresh?
+    // TODO:  make this buffer truly circular
     if (bus_ctx->tx_in_use != 0)
     {
-        bus_ctx->tx_error_count++;
-        bus_ctx->tx_error_overrun_count++;
-        return;
+        // Check if we can use the buffer or we don't have enough total space
+    	if ((bus_ctx->currentTxNumBytes + szBuff) >= CONFIGM_uart_txbuffsize)
+    	{
+    	    bus_ctx->tx_error_count++;
+    	    bus_ctx->tx_error_overrun_count++;
+    	    return;
+        }
+        else
+        {
+            // Leave currentTxIndex where it is, but modify everything else
+            // and add new stuff to buffer
+            bus_ctx->tx_overlapped_requests_fulfilled++;
+            memcpy(bus_ctx->txBuff+bus_ctx->currentTxNumBytes, srcBuff, szBuff);
+            bus_ctx->currentTxNumBytes += szBuff;
+        }
     }
-    if (szBuff > CONFIGM_uart_txbuffsize)
+    else
     {
-        bus_ctx->tx_error_count++;
-        bus_ctx->tx_error_buffer_overflow_count++;
-        return;
+        // If not currently in use, we start over at start of buffer
+        bus_ctx->currentTxIndex = 0;
+        bus_ctx->currentTxNumBytes = szBuff;
+        memcpy(bus_ctx->txBuff, srcBuff, szBuff);
     }
 
-    // Transmit is good, cache the data to be sent
-    memcpy(bus_ctx->txBuff, srcBuff, szBuff);
-    bus_ctx->currentTxIndex = 0;
-    bus_ctx->currentTxNumBytes = szBuff;
     bus_ctx->tx_in_use = 1;
 
-    // Start write process
-    if (handle == BackchannelUART)
-        UCA0TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
-    else
-        UCA1TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
-    bus_ctx->tx_bytes_sent++;
+    // Start adding characters to transmit buffer if this is a new transmission
+    if (bus_ctx->currentTxIndex == 0)
+    {
+        // Start write process
+        if (handle == BackchannelUART)
+            UCA0TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
+        else
+            UCA1TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
+        bus_ctx->tx_bytes_sent++;
 
-    __bis_SR_register(GIE);     // Interrupts enabled
-
+        __bis_SR_register(GIE);     // Make sure interrupts enabled
+    }
 }
 
 void uartRegisterRxCallback(hBus handle, void (*callback)(uint8_t rcvdbyte))
