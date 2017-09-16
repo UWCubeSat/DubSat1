@@ -14,8 +14,6 @@
 #include "core/debugtools.h"
 #include "bsp/bsp.h"
 
-FILE_STATIC uint8_t syncBuf[3] = { 0, 0, 0 };
-
 FILE_STATIC uint8_t headerBuf[32];
 FILE_STATIC uint8_t messageBuf[128];
 FILE_STATIC uint16_t bytesRead = 0;
@@ -63,19 +61,19 @@ void parseMessage(uint16_t messageId) {
         const float vyd = cast(float, messageBuf + 80);
         const float vzd = cast(float, messageBuf + 84);
 
-        debugTraceF(4, "BESTXYZ (%u)\n\tx: %e\n\ty: %e\n\tz: %e", pSolStat, px, py, pz);
+        debugTraceF(4, "BESTXYZ (%u)\n\tx: %e\n\ty: %e\n\tz: %e\n", pSolStat, px, py, pz);
         break;
     }
     case ID_TIME: {
         // read basic time from header
-        const uint16_t week = cast(uint16_t, headerBuf + 11);
-        const GPSec ms = cast(GPSec, headerBuf + 13);
+        const uint16_t week = cast(uint16_t, headerBuf + 14);
+        const GPSec ms = cast(GPSec, headerBuf + 16);
 
         // read offset from message
         const GPS_ENUM clockStatus = cast(GPS_ENUM, messageBuf);
         const double offset = cast(double, messageBuf + 4);
 
-        debugTraceF(4, "TIME \n\tweek: %u \n\tms: %u", week, ms);
+        debugTraceF(4, "TIME \n\tweek: %u \n\tms: %u\n", week, ms);
         break;
     }
     default:
@@ -88,46 +86,47 @@ void readCallback(uint8_t rcvdbyte) {
     switch(status) {
     case Status_Sync:
         // read until synced (at the start of a new header)
-        syncBuf[0] = syncBuf[1];
-        syncBuf[1] = syncBuf[2];
-        syncBuf[2] = rcvdbyte;
-        if (syncBuf[0] == '\xAA' && syncBuf[1] == '\x44' && syncBuf[2] == '\x12') {
-            debugTraceF(4, "synced");
-
-            syncBuf[0] = 0;
-            syncBuf[1] = 0;
-            syncBuf[2] = 0;
+        headerBuf[0] = headerBuf[1];
+        headerBuf[1] = headerBuf[2];
+        headerBuf[2] = rcvdbyte;
+        // synced when read \xAA, \x44, \x12
+        if (headerBuf[0] == 170 && headerBuf[1] == 68 && headerBuf[2] == 18) {
+            printf("synced\n");
+            headerBuf[0] = 0;
+            headerBuf[1] = 0;
+            headerBuf[2] = 0;
+            bytesRead = 3;
             status = Status_Header;
         }
         break;
-    case Status_Header:
+    case Status_Header: {
         headerBuf[bytesRead] = rcvdbyte;
         bytesRead++;
 
-        // read through the header (headerBuf[0] is the header length)
-        // Below assumes header length includes the response ID but not the sync bits
-        // TODO confirm that assumption
-        if (bytesRead == headerBuf[0]) {
-            debugTraceF(4, "read header, length: %u", headerBuf[0]);
+        // read through the header + the responseId that follows
+        const uint8_t headerLength = headerBuf[3];
+        if (bytesRead == headerLength + sizeof(GPS_ENUM)) {
+            debugTraceF(4, "read header, length: %u\n", headerLength);
 
-            messageLength = cast(uint16_t, headerBuf + 5);
-            const GPS_ENUM responseId = cast(GPS_ENUM, headerBuf + 25);
+            messageLength = cast(uint16_t, headerBuf + 8);
+            const GPS_ENUM responseId = cast(GPS_ENUM, headerBuf + headerLength);
             if (responseId != RESPONSE_ID_OK) {
                 // TODO error handling
-                debugTraceF(4, "bad response ID: %u", responseId);
+                debugTraceF(4, "bad response ID: %u\n", responseId);
             }
             bytesRead = 0;
             status = Status_Message;
         }
         break;
+    }
     case Status_Message:
         messageBuf[bytesRead] = rcvdbyte;
         bytesRead++;
 
         if (bytesRead == messageLength) {
-            debugTraceF(4, "read message, length: %u", messageLength);
+            debugTraceF(4, "read message, length: %u\n", messageLength);
 
-            const uint16_t messageId = cast(uint16_t, headerBuf + 1);
+            const uint16_t messageId = cast(uint16_t, headerBuf + 4);
             parseMessage(messageId);
             bytesRead = 0;
             status = Status_Sync;
