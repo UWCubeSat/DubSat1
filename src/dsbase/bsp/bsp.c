@@ -8,6 +8,7 @@
 #include "bsp/bsp.h"
 #include "interfaces/systeminfo.h"
 #include "core/uart.h"
+#include "core/i2c.h"
 
 
 FILE_STATIC SubsystemModule ssModule;
@@ -77,12 +78,6 @@ void bspInit(SubsystemModule mod)
 
 void bspUARTInit(bus_instance_UART instance)
 {
-    // General config, shared by all board types
-
-    // Specific board configuration steps
-
-#if defined(__BSP_Board_MSP430FR5994LaunchPad__)
-
     // LaunchPad for MSP430FR5994
     if (instance == BackchannelUART)
     {
@@ -94,9 +89,22 @@ void bspUARTInit(bus_instance_UART instance)
         APP_UART_SEL0 &= ~APP_UART_BITS;
         APP_UART_SEL1 |= APP_UART_BITS;
     }
+}
 
-#else
-#error Unspecified board hardware, unable to determine correct BSP implementation.  Please specify board.
+// NOTE:  The LaunchPad only exposes pins for the I2C bus we call "Bus2", hence the macro usage
+void bspI2CInit(bus_instance_I2C instance)
+{
+    if (instance == I2CBus2)
+    {
+        I2C2_PORTSEL1 &= ~(I2C2_SDA_BIT | I2C2_SCL_BIT);
+        I2C2_PORTSEL0 |= (I2C2_SDA_BIT | I2C2_SCL_BIT);
+    }
+#if !defined(__BSP_Board_MSP430FR5994LaunchPad__)
+    else if (instance == I2CBus1)
+    {
+        I2C1_PORTSEL1 &= ~(I2C1_SDA_BIT | I2C1_SCL_BIT);
+        I2C1_PORTSEL0 |= (I2C1_SDA_BIT | I2C1_SCL_BIT);
+    }
 #endif
 
 }
