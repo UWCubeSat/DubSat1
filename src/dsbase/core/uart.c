@@ -30,8 +30,8 @@ uint8_t uartReportStatus(DebugMode mode)
 
                 debugPrintF("**UART %d Status:\r\n", i);
                 debugPrintF("*TX:\r\nBytes sent: %d\r\nErrors: %d\r\nBuffer OF: %d\r\nBuff UF: %d\r\nBuff overlapped: %d\r\n",
-                        bus_ctx->tx_overlapped_requests_fulfilled, bus_ctx->tx_bytes_sent, bus_ctx->tx_error_count,
-                        bus_ctx->tx_error_buffer_overflow_count, bus_ctx->tx_error_underrun_count);
+                        bus_ctx->tx_bytes_sent, bus_ctx->tx_error_count, bus_ctx->tx_error_buffer_overflow_count,
+                        bus_ctx->tx_error_underrun_count, bus_ctx->tx_overlapped_requests_fulfilled);
                 __delay_cycles(1000000);
                 debugPrintF("*RX:\r\nBytes rcvd: %d\r\nErrors: %d\r\nMissing handlers: %d\r\n\r\n", bus_ctx->rx_bytes_rcvd,
                             bus_ctx->rx_error_count, bus_ctx->rx_error_missinghandler_count);
