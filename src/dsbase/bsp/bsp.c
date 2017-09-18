@@ -39,6 +39,7 @@ void bspInit(SubsystemModule mod)
     // Stop watchdog timer
     WDTCTL = WDTPW | WDTHOLD;
 
+
     // SAFE way of setting clock to 8Mhz
     // Per Device Errata set divider to 4 before changing frequency to
     // prevent out of spec operation from overshoot transient
