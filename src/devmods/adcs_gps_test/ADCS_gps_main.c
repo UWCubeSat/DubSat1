@@ -160,7 +160,16 @@ void readCallback(uint8_t rcvdbyte)
             debugTraceF(4, "read message, length: %u\r\n", messageLength);
 
             const uint16_t messageId = cast(uint16_t, headerBuf + 4);
-            parseMessage(messageId);
+
+            const uint8_t messageType = headerBuf[6];
+            if (messageType & 0b1000000) {
+                // the receiver responds to commands with a confirmation message,
+                // which can be ignored
+                debugTraceF(4, "received command: %u", messageId);
+            } else {
+                parseMessage(messageId);
+            }
+
             bytesRead = 0;
             status = Status_Sync;
         }
