@@ -12,6 +12,6 @@
 
 #define SEC   8000000   // Ideal number of cycles/second
 
-uint16_t timerCycleDiff16(uint16_t earlierTime, uint16_t laterTime);
+uint32_t timerCycleDiff16(uint16_t earlierTime, uint16_t laterTime);
 
 #endif /* DSBASE_CORE_TIMERS_H_ */

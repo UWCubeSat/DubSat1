@@ -13,6 +13,9 @@
 typedef enum _subsystemModule {
     Module_Test = 0,
     Module_ADCS_BDot = 1,
+    Module_ADCS_RWX = 2,
+    Module_ADCS_RWY = 3,
+    Module_ADCS_RWZ = 4,
 } SubsystemModule;
 
 uint8_t infoReport(DebugMode mode);
