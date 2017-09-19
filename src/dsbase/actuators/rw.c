@@ -75,7 +75,7 @@ void rwsSetTuningParams(double Kp, double Ki, double Kd)
 double rwsPIDStep(double cmd)
 {
     if (active != 1)
-        return;
+        return cmd;
 
     setpoint = cmd;
     input = currentRPM;
