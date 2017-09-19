@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>generaltest_1</name>
+	<name>generaltest_2</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -25,6 +25,11 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
 	<linkedResources>
+		<link>
+			<name>dsbase/actuators</name>
+			<type>2</type>
+			<locationURI>DSBASE/actuators</locationURI>
+		</link>
 		<link>
 			<name>dsbase/bsp</name>
 			<type>2</type>
