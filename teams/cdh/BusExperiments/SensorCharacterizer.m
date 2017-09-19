@@ -10,31 +10,36 @@ clear all; close all; clc;
 
 % Configure core parameters
 % slave_addr = '1Eh';   % 5883/5983 magnetometers
-slave_addr = '68h';    % Bosch BMI160 IMU
+% slave_addr = '68h';    % Bosch BMI160 IMU
+slave_addr = '6Ah';      % ST LSM6DSM
 total_time = 10;   % Seconds
 period = 0.1;     % Seconds
 
 %num_samps = floor(total_time/period);
-num_samps = 500000;
+num_samps = 5000;
 dut = i2c('aardvark', 0, slave_addr);
 fopen(dut);
 
-% Configure sensor
+%% Configure sensor
 
 % % Configure 5883/5983
 % fwrite(dut, [0 hex2dec('14')]);   % Output rate = 30Hz, no averaging
 % fwrite(dut, [1 hex2dec('00')]);   % Maximum gain
 % fwrite(dut, [2 hex2dec('00')]);   % Continuous operating mode
 
-% Configure IMU
+% Configure Bosch BMI160 IMU
 %  First, enable both the IMU and accelerometer
-GYR_CONF = hex2dec('42');
-GYR_RANGE = hex2dec('43');
-CMDREG = hex2dec('7E');
-fwrite(dut, [CMDREG hex2dec('15')]);
-fwrite(dut, [CMDREG hex2dec('11')]);
-fwrite(dut, [GYR_CONF 42]);  % ODR = 400Hz
-fwrite(dut, [GYR_RANGE 4]);  % Range at +/- 125dps (smallest/most sens.)
+% GYR_CONF = hex2dec('42');
+% GYR_RANGE = hex2dec('43');
+% CMDREG = hex2dec('7E');
+% fwrite(dut, [CMDREG hex2dec('15')]);
+% fwrite(dut, [CMDREG hex2dec('11')]);
+% fwrite(dut, [GYR_CONF 42]);  % ODR = 400Hz
+% fwrite(dut, [GYR_RANGE 4]);  % Range at +/- 125dps (smallest/most sens.)
+
+% Configure ST LSM6DSM IMU
+CTRL2_G = hex2dec('11');
+fwrite(dut, [CTRL2_G hex2dec('72')]); %62=416Hz, 72=833Hz
 
 %% Collect Data
 % Now collect data from the sensor.
@@ -44,17 +49,21 @@ fwrite(dut, [GYR_RANGE 4]);  % Range at +/- 125dps (smallest/most sens.)
 %readbytes = 6;  % Magtom
 
 % BMI160
-results = zeros(num_samps, 4); 
-outputreadreg = hex2dec('0C');
-readbytes = 12;
+% outputreadreg = hex2dec('0C');
+% readbytes = 12;
 
+% ST LSM6DSM IMU
+outputreadreg = hex2dec('22');
+readbytes = 6;
+
+results = zeros(num_samps, 4); 
 tic;
 for r = 1:num_samps
     now = toc;
     fwrite(dut, outputreadreg);   % Moves cursor to start of data
     raw = dec2hex(fread(dut, readbytes));
     
-    % IMU BMI160:  Little endian!
+    % IMU BMI160 and ST LSM6DSM both:  Little endian!
     gyroXstr = [raw(2,:) raw(1,:)];
     gyroYstr = [raw(4,:) raw(3,:)];
     gyroZstr = [raw(6,:) raw(5,:)];
@@ -107,7 +116,9 @@ legend('X','Y','Z');
 % variance/deviation, and then plot it.
 
 % Convert to engineering units (using most sensitive
-euresults = results(:,2:4) * .0038;
+
+% For ST LSM6DSM - +/-125dps mode
+euresults = results(:,2:4) * .004375;
 
 pts = 100;
 fs = 1/period;
