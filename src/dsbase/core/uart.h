@@ -36,7 +36,6 @@ typedef struct {
     uint8_t tx_error_count;
     uint8_t tx_error_overrun_count;
     uint8_t tx_error_underrun_count;
-    uint8_t tx_error_buffer_overflow_count;
     uint8_t tx_overlapped_requests_fulfilled;  // not an error
 
     uint16_t rx_bytes_rcvd;

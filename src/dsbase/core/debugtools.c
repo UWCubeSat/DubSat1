@@ -158,7 +158,7 @@ void coreCallSimpleHandlers(simple_handler_type t)
             return;
         }
 
-        if (handler != NULL)
+        if (handler != 0)
             (handler)(debug_status.debug_mode);
         debugPrintF("\r\n");
     }
@@ -166,13 +166,13 @@ void coreCallSimpleHandlers(simple_handler_type t)
 
 void cmdInfo()
 {
-    debugPrintF("Subsystem information (static):\r\n--------------------------------\r\n");
+    debugPrintF("\r\nSubsystem information (static):\r\n--------------------------------\r\n");
     coreCallSimpleHandlers(Handler_Info);
 }
 
 void cmdStatus()
 {
-    debugPrintF("Subsystem status (dynamic):\r\n----------------------------\r\n");
+    debugPrintF("\r\nSubsystem status (dynamic):\r\n----------------------------\r\n");
     coreCallSimpleHandlers(Handler_Status);
 }
 

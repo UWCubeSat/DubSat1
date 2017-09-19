@@ -32,7 +32,6 @@ uint8_t infoReport(DebugMode mode)
         debugPrintF("Standard C Version:\t%d\r\n", __STDC_VERSION__);
         debugPrintF("Date Compiled:\t\t%s\r\n", __DATE__);
         debugPrintF("Time Compiled:\t\t%s\r\n", __TIME__);
-
     }
     else
     {
