@@ -44,9 +44,9 @@ typedef struct {
     uint8_t rx_error_missinghandler_count;
 
     uint8_t txBuff[CONFIGM_uart_txbuffsize];
-    volatile uint8_t currentTxIndex;
-    uint8_t currentTxNumBytes;
-    volatile uint8_t currentRxIndex;
+    volatile uint16_t currentTxIndex;
+    uint16_t currentTxNumBytes;
+    volatile uint16_t currentRxIndex;
     void (*rxCallback)(uint8_t);
 
 } bus_context_UART;

@@ -102,6 +102,30 @@ hBus uartInit(bus_instance_UART instance)
     return handle;
 }
 
+void enableUARTInterrupts(handle)
+{
+    if (handle == BackchannelUART)
+    {
+        UCA0IE |= UCRXIE | UCTXIE;
+    }
+    else if (handle == ApplicationUART)
+    {
+        UCA1IE |= UCRXIE | UCTXIE;
+    }
+}
+
+void disableUARTInterrupts(handle)
+{
+    if (handle == BackchannelUART)
+    {
+        UCA0IE &= ~(UCRXIE | UCTXIE);
+    }
+    else if (handle == ApplicationUART)
+    {
+        UCA1IE &= ~(UCRXIE | UCTXIE);
+    }
+}
+
 void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
 {
     bus_context_UART *bus_ctx = &buses[handle];
@@ -112,15 +136,21 @@ void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
         return;
     }
     
+    // MUST turn off interrupts so we don't get the buffer changes out from under us
+    disableUARTInterrupts(handle);
+
     // Are we adding more to the current transmit buffer, or starting fresh?
     // TODO:  make this buffer truly circular
-    if (bus_ctx->tx_in_use != 0)
+    if (bus_ctx->tx_in_use == 1)
     {
+
         // Check if we can use the buffer or we don't have enough total space
     	if ((bus_ctx->currentTxNumBytes + szBuff) >= CONFIGM_uart_txbuffsize)
     	{
     	    bus_ctx->tx_error_count++;
     	    bus_ctx->tx_error_overrun_count++;
+
+    	    enableUARTInterrupts(handle);
     	    return;
         }
         else
@@ -145,15 +175,19 @@ void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
     // Start adding characters to transmit buffer if this is a new transmission
     if (bus_ctx->currentTxIndex == 0)
     {
+        bus_ctx->tx_bytes_sent++;
+
         // Start write process
         if (handle == BackchannelUART)
             UCA0TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
         else
             UCA1TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
-        bus_ctx->tx_bytes_sent++;
+
 
         __bis_SR_register(GIE);     // Make sure interrupts enabled
     }
+
+    enableUARTInterrupts(handle);
 }
 
 void uartRegisterRxCallback(hBus handle, void (*callback)(uint8_t rcvdbyte))
@@ -201,6 +235,8 @@ void handleUCRXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
 
 void handleUCTXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
 {
+    disableUARTInterrupts(instance);
+
     if (bus_ctx->tx_in_use == 0)
     {
         bus_ctx->tx_error_count++;
@@ -220,6 +256,8 @@ void handleUCTXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
         bus_ctx->currentTxIndex++;
         bus_ctx->tx_in_use = 0;
     }
+
+    enableUARTInterrupts(instance);
 }
 
 
