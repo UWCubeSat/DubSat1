@@ -812,6 +812,18 @@ Board Template: V2.1</text>
 <wire x1="13.7" y1="8.4" x2="13.7" y2="6.4" width="0.127" layer="21"/>
 <text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
 </package>
+<package name="SOT-23-5">
+<smd name="P$1" x="-0.95" y="-1.35" dx="1.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="P$2" x="0" y="-1.35" dx="1.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="P$3" x="0.95" y="-1.35" dx="1.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="P$4" x="0.95" y="1.35" dx="1.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="P$5" x="-0.95" y="1.35" dx="1.2" dy="0.6" layer="1" rot="R90"/>
+<wire x1="-1.5" y1="0.8" x2="1.5" y2="0.8" width="0.127" layer="21"/>
+<wire x1="1.5" y1="-0.8" x2="-1.5" y2="-0.8" width="0.127" layer="21"/>
+<wire x1="-1.5" y1="-0.8" x2="-1.5" y2="0.8" width="0.127" layer="21"/>
+<wire x1="1.5" y1="-0.8" x2="1.5" y2="0.8" width="0.127" layer="21"/>
+<wire x1="-0.92075" y1="-0.5207" x2="-0.92075" y2="0.4191" width="0.2286" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="BOARD_TEMPLATE">
@@ -1895,6 +1907,18 @@ PWM</text>
 <pin name="P$8" x="22.86" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <text x="-12.7" y="12.7" size="2.1844" layer="95">&gt;Name</text>
 </symbol>
+<symbol name="LT1761">
+<pin name="IN" x="-12.7" y="5.08" visible="pin" length="middle"/>
+<pin name="GND" x="-12.7" y="0" visible="pin" length="middle"/>
+<pin name="EN" x="-12.7" y="-5.08" visible="pin" length="middle"/>
+<pin name="BYP" x="10.16" y="-5.08" visible="pin" length="middle" rot="R180"/>
+<pin name="OUT" x="10.16" y="5.08" visible="pin" length="middle" rot="R180"/>
+<wire x1="-7.62" y1="-7.62" x2="-7.62" y2="7.62" width="0.254" layer="94"/>
+<wire x1="-7.62" y1="7.62" x2="5.08" y2="7.62" width="0.254" layer="94"/>
+<wire x1="5.08" y1="7.62" x2="5.08" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="5.08" y1="-7.62" x2="-7.62" y2="-7.62" width="0.254" layer="94"/>
+<text x="-7.62" y="-10.16" size="1.27" layer="95">LT1761</text>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="BOARD_TEMPLATE">
@@ -2194,6 +2218,25 @@ PWM</text>
 <connect gate="G$1" pin="P$6" pad="P$6"/>
 <connect gate="G$1" pin="P$7" pad="P$7"/>
 <connect gate="G$1" pin="P$8" pad="P$8"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="LINEAR_LDO_LT1761-X">
+<gates>
+<gate name="G$1" symbol="LT1761" x="2.54" y="0"/>
+</gates>
+<devices>
+<device name="" package="SOT-23-5">
+<connects>
+<connect gate="G$1" pin="BYP" pad="P$4"/>
+<connect gate="G$1" pin="EN" pad="P$3"/>
+<connect gate="G$1" pin="GND" pad="P$2"/>
+<connect gate="G$1" pin="IN" pad="P$1"/>
+<connect gate="G$1" pin="OUT" pad="P$5"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -10137,6 +10180,14 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="GND36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="SERIAL_X" library="SparkFun-Connectors" deviceset="CONN_03" device="LOCK"/>
 <part name="GND37" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="LDO_3V3" library="DubSat1 Components" deviceset="LINEAR_LDO_LT1761-X" device=""/>
+<part name="LDO_5V" library="DubSat1 Components" deviceset="LINEAR_LDO_LT1761-X" device=""/>
+<part name="GND38" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND39" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="+3V4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
+<part name="P+4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
+<part name="C16" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF"/>
+<part name="C17" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF"/>
 </parts>
 <sheets>
 <sheet>
@@ -10249,6 +10300,14 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <instance part="GND36" gate="1" x="190.5" y="-124.46" rot="R90"/>
 <instance part="SERIAL_X" gate="J$1" x="17.78" y="-129.54"/>
 <instance part="GND37" gate="1" x="35.56" y="-124.46" rot="R90"/>
+<instance part="LDO_3V3" gate="G$1" x="147.32" y="30.48"/>
+<instance part="LDO_5V" gate="G$1" x="215.9" y="30.48"/>
+<instance part="GND38" gate="1" x="193.04" y="30.48" rot="R270"/>
+<instance part="GND39" gate="1" x="124.46" y="30.48" rot="R270"/>
+<instance part="+3V4" gate="G$1" x="170.18" y="35.56" rot="R270"/>
+<instance part="P+4" gate="1" x="238.76" y="35.56" rot="R270"/>
+<instance part="C16" gate="G$1" x="165.1" y="25.4"/>
+<instance part="C17" gate="G$1" x="233.68" y="25.4"/>
 </instances>
 <busses>
 </busses>
@@ -10535,6 +10594,16 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <wire x1="27.94" y1="-127" x2="27.94" y2="-124.46" width="0.1524" layer="91"/>
 <wire x1="27.94" y1="-124.46" x2="33.02" y2="-124.46" width="0.1524" layer="91"/>
 <pinref part="GND37" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="GND39" gate="1" pin="GND"/>
+<pinref part="LDO_3V3" gate="G$1" pin="GND"/>
+<wire x1="127" y1="30.48" x2="134.62" y2="30.48" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="GND38" gate="1" pin="GND"/>
+<pinref part="LDO_5V" gate="G$1" pin="GND"/>
+<wire x1="195.58" y1="30.48" x2="203.2" y2="30.48" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="CANH" class="0">
@@ -10907,6 +10976,18 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <wire x1="38.1" y1="25.4" x2="33.02" y2="25.4" width="0.1524" layer="91"/>
 <label x="33.02" y="25.4" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
+<segment>
+<pinref part="LDO_3V3" gate="G$1" pin="IN"/>
+<wire x1="134.62" y1="35.56" x2="129.54" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="129.54" y1="35.56" x2="129.54" y2="40.64" width="0.1524" layer="91"/>
+<label x="129.54" y="40.64" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
+<segment>
+<pinref part="LDO_5V" gate="G$1" pin="IN"/>
+<wire x1="203.2" y1="35.56" x2="198.12" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="198.12" y1="35.56" x2="198.12" y2="40.64" width="0.1524" layer="91"/>
+<label x="198.12" y="40.64" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
 </net>
 <net name="+3V3" class="0">
 <segment>
@@ -10965,6 +11046,15 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <wire x1="261.62" y1="-43.18" x2="266.7" y2="-43.18" width="0.1524" layer="91"/>
 <junction x="261.62" y="-45.72"/>
 </segment>
+<segment>
+<pinref part="LDO_3V3" gate="G$1" pin="OUT"/>
+<pinref part="+3V4" gate="G$1" pin="+3V3"/>
+<wire x1="157.48" y1="35.56" x2="165.1" y2="35.56" width="0.1524" layer="91"/>
+<pinref part="C16" gate="G$1" pin="1"/>
+<wire x1="165.1" y1="35.56" x2="167.64" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="27.94" x2="165.1" y2="35.56" width="0.1524" layer="91"/>
+<junction x="165.1" y="35.56"/>
+</segment>
 </net>
 <net name="+5V" class="0">
 <segment>
@@ -10979,6 +11069,15 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <segment>
 <pinref part="P+3" gate="1" pin="+5V"/>
 <wire x1="266.7" y1="-38.1" x2="246.38" y2="-38.1" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="LDO_5V" gate="G$1" pin="OUT"/>
+<pinref part="P+4" gate="1" pin="+5V"/>
+<wire x1="226.06" y1="35.56" x2="233.68" y2="35.56" width="0.1524" layer="91"/>
+<pinref part="C17" gate="G$1" pin="1"/>
+<wire x1="233.68" y1="35.56" x2="236.22" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="233.68" y1="27.94" x2="233.68" y2="35.56" width="0.1524" layer="91"/>
+<junction x="233.68" y="35.56"/>
 </segment>
 </net>
 <net name="M_Z_TX" class="0">
@@ -11772,6 +11871,26 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <pinref part="U$5" gate="G$1" pin="P2.5_GPIO"/>
 <wire x1="160.02" y1="-116.84" x2="160.02" y2="-129.54" width="0.1524" layer="91"/>
 <label x="160.02" y="-129.54" size="1.778" layer="95" rot="R270" xref="yes"/>
+</segment>
+</net>
+<net name="N$13" class="0">
+<segment>
+<pinref part="LDO_5V" gate="G$1" pin="BYP"/>
+<wire x1="226.06" y1="25.4" x2="228.6" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="228.6" y1="25.4" x2="228.6" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="C17" gate="G$1" pin="2"/>
+<wire x1="228.6" y1="17.78" x2="233.68" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="233.68" y1="17.78" x2="233.68" y2="20.32" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$14" class="0">
+<segment>
+<pinref part="LDO_3V3" gate="G$1" pin="BYP"/>
+<wire x1="157.48" y1="25.4" x2="160.02" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="160.02" y1="25.4" x2="160.02" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="C16" gate="G$1" pin="2"/>
+<wire x1="160.02" y1="17.78" x2="165.1" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="17.78" x2="165.1" y2="20.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
