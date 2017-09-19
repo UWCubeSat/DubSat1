@@ -60,7 +60,7 @@ void debugInit()
     debug_status.trace_level = __INITIAL_TRACE_LEVEL__;
     debug_status.debug_mode = InteractiveMode;
 
-    handle = uartInit(BackchannelUART);
+    handle = uartInit(BackchannelUART, 1);
     uartRegisterRxCallback(handle, debugReadCallback);
 
     debugRegisterEntity(Entity_DebugService, 'd', NULL, reportStatusCallback, actionCallback);

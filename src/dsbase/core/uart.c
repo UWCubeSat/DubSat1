@@ -12,7 +12,7 @@
 #include "config/config.h"
 
 FILE_STATIC bus_context_UART buses[CONFIGM_uart_maxperipheralinstances];
-FILE_STATIC buses_registered_with_debug = 0;  // Only need to register once with debug service for both buses
+FILE_STATIC uint8_t buses_registered_with_debug = 0;  // Only need to register once with debug service for both buses
 
 uint8_t uartReportStatus(DebugMode mode)
 {
@@ -46,7 +46,7 @@ uint8_t uartReportStatus(DebugMode mode)
 }
 
 // TODO:  Add configuration parameters for speed
-hBus uartInit(bus_instance_UART instance)
+hBus uartInit(bus_instance_UART instance, uint8_t echoenable)
 {
     hBus handle = (uint8_t)instance;
     bus_context_UART *bus_ctx = &buses[handle];
@@ -56,7 +56,7 @@ hBus uartInit(bus_instance_UART instance)
         return handle;
 
     bus_ctx->initialized = 1;
-    bus_ctx->echo_on = 1;
+    bus_ctx->echo_on = echoenable;
     bus_ctx->tx_in_use = 0;
     bus_ctx->rx_in_use = 0;
 
