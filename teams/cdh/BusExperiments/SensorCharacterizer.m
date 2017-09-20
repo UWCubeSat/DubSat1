@@ -16,7 +16,7 @@ total_time = 10;   % Seconds
 period = 0.1;     % Seconds
 
 %num_samps = floor(total_time/period);
-num_samps = 200000;
+num_samps = 10000;
 dut = i2c('aardvark', 0, slave_addr);
 fopen(dut);
 
@@ -39,7 +39,13 @@ fopen(dut);
 
 % Configure ST LSM6DSM IMU
 CTRL2_G = hex2dec('11');
-fwrite(dut, [CTRL2_G hex2dec('62')]); %62=416Hz, 72=833Hz
+CTRL7_G = hex2dec('16');
+
+%62=416Hz, 72=833Hz
+% High perf disable + 52=208Hz, 42 = 104Hz
+fwrite(dut, [CTRL2_G hex2dec('42')]); 
+fwrite(dut, [CTRL7_G hex2dec('80')]);  % 80 = highperf disabled
+
 
 %% Collect Data
 % Now collect data from the sensor.
@@ -89,7 +95,7 @@ for r = 1:num_samps
 %     results(r,:) = [now xval yval zval];
     
     %pause(period);
-    pause(.0003);
+    pause(.008);
 end
 totaltime = toc;
 samprate = (num_samps)/totaltime;
@@ -130,10 +136,28 @@ fs = 1/period;
 %%
 figure();
 loglog(Tx, sigmax);
+grid on;
 hold on;
 loglog(Ty, sigmay);
 loglog(Tz, sigmaz);
 title('Allan (Overlapped) Deviation');
 legend('X-axis', 'Y-axis', 'Z-axis');
 
+% Calculate Angle Random Walk
+arwX = sigmax(10);
+arwY = sigmay(10);
+arwZ = sigmaz(10);
+
+% Calculate Bias Instability
+binstXdps = min(sigmax);
+binstXdph = binstXdps * 3600;
+binstYdps = min(sigmay);
+binstYdph = binstYdps * 3600;
+binstZdps = min(sigmaz);
+binstZdph = binstZdps * 3600;
+
+disp(['ARW X/Y/Z = ' num2str(arwX) '/' num2str(arwY) '/' num2str(arwZ)]);
+disp(['Bias instability X = ' num2str(binstXdps) ' dps (' num2str(binstXdph) ' dph)']);
+disp(['Bias instability Y = ' num2str(binstYdps) ' dps (' num2str(binstYdph) ' dph)']);
+disp(['Bias instability Z = ' num2str(binstZdps) ' dps (' num2str(binstZdph) ' dph)']);
 
