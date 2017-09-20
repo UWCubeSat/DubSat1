@@ -46,6 +46,7 @@ typedef struct _svc_status_debug {
 
 } svc_status_debug;
 
+// KEEP THESE ENUMS IN SYNC WITH SRC FILE
 typedef enum _entityID {
     Entity_Test,
     Entity_DebugService,

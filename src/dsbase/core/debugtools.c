@@ -18,6 +18,7 @@
 
 FILE_STATIC char debugWriteOutputBuff[CONFIGM_debug_outputbuffsize];
 FILE_STATIC char debugConsoleInputBuff[CONFIGM_debug_consoleinputbuffsize];
+FILE_STATIC char debugConsoleCmdBuff[CONFIGM_debug_consoleinputbuffsize];
 
 FILE_STATIC uint8_t consoleBytesRead = 0;
 FILE_STATIC uint8_t consoleBuildingCommand = 0;
@@ -27,6 +28,15 @@ FILE_STATIC uint8_t entityCount = 0;
 
 FILE_STATIC svc_status_debug debug_status;
 
+// KEEP THESE STRINGS IN SYNC WITH HEADER FILE
+FILE_STATIC uint8_t *DebugEntityFriendlyNames[] =  {
+                                                    "Test Entity",
+                                                    "Debug Service",
+                                                    "I2C Bus",
+                                                    "SPI Bus",
+                                                    "CAN Bus",
+                                                    "Core/BSP",
+                                                    "UART Bus", };
 
 uint8_t reportStatusCallback(DebugMode mode)
 {
@@ -45,8 +55,17 @@ uint8_t reportStatusCallback(DebugMode mode)
 
 uint8_t actionCallback(DebugMode mode, uint8_t * cmdstr)
 {
-    int i = 0;
-    int j = i + 2;
+    if (mode == InteractiveMode)
+    {
+        if (strlen(cmdstr) == 0)
+        {
+            debugPrintF("Here you would list the command syntax for all actions provided by this entity ...\r\n");
+        }
+        else
+        {
+            debugPrintF("Here you would act on the specific action string '%s' passed into the command.\r\n", cmdstr);
+        }
+    }
 }
 
 FILE_STATIC hBus handle;
@@ -115,6 +134,7 @@ void debugReadCallback(uint8_t rcvdbyte)
         consoleBytesRead++;
         consoleBuildingCommand = 0;
         processCommand((uint8_t *)debugConsoleInputBuff, consoleBytesRead);
+        memset(debugConsoleInputBuff, 0, CONFIGM_debug_consoleinputbuffsize);
     }
     else
     {
@@ -180,13 +200,53 @@ void cmdAction(uint8_t * cmdstr)
 {
     int i;
     param_debug_handler handler;
+    uint8_t foundhandler = 0;
+    uint8_t foundpathchar = 0;
+    uint8_t len = strlen(cmdstr);
 
-    for (i = 0; i < entityCount; i++)
+    debugPrintF("\r\n");
+
+    // If cmdstr is null, then user typed just '!', so give a list of path chars/entities
+    if (len == 0)
     {
-        if (handler != NULL)
-            (handler)(debug_status.debug_mode, cmdstr);
-        debugPrintF("\r\n");
-     }
+        debugPrintF("No entity path specified, so listing available entities ... \r\n\r\n");
+                debugPrintF("\tEntity\t\tPath Char\r\n");
+        debugPrintF("\t------\t\t---------\r\n\r\n");
+        for (i = 0; i < entityCount; i++)
+        {
+            debugPrintF("\t%s\t\t%c\r\n", DebugEntityFriendlyNames[registeredDebugEntities[i].id], registeredDebugEntities[i].pathchar);
+
+        }
+
+    }
+    else   // Pass it all along to the matching handler, if any
+    {
+        for (i = 0; i < entityCount; i++)
+        {
+            if (registeredDebugEntities[i].pathchar == cmdstr[0])
+            {
+                foundpathchar = 1;
+
+                handler = registeredDebugEntities[i].action_handler;
+                if (handler != NULL)
+                {
+                    foundhandler = 1;
+
+                    (handler)(debug_status.debug_mode, cmdstr+1);
+                    debugPrintF("\r\n");
+                }
+            }
+        }
+
+        if (foundhandler == 0)
+        {
+            if (foundpathchar == 0)
+                debugPrintF("No debug entity with path character '%c' Use '!' alone to retrieve list of entities.\r\n", cmdstr[0]);
+            else
+                debugPrintF("Debug entity for '%c' found, but it doesn't have any actions available.\r\n", cmdstr[0]);
+
+        }
+    }
 }
 
 void processCommand(uint8_t * cmdbuff, uint8_t cmdlength)
