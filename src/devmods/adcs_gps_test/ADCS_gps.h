@@ -15,7 +15,7 @@
 typedef int32_t GPSec;
 typedef uint32_t GPS_ENUM;
 
-#ifndef __DEBUG__
+#ifdef __DEBUG__
 const char *GPS_ERROR[] = {
     "Error (use RXSTATUS for details)",
     "Temperature warning",

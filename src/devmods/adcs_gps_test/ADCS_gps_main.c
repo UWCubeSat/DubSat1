@@ -5,9 +5,7 @@
 #define cast(TYPE, PTR) (*((TYPE*) (PTR)))
 
 #include "ADCS_GPS.h"
-#include <msp430.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <cstring>
 #include "core/uart.h"
 #include "core/debugtools.h"
@@ -66,7 +64,7 @@ void parseMessage(uint16_t messageId)
         const float vyd = cast(float, messageBuf + 80);
         const float vzd = cast(float, messageBuf + 84);
 
-        debugTraceF(4, "BESTXYZ (%u)\n\tx: %e\n\ty: %e\n\tz: %e\r\n", pSolStat,
+        debugTraceF(4, "BESTXYZ (%u)\r\n\tx: %f\r\n\ty: %f\r\n\tz: %f\r\n", pSolStat,
                     px, py, pz);
         break;
     }
@@ -185,7 +183,7 @@ void sendCommand(uint8_t *command)
 uint8_t actionHandler(DebugMode mode, uint8_t *command)
 {
     sendCommand(command);
-    return 0;
+    return 1;
 }
 
 uint8_t statusHandler(DebugMode mode)
@@ -200,7 +198,7 @@ uint8_t statusHandler(DebugMode mode)
             i++;
         }
     }
-    return 0;
+    return 1;
 }
 
 int main(void)
@@ -208,7 +206,7 @@ int main(void)
     bspInit(Module_Test);
     __bis_SR_register(GIE); // Enter LPM3, interrupts enabled
 
-    uartHandle = uartInit(ApplicationUART);
+    uartHandle = uartInit(ApplicationUART, 0);
 
     // TODO what is pathchar?
     debugRegisterEntity(Entity_Test, 'g', NULL, statusHandler, actionHandler);
@@ -216,8 +214,7 @@ int main(void)
     // send configuration and commands to receiver
     sendCommand("interfacemode com1 novatel novatelbinary on\n\r");
     sendCommand("unlogall\n\r");
-    sendCommand("log timeb ontime 1\n\r");
-    sendCommand("serialconfig com1 115200\n\r");
+    sendCommand("log bestxyzb ontime 3\n\r");
 
     uartRegisterRxCallback(uartHandle, readCallback);
 
