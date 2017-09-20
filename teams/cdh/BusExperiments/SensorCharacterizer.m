@@ -16,7 +16,7 @@ total_time = 10;   % Seconds
 period = 0.1;     % Seconds
 
 %num_samps = floor(total_time/period);
-num_samps = 5000;
+num_samps = 1000;
 dut = i2c('aardvark', 0, slave_addr);
 fopen(dut);
 
@@ -39,7 +39,7 @@ fopen(dut);
 
 % Configure ST LSM6DSM IMU
 CTRL2_G = hex2dec('11');
-fwrite(dut, [CTRL2_G hex2dec('72')]); %62=416Hz, 72=833Hz
+fwrite(dut, [CTRL2_G hex2dec('62')]); %62=416Hz, 72=833Hz
 
 %% Collect Data
 % Now collect data from the sensor.
@@ -89,6 +89,7 @@ for r = 1:num_samps
 %     results(r,:) = [now xval yval zval];
     
     %pause(period);
+    pause(.0005);
 end
 totaltime = toc;
 samprate = (num_samps)/totaltime;
