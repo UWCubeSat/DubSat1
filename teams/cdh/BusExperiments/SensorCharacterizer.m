@@ -16,7 +16,7 @@ total_time = 10;   % Seconds
 period = 0.1;     % Seconds
 
 %num_samps = floor(total_time/period);
-num_samps = 1000;
+num_samps = 200000;
 dut = i2c('aardvark', 0, slave_addr);
 fopen(dut);
 
@@ -89,7 +89,7 @@ for r = 1:num_samps
 %     results(r,:) = [now xval yval zval];
     
     %pause(period);
-    pause(.0005);
+    pause(.0003);
 end
 totaltime = toc;
 samprate = (num_samps)/totaltime;
