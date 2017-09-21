@@ -4,11 +4,12 @@
 #include <stdint.h>
 #include <cstring>
 #include "core/uart.h"
+#include "crc.h"
 
-FILE_STATIC uint8_t headerBuf[32];
-FILE_STATIC uint8_t messageBuf[128];
-FILE_STATIC uint16_t bytesRead = 0;
+FILE_STATIC uint8_t buf[256];
+FILE_STATIC uint8_t bytesRead = 0;
 
+FILE_STATIC uint8_t headerLength;
 FILE_STATIC uint16_t messageLength;
 
 FILE_STATIC uint32_t rxStatus = 0;
@@ -23,40 +24,20 @@ FILE_STATIC Status status = Status_Sync;
 FILE_STATIC hBus uartHandle;
 
 #ifdef __DEBUG__
-const char *GPS_ERROR[] = {
-    "Error (use RXSTATUS for details)",
-    "Temperature warning",
-    "Voltage supply warning",
-    "Antenna not powered",
-    "LNA Failure",
-    "Antenna open",
-    "Antenna shorted",
-    "CPU overload",
-    "COM1 buffer overrun",
-    "COM2 buffer overrun",
-    "COM3 buffer overrun",
-    "Link overrun",
-    "",
-    "Aux transmit overrun",
-    "AGC out of range",
-    "",
-    "INS reset",
-    "",
-    "GPS Almanac/UTC invalid",
-    "Position invalid",
-    "Position fixed",
-    "Clock steering disabled",
-    "Clock model invalid",
-    "External oscillator locked",
-    "Software resource warning",
-    "",
-    "",
-    "",
-    "",
-    "Aux 3 status event",
-    "Aux 2 status event",
-    "Aux 1 status event"
-};
+const char *GPS_ERROR[] = { "Error (use RXSTATUS for details)",
+                            "Temperature warning", "Voltage supply warning",
+                            "Antenna not powered", "LNA Failure",
+                            "Antenna open", "Antenna shorted", "CPU overload",
+                            "COM1 buffer overrun", "COM2 buffer overrun",
+                            "COM3 buffer overrun", "Link overrun", "",
+                            "Aux transmit overrun", "AGC out of range", "",
+                            "INS reset", "", "GPS Almanac/UTC invalid",
+                            "Position invalid", "Position fixed",
+                            "Clock steering disabled", "Clock model invalid",
+                            "External oscillator locked",
+                            "Software resource warning", "", "", "", "",
+                            "Aux 3 status event", "Aux 2 status event",
+                            "Aux 1 status event" };
 #else
 const char *GPS_ERROR[];
 #endif /* __DEBUG__ */
@@ -65,7 +46,7 @@ const char *GPS_ERROR[];
  * Parse a message, assuming that message is stored in the messageBuf and messageId is set
  * TODO send CAN packets
  */
-void parseMessage(uint16_t messageId)
+void parseMessage(uint16_t messageId, uint8_t* messageBuf)
 {
     switch (messageId)
     {
@@ -144,49 +125,58 @@ void readCallback(uint8_t rcvdbyte)
     {
     case Status_Sync:
         // read until synced (at the start of a new header)
-        headerBuf[0] = headerBuf[1];
-        headerBuf[1] = headerBuf[2];
-        headerBuf[2] = rcvdbyte;
+        buf[0] = buf[1];
+        buf[1] = buf[2];
+        buf[2] = rcvdbyte;
         // synced when read \xAA, \x44, \x12
-        if (headerBuf[0] == 170 && headerBuf[1] == 68 && headerBuf[2] == 18)
+        if (buf[0] == 170 && buf[1] == 68 && buf[2] == 18)
         {
             debugTraceF(4, "synced\r\n");
-            headerBuf[0] = 0;
-            headerBuf[1] = 0;
-            headerBuf[2] = 0;
+            buf[0] = 0;
+            buf[1] = 0;
+            buf[2] = 0;
             bytesRead = 3;
             status = Status_Header;
         }
         break;
     case Status_Header:
     {
-        headerBuf[bytesRead] = rcvdbyte;
+        buf[bytesRead] = rcvdbyte;
         bytesRead++;
 
         // read through the header + the responseId that follows
-        if (bytesRead == headerBuf[3])
+        headerLength = buf[3];
+        if (bytesRead == headerLength)
         {
             debugTraceF(4, "read header, length: %u\r\n", bytesRead);
 
-            messageLength = cast(uint16_t, headerBuf + 8);
-            rxStatus = cast(uint32_t, headerBuf + 20);
+            messageLength = cast(uint16_t, buf + 8);
+            rxStatus = cast(uint32_t, buf + 20);
 
-            bytesRead = 0;
             status = Status_Message;
         }
         break;
     }
     case Status_Message:
-        messageBuf[bytesRead] = rcvdbyte;
+        buf[bytesRead] = rcvdbyte;
         bytesRead++;
 
-        if (bytesRead == messageLength)
+        if (bytesRead == headerLength + messageLength + 4) // + 4 to get the CRC too
         {
             debugTraceF(4, "read message, length: %u\r\n", messageLength);
 
-            const uint16_t messageId = cast(uint16_t, headerBuf + 4);
+            // check the CRC
+            const uint32_t crcExpected = cast(uint32_t, buf + bytesRead - 4);
+            const uint32_t crcActual = calculateBlockCrc32(bytesRead - 4, buf);
+            if (crcExpected != crcActual)
+            {
+                // TODO real error handling
+                debugTraceF(3, "invalid CRC");
+            }
 
-            const uint8_t messageType = headerBuf[6];
+            const uint16_t messageId = cast(uint16_t, buf + 4);
+
+            const uint8_t messageType = buf[6];
             if (messageType & 0b1000000)
             {
                 // the receiver responds to commands with a confirmation message,
@@ -195,7 +185,7 @@ void readCallback(uint8_t rcvdbyte)
             }
             else
             {
-                parseMessage(messageId);
+                parseMessage(messageId, buf + headerLength);
             }
 
             bytesRead = 0;
@@ -228,7 +218,8 @@ uint8_t gpsStatus(DebugMode mode)
     return 1;
 }
 
-void gpsInit(void) {
+void gpsInit(void)
+{
     uartHandle = uartInit(ApplicationUART, 0);
     uartRegisterRxCallback(uartHandle, readCallback);
 }
