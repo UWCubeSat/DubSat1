@@ -39,15 +39,15 @@ int main(void) {
         __delay_cycles(.05 * SEC);
 
         // Work through a simple sequence
-        //sequencecounter++;
+        sequencecounter++;
         if (sequencecounter < 200)
             setpoint_cmd = 600;
         else if (sequencecounter < 500)
-            setpoint_cmd = 3000;
+            setpoint_cmd = 2000;
         else if (sequencecounter < 900)
             setpoint_cmd = 150;
         else if (sequencecounter < 1500)
-            setpoint_cmd = 8000;
+            setpoint_cmd = 4000;
         else if (sequencecounter < 2000)
             setpoint_cmd = 1800;
         else

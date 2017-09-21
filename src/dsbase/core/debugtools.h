@@ -55,6 +55,7 @@ typedef enum _entityID {
     Entity_CANBus,
     Entity_BSP,
     Entity_UART,
+    Entity_RWS,
 } entityID;
 
 

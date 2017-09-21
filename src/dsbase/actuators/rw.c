@@ -5,12 +5,12 @@
  *      Author: jeffc
  */
 
+#include <stdlib.h>
+
 #include "actuators/rw.h"
 #include "core/utils.h"
 #include "core/debugtools.h"
 #include "core/timers.h"
-
-
 
 FILE_STATIC unsigned long lastTime_cycles;
 FILE_STATIC double input, rawOutput, lastInput, output, setpoint;
@@ -24,6 +24,60 @@ FILE_STATIC uint32_t currentPeriod_cycles = 0;
 FILE_STATIC uint32_t overflowCount = 0;
 
 FILE_STATIC uint8_t active = 0;
+FILE_STATIC uint8_t setpoint_override = 0;
+FILE_STATIC double overridden_setpoint;
+
+void rwsShowUsage()
+{
+    debugPrintF("Usage:\r\n");
+    debugPrintF("\t!rs<rpm>  --  where <rpm> = desired setpoint\r\n");
+    debugPrintF("\t!rsd  --  switch direction of motor\r\n");
+}
+
+uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
+{
+    uint8_t len = strlen(cmdstr);
+    uint16_t inputnum = 0;
+
+    if (mode == InteractiveMode)
+    {
+        if (len == 0)
+        {
+            rwsShowUsage();
+            return;
+        }
+        else
+        {
+            if (cmdstr[0] == 's')
+            {
+                // Just '!rs' reverts back to "programmed" speed
+                if (len == 1)
+                {
+                    debugPrintF("Reverting back to programmed control.\r\n");
+                    setpoint_override = 0;
+                }
+                else
+                {
+                    inputnum = atoi(&cmdstr[1]);
+                    debugPrintF("Overriding PID setpoint to %d rpm.", inputnum);
+                    setpoint_override = 1;
+                    overridden_setpoint = inputnum;
+                }
+                return;
+            }
+            else if (cmdstr[0] == 'd')
+            {
+                debugPrintF("Switching motor direction.\r\n");
+                RW_MOTORDIR_OUT ^= RW_MOTORDIR_PIN;
+            }
+            else
+            {
+                rwsShowUsage();
+                return;
+            }
+        }
+    }
+}
 
 void rwsInit()
 {
@@ -53,6 +107,8 @@ void rwsInit()
     RW_PWM_DIR |= RW_PWM_PIN;
     RW_PWM_SEL1 &= ~RW_PWM_PIN;
     RW_PWM_SEL0 |= RW_PWM_PIN;
+
+    debugRegisterEntity(Entity_RWS, 'r', NULL, NULL, rwsActionCallback);
 }
 
 void rwsRunAuto()
@@ -77,7 +133,10 @@ double rwsPIDStep(double cmd)
     if (active != 1)
         return cmd;
 
-    setpoint = cmd;
+    if (setpoint_override == 1)
+        setpoint = overridden_setpoint;
+    else
+        setpoint = cmd;
     input = currentRPM;
 
     // Calc time delta
@@ -104,7 +163,7 @@ double rwsPIDStep(double cmd)
     lastErr = error;
     lastTime_cycles = now_cycles;
 
-    debugPrintF("%f,%f,%f,%f,%f,%f\r\n", timeChange_s, setpoint, input, error, errSum, output);
+    debugTraceF(2,"%f,%f,%f,%f,%f,%f\r\n", timeChange_s, setpoint, input, error, errSum, output);
     return output;
 
 }

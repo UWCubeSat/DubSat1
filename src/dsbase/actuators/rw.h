@@ -26,6 +26,7 @@
 #define RW_FREQ_SEL0    P7SEL0
 #define RW_FREQ_PIN     BIT4
 
+#define RW_MOTORDIR_OUT     P7OUT
 #define RW_MOTORDIR_DIR     P7DIR
 #define RW_MOTORDIR_SEL1    P7SEL1
 #define RW_MOTORDIR_SEL0    P7SEL0

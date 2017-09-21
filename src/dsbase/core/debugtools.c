@@ -36,7 +36,8 @@ FILE_STATIC uint8_t *DebugEntityFriendlyNames[] =  {
                                                     "SPI Bus",
                                                     "CAN Bus",
                                                     "Core/BSP",
-                                                    "UART Bus", };
+                                                    "UART Bus",
+                                                    "RWheels",};
 
 uint8_t reportStatusCallback(DebugMode mode)
 {
