@@ -132,9 +132,6 @@ void readCallback(uint8_t rcvdbyte)
         if (buf[0] == 170 && buf[1] == 68 && buf[2] == 18)
         {
             debugTraceF(4, "synced\r\n");
-            buf[0] = 0;
-            buf[1] = 0;
-            buf[2] = 0;
             bytesRead = 3;
             status = Status_Header;
         }
@@ -144,7 +141,7 @@ void readCallback(uint8_t rcvdbyte)
         buf[bytesRead] = rcvdbyte;
         bytesRead++;
 
-        // read through the header + the responseId that follows
+        // read through the header
         headerLength = buf[3];
         if (bytesRead == headerLength)
         {
@@ -171,7 +168,7 @@ void readCallback(uint8_t rcvdbyte)
             if (crcExpected != crcActual)
             {
                 // TODO real error handling
-                debugTraceF(3, "invalid CRC");
+                debugTraceF(3, "invalid CRC\r\n\texpected: %X\r\n\tactual:   %X\r\n", crcExpected, crcActual);
             }
 
             const uint16_t messageId = cast(uint16_t, buf + 4);
@@ -187,6 +184,11 @@ void readCallback(uint8_t rcvdbyte)
             {
                 parseMessage(messageId, buf + headerLength);
             }
+
+            // set the sync bytes back to 0
+            buf[0] = 0;
+            buf[1] = 0;
+            buf[2] = 0;
 
             bytesRead = 0;
             status = Status_Sync;
