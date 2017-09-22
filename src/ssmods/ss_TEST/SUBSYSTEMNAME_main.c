@@ -18,7 +18,8 @@ FILE_STATIC flag_t triggerState3;
 /*
  * main.c
  */
-int main(void) {
+int main(void)
+{
 
     /* ----- INITIALIZATION -----*/
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code, as
@@ -35,7 +36,12 @@ int main(void) {
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
-    // console, etc.
+    // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
+    // debugtools.h.  Also, be sure to change the "path char"
+    debugRegisterEntity(Entity_Test, '%', handleDebugInfoCallback,
+                                          handleDebugStatusCallback,
+                                          handleDebugActionCallback);
+
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
@@ -110,4 +116,62 @@ void handleSyncPulse1()
 void handleSyncPulse2()
 {
     __no_operation();
+}
+
+// Optional callback for the debug system.  "Info" is considered static information
+// that doesn't change about the subsystem module code/executable, so this is most
+// often left off.
+uint8_t handleDebugInfoCallback(DebugMode mode)
+{
+    if (mode == InteractiveMode)
+    {
+        // debugPrintF information in a user-friendly, formatted way
+    }
+    else if (mode == HeadlessInteractiveMode)
+    {
+        // debugPrintF information without field names, as CSV
+    }
+    else if (mode == StreamingMode)
+    {
+        // debugPrintF into a ground segment-friendly "packet" mode
+    }
+    return 1;
+}
+
+// Optional callback for the debug system.  "Status" is considered the
+// current state of dynamic information about the subsystem module, and is the most
+// common to be surfaced, particularly as "streaming telemetry".
+uint8_t handleDebugStatusCallback(DebugMode mode)
+{
+    if (mode == InteractiveMode)
+    {
+        // debugPrintF status in a user-friendly, formatted way
+    }
+    else if (mode == HeadlessInteractiveMode)
+    {
+        // debugPrintF status without field names, as CSV
+    }
+    else if (mode == StreamingMode)
+    {
+        // debugPrintF status a ground segment-friendly "packet" format
+    }
+    return 1;
+}
+
+uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
+{
+    if (mode == InteractiveMode)
+    {
+        // handle actions in a user-friendly way
+    }
+    else if (mode == HeadlessInteractiveMode)
+    {
+        // handle actions in a low-output way
+    }
+    else if (mode == StreamingMode)
+    {
+        // handle actions, any output should be ground-segment friendly
+        // "packet" format
+    }
+    return 1;
 }

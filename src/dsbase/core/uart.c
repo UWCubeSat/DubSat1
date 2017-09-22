@@ -102,6 +102,28 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable)
     return handle;
 }
 
+void uartSetEchoOn(hBus handle)
+{
+    bus_context_UART *bus_ctx = &buses[handle];
+
+    // Only initialize each instance once
+    if (bus_ctx->initialized == 1)
+    {
+        bus_ctx->echo_on = 1;
+    }
+}
+
+void uartSetEchoOff(hBus handle)
+{
+    bus_context_UART *bus_ctx = &buses[handle];
+
+    // Only initialize each instance once
+    if (bus_ctx->initialized == 1)
+    {
+        bus_ctx->echo_on = 0;
+    }
+}
+
 void enableUARTInterrupts(handle)
 {
     if (handle == BackchannelUART)
