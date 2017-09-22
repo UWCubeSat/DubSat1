@@ -18,6 +18,18 @@ FILE_STATIC uint8_t *SubsystemModulePaths[] =
                                              "ADCS/RWheelY",
                                              "ADCS/RWheelZ"};
 
+FILE_STATIC SpacecraftInfo sc_info;
+
+// Performs logic to "figure out" current state (1st boot? reboot? MET?)
+// Hooks up sync pulse handlers
+StartupType coreStartup(sync_pulse_handler sync1, sync_pulse_handler sync2)
+{
+
+    // TODO:  populates sc_info as well?
+    debugTraceF(1, "Completed core startup routine.\r\n");
+    return Startup_Unknown;
+}
+
 uint8_t *getSubsystemModulePath()
 {
     return SubsystemModulePaths[(uint8_t)bspGetModule()];
@@ -39,3 +51,20 @@ uint8_t infoReport(DebugMode mode)
     }
     return 1;
 }
+
+uint8_t coreGetPrecautionLevel()
+{
+    // TODO:  Do some fancy mapping between perceived PPT state and action
+    // TODO:  Maybe add a parameter the says what you're trying to do, and this will send back a yes/no
+    return 0;
+}
+
+
+
+// TODO:  maybe have the precaution level thing work with this function instead ...?
+uint8_t coreIsPrecautionaryInhibitActive(ActivityType activity)
+{
+    return 1;
+}
+
+
