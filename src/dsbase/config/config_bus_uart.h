@@ -12,7 +12,8 @@
 // CONFIGM... configuration values are defined as MACROS
 // Use these for values that will be needed in other initializers (best example:  buffer sizes)
 #define CONFIGM_uart_txbuffsize  512
-#define CONFIGM_uart_rxbuffsize  128
+#define CONFIGM_uart_rxbuffsize  512
+#define CONFIGM_uart_maxperipheralinstances   2
 
 // CONFIGRO... configuration values are similarly READONLY (in the sense of unchanging, not C sense)
 // These are variables, but enforced with const when actually defined in the source file

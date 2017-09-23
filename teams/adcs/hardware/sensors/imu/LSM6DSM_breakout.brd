@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.2.2">
+<eagle version="8.3.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
+<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.5" unitdist="mm" unit="mm" style="lines" multiple="1" display="no" altdistance="5" altunitdist="mil" altunit="mil"/>
+<grid distance="12.5" unitdist="mil" unit="mil" style="lines" multiple="1" display="no" altdistance="5" altunitdist="mil" altunit="mil"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -1593,12 +1594,19 @@ design rules under a new name.</description>
 <wire x1="10.5" y1="11.5" x2="10.550190625" y2="11.550190625" width="0.254" layer="1"/>
 <via x="10.550190625" y="11.550190625" extent="1-16" drill="0.35"/>
 <wire x1="10.550190625" y1="11.550190625" x2="10.5" y2="11.5" width="0.254" layer="16"/>
-<via x="9.771" y="6.152" extent="1-16" drill="0.35" shape="square"/>
-<via x="10.431" y="6.177" extent="1-16" drill="0.35" shape="square"/>
-<via x="10.845" y="16.489" extent="1-16" drill="0.35" shape="square"/>
-<via x="11.521" y="16.428" extent="1-16" drill="0.35" shape="square"/>
-<wire x1="11.521" y1="16.428" x2="11.173" y2="16.416" width="0" layer="19" extent="1-1"/>
-<wire x1="10.14" y1="6.21" x2="10.431" y2="6.177" width="0" layer="19" extent="1-1"/>
+<via x="10.431" y="5.296" extent="1-16" drill="0.35" shape="square"/>
+<via x="11.521" y="17.3805" extent="1-16" drill="0.35" shape="square"/>
+<via x="9.796" y="5.296" extent="1-16" drill="0.35" shape="square"/>
+<via x="10.886" y="17.3805" extent="1-16" drill="0.35" shape="square"/>
+<wire x1="10.886" y1="17.3805" x2="10.886" y2="16.703" width="0.254" layer="1"/>
+<wire x1="11.173" y1="16.416" x2="10.886" y2="16.703" width="0.254" layer="1"/>
+<wire x1="10.431" y1="5.296" x2="10.431" y2="5.919" width="0.254" layer="1"/>
+<wire x1="10.23875" y1="6.11125" x2="10.431" y2="5.919" width="0.254" layer="1"/>
+<wire x1="10.23875" y1="6.11125" x2="10.14" y2="6.21" width="0.254" layer="1"/>
+<wire x1="9.796" y1="5.296" x2="9.796" y2="5.6685" width="0.254" layer="1"/>
+<wire x1="9.796" y1="5.6685" x2="10.23875" y2="6.11125" width="0.254" layer="1"/>
+<wire x1="11.521" y1="17.3805" x2="11.521" y2="16.764" width="0.254" layer="1"/>
+<wire x1="11.521" y1="16.764" x2="11.173" y2="16.416" width="0.254" layer="1"/>
 </signal>
 <signal name="VDD">
 <contactref element="U$1" pad="VDDIO"/>
@@ -1663,9 +1671,9 @@ design rules under a new name.</description>
 <wire x1="5" y1="8.13345" x2="4.893275" y2="8.026725" width="0.254" layer="1"/>
 <wire x1="10.66" y1="12.91013125" x2="10.5644" y2="12.95874375" width="0.254" layer="1"/>
 <wire x1="10.5644" y1="12.95874375" x2="10.5644" y2="13.00573125" width="0.254" layer="1"/>
-<wire x1="10.5644" y1="13.00573125" x2="10.00613125" y2="13.564" width="0.254" layer="1"/>
-<wire x1="10.00613125" y1="13.564" x2="6.564" y2="13.564" width="0.254" layer="1"/>
-<wire x1="6.564" y1="13.564" x2="5" y2="12" width="0.254" layer="1"/>
+<wire x1="10.5644" y1="13.00573125" x2="9.91763125" y2="13.6525" width="0.254" layer="1"/>
+<wire x1="9.91763125" y1="13.6525" x2="6.6525" y2="13.6525" width="0.254" layer="1"/>
+<wire x1="6.6525" y1="13.6525" x2="5" y2="12" width="0.254" layer="1"/>
 </signal>
 <signal name="N$1">
 <contactref element="U$1" pad="INT1"/>
@@ -1708,7 +1716,7 @@ design rules under a new name.</description>
 </drawing>
 <compatibility>
 <note version="8.2" severity="warning">
-Since Version 8.2, Eagle supports online libraries. The ids
+Since Version 8.2, EAGLE supports online libraries. The ids
 of those online libraries will not be understood (or retained)
 with this version.
 </note>

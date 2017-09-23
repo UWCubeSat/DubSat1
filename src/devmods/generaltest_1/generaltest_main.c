@@ -12,16 +12,30 @@
 char buff[64] = "Hello: %d";
 char spew[] = "#: %d\r\n";
 
+uint8_t testInfoCallback(DebugMode mode)
+{
+    if (mode == InteractiveMode)
+    {
+        debugPrintF("In test info callback ...\r\n");
+    }
+    return 1;
+}
+
+uint8_t testStatusCallback(DebugMode mode)
+{
+    if (mode == InteractiveMode)
+    {
+        debugPrintF("In test status callback ...\r\n");
+    }
+    return 1;
+}
 
 int main(void)
 {
     bspInit(Module_ADCS_BDot);
+    debugRegisterEntity(Entity_Test, 'q', testInfoCallback, testStatusCallback, 0);
 
     __bis_SR_register(GIE);     // Enter LPM3, interrupts enabled
-
-//    debugTraceF(1, "\r\nBSP init complete.\r\n");
-//    debugTraceF(1, "And something right after ...\r\n");
-//    debugTraceF(1, "And a third thing.\r\n");
 
     int i = 0;
     for(;;)

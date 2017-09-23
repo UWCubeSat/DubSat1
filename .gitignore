@@ -21,3 +21,4 @@ test/unit-tests/build/
 .DS_Store
 
 \.idea/
+*.asv

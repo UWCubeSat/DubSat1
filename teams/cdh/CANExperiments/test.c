@@ -1,107 +1,58 @@
-PPTMisfireCount* decodePPTMisfireCount(CANPacket *input){
-    PPTMisfireCount *p;
-    return p;
-}
+#ifndef CANDB_HEADER
+#define CANDB_HEADER
 
-PPTTimingStatus* decodePPTTimingStatus(CANPacket *input){
-    PPTTimingStatus *p;
-    return p;
-}
+#include <stdint.h>
 
-FiringStatus* decodeFiringStatus(CANPacket *input){
-    FiringStatus *p;
-    return p;
-}
+typedef struct {
+	uint16_t totalMisfires2;
+	uint16_t totalMisfires1;
+} PPTMisfireCount;
 
-VoltageCurrentInfo* decodeVoltageCurrentInfo(CANPacket *input){
-    VoltageCurrentInfo *p;
-    return p;
-}
+typedef struct {
+	uint8_t averageChargeTime;
+	uint16_t minutesSinceSuccessfulFire;
+	uint16_t minutesSinceAttemptedFire;
+	uint8_t medianChargeTime;
+} PPTTimingStatus;
 
-BatteryStatus* decodeBatteryStatus(CANPacket *input){
-    BatteryStatus *p;
-    return p;
-}
+typedef struct {
+	uint16_t successfullFires1;
+	int16_t successfulFires2;
+	uint8_t numberOfMisfires;
+	uint8_t lastFiringRate;
+} FiringStatus;
 
-PowerStatus* decodePowerStatus(CANPacket *input){
-    PowerStatus *p;
-    return p;
-}
+typedef struct {
+	uint8_t adcCurrent;
+	uint8_t com1Current;
+	uint8_t com2Current;
+	uint8_t LineVoltage;
+	uint8_t rahsCurrent;
+} VoltageCurrentInfo;
 
-MCUStatus* decodeMCUStatus(CANPacket *input){
-    MCUStatus *p;
-    return p;
-}
+typedef struct {
+	int16_t batteryFullChargeCount;
+	int8_t batteryTemperature;
+	uint8_t batteryVoltage;
+	uint8_t LowestBatteryVoltage;
+	uint16_t underVoltageEvents;
+} BatteryStatus;
 
-CANPacket* encodePPTMisfireCount(PPTMisfireCount *input){
-    CANPacket *p;
-    p -> id = (uint64_t) 0x600000;
-    p -> data[2] = (int16_t) ((input -> totalMisfires2 - 0) / 1.0);
-    p -> data[0] = (int16_t) ((input -> totalMisfires1 - 0) / 1.0);
-    return p;
-}
+typedef struct {
+	uint8_t powerGeneration;
+	uint8_t overcurrent;
+	uint8_t outputPower;
+	uint8_t outputConfig;
+	uint8_t coulombCount;
+	uint8_t batteryFullyCharged;
+	uint8_t avePowerGeneration;
+} PowerStatus;
 
-CANPacket* encodePPTTimingStatus(PPTTimingStatus *input){
-    CANPacket *p;
-    p -> id = (uint64_t) 0x500000;
-    p -> data[1] = (int8_t) ((input -> averageChargeTime - 0) / 2.0);
-    p -> data[4] = (int16_t) ((input -> minutesSinceSuccessfulFire - 0) / 1.0);
-    p -> data[2] = (int16_t) ((input -> minutesSinceAttemptedFire - 0) / 1.0);
-    p -> data[0] = (int8_t) ((input -> medianChargeTime - 0) / 2.0);
-    return p;
-}
+typedef struct {
+	uint16_t numOfTurnons;
+	uint16_t minutesSinceTurnon;
+	int8_t MCUTemp;
+} MCUStatus;
 
-CANPacket* encodeFiringStatus(FiringStatus *input){
-    CANPacket *p;
-    p -> id = (uint64_t) 0x400000;
-    p -> data[4] = (int16_t) ((input -> successfullFires1 - 0) / 1.0);
-    p -> data[2] = (uint16_t) ((input -> successfulFires2 - 0) / 1.0);
-    p -> data[1] = (int8_t) ((input -> numberOfMisfires - 0) / 1.0);
-    p -> data[0] = (int8_t) ((input -> lastFiringRate - 0) / 1.0);
-    return p;
-}
 
-CANPacket* encodeVoltageCurrentInfo(VoltageCurrentInfo *input){
-    CANPacket *p;
-    p -> id = (uint64_t) 0x300000;
-    p -> data[4] = (int8_t) ((input -> adcCurrent - 0) / 25.0);
-    p -> data[3] = (int8_t) ((input -> com1Current - 0) / 1.0);
-    p -> data[2] = (int8_t) ((input -> com2Current - 0) / 25.0);
-    p -> data[1] = (int8_t) ((input -> LineVoltage - 0) / 25.0);
-    p -> data[0] = (int8_t) ((input -> rahsCurrent - 0) / 25.0);
-    return p;
-}
-
-CANPacket* encodeBatteryStatus(BatteryStatus *input){
-    CANPacket *p;
-    p -> id = (uint64_t) 0x200000;
-    p -> data[6] = (uint16_t) ((input -> batteryFullChargeCount - 0) / 1.0);
-    p -> data[4] = (uint8_t) ((input -> batteryTemperature - 0) / 1.5);
-    p -> data[3] = (int8_t) ((input -> batteryVoltage - 0) / 25.0);
-    p -> data[2] = (int8_t) ((input -> LowestBatteryVoltage - 0) / 25.0);
-    p -> data[0] = (int16_t) ((input -> underVoltageEvents - 0) / 1.0);
-    return p;
-}
-
-CANPacket* encodePowerStatus(PowerStatus *input){
-    CANPacket *p;
-    p -> id = (uint64_t) 0x100000;
-    p -> data[7] = (int8_t) ((input -> powerGeneration - 0) / 150.0);
-    p -> data[6] = (int8_t) ((input -> overcurrent - 0) / 1.0);
-    p -> data[5] = (int8_t) ((input -> outputPower - 0) / 150.0);
-    p -> data[4] = (int8_t) ((input -> outputConfig - 0) / 1.0);
-    p -> data[2] = (int8_t) ((input -> coulombCount - 0) / 15.0);
-    p -> data[1] = (int8_t) ((input -> batteryFullyCharged - 0) / 1.0);
-    p -> data[0] = (int8_t) ((input -> avePowerGeneration - 0) / 100.0);
-    return p;
-}
-
-CANPacket* encodeMCUStatus(MCUStatus *input){
-    CANPacket *p;
-    p -> id = (uint64_t) 0x0;
-    p -> data[4] = (int16_t) ((input -> numOfTurnons - 0) / 1.0);
-    p -> data[2] = (int16_t) ((input -> minutesSinceTurnon - 0) / 1.0);
-    p -> data[0] = (uint8_t) ((input -> MCUTemp - 0) / 1.0);
-    return p;
-}
-
+#endif
