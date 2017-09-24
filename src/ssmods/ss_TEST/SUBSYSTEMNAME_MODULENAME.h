@@ -44,6 +44,8 @@ typedef struct _module_status {
 void handleSyncPulse1();
 void handleSyncPulse2();
 
-
+uint8_t handleDebugInfoCallback(DebugMode mode);
+uint8_t handleDebugStatusCallback(DebugMode mode);
+uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 
 #endif /* SUBSYSTEMNAME_MODULENAME_H_ */

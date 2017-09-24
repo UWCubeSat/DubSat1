@@ -35,7 +35,8 @@ void displayPrompt();
 
 typedef enum _debugmode {
     InteractiveMode,
-    HeadlessMode,
+    HeadlessInteractiveMode,
+    StreamingMode,
 } DebugMode;
 
 typedef struct _svc_status_debug {

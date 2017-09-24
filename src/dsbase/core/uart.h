@@ -22,6 +22,9 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable);
 void uartTransmit(hBus handle, uint8_t * buff, uint8_t szBuff);
 void uartRegisterRxCallback(hBus handle, void (*rxcallback)(uint8_t rcvdbyte));
 
+void uartSetEchoOn(hBus handle);
+void uartSetEchoOff(hBus handle);
+
 // Global error tallies (not per-bus)
 uint8_t error_bus_not_initialized;
 
