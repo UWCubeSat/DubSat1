@@ -14,7 +14,7 @@ FILE_STATIC uint16_t messageLength;
 
 FILE_STATIC uint32_t rxStatus = 0;
 
-typedef enum status
+typedef enum
 {
     Status_Sync, Status_Header, Status_Message,
 } Status;
@@ -24,20 +24,25 @@ FILE_STATIC Status status = Status_Sync;
 FILE_STATIC hBus uartHandle;
 
 #ifdef __DEBUG__
-const char *GPS_ERROR[] = { "Error (use RXSTATUS for details)",
-                            "Temperature warning", "Voltage supply warning",
-                            "Antenna not powered", "LNA Failure",
-                            "Antenna open", "Antenna shorted", "CPU overload",
-                            "COM1 buffer overrun", "COM2 buffer overrun",
-                            "COM3 buffer overrun", "Link overrun", "",
-                            "Aux transmit overrun", "AGC out of range", "",
-                            "INS reset", "", "GPS Almanac/UTC invalid",
-                            "Position invalid", "Position fixed",
-                            "Clock steering disabled", "Clock model invalid",
-                            "External oscillator locked",
-                            "Software resource warning", "", "", "", "",
-                            "Aux 3 status event", "Aux 2 status event",
-                            "Aux 1 status event" };
+FILE_STATIC const char *GPS_ERROR[] = { "Error (use RXSTATUS for details)",
+                                        "Temperature warning",
+                                        "Voltage supply warning",
+                                        "Antenna not powered", "LNA Failure",
+                                        "Antenna open", "Antenna shorted",
+                                        "CPU overload", "COM1 buffer overrun",
+                                        "COM2 buffer overrun",
+                                        "COM3 buffer overrun", "Link overrun",
+                                        "", "Aux transmit overrun",
+                                        "AGC out of range", "", "INS reset", "",
+                                        "GPS Almanac/UTC invalid",
+                                        "Position invalid", "Position fixed",
+                                        "Clock steering disabled",
+                                        "Clock model invalid",
+                                        "External oscillator locked",
+                                        "Software resource warning", "", "", "",
+                                        "", "Aux 3 status event",
+                                        "Aux 2 status event",
+                                        "Aux 1 status event" };
 #else
 const char *GPS_ERROR[];
 #endif /* __DEBUG__ */
@@ -46,11 +51,11 @@ const char *GPS_ERROR[];
  * Parse a message, assuming that message is stored in the messageBuf and messageId is set
  * TODO send CAN packets
  */
-void parseMessage(uint16_t messageId, uint8_t* messageBuf)
+void parseMessage(message_type messageType, uint8_t* messageBuf)
 {
-    switch (messageId)
+    switch (messageType)
     {
-    case ID_BESTXYZ:
+    case Message_BestXYZ:
     {
         // position solution status
         const GPS_ENUM pSolStat = cast(GPS_ENUM, messageBuf);
@@ -82,7 +87,7 @@ void parseMessage(uint16_t messageId, uint8_t* messageBuf)
                     pSolStat, px, py, pz);
         break;
     }
-    case ID_TIME:
+    case Message_Time:
     {
         const GPS_ENUM clockStatus = cast(GPS_ENUM, messageBuf);
 
@@ -114,7 +119,7 @@ void parseMessage(uint16_t messageId, uint8_t* messageBuf)
         break;
     }
     default:
-        debugTraceF(4, "unsupported message ID: %u\r\n", messageId);
+        debugTraceF(4, "unsupported message ID: %u\r\n", messageType);
         break;
     }
 }
@@ -168,7 +173,10 @@ void readCallback(uint8_t rcvdbyte)
             if (crcExpected != crcActual)
             {
                 // TODO real error handling
-                debugTraceF(3, "invalid CRC\r\n\texpected: %X\r\n\tactual:   %X\r\n", crcExpected, crcActual);
+                debugTraceF(
+                        3,
+                        "invalid CRC\r\n\texpected: %X\r\n\tactual:   %X\r\n",
+                        crcExpected, crcActual);
             }
 
             const uint16_t messageId = cast(uint16_t, buf + 4);
@@ -182,7 +190,7 @@ void readCallback(uint8_t rcvdbyte)
             }
             else
             {
-                parseMessage(messageId, buf + headerLength);
+                parseMessage((message_type) messageId, buf + headerLength);
             }
 
             // set the sync bytes back to 0
@@ -197,7 +205,7 @@ void readCallback(uint8_t rcvdbyte)
     }
 }
 
-void sendCommand(uint8_t *command)
+void gpsSendCommand(uint8_t *command)
 {
     uartTransmit(uartHandle, command, strlen((char*) command));
 }
