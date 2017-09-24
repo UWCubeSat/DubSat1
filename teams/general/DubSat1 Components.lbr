@@ -3078,13 +3078,13 @@ Board Template: V2.1</text>
 <pin name="B" x="22.86" y="0" visible="pad" length="middle" rot="R180"/>
 </symbol>
 <symbol name="MT_AIRCORE">
-<text x="0" y="0" size="1.778" layer="94" font="vector" align="bottom-center">MT_AIRCORE</text>
-<wire x1="-10.16" y1="10.16" x2="-10.16" y2="-10.16" width="0.001" layer="94"/>
-<wire x1="-10.16" y1="-10.16" x2="10.16" y2="-10.16" width="0.001" layer="94"/>
-<wire x1="10.16" y1="-10.16" x2="10.16" y2="10.16" width="0.001" layer="94"/>
-<wire x1="10.16" y1="10.16" x2="-10.16" y2="10.16" width="0.001" layer="94"/>
-<pin name="A" x="-2.54" y="-15.24" visible="pad" length="middle" rot="R90"/>
-<pin name="B" x="2.54" y="-15.24" visible="pad" length="middle" rot="R90"/>
+<text x="0" y="0" size="2.54" layer="94" font="vector" align="center">MT_AIRCORE</text>
+<wire x1="-17.78" y1="17.78" x2="-17.78" y2="-17.78" width="0.254" layer="94"/>
+<wire x1="-17.78" y1="-17.78" x2="17.78" y2="-17.78" width="0.254" layer="94"/>
+<wire x1="17.78" y1="-17.78" x2="17.78" y2="17.78" width="0.254" layer="94"/>
+<wire x1="17.78" y1="17.78" x2="-17.78" y2="17.78" width="0.254" layer="94"/>
+<pin name="A" x="-2.54" y="-22.86" visible="pad" length="middle" rot="R90"/>
+<pin name="B" x="2.54" y="-22.86" visible="pad" length="middle" rot="R90"/>
 </symbol>
 <symbol name="HMC5983">
 <pin name="SCL/SPI_SCK" x="-30.48" y="7.62" visible="pin" length="middle"/>
@@ -6274,6 +6274,9 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 <connect gate="G$1" pin="1" pad="P$1"/>
 <connect gate="G$1" pin="2" pad="P$2"/>
 </connects>
+<technologies>
+<technology name=""/>
+</technologies>
 </device>
 </devices>
 </deviceset>
@@ -6454,6 +6457,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 <connect gate="G$1" pin="P$4" pad="P$4"/>
 </connects>
 <technologies>
+<technology name=""/>
 </technologies>
 </device>
 </devices>
@@ -6520,6 +6524,9 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 <connect gate="G$1" pin="MOSI" pad="MOSI"/>
 <connect gate="G$1" pin="SCLK" pad="CLK"/>
 </connects>
+<technologies>
+<technology name=""/>
+</technologies>
 </device>
 </devices>
 </deviceset>
@@ -6558,6 +6565,9 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 <connect gate="G$1" pin="IN" pad="P$1"/>
 <connect gate="G$1" pin="OUT" pad="P$5"/>
 </connects>
+<technologies>
+<technology name=""/>
+</technologies>
 </device>
 </devices>
 </deviceset>
