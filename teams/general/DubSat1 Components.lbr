@@ -7,7 +7,7 @@
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -2837,6 +2837,24 @@ Board Template: V2.1</text>
 <rectangle x1="57" y1="30" x2="64" y2="37" layer="31"/>
 <rectangle x1="46.5" y1="3" x2="53.5" y2="10" layer="31"/>
 </package>
+<package name="DDB">
+<smd name="GND" x="0" y="0" dx="0.61" dy="2.2" layer="1"/>
+<smd name="P$7" x="0.925" y="0.25" dx="0.7" dy="0.25" layer="1"/>
+<smd name="P$2" x="-0.925" y="0.25" dx="0.7" dy="0.25" layer="1"/>
+<smd name="P$8" x="0.925" y="0.75" dx="0.7" dy="0.25" layer="1"/>
+<smd name="P$6" x="0.925" y="-0.25" dx="0.7" dy="0.25" layer="1"/>
+<smd name="P$5" x="0.925" y="-0.75" dx="0.7" dy="0.25" layer="1"/>
+<smd name="P$1" x="-0.925" y="0.75" dx="0.7" dy="0.25" layer="1"/>
+<smd name="P$3" x="-0.925" y="-0.25" dx="0.7" dy="0.25" layer="1"/>
+<smd name="P$4" x="-0.925" y="-0.75" dx="0.7" dy="0.25" layer="1"/>
+<wire x1="-1" y1="1.25" x2="-1" y2="1.5" width="0.127" layer="21"/>
+<wire x1="-1" y1="1.5" x2="1" y2="1.5" width="0.127" layer="21"/>
+<wire x1="1" y1="1.5" x2="1" y2="1.25" width="0.127" layer="21"/>
+<wire x1="-1" y1="-1.25" x2="-1" y2="-1.5" width="0.127" layer="21"/>
+<wire x1="-1" y1="-1.5" x2="1" y2="-1.5" width="0.127" layer="21"/>
+<wire x1="1" y1="-1.5" x2="1" y2="-1.25" width="0.127" layer="21"/>
+<text x="-1" y="1.75" size="0.5" layer="25" font="vector">&gt;NAME</text>
+</package>
 </packages>
 <symbols>
 <symbol name="LM57">
@@ -5037,6 +5055,22 @@ Allows current flow when high potential at base.</description>
 <wire x1="53.34" y1="35.56" x2="12.7" y2="35.56" width="0.254" layer="94"/>
 <text x="22.86" y="20.32" size="2.54" layer="94">&gt;NAME</text>
 </symbol>
+<symbol name="LT8330">
+<text x="0" y="0" size="1.778" layer="94" font="vector" rot="R90" align="center">LT8330</text>
+<pin name="FBX" x="-17.78" y="7.62" visible="pin" length="middle"/>
+<pin name="NC" x="-17.78" y="2.54" visible="pin" length="middle"/>
+<pin name="SW@1" x="-17.78" y="-2.54" visible="pin" length="middle"/>
+<pin name="SW@2" x="-17.78" y="-7.62" visible="pin" length="middle"/>
+<pin name="GND" x="17.78" y="-7.62" visible="pin" length="middle" rot="R180"/>
+<pin name="V_IN" x="17.78" y="-2.54" visible="pin" length="middle" rot="R180"/>
+<pin name="INT_VCC" x="17.78" y="2.54" visible="pin" length="middle" rot="R180"/>
+<pin name="EN/UVLO" x="17.78" y="7.62" visible="pin" length="middle" rot="R180"/>
+<wire x1="-12.7" y1="10.16" x2="12.7" y2="10.16" width="0.254" layer="94"/>
+<wire x1="12.7" y1="10.16" x2="12.7" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="12.7" y1="-10.16" x2="-12.7" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="-12.7" y1="-10.16" x2="-12.7" y2="10.16" width="0.254" layer="94"/>
+<text x="-12.7" y="12.7" size="1.778" layer="95" font="vector">&gt;NAME</text>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="LM57">
@@ -6577,6 +6611,28 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </gates>
 <devices>
 <device name="" package="SOLAR_CELL_STENCIL">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="LT8330">
+<gates>
+<gate name="G$1" symbol="LT8330" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="DDB">
+<connects>
+<connect gate="G$1" pin="EN/UVLO" pad="P$8"/>
+<connect gate="G$1" pin="FBX" pad="P$1"/>
+<connect gate="G$1" pin="GND" pad="GND P$5"/>
+<connect gate="G$1" pin="INT_VCC" pad="P$7"/>
+<connect gate="G$1" pin="NC" pad="P$2"/>
+<connect gate="G$1" pin="SW@1" pad="P$3"/>
+<connect gate="G$1" pin="SW@2" pad="P$4"/>
+<connect gate="G$1" pin="V_IN" pad="P$6"/>
+</connects>
 <technologies>
 <technology name=""/>
 </technologies>
