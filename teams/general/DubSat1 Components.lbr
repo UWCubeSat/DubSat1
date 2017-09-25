@@ -6653,7 +6653,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="LT8330">
+<deviceset name="LT8330" prefix="U">
 <gates>
 <gate name="G$1" symbol="LT8330" x="0" y="0"/>
 </gates>
@@ -6675,7 +6675,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="PMEG6010CEJ">
+<deviceset name="PMEG6010CEJ" prefix="D">
 <gates>
 <gate name="G$1" symbol="PMEG6010CE" x="0" y="0"/>
 </gates>
