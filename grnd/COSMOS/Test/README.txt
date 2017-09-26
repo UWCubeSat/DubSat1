@@ -1,0 +1,1 @@
+This folder will hold COSMOS targets used in the ground segment.
