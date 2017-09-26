@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bookmarks>
    <site url="http://software-dl.ti.com/ccs/esd/CCSv7/Updates" selected="true" name="Code Composer Studio v7 Updates"/>
-   <site url="http://software-dl.ti.com/dsps/dsps_public_sw/sdo_ccstudio/codegen/Updates/p2linux/" selected="true" name="Code Generation Tools Updates"/>
-   <site url="http://software-dl.ti.com/dsps/dsps_public_sw/sdo_ccstudio/codegen/Updates/p2mac/" selected="true" name="Code Generation Tools Updates"/>
-   <site url="http://software-dl.ti.com/dsps/dsps_public_sw/sdo_ccstudio/codegen/Updates/p2win32/" selected="true" name="Code Generation Tools Updates"/>
-   <site url="http://software-dl.ti.com/ccs/esd/device_support_auto" selected="true" name="Device Support"/>
+   <site url="http://software-dl.ti.com/dsps/dsps_public_sw/sdo_ccstudio/codegen/Updates/p2win32" selected="true" name="Code Generation Tools Updates"/>
    <site url="http://software-dl.ti.com/ccs/non-esd/dvt/ccs6.0" selected="true" name="DVT Updates"/>
    <site url="http://software-dl.ti.com/dsps/dsps_public_sw/sdo_ccstudio/guicomposer/v7.0/all_extras_repo/" selected="true" name="Eclipse_CDT_4.x"/>
    <site url="http://downloads.ti.com/emulation/esd/emupack/osx/latest" selected="true" name="EMUPack SR Release"/>
    <site url="http://software-dl.ti.com/dsps/dsps_public_sw/sdo_ccstudio/CCSv5/Updates/" selected="true" name="Exported Repository"/>
    <site url="http://software-dl.ti.com/dsps/dsps_public_sw/sdo_ccstudio/gcc/Updates/win32" selected="true" name="GCC ARM Compiler Tools Updates"/>
-   <site url="http://downloads.ti.com/msp430/esd/v7/updates-430/gcc" selected="true" name="Split MSP Components Test"/>
 </bookmarks>
