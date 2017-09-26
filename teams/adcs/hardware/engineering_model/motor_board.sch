@@ -710,40 +710,24 @@ Board Template: V2.1</text>
 <text x="19.685" y="-2.54" size="1.27" layer="48" font="vector" rot="R180">BOARD EDGE THIS SIDE</text>
 </package>
 <package name="REACTION_WHEEL_BRACKET">
-<wire x1="16" y1="14" x2="29.35" y2="14" width="0.2" layer="21"/>
-<wire x1="14" y1="16" x2="16" y2="14" width="0.2" layer="21" curve="68.899707"/>
-<wire x1="14" y1="29.35" x2="14" y2="16" width="0.2" layer="21"/>
-<wire x1="14" y1="29.35" x2="6" y2="29.35" width="0.2" layer="21"/>
-<wire x1="6" y1="29.35" x2="6" y2="16" width="0.2" layer="21"/>
-<wire x1="-6" y1="16" x2="6" y2="16" width="0.2" layer="21"/>
-<wire x1="-6" y1="29.35" x2="-6" y2="16" width="0.2" layer="21"/>
-<wire x1="-14" y1="29.35" x2="-6" y2="29.35" width="0.2" layer="21"/>
-<wire x1="-14" y1="-14" x2="-14" y2="29.35" width="0.2" layer="21"/>
-<wire x1="29.35" y1="-14" x2="-14" y2="-14" width="0.2" layer="21"/>
-<wire x1="29.35" y1="-14" x2="29.35" y2="-6" width="0.2" layer="21"/>
-<wire x1="29.35" y1="-6" x2="16" y2="-6" width="0.2" layer="21"/>
-<wire x1="16" y1="6" x2="16" y2="-6" width="0.2" layer="21"/>
-<wire x1="29.35" y1="6" x2="16" y2="6" width="0.2" layer="21"/>
-<wire x1="29.35" y1="14" x2="29.35" y2="6" width="0.2" layer="21"/>
-<wire x1="-14" y1="29.35" x2="-14" y2="30.85" width="0.2" layer="21"/>
-<wire x1="-14" y1="30.85" x2="14" y2="30.85" width="0.2" layer="21"/>
-<wire x1="14" y1="30.85" x2="14" y2="29.35" width="0.2" layer="21"/>
-<wire x1="-6" y1="29.35" x2="6" y2="29.35" width="0.2" layer="21"/>
-<wire x1="29.35" y1="14" x2="30.85" y2="14" width="0.2" layer="21"/>
-<wire x1="30.85" y1="14" x2="30.85" y2="-14" width="0.2" layer="21"/>
-<wire x1="30.85" y1="-14" x2="29.35" y2="-14" width="0.2" layer="21"/>
-<wire x1="29.35" y1="6" x2="29.35" y2="-6" width="0.2" layer="21"/>
-<hole x="-11.5" y="-11.5" drill="2.18"/>
-<hole x="11.5" y="-11.5" drill="2.18"/>
-<hole x="11.5" y="11.5" drill="2.18"/>
-<hole x="-11.5" y="11.5" drill="2.18"/>
-<wire x1="-15" y1="-15" x2="-15" y2="31.85" width="0.2" layer="39"/>
-<wire x1="-15" y1="31.85" x2="15" y2="31.85" width="0.2" layer="39"/>
-<wire x1="15" y1="31.85" x2="15" y2="16.75" width="0.2" layer="39"/>
-<wire x1="16.75" y1="15" x2="31.85" y2="15" width="0.2" layer="39"/>
-<wire x1="31.85" y1="15" x2="31.85" y2="-15" width="0.2" layer="39"/>
-<wire x1="31.85" y1="-15" x2="-15" y2="-15" width="0.2" layer="39"/>
-<wire x1="15" y1="16.75" x2="16.75" y2="15" width="0.2" layer="39" curve="90"/>
+<wire x1="-14" y1="1.35" x2="-14" y2="14" width="0.001" layer="21"/>
+<wire x1="-14" y1="1.35" x2="-22" y2="1.35" width="0.001" layer="21"/>
+<wire x1="-22" y1="1.35" x2="-22" y2="-12" width="0.001" layer="21"/>
+<wire x1="-34" y1="-12" x2="-22" y2="-12" width="0.001" layer="21"/>
+<wire x1="-34" y1="1.35" x2="-34" y2="-12" width="0.001" layer="21"/>
+<wire x1="-42" y1="1.35" x2="-34" y2="1.35" width="0.001" layer="21"/>
+<wire x1="-42" y1="1.35" x2="-42" y2="-14" width="0.001" layer="21"/>
+<wire x1="29.35" y1="-14" x2="-42" y2="-14" width="0.001" layer="21"/>
+<wire x1="29.35" y1="-14" x2="29.35" y2="-6" width="0.001" layer="21"/>
+<wire x1="29.35" y1="-6" x2="16" y2="-6" width="0.001" layer="21"/>
+<wire x1="16" y1="6" x2="16" y2="-6" width="0.001" layer="21"/>
+<wire x1="29.35" y1="6" x2="16" y2="6" width="0.001" layer="21"/>
+<wire x1="29.35" y1="14" x2="29.35" y2="6" width="0.001" layer="21"/>
+<wire x1="-14" y1="14" x2="29.35" y2="14" width="0.001" layer="21"/>
+<hole x="-11.5" y="11.5" drill="2.286"/>
+<hole x="11.5" y="11.5" drill="2.286"/>
+<hole x="11.5" y="-11.5" drill="2.286"/>
+<hole x="-11.5" y="-11.5" drill="2.286"/>
 </package>
 <package name="DRV10970">
 <smd name="V" x="3.6" y="2.925" dx="0.75" dy="0.3" layer="1" rot="R90"/>
@@ -902,28 +886,28 @@ Board Template: V2.1</text>
 <pin name="P$66" x="-12.7" y="-10.16" length="middle" rot="R180"/>
 <pin name="P$67" x="12.7" y="-10.16" length="middle"/>
 <pin name="P$68" x="63.5" y="-10.16" length="middle" rot="R180"/>
-<pin name="ESTIMAT_I2C_SDA" x="-66.04" y="-12.7" length="middle"/>
-<pin name="ESTIMAT_I2C_SCL" x="-12.7" y="-12.7" length="middle" rot="R180"/>
-<pin name="P$71" x="12.7" y="-12.7" length="middle"/>
-<pin name="P$72" x="63.5" y="-12.7" length="middle" rot="R180"/>
-<pin name="MAG1_PWM@73" x="-66.04" y="-15.24" length="middle"/>
-<pin name="MAG2_PWM@74" x="-12.7" y="-15.24" length="middle" rot="R180"/>
-<pin name="MAG3_PWM@75" x="12.7" y="-15.24" length="middle"/>
-<pin name="P$76" x="63.5" y="-15.24" length="middle" rot="R180"/>
+<pin name="WHEEL_VBATT@69" x="-66.04" y="-12.7" length="middle"/>
+<pin name="WHEEL_VBATT@70" x="-12.7" y="-12.7" length="middle" rot="R180"/>
+<pin name="WHEEL_GND@71" x="12.7" y="-12.7" length="middle"/>
+<pin name="WHEEL_GND@72" x="63.5" y="-12.7" length="middle" rot="R180"/>
+<pin name="ESTIMAT_5V@73" x="-66.04" y="-15.24" length="middle"/>
+<pin name="ESTIMAT_5V@74" x="-12.7" y="-15.24" length="middle" rot="R180"/>
+<pin name="ESTIMAT_3.3V@75" x="12.7" y="-15.24" length="middle"/>
+<pin name="ESTIMAT_3.3V@76" x="63.5" y="-15.24" length="middle" rot="R180"/>
 <pin name="ESTIMAT_VBAT@77" x="-66.04" y="-17.78" length="middle"/>
-<pin name="ESTIMAT_GND@78" x="-12.7" y="-17.78" length="middle" rot="R180"/>
-<pin name="ESTIMAT_VBAT@79" x="12.7" y="-17.78" length="middle"/>
+<pin name="ESTIMAT_VBAT@78" x="-12.7" y="-17.78" length="middle" rot="R180"/>
+<pin name="ESTIMAT_GND@79" x="12.7" y="-17.78" length="middle"/>
 <pin name="ESTIMAT_GND@80" x="63.5" y="-17.78" length="middle" rot="R180"/>
-<pin name="ADCS2_VBAT@81" x="-66.04" y="-20.32" length="middle"/>
-<pin name="ADCS2_GND@82" x="-12.7" y="-20.32" length="middle" rot="R180"/>
-<pin name="ADCS2_VBAT@83" x="12.7" y="-20.32" length="middle"/>
-<pin name="ADCS2_GND@84" x="63.5" y="-20.32" length="middle" rot="R180"/>
+<pin name="BDOT_5V@81" x="-66.04" y="-20.32" length="middle"/>
+<pin name="BDOT_5V@82" x="-12.7" y="-20.32" length="middle" rot="R180"/>
+<pin name="BDOT_3.3V@83" x="12.7" y="-20.32" length="middle"/>
+<pin name="BDOT_3.3V@84" x="63.5" y="-20.32" length="middle" rot="R180"/>
 <pin name="BDOT_VBAT@85" x="-66.04" y="-22.86" length="middle"/>
-<pin name="BDOT_GND@86" x="-12.7" y="-22.86" length="middle" rot="R180"/>
-<pin name="BDOT_VBAT@87" x="12.7" y="-22.86" length="middle"/>
+<pin name="BDOT_VBAT@86" x="-12.7" y="-22.86" length="middle" rot="R180"/>
+<pin name="BDOT_GND@87" x="12.7" y="-22.86" length="middle"/>
 <pin name="BDOT_GND@88" x="63.5" y="-22.86" length="middle" rot="R180"/>
-<pin name="BDOT_I2C_SDA" x="-66.04" y="-25.4" length="middle"/>
-<pin name="BDOT_I2C_SCL" x="-12.7" y="-25.4" length="middle" rot="R180"/>
+<pin name="P$89" x="-66.04" y="-25.4" length="middle"/>
+<pin name="P$90" x="-12.7" y="-25.4" length="middle" rot="R180"/>
 <pin name="P$91" x="12.7" y="-25.4" length="middle"/>
 <pin name="P$92" x="63.5" y="-25.4" length="middle" rot="R180"/>
 <pin name="RAHS_VBAT@93" x="-66.04" y="-27.94" length="middle"/>
@@ -1820,6 +1804,8 @@ PWM</text>
 <text x="-46.609" y="27.305" size="2.54" layer="97" rot="R90">DC</text>
 <wire x1="-35.56" y1="15.24" x2="-45.72" y2="15.24" width="0.2032" layer="97"/>
 <text x="-13.589" y="52.197" size="2.54" layer="95">MSP-CAN block V2.4</text>
+<text x="16.637" y="-43.942" size="2.54" layer="97">eUSCI_A1 UART use: 
+P2.6 Rx and P2.5 Tx</text>
 </symbol>
 <symbol name="PROGRAM/DEBUG_PORT">
 <wire x1="-13.97" y1="15.24" x2="10.16" y2="15.24" width="0.4064" layer="94"/>
@@ -1944,16 +1930,14 @@ PWM</text>
 <connect gate="G$1" pin="3.3V@55" pad="P$55"/>
 <connect gate="G$1" pin="5V@50" pad="P$50"/>
 <connect gate="G$1" pin="5V@51" pad="P$51"/>
-<connect gate="G$1" pin="ADCS2_GND@82" pad="P$82"/>
-<connect gate="G$1" pin="ADCS2_GND@84" pad="P$84"/>
-<connect gate="G$1" pin="ADCS2_VBAT@81" pad="P$81"/>
-<connect gate="G$1" pin="ADCS2_VBAT@83" pad="P$83"/>
-<connect gate="G$1" pin="BDOT_GND@86" pad="P$86"/>
+<connect gate="G$1" pin="BDOT_3.3V@83" pad="P$83"/>
+<connect gate="G$1" pin="BDOT_3.3V@84" pad="P$84"/>
+<connect gate="G$1" pin="BDOT_5V@81" pad="P$81"/>
+<connect gate="G$1" pin="BDOT_5V@82" pad="P$82"/>
+<connect gate="G$1" pin="BDOT_GND@87" pad="P$87"/>
 <connect gate="G$1" pin="BDOT_GND@88" pad="P$88"/>
-<connect gate="G$1" pin="BDOT_I2C_SCL" pad="P$90"/>
-<connect gate="G$1" pin="BDOT_I2C_SDA" pad="P$89"/>
 <connect gate="G$1" pin="BDOT_VBAT@85" pad="P$85"/>
-<connect gate="G$1" pin="BDOT_VBAT@87" pad="P$87"/>
+<connect gate="G$1" pin="BDOT_VBAT@86" pad="P$86"/>
 <connect gate="G$1" pin="CANH" pad="P$53"/>
 <connect gate="G$1" pin="CANL" pad="P$57"/>
 <connect gate="G$1" pin="COM1_GND@102" pad="P$102"/>
@@ -1980,15 +1964,14 @@ PWM</text>
 <connect gate="G$1" pin="DISTRI_VBAT@28" pad="P$28"/>
 <connect gate="G$1" pin="DISTRI_VBAT@29" pad="P$29"/>
 <connect gate="G$1" pin="DISTRI_VBAT@31" pad="P$31"/>
-<connect gate="G$1" pin="ESTIMAT_GND@78" pad="P$78"/>
+<connect gate="G$1" pin="ESTIMAT_3.3V@75" pad="P$75"/>
+<connect gate="G$1" pin="ESTIMAT_3.3V@76" pad="P$76"/>
+<connect gate="G$1" pin="ESTIMAT_5V@73" pad="P$73"/>
+<connect gate="G$1" pin="ESTIMAT_5V@74" pad="P$74"/>
+<connect gate="G$1" pin="ESTIMAT_GND@79" pad="P$79"/>
 <connect gate="G$1" pin="ESTIMAT_GND@80" pad="P$80"/>
-<connect gate="G$1" pin="ESTIMAT_I2C_SCL" pad="P$70"/>
-<connect gate="G$1" pin="ESTIMAT_I2C_SDA" pad="P$69"/>
 <connect gate="G$1" pin="ESTIMAT_VBAT@77" pad="P$77"/>
-<connect gate="G$1" pin="ESTIMAT_VBAT@79" pad="P$79"/>
-<connect gate="G$1" pin="MAG1_PWM@73" pad="P$73"/>
-<connect gate="G$1" pin="MAG2_PWM@74" pad="P$74"/>
-<connect gate="G$1" pin="MAG3_PWM@75" pad="P$75"/>
+<connect gate="G$1" pin="ESTIMAT_VBAT@78" pad="P$78"/>
 <connect gate="G$1" pin="MCU_GND@46" pad="P$46"/>
 <connect gate="G$1" pin="MCU_GND@47" pad="P$47"/>
 <connect gate="G$1" pin="MCU_GND@58" pad="P$58"/>
@@ -2017,9 +2000,8 @@ PWM</text>
 <connect gate="G$1" pin="P$66" pad="P$66"/>
 <connect gate="G$1" pin="P$67" pad="P$67"/>
 <connect gate="G$1" pin="P$68" pad="P$68"/>
-<connect gate="G$1" pin="P$71" pad="P$71"/>
-<connect gate="G$1" pin="P$72" pad="P$72"/>
-<connect gate="G$1" pin="P$76" pad="P$76"/>
+<connect gate="G$1" pin="P$89" pad="P$89"/>
+<connect gate="G$1" pin="P$90" pad="P$90"/>
 <connect gate="G$1" pin="P$91" pad="P$91"/>
 <connect gate="G$1" pin="P$92" pad="P$92"/>
 <connect gate="G$1" pin="P$95" pad="P$95"/>
@@ -2044,6 +2026,10 @@ PWM</text>
 <connect gate="G$1" pin="RAHS_VBAT@93" pad="P$93"/>
 <connect gate="G$1" pin="SYNC1" pad="P$45"/>
 <connect gate="G$1" pin="SYNC2" pad="P$49"/>
+<connect gate="G$1" pin="WHEEL_GND@71" pad="P$71"/>
+<connect gate="G$1" pin="WHEEL_GND@72" pad="P$72"/>
+<connect gate="G$1" pin="WHEEL_VBATT@69" pad="P$69"/>
+<connect gate="G$1" pin="WHEEL_VBATT@70" pad="P$70"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -2188,7 +2174,7 @@ PWM</text>
 </deviceset>
 <deviceset name="0_OHM_JUMPER">
 <gates>
-<gate name="G$1" symbol="0_0HM_JUMPER" x="5.08" y="2.54"/>
+<gate name="G$1" symbol="0_0HM_JUMPER" x="7.62" y="5.08"/>
 </gates>
 <devices>
 <device name="" package="0_OHM_JUMPER">
@@ -10358,13 +10344,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 </net>
 <net name="GND" class="0">
 <segment>
-<pinref part="U$2" gate="G$1" pin="ADCS2_GND@82"/>
+<pinref part="U$2" gate="G$1" pin="BDOT_5V@82"/>
 <pinref part="GND1" gate="1" pin="GND"/>
 <wire x1="12.7" y1="25.4" x2="17.78" y2="25.4" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND2" gate="1" pin="GND"/>
-<pinref part="U$2" gate="G$1" pin="ADCS2_GND@84"/>
+<pinref part="U$2" gate="G$1" pin="BDOT_3.3V@84"/>
 <wire x1="93.98" y1="25.4" x2="88.9" y2="25.4" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -10779,12 +10765,12 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 </net>
 <net name="VBAT" class="0">
 <segment>
-<pinref part="U$2" gate="G$1" pin="ADCS2_VBAT@81"/>
+<pinref part="U$2" gate="G$1" pin="BDOT_5V@81"/>
 <wire x1="-40.64" y1="25.4" x2="-45.72" y2="25.4" width="0.1524" layer="91"/>
 <label x="-45.72" y="25.4" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="ADCS2_VBAT@83"/>
+<pinref part="U$2" gate="G$1" pin="BDOT_3.3V@83"/>
 <wire x1="38.1" y1="25.4" x2="33.02" y2="25.4" width="0.1524" layer="91"/>
 <label x="33.02" y="25.4" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
