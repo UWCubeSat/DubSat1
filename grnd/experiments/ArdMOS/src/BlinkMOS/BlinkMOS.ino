@@ -22,11 +22,23 @@
   http://www.arduino.cc/en/Tutorial/Blink
 */
 
+#define MODE_ON 1
+#define MODE_OFF 0
+
+#define OPCODE_DELAY 1
+#define OPCODE_MODE  2 
+
+#define MINDELAY  15
+
 struct soh_t
 {
   byte length;
   byte id;
   byte delay;
+  byte mode;
+
+  byte cmds_accepted;
+  byte cmds_received;
 };
 
 soh_t mySoh;
@@ -35,6 +47,7 @@ soh_t mySoh;
 void setup() {
   mySoh.id = 1;
   mySoh.delay = 250;
+  mySoh.mode = MODE_ON;
   
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
@@ -44,9 +57,11 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() {
   processCmds();
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+  if (mySoh.mode == MODE_ON) 
+    digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
   delay(mySoh.delay);                      
-  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+  if (mySoh.mode == MODE_ON) 
+    digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
   delay(mySoh.delay);
   sendTlm();                   
 }
@@ -54,9 +69,38 @@ void loop() {
 // TODO:  Obviously, we only handle one command type currently ... 
 void processCmds()
 {
+  byte opcode;
+  byte param;
+  
+  bool recOne = false;
+  
   while (Serial.available())
   {
-    mySoh.delay = Serial.read();
+    opcode = Serial.read();
+    switch (opcode)
+    {
+      case OPCODE_DELAY:
+        while (!Serial.available()) {}
+        param = Serial.read();
+        param = (param < MINDELAY) ? MINDELAY : param;
+        mySoh.delay = param;
+        recOne = true;
+        mySoh.cmds_received++;
+        break;
+      case OPCODE_MODE:
+        while (!Serial.available()) {}
+        mySoh.mode = Serial.read();
+        recOne = true;
+        mySoh.cmds_received++;
+        break;
+      default:
+        break;  
+    }    
+  }
+
+  if (recOne==true)
+  {
+    mySoh.cmds_accepted++;
   }
 }
 
