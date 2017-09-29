@@ -1,0 +1,67 @@
+2017/09/28 18:54:24.745  INFO: Processing target definition in file 'D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/BLINK/target.txt'
+2017/09/28 18:54:24.772  INFO: Processing target definition in file 'D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/target.txt'
+2017/09/28 18:54:24.780  ERROR: Unable to require D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/lib/delay_limits_response.rb due to cannot load such file -- D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/lib/delay_limits_response.rb. Ensure D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/lib/delay_limits_response.rb is in the COSMOS lib directory.
+2017/09/28 18:54:24.786  INFO: COSMOS Version: 4.0.1
+2017/09/28 18:54:24.786  INFO: Processing CmdTlmServer configuration in file: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/tools/cmd_tlm_server/cmd_tlm_server.txt
+2017/09/28 18:54:24.795  INFO: Processing CmdTlmServer configuration in file: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/BLINK/cmd_tlm_server.txt
+2017/09/28 18:54:24.808  INFO: Marshal load success: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/tmp/marshal_a04440ff820054673fd9ad144562e210.bin
+2017/09/28 18:54:24.813  INFO: Creating thread for interface BLINKINT
+2017/09/28 18:54:24.813  INFO: Creating thread for router PREIDENTIFIED_ROUTER
+2017/09/28 18:54:24.814  INFO: Starting packet reading for BLINKINT
+2017/09/28 18:54:24.814  INFO: Connecting to BLINKINT...
+2017/09/28 18:54:24.850  INFO: Creating thread for router PREIDENTIFIED_CMD_ROUTER
+2017/09/28 18:54:24.859  INFO: BLINKINT Connection Success
+2017/09/28 18:54:24.859  INFO: Starting packet reading for PREIDENTIFIED_ROUTER
+2017/09/28 18:54:24.859  INFO: Connecting to PREIDENTIFIED_ROUTER...
+2017/09/28 18:54:24.859  INFO: PREIDENTIFIED_ROUTER Connection Success
+2017/09/28 18:54:24.859  INFO: Starting connection maintenance for PREIDENTIFIED_CMD_ROUTER
+2017/09/28 18:54:24.859  INFO: Connecting to PREIDENTIFIED_CMD_ROUTER...
+2017/09/28 18:54:24.860  INFO: PREIDENTIFIED_CMD_ROUTER Connection Success
+2017/09/28 18:54:30.518  ERROR: BLINK SOH received with actual packet length of 220 but defined length of 7
+2017/09/28 18:54:30.530  INFO: Log File Opened : D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/logs/2017_09_28_18_54_30_tlm.bin
+2017/09/28 18:54:30.530  ERROR: Sync not found. Discarding 8 bytes of data.
+2017/09/28 18:54:30.530  ERROR: Starting: 0x0A 0x50 0x50 0xFA 0x01 0x00
+2017/09/28 18:54:36.284  ERROR: BLINK SOH received with actual packet length of 220 but defined length of 7
+2017/09/28 18:54:36.284  ERROR: Sync not found. Discarding 8 bytes of data.
+2017/09/28 18:54:36.284  ERROR: Starting: 0x0A 0x50 0x50 0xFA 0x01 0x00
+2017/09/28 18:54:42.049  ERROR: BLINK SOH received with actual packet length of 220 but defined length of 7
+2017/09/28 18:54:42.049  ERROR: BLINK SOH DELAY = 250 is RED_HIGH
+2017/09/28 18:54:42.049  INFO: cmd("BLINK DELAY with DELAY 149")
+2017/09/28 18:54:42.050  INFO: Log File Opened : D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/logs/2017_09_28_18_54_42_cmd.bin
+2017/09/28 18:54:42.050  ERROR: Sync not found. Discarding 8 bytes of data.
+2017/09/28 18:54:42.050  ERROR: Starting: 0x0A 0x50 0x50 0xFA 0x01 0x00
+2017/09/28 18:54:42.050  ERROR: Sync not found. Discarding 2 bytes of data.
+2017/09/28 18:54:42.050  ERROR: Starting: 0x01 0x95 0x00 0x00 0x00 0x00
+2017/09/28 18:54:47.813  ERROR: BLINK SOH received with actual packet length of 220 but defined length of 7
+2017/09/28 18:54:47.813  ERROR: Sync not found. Discarding 8 bytes of data.
+2017/09/28 18:54:47.813  ERROR: Starting: 0x0A 0x50 0x50 0xFA 0x01 0x00
+2017/09/28 18:54:53.585  ERROR: BLINK SOH received with actual packet length of 220 but defined length of 7
+2017/09/28 18:54:53.585  ERROR: Sync not found. Discarding 8 bytes of data.
+2017/09/28 18:54:53.585  ERROR: Starting: 0x0A 0x50 0x50 0xFA 0x01 0x00
+2017/09/28 18:54:59.354  ERROR: BLINK SOH received with actual packet length of 220 but defined length of 7
+2017/09/28 18:54:59.354  ERROR: Sync not found. Discarding 8 bytes of data.
+2017/09/28 18:54:59.354  ERROR: Starting: 0x0A 0x50 0x50 0xFA 0x01 0x00
+2017/09/28 18:55:05.120  ERROR: BLINK SOH received with actual packet length of 220 but defined length of 7
+2017/09/28 18:55:05.120  ERROR: Sync not found. Discarding 8 bytes of data.
+2017/09/28 18:55:05.121  ERROR: Starting: 0x0A 0x50 0x50 0xFA 0x01 0x00
+2017/09/28 18:55:10.887  ERROR: BLINK SOH received with actual packet length of 220 but defined length of 7
+2017/09/28 18:55:10.887  ERROR: Sync not found. Discarding 8 bytes of data.
+2017/09/28 18:55:10.887  ERROR: Starting: 0x0A 0x50 0x50 0xFA 0x01 0x00
+2017/09/28 18:55:16.653  ERROR: BLINK SOH received with actual packet length of 220 but defined length of 7
+2017/09/28 18:55:16.653  ERROR: Sync not found. Discarding 8 bytes of data.
+2017/09/28 18:55:16.653  ERROR: Starting: 0x0A 0x50 0x50 0xFA 0x01 0x00
+2017/09/28 18:55:19.980  INFO: Log File Closed : D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/logs/2017_09_28_18_54_42_cmd.bin
+2017/09/28 18:55:19.985  INFO: Log File Closed : D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/logs/2017_09_28_18_54_30_tlm.bin
+2017/09/28 18:55:20.005  INFO: Killing thread for router PREIDENTIFIED_ROUTER
+2017/09/28 18:55:20.005  INFO: Clean disconnect from PREIDENTIFIED_ROUTER (returned nil)
+2017/09/28 18:55:20.005  INFO: Connection Lost for PREIDENTIFIED_ROUTER
+2017/09/28 18:55:20.086  INFO: Stopped packet reading for PREIDENTIFIED_ROUTER
+2017/09/28 18:55:20.096  INFO: Disconnected from router PREIDENTIFIED_ROUTER
+2017/09/28 18:55:20.096  INFO: Killing thread for router PREIDENTIFIED_CMD_ROUTER
+2017/09/28 18:55:20.097  INFO: Stopped packet reading for PREIDENTIFIED_CMD_ROUTER
+2017/09/28 18:55:20.187  INFO: Disconnected from router PREIDENTIFIED_CMD_ROUTER
+2017/09/28 18:55:20.187  INFO: Killing thread for interface BLINKINT
+2017/09/28 18:55:20.189  INFO: Clean disconnect from BLINKINT (returned nil)
+2017/09/28 18:55:20.189  INFO: Connection Lost for BLINKINT
+2017/09/28 18:55:20.189  INFO: Stopped packet reading for BLINKINT
+2017/09/28 18:55:20.197  INFO: Disconnected from interface BLINKINT

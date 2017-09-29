@@ -1,2 +1,2 @@
-INTERFACE BLINKINT serial_interface.rb com6 com6 9600 NONE 1 10.0 nil LENGTH 0 8 0 1
+INTERFACE BLINKINT serial_interface.rb com7 com7 115200 NONE 1 10.0 nil LENGTH 0 8 0 1 BIG_ENDIAN 1 DE
   TARGET BLINK
