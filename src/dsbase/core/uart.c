@@ -80,6 +80,8 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable)
        UCA0CTLW0 &= ~UCSWRST;                  // Initialize eUSCI
        UCA0IE |= UCRXIE | UCTXIE;              // Enable USCI_A0 RX interrupt
      */
+    // Also:  default UART settings are parity disabled,
+    // LSB first, 8-bit data, and 1 stop bit
     if (instance == BackchannelUART)
     {
         UCA0CTLW0 = UCSWRST;

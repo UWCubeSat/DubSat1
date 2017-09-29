@@ -13,10 +13,23 @@
 #define MODE_ON 1
 #define MODE_OFF 0
 
+
 #define OPCODE_DELAY 1
 #define OPCODE_MODE  2
 
 #define MINDELAY  15
+
+typedef enum _cmdtype {
+    CMD_NONE,
+    CMD_DELAY,
+    CMD_MODE,
+} cmdtype;
+
+typedef enum _cmdstate {
+    STATE_START,
+    STATE_PARAMWAIT,
+
+} cmdstate;
 
 typedef struct _soh_t
 {
