@@ -25,7 +25,7 @@ uint8_t uartReportStatus(DebugMode mode)
         bus_ctx = &buses[i];
         if (bus_ctx->initialized == 1)
         {
-            if (mode == InteractiveMode)
+            if (mode == Mode_ASCIIInteractive)
             {
 
                 debugPrintF("**UART %d Status:\r\n", i);

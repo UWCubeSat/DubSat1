@@ -13,8 +13,8 @@
 #include "core/timers.h"
 
 FILE_STATIC unsigned long lastTime_cycles;
-FILE_STATIC double input, rawOutput, lastInput, output, setpoint;
-FILE_STATIC double errSum, lastErr;
+FILE_STATIC double rawOutput, lastInput;
+FILE_STATIC double lastErr;
 FILE_STATIC double kp, ki, kd;
 
 FILE_STATIC uint16_t outputCounter = 0;
@@ -26,6 +26,8 @@ FILE_STATIC uint32_t overflowCount = 0;
 FILE_STATIC uint8_t active = 0;
 FILE_STATIC uint8_t setpoint_override = 0;
 FILE_STATIC double overridden_setpoint;
+
+FILE_STATIC PidStepInfo pid;
 
 void rwsShowUsage()
 {
@@ -39,7 +41,7 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
     uint8_t len = strlen(cmdstr);
     uint16_t inputnum = 0;
 
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
     {
         if (len == 0)
         {
@@ -81,6 +83,12 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
 
 void rwsInit()
 {
+    // Setup fields
+    pid.id = 7;
+    pid.length = sizeof(pid);
+    pid.syncpattern = 0xFC;
+    pid.padding = 2;
+
     //  FR (direction):  P7.3 to control direction, P7.4 to read FG pin ('1 0 0')
     RW_MOTORDIR_DIR |= RW_MOTORDIR_PIN;
     RW_MOTORDIR_SEL1 &= ~RW_MOTORDIR_PIN;
@@ -128,43 +136,53 @@ void rwsSetTuningParams(double Kp, double Ki, double Kd)
     kd = Kd;
 }
 
+
 double rwsPIDStep(double cmd)
 {
     if (active != 1)
         return cmd;
 
     if (setpoint_override == 1)
-        setpoint = overridden_setpoint;
+        pid.setpoint = overridden_setpoint;
     else
-        setpoint = cmd;
-    input = currentRPM;
+        pid.setpoint = cmd;
+    pid.input = currentRPM;
 
     // Calc time delta
     uint32_t now_cycles = TIMESTAMP_TIMER(R);
-    double timeChange_s  = (double)(CLK_PERIOD_8MHZ * timerCycleDiff16(lastTime_cycles, now_cycles));
+    pid.timeChange_s  = (double)(CLK_PERIOD_8MHZ * timerCycleDiff16(lastTime_cycles, now_cycles));
 
     // Compute vars
-    double error = setpoint - input;
-    errSum += (error * timeChange_s);
-    double dErr = (error - lastErr) / timeChange_s;
+    pid.error = pid.setpoint - pid.input;
+    pid.errSum += (pid.error * pid.timeChange_s);
+    pid.dErr = (pid.error - lastErr) / pid.timeChange_s;
 
 
     // Compute PID output
-    rawOutput = (kp * error) + (ki * errSum) + (kd * dErr);
+    rawOutput = (kp * pid.error) + (ki * pid.errSum) + (kd * pid.dErr);
 
     if (rawOutput < MIN_PWM_OUT)
-        output = MIN_PWM_OUT;
+        pid.output = MIN_PWM_OUT;
     else if (rawOutput > MAX_PWM_OUT)
-        output = MAX_PWM_OUT;
+        pid.output = MAX_PWM_OUT;
     else
-        output = rawOutput;
+        pid.output = rawOutput;
 
     // Store values for subsequent comparisons
-    lastErr = error;
+    lastErr = pid.error;
     lastTime_cycles = now_cycles;
 
-    debugTraceF(2,"%f,%f,%f,%f,%f,%f\r\n", timeChange_s, setpoint, input, error, errSum, output);
-    return output;
+    if (debugGetMode() == Mode_ASCIIInteractive)
+    {
+        debugTraceF(2,"%f,%f,%f,%f,%f,%f\r\n", pid.timeChange_s, pid.setpoint, pid.input, pid.error, pid.errSum, pid.output);
+    }
+    else if (debugGetMode() == Mode_BinaryStreaming)
+    {
+        debugPrint((const uint8_t *) &pid, sizeof(pid));
+    }
+
+
+    return pid.output;
 
 }
 

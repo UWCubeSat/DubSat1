@@ -21,6 +21,24 @@
 #define __INITIAL_TRACE_LEVEL__   0
 #endif
 
+#if !defined(__INITIAL_DEBUG_MODE__)
+#define __INITIAL_DEBUG_MODE__  0
+#endif
+
+typedef enum _debugmode {
+    Mode_ASCIIInteractive,
+    Mode_ASCIIHeadless,
+    Mode_BinaryStreaming,
+} DebugMode;
+
+typedef struct _svc_status_debug {
+    uint8_t initialized;
+    uint8_t registration_errors;
+    uint8_t trace_level;
+    DebugMode debug_mode;
+
+} svc_status_debug;
+
 void debugInit();
 
 void debugPrint(uint8_t * buff, uint8_t szBuff);
@@ -32,20 +50,8 @@ void debugReadCallback(uint8_t rcvdbyte);
 void processCommand(uint8_t * cmdbuff, uint8_t cmdlength);
 uint8_t normalizeTraceLevel(uint8_t lvl);
 void displayPrompt();
-
-typedef enum _debugmode {
-    InteractiveMode,
-    HeadlessInteractiveMode,
-    StreamingMode,
-} DebugMode;
-
-typedef struct _svc_status_debug {
-    uint8_t initialized;
-    uint8_t registration_errors;
-    uint8_t trace_level;
-    DebugMode debug_mode;
-
-} svc_status_debug;
+void debugSetMode(DebugMode newmode);
+DebugMode debugGetMode();
 
 // KEEP THESE ENUMS IN SYNC WITH SRC FILE
 typedef enum _entityID {

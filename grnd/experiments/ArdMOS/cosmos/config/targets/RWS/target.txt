@@ -1,10 +1,13 @@
+# Ignored Parameters
+#IGNORE_PARAMETER OPCODE
+
 # If you have custom limits responses or conversions you require them here
 #REQUIRE RWS_limits_response.rb
 #REQUIRE RWS_conversion.rb
 
 # Ignored Parameters
 # (parameters you don't want to see by default in various tools)
-IGNORE_PARAMETER ID
+IGNORE_PARAMETER OPCODE
 
 # Ignored Items
 # (items you don't want to see by default in various tools)

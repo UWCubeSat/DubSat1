@@ -41,7 +41,7 @@ FILE_STATIC uint8_t *DebugEntityFriendlyNames[] =  {
 
 uint8_t reportStatusCallback(DebugMode mode)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
         {
             debugPrintF("**Debug Service Status:\r\n");
             debugPrintF("Trace level: %d\r\n\r\n", debug_status.trace_level);
@@ -56,7 +56,7 @@ uint8_t reportStatusCallback(DebugMode mode)
 
 uint8_t actionCallback(DebugMode mode, uint8_t * cmdstr)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
     {
         if (strlen(cmdstr) == 0)
         {
@@ -78,12 +78,26 @@ void debugInit()
 
     debug_status.initialized = 1;
     debug_status.trace_level = __INITIAL_TRACE_LEVEL__;
-    debug_status.debug_mode = InteractiveMode;
+    debugSetMode((DebugMode)__INITIAL_DEBUG_MODE__);
 
     handle = uartInit(BackchannelUART, 1);
     uartRegisterRxCallback(handle, debugReadCallback);
 
     debugRegisterEntity(Entity_DebugService, 'd', NULL, reportStatusCallback, actionCallback);
+}
+
+DebugMode debugGetMode()
+{
+    return debug_status.debug_mode;
+}
+
+void debugSetMode(DebugMode newmode)
+{
+    debug_status.debug_mode = newmode;
+    if (debug_status.debug_mode != Mode_ASCIIInteractive)
+        uartSetEchoOff(handle);
+    else
+        uartSetEchoOn(handle);
 }
 
 void debugPrint(uint8_t * buff, uint8_t szBuff)
@@ -298,7 +312,7 @@ uint8_t normalizeTraceLevel(uint8_t lvl)
 
 void displayPrompt()
 {
-    if (debug_status.debug_mode == InteractiveMode)
+    if (debug_status.debug_mode == Mode_ASCIIInteractive)
     {
         debugPrintF("\r\n[%s]>>", getSubsystemModulePath());
     }

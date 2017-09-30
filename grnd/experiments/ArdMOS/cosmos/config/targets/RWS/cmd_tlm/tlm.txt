@@ -1,8 +1,13 @@
-TELEMETRY RWS STATUS BIG_ENDIAN "Telemetry description"
-  # Keyword      Name  BitSize Type   ID Description
-  APPEND_ID_ITEM ID    16      INT    1  "Identifier"
-  APPEND_ITEM    VALUE 32      FLOAT     "Value"
-  APPEND_ITEM    BOOL  8       UINT      "Boolean"
-    STATE FALSE 0
-    STATE TRUE 1
-  APPEND_ITEM    LABEL 0       STRING    "The label to apply"
+TELEMETRY RWS PIDMOT BIG_ENDIAN "Telemetry description"
+    APPEND_ITEM LENGTH 8 UINT "Length of packet." BIG_ENDIAN
+    APPEND_ID_ITEM ID 8 UINT 7 "ID of command" BIG_ENDIAN
+    APPEND_ITEM PADDING 8 UINT "<alignment padding>" LITTLE_ENDIAN
+    APPEND_ITEM TIMECHANGE 64 FLOAT "Time change covered by this telemetry entry." LITTLE_ENDIAN
+      UNITS seconds s
+    APPEND_ITEM SETPOINT 64 FLOAT "Current setpoint of PID controller." LITTLE_ENDIAN
+    APPEND_ITEM INPUT 64 FLOAT "Current input value." LITTLE_ENDIAN
+    APPEND_ITEM ERROR 64 FLOAT "Current measured error value." LITTLE_ENDIAN
+    APPEND_ITEM ERRSUM 64 FLOAT "Total value of integral term." LITTLE_ENDIAN
+    APPEND_ITEM DERR 64 FLOAT "Value of derivative term." LITTLE_ENDIAN
+    APPEND_ITEM OUTPUT 64 FLOAT "Value of generated output from PID loop." LITTLE_ENDIAN
+  
