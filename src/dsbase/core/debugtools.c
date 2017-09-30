@@ -168,25 +168,32 @@ void debugTraceF(uint8_t level, const char *_format, ...)
 
 void debugReadCallback(uint8_t rcvdbyte)
 {
-    // New command starting
-    if (consoleBuildingCommand == 0)
+    if (debug_status.debug_mode != Mode_BinaryStreaming)
     {
-        consoleBuildingCommand = 1;
-        consoleBytesRead = 0;
-    }
+        // New command starting
+        if (consoleBuildingCommand == 0)
+        {
+            consoleBuildingCommand = 1;
+            consoleBytesRead = 0;
+        }
 
-    // Keep building command string until enter is hit
-    if (rcvdbyte == '\r')
-    {
-        consoleBytesRead++;
-        consoleBuildingCommand = 0;
-        processCommand((uint8_t *)debugConsoleInputBuff, consoleBytesRead);
-        memset(debugConsoleInputBuff, 0, CONFIGM_debug_consoleinputbuffsize);
+        // Keep building command string until enter is hit
+        if (rcvdbyte == '\r')
+        {
+            consoleBytesRead++;
+            consoleBuildingCommand = 0;
+            processCommand((uint8_t *)debugConsoleInputBuff, consoleBytesRead);
+            memset(debugConsoleInputBuff, 0, CONFIGM_debug_consoleinputbuffsize);
+        }
+        else
+        {
+            debugConsoleInputBuff[consoleBytesRead] = rcvdbyte;
+            consoleBytesRead++;
+        }
     }
     else
     {
-        debugConsoleInputBuff[consoleBytesRead] = rcvdbyte;
-        consoleBytesRead++;
+
     }
 }
 
@@ -340,6 +347,11 @@ void processCommand(uint8_t * cmdbuff, uint8_t cmdlength)
             debug_status.trace_level = 0;
             debugInvokeActionHandlers(&cmdbuff[1]);
             break;
+        case '*':    // Change debug mode - can't get out of binary once in it, however
+            debug_status.trace_level = 0;
+            debugPrintF("Entering binary telemetry/telecommand streaming mode ... to exit, reset device.\r\n");
+            debug_status.debug_mode = Mode_BinaryStreaming;
+            break;
         default:
             // NOP
             break;
@@ -365,8 +377,10 @@ void displayPrompt()
     {
         debugPrintF("\r\n[%s]>>", getSubsystemModulePath());
     }
-    else
+    else if (debug_status.debug_mode == Mode_ASCIIHeadless)
+    {
         debugPrintF(">");
+    }
 }
 
 void bcbinPopulateHeader( BcTlmHeader *header, uint8_t opcode, uint8_t fulllen)

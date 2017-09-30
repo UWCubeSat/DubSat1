@@ -60,7 +60,8 @@ int main(void) {
         PWM_TIMER(CCR4) = output_cmd;
 
         // Now telemetry is being extracted by the subsystem rather than RW offering it up
-        debugInvokeStatusHandler(Entity_RWS);
+        if (debugGetMode() == Mode_BinaryStreaming)
+                debugInvokeStatusHandler(Entity_RWS);
 
         //debugPrintF("%f,%f\r\n", setpoint_cmd, output_cmd);
     }
