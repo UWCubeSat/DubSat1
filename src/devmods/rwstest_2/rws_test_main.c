@@ -59,6 +59,9 @@ int main(void) {
         // Assign output to PWM output signal for motor driver
         PWM_TIMER(CCR4) = output_cmd;
 
+        // Now telemetry is being extracted by the subsystem rather than RW offering it up
+        debugInvokeStatusHandler(Entity_RWS);
+
         //debugPrintF("%f,%f\r\n", setpoint_cmd, output_cmd);
     }
 

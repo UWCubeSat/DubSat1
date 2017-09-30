@@ -36,6 +36,17 @@ void rwsShowUsage()
     debugPrintF("\t!rsd  --  switch direction of motor\r\n");
 }
 
+void bcbinSendTlm()
+{
+    bcbinSendPacket((const uint8_t *) &pid, sizeof(pid));
+}
+
+uint8_t rwsStatusCallback(DebugMode mode)
+{
+    if (mode == Mode_BinaryStreaming)
+        bcbinSendTlm();
+}
+
 uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     uint8_t len = strlen(cmdstr);
@@ -83,12 +94,6 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
 
 void rwsInit()
 {
-    // Setup fields
-    pid.id = 7;
-    pid.length = sizeof(pid);
-    pid.syncpattern = 0xFC;
-    pid.padding = 2;
-
     //  FR (direction):  P7.3 to control direction, P7.4 to read FG pin ('1 0 0')
     RW_MOTORDIR_DIR |= RW_MOTORDIR_PIN;
     RW_MOTORDIR_SEL1 &= ~RW_MOTORDIR_PIN;
@@ -116,7 +121,9 @@ void rwsInit()
     RW_PWM_SEL1 &= ~RW_PWM_PIN;
     RW_PWM_SEL0 |= RW_PWM_PIN;
 
-    debugRegisterEntity(Entity_RWS, 'r', NULL, NULL, rwsActionCallback);
+    // Setup binary telemetry header
+    bcbinPopulateHeader(&(pid.header), BCBIN_OPCODE_RWS_PIDMOT, sizeof(pid));
+    debugRegisterEntity(Entity_RWS, NULL, rwsStatusCallback, rwsActionCallback);
 }
 
 void rwsRunAuto()
@@ -135,7 +142,6 @@ void rwsSetTuningParams(double Kp, double Ki, double Kd)
     ki = Ki;
     kd = Kd;
 }
-
 
 double rwsPIDStep(double cmd)
 {
@@ -178,7 +184,7 @@ double rwsPIDStep(double cmd)
     }
     else if (debugGetMode() == Mode_BinaryStreaming)
     {
-        debugPrint((const uint8_t *) &pid, sizeof(pid));
+        //bcbinSendTlm();
     }
 
 

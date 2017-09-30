@@ -1,4 +1,4 @@
-TITLE "Launcher"
+TITLE "Experimental Launcher"
 TOOL_FONT tahoma 12
 LABEL_FONT tahoma 16
 # NUM_COLUMNS 4 # This is the default
@@ -34,6 +34,7 @@ TOOL "Data Viewer" "LAUNCH DataViewer" "data_viewer.png"
 DIVIDER
 LABEL Utilities
 
+TOOL "Config Editor" "LAUNCH ConfigEditor" "config_editor.png"
 TOOL "Telemetry Extractor" "LAUNCH TlmExtractor" "tlm_extractor.png"
 TOOL "Command Extractor" "LAUNCH CmdExtractor" "cmd_extractor.png"
 TOOL "Handbook Creator" "LAUNCH HandbookCreator" "handbook_creator.png"

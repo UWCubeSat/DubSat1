@@ -64,7 +64,7 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable)
     if (buses_registered_with_debug == 0)
     {
         buses_registered_with_debug = 1;
-        debugRegisterEntity(Entity_UART, 'u', NULL, uartReportStatus, NULL);
+        debugRegisterEntity(Entity_UART, NULL, uartReportStatus, NULL);
     }
     
     // TODO:  Add logic to rejigger the dividers based on current clock

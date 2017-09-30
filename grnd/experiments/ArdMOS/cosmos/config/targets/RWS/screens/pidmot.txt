@@ -1,0 +1,18 @@
+SCREEN AUTO AUTO 1.0
+
+  VERTICALBOX
+    LABELVALUE RWS PIDMOT RECEIVED_TIMESECONDS # COSMOS Received Time (UTC, Floating point, Unix epoch)
+    LABELVALUE RWS PIDMOT RECEIVED_TIMEFORMATTED # COSMOS Received Time (Local time zone, Formatted string)
+    LABELVALUE RWS PIDMOT RECEIVED_COUNT # COSMOS packet received count
+    LABELVALUE RWS PIDMOT LENGTH # Length of packet.
+    LABELVALUE RWS PIDMOT ID # ID of command
+    LABELVALUE RWS PIDMOT PADDING # <alignment padding>
+    LABELVALUE RWS PIDMOT TIMECHANGE # Time change covered by this telemetry entry.
+    LABELVALUE RWS PIDMOT SETPOINT # Current setpoint of PID controller.
+    LABELVALUE RWS PIDMOT INPUT # Current input value.
+    LABELVALUE RWS PIDMOT ERROR # Current measured error value.
+    LABELVALUE RWS PIDMOT ERRSUM # Total value of integral term.
+    LABELVALUE RWS PIDMOT DERR # Value of derivative term.
+    LABELVALUE RWS PIDMOT OUTPUT # Value of generated output from PID loop.
+  END
+

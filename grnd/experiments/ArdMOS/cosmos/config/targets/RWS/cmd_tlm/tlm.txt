@@ -1,7 +1,6 @@
 TELEMETRY RWS PIDMOT BIG_ENDIAN "Telemetry description"
-    APPEND_ITEM LENGTH 8 UINT "Length of packet." BIG_ENDIAN
-    APPEND_ID_ITEM ID 8 UINT 7 "ID of command" BIG_ENDIAN
-    APPEND_ITEM PADDING 8 UINT "<alignment padding>" LITTLE_ENDIAN
+    APPEND_ITEM LENGTH 8 UINT "Length of packet." LITTLE_ENDIAN
+    APPEND_ID_ITEM ID 8 UINT 7 "ID of command" LITTLE_ENDIAN
     APPEND_ITEM TIMECHANGE 64 FLOAT "Time change covered by this telemetry entry." LITTLE_ENDIAN
       UNITS seconds s
     APPEND_ITEM SETPOINT 64 FLOAT "Current setpoint of PID controller." LITTLE_ENDIAN

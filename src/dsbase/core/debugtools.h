@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "utils.h"
+
 #ifndef __DEBUG__
 #warning  Header debugtools.h included, but __DEBUG__ flag not set.
 #endif  /* __DEBUG__ */
@@ -55,6 +57,7 @@ DebugMode debugGetMode();
 
 // KEEP THESE ENUMS IN SYNC WITH SRC FILE
 typedef enum _entityID {
+    Entity_NONE,
     Entity_Test,
     Entity_DebugService,
     Entity_I2CBus,
@@ -82,8 +85,34 @@ typedef struct _debug_context {
     param_debug_handler action_handler;
 } debug_context;
 
-void debugRegisterEntity(entityID id, uint8_t pathchar,
+void debugRegisterEntity(entityID id,
                          simple_debug_handler infohandler, simple_debug_handler statushandler,
                          param_debug_handler actionhandler);
+
+void debugInvokeInfoHandler(entityID id);
+void debugInvokeStatusHandler(entityID id);
+
+void debugInvokeInfoHandlers();
+void debugInvokeStatusHandlers();
+void debugInvokeActionHandlers(uint8_t * cmdstr);
+
+// Backchannel binary telemetery/command stuff
+
+#define BCBIN_SYNCPATTERN           0xFC
+
+// THIS HEADER MUST BE THE FIRST FIELD IN OUTGOING BINARY TELEMETRY STRUCTS
+typedef struct PACKED_STRUCT _bctlm_header {
+    uint8_t syncpattern;
+    uint8_t length;
+    uint8_t id;
+} BcTlmHeader;
+
+void bcbinPopulateHeader( BcTlmHeader *header, uint8_t opcode, uint8_t fulllen);
+void bcbinSendPacket(uint8_t * buff, uint8_t szBuff);
+
+#define BCBIN_OPCODE_RWS_PIDMOT     0x07
+
+
+
 
 #endif /* DEBUGTOOLS_H_ */

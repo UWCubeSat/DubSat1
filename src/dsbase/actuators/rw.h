@@ -12,6 +12,7 @@
 #include <stdint.h>
 
 #include "core/utils.h"
+#include "core/debugtools.h"
 
 #define OUTPUT_INCREMENT  5
 #define CLK_RPM_PERIOD_CONVERSION_8MHZ  240000000.0
@@ -53,11 +54,8 @@ double rwsPIDStep(double setpoint);
 void rwsRunAuto();
 void rwsRunManual();
 
-typedef struct _pid_step_info {
-    uint8_t syncpattern;
-    uint8_t length;
-    uint8_t id;
-    uint8_t padding;
+typedef struct PACKED_STRUCT _pid_step_info {
+    BcTlmHeader header;
     double timeChange_s;
     double setpoint;
     double input;
