@@ -222,22 +222,26 @@ void debugReadCallback(uint8_t rcvdbyte)
             case STATE_OPCODE_WAIT:
                 cmd_header.opcode = rcvdbyte;
                 binExpectedParamBytes = cmd_header.length - 4;
-                debugConsoleCmdBuff[0] = cmd_header.opcode;
+                debugConsoleInputBuff[0] = cmd_header.opcode;
 
                 // If no parameters (but a valid opcode)
                 if (binExpectedParamBytes == 0)
                 {
-                    debugInvokeActionHandler(cmd_header.entityid, debugConsoleCmdBuff);
+                    debugConsoleInputBuff[1] = 0;
+                    debugInvokeActionHandler(cmd_header.entityid, debugConsoleInputBuff);
                     cmd_parsing_state = STATE_START;
                 }
+                else
+                    cmd_parsing_state = STATE_GATHERING_PARAMS;
                 break;
             case STATE_GATHERING_PARAMS:
-                debugConsoleCmdBuff[binParamBytesRead+1] = rcvdbyte;
+                debugConsoleInputBuff[binParamBytesRead+1] = rcvdbyte;
                 binParamBytesRead++;
 
                 if (binParamBytesRead >= binExpectedParamBytes)
                 {
-                    debugInvokeActionHandler(cmd_header.entityid, debugConsoleCmdBuff);
+                    debugConsoleInputBuff[binParamBytesRead+1] = 0;
+                    debugInvokeActionHandler(cmd_header.entityid, debugConsoleInputBuff);
                     cmd_parsing_state = STATE_START;
                 }
                 break;
