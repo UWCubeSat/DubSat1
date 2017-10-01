@@ -97,15 +97,14 @@ void debugInit()
     if (debug_status.initialized != 0)
         return;
 
+    handle = uartInit(BackchannelUART, 1);
+    uartRegisterRxCallback(handle, debugReadCallback);
+
     debug_status.initialized = 1;
     debug_status.trace_level = __INITIAL_TRACE_LEVEL__;
     debugSetMode((DebugMode)__INITIAL_DEBUG_MODE__);
     cmd_parsing_state = STATE_START;
     cmd_header.syncpattern = BCBIN_SYNCPATTERN;
-
-
-    handle = uartInit(BackchannelUART, 1);
-    uartRegisterRxCallback(handle, debugReadCallback);
 
     debugRegisterEntity(Entity_DebugService, NULL, reportStatusCallback, actionCallback);
 }
