@@ -36,6 +36,8 @@ typedef enum _debugmode {
 typedef struct _svc_status_debug {
     uint8_t initialized;
     uint8_t registration_errors;
+    uint8_t unknown_cmd_ids;
+    uint8_t unknown_entity_ids;
     uint8_t trace_level;
     DebugMode debug_mode;
 
@@ -57,7 +59,7 @@ DebugMode debugGetMode();
 
 // KEEP THESE ENUMS IN SYNC WITH SRC FILE
 typedef enum _entityID {
-    Entity_NONE,
+    Entity_NONE = 0,
     Entity_Test,
     Entity_DebugService,
     Entity_I2CBus,
@@ -91,6 +93,7 @@ void debugRegisterEntity(entityID id,
 
 void debugInvokeInfoHandler(entityID id);
 void debugInvokeStatusHandler(entityID id);
+void debugInvokeActionHandler(entityID id, uint8_t * params);
 
 void debugInvokeInfoHandlers();
 void debugInvokeStatusHandlers();
@@ -107,12 +110,26 @@ typedef struct PACKED_STRUCT _bctlm_header {
     uint8_t id;
 } BcTlmHeader;
 
+typedef struct PACKED_STRUCT _bccmd_header {
+    uint8_t syncpattern;
+    uint8_t length;
+    uint8_t entityid;
+    uint8_t opcode;
+} BcCmdHeader;
+
 void bcbinPopulateHeader( BcTlmHeader *header, uint8_t opcode, uint8_t fulllen);
 void bcbinSendPacket(uint8_t * buff, uint8_t szBuff);
 
-#define BCBIN_OPCODE_RWS_PIDMOT     0x07
+#define BINTLM_OPCODE_RWS_PIDMOT     0x07
 
+typedef enum _bccmd_state {
+    STATE_START,
+    STATE_LEN_WAIT,
+    STATE_ENTID_WAIT,
+    STATE_OPCODE_WAIT,
+    STATE_GATHERING_PARAMS,
 
+} BcCmdState;
 
 
 #endif /* DEBUGTOOLS_H_ */

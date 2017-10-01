@@ -27,6 +27,11 @@ FILE_STATIC debug_context registeredDebugEntities[CONFIGM_debug_maxentities];
 FILE_STATIC uint8_t entityCount = 0;
 
 FILE_STATIC svc_status_debug debug_status;
+FILE_STATIC hBus handle;
+FILE_STATIC BcCmdState cmd_parsing_state;
+FILE_STATIC BcCmdHeader cmd_header;
+FILE_STATIC uint8_t binExpectedParamBytes;
+FILE_STATIC uint8_t binParamBytesRead = 0;
 
 // KEEP THESE STRINGS IN SYNC WITH HEADER FILE and following array
 FILE_STATIC uint8_t *DebugEntityFriendlyNames[] =  {
@@ -85,7 +90,7 @@ uint8_t actionCallback(DebugMode mode, uint8_t * cmdstr)
     }
 }
 
-FILE_STATIC hBus handle;
+
 
 void debugInit()
 {
@@ -95,6 +100,9 @@ void debugInit()
     debug_status.initialized = 1;
     debug_status.trace_level = __INITIAL_TRACE_LEVEL__;
     debugSetMode((DebugMode)__INITIAL_DEBUG_MODE__);
+    cmd_parsing_state = STATE_START;
+    cmd_header.syncpattern = BCBIN_SYNCPATTERN;
+
 
     handle = uartInit(BackchannelUART, 1);
     uartRegisterRxCallback(handle, debugReadCallback);
@@ -193,7 +201,47 @@ void debugReadCallback(uint8_t rcvdbyte)
     }
     else
     {
+        switch (cmd_parsing_state)
+        {
+            case STATE_START:
+                binExpectedParamBytes = 0;
+                binParamBytesRead = 0;
+                if (rcvdbyte == BCBIN_SYNCPATTERN)
+                    cmd_parsing_state = STATE_LEN_WAIT;
+                else
+                    debug_status.unknown_cmd_ids++;
+                break;
+            case STATE_LEN_WAIT:
+                cmd_header.length = rcvdbyte;
+                cmd_parsing_state = STATE_ENTID_WAIT;
+                break;
+            case STATE_ENTID_WAIT:
+                cmd_header.entityid = rcvdbyte;
+                cmd_parsing_state = STATE_OPCODE_WAIT;
+                break;
+            case STATE_OPCODE_WAIT:
+                cmd_header.opcode = rcvdbyte;
+                binExpectedParamBytes = cmd_header.length - 4;
+                debugConsoleCmdBuff[0] = cmd_header.opcode;
 
+                // If no parameters (but a valid opcode)
+                if (binExpectedParamBytes == 0)
+                {
+                    debugInvokeActionHandler(cmd_header.entityid, debugConsoleCmdBuff);
+                    cmd_parsing_state = STATE_START;
+                }
+                break;
+            case STATE_GATHERING_PARAMS:
+                debugConsoleCmdBuff[binParamBytesRead+1] = rcvdbyte;
+                binParamBytesRead++;
+
+                if (binParamBytesRead >= binExpectedParamBytes)
+                {
+                    debugInvokeActionHandler(cmd_header.entityid, debugConsoleCmdBuff);
+                    cmd_parsing_state = STATE_START;
+                }
+                break;
+        }
     }
 }
 
@@ -253,6 +301,28 @@ void debugInvokeInfoHandler(entityID id)
 void debugInvokeStatusHandler(entityID id)
 {
     coreCallSimpleHandlers(Handler_Status, id);
+}
+
+void debugInvokeActionHandler(entityID id, uint8_t * params)
+{
+    int i;
+    param_debug_handler foundhandler = 0;
+
+    for (i = 0; i < entityCount; i++)
+    {
+        if (registeredDebugEntities[i].id == id)
+        {
+            foundhandler = registeredDebugEntities[i].action_handler;
+        }
+    }
+
+    if (foundhandler == NULL)
+    {
+        debug_status.unknown_entity_ids++;
+        return;
+    }
+
+    (foundhandler)(debug_status.debug_mode, params);
 }
 
 void debugInvokeInfoHandlers()

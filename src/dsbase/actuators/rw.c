@@ -52,6 +52,8 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
     uint8_t len = strlen(cmdstr);
     uint16_t inputnum = 0;
 
+    CmdSetPointChange *cmdspc;
+
     if (mode == Mode_ASCIIInteractive)
     {
         if (len == 0)
@@ -90,6 +92,26 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
             }
         }
     }
+    else
+    {
+        // Handle the cmdstr as binary values
+        switch (cmdstr[0])
+        {
+            case OPCODE_DIRCHANGE:
+                RW_MOTORDIR_OUT ^= RW_MOTORDIR_PIN;
+                break;
+            case OPCODE_SETPOINTCHANGE:
+                cmdspc = (CmdSetPointChange *) &cmdstr[1];
+                if (cmdspc->newsetpoint == 0)
+                    setpoint_override = 0;
+                else
+                {
+                    setpoint_override = 1;
+                    overridden_setpoint = cmdspc->newsetpoint;
+                }
+                break;
+        }
+    }
 }
 
 void rwsInit()
@@ -122,7 +144,7 @@ void rwsInit()
     RW_PWM_SEL0 |= RW_PWM_PIN;
 
     // Setup binary telemetry header
-    bcbinPopulateHeader(&(pid.header), BCBIN_OPCODE_RWS_PIDMOT, sizeof(pid));
+    bcbinPopulateHeader(&(pid.header), BINTLM_OPCODE_RWS_PIDMOT, sizeof(pid));
     debugRegisterEntity(Entity_RWS, NULL, rwsStatusCallback, rwsActionCallback);
 }
 

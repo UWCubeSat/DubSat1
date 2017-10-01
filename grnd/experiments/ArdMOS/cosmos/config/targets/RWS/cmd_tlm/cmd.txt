@@ -1,8 +1,10 @@
-COMMAND RWS COMMAND BIG_ENDIAN "Packet description"
-  # Keyword           Name  BitSize Type   Min Max  Default  Description
-  APPEND_ID_PARAMETER ID    16      INT    1   1    1        "Identifier"
-  APPEND_PARAMETER    VALUE 32      FLOAT  0   10.5 2.5      "Value"
-  APPEND_PARAMETER    BOOL  8       UINT   MIN MAX  0        "Boolean"
-    STATE FALSE 0
-    STATE TRUE 1
-  APPEND_PARAMETER    LABEL 0       STRING          "COSMOS" "The label to apply"
+COMMAND RWS DIRCHANGE LITTLE_ENDIAN "Changes direction of motor."
+  APPEND_PARAMETER LENGTH 8  UINT 0 255 0 
+  APPEND_ID_PARAMETER ENTITYID 8 UINT 8 8 8 "Entity ID for the RW software in the module."
+  APPEND_ID_PARAMETER OPCODE 8 UINT 100 100 100 "Opcode passed to the entity command handler."
+  
+COMMAND RWS SETPOINTCH LITTLE_ENDIAN "Changes the PID setpoint for the motor."
+  APPEND_PARAMETER LENGTH 8  UINT 0 255 0
+  APPEND_ID_PARAMETER ENTITYID 8 UINT 8 8 8 "Entity ID for the RW software in the module."
+  APPEND_ID_PARAMETER OPCODE 8 UINT 115 115 115 "Opcode passed to the entity command handler."
+  APPEND_PARAMETER NEWSETPOINT 16 UINT 0 12000 500 "Store new setpoint for the PID controller and motor." LITTLE_ENDIAN

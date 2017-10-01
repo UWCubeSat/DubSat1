@@ -30,7 +30,7 @@ int main(void) {
 
     __bis_SR_register(GIE);
 
-    rwsSetTuningParams(2.0, 4.4, 0.0);
+    rwsSetTuningParams(2.5, 9.4, 0.0);
     rwsRunAuto();
 
     uint16_t sequencecounter = 0;

@@ -65,4 +65,10 @@ typedef struct PACKED_STRUCT _pid_step_info {
     double output;
 } PidStepInfo;
 
+#define OPCODE_DIRCHANGE            0x64
+#define OPCODE_SETPOINTCHANGE       0x73
+typedef struct PACKED_STRUCT _cmd_setpointchange {
+    uint16_t newsetpoint;
+} CmdSetPointChange;
+
 #endif /* DSBASE_ACTUATORS_RW_H_ */
