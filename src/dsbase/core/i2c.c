@@ -10,6 +10,8 @@
 
 void i2cInit(uint8_t slaveaddr)
 {
+    bspI2CInit(I2CBus2);
+
     // USCI Configuration:  Common for both TX and RX
     i2cDisable();                                             // Software reset enabled
     UCB2CTLW0 |= UCMODE_3 | UCMST | UCSYNC | UCSSEL__SMCLK;     // I2C, master, synchronous, use SMCLK

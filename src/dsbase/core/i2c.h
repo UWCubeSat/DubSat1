@@ -13,6 +13,11 @@
 // TODO:  Introduce pre-processor hackery to "build up" each register name based on
 // passed in USCI_MODULE selected.
 
+typedef enum _bus_instance_I2C {
+    I2CBus1 = 0,
+    I2CBus2 = 1,
+} bus_instance_I2C;
+
 // Core helper definitions
 #define I2C_MASTER_RECEIVE_INTERRUPT_MASK     (UCRXEIE | UCNACKIE )
 #define I2C_MASTER_TRANSMIT_INTERRUPT_MASK    (UCTXIE2 | UCNACKIE )

@@ -1,0 +1,35 @@
+2017/09/26 17:22:35.033  INFO: Processing target definition in file 'D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/target.txt'
+2017/09/26 17:22:35.036  INFO: COSMOS Version: 4.0.1
+2017/09/26 17:22:35.036  INFO: Processing CmdTlmServer configuration in file: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/tools/cmd_tlm_server/cmd_tlm_server.txt
+2017/09/26 17:22:35.036  INFO: Processing CmdTlmServer configuration in file: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/BLINK/cmd_tlm_server.txt
+2017/09/26 17:22:35.058  INFO: Marshal load success: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/tmp/marshal_88f589313c54d9cd05c31a585b50b75d.bin
+2017/09/26 17:22:35.061  INFO: Creating thread for interface BLINKINT
+2017/09/26 17:22:35.061  INFO: Creating thread for router PREIDENTIFIED_ROUTER
+2017/09/26 17:22:35.061  INFO: Creating thread for router PREIDENTIFIED_CMD_ROUTER
+2017/09/26 17:22:35.062  INFO: Starting packet reading for BLINKINT
+2017/09/26 17:22:35.062  INFO: Connecting to BLINKINT...
+2017/09/26 17:22:35.064  INFO: Starting packet reading for PREIDENTIFIED_ROUTER
+2017/09/26 17:22:35.064  INFO: Connecting to PREIDENTIFIED_ROUTER...
+2017/09/26 17:22:35.064  INFO: PREIDENTIFIED_ROUTER Connection Success
+2017/09/26 17:22:35.064  INFO: Starting connection maintenance for PREIDENTIFIED_CMD_ROUTER
+2017/09/26 17:22:35.064  INFO: Connecting to PREIDENTIFIED_CMD_ROUTER...
+2017/09/26 17:22:35.065  INFO: PREIDENTIFIED_CMD_ROUTER Connection Success
+2017/09/26 17:22:35.069  INFO: BLINKINT Connection Success
+2017/09/26 17:22:49.622  INFO: cmd("BLINK DELAY with DELAY 1")
+2017/09/26 17:22:49.636  INFO: Log File Opened : D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/logs/2017_09_26_17_22_49_cmd.bin
+2017/09/26 17:22:54.014  INFO: cmd("BLINK DELAY with DELAY 1")
+2017/09/26 17:23:46.070  INFO: cmd("BLINK DELAY with DELAY 1")
+2017/09/26 17:23:55.474  INFO: Log File Closed : D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/logs/2017_09_26_17_22_49_cmd.bin
+2017/09/26 17:23:55.505  INFO: Killing thread for router PREIDENTIFIED_ROUTER
+2017/09/26 17:23:55.505  INFO: Clean disconnect from PREIDENTIFIED_ROUTER (returned nil)
+2017/09/26 17:23:55.505  INFO: Connection Lost for PREIDENTIFIED_ROUTER
+2017/09/26 17:23:55.565  INFO: Stopped packet reading for PREIDENTIFIED_ROUTER
+2017/09/26 17:23:55.575  INFO: Disconnected from router PREIDENTIFIED_ROUTER
+2017/09/26 17:23:55.575  INFO: Killing thread for router PREIDENTIFIED_CMD_ROUTER
+2017/09/26 17:23:55.580  INFO: Stopped packet reading for PREIDENTIFIED_CMD_ROUTER
+2017/09/26 17:23:55.666  INFO: Disconnected from router PREIDENTIFIED_CMD_ROUTER
+2017/09/26 17:23:55.666  INFO: Killing thread for interface BLINKINT
+2017/09/26 17:23:55.707  INFO: Clean disconnect from BLINKINT (returned nil)
+2017/09/26 17:23:55.707  INFO: Connection Lost for BLINKINT
+2017/09/26 17:23:55.707  INFO: Stopped packet reading for BLINKINT
+2017/09/26 17:23:55.707  INFO: Disconnected from interface BLINKINT

@@ -102,7 +102,7 @@
 
 
 // Conversion factors
-// TODO:  Ideally, this becomes a lookup table based on current gain setting
+// TODO:  Consider making this a lookup table based on current gain setting, to avoid falling out of sync
 #define HMC5883L_CONVERSION_FACTOR_RAW_TO_NANOTESLAS  MAG_HMC5883L_GAIN_MAX_CONVERSION_FACTOR
 #define HMC5883L_CONVERSION_FACTOR_RAW_TO_TESLAS  (HMC5883L_CONVERSION_FACTOR_RAW_TO_NANOTESLAS / 1000000000.0)
 

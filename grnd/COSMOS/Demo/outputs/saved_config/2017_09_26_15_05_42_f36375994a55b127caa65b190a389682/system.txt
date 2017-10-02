@@ -1,0 +1,5 @@
+DECLARE_TARGET INST nil target.txt
+DECLARE_TARGET INST INST2 target.txt
+DECLARE_TARGET EXAMPLE nil target.txt
+DECLARE_TARGET TEMPLATED nil target.txt
+DECLARE_TARGET SYSTEM nil target.txt
