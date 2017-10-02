@@ -11242,6 +11242,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="17.78" y="-205.74"/>
 <pinref part="MOTOR_X" gate="G$1" pin="P$6"/>
 </segment>
+<segment>
+<pinref part="U$3" gate="G$1" pin="P3.6_GPIO/PWM"/>
+<wire x1="45.72" y1="-86.36" x2="66.04" y2="-86.36" width="0.1524" layer="91"/>
+<wire x1="66.04" y1="-86.36" x2="66.04" y2="-88.9" width="0.1524" layer="91"/>
+<wire x1="66.04" y1="-88.9" x2="68.58" y2="-88.9" width="0.1524" layer="91"/>
+<label x="68.58" y="-88.9" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="HP_V_X" class="0">
 <segment>
@@ -11257,6 +11264,11 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="20.32" y="-198.12"/>
 <pinref part="MOTOR_X" gate="G$1" pin="P$7"/>
 </segment>
+<segment>
+<pinref part="U$3" gate="G$1" pin="P3.7_GPIO/PWM"/>
+<wire x1="45.72" y1="-83.82" x2="68.58" y2="-83.82" width="0.1524" layer="91"/>
+<label x="68.58" y="-83.82" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="HP_U_X" class="0">
 <segment>
@@ -11269,6 +11281,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <wire x1="22.86" y1="-190.5" x2="22.86" y2="-167.64" width="0.1524" layer="91"/>
 <junction x="22.86" y="-190.5"/>
 <pinref part="MOTOR_X" gate="G$1" pin="P$8"/>
+</segment>
+<segment>
+<pinref part="U$3" gate="G$1" pin="P1.6_GPIO/PWM"/>
+<wire x1="45.72" y1="-81.28" x2="66.04" y2="-81.28" width="0.1524" layer="91"/>
+<wire x1="66.04" y1="-81.28" x2="66.04" y2="-78.74" width="0.1524" layer="91"/>
+<wire x1="66.04" y1="-78.74" x2="68.58" y2="-78.74" width="0.1524" layer="91"/>
+<label x="68.58" y="-78.74" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="CS_X" class="0">
@@ -11670,6 +11689,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="180.34" y="-205.74"/>
 <pinref part="MOTOR_Y" gate="G$1" pin="P$6"/>
 </segment>
+<segment>
+<pinref part="U$10" gate="G$1" pin="P3.6_GPIO/PWM"/>
+<wire x1="193.04" y1="-78.74" x2="213.36" y2="-78.74" width="0.1524" layer="91"/>
+<wire x1="213.36" y1="-78.74" x2="213.36" y2="-81.28" width="0.1524" layer="91"/>
+<wire x1="213.36" y1="-81.28" x2="215.9" y2="-81.28" width="0.1524" layer="91"/>
+<label x="215.9" y="-81.28" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="HP_V_Y" class="0">
 <segment>
@@ -11685,6 +11711,11 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="182.88" y="-198.12"/>
 <pinref part="MOTOR_Y" gate="G$1" pin="P$7"/>
 </segment>
+<segment>
+<pinref part="U$10" gate="G$1" pin="P3.7_GPIO/PWM"/>
+<wire x1="193.04" y1="-76.2" x2="215.9" y2="-76.2" width="0.1524" layer="91"/>
+<label x="215.9" y="-76.2" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="HP_U_Y" class="0">
 <segment>
@@ -11697,6 +11728,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <wire x1="185.42" y1="-190.5" x2="185.42" y2="-167.64" width="0.1524" layer="91"/>
 <junction x="185.42" y="-190.5"/>
 <pinref part="MOTOR_Y" gate="G$1" pin="P$8"/>
+</segment>
+<segment>
+<pinref part="U$10" gate="G$1" pin="P1.6_GPIO/PWM"/>
+<wire x1="193.04" y1="-73.66" x2="213.36" y2="-73.66" width="0.1524" layer="91"/>
+<wire x1="213.36" y1="-73.66" x2="213.36" y2="-71.12" width="0.1524" layer="91"/>
+<wire x1="213.36" y1="-71.12" x2="215.9" y2="-71.12" width="0.1524" layer="91"/>
+<label x="215.9" y="-71.12" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="CS_Y" class="0">
@@ -12027,6 +12065,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="330.2" y="-208.28"/>
 <pinref part="MOTOR_Z" gate="G$1" pin="P$6"/>
 </segment>
+<segment>
+<pinref part="U$13" gate="G$1" pin="P3.6_GPIO/PWM"/>
+<wire x1="342.9" y1="-81.28" x2="363.22" y2="-81.28" width="0.1524" layer="91"/>
+<wire x1="363.22" y1="-81.28" x2="363.22" y2="-83.82" width="0.1524" layer="91"/>
+<wire x1="363.22" y1="-83.82" x2="365.76" y2="-83.82" width="0.1524" layer="91"/>
+<label x="365.76" y="-83.82" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="HP_V_Z" class="0">
 <segment>
@@ -12042,6 +12087,11 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="332.74" y="-200.66"/>
 <pinref part="MOTOR_Z" gate="G$1" pin="P$7"/>
 </segment>
+<segment>
+<pinref part="U$13" gate="G$1" pin="P3.7_GPIO/PWM"/>
+<wire x1="342.9" y1="-78.74" x2="365.76" y2="-78.74" width="0.1524" layer="91"/>
+<label x="365.76" y="-78.74" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="HP_U_Z" class="0">
 <segment>
@@ -12054,6 +12104,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <wire x1="335.28" y1="-193.04" x2="335.28" y2="-170.18" width="0.1524" layer="91"/>
 <junction x="335.28" y="-193.04"/>
 <pinref part="MOTOR_Z" gate="G$1" pin="P$8"/>
+</segment>
+<segment>
+<pinref part="U$13" gate="G$1" pin="P1.6_GPIO/PWM"/>
+<wire x1="342.9" y1="-76.2" x2="363.22" y2="-76.2" width="0.1524" layer="91"/>
+<wire x1="363.22" y1="-76.2" x2="363.22" y2="-73.66" width="0.1524" layer="91"/>
+<wire x1="363.22" y1="-73.66" x2="365.76" y2="-73.66" width="0.1524" layer="91"/>
+<label x="365.76" y="-73.66" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="CS_Z" class="0">
