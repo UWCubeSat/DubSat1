@@ -27,9 +27,15 @@ FILE_STATIC debug_context registeredDebugEntities[CONFIGM_debug_maxentities];
 FILE_STATIC uint8_t entityCount = 0;
 
 FILE_STATIC svc_status_debug debug_status;
+FILE_STATIC hBus handle;
+FILE_STATIC BcCmdState cmd_parsing_state;
+FILE_STATIC BcCmdHeader cmd_header;
+FILE_STATIC uint8_t binExpectedParamBytes;
+FILE_STATIC uint8_t binParamBytesRead = 0;
 
-// KEEP THESE STRINGS IN SYNC WITH HEADER FILE
+// KEEP THESE STRINGS IN SYNC WITH HEADER FILE and following array
 FILE_STATIC uint8_t *DebugEntityFriendlyNames[] =  {
+                                                    "<Null Entity>",
                                                     "Test Entity",
                                                     "Debug Service",
                                                     "I2C Bus",
@@ -39,9 +45,24 @@ FILE_STATIC uint8_t *DebugEntityFriendlyNames[] =  {
                                                     "UART Bus",
                                                     "RWheels",};
 
+// KEEP THESE STRINGS IN SYNC WITH HEADER FILE and previous array
+// Use lower-case for "system" services and buses, capital letters for
+// subsystem-specific stuff
+FILE_STATIC uint8_t DebugEntityPathChars[] = {
+                                              '.',
+                                              '^',
+                                              'd',
+                                              'i',
+                                              'p',
+                                              'c',
+                                              'b',
+                                              'u',
+                                              'R',
+                                            };
+
 uint8_t reportStatusCallback(DebugMode mode)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
         {
             debugPrintF("**Debug Service Status:\r\n");
             debugPrintF("Trace level: %d\r\n\r\n", debug_status.trace_level);
@@ -56,7 +77,7 @@ uint8_t reportStatusCallback(DebugMode mode)
 
 uint8_t actionCallback(DebugMode mode, uint8_t * cmdstr)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
     {
         if (strlen(cmdstr) == 0)
         {
@@ -69,30 +90,54 @@ uint8_t actionCallback(DebugMode mode, uint8_t * cmdstr)
     }
 }
 
-FILE_STATIC hBus handle;
+
 
 void debugInit()
 {
     if (debug_status.initialized != 0)
         return;
 
-    debug_status.initialized = 1;
-    debug_status.trace_level = __INITIAL_TRACE_LEVEL__;
-    debug_status.debug_mode = InteractiveMode;
-
     handle = uartInit(BackchannelUART, 1);
     uartRegisterRxCallback(handle, debugReadCallback);
 
-    debugRegisterEntity(Entity_DebugService, 'd', NULL, reportStatusCallback, actionCallback);
+    debug_status.initialized = 1;
+    debug_status.trace_level = __INITIAL_TRACE_LEVEL__;
+    debugSetMode((DebugMode)__INITIAL_DEBUG_MODE__);
+    cmd_parsing_state = STATE_START;
+    cmd_header.syncpattern = BCBIN_SYNCPATTERN;
+
+    debugRegisterEntity(Entity_DebugService, NULL, reportStatusCallback, actionCallback);
+}
+
+DebugMode debugGetMode()
+{
+    return debug_status.debug_mode;
+}
+
+void debugSetMode(DebugMode newmode)
+{
+    debug_status.debug_mode = newmode;
+    if (debug_status.debug_mode != Mode_ASCIIInteractive)
+        uartSetEchoOff(handle);
+    else
+        uartSetEchoOn(handle);
 }
 
 void debugPrint(uint8_t * buff, uint8_t szBuff)
 {
+    // DO NOT USE debugPrint when performing binary streaming
+    if (debug_status.debug_mode == Mode_BinaryStreaming)
+            return;
+
     uartTransmit(handle, buff, szBuff);
 }
 
 void debugPrintF(const char *_format, ...)
 {
+    // DO NOT USE debugPrintF when performing binary streaming
+    if (debug_status.debug_mode == Mode_BinaryStreaming)
+        return;
+
     int numBytes;
 
     va_list argptr;
@@ -103,12 +148,20 @@ void debugPrintF(const char *_format, ...)
 
 void debugTrace(uint8_t level, uint8_t * buff, uint8_t szBuff)
 {
+    // DO NOT USE debugTrace when performing binary streaming
+    if (debug_status.debug_mode == Mode_BinaryStreaming)
+        return;
+
     if (normalizeTraceLevel(level) <= debug_status.trace_level)
         debugPrint(buff, szBuff);
 }
 
 void debugTraceF(uint8_t level, const char *_format, ...)
 {
+    // DO NOT USE debugTraceF when performing binary streaming
+    if (debug_status.debug_mode == Mode_BinaryStreaming)
+        return;
+
     int numBytes;
 
     if (normalizeTraceLevel(level) <= debug_status.trace_level)
@@ -122,29 +175,80 @@ void debugTraceF(uint8_t level, const char *_format, ...)
 
 void debugReadCallback(uint8_t rcvdbyte)
 {
-    // New command starting
-    if (consoleBuildingCommand == 0)
+    if (debug_status.debug_mode != Mode_BinaryStreaming)
     {
-        consoleBuildingCommand = 1;
-        consoleBytesRead = 0;
-    }
+        // New command starting
+        if (consoleBuildingCommand == 0)
+        {
+            consoleBuildingCommand = 1;
+            consoleBytesRead = 0;
+        }
 
-    // Keep building command string until enter is hit
-    if (rcvdbyte == '\r')
-    {
-        consoleBytesRead++;
-        consoleBuildingCommand = 0;
-        processCommand((uint8_t *)debugConsoleInputBuff, consoleBytesRead);
-        memset(debugConsoleInputBuff, 0, CONFIGM_debug_consoleinputbuffsize);
+        // Keep building command string until enter is hit
+        if (rcvdbyte == '\r')
+        {
+            consoleBytesRead++;
+            consoleBuildingCommand = 0;
+            processCommand((uint8_t *)debugConsoleInputBuff, consoleBytesRead);
+            memset(debugConsoleInputBuff, 0, CONFIGM_debug_consoleinputbuffsize);
+        }
+        else
+        {
+            debugConsoleInputBuff[consoleBytesRead] = rcvdbyte;
+            consoleBytesRead++;
+        }
     }
     else
     {
-        debugConsoleInputBuff[consoleBytesRead] = rcvdbyte;
-        consoleBytesRead++;
+        switch (cmd_parsing_state)
+        {
+            case STATE_START:
+                binExpectedParamBytes = 0;
+                binParamBytesRead = 0;
+                if (rcvdbyte == BCBIN_SYNCPATTERN)
+                    cmd_parsing_state = STATE_LEN_WAIT;
+                else
+                    debug_status.unknown_cmd_ids++;
+                break;
+            case STATE_LEN_WAIT:
+                cmd_header.length = rcvdbyte;
+                cmd_parsing_state = STATE_ENTID_WAIT;
+                break;
+            case STATE_ENTID_WAIT:
+                cmd_header.entityid = rcvdbyte;
+                cmd_parsing_state = STATE_OPCODE_WAIT;
+                break;
+            case STATE_OPCODE_WAIT:
+                cmd_header.opcode = rcvdbyte;
+                binExpectedParamBytes = cmd_header.length - 4;
+                debugConsoleInputBuff[0] = cmd_header.opcode;
+
+                // If no parameters (but a valid opcode)
+                if (binExpectedParamBytes == 0)
+                {
+                    debugConsoleInputBuff[1] = 0;
+                    debugInvokeActionHandler(cmd_header.entityid, debugConsoleInputBuff);
+                    cmd_parsing_state = STATE_START;
+                }
+                else
+                    cmd_parsing_state = STATE_GATHERING_PARAMS;
+                break;
+            case STATE_GATHERING_PARAMS:
+                debugConsoleInputBuff[binParamBytesRead+1] = rcvdbyte;
+                binParamBytesRead++;
+
+                if (binParamBytesRead >= binExpectedParamBytes)
+                {
+                    debugConsoleInputBuff[binParamBytesRead+1] = 0;
+                    debugInvokeActionHandler(cmd_header.entityid, debugConsoleInputBuff);
+                    cmd_parsing_state = STATE_START;
+                }
+                break;
+        }
     }
 }
 
-void debugRegisterEntity(entityID id, uint8_t pathchar,
+void debugRegisterEntity(entityID id,
                          simple_debug_handler infohandler, simple_debug_handler statushandler, param_debug_handler actionhandler)
 {
     if (entityCount >= CONFIGM_debug_maxentities)
@@ -156,48 +260,87 @@ void debugRegisterEntity(entityID id, uint8_t pathchar,
     // TODO:
     debug_context  *newEntity = &(registeredDebugEntities[entityCount++]);
     newEntity->id = id;
-    newEntity->pathchar = pathchar;
+    newEntity->pathchar = DebugEntityPathChars[(uint8_t) id];
     newEntity->info_handler = infohandler;
     newEntity->status_handler = statushandler;
     newEntity->action_handler = actionhandler;
 }
 
-void coreCallSimpleHandlers(simple_handler_type t)
+void coreCallSimpleHandlers(simple_handler_type t, entityID onlyid)
 {
     int i;
     simple_debug_handler handler;
 
     for (i = 0; i < entityCount; i++)
     {
-        if (t == Handler_Info)
-            handler = registeredDebugEntities[i].info_handler;
-        else if (t == Handler_Status)
-            handler = registeredDebugEntities[i].status_handler;
-        else
+        if (onlyid == Entity_NONE || onlyid == registeredDebugEntities[i].id)
         {
-            debug_status.registration_errors++;
-            return;
-        }
+            if (t == Handler_Info)
+                handler = registeredDebugEntities[i].info_handler;
+            else if (t == Handler_Status)
+                handler = registeredDebugEntities[i].status_handler;
+            else
+            {
+                debug_status.registration_errors++;
+                return;
+            }
 
-        if (handler != 0)
-            (handler)(debug_status.debug_mode);
-        debugPrintF("\r\n");
+            if (handler != 0)
+                (handler)(debug_status.debug_mode);
+            debugPrintF("\r\n");
+
+            // No need to search for more
+            if (onlyid != Entity_NONE)
+                return;
+        }
     }
 }
 
-void cmdInfo()
+void debugInvokeInfoHandler(entityID id)
+{
+    coreCallSimpleHandlers(Handler_Info, id);
+}
+
+void debugInvokeStatusHandler(entityID id)
+{
+    coreCallSimpleHandlers(Handler_Status, id);
+}
+
+void debugInvokeActionHandler(entityID id, uint8_t * params)
+{
+    int i;
+    param_debug_handler foundhandler = 0;
+
+    for (i = 0; i < entityCount; i++)
+    {
+        if (registeredDebugEntities[i].id == id)
+        {
+            foundhandler = registeredDebugEntities[i].action_handler;
+        }
+    }
+
+    if (foundhandler == NULL)
+    {
+        debug_status.unknown_entity_ids++;
+        return;
+    }
+
+    (foundhandler)(debug_status.debug_mode, params);
+}
+
+void debugInvokeInfoHandlers()
 {
     debugPrintF("\r\nSubsystem information (static):\r\n--------------------------------\r\n");
-    coreCallSimpleHandlers(Handler_Info);
+    coreCallSimpleHandlers(Handler_Info, Entity_NONE);
 }
 
-void cmdStatus()
+void debugInvokeStatusHandlers()
 {
     debugPrintF("\r\nSubsystem status (dynamic):\r\n----------------------------\r\n");
-    coreCallSimpleHandlers(Handler_Status);
+    coreCallSimpleHandlers(Handler_Status, Entity_NONE);
 }
 
-void cmdAction(uint8_t * cmdstr)
+void debugInvokeActionHandlers(uint8_t * cmdstr)
 {
     int i;
     param_debug_handler handler;
@@ -267,15 +410,20 @@ void processCommand(uint8_t * cmdbuff, uint8_t cmdlength)
             break;
         case 'i':   // Call info functions on all entities
             debug_status.trace_level = 0;
-            cmdInfo();
+            debugInvokeInfoHandlers();
             break;
         case 's':   // Call status functions on all entities
             debug_status.trace_level = 0;
-            cmdStatus();
+            debugInvokeStatusHandlers();
             break;
         case '!':
             debug_status.trace_level = 0;
-            cmdAction(&cmdbuff[1]);
+            debugInvokeActionHandlers(&cmdbuff[1]);
+            break;
+        case '*':    // Change debug mode - can't get out of binary once in it, however
+            debug_status.trace_level = 0;
+            debugPrintF("Entering binary telemetry/telecommand streaming mode ... to exit, reset device.\r\n");
+            debug_status.debug_mode = Mode_BinaryStreaming;
             break;
         default:
             // NOP
@@ -298,14 +446,27 @@ uint8_t normalizeTraceLevel(uint8_t lvl)
 
 void displayPrompt()
 {
-    if (debug_status.debug_mode == InteractiveMode)
+    if (debug_status.debug_mode == Mode_ASCIIInteractive)
     {
         debugPrintF("\r\n[%s]>>", getSubsystemModulePath());
     }
-    else
+    else if (debug_status.debug_mode == Mode_ASCIIHeadless)
+    {
         debugPrintF(">");
+    }
 }
 
+void bcbinPopulateHeader( BcTlmHeader *header, uint8_t opcode, uint8_t fulllen)
+{
+    header->syncpattern = BCBIN_SYNCPATTERN;
+    header->id = opcode;
+    header->length = fulllen;
+}
+
+void bcbinSendPacket(uint8_t * buff, uint8_t szBuff)
+{
+    uartTransmit(handle, buff, szBuff);
+}
 
 #else  /* __DEBUG__ not specified, therefore nop debug operations */
 

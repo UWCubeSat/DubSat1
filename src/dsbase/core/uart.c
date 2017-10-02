@@ -25,7 +25,7 @@ uint8_t uartReportStatus(DebugMode mode)
         bus_ctx = &buses[i];
         if (bus_ctx->initialized == 1)
         {
-            if (mode == InteractiveMode)
+            if (mode == Mode_ASCIIInteractive)
             {
 
                 debugPrintF("**UART %d Status:\r\n", i);
@@ -64,7 +64,7 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable)
     if (buses_registered_with_debug == 0)
     {
         buses_registered_with_debug = 1;
-        debugRegisterEntity(Entity_UART, 'u', NULL, uartReportStatus, NULL);
+        debugRegisterEntity(Entity_UART, NULL, uartReportStatus, NULL);
     }
     
     // TODO:  Add logic to rejigger the dividers based on current clock

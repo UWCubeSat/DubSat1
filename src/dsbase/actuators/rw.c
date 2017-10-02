@@ -13,8 +13,8 @@
 #include "core/timers.h"
 
 FILE_STATIC unsigned long lastTime_cycles;
-FILE_STATIC double input, rawOutput, lastInput, output, setpoint;
-FILE_STATIC double errSum, lastErr;
+FILE_STATIC double rawOutput, lastInput;
+FILE_STATIC double lastErr;
 FILE_STATIC double kp, ki, kd;
 
 FILE_STATIC uint16_t outputCounter = 0;
@@ -27,6 +27,8 @@ FILE_STATIC uint8_t active = 0;
 FILE_STATIC uint8_t setpoint_override = 0;
 FILE_STATIC double overridden_setpoint;
 
+FILE_STATIC PidStepInfo pid;
+
 void rwsShowUsage()
 {
     debugPrintF("Usage:\r\n");
@@ -34,12 +36,25 @@ void rwsShowUsage()
     debugPrintF("\t!rsd  --  switch direction of motor\r\n");
 }
 
+void bcbinSendTlm()
+{
+    bcbinSendPacket((const uint8_t *) &pid, sizeof(pid));
+}
+
+uint8_t rwsStatusCallback(DebugMode mode)
+{
+    if (mode == Mode_BinaryStreaming)
+        bcbinSendTlm();
+}
+
 uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     uint8_t len = strlen(cmdstr);
     uint16_t inputnum = 0;
 
-    if (mode == InteractiveMode)
+    CmdPidCtrl *cmdpidctrl;
+
+    if (mode == Mode_ASCIIInteractive)
     {
         if (len == 0)
         {
@@ -77,6 +92,33 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
             }
         }
     }
+    else
+    {
+        // Handle the cmdstr as binary values
+        switch (cmdstr[0])
+        {
+            case OPCODE_DIRCHANGE:
+                RW_MOTORDIR_OUT ^= RW_MOTORDIR_PIN;
+                break;
+            case OPCODE_SETPOINTCHANGE:
+                cmdpidctrl = (CmdPidCtrl *) &cmdstr[1];
+                if (cmdpidctrl->resetwindup == TRUE)
+                {
+                    pid.resetwindupcnt++;
+                    pid.errSum = 0;
+                }
+
+                // TODO:  Remove this janky override stuff and just have one commanding mode
+                if (cmdpidctrl->newsetpoint == 0)
+                    setpoint_override = 0;
+                else
+                {
+                    setpoint_override = 1;
+                    overridden_setpoint = cmdpidctrl->newsetpoint;
+                }
+                break;
+        }
+    }
 }
 
 void rwsInit()
@@ -108,7 +150,9 @@ void rwsInit()
     RW_PWM_SEL1 &= ~RW_PWM_PIN;
     RW_PWM_SEL0 |= RW_PWM_PIN;
 
-    debugRegisterEntity(Entity_RWS, 'r', NULL, NULL, rwsActionCallback);
+    // Setup binary telemetry header
+    bcbinPopulateHeader(&(pid.header), BINTLM_OPCODE_RWS_PIDMOT, sizeof(pid));
+    debugRegisterEntity(Entity_RWS, NULL, rwsStatusCallback, rwsActionCallback);
 }
 
 void rwsRunAuto()
@@ -134,37 +178,46 @@ double rwsPIDStep(double cmd)
         return cmd;
 
     if (setpoint_override == 1)
-        setpoint = overridden_setpoint;
+        pid.setpoint = overridden_setpoint;
     else
-        setpoint = cmd;
-    input = currentRPM;
+        pid.setpoint = cmd;
+    pid.input = currentRPM;
 
     // Calc time delta
     uint32_t now_cycles = TIMESTAMP_TIMER(R);
-    double timeChange_s  = (double)(CLK_PERIOD_8MHZ * timerCycleDiff16(lastTime_cycles, now_cycles));
+    pid.timeChange_s  = (double)(CLK_PERIOD_8MHZ * timerCycleDiff16(lastTime_cycles, now_cycles));
 
     // Compute vars
-    double error = setpoint - input;
-    errSum += (error * timeChange_s);
-    double dErr = (error - lastErr) / timeChange_s;
+    pid.error = pid.setpoint - pid.input;
+    pid.errSum += (pid.error * pid.timeChange_s);
+    pid.dErr = (pid.error - lastErr) / pid.timeChange_s;
 
 
     // Compute PID output
-    rawOutput = (kp * error) + (ki * errSum) + (kd * dErr);
+    rawOutput = (kp * pid.error) + (ki * pid.errSum) + (kd * pid.dErr);
 
     if (rawOutput < MIN_PWM_OUT)
-        output = MIN_PWM_OUT;
+        pid.output = MIN_PWM_OUT;
     else if (rawOutput > MAX_PWM_OUT)
-        output = MAX_PWM_OUT;
+        pid.output = MAX_PWM_OUT;
     else
-        output = rawOutput;
+        pid.output = rawOutput;
 
     // Store values for subsequent comparisons
-    lastErr = error;
+    lastErr = pid.error;
     lastTime_cycles = now_cycles;
 
-    debugTraceF(2,"%f,%f,%f,%f,%f,%f\r\n", timeChange_s, setpoint, input, error, errSum, output);
-    return output;
+    if (debugGetMode() == Mode_ASCIIInteractive)
+    {
+        debugTraceF(2,"%f,%f,%f,%f,%f,%f\r\n", pid.timeChange_s, pid.setpoint, pid.input, pid.error, pid.errSum, pid.output);
+    }
+    else if (debugGetMode() == Mode_BinaryStreaming)
+    {
+        //bcbinSendTlm();
+    }
+
+
+    return pid.output;
 
 }
 

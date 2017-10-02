@@ -10,6 +10,4 @@
 
 
 
-
-
 #endif /* RWS_TEST_H_ */

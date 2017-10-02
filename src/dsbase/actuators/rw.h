@@ -11,6 +11,9 @@
 #include <msp430.h>
 #include <stdint.h>
 
+#include "core/utils.h"
+#include "core/debugtools.h"
+
 #define OUTPUT_INCREMENT  5
 #define CLK_RPM_PERIOD_CONVERSION_8MHZ  240000000.0
 #define CLK_PERIOD_8MHZ  0.000000125
@@ -50,5 +53,25 @@ void rwsSetTuningParams(double Kp, double Ki, double Kd);
 double rwsPIDStep(double setpoint);
 void rwsRunAuto();
 void rwsRunManual();
+
+typedef struct PACKED_STRUCT _pid_step_info {
+    BcTlmHeader header;
+    double timeChange_s;
+    double setpoint;
+    double input;
+    double error;
+    double errSum;
+    double dErr;
+    double output;
+
+    uint8_t resetwindupcnt;
+} PidStepInfo;
+
+#define OPCODE_DIRCHANGE            0x64
+#define OPCODE_SETPOINTCHANGE       0x73
+typedef struct PACKED_STRUCT _cmd_pidctrl {
+    uint16_t newsetpoint;
+    BOOL resetwindup;
+} CmdPidCtrl;
 
 #endif /* DSBASE_ACTUATORS_RW_H_ */

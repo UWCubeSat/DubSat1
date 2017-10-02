@@ -37,7 +37,7 @@ uint8_t *getSubsystemModulePath()
 
 uint8_t infoReport(DebugMode mode)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
     {
         debugPrintF("**Subsystem Module: \t%s\r\n", getSubsystemModulePath());
         debugPrintF("Compiler Version:\t%d\r\n", __TI_COMPILER_VERSION__);

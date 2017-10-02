@@ -9,6 +9,6 @@ i = 0;
 while 1
     fwrite(u, [OPCODE abs(floor(255 * sin(i)))]);
     i = i + .05;
-    pause(0.1);
+    pause(0.05);
 end
 

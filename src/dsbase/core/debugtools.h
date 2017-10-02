@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "utils.h"
+
 #ifndef __DEBUG__
 #warning  Header debugtools.h included, but __DEBUG__ flag not set.
 #endif  /* __DEBUG__ */
@@ -20,6 +22,26 @@
 #if !defined(__INITIAL_TRACE_LEVEL__)
 #define __INITIAL_TRACE_LEVEL__   0
 #endif
+
+#if !defined(__INITIAL_DEBUG_MODE__)
+#define __INITIAL_DEBUG_MODE__  0
+#endif
+
+typedef enum _debugmode {
+    Mode_ASCIIInteractive,
+    Mode_ASCIIHeadless,
+    Mode_BinaryStreaming,
+} DebugMode;
+
+typedef struct _svc_status_debug {
+    uint8_t initialized;
+    uint8_t registration_errors;
+    uint8_t unknown_cmd_ids;
+    uint8_t unknown_entity_ids;
+    uint8_t trace_level;
+    DebugMode debug_mode;
+
+} svc_status_debug;
 
 void debugInit();
 
@@ -32,23 +54,12 @@ void debugReadCallback(uint8_t rcvdbyte);
 void processCommand(uint8_t * cmdbuff, uint8_t cmdlength);
 uint8_t normalizeTraceLevel(uint8_t lvl);
 void displayPrompt();
-
-typedef enum _debugmode {
-    InteractiveMode,
-    HeadlessInteractiveMode,
-    StreamingMode,
-} DebugMode;
-
-typedef struct _svc_status_debug {
-    uint8_t initialized;
-    uint8_t registration_errors;
-    uint8_t trace_level;
-    DebugMode debug_mode;
-
-} svc_status_debug;
+void debugSetMode(DebugMode newmode);
+DebugMode debugGetMode();
 
 // KEEP THESE ENUMS IN SYNC WITH SRC FILE
 typedef enum _entityID {
+    Entity_NONE = 0,
     Entity_Test,
     Entity_DebugService,
     Entity_I2CBus,
@@ -76,8 +87,49 @@ typedef struct _debug_context {
     param_debug_handler action_handler;
 } debug_context;
 
-void debugRegisterEntity(entityID id, uint8_t pathchar,
+void debugRegisterEntity(entityID id,
                          simple_debug_handler infohandler, simple_debug_handler statushandler,
                          param_debug_handler actionhandler);
+
+void debugInvokeInfoHandler(entityID id);
+void debugInvokeStatusHandler(entityID id);
+void debugInvokeActionHandler(entityID id, uint8_t * params);
+
+void debugInvokeInfoHandlers();
+void debugInvokeStatusHandlers();
+void debugInvokeActionHandlers(uint8_t * cmdstr);
+
+// Backchannel binary telemetery/command stuff
+
+#define BCBIN_SYNCPATTERN           0xFC
+
+// THIS HEADER MUST BE THE FIRST FIELD IN OUTGOING BINARY TELEMETRY STRUCTS
+typedef struct PACKED_STRUCT _bctlm_header {
+    uint8_t syncpattern;
+    uint8_t length;
+    uint8_t id;
+} BcTlmHeader;
+
+typedef struct PACKED_STRUCT _bccmd_header {
+    uint8_t syncpattern;
+    uint8_t length;
+    uint8_t entityid;
+    uint8_t opcode;
+} BcCmdHeader;
+
+void bcbinPopulateHeader( BcTlmHeader *header, uint8_t opcode, uint8_t fulllen);
+void bcbinSendPacket(uint8_t * buff, uint8_t szBuff);
+
+#define BINTLM_OPCODE_RWS_PIDMOT     0x07
+
+typedef enum _bccmd_state {
+    STATE_START,
+    STATE_LEN_WAIT,
+    STATE_ENTID_WAIT,
+    STATE_OPCODE_WAIT,
+    STATE_GATHERING_PARAMS,
+
+} BcCmdState;
+
 
 #endif /* DEBUGTOOLS_H_ */

@@ -24,7 +24,7 @@ int main(void) {
     while(1)
     {
         LED_PORT_OUT ^= LED_BITS;
-        __delay_cycles(0.25 * SEC);
+        __delay_cycles(0.1 * SEC);
     }
 	
 	return 0;
