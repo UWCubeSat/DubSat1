@@ -26,6 +26,10 @@ typedef uint8_t telemid_t;
 
 #define NULL ((void*)0)
 
+#define BOOL uint8_t
+#define TRUE 1
+#define FALSE 0
+
 #define PACKED_STRUCT __attribute__((__packed__))
 
 #endif /* CORE_UTILS_H_ */

@@ -63,12 +63,15 @@ typedef struct PACKED_STRUCT _pid_step_info {
     double errSum;
     double dErr;
     double output;
+
+    uint8_t resetwindupcnt;
 } PidStepInfo;
 
 #define OPCODE_DIRCHANGE            0x64
 #define OPCODE_SETPOINTCHANGE       0x73
-typedef struct PACKED_STRUCT _cmd_setpointchange {
+typedef struct PACKED_STRUCT _cmd_pidctrl {
     uint16_t newsetpoint;
-} CmdSetPointChange;
+    BOOL resetwindup;
+} CmdPidCtrl;
 
 #endif /* DSBASE_ACTUATORS_RW_H_ */

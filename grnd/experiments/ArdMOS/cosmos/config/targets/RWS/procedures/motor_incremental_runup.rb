@@ -1,9 +1,9 @@
 # Script Runner test script
-cmd("RWS SETPOINTCH with LENGTH 0, ENTITYID 8, OPCODE 115, NEWSETPOINT 300")
-wait(45)
+cmd_no_hazardous_check("RWS PIDCTRL with NEWSETPOINT 500, RESETWINDUP TRUE")
+wait(20)
 
 3.upto(80) do |i|
-  cmd("RWS SETPOINTCH with LENGTH 0, ENTITYID 8, OPCODE 115, NEWSETPOINT #{i*100}")
+  cmd("RWS PIDCTRL with NEWSETPOINT #{i*100}")
   wait(15)
 end
 

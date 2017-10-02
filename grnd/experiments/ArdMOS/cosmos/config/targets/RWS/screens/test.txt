@@ -1,14 +1,14 @@
 SCREEN AUTO AUTO 1.0
 
 TITLE "Reaction Wheel"
-HORIZONTALLINE
+
   VERTICALBOX
     LABELVALUE RWS PIDMOT RECEIVED_TIMEFORMATTED WITH_UNITS 25 # COSMOS Received Time (Local time zone, Formatted string)
     LABELVALUE RWS PIDMOT TIMECHANGE WITH_UNITS 25 # Time change covered by this telemetry entry.
     LABELVALUE RWS PIDMOT DERR WITH_UNITS 25 # Value of derivative term.
     LABELVALUE RWS PIDMOT OUTPUT WITH_UNITS 25 # Value of generated output from PID loop.
     LABELVALUELIMITSBAR RWS PIDMOT ERRSUM WITH_UNITS 25 # Total value of integral term.
-    LABELVALUE RWS PIDMOT RWUCNT
+
     
     HORIZONTALLINE      
     

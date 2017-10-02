@@ -7,7 +7,9 @@
 
 # Ignored Parameters
 # (parameters you don't want to see by default in various tools)
-#IGNORE_PARAMETER OPCODE
+IGNORE_PARAMETER ENTITYID
+IGNORE_PARAMETER OPCODE
+IGNORE_PARAMETER LENGTH
 
 
 # Ignored Items

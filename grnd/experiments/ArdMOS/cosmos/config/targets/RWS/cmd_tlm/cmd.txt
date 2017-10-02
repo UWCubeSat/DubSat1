@@ -3,8 +3,13 @@ COMMAND RWS DIRCHANGE LITTLE_ENDIAN "Changes direction of motor."
   APPEND_ID_PARAMETER ENTITYID 8 UINT 8 8 8 "Entity ID for the RW software in the module."
   APPEND_ID_PARAMETER OPCODE 8 UINT 100 100 100 "Opcode passed to the entity command handler."
   
-COMMAND RWS SETPOINTCH LITTLE_ENDIAN "Changes the PID setpoint for the motor."
+COMMAND RWS PIDCTRL LITTLE_ENDIAN "Changes the PID setpoint, integral windup, and other settings for the RW motor."
   APPEND_PARAMETER LENGTH 8  UINT 0 255 0
   APPEND_ID_PARAMETER ENTITYID 8 UINT 8 8 8 "Entity ID for the RW software in the module."
   APPEND_ID_PARAMETER OPCODE 8 UINT 115 115 115 "Opcode passed to the entity command handler."
+  
+  # Parameters after this point are what the entity command processing function actually sees ... 
   APPEND_PARAMETER NEWSETPOINT 16 UINT 0 12000 500 "Store new setpoint for the PID controller and motor." LITTLE_ENDIAN
+  APPEND_PARAMETER RESETWINDUP 8 UINT 0 1 0 "Indicates whether command should reset integral windup value to 0 - helpful when motor has stalled." LITTLE_ENDIAN
+    STATE FALSE 0
+    STATE TRUE 1 HAZARDOUS "Resetting integral windup can lead to unpredictable motor operation, use with care."
