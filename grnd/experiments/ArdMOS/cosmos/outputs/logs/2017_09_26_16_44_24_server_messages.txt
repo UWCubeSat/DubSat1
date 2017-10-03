@@ -1,0 +1,20 @@
+2017/09/26 16:44:23.828  INFO: Processing target definition in file 'D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/target.txt'
+2017/09/26 16:44:23.851  INFO: COSMOS Version: 4.0.1
+2017/09/26 16:44:23.851  INFO: Processing CmdTlmServer configuration in file: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/tools/cmd_tlm_server/cmd_tlm_server.txt
+2017/09/26 16:44:23.861  INFO: Marshal file does not exist: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/tmp/marshal_467ddb339dc4b0776bc261b9071ece16.bin
+2017/09/26 16:44:23.893  INFO: Creating thread for router PREIDENTIFIED_ROUTER
+2017/09/26 16:44:23.893  INFO: Creating thread for router PREIDENTIFIED_CMD_ROUTER
+2017/09/26 16:44:23.894  INFO: Starting packet reading for PREIDENTIFIED_ROUTER
+2017/09/26 16:44:23.894  INFO: Connecting to PREIDENTIFIED_ROUTER...
+2017/09/26 16:44:23.894  INFO: PREIDENTIFIED_ROUTER Connection Success
+2017/09/26 16:44:23.894  INFO: Starting connection maintenance for PREIDENTIFIED_CMD_ROUTER
+2017/09/26 16:44:23.894  INFO: Connecting to PREIDENTIFIED_CMD_ROUTER...
+2017/09/26 16:44:23.895  INFO: PREIDENTIFIED_CMD_ROUTER Connection Success
+2017/09/26 17:07:06.297  INFO: Killing thread for router PREIDENTIFIED_ROUTER
+2017/09/26 17:07:06.298  INFO: Clean disconnect from PREIDENTIFIED_ROUTER (returned nil)
+2017/09/26 17:07:06.298  INFO: Connection Lost for PREIDENTIFIED_ROUTER
+2017/09/26 17:07:06.359  INFO: Stopped packet reading for PREIDENTIFIED_ROUTER
+2017/09/26 17:07:06.369  INFO: Disconnected from router PREIDENTIFIED_ROUTER
+2017/09/26 17:07:06.369  INFO: Killing thread for router PREIDENTIFIED_CMD_ROUTER
+2017/09/26 17:07:06.375  INFO: Stopped packet reading for PREIDENTIFIED_CMD_ROUTER
+2017/09/26 17:07:06.461  INFO: Disconnected from router PREIDENTIFIED_CMD_ROUTER

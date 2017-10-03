@@ -73,22 +73,29 @@
 #define INCR_STEP   1
 #define TIME_STEP   10000
 
-#define TIMER(reg)          T##B0##reg
-#define ROOT_TIMER(bits)    T##B##bits
+#define PWM_TIMER(reg)          T##B0##reg
+#define PWM_ROOT_TIMER(bits)    T##B##bits
+
+#define SEC     8000000
 
 int main(void)
 {
     bspInit(Module_Test);
 
     // Configure GPIO - Timer B - for PWM
-    // NOTE:  P1.7 is hard-wired in the actual test board for the RW
-    P1DIR |= BIT4 | BIT5 | BIT7;                   // P1.4, P1.5, and P1.7 output
-    P1SEL0 |= BIT4 | BIT5 | BIT7;                  // P1.4, P1.5, and P1.7  options select
+    P1DIR |= BIT4 | BIT5 | BIT7;                   // P1.4 and P1.5 output
+    P1SEL0 |= BIT4 | BIT5 | BIT7;                  // P1.4 and P1.5 options select
     P1SEL1 &= ~(BIT4 | BIT5 | BIT7);
 
     // Configure GPIO - Timer A (to drive LEDs)
     P1DIR |= BIT0 | BIT1;                   // P1.0 and P1.1 output
     P1SEL0 |= BIT0 | BIT1;                  // P1.0 and P1.1 options select
+
+    // Setup pin P7.3 to control direction, P7.4 to read FG pin
+    P7DIR |= BIT3;
+    P7DIR &= ~BIT4;
+    P7SEL0 &= ~(BIT3 | BIT4);
+    P7SEL1 &= ~(BIT3 | BIT4);
 
     // LED pin
     //P1DIR |= 0x01;
@@ -118,18 +125,38 @@ int main(void)
 //        TIMER(CCR2) += incr2;
 //    }
 
-    TIMER(CCR0) = 1000;
-    TIMER(CCTL1) = OUTMOD_7;
-    TIMER(CCTL2) = OUTMOD_7;
-    TIMER(CCTL4) = OUTMOD_7;
-    TIMER(CCR1) = 500;
-    TIMER(CCR2) = 500;
-    TIMER(CCR4) = 500;
-    TIMER(CTL) = ROOT_TIMER(SSEL__SMCLK) | MC__UP | ROOT_TIMER(CLR);  // SMCLK, up mode, clear TAR
+    PWM_TIMER(CCR0) = 1000;
+    PWM_TIMER(CCTL1) = OUTMOD_7;
+    PWM_TIMER(CCTL2) = OUTMOD_7;
+    PWM_TIMER(CCTL4) = OUTMOD_7;
+    PWM_TIMER(CCR1) = 200;
+    PWM_TIMER(CCR2) = 200;
+    PWM_TIMER(CCR4) = 200;
+    PWM_TIMER(CTL) = PWM_ROOT_TIMER(SSEL__SMCLK) | MC__UP | PWM_ROOT_TIMER(CLR);  // SMCLK, up mode, clear TAR
+
+    debugPrintF("\r\nBeginning spin tests ...\r\n");
+
+    while(1)
+    {
+        debugPrintF("Direction set to CW (FR = HIGH) ...\r\n");
+        P7OUT |= BIT3;
+        PWM_TIMER(CCR4) = 15;
+        __delay_cycles(5 * SEC);
+        debugPrintF("Coasting to a stop ...\r\n");
+        PWM_TIMER(CCR4) = 0;
+        __delay_cycles(10 * SEC);
+        debugPrintF("Direction set to CCW (FR = LOW) ...\r\n");
+        P7OUT &= ~ BIT3;
+        PWM_TIMER(CCR4) = 15;
+        __delay_cycles(5 * SEC);
+        debugPrintF("Coasting to a stop ...\r\n");
+        PWM_TIMER(CCR4) = 0;
+        __delay_cycles(10 * SEC);
+    }
 
     __bis_SR_register(LPM0_bits);           // Enter LPM0
     __no_operation();                       // For debugger
-    while(1) {}
+
 }
 
 

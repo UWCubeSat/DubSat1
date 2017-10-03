@@ -13,7 +13,7 @@
 #include "mock_msp430.h"
 
 
-void setup(void)
+void setUp(void)
 {
     //This function will be called before the test runs.
     //

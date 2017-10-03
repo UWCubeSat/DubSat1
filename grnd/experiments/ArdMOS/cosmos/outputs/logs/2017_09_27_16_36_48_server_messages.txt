@@ -1,0 +1,90 @@
+2017/09/27 16:36:47.723  INFO: Processing target definition in file 'D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/BLINK/target.txt'
+2017/09/27 16:36:47.745  INFO: Processing target definition in file 'D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/target.txt'
+2017/09/27 16:36:47.759  ERROR: Unable to require D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/lib/delay_limits_response.rb due to cannot load such file -- D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/lib/delay_limits_response.rb. Ensure D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/lib/delay_limits_response.rb is in the COSMOS lib directory.
+2017/09/27 16:36:47.764  INFO: COSMOS Version: 4.0.1
+2017/09/27 16:36:47.764  INFO: Processing CmdTlmServer configuration in file: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/tools/cmd_tlm_server/cmd_tlm_server.txt
+2017/09/27 16:36:47.765  INFO: Processing CmdTlmServer configuration in file: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/BLINK/cmd_tlm_server.txt
+2017/09/27 16:36:47.774  INFO: Marshal file does not exist: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/tmp/marshal_602eee753c243ec1c8ad467e584db895.bin
+2017/09/27 16:36:47.835  INFO: Creating thread for interface BLINKINT
+2017/09/27 16:36:47.836  INFO: Creating thread for router PREIDENTIFIED_ROUTER
+2017/09/27 16:36:47.836  INFO: Creating thread for router PREIDENTIFIED_CMD_ROUTER
+2017/09/27 16:36:47.843  INFO: Starting packet reading for BLINKINT
+2017/09/27 16:36:47.843  INFO: Connecting to BLINKINT...
+2017/09/27 16:36:47.846  INFO: BLINKINT Connection Success
+2017/09/27 16:36:47.847  INFO: Starting packet reading for PREIDENTIFIED_ROUTER
+2017/09/27 16:36:47.847  INFO: Connecting to PREIDENTIFIED_ROUTER...
+2017/09/27 16:36:47.847  INFO: PREIDENTIFIED_ROUTER Connection Success
+2017/09/27 16:36:47.847  INFO: Starting connection maintenance for PREIDENTIFIED_CMD_ROUTER
+2017/09/27 16:36:47.847  INFO: Connecting to PREIDENTIFIED_CMD_ROUTER...
+2017/09/27 16:36:47.847  INFO: PREIDENTIFIED_CMD_ROUTER Connection Success
+2017/09/27 16:36:47.852  INFO: Log File Opened : D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/logs/2017_09_27_16_36_47_tlm.bin
+2017/09/27 16:36:47.852  INFO: BLINK SOH DELAY = 75 is GREEN
+2017/09/27 16:36:47.853  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.853  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.854  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.854  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.854  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.854  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.854  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.854  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.854  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.854  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.854  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.854  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.854  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.855  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.855  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.855  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.855  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.855  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.855  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.855  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.855  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:47.961  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:48.106  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:48.261  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:48.417  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:48.560  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:48.710  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:48.864  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:49.008  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:49.160  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:49.316  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:49.459  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:49.615  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:49.763  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:49.915  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:50.067  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:50.209  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:50.361  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:50.514  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:50.666  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:50.819  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:50.965  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:51.119  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:51.261  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:51.414  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:51.567  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:51.721  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:51.860  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:52.015  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:52.183  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:52.316  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:52.470  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:52.618  ERROR: BLINKINT - Unknown 6 byte packet starting: 060606014B01
+2017/09/27 16:36:52.739  INFO: User disconnecting interface BLINKINT
+2017/09/27 16:36:52.739  INFO: Killing thread for interface BLINKINT
+2017/09/27 16:36:52.769  INFO: Clean disconnect from BLINKINT (returned nil)
+2017/09/27 16:36:52.769  INFO: Connection Lost for BLINKINT
+2017/09/27 16:36:52.769  INFO: Stopped packet reading for BLINKINT
+2017/09/27 16:36:52.769  INFO: Disconnected from interface BLINKINT
+2017/09/27 16:36:57.709  INFO: Log File Closed : D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/logs/2017_09_27_16_36_47_tlm.bin
+2017/09/27 16:36:57.739  INFO: Killing thread for router PREIDENTIFIED_ROUTER
+2017/09/27 16:36:57.739  INFO: Clean disconnect from PREIDENTIFIED_ROUTER (returned nil)
+2017/09/27 16:36:57.739  INFO: Connection Lost for PREIDENTIFIED_ROUTER
+2017/09/27 16:36:57.810  INFO: Stopped packet reading for PREIDENTIFIED_ROUTER
+2017/09/27 16:36:57.810  INFO: Disconnected from router PREIDENTIFIED_ROUTER
+2017/09/27 16:36:57.810  INFO: Killing thread for router PREIDENTIFIED_CMD_ROUTER
+2017/09/27 16:36:57.820  INFO: Stopped packet reading for PREIDENTIFIED_CMD_ROUTER
+2017/09/27 16:36:57.910  INFO: Disconnected from router PREIDENTIFIED_CMD_ROUTER
+2017/09/27 16:36:57.910  INFO: Disconnected from interface BLINKINT

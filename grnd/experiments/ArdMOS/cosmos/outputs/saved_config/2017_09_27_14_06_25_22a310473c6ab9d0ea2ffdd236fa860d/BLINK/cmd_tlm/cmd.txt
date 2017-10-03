@@ -1,0 +1,2 @@
+COMMAND BLINK delay BIG_ENDIAN "Command to change how fast to blink the LED."
+  APPEND_PARAMETER  delay 8 UINT 0 255 100 "Delay (in ms) between LED on/off transitions."

@@ -1,0 +1,2 @@
+2017/09/26 17:15:13.429  cmd("BLINK DELAY with DELAY 1")
+2017/09/26 17:15:13.439  Error sending BLINK DELAY due to Target not mapped to an interface: BLINK
