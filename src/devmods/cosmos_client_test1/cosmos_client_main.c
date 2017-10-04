@@ -62,7 +62,7 @@ int main(void) {
 
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
     bspInit(Module_Test);
-    h = uartInit(ApplicationUART, 1);
+    h = uartInit(ApplicationUART, 1, Speed_9600);
     uartRegisterRxCallback(h, myReadCallback);
 
     // Enable for output
