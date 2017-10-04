@@ -53,14 +53,13 @@ int main(void) {
         else
             sequencecounter = 0;
 
-
         output_cmd = rwsPIDStep(setpoint_cmd);
 
         // Assign output to PWM output signal for motor driver
         PWM_TIMER(CCR4) = output_cmd;
 
         // Now telemetry is being extracted by the subsystem rather than RW offering it up
-        if (debugGetMode() == Mode_BinaryStreaming)
+        if ((sequencecounter % 2) == 0 && debugGetMode() == Mode_BinaryStreaming)
                 debugInvokeStatusHandler(Entity_RWS);
 
         //debugPrintF("%f,%f\r\n", setpoint_cmd, output_cmd);

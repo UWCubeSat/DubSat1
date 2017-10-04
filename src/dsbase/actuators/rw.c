@@ -99,6 +99,8 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
         {
             case OPCODE_DIRCHANGE:
                 RW_MOTORDIR_OUT ^= RW_MOTORDIR_PIN;
+                pid.lastcmd.newsetpoint = 666;
+                pid.lastcmd.resetwindup = 0;
                 break;
             case OPCODE_SETPOINTCHANGE:
                 cmdpidctrl = (CmdPidCtrl *) &cmdstr[1];
@@ -106,15 +108,22 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
                 {
                     pid.resetwindupcnt++;
                     pid.errSum = 0;
+                    pid.lastcmd.resetwindup = TRUE;
                 }
+                else
+                    pid.lastcmd.resetwindup = FALSE;
 
                 // TODO:  Remove this janky override stuff and just have one commanding mode
                 if (cmdpidctrl->newsetpoint == 0)
+                {
                     setpoint_override = 0;
+                    pid.lastcmd.newsetpoint = 0;
+                }
                 else
                 {
                     setpoint_override = 1;
                     overridden_setpoint = cmdpidctrl->newsetpoint;
+                    pid.lastcmd.newsetpoint = overridden_setpoint;
                 }
                 break;
         }

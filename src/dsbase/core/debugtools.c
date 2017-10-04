@@ -43,7 +43,8 @@ FILE_STATIC uint8_t *DebugEntityFriendlyNames[] =  {
                                                     "CAN Bus",
                                                     "Core/BSP",
                                                     "UART Bus",
-                                                    "RWheels",};
+                                                    "RWheels",
+                                                    };
 
 // KEEP THESE STRINGS IN SYNC WITH HEADER FILE and previous array
 // Use lower-case for "system" services and buses, capital letters for
@@ -89,8 +90,6 @@ uint8_t actionCallback(DebugMode mode, uint8_t * cmdstr)
         }
     }
 }
-
-
 
 void debugInit()
 {
@@ -208,7 +207,9 @@ void debugReadCallback(uint8_t rcvdbyte)
                 if (rcvdbyte == BCBIN_SYNCPATTERN)
                     cmd_parsing_state = STATE_LEN_WAIT;
                 else
+                {
                     debug_status.unknown_cmd_ids++;
+                }
                 break;
             case STATE_LEN_WAIT:
                 cmd_header.length = rcvdbyte;
@@ -423,7 +424,7 @@ void processCommand(uint8_t * cmdbuff, uint8_t cmdlength)
         case '*':    // Change debug mode - can't get out of binary once in it, however
             debug_status.trace_level = 0;
             debugPrintF("Entering binary telemetry/telecommand streaming mode ... to exit, reset device.\r\n");
-            debug_status.debug_mode = Mode_BinaryStreaming;
+            debugSetMode(Mode_BinaryStreaming);
             break;
         default:
             // NOP
