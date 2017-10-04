@@ -96,7 +96,7 @@ void debugInit()
     if (debug_status.initialized != 0)
         return;
 
-    handle = uartInit(BackchannelUART, 1);
+    handle = uartInit(BackchannelUART, 1, DEBUG_UART_SPEED);
     uartRegisterRxCallback(handle, debugReadCallback);
 
     debug_status.initialized = 1;

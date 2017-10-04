@@ -30,6 +30,7 @@ Important symbols include (note:  underbars are DOUBLED (i.e. '__') for the begi
 * `__DEBUG__`   :  Should be set for debug builds.  All the debug printing and other infrastructure is keyed off of this
 * `__INITIAL_TRACE_LEVEL__`   :  Optional, defaults to 0 if not specified, and to 1 in standard templates.  Allows you to immediately pick up trace statements without having to change trace levels at startup.  
 * `__INITIAL_DEBUG_MODE__`   :   Optional, defaults to 0 if not specified.  0=interactive ASCII console, 1="headless" ASCII mode, 2=COSMOS-compatible binary telemetry mode
+* `__DEBUG_UART_SPEED_<spd>__`  :  Optional, <spd> can be "9600", "38400", or "115200" - defaults to 115200.
 
 * Board selection (ONE must be selected - it will help the dsbase infrastructure choose the right pins, and make other assumptions):
     * `__BSP_Board_MSP430FR5994LaunchPad__`:  The standard MSP430FR5994 LaunchPad board used for testing.

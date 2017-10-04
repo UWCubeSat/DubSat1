@@ -27,6 +27,15 @@
 #define __INITIAL_DEBUG_MODE__  0
 #endif
 
+#if defined(__DEBUG_UART_SPEED_9600__)
+#define DEBUG_UART_SPEED Speed_9600
+#elif defined(__DEBUG_UART_SPEED_38400__)
+#define DEBUG_UART_SPEED Speed_38400
+#else
+#define DEBUG_UART_SPEED Speed_115200
+#endif
+
+
 typedef enum _debugmode {
     Mode_ASCIIInteractive,
     Mode_ASCIIHeadless,
@@ -130,6 +139,5 @@ typedef enum _bccmd_state {
     STATE_GATHERING_PARAMS,
 
 } BcCmdState;
-
 
 #endif /* DEBUGTOOLS_H_ */
