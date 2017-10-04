@@ -36,7 +36,7 @@ int main(void) {
     uint16_t sequencecounter = 0;
     while (1)
     {
-        __delay_cycles(.05 * SEC);
+        //__delay_cycles(.05 * SEC);
 
         // Work through a simple sequence
         sequencecounter++;
@@ -59,7 +59,7 @@ int main(void) {
         PWM_TIMER(CCR4) = output_cmd;
 
         // Now telemetry is being extracted by the subsystem rather than RW offering it up
-        if ((sequencecounter % 2) == 0 && debugGetMode() == Mode_BinaryStreaming)
+        if ((sequencecounter % 100) == 0 && debugGetMode() == Mode_BinaryStreaming)
                 debugInvokeStatusHandler(Entity_RWS);
 
         //debugPrintF("%f,%f\r\n", setpoint_cmd, output_cmd);
