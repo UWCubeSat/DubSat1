@@ -68,7 +68,7 @@ DebugMode debugGetMode();
 
 // KEEP THESE ENUMS IN SYNC WITH SRC FILE
 typedef enum _entityID {
-    Entity_NONE = 0,
+    Entity_NONE,
     Entity_Test,
     Entity_DebugService,
     Entity_I2CBus,

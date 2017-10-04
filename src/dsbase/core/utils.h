@@ -24,7 +24,7 @@ typedef uint8_t telemid_t;
 #define FILE_STATIC
 #endif
 
-#define NULL ((void*)0)
+#define NULLP ((void*)0)
 
 #define BOOL uint8_t
 #define TRUE 1

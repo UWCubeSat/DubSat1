@@ -5,6 +5,7 @@
  *      Author: jeffc
  */
 
+#include <string.h>
 #include "debugtools.h"
 #include "uart.h"
 #include "utils.h"
@@ -16,9 +17,8 @@
 // should go away when compiled for release
 #ifdef __DEBUG__
 
-FILE_STATIC char debugWriteOutputBuff[CONFIGM_debug_outputbuffsize];
-FILE_STATIC char debugConsoleInputBuff[CONFIGM_debug_consoleinputbuffsize];
-FILE_STATIC char debugConsoleCmdBuff[CONFIGM_debug_consoleinputbuffsize];
+FILE_STATIC uint8_t debugWriteOutputBuff[CONFIGM_debug_outputbuffsize];
+FILE_STATIC uint8_t debugConsoleInputBuff[CONFIGM_debug_consoleinputbuffsize];
 
 FILE_STATIC uint8_t consoleBytesRead = 0;
 FILE_STATIC uint8_t consoleBuildingCommand = 0;
@@ -80,7 +80,7 @@ uint8_t actionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     if (mode == Mode_ASCIIInteractive)
     {
-        if (strlen(cmdstr) == 0)
+        if (strlen((const char *)cmdstr) == 0)
         {
             debugPrintF("Here you would list the command syntax for all actions provided by this entity ...\r\n");
         }
@@ -89,6 +89,7 @@ uint8_t actionCallback(DebugMode mode, uint8_t * cmdstr)
             debugPrintF("Here you would act on the specific action string '%s' passed into the command.\r\n", cmdstr);
         }
     }
+    return 1;
 }
 
 void debugInit()
@@ -141,7 +142,7 @@ void debugPrintF(const char *_format, ...)
 
     va_list argptr;
     va_start(argptr, _format);
-    numBytes = vsnprintf(debugWriteOutputBuff, CONFIGM_debug_outputbuffsize, _format, argptr);
+    numBytes = vsnprintf((char*)debugWriteOutputBuff, CONFIGM_debug_outputbuffsize, _format, argptr);
     uartTransmit(handle, (uint8_t *)debugWriteOutputBuff, numBytes + 1);
 }
 
@@ -167,7 +168,7 @@ void debugTraceF(uint8_t level, const char *_format, ...)
     {
         va_list argptr;
         va_start(argptr, _format);
-        numBytes = vsnprintf(debugWriteOutputBuff, CONFIGM_debug_outputbuffsize, _format, argptr);
+        numBytes = vsnprintf((char*)debugWriteOutputBuff, CONFIGM_debug_outputbuffsize, _format, argptr);
         uartTransmit(handle, (uint8_t *)debugWriteOutputBuff, numBytes + 1);
     }
 }
@@ -347,7 +348,7 @@ void debugInvokeActionHandlers(uint8_t * cmdstr)
     param_debug_handler handler;
     uint8_t foundhandler = 0;
     uint8_t foundpathchar = 0;
-    uint8_t len = strlen(cmdstr);
+    uint8_t len = strlen((const char *)cmdstr);
 
     debugPrintF("\r\n");
 

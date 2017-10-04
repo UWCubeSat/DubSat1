@@ -17,6 +17,7 @@
 // Various helper functions
 void bspInit(SubsystemModule mod);
 //void bspUARTInit(bus_instance_UART instance);
+void bspI2CInit(bus_instance_I2C instance);
 SubsystemModule bspGetModule();
 
 // Hard-wired assignments for a given board are stashed in these #if defined(...)

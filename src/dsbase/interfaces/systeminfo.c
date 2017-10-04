@@ -27,6 +27,7 @@ StartupType coreStartup(sync_pulse_handler sync1, sync_pulse_handler sync2)
 
     // TODO:  populates sc_info as well?
     debugTraceF(1, "Completed core startup routine.\r\n");
+    sc_info.scmode = SCMode_Unknown;
     return Startup_Unknown;
 }
 

@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "actuators/rw.h"
 #include "core/utils.h"
@@ -38,18 +39,19 @@ void rwsShowUsage()
 
 void bcbinSendTlm()
 {
-    bcbinSendPacket((const uint8_t *) &pid, sizeof(pid));
+    bcbinSendPacket((uint8_t *) &pid, sizeof(pid));
 }
 
 uint8_t rwsStatusCallback(DebugMode mode)
 {
     if (mode == Mode_BinaryStreaming)
         bcbinSendTlm();
+    return 1;
 }
 
 uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
-    uint8_t len = strlen(cmdstr);
+    uint8_t len = strlen((const char *)cmdstr);
     uint16_t inputnum = 0;
 
     CmdPidCtrl *cmdpidctrl;
@@ -59,7 +61,7 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
         if (len == 0)
         {
             rwsShowUsage();
-            return;
+            return 0;
         }
         else
         {
@@ -73,12 +75,12 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
                 }
                 else
                 {
-                    inputnum = atoi(&cmdstr[1]);
+                    inputnum = atoi((const char*)&cmdstr[1]);
                     debugPrintF("Overriding PID setpoint to %d rpm.", inputnum);
                     setpoint_override = 1;
                     overridden_setpoint = inputnum;
                 }
-                return;
+                return 1;
             }
             else if (cmdstr[0] == 'd')
             {
@@ -88,7 +90,7 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
             else
             {
                 rwsShowUsage();
-                return;
+                return 0;
             }
         }
     }
@@ -127,7 +129,9 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
                 }
                 break;
         }
+        return 1;
     }
+    return 1;
 }
 
 void rwsInit()

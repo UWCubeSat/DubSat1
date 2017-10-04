@@ -19,6 +19,7 @@ int main(void) {
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
     bspInit(Module_ADCS_RWX);
     rwsInit();
+    coreStartup(NULL, NULL);
 
     // PWM timer configuration
     PWM_TIMER(CCR0) = MAX_PWM_OUT + 1;
@@ -71,7 +72,7 @@ int main(void) {
 
 #endif  //  __DEBUG__
 
-	return 0;
+
 }
 
 
