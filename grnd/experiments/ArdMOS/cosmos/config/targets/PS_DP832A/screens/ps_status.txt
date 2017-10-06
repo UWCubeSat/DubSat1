@@ -1,0 +1,18 @@
+SCREEN AUTO AUTO 1.0
+
+  VERTICALBOX
+    LABELVALUE PS_DP832A PS_STATUS RECEIVED_TIMESECONDS # COSMOS Received Time (UTC, Floating point, Unix epoch)
+    LABELVALUE PS_DP832A PS_STATUS RECEIVED_TIMEFORMATTED # COSMOS Received Time (Local time zone, Formatted string)
+    LABELVALUE PS_DP832A PS_STATUS RECEIVED_COUNT # COSMOS packet received count
+    LABELVALUE PS_DP832A PS_STATUS TLM_ID # Packet Identifier
+    LABELVALUE PS_DP832A PS_STATUS V_CH1 # Output voltage on channel 1.
+    LABELVALUE PS_DP832A PS_STATUS I_CH1 # Output current on channel 1.
+    LABELVALUE PS_DP832A PS_STATUS P_CH1 # Output power on channel 1.
+    LABELVALUE PS_DP832A PS_STATUS V_CH2 # Output voltage on channel 1.
+    LABELVALUE PS_DP832A PS_STATUS I_CH2 # Output current on channel 1.
+    LABELVALUE PS_DP832A PS_STATUS P_CH2 # Output power on channel 1.
+    LABELVALUE PS_DP832A PS_STATUS V_CH3 # Output voltage on channel 1.
+    LABELVALUE PS_DP832A PS_STATUS I_CH3 # Output current on channel 1.
+    LABELVALUE PS_DP832A PS_STATUS P_CH3 # Output power on channel 1.
+  END
+
