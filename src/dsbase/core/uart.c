@@ -12,7 +12,7 @@
 #include "config/config.h"
 
 FILE_STATIC bus_context_UART buses[CONFIGM_uart_maxperipheralinstances];
-FILE_STATIC buses_registered_with_debug = 0;  // Only need to register once with debug service for both buses
+FILE_STATIC uint8_t buses_registered_with_debug = 0;  // Only need to register once with debug service for both buses
 
 uint8_t uartReportStatus(DebugMode mode)
 {
@@ -25,12 +25,12 @@ uint8_t uartReportStatus(DebugMode mode)
         bus_ctx = &buses[i];
         if (bus_ctx->initialized == 1)
         {
-            if (mode == InteractiveMode)
+            if (mode == Mode_ASCIIInteractive)
             {
 
                 debugPrintF("**UART %d Status:\r\n", i);
                 debugPrintF("*TX:\r\nBytes sent: %d\r\nErrors: %d\r\nBuffer OF: %d\r\nBuff UF: %d\r\nBuff overlapped: %d\r\n",
-                        bus_ctx->tx_bytes_sent, bus_ctx->tx_error_count, bus_ctx->tx_error_buffer_overflow_count,
+                        bus_ctx->tx_bytes_sent, bus_ctx->tx_error_count, bus_ctx->tx_error_overrun_count,
                         bus_ctx->tx_error_underrun_count, bus_ctx->tx_overlapped_requests_fulfilled);
                 __delay_cycles(1000000);
                 debugPrintF("*RX:\r\nBytes rcvd: %d\r\nErrors: %d\r\nMissing handlers: %d\r\n\r\n", bus_ctx->rx_bytes_rcvd,
@@ -46,7 +46,7 @@ uint8_t uartReportStatus(DebugMode mode)
 }
 
 // TODO:  Add configuration parameters for speed
-hBus uartInit(bus_instance_UART instance)
+hBus uartInit(bus_instance_UART instance, uint8_t echoenable, UARTSpeed speed)
 {
     hBus handle = (uint8_t)instance;
     bus_context_UART *bus_ctx = &buses[handle];
@@ -56,7 +56,7 @@ hBus uartInit(bus_instance_UART instance)
         return handle;
 
     bus_ctx->initialized = 1;
-    bus_ctx->echo_on = 1;
+    bus_ctx->echo_on = echoenable;
     bus_ctx->tx_in_use = 0;
     bus_ctx->rx_in_use = 0;
 
@@ -64,7 +64,7 @@ hBus uartInit(bus_instance_UART instance)
     if (buses_registered_with_debug == 0)
     {
         buses_registered_with_debug = 1;
-        debugRegisterEntity(Entity_UART, 'u', NULL, uartReportStatus, NULL);
+        debugRegisterEntity(Entity_UART, NULL, uartReportStatus, NULL);
     }
     
     // TODO:  Add logic to rejigger the dividers based on current clock
@@ -80,12 +80,29 @@ hBus uartInit(bus_instance_UART instance)
        UCA0CTLW0 &= ~UCSWRST;                  // Initialize eUSCI
        UCA0IE |= UCRXIE | UCTXIE;              // Enable USCI_A0 RX interrupt
      */
+    // Also:  default UART settings are parity disabled,
+    // LSB first, 8-bit data, and 1 stop bit
     if (instance == BackchannelUART)
     {
         UCA0CTLW0 = UCSWRST;
         UCA0CTLW0 |= UCSSEL__SMCLK;
-        UCA0BRW = 4;
-        UCA0MCTLW |= UCOS16 | UCBRF_5 | 0x55;
+
+        switch (speed)
+        {
+            case Speed_9600:
+                UCA0BRW = UCAxBRW_9600;
+                UCA0MCTLW |= UCAxMCTLW_9600;
+                break;
+            case Speed_38400:
+                UCA0BRW = UCAxBRW_38400;
+                UCA0MCTLW |= UCAxMCTLW_38400;
+                break;
+            case Speed_115200:
+                UCA0BRW = UCAxBRW_115200;
+                UCA0MCTLW |= UCAxMCTLW_115200;
+                break;
+        }
+
         UCA0CTLW0 &= ~UCSWRST;
         UCA0IE |= UCRXIE | UCTXIE;
     }
@@ -93,13 +110,74 @@ hBus uartInit(bus_instance_UART instance)
     {
         UCA1CTLW0 = UCSWRST;
         UCA1CTLW0 |= UCSSEL__SMCLK;
-        UCA1BRW = 4;
-        UCA1MCTLW |= UCOS16 | UCBRF_5 | 0x55;
+
+        switch (speed)
+        {
+            case Speed_9600:
+                UCA1BRW = UCAxBRW_9600;
+                UCA1MCTLW |= UCAxMCTLW_9600;
+                break;
+            case Speed_38400:
+                UCA1BRW = UCAxBRW_38400;
+                UCA1MCTLW |= UCAxMCTLW_38400;
+                break;
+            case Speed_115200:
+                UCA1BRW = UCAxBRW_115200;
+                UCA1MCTLW |= UCAxMCTLW_115200;
+                break;
+        }
+
         UCA1CTLW0 &= ~UCSWRST;
         UCA1IE |= UCRXIE | UCTXIE;
     }
 
     return handle;
+}
+
+void uartSetEchoOn(hBus handle)
+{
+    bus_context_UART *bus_ctx = &buses[handle];
+
+    // Only initialize each instance once
+    if (bus_ctx->initialized == 1)
+    {
+        bus_ctx->echo_on = 1;
+    }
+}
+
+void uartSetEchoOff(hBus handle)
+{
+    bus_context_UART *bus_ctx = &buses[handle];
+
+    // Only initialize each instance once
+    if (bus_ctx->initialized == 1)
+    {
+        bus_ctx->echo_on = 0;
+    }
+}
+
+void enableUARTInterrupts(handle)
+{
+    if (handle == BackchannelUART)
+    {
+        UCA0IE |= UCRXIE | UCTXIE;
+    }
+    else if (handle == ApplicationUART)
+    {
+        UCA1IE |= UCRXIE | UCTXIE;
+    }
+}
+
+void disableUARTInterrupts(handle)
+{
+    if (handle == BackchannelUART)
+    {
+        UCA0IE &= ~(UCRXIE | UCTXIE);
+    }
+    else if (handle == ApplicationUART)
+    {
+        UCA1IE &= ~(UCRXIE | UCTXIE);
+    }
 }
 
 void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
@@ -112,15 +190,21 @@ void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
         return;
     }
     
+    // MUST turn off interrupts so we don't get the buffer changes out from under us
+    disableUARTInterrupts(handle);
+
     // Are we adding more to the current transmit buffer, or starting fresh?
     // TODO:  make this buffer truly circular
-    if (bus_ctx->tx_in_use != 0)
+    if (bus_ctx->tx_in_use == 1)
     {
+
         // Check if we can use the buffer or we don't have enough total space
     	if ((bus_ctx->currentTxNumBytes + szBuff) >= CONFIGM_uart_txbuffsize)
     	{
     	    bus_ctx->tx_error_count++;
     	    bus_ctx->tx_error_overrun_count++;
+
+    	    enableUARTInterrupts(handle);
     	    return;
         }
         else
@@ -145,15 +229,19 @@ void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
     // Start adding characters to transmit buffer if this is a new transmission
     if (bus_ctx->currentTxIndex == 0)
     {
+        bus_ctx->tx_bytes_sent++;
+
         // Start write process
         if (handle == BackchannelUART)
             UCA0TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
         else
             UCA1TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
-        bus_ctx->tx_bytes_sent++;
+
 
         __bis_SR_register(GIE);     // Make sure interrupts enabled
     }
+
+    enableUARTInterrupts(handle);
 }
 
 void uartRegisterRxCallback(hBus handle, void (*callback)(uint8_t rcvdbyte))
@@ -201,6 +289,8 @@ void handleUCRXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
 
 void handleUCTXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
 {
+    disableUARTInterrupts(instance);
+
     if (bus_ctx->tx_in_use == 0)
     {
         bus_ctx->tx_error_count++;
@@ -220,6 +310,8 @@ void handleUCTXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
         bus_ctx->currentTxIndex++;
         bus_ctx->tx_in_use = 0;
     }
+
+    enableUARTInterrupts(instance);
 }
 
 

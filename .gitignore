@@ -21,3 +21,5 @@ test/unit-tests/build/
 .DS_Store
 
 \.idea/
+*.asv
+grnd/experiments/ArdMOS/cosmos/outputs/

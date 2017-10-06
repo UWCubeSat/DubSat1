@@ -1,0 +1,62 @@
+2017/09/28 11:52:12.657  INFO: Processing target definition in file 'D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/BLINK/target.txt'
+2017/09/28 11:52:12.683  INFO: Processing target definition in file 'D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/target.txt'
+2017/09/28 11:52:12.695  ERROR: Unable to require D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/lib/delay_limits_response.rb due to cannot load such file -- D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/lib/delay_limits_response.rb. Ensure D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/lib/delay_limits_response.rb is in the COSMOS lib directory.
+2017/09/28 11:52:12.698  INFO: COSMOS Version: 4.0.1
+2017/09/28 11:52:12.698  INFO: Processing CmdTlmServer configuration in file: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/tools/cmd_tlm_server/cmd_tlm_server.txt
+2017/09/28 11:52:12.709  INFO: Processing CmdTlmServer configuration in file: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/BLINK/cmd_tlm_server.txt
+2017/09/28 11:52:12.750  INFO: Marshal load success: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/tmp/marshal_5e297ac4d06507c296496207dd0a2ec1.bin
+2017/09/28 11:52:12.755  INFO: Creating thread for interface BLINKINT
+2017/09/28 11:52:12.756  INFO: Creating thread for router PREIDENTIFIED_ROUTER
+2017/09/28 11:52:12.756  INFO: Creating thread for router PREIDENTIFIED_CMD_ROUTER
+2017/09/28 11:52:12.760  INFO: Starting packet reading for BLINKINT
+2017/09/28 11:52:12.760  INFO: Connecting to BLINKINT...
+2017/09/28 11:52:12.761  ERROR: BLINKINT Connection Failed: RuntimeError : Error during CreateFile: The system cannot find the file specified.
+2017/09/28 11:52:12.761  ERROR: RuntimeError : Error during CreateFile: The system cannot find the file specified.
+
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/win32/win32.rb:25:in `create_file'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/io/win32_serial_driver.rb:59:in `initialize'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/io/serial_driver.rb:45:in `new'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/io/serial_driver.rb:45:in `initialize'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/streams/serial_stream.rb:62:in `new'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/streams/serial_stream.rb:62:in `initialize'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/interfaces/serial_interface.rb:58:in `new'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/interfaces/serial_interface.rb:58:in `connect'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/tools/cmd_tlm_server/interface_thread.rb:251:in `connect'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/tools/cmd_tlm_server/interface_thread.rb:71:in `block (2 levels) in start'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/tools/cmd_tlm_server/interface_thread.rb:69:in `synchronize'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/tools/cmd_tlm_server/interface_thread.rb:69:in `block in start'
+2017/09/28 11:52:12.761  INFO: Starting packet reading for PREIDENTIFIED_ROUTER
+2017/09/28 11:52:12.761  INFO: Connecting to PREIDENTIFIED_ROUTER...
+2017/09/28 11:52:12.761  INFO: PREIDENTIFIED_ROUTER Connection Success
+2017/09/28 11:52:12.761  INFO: Starting connection maintenance for PREIDENTIFIED_CMD_ROUTER
+2017/09/28 11:52:12.761  INFO: Connecting to PREIDENTIFIED_CMD_ROUTER...
+2017/09/28 11:52:12.764  INFO: PREIDENTIFIED_CMD_ROUTER Connection Success
+2017/09/28 11:52:17.795  INFO: Connecting to BLINKINT...
+2017/09/28 11:52:17.795  ERROR: BLINKINT Connection Failed: RuntimeError : Error during CreateFile: The system cannot find the file specified.
+2017/09/28 11:52:17.795  ERROR: RuntimeError : Error during CreateFile: The system cannot find the file specified.
+
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/win32/win32.rb:25:in `create_file'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/io/win32_serial_driver.rb:59:in `initialize'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/io/serial_driver.rb:45:in `new'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/io/serial_driver.rb:45:in `initialize'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/streams/serial_stream.rb:62:in `new'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/streams/serial_stream.rb:62:in `initialize'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/interfaces/serial_interface.rb:58:in `new'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/interfaces/serial_interface.rb:58:in `connect'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/tools/cmd_tlm_server/interface_thread.rb:251:in `connect'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/tools/cmd_tlm_server/interface_thread.rb:71:in `block (2 levels) in start'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/tools/cmd_tlm_server/interface_thread.rb:69:in `synchronize'
+C:/COSMOS/Vendor/Ruby/lib/ruby/gems/2.2.0/gems/cosmos-4.0.1/lib/cosmos/tools/cmd_tlm_server/interface_thread.rb:69:in `block in start'
+2017/09/28 11:52:21.172  INFO: User disconnecting interface BLINKINT
+2017/09/28 11:52:21.172  INFO: Killing thread for interface BLINKINT
+2017/09/28 11:52:21.176  INFO: Stopped packet reading for BLINKINT
+2017/09/28 11:52:21.182  INFO: Disconnected from interface BLINKINT
+2017/09/28 11:52:25.885  INFO: Killing thread for router PREIDENTIFIED_ROUTER
+2017/09/28 11:52:25.885  INFO: Clean disconnect from PREIDENTIFIED_ROUTER (returned nil)
+2017/09/28 11:52:25.885  INFO: Connection Lost for PREIDENTIFIED_ROUTER
+2017/09/28 11:52:25.936  INFO: Stopped packet reading for PREIDENTIFIED_ROUTER
+2017/09/28 11:52:25.946  INFO: Disconnected from router PREIDENTIFIED_ROUTER
+2017/09/28 11:52:25.946  INFO: Killing thread for router PREIDENTIFIED_CMD_ROUTER
+2017/09/28 11:52:25.953  INFO: Stopped packet reading for PREIDENTIFIED_CMD_ROUTER
+2017/09/28 11:52:26.037  INFO: Disconnected from router PREIDENTIFIED_CMD_ROUTER
+2017/09/28 11:52:26.037  INFO: Disconnected from interface BLINKINT

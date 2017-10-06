@@ -16,7 +16,7 @@ int main(void) {
     bspInit(Module_Test);
 
     debugInit();
-    hBus h = uartInit(ApplicationUART);
+    hBus h = uartInit(ApplicationUART, 1);
 
     uint8_t outlen = strlen(outstr);
     uint8_t count = 0;

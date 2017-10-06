@@ -1,0 +1,1 @@
+DECLARE_TARGET SYSTEM nil target.txt

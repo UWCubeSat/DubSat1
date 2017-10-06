@@ -39,8 +39,8 @@ void bspInit(SubsystemModule mod)
     // Stop watchdog timer
     WDTCTL = WDTPW | WDTHOLD;
 
-    // SAFE way of setting clock to 8Mhz
-    // Per Device Errata set divider to 4 before changing frequency to
+    // SAFE way of setting clock to 8Mhz, from
+    // per-device errata:  must set divider to 4 before changing frequency to
     // prevent out of spec operation from overshoot transient
     CSCTL0_H = CSKEY_H;                     // Unlock CS registers
     CSCTL1 = DCOFSEL_0;                     // Set DCO to 1MHz
@@ -68,7 +68,7 @@ void bspInit(SubsystemModule mod)
 
     // Register the system info report function
     // TODO:  Merge systeminfo and BSP, they aren't both needed
-    debugRegisterEntity(Entity_BSP, '&', infoReport, NULL, NULL);
+    debugRegisterEntity(Entity_BSP, infoReport, NULL, NULL);
 
     debugTraceF(1,"\r\n-------------------------------------------------------\r\nBSP initialization routine complete.\r\n");
 

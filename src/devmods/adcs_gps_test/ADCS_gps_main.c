@@ -1,40 +1,55 @@
-#include <interfaces/systeminfo.h>
-#include <intrinsics.h>
-#include <msp430fr5994.h>
-
-#define __DEBUG__ 1
 #define cast(TYPE, PTR) (*((TYPE*) (PTR)))
 
-#include "ADCS_GPS.h"
 #include <msp430.h>
+
+#include "ADCS_GPS.h"
+#include "bsp/bsp.h"
 #include <stdint.h>
-#include <stdio.h>
 #include <cstring>
 #include "core/uart.h"
-#include "core/debugtools.h"
-#include "bsp/bsp.h"
+#include "crc.h"
 
-FILE_STATIC uint8_t headerBuf[32];
-FILE_STATIC uint8_t messageBuf[128];
-FILE_STATIC uint16_t bytesRead = 0;
+FILE_STATIC uint8_t buf[256];
+FILE_STATIC uint8_t bytesRead = 0;
+FILE_STATIC uint32_t rxStatus = 0;
+FILE_STATIC uint8_t synced = 0;
 
-FILE_STATIC uint16_t messageLength;
+FILE_STATIC hBus uartHandle;
 
-typedef enum status {
-    Status_Sync,
-    Status_Header,
-    Status_Message,
-} Status;
-
-FILE_STATIC Status status = Status_Sync;
+#ifdef __DEBUG__
+FILE_STATIC const char *GPS_ERROR[] = { "Error (use RXSTATUS for details)",
+                                        "Temperature warning",
+                                        "Voltage supply warning",
+                                        "Antenna not powered", "LNA Failure",
+                                        "Antenna open", "Antenna shorted",
+                                        "CPU overload", "COM1 buffer overrun",
+                                        "COM2 buffer overrun",
+                                        "COM3 buffer overrun", "Link overrun",
+                                        "", "Aux transmit overrun",
+                                        "AGC out of range", "", "INS reset", "",
+                                        "GPS Almanac/UTC invalid",
+                                        "Position invalid", "Position fixed",
+                                        "Clock steering disabled",
+                                        "Clock model invalid",
+                                        "External oscillator locked",
+                                        "Software resource warning", "", "", "",
+                                        "", "Aux 3 status event",
+                                        "Aux 2 status event",
+                                        "Aux 1 status event" };
+#else
+const char *GPS_ERROR[];
+#endif /* __DEBUG__ */
 
 /**
  * Parse a message, assuming that message is stored in the messageBuf and messageId is set
  * TODO send CAN packets
  */
-void parseMessage(uint16_t messageId) {
-    switch (messageId) {
-    case ID_BESTXYZ: {
+void parseMessage(message_type messageType, uint8_t* messageBuf)
+{
+    switch (messageType)
+    {
+    case Message_BestXYZ:
+    {
         // position solution status
         const GPS_ENUM pSolStat = cast(GPS_ENUM, messageBuf);
 
@@ -61,98 +76,168 @@ void parseMessage(uint16_t messageId) {
         const float vyd = cast(float, messageBuf + 80);
         const float vzd = cast(float, messageBuf + 84);
 
-        debugTraceF(4, "BESTXYZ (%u)\n\tx: %e\n\ty: %e\n\tz: %e\n", pSolStat, px, py, pz);
+        debugTraceF(4, "BESTXYZ (%u)\r\n\tx: %f\r\n\ty: %f\r\n\tz: %f\r\n",
+                    pSolStat, px, py, pz);
         break;
     }
-    case ID_TIME: {
-        // read basic time from header
-        const uint16_t week = cast(uint16_t, headerBuf + 14);
-        const GPSec ms = cast(GPSec, headerBuf + 16);
-
-        // read offset from message
+    case Message_Time:
+    {
         const GPS_ENUM clockStatus = cast(GPS_ENUM, messageBuf);
-        const double offset = cast(double, messageBuf + 4);
 
-        debugTraceF(4, "TIME \n\tweek: %u \n\tms: %u\n", week, ms);
+        // utc time
+        // year and ms are officially unsigned longs, but in practice they can never exceed the max
+        // value of a short. I cast them to uint16_t to fit into one CAN packet.
+        const uint16_t year = cast(uint16_t, messageBuf + 28);
+        const uint8_t month = messageBuf[32];
+        const uint8_t day = messageBuf[33];
+        const uint8_t hour = messageBuf[34];
+        const uint8_t min = messageBuf[35];
+        const uint16_t ms = cast(uint16_t, messageBuf + 36);
+        const GPS_ENUM utcStatus = cast(GPS_ENUM, messageBuf + 40);
+
+        // TODO real error handling
+        if (!clockStatus)
+        {
+            debugTraceF(4, "bad clock status: %u\r\n", clockStatus);
+        }
+        if (utcStatus != 1)
+        {
+            debugTraceF(4, "bad utc status: %u\r\n", utcStatus);
+        }
+
+        debugTraceF(
+                4,
+                "TIME \r\n\tyear: %u \r\n\tmonth: %u\r\n\tday: %u\r\n\thour: %u\r\n\tmin: %u\r\n\tms: %u\r\n",
+                year, month, day, hour, min, ms);
         break;
     }
     default:
-        debugTraceF(4, "unsupported message ID: %u\n", messageId);
+        debugTraceF(4, "unsupported message ID: %u\r\n", messageType);
         break;
     }
 }
 
-void readCallback(uint8_t rcvdbyte) {
-    switch(status) {
-    case Status_Sync:
-        // read until synced (at the start of a new header)
-        headerBuf[0] = headerBuf[1];
-        headerBuf[1] = headerBuf[2];
-        headerBuf[2] = rcvdbyte;
-        // synced when read \xAA, \x44, \x12
-        if (headerBuf[0] == 170 && headerBuf[1] == 68 && headerBuf[2] == 18) {
-            printf("synced\n");
-            headerBuf[0] = 0;
-            headerBuf[1] = 0;
-            headerBuf[2] = 0;
+// TODO this might get called before the message is parsed.
+// This is a problem because then the buffer will write sync bytes at the end and skip the message.
+void readCallback(uint8_t rcvdbyte)
+{
+    if (synced == 0)
+    {
+        buf[0] = buf[1];
+        buf[1] = buf[2];
+        buf[2] = rcvdbyte;
+        if (buf[0] == 170 && buf[1] == 68 && buf[2] == 18)
+        {
             bytesRead = 3;
-            status = Status_Header;
+            synced = 1;
         }
-        break;
-    case Status_Header: {
-        headerBuf[bytesRead] = rcvdbyte;
+    }
+    else
+    {
+        buf[bytesRead] = rcvdbyte;
         bytesRead++;
+    }
+}
 
-        // read through the header + the responseId that follows
-        const uint8_t headerLength = headerBuf[3];
-        if (bytesRead == headerLength + sizeof(GPS_ENUM)) {
-            debugTraceF(4, "read header, length: %u\n", headerLength);
-
-            messageLength = cast(uint16_t, headerBuf + 8);
-            const GPS_ENUM responseId = cast(GPS_ENUM, headerBuf + headerLength);
-            if (responseId != RESPONSE_ID_OK) {
-                // TODO error handling
-                debugTraceF(4, "bad response ID: %u\n", responseId);
+uint8_t gpsStatus(DebugMode mode)
+{
+    if (mode == InteractiveMode)
+    {
+        debugPrintF("GPS Status: %X\r\n", rxStatus);
+        uint8_t i = 0;
+        while (i < 32)
+        {
+            if (rxStatus & (1 << i))
+            {
+                debugPrintF("\terror #%u - %s\r\n", i, GPS_ERROR[i]);
             }
-            bytesRead = 0;
-            status = Status_Message;
+            i++;
         }
-        break;
     }
-    case Status_Message:
-        messageBuf[bytesRead] = rcvdbyte;
-        bytesRead++;
-
-        if (bytesRead == messageLength) {
-            debugTraceF(4, "read message, length: %u\n", messageLength);
-
-            const uint16_t messageId = cast(uint16_t, headerBuf + 4);
-            parseMessage(messageId);
-            bytesRead = 0;
-            status = Status_Sync;
-        }
-        break;
-    }
+    return 1;
 }
 
-void sendCommand(hBus uartHandle, const char *command) {
-    uartTransmit(uartHandle, (uint8_t*) command, strlen(command));
+void gpsSendCommand(uint8_t *command)
+{
+    uartTransmit(uartHandle, command, strlen((char*) command));
 }
 
-int main(void) {
+uint8_t actionHandler(DebugMode mode, uint8_t *command)
+{
+    gpsSendCommand(command);
+    return 1;
+}
+
+int main(void)
+{
     bspInit(Module_Test);
     __bis_SR_register(GIE); // Enter LPM3, interrupts enabled
 
-    const hBus uartHandle = uartInit(ApplicationUART);
+    uartHandle = uartInit(ApplicationUART, 0);
+
+#if defined(__DEBUG__)
+
+    debugRegisterEntity(Entity_Test, 'g', NULL, gpsStatus, actionHandler);
 
     // send configuration and commands to receiver
-    sendCommand(uartHandle, "interfacemode com1 novatel novatelbinary on\n\r");
-    sendCommand(uartHandle, "unlogall\n\r");
-    sendCommand(uartHandle, "log timeb ontime 1\n\r");
+    gpsSendCommand("interfacemode com1 novatel novatelbinary on\n\r");
+    gpsSendCommand("unlogall\n\r");
+    gpsSendCommand("log bestxyzb ontime 3\n\r");
+
+#endif
 
     uartRegisterRxCallback(uartHandle, readCallback);
 
-    for (;;) {
-        // TODO this empty forever-loop seems bad
+    while (1)
+    {
+        // sync
+        while (synced == 0);
+
+        // read header length
+        while (bytesRead < 4);
+        const uint8_t headerLength = buf[3];
+        debugTraceF(4, "header length: %u\r\n", headerLength);
+
+        // read header
+        while (bytesRead < headerLength);
+        const uint16_t messageLength = cast(uint16_t, buf + 8);
+        rxStatus = cast(uint32_t, buf + 20);
+        debugTraceF(4, "message length: %u\r\n", messageLength);
+
+        // read message
+        while (bytesRead < headerLength + messageLength + 4); // + 4 to get CRC, too
+
+        // check the CRC
+        const uint32_t crcExpected = cast(uint32_t, buf + bytesRead - 4);
+        const uint32_t crcActual = calculateBlockCrc32(bytesRead - 4, buf);
+        if (crcExpected != crcActual)
+        {
+            // TODO real error handling
+            debugTraceF(3,
+                        "invalid CRC\r\n\texpected: %X\r\n\tactual:   %X\r\n",
+                        crcExpected, crcActual);
+        }
+
+        const uint16_t messageId = cast(uint16_t, buf + 4);
+
+        const uint8_t messageType = buf[6];
+        if (messageType & 0b1000000)
+        {
+            // the receiver responds to commands with a confirmation message,
+            // which can be ignored
+            debugTraceF(4, "received command: %u", messageId);
+        }
+        else
+        {
+            parseMessage((message_type) messageId, buf + headerLength);
+        }
+
+        // set the sync bytes back to 0
+        buf[0] = 0;
+        buf[1] = 0;
+        buf[2] = 0;
+
+        bytesRead = 0;
+        synced = 0;
     }
 }

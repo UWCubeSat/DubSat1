@@ -9,7 +9,8 @@
 #define SENSORS_BMI160_IMU_H_
 
 
-// TODO:  Minimal definitions to get IMU off the ground, for assessment/characterization
+// Minimal definitions to get IMU off the ground, for assessment/characterization
+// Will move to full header definition (for relevant registers/constants) if BMI160 chosen.
 #define IMU_BMI160_I2C_7BIT_ADDRESS                 0x68
 #define IMU_BMI160_FULL_OUTPUT_REG_ADDR_START
 #define IMU_BMI160_GYRO_OUTPUT_REG_ADDR_START

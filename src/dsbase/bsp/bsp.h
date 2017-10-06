@@ -17,6 +17,7 @@
 // Various helper functions
 void bspInit(SubsystemModule mod);
 //void bspUARTInit(bus_instance_UART instance);
+void bspI2CInit(bus_instance_I2C instance);
 SubsystemModule bspGetModule();
 
 // Hard-wired assignments for a given board are stashed in these #if defined(...)
@@ -29,7 +30,7 @@ SubsystemModule bspGetModule();
 #define LP5994_LED_PORT_OUT    P1OUT
 #define LP5994_LED0_BIT        BIT0
 #define LP5994_LED1_BIT        BIT1
-#define LP5994_LED_BITS        (LED0_BIT | LED1_BIT)
+#define LP5994_LED_BITS        (LP5994_LED0_BIT | LP5994_LED1_BIT)
 
 #define LP5994_A1_UART_SEL0     P2SEL0
 #define LP5994_A1_UART_SEL1     P2SEL1
@@ -51,6 +52,10 @@ SubsystemModule bspGetModule();
 #define LP5994_I2C2_SCL_BIT         BIT1
 
 // Generic assignments
+
+// NOTE:  these LED outputs have been confirmed to only need
+// PJDIR set correctly;  SEL0/1 default to 0, which
+// is the correct setting for GPIO on these pins.
 #define LED_PORT_DIR        LP5994_LED_PORT_DIR
 #define LED_PORT_OUT        LP5994_LED_PORT_OUT
 #define LED0_BIT            LP5994_LED0_BIT
@@ -80,11 +85,15 @@ SubsystemModule bspGetModule();
 
 #elif defined(__BSP_Board_MSP430FR5994_CANMSPBlockv24__)
 
-#define CANMSP_BLOCKV24_LED_PORT_DIR    P1DIR
-#define CANMSP_BLOCKV24_LED_PORT_OUT    P1OUT
+// NOTE:  these LED outputs have been confirmed to only need
+// PJDIR set correctly;  SEL0/1 and CEPDx all default to 0, which
+// is the correct setting for GPIO on these pins.
+#define CANMSP_BLOCKV24_LED_PORT_DIR    PJDIR
+#define CANMSP_BLOCKV24_LED_PORT_OUT    PJOUT
 #define CANMSP_BLOCKV24_LED0_BIT        BIT0
 #define CANMSP_BLOCKV24_LED1_BIT        BIT1
-#define CANMSP_BLOCKV24_LED_BITS        (LED0_BIT | LED1_BIT)
+#define CANMSP_BLOCKV24_LED2_BIT        BIT2
+#define CANMSP_BLOCKV24_LED_BITS        (CANMSP_BLOCKV24_LED0_BIT | CANMSP_BLOCKV24_LED1_BIT | CANMSP_BLOCKV24_LED2_BIT)
 
 #define CANMSP_BLOCKV24_2ND_UART_SEL0     P2SEL0
 #define CANMSP_BLOCKV24_2ND_UART_SEL1     P2SEL1
@@ -109,12 +118,13 @@ SubsystemModule bspGetModule();
 #define LED_PORT_OUT        CANMSP_BLOCKV24_LED_PORT_OUT
 #define LED0_BIT            CANMSP_BLOCKV24_LED0_BIT
 #define LED1_BIT            CANMSP_BLOCKV24_LED1_BIT
+#define LED2_BIT            CANMSP_BLOCKV24_LED2_BIT
 #define LED_BITS            CANMSP_BLOCKV24_LED_BITS
 
 // TX=P2.5, RX=P2.6
-#define APP_UART_SEL0   CANMSP_BLOCKV24_UART_SEL0
-#define APP_UART_SEL1   CANMSP_BLOCKV24_UART_SEL1
-#define APP_UART_BITS   CANMSP_BLOCKV24_UART_BITS
+#define APP_UART_SEL0   CANMSP_BLOCKV24_2ND_UART_SEL0
+#define APP_UART_SEL1   CANMSP_BLOCKV24_2ND_UART_SEL1
+#define APP_UART_BITS   CANMSP_BLOCKV24_2ND_UART_BITS
 
 // TX=P2.0, RX=P2.1 - Exposed on LaunchPad in jumper J101 TXD and RXD
 #define BACKCHANNEL_UART_SEL0   CANMSP_BLOCKV24_BACKCHANNEL_UART_SEL0
