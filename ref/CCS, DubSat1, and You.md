@@ -32,7 +32,8 @@ Important symbols include (note:  underbars are DOUBLED (i.e. '__') for the begi
 
 * Board selection (ONE must be selected - it will help the dsbase infrastructure choose the right pins, and make other assumptions):
     * `__BSP_Board_MSP430FR5994LaunchPad__`:  The standard MSP430FR5994 LaunchPad board used for testing.
-    * `__BSP_Board_MSP430FR5994_CANMSPBlockv1__`:  New (as of 5/12/17) boards for testing custom boards.
+    * `__BSP_Board_MSP430FR5994_CANMSPBlockv1__`:  New (as of 5/12/17) boards for testing custom boards.``
+	* `__BSP_Board_MSP430FR5994_CANMSPBlockv24__`:  Current test boards, circa September, 2017.
     * TODO:  MSP432 symbol will be needed very shortly
 
 * Other hardware selection (optional, if a given piece of hardware is used - i.e. if the header is included and the define isn't included, you get a compile error):
