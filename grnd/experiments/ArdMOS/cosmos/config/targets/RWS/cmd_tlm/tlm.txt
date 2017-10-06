@@ -14,4 +14,5 @@ TELEMETRY RWS PIDMOT BIG_ENDIAN "Telemetry description"
     APPEND_ITEM DERR 64 FLOAT "Value of derivative term." LITTLE_ENDIAN
     APPEND_ITEM OUTPUT 64 FLOAT "Value of generated output from PID loop." LITTLE_ENDIAN
     APPEND_ITEM RWUCNT 8 UINT "Number of times integral windup has been explicitly reset." LITTLE_ENDIAN
-  
+    APPEND_ITEM LASTCMD_SETPOINT 16 UINT "The last setpoint command received." LITTLE_ENDIAN
+    APPEND_ITEM LASTCMD_RWU 8 UINT "The last reset windup setting command received."

@@ -54,6 +54,13 @@ double rwsPIDStep(double setpoint);
 void rwsRunAuto();
 void rwsRunManual();
 
+#define OPCODE_DIRCHANGE            0x64
+#define OPCODE_SETPOINTCHANGE       0x73
+typedef struct PACKED_STRUCT _cmd_pidctrl {
+    uint16_t newsetpoint;
+    BOOL resetwindup;
+} CmdPidCtrl;
+
 typedef struct PACKED_STRUCT _pid_step_info {
     BcTlmHeader header;
     double timeChange_s;
@@ -65,13 +72,10 @@ typedef struct PACKED_STRUCT _pid_step_info {
     double output;
 
     uint8_t resetwindupcnt;
+    CmdPidCtrl lastcmd;
+
 } PidStepInfo;
 
-#define OPCODE_DIRCHANGE            0x64
-#define OPCODE_SETPOINTCHANGE       0x73
-typedef struct PACKED_STRUCT _cmd_pidctrl {
-    uint16_t newsetpoint;
-    BOOL resetwindup;
-} CmdPidCtrl;
+
 
 #endif /* DSBASE_ACTUATORS_RW_H_ */

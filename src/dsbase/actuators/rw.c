@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "actuators/rw.h"
 #include "core/utils.h"
@@ -38,18 +39,19 @@ void rwsShowUsage()
 
 void bcbinSendTlm()
 {
-    bcbinSendPacket((const uint8_t *) &pid, sizeof(pid));
+    bcbinSendPacket((uint8_t *) &pid, sizeof(pid));
 }
 
 uint8_t rwsStatusCallback(DebugMode mode)
 {
     if (mode == Mode_BinaryStreaming)
         bcbinSendTlm();
+    return 1;
 }
 
 uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
-    uint8_t len = strlen(cmdstr);
+    uint8_t len = strlen((const char *)cmdstr);
     uint16_t inputnum = 0;
 
     CmdPidCtrl *cmdpidctrl;
@@ -59,7 +61,7 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
         if (len == 0)
         {
             rwsShowUsage();
-            return;
+            return 0;
         }
         else
         {
@@ -73,12 +75,12 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
                 }
                 else
                 {
-                    inputnum = atoi(&cmdstr[1]);
+                    inputnum = atoi((const char*)&cmdstr[1]);
                     debugPrintF("Overriding PID setpoint to %d rpm.", inputnum);
                     setpoint_override = 1;
                     overridden_setpoint = inputnum;
                 }
-                return;
+                return 1;
             }
             else if (cmdstr[0] == 'd')
             {
@@ -88,7 +90,7 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
             else
             {
                 rwsShowUsage();
-                return;
+                return 0;
             }
         }
     }
@@ -99,6 +101,8 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
         {
             case OPCODE_DIRCHANGE:
                 RW_MOTORDIR_OUT ^= RW_MOTORDIR_PIN;
+                pid.lastcmd.newsetpoint = 666;
+                pid.lastcmd.resetwindup = 0;
                 break;
             case OPCODE_SETPOINTCHANGE:
                 cmdpidctrl = (CmdPidCtrl *) &cmdstr[1];
@@ -106,19 +110,28 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
                 {
                     pid.resetwindupcnt++;
                     pid.errSum = 0;
+                    pid.lastcmd.resetwindup = TRUE;
                 }
+                else
+                    pid.lastcmd.resetwindup = FALSE;
 
                 // TODO:  Remove this janky override stuff and just have one commanding mode
                 if (cmdpidctrl->newsetpoint == 0)
+                {
                     setpoint_override = 0;
+                    pid.lastcmd.newsetpoint = 0;
+                }
                 else
                 {
                     setpoint_override = 1;
                     overridden_setpoint = cmdpidctrl->newsetpoint;
+                    pid.lastcmd.newsetpoint = overridden_setpoint;
                 }
                 break;
         }
+        return 1;
     }
+    return 1;
 }
 
 void rwsInit()

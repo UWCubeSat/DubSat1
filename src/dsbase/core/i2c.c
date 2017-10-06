@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include "i2c.h"
+#include "bsp/bsp.h"
 
 void i2cInit(uint8_t slaveaddr)
 {

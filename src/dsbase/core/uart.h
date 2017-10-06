@@ -18,7 +18,13 @@ typedef enum _bus_instance_UART {
     ApplicationUART = 1,
 } bus_instance_UART;
 
-hBus uartInit(bus_instance_UART instance, uint8_t echoenable);
+typedef enum {
+    Speed_9600,
+    Speed_38400,
+    Speed_115200,
+} UARTSpeed;
+
+hBus uartInit(bus_instance_UART instance, uint8_t echoenable, UARTSpeed speed);
 void uartTransmit(hBus handle, uint8_t * buff, uint8_t szBuff);
 void uartRegisterRxCallback(hBus handle, void (*rxcallback)(uint8_t rcvdbyte));
 
@@ -52,6 +58,16 @@ typedef struct {
     void (*rxCallback)(uint8_t);
 
 } bus_context_UART;
+
+
+
+// Definitions for the supported speeds for the UART bus
+#define UCAxBRW_9600 52
+#define UCAxMCTLW_9600 (UCOS16 | UCBRF_1 | 0x49)
+#define UCAxBRW_38400 13
+#define UCAxMCTLW_38400 (UCOS16 | UCBRF_0 | 0x84)
+#define UCAxBRW_115200 4
+#define UCAxMCTLW_115200 (UCOS16 | UCBRF_5 | 0x55)
 
 
 #endif /* UART_H_ */
