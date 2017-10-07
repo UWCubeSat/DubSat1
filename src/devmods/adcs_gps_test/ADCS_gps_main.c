@@ -1,4 +1,5 @@
 #define cast(TYPE, PTR) (*((TYPE*) (PTR)))
+#define GPS_BUFFER_LENGTH 256
 
 #include <msp430.h>
 
@@ -9,10 +10,11 @@
 #include "core/uart.h"
 #include "crc.h"
 
-FILE_STATIC uint8_t buf[256];
+FILE_STATIC uint8_t buf[GPS_BUFFER_LENGTH];
 FILE_STATIC uint8_t bytesRead = 0;
-FILE_STATIC uint32_t rxStatus = 0;
 FILE_STATIC uint8_t synced = 0;
+
+FILE_STATIC uint8_t rxStatus = 0;
 
 FILE_STATIC hBus uartHandle;
 
@@ -40,79 +42,44 @@ FILE_STATIC const char *GPS_ERROR[] = { "Error (use RXSTATUS for details)",
 const char *GPS_ERROR[];
 #endif /* __DEBUG__ */
 
-/**
- * Parse a message, assuming that message is stored in the messageBuf and messageId is set
- * TODO send CAN packets
- */
-void parseMessage(message_type messageType, uint8_t* messageBuf)
+ // TODO send CAN packets
+void parseMessage(uint8_t* buf)
 {
-    switch (messageType)
+    GPSHeader *header = (GPSHeader*) buf;
+    switch (header->messageType)
     {
     case Message_BestXYZ:
     {
-        // position solution status
-        const GPS_ENUM pSolStat = cast(GPS_ENUM, messageBuf);
-
-        // position
-        const double px = cast(double, messageBuf + 8);
-        const double py = cast(double, messageBuf + 16);
-        const double pz = cast(double, messageBuf + 24);
-
-        // position std dev
-        const float pxd = cast(float, messageBuf + 32);
-        const float pyd = cast(float, messageBuf + 36);
-        const float pzd = cast(float, messageBuf + 40);
-
-        // velocity solution status
-        const GPS_ENUM vSolStat = cast(GPS_ENUM, messageBuf + 44);
-
-        // velocity
-        const double vx = cast(double, messageBuf + 52);
-        const double vy = cast(double, messageBuf + 60);
-        const double vz = cast(double, messageBuf + 68);
-
-        // velocity std dev
-        const float vxd = cast(float, messageBuf + 76);
-        const float vyd = cast(float, messageBuf + 80);
-        const float vzd = cast(float, messageBuf + 84);
-
+        GPSBestXYZ *m = (GPSBestXYZ*) buf;
         debugTraceF(4, "BESTXYZ (%u)\r\n\tx: %f\r\n\ty: %f\r\n\tz: %f\r\n",
-                    pSolStat, px, py, pz);
+                    m->pSolStatus, m->pos.x, m->pos.y, m->pos.z);
         break;
     }
     case Message_Time:
     {
-        const GPS_ENUM clockStatus = cast(GPS_ENUM, messageBuf);
+        GPSTime *m = (GPSTime*) buf;
 
-        // utc time
         // year and ms are officially unsigned longs, but in practice they can never exceed the max
         // value of a short. I cast them to uint16_t to fit into one CAN packet.
-        const uint16_t year = cast(uint16_t, messageBuf + 28);
-        const uint8_t month = messageBuf[32];
-        const uint8_t day = messageBuf[33];
-        const uint8_t hour = messageBuf[34];
-        const uint8_t min = messageBuf[35];
-        const uint16_t ms = cast(uint16_t, messageBuf + 36);
-        const GPS_ENUM utcStatus = cast(GPS_ENUM, messageBuf + 40);
 
         // TODO real error handling
-        if (!clockStatus)
+        if (!m->clockStatus)
         {
-            debugTraceF(4, "bad clock status: %u\r\n", clockStatus);
+            debugTraceF(4, "bad clock status: %u\r\n", m->clockStatus);
         }
-        if (utcStatus != 1)
+        if (m->utcStatus != 1)
         {
-            debugTraceF(4, "bad utc status: %u\r\n", utcStatus);
+            debugTraceF(4, "bad utc status: %u\r\n", m->utcStatus);
         }
 
         debugTraceF(
                 4,
                 "TIME \r\n\tyear: %u \r\n\tmonth: %u\r\n\tday: %u\r\n\thour: %u\r\n\tmin: %u\r\n\tms: %u\r\n",
-                year, month, day, hour, min, ms);
+                m->utcYear, m->utcMonth, m->utcDay, m->utcHour, m->utcMin, m->utcMs);
         break;
     }
     default:
-        debugTraceF(4, "unsupported message ID: %u\r\n", messageType);
+        debugTraceF(4, "unsupported message ID: %u\r\n", header->messageType);
         break;
     }
 }
@@ -171,9 +138,9 @@ uint8_t actionHandler(DebugMode mode, uint8_t *command)
 int main(void)
 {
     bspInit(Module_Test);
-    __bis_SR_register(GIE); // Enter LPM3, interrupts enabled
+    __bis_SR_register(GIE);
 
-    uartHandle = uartInit(ApplicationUART, 0, Speed_9600);
+    uartHandle = uartInit(ApplicationUART, 0, Speed_115200);
 
 #if defined(__DEBUG__)
 
@@ -195,17 +162,16 @@ int main(void)
 
         // read header length
         while (bytesRead < 4);
-        const uint8_t headerLength = buf[3];
-        debugTraceF(4, "header length: %u\r\n", headerLength);
+        GPSHeader *header = (GPSHeader*) buf;
+        debugTraceF(4, "header length: %u\r\n", header->headerLength);
 
         // read header
-        while (bytesRead < headerLength);
-        const uint16_t messageLength = cast(uint16_t, buf + 8);
-        rxStatus = cast(uint32_t, buf + 20);
-        debugTraceF(4, "message length: %u\r\n", messageLength);
+        while (bytesRead < header->headerLength);
+        rxStatus = header->rxStatus;
+        debugTraceF(4, "message length: %u\r\n", header->messageLength);
 
-        // read message
-        while (bytesRead < headerLength + messageLength + 4); // + 4 to get CRC, too
+        // read message (+ 4 to get CRC, too)
+        while (bytesRead < header->headerLength + header->messageLength + 4);
 
         // check the CRC
         const uint32_t crcExpected = cast(uint32_t, buf + bytesRead - 4);
@@ -218,24 +184,21 @@ int main(void)
                         crcExpected, crcActual);
         }
 
-        const uint16_t messageId = cast(uint16_t, buf + 4);
-
-        const uint8_t messageType = buf[6];
-        if (messageType & 0b1000000)
+        if (header->messageType & 0b1000000)
         {
             // the receiver responds to commands with a confirmation message,
             // which can be ignored
-            debugTraceF(4, "received command: %u", messageId);
+            debugTraceF(4, "received command: %u", header->messageId);
         }
         else
         {
-            parseMessage((message_type) messageId, buf + headerLength);
+            parseMessage(buf);
         }
 
         // set the sync bytes back to 0
-        buf[0] = 0;
-        buf[1] = 0;
-        buf[2] = 0;
+        header->sync[0] = 0;
+        header->sync[1] = 0;
+        header->sync[2] = 0;
 
         bytesRead = 0;
         synced = 0;
