@@ -42,11 +42,17 @@ FILE_STATIC const char *GPS_ERROR[] = { "Error (use RXSTATUS for details)",
 const char *GPS_ERROR[];
 #endif /* __DEBUG__ */
 
+typedef enum message_id
+{
+    Message_BestXYZ = 241,
+    Message_Time = 101,
+} message_id;
+
  // TODO send CAN packets
 void parseMessage(uint8_t* buf)
 {
     GPSHeader *header = (GPSHeader*) buf;
-    switch (header->messageType)
+    switch (header->messageId)
     {
     case Message_BestXYZ:
     {

@@ -8,12 +8,6 @@
 typedef int32_t gps_ec;
 typedef uint32_t gps_enum;
 
-typedef enum message_type
-{
-    Message_BestXYZ = 241,
-    Message_Time = 101,
-} message_type;
-
 typedef struct PACKED_STRUCT GPSHeader {
     int8_t sync[3];
     uint8_t headerLength;
