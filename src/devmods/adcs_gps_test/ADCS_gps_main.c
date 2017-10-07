@@ -141,7 +141,7 @@ void readCallback(uint8_t rcvdbyte)
 
 uint8_t gpsStatus(DebugMode mode)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
     {
         debugPrintF("GPS Status: %X\r\n", rxStatus);
         uint8_t i = 0;
@@ -173,11 +173,11 @@ int main(void)
     bspInit(Module_Test);
     __bis_SR_register(GIE); // Enter LPM3, interrupts enabled
 
-    uartHandle = uartInit(ApplicationUART, 0);
+    uartHandle = uartInit(ApplicationUART, 0, Speed_9600);
 
 #if defined(__DEBUG__)
 
-    debugRegisterEntity(Entity_Test, 'g', NULL, gpsStatus, actionHandler);
+    debugRegisterEntity(Entity_Test, NULL, gpsStatus, actionHandler);
 
     // send configuration and commands to receiver
     gpsSendCommand("interfacemode com1 novatel novatelbinary on\n\r");
