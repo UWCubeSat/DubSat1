@@ -5,6 +5,8 @@ import binascii
 
 import canlib.canlib as canlib
 
+syncpattern = "S"
+
 # Create the TCP/IP socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 can = canlib.canlib()
@@ -28,6 +30,7 @@ s.listen(1)
 # We are now listening and waiting to accept a connection
 connection, client_address = s.accept()
 
+# Setup the CAN bus channel
 canchan = can.openChannel(0, canlib.canOPEN_ACCEPT_VIRTUAL)
 canchan.setBusOutputControl(canlib.canDRIVER_NORMAL)
 canchan.setBusParams(canlib.canBITRATE_250K)
@@ -35,6 +38,9 @@ canchan.busOn()
 
 print("Connection received, waiting to pass along CAN traffic.")
 while True:
+
+    # TODO:  Need to add a "rawread()" to the channel API, so we don't waste
+    # time 'tuple-izing' stuff that we are going to turn around and de-tuple, anyway
     id, msg, dlc, flag, time = canchan.read(-1)
     #canmsg = canchan.read(-1)
     #print("Received data: %s" % candata)
@@ -43,8 +49,10 @@ while True:
         idhex += '0'
     idstr = binascii.a2b_hex(idhex)
     dlcstr = binascii.a2b_hex(format(dlc, '02x'))
+
+    connection.sendall(syncpattern)
     connection.sendall(idstr)
     connection.sendall(dlcstr)
     connection.sendall(msg)
-    #time.sleep(.2)
+
 
