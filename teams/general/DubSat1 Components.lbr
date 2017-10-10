@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.5.0">
+<eagle version="8.3.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
+<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="1" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.1" altunitdist="mm" altunit="mm"/>
@@ -2768,6 +2769,10 @@ Board Template: V2.1</text>
 <text x="1.651" y="0" size="0.6096" layer="27" font="vector" ratio="20" rot="R90" align="top-center">&gt;VALUE</text>
 </package>
 <package name="REACTION_WHEEL_BRACKET">
+<circle x="-11" y="11" radius="0.889" width="0.001" layer="21"/>
+<circle x="11" y="11" radius="0.889" width="0.001" layer="21"/>
+<circle x="-11" y="-11" radius="0.889" width="0.001" layer="21"/>
+<circle x="11" y="-11" radius="0.889" width="0.001" layer="21"/>
 <wire x1="-14" y1="1.35" x2="-14" y2="14" width="0.001" layer="21"/>
 <wire x1="-14" y1="1.35" x2="-22" y2="1.35" width="0.001" layer="21"/>
 <wire x1="-22" y1="1.35" x2="-22" y2="-12" width="0.001" layer="21"/>
@@ -2775,17 +2780,29 @@ Board Template: V2.1</text>
 <wire x1="-34" y1="1.35" x2="-34" y2="-12" width="0.001" layer="21"/>
 <wire x1="-42" y1="1.35" x2="-34" y2="1.35" width="0.001" layer="21"/>
 <wire x1="-42" y1="1.35" x2="-42" y2="-14" width="0.001" layer="21"/>
-<wire x1="29.35" y1="-14" x2="-42" y2="-14" width="0.001" layer="21"/>
+<wire x1="-40" y1="-14" x2="-42" y2="-14" width="0.001" layer="21"/>
+<wire x1="-37" y1="-17" x2="-40" y2="-14" width="0.001" layer="21" curve="90"/>
+<wire x1="-37" y1="-17" x2="-31" y2="-17" width="0.001" layer="21" curve="180"/>
+<wire x1="-28" y1="-14" x2="-31" y2="-17" width="0.001" layer="21" curve="90"/>
+<wire x1="15.35" y1="-14" x2="-28" y2="-14" width="0.001" layer="21"/>
+<wire x1="18.35" y1="-17" x2="15.35" y2="-14" width="0.001" layer="21" curve="90"/>
+<wire x1="18.35" y1="-17" x2="24.35" y2="-17" width="0.001" layer="21" curve="180"/>
+<wire x1="27.35" y1="-14" x2="24.35" y2="-17" width="0.001" layer="21" curve="90"/>
+<wire x1="29.35" y1="-14" x2="27.35" y2="-14" width="0.001" layer="21"/>
 <wire x1="29.35" y1="-14" x2="29.35" y2="-6" width="0.001" layer="21"/>
 <wire x1="29.35" y1="-6" x2="16" y2="-6" width="0.001" layer="21"/>
 <wire x1="16" y1="6" x2="16" y2="-6" width="0.001" layer="21"/>
 <wire x1="29.35" y1="6" x2="16" y2="6" width="0.001" layer="21"/>
 <wire x1="29.35" y1="14" x2="29.35" y2="6" width="0.001" layer="21"/>
 <wire x1="-14" y1="14" x2="29.35" y2="14" width="0.001" layer="21"/>
-<hole x="-11.5" y="11.5" drill="2.286"/>
-<hole x="11.5" y="11.5" drill="2.286"/>
-<hole x="11.5" y="-11.5" drill="2.286"/>
-<hole x="-11.5" y="-11.5" drill="2.286"/>
+<circle x="-34" y="-17" radius="1.355" width="0.001" layer="21"/>
+<circle x="21.35" y="-17" radius="1.355" width="0.001" layer="21"/>
+<hole x="-11" y="11" drill="2.39"/>
+<hole x="11" y="11" drill="2.39"/>
+<hole x="11" y="-11" drill="2.39"/>
+<hole x="-11" y="-11" drill="2.39"/>
+<hole x="21.35" y="-17" drill="2.39"/>
+<hole x="-34" y="-17" drill="2.39"/>
 </package>
 <package name="SOLAR_CELL_STENCIL">
 <wire x1="0" y1="0" x2="16" y2="0" width="0.127" layer="21"/>
