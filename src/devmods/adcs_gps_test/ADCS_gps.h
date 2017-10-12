@@ -17,7 +17,7 @@ typedef struct PACKED_STRUCT GPSHeader {
     uint16_t messageLength;
     uint16_t sequence;
     uint8_t idleTime;
-    gps_enum timeStatus;
+    uint8_t timeStatus;
     uint16_t week;
     gps_ec ms;
     uint32_t rxStatus; // receiver status
