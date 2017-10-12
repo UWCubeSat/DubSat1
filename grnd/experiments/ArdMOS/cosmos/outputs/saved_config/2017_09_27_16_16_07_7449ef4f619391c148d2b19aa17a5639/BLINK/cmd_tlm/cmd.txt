@@ -1,0 +1,12 @@
+COMMAND BLINK delay BIG_ENDIAN "Command to change how fast to blink the LED."
+  APPEND_ID_PARAMETER opcode 8 UINT 1 1 1 "Opcode identifier for DELAY command."
+  APPEND_PARAMETER  delay 8 UINT 0 255 100 "Delay (in ms) between LED on/off transitions."
+  UNITS Milleseconds ms
+  
+COMMAND BLINK mode BIG_ENDIAN "Indicates what mode the LED should be in."
+  APPEND_ID_PARAMETER opcode 8 UINT 2 2 2 "Opcode identifier for MODE command."
+  APPEND_PARAMETER  action 8 UINT 0 1 1 "Mode setting for LED."
+  HAZARDOUS "Please confirm that you'd like to change the LED mode."
+	STATE OFF 0
+	STATE ON 1
+	

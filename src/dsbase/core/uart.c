@@ -25,7 +25,7 @@ uint8_t uartReportStatus(DebugMode mode)
         bus_ctx = &buses[i];
         if (bus_ctx->initialized == 1)
         {
-            if (mode == InteractiveMode)
+            if (mode == Mode_ASCIIInteractive)
             {
 
                 debugPrintF("**UART %d Status:\r\n", i);
@@ -46,7 +46,7 @@ uint8_t uartReportStatus(DebugMode mode)
 }
 
 // TODO:  Add configuration parameters for speed
-hBus uartInit(bus_instance_UART instance, uint8_t echoenable)
+hBus uartInit(bus_instance_UART instance, uint8_t echoenable, UARTSpeed speed)
 {
     hBus handle = (uint8_t)instance;
     bus_context_UART *bus_ctx = &buses[handle];
@@ -64,7 +64,7 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable)
     if (buses_registered_with_debug == 0)
     {
         buses_registered_with_debug = 1;
-        debugRegisterEntity(Entity_UART, 'u', NULL, uartReportStatus, NULL);
+        debugRegisterEntity(Entity_UART, NULL, uartReportStatus, NULL);
     }
     
     // TODO:  Add logic to rejigger the dividers based on current clock
@@ -80,12 +80,29 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable)
        UCA0CTLW0 &= ~UCSWRST;                  // Initialize eUSCI
        UCA0IE |= UCRXIE | UCTXIE;              // Enable USCI_A0 RX interrupt
      */
+    // Also:  default UART settings are parity disabled,
+    // LSB first, 8-bit data, and 1 stop bit
     if (instance == BackchannelUART)
     {
         UCA0CTLW0 = UCSWRST;
         UCA0CTLW0 |= UCSSEL__SMCLK;
-        UCA0BRW = 4;
-        UCA0MCTLW |= UCOS16 | UCBRF_5 | 0x55;
+
+        switch (speed)
+        {
+            case Speed_9600:
+                UCA0BRW = UCAxBRW_9600;
+                UCA0MCTLW |= UCAxMCTLW_9600;
+                break;
+            case Speed_38400:
+                UCA0BRW = UCAxBRW_38400;
+                UCA0MCTLW |= UCAxMCTLW_38400;
+                break;
+            case Speed_115200:
+                UCA0BRW = UCAxBRW_115200;
+                UCA0MCTLW |= UCAxMCTLW_115200;
+                break;
+        }
+
         UCA0CTLW0 &= ~UCSWRST;
         UCA0IE |= UCRXIE | UCTXIE;
     }
@@ -93,8 +110,23 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable)
     {
         UCA1CTLW0 = UCSWRST;
         UCA1CTLW0 |= UCSSEL__SMCLK;
-        UCA1BRW = 4;
-        UCA1MCTLW |= UCOS16 | UCBRF_5 | 0x55;
+
+        switch (speed)
+        {
+            case Speed_9600:
+                UCA1BRW = UCAxBRW_9600;
+                UCA1MCTLW |= UCAxMCTLW_9600;
+                break;
+            case Speed_38400:
+                UCA1BRW = UCAxBRW_38400;
+                UCA1MCTLW |= UCAxMCTLW_38400;
+                break;
+            case Speed_115200:
+                UCA1BRW = UCAxBRW_115200;
+                UCA1MCTLW |= UCAxMCTLW_115200;
+                break;
+        }
+
         UCA1CTLW0 &= ~UCSWRST;
         UCA1IE |= UCRXIE | UCTXIE;
     }

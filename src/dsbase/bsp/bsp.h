@@ -17,6 +17,7 @@
 // Various helper functions
 void bspInit(SubsystemModule mod);
 //void bspUARTInit(bus_instance_UART instance);
+void bspI2CInit(bus_instance_I2C instance);
 SubsystemModule bspGetModule();
 
 // Hard-wired assignments for a given board are stashed in these #if defined(...)
@@ -51,6 +52,10 @@ SubsystemModule bspGetModule();
 #define LP5994_I2C2_SCL_BIT         BIT1
 
 // Generic assignments
+
+// NOTE:  these LED outputs have been confirmed to only need
+// PJDIR set correctly;  SEL0/1 default to 0, which
+// is the correct setting for GPIO on these pins.
 #define LED_PORT_DIR        LP5994_LED_PORT_DIR
 #define LED_PORT_OUT        LP5994_LED_PORT_OUT
 #define LED0_BIT            LP5994_LED0_BIT
@@ -80,6 +85,9 @@ SubsystemModule bspGetModule();
 
 #elif defined(__BSP_Board_MSP430FR5994_CANMSPBlockv24__)
 
+// NOTE:  these LED outputs have been confirmed to only need
+// PJDIR set correctly;  SEL0/1 and CEPDx all default to 0, which
+// is the correct setting for GPIO on these pins.
 #define CANMSP_BLOCKV24_LED_PORT_DIR    PJDIR
 #define CANMSP_BLOCKV24_LED_PORT_OUT    PJOUT
 #define CANMSP_BLOCKV24_LED0_BIT        BIT0

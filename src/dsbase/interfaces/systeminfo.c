@@ -27,6 +27,7 @@ StartupType coreStartup(sync_pulse_handler sync1, sync_pulse_handler sync2)
 
     // TODO:  populates sc_info as well?
     debugTraceF(1, "Completed core startup routine.\r\n");
+    sc_info.scmode = SCMode_Unknown;
     return Startup_Unknown;
 }
 
@@ -37,7 +38,7 @@ uint8_t *getSubsystemModulePath()
 
 uint8_t infoReport(DebugMode mode)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
     {
         debugPrintF("**Subsystem Module: \t%s\r\n", getSubsystemModulePath());
         debugPrintF("Compiler Version:\t%d\r\n", __TI_COMPILER_VERSION__);

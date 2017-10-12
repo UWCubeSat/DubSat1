@@ -1,0 +1,39 @@
+2017/09/27 16:16:07.646  INFO: Processing target definition in file 'D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/target.txt'
+2017/09/27 16:16:07.647  ERROR: Unable to require D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/lib/delay_limits_response.rb due to cannot load such file -- D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/lib/delay_limits_response.rb. Ensure D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/SYSTEM/lib/delay_limits_response.rb is in the COSMOS lib directory.
+2017/09/27 16:16:07.651  INFO: COSMOS Version: 4.0.1
+2017/09/27 16:16:07.651  INFO: Processing CmdTlmServer configuration in file: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/tools/cmd_tlm_server/cmd_tlm_server.txt
+2017/09/27 16:16:07.652  INFO: Processing CmdTlmServer configuration in file: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/config/targets/BLINK/cmd_tlm_server.txt
+2017/09/27 16:16:07.674  INFO: Marshal file does not exist: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/tmp/marshal_7449ef4f619391c148d2b19aa17a5639.bin
+2017/09/27 16:16:07.764  INFO: Creating thread for interface BLINKINT
+2017/09/27 16:16:07.764  INFO: Creating thread for router PREIDENTIFIED_ROUTER
+2017/09/27 16:16:07.764  INFO: Creating thread for router PREIDENTIFIED_CMD_ROUTER
+2017/09/27 16:16:07.765  INFO: Starting packet reading for BLINKINT
+2017/09/27 16:16:07.765  INFO: Connecting to BLINKINT...
+2017/09/27 16:16:07.768  INFO: Starting packet reading for PREIDENTIFIED_ROUTER
+2017/09/27 16:16:07.768  INFO: Connecting to PREIDENTIFIED_ROUTER...
+2017/09/27 16:16:07.769  INFO: PREIDENTIFIED_ROUTER Connection Success
+2017/09/27 16:16:07.769  INFO: Starting connection maintenance for PREIDENTIFIED_CMD_ROUTER
+2017/09/27 16:16:07.769  INFO: Connecting to PREIDENTIFIED_CMD_ROUTER...
+2017/09/27 16:16:07.769  INFO: PREIDENTIFIED_CMD_ROUTER Connection Success
+2017/09/27 16:16:07.777  INFO: BLINKINT Connection Success
+2017/09/27 16:16:07.777  ERROR: BLINKINT - Unknown 5 byte packet starting: 0505019520
+2017/09/27 16:16:07.787  INFO: Log File Opened : D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/logs/2017_09_27_16_16_07_tlm.bin
+2017/09/27 16:16:07.787  ERROR: BLINKINT - Unknown 32 byte packet starting: 2005019520200501952020050195202005019520200501952020050195202005
+2017/09/27 16:16:07.787  ERROR: BLINKINT - Unknown 1 byte packet starting: 01
+2017/09/27 16:16:07.788  ERROR: BLINKINT - Unknown 149 byte packet starting: 952020050195202005019520200501952020050195202005019520200501952020050195
+2017/09/27 16:16:07.788  ERROR: BLINKINT - Unknown 32 byte packet starting: 2020050195202005019520200501952020050195202005019520200501952020
+2017/09/27 16:16:07.788  INFO: BLINK SOH DELAY = 149 is GREEN
+2017/09/27 16:16:33.231  INFO: Log File Closed : D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/logs/2017_09_27_16_16_07_tlm.bin
+2017/09/27 16:16:33.262  INFO: Killing thread for router PREIDENTIFIED_ROUTER
+2017/09/27 16:16:33.262  INFO: Clean disconnect from PREIDENTIFIED_ROUTER (returned nil)
+2017/09/27 16:16:33.262  INFO: Connection Lost for PREIDENTIFIED_ROUTER
+2017/09/27 16:16:33.363  INFO: Stopped packet reading for PREIDENTIFIED_ROUTER
+2017/09/27 16:16:33.372  INFO: Disconnected from router PREIDENTIFIED_ROUTER
+2017/09/27 16:16:33.372  INFO: Killing thread for router PREIDENTIFIED_CMD_ROUTER
+2017/09/27 16:16:33.380  INFO: Stopped packet reading for PREIDENTIFIED_CMD_ROUTER
+2017/09/27 16:16:33.463  INFO: Disconnected from router PREIDENTIFIED_CMD_ROUTER
+2017/09/27 16:16:33.463  INFO: Killing thread for interface BLINKINT
+2017/09/27 16:16:33.503  INFO: Clean disconnect from BLINKINT (returned nil)
+2017/09/27 16:16:33.503  INFO: Connection Lost for BLINKINT
+2017/09/27 16:16:33.503  INFO: Stopped packet reading for BLINKINT
+2017/09/27 16:16:33.503  INFO: Disconnected from interface BLINKINT

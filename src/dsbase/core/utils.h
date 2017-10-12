@@ -13,6 +13,8 @@
 typedef uint8_t hBus;
 typedef uint8_t hDev;
 
+typedef uint8_t telemid_t;
+
 // Used for static variables in files (rather than in functions)
 // Designed to melt away when running under a text context, so those variables
 // become accessible
@@ -22,6 +24,12 @@ typedef uint8_t hDev;
 #define FILE_STATIC
 #endif
 
-#define NULL ((void*)0)
+#define NULLP ((void*)0)
+
+#define BOOL uint8_t
+#define TRUE 1
+#define FALSE 0
+
+#define PACKED_STRUCT __attribute__((__packed__))
 
 #endif /* CORE_UTILS_H_ */

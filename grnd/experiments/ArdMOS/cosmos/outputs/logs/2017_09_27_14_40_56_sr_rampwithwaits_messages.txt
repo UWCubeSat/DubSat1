@@ -1,0 +1,171 @@
+2017/09/27 14:40:56.133 (SCRIPTRUNNER): Starting script: rampwithwaits.rb
+2017/09/27 14:40:56.537 (rampwithwaits.rb:2): Marshal load success: D:/Repos/DubSat1/grnd/experiments/ArdMOS/cosmos/outputs/tmp/marshal_326bc84c817bf97c03c1d805734337a5.bin
+2017/09/27 14:40:56.538 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 4")
+2017/09/27 14:40:56.625 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 4 success with value == 4 after waiting 0.003998 seconds
+2017/09/27 14:40:56.727 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 5")
+2017/09/27 14:40:56.829 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 5 success with value == 5 after waiting 0.007001 seconds
+2017/09/27 14:40:56.927 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 6")
+2017/09/27 14:40:57.031 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 6 success with value == 6 after waiting 0.008009 seconds
+2017/09/27 14:40:57.137 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 7")
+2017/09/27 14:40:57.236 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 7 success with value == 7 after waiting 0.012012 seconds
+2017/09/27 14:40:57.426 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 8")
+2017/09/27 14:40:57.516 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 8 success with value == 8 after waiting 0.003008 seconds
+2017/09/27 14:40:57.617 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 9")
+2017/09/27 14:40:57.716 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 9 success with value == 9 after waiting 0.001995 seconds
+2017/09/27 14:40:57.817 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 10")
+2017/09/27 14:40:57.918 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 10 success with value == 10 after waiting 0.003998 seconds
+2017/09/27 14:40:58.017 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 11")
+2017/09/27 14:40:58.121 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 11 success with value == 11 after waiting 0.006007 seconds
+2017/09/27 14:40:58.221 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 12")
+2017/09/27 14:40:58.321 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 12 success with value == 12 after waiting 0.004002 seconds
+2017/09/27 14:40:58.421 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 13")
+2017/09/27 14:40:58.521 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 13 success with value == 13 after waiting 0.004008 seconds
+2017/09/27 14:40:58.621 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 14")
+2017/09/27 14:40:58.722 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 14 success with value == 14 after waiting 0.004004 seconds
+2017/09/27 14:40:58.822 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 15")
+2017/09/27 14:40:58.924 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 15 success with value == 15 after waiting 0.007011 seconds
+2017/09/27 14:40:59.025 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 16")
+2017/09/27 14:40:59.125 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 16 success with value == 16 after waiting 0.008002 seconds
+2017/09/27 14:40:59.225 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 17")
+2017/09/27 14:40:59.329 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 17 success with value == 17 after waiting 0.011009 seconds
+2017/09/27 14:40:59.431 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 18")
+2017/09/27 14:40:59.531 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 18 success with value == 18 after waiting 0.013043 seconds
+2017/09/27 14:40:59.630 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 19")
+2017/09/27 14:40:59.729 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 19 success with value == 19 after waiting 0.012006 seconds
+2017/09/27 14:40:59.829 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 20")
+2017/09/27 14:40:59.930 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 20 success with value == 20 after waiting 0.012983 seconds
+2017/09/27 14:41:00.029 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 21")
+2017/09/27 14:41:00.120 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 21 success with value == 21 after waiting 0.00401 seconds
+2017/09/27 14:41:00.219 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 22")
+2017/09/27 14:41:00.319 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 22 success with value == 22 after waiting 0.004009 seconds
+2017/09/27 14:41:00.420 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 23")
+2017/09/27 14:41:00.521 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 23 success with value == 23 after waiting 0.004009 seconds
+2017/09/27 14:41:00.621 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 24")
+2017/09/27 14:41:00.721 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 24 success with value == 24 after waiting 0.004 seconds
+2017/09/27 14:41:00.832 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 25")
+2017/09/27 14:41:00.933 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 25 success with value == 25 after waiting 0.013048 seconds
+2017/09/27 14:41:01.023 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 26")
+2017/09/27 14:41:01.124 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 26 success with value == 26 after waiting 0.002974 seconds
+2017/09/27 14:41:01.225 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 27")
+2017/09/27 14:41:01.326 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 27 success with value == 27 after waiting 0.004009 seconds
+2017/09/27 14:41:01.426 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 28")
+2017/09/27 14:41:01.787 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 28 success with value == 28 after waiting 0.266251 seconds
+2017/09/27 14:41:01.830 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 29")
+2017/09/27 14:41:01.932 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 29 success with value == 29 after waiting 0.013015 seconds
+2017/09/27 14:41:02.031 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 30")
+2017/09/27 14:41:02.132 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 30 success with value == 30 after waiting 0.012008 seconds
+2017/09/27 14:41:02.232 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 31")
+2017/09/27 14:41:02.578 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 31 success with value == 31 after waiting 0.257245 seconds
+2017/09/27 14:41:02.609 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 32")
+2017/09/27 14:41:02.974 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 32 success with value == 32 after waiting 0.269253 seconds
+2017/09/27 14:41:03.007 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 33")
+2017/09/27 14:41:03.361 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 33 success with value == 33 after waiting 0.261252 seconds
+2017/09/27 14:41:03.394 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 34")
+2017/09/27 14:41:03.749 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 34 success with value == 34 after waiting 0.259252 seconds
+2017/09/27 14:41:03.796 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 35")
+2017/09/27 14:41:04.150 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 35 success with value == 35 after waiting 0.266252 seconds
+2017/09/27 14:41:04.192 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 36")
+2017/09/27 14:41:04.549 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 36 success with value == 36 after waiting 0.268257 seconds
+2017/09/27 14:41:04.581 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 37")
+2017/09/27 14:41:04.947 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 37 success with value == 37 after waiting 0.269263 seconds
+2017/09/27 14:41:04.979 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 38")
+2017/09/27 14:41:05.335 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 38 success with value == 38 after waiting 0.263253 seconds
+2017/09/27 14:41:05.382 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 39")
+2017/09/27 14:41:05.737 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 39 success with value == 39 after waiting 0.267251 seconds
+2017/09/27 14:41:05.768 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 40")
+2017/09/27 14:41:06.126 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 40 success with value == 40 after waiting 0.262256 seconds
+2017/09/27 14:41:06.156 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 41")
+2017/09/27 14:41:06.259 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 41 success with value == 41 after waiting 0.007011 seconds
+2017/09/27 14:41:06.358 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 42")
+2017/09/27 14:41:06.716 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 42 success with value == 42 after waiting 0.264263 seconds
+2017/09/27 14:41:06.747 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 43")
+2017/09/27 14:41:07.102 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 43 success with value == 43 after waiting 0.256237 seconds
+2017/09/27 14:41:07.148 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 44")
+2017/09/27 14:41:07.503 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 44 success with value == 44 after waiting 0.267255 seconds
+2017/09/27 14:41:07.550 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 45")
+2017/09/27 14:41:07.907 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 45 success with value == 45 after waiting 0.263245 seconds
+2017/09/27 14:41:07.940 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 46")
+2017/09/27 14:41:08.295 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 46 success with value == 46 after waiting 0.259251 seconds
+2017/09/27 14:41:08.329 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 47")
+2017/09/27 14:41:08.683 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 47 success with value == 47 after waiting 0.257245 seconds
+2017/09/27 14:41:08.716 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 48")
+2017/09/27 14:41:09.072 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 48 success with value == 48 after waiting 0.260243 seconds
+2017/09/27 14:41:09.104 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 49")
+2017/09/27 14:41:09.458 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 49 success with value == 49 after waiting 0.26225 seconds
+2017/09/27 14:41:09.504 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 50")
+2017/09/27 14:41:09.859 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 50 success with value == 50 after waiting 0.267253 seconds
+2017/09/27 14:41:09.892 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 51")
+2017/09/27 14:41:10.249 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 51 success with value == 51 after waiting 0.262247 seconds
+2017/09/27 14:41:10.294 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 52")
+2017/09/27 14:41:10.647 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 52 success with value == 52 after waiting 0.266253 seconds
+2017/09/27 14:41:10.680 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 53")
+2017/09/27 14:41:11.034 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 53 success with value == 53 after waiting 0.255243 seconds
+2017/09/27 14:41:11.068 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 54")
+2017/09/27 14:41:11.426 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 54 success with value == 54 after waiting 0.262251 seconds
+2017/09/27 14:41:11.471 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 55")
+2017/09/27 14:41:11.827 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 55 success with value == 55 after waiting 0.266253 seconds
+2017/09/27 14:41:11.857 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 56")
+2017/09/27 14:41:12.224 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 56 success with value == 56 after waiting 0.26926 seconds
+2017/09/27 14:41:12.255 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 57")
+2017/09/27 14:41:12.610 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 57 success with value == 57 after waiting 0.261255 seconds
+2017/09/27 14:41:12.655 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 58")
+2017/09/27 14:41:13.009 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 58 success with value == 58 after waiting 0.26425 seconds
+2017/09/27 14:41:13.058 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 59")
+2017/09/27 14:41:13.412 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 59 success with value == 59 after waiting 0.266255 seconds
+2017/09/27 14:41:13.457 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 60")
+2017/09/27 14:41:13.811 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 60 success with value == 60 after waiting 0.266258 seconds
+2017/09/27 14:41:13.841 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 61")
+2017/09/27 14:41:14.201 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 61 success with value == 61 after waiting 0.263246 seconds
+2017/09/27 14:41:14.244 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 62")
+2017/09/27 14:41:14.601 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 62 success with value == 62 after waiting 0.269259 seconds
+2017/09/27 14:41:14.631 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 63")
+2017/09/27 14:41:14.985 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 63 success with value == 63 after waiting 0.255244 seconds
+2017/09/27 14:41:15.020 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 64")
+2017/09/27 14:41:15.385 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 64 success with value == 64 after waiting 0.269254 seconds
+2017/09/27 14:41:15.417 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 65")
+2017/09/27 14:41:15.771 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 65 success with value == 65 after waiting 0.261256 seconds
+2017/09/27 14:41:15.821 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 66")
+2017/09/27 14:41:16.172 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 66 success with value == 66 after waiting 0.262255 seconds
+2017/09/27 14:41:16.204 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 67")
+2017/09/27 14:41:16.560 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 67 success with value == 67 after waiting 0.260248 seconds
+2017/09/27 14:41:16.592 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 68")
+2017/09/27 14:41:16.958 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 68 success with value == 68 after waiting 0.268257 seconds
+2017/09/27 14:41:16.992 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 69")
+2017/09/27 14:41:17.360 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 69 success with value == 69 after waiting 0.271254 seconds
+2017/09/27 14:41:17.407 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 70")
+2017/09/27 14:41:17.759 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 70 success with value == 70 after waiting 0.264286 seconds
+2017/09/27 14:41:17.795 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 71")
+2017/09/27 14:41:18.160 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 71 success with value == 71 after waiting 0.268252 seconds
+2017/09/27 14:41:18.193 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 72")
+2017/09/27 14:41:18.557 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 72 success with value == 72 after waiting 0.271255 seconds
+2017/09/27 14:41:18.604 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 73")
+2017/09/27 14:41:18.959 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 73 success with value == 73 after waiting 0.267276 seconds
+2017/09/27 14:41:19.002 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 74")
+2017/09/27 14:41:19.356 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 74 success with value == 74 after waiting 0.265246 seconds
+2017/09/27 14:41:19.388 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 75")
+2017/09/27 14:41:19.743 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 75 success with value == 75 after waiting 0.256232 seconds
+2017/09/27 14:41:19.776 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 76")
+2017/09/27 14:41:20.130 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 76 success with value == 76 after waiting 0.258252 seconds
+2017/09/27 14:41:20.163 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 77")
+2017/09/27 14:41:20.529 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 77 success with value == 77 after waiting 0.269271 seconds
+2017/09/27 14:41:20.566 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 78")
+2017/09/27 14:41:20.929 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 78 success with value == 78 after waiting 0.271248 seconds
+2017/09/27 14:41:20.961 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 79")
+2017/09/27 14:41:21.316 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 79 success with value == 79 after waiting 0.260247 seconds
+2017/09/27 14:41:21.363 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 80")
+2017/09/27 14:41:21.716 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 80 success with value == 80 after waiting 0.265248 seconds
+2017/09/27 14:41:21.764 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 81")
+2017/09/27 14:41:22.120 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 81 success with value == 81 after waiting 0.268262 seconds
+2017/09/27 14:41:22.164 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 82")
+2017/09/27 14:41:22.521 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 82 success with value == 82 after waiting 0.262245 seconds
+2017/09/27 14:41:22.563 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 83")
+2017/09/27 14:41:22.918 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 83 success with value == 83 after waiting 0.262244 seconds
+2017/09/27 14:41:22.950 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 84")
+2017/09/27 14:41:23.305 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 84 success with value == 84 after waiting 0.262247 seconds
+2017/09/27 14:41:23.349 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 85")
+2017/09/27 14:41:23.705 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 85 success with value == 85 after waiting 0.263247 seconds
+2017/09/27 14:41:23.738 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 86")
+2017/09/27 14:41:24.091 (rampwithwaits.rb:3): CHECK: BLINK SOH DELAY == 86 success with value == 86 after waiting 0.257246 seconds
+2017/09/27 14:41:24.122 (rampwithwaits.rb:2): cmd("BLINK DELAY with DELAY 87")
+2017/09/27 14:41:24.131 (SCRIPTRUNNER): User pressed Stop
+2017/09/27 14:41:24.133 (SCRIPTRUNNER): Script stopped: rampwithwaits.rb

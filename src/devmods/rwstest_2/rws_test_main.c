@@ -19,6 +19,7 @@ int main(void) {
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
     bspInit(Module_ADCS_RWX);
     rwsInit();
+    coreStartup(NULL, NULL);
 
     // PWM timer configuration
     PWM_TIMER(CCR0) = MAX_PWM_OUT + 1;
@@ -30,13 +31,13 @@ int main(void) {
 
     __bis_SR_register(GIE);
 
-    rwsSetTuningParams(2.0, 4.4, 0.0);
+    rwsSetTuningParams(2.5, 9.4, 0.0);
     rwsRunAuto();
 
     uint16_t sequencecounter = 0;
     while (1)
     {
-        __delay_cycles(.05 * SEC);
+        //__delay_cycles(.05 * SEC);
 
         // Work through a simple sequence
         sequencecounter++;
@@ -53,11 +54,14 @@ int main(void) {
         else
             sequencecounter = 0;
 
-
         output_cmd = rwsPIDStep(setpoint_cmd);
 
         // Assign output to PWM output signal for motor driver
         PWM_TIMER(CCR4) = output_cmd;
+
+        // Now telemetry is being extracted by the subsystem rather than RW offering it up
+        if ((sequencecounter % 100) == 0 && debugGetMode() == Mode_BinaryStreaming)
+                debugInvokeStatusHandler(Entity_RWS);
 
         //debugPrintF("%f,%f\r\n", setpoint_cmd, output_cmd);
     }
@@ -68,7 +72,7 @@ int main(void) {
 
 #endif  //  __DEBUG__
 
-	return 0;
+
 }
 
 

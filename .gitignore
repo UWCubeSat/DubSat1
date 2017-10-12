@@ -11,7 +11,6 @@ test/unit-tests/build/
 
 # Ignore LaTeX build intermediates
 *.aux
-*.log
 *.synctex.gz
 *.toc
 
@@ -22,3 +21,9 @@ test/unit-tests/build/
 
 \.idea/
 *.asv
+grnd/experiments/ArdMOS/cosmos/outputs/
+teams/cdh/KvaserExperiments/CANAPI/Lib/Borland/
+teams/cdh/KvaserExperiments/Tests/*/Debug/
+teams/cdh/KvaserExperiments/Tests/*/HelloKvaser/Debug/
+*.suo
+teams/cdh/KvaserExperiments/Tests/*/.vs/
