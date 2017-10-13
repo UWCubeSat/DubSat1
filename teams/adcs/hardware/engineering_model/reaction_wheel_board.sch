@@ -709,26 +709,6 @@ Board Template: V2.1</text>
 <text x="0.635" y="2.54" size="1.27" layer="21" font="vector" rot="R90">SBWTCK</text>
 <text x="19.685" y="-2.54" size="1.27" layer="48" font="vector" rot="R180">BOARD EDGE THIS SIDE</text>
 </package>
-<package name="REACTION_WHEEL_BRACKET">
-<wire x1="-14" y1="1.35" x2="-14" y2="14" width="0.001" layer="21"/>
-<wire x1="-14" y1="1.35" x2="-22" y2="1.35" width="0.001" layer="21"/>
-<wire x1="-22" y1="1.35" x2="-22" y2="-12" width="0.001" layer="21"/>
-<wire x1="-34" y1="-12" x2="-22" y2="-12" width="0.001" layer="21"/>
-<wire x1="-34" y1="1.35" x2="-34" y2="-12" width="0.001" layer="21"/>
-<wire x1="-42" y1="1.35" x2="-34" y2="1.35" width="0.001" layer="21"/>
-<wire x1="-42" y1="1.35" x2="-42" y2="-14" width="0.001" layer="21"/>
-<wire x1="29.35" y1="-14" x2="-42" y2="-14" width="0.001" layer="21"/>
-<wire x1="29.35" y1="-14" x2="29.35" y2="-6" width="0.001" layer="21"/>
-<wire x1="29.35" y1="-6" x2="16" y2="-6" width="0.001" layer="21"/>
-<wire x1="16" y1="6" x2="16" y2="-6" width="0.001" layer="21"/>
-<wire x1="29.35" y1="6" x2="16" y2="6" width="0.001" layer="21"/>
-<wire x1="29.35" y1="14" x2="29.35" y2="6" width="0.001" layer="21"/>
-<wire x1="-14" y1="14" x2="29.35" y2="14" width="0.001" layer="21"/>
-<hole x="-11.5" y="11.5" drill="2.286"/>
-<hole x="11.5" y="11.5" drill="2.286"/>
-<hole x="11.5" y="-11.5" drill="2.286"/>
-<hole x="-11.5" y="-11.5" drill="2.286"/>
-</package>
 <package name="DRV10970">
 <smd name="V" x="3.6" y="2.925" dx="0.75" dy="0.3" layer="1" rot="R90"/>
 <smd name="U" x="2.95" y="2.925" dx="0.75" dy="0.3" layer="1" rot="R90"/>
@@ -1883,13 +1863,6 @@ P2.6 Rx and P2.5 Tx</text>
 <pin name="P3.5_GPIO_DEBUG" x="-17.78" y="12.7" visible="pin" length="middle"/>
 <text x="-15.24" y="16.51" size="2.54" layer="95">Program/Debug Port</text>
 </symbol>
-<symbol name="REACTION_WHEEL_BRACKET">
-<text x="-2.54" y="0" size="5.08" layer="94" align="center">REACTION WHEEL BRACKET</text>
-<wire x1="-53.34" y1="5.08" x2="-53.34" y2="-5.08" width="0.254" layer="94"/>
-<wire x1="-53.34" y1="-5.08" x2="48.26" y2="-5.08" width="0.254" layer="94"/>
-<wire x1="48.26" y1="-5.08" x2="48.26" y2="5.08" width="0.254" layer="94"/>
-<wire x1="48.26" y1="5.08" x2="-53.34" y2="5.08" width="0.254" layer="94"/>
-</symbol>
 <symbol name="DRV10970">
 <pin name="DAA" x="-20.32" y="27.94" visible="pin" length="middle"/>
 <pin name="U_HP" x="-20.32" y="22.86" visible="pin" length="middle"/>
@@ -2214,18 +2187,6 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="SBWTCK" pad="SBWTCK"/>
 <connect gate="G$1" pin="SBWTDIO" pad="2"/>
 </connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="REACTION_WHEEL_BRACKET">
-<gates>
-<gate name="G$1" symbol="REACTION_WHEEL_BRACKET" x="2.54" y="0"/>
-</gates>
-<devices>
-<device name="" package="REACTION_WHEEL_BRACKET">
 <technologies>
 <technology name=""/>
 </technologies>
@@ -10225,7 +10186,6 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="GND4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="+3V1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="P+1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
-<part name="U$9" library="DubSat1 Components" deviceset="REACTION_WHEEL_BRACKET" device=""/>
 <part name="U$7" library="DubSat1 Components" deviceset="DRV10970" device=""/>
 <part name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="2.2uF"/>
 <part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="3.3K"/>
@@ -10360,7 +10320,6 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <instance part="GND4" gate="1" x="-48.26" y="-60.96" rot="R270"/>
 <instance part="+3V1" gate="G$1" x="-63.5" y="-55.88" rot="R90"/>
 <instance part="P+1" gate="1" x="-63.5" y="-35.56" rot="R90"/>
-<instance part="U$9" gate="G$1" x="157.48" y="71.12"/>
 <instance part="U$7" gate="G$1" x="-2.54" y="-246.38" rot="R270"/>
 <instance part="C1" gate="G$1" x="15.24" y="-274.32"/>
 <instance part="R1" gate="G$1" x="-15.24" y="-302.26" rot="R90"/>
