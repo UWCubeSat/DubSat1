@@ -134,6 +134,30 @@ def toPyObject(infile, outfileName, **options):
 
     #print(outdbs[''].frames._list[0]._name)
     return outdbs['']
+def createCHeaderBackup(candb, cFileName):
+    #print(candb.frames._list[0]._name)
+    cFile = open(cFileName, "w")
+    cFile.write("#ifndef CANDB_HEADER\n#define CANDB_HEADER\n\n")
+    cFile.write("#include <stdint.h>\n\n")
+    for frame in candb.frames:
+        cFile.write("typedef struct {\n")
+        for sig in frame:
+            if sig.is_signed:
+                cFile.write("\tint")
+            else:
+                cFile.write("\tuint")
+            if sig.signalsize == 8:
+                cFile.write("8_t ")
+            elif sig.signalsize == 16:
+                cFile.write("16_t ")
+            elif sig.signalsize == 32:
+                cFile.write("32_t ")
+            else:
+                cFile.write("64_t ")
+            cFile.write(sig.name + ";\n")
+        cFile.write("} " + frame.name + ";\n\n")
+    cFile.write("\n#endif")
+    cFile.close()
 
 def createCHeader(candb, cFileName):
     #print(candb.frames._list[0]._name)
@@ -159,6 +183,32 @@ def createCHeader(candb, cFileName):
         cFile.write("} " + frame.name + ";\n\n")
     cFile.write("\n#endif")
     cFile.close()
+
+    def createCMain(candb, cFileName):
+        #print(candb.frames._list[0]._name)
+        cFile = open(cFileName, "w")
+        cFile.write("#ifndef CANDB_HEADER\n#define CANDB_HEADER\n\n")
+        cFile.write("#include <stdint.h>\n\n")
+        for frame in candb.frames:
+            cFile.write("typedef struct {\n")
+            for sig in frame:
+                if sig.is_signed:
+                    cFile.write("\tint")
+                else:
+                    cFile.write("\tuint")
+                if sig.signalsize == 8:
+                    cFile.write("8_t ")
+                elif sig.signalsize == 16:
+                    cFile.write("16_t ")
+                elif sig.signalsize == 32:
+                    cFile.write("32_t ")
+                else:
+                    cFile.write("64_t ")
+                cFile.write(sig.name + ";\n")
+            cFile.write("} " + frame.name + ";\n\n")
+        cFile.write("\n#endif")
+        cFile.close()
+
 
 
 def main():
@@ -312,7 +362,8 @@ def main():
     #set_log_level(logger, verbosity)
 
     CANObj = toPyObject(infile, outfileName, **cmdlineOptions.__dict__)
-    createCHeader(CANObj, "test.c")
+    createCHeader(CANObj, "test.h")
+    createCMain(CANObj, "test.c")
 
 
 if __name__ == '__main__':
