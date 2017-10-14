@@ -10289,21 +10289,29 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="GND48" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U$5" library="DubSat1 Components" deviceset="LT8335" device=""/>
 <part name="GND17" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C23" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C23" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
 <part name="GND18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C24" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C24" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF"/>
 <part name="GND19" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R12" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2"/>
+<part name="R12" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="43 kΩ"/>
 <part name="D2" library="DubSat1 Components" deviceset="PMEG6010CEJ" device=""/>
-<part name="L2" library="DubSat1 Components" deviceset="WURTH_ELEKTRONIK_INDDD_744877001" device=""/>
-<part name="C25" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="L2" library="DubSat1 Components" deviceset="WURTH_ELEKTRONIK_INDDD_744877001" device="" value="WURTH_ELEKTRONIK_INDDD_744877001 (1.8 μH)"/>
+<part name="C25" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF"/>
 <part name="GND20" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C26" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C26" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="22 μF"/>
 <part name="GND23" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C27" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
-<part name="R13" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2"/>
-<part name="R14" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2"/>
+<part name="C27" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="5.6 pF"/>
+<part name="R13" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="499 kΩ"/>
+<part name="R14" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="232 kΩ"/>
 <part name="GND49" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF"/>
+<part name="GND5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF"/>
+<part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C8" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
+<part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C9" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
+<part name="GND16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -10351,8 +10359,8 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <instance part="LDO_5V" gate="G$1" x="215.9" y="30.48"/>
 <instance part="GND38" gate="1" x="193.04" y="30.48" rot="R270"/>
 <instance part="GND39" gate="1" x="124.46" y="30.48" rot="R270"/>
-<instance part="+3V4" gate="G$1" x="170.18" y="35.56" rot="R270"/>
-<instance part="P+4" gate="1" x="238.76" y="35.56" rot="R270"/>
+<instance part="+3V4" gate="G$1" x="175.26" y="35.56" rot="R270"/>
+<instance part="P+4" gate="1" x="243.84" y="35.56" rot="R270"/>
 <instance part="C16" gate="G$1" x="165.1" y="25.4"/>
 <instance part="C17" gate="G$1" x="233.68" y="25.4"/>
 <instance part="U$10" gate="G$1" x="147.32" y="-71.12"/>
@@ -10438,6 +10446,14 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <instance part="R13" gate="G$1" x="302.26" y="60.96" rot="R90"/>
 <instance part="R14" gate="G$1" x="294.64" y="45.72" rot="R90"/>
 <instance part="GND49" gate="1" x="294.64" y="38.1" rot="MR0"/>
+<instance part="C6" gate="G$1" x="127" y="43.18"/>
+<instance part="GND5" gate="1" x="127" y="50.8" rot="R180"/>
+<instance part="C7" gate="G$1" x="195.58" y="43.18"/>
+<instance part="GND6" gate="1" x="195.58" y="50.8" rot="R180"/>
+<instance part="C8" gate="G$1" x="160.02" y="43.18"/>
+<instance part="GND7" gate="1" x="160.02" y="50.8" rot="R180"/>
+<instance part="C9" gate="G$1" x="228.6" y="43.18"/>
+<instance part="GND16" gate="1" x="228.6" y="50.8" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -10762,6 +10778,26 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <pinref part="R14" gate="G$1" pin="1"/>
 <pinref part="GND49" gate="1" pin="GND"/>
 </segment>
+<segment>
+<pinref part="C6" gate="G$1" pin="1"/>
+<pinref part="GND5" gate="1" pin="GND"/>
+<wire x1="127" y1="45.72" x2="127" y2="48.26" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="C7" gate="G$1" pin="1"/>
+<pinref part="GND6" gate="1" pin="GND"/>
+<wire x1="195.58" y1="45.72" x2="195.58" y2="48.26" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="C8" gate="G$1" pin="1"/>
+<pinref part="GND7" gate="1" pin="GND"/>
+<wire x1="160.02" y1="45.72" x2="160.02" y2="48.26" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="C9" gate="G$1" pin="1"/>
+<pinref part="GND16" gate="1" pin="GND"/>
+<wire x1="228.6" y1="45.72" x2="228.6" y2="48.26" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="CANH" class="0">
 <segment>
@@ -10953,25 +10989,31 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 </segment>
 <segment>
 <pinref part="LDO_3V3" gate="G$1" pin="IN"/>
-<wire x1="134.62" y1="35.56" x2="129.54" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="129.54" y1="35.56" x2="129.54" y2="40.64" width="0.1524" layer="91"/>
-<label x="129.54" y="40.64" size="1.778" layer="95" rot="R90" xref="yes"/>
-<wire x1="129.54" y1="35.56" x2="119.38" y2="35.56" width="0.1524" layer="91"/>
-<junction x="129.54" y="35.56"/>
+<wire x1="134.62" y1="35.56" x2="127" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="127" y1="35.56" x2="119.38" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="35.56" x2="119.38" y2="40.64" width="0.1524" layer="91"/>
+<label x="119.38" y="40.64" size="1.778" layer="95" rot="R90" xref="yes"/>
+<junction x="119.38" y="35.56"/>
 <pinref part="LDO_3V3" gate="G$1" pin="EN"/>
 <wire x1="119.38" y1="35.56" x2="119.38" y2="25.4" width="0.1524" layer="91"/>
 <wire x1="119.38" y1="25.4" x2="134.62" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="C6" gate="G$1" pin="2"/>
+<wire x1="127" y1="35.56" x2="127" y2="38.1" width="0.1524" layer="91"/>
+<junction x="127" y="35.56"/>
 </segment>
 <segment>
 <pinref part="LDO_5V" gate="G$1" pin="IN"/>
-<wire x1="203.2" y1="35.56" x2="198.12" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="198.12" y1="35.56" x2="198.12" y2="40.64" width="0.1524" layer="91"/>
-<label x="198.12" y="40.64" size="1.778" layer="95" rot="R90" xref="yes"/>
-<wire x1="198.12" y1="35.56" x2="187.96" y2="35.56" width="0.1524" layer="91"/>
-<junction x="198.12" y="35.56"/>
+<wire x1="203.2" y1="35.56" x2="195.58" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="195.58" y1="35.56" x2="187.96" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="187.96" y1="35.56" x2="187.96" y2="40.64" width="0.1524" layer="91"/>
+<label x="187.96" y="40.64" size="1.778" layer="95" rot="R90" xref="yes"/>
+<junction x="187.96" y="35.56"/>
 <pinref part="LDO_5V" gate="G$1" pin="EN"/>
 <wire x1="187.96" y1="35.56" x2="187.96" y2="25.4" width="0.1524" layer="91"/>
 <wire x1="187.96" y1="25.4" x2="203.2" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="C7" gate="G$1" pin="2"/>
+<wire x1="195.58" y1="35.56" x2="195.58" y2="38.1" width="0.1524" layer="91"/>
+<junction x="195.58" y="35.56"/>
 </segment>
 <segment>
 <pinref part="U$5" gate="G$1" pin="V_IN"/>
@@ -11019,11 +11061,15 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <segment>
 <pinref part="LDO_3V3" gate="G$1" pin="OUT"/>
 <pinref part="+3V4" gate="G$1" pin="+3V3"/>
-<wire x1="157.48" y1="35.56" x2="165.1" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="157.48" y1="35.56" x2="160.02" y2="35.56" width="0.1524" layer="91"/>
 <pinref part="C16" gate="G$1" pin="1"/>
-<wire x1="165.1" y1="35.56" x2="167.64" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="160.02" y1="35.56" x2="165.1" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="35.56" x2="172.72" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="165.1" y1="27.94" x2="165.1" y2="35.56" width="0.1524" layer="91"/>
 <junction x="165.1" y="35.56"/>
+<pinref part="C8" gate="G$1" pin="2"/>
+<wire x1="160.02" y1="35.56" x2="160.02" y2="38.1" width="0.1524" layer="91"/>
+<junction x="160.02" y="35.56"/>
 </segment>
 <segment>
 <pinref part="+3V3" gate="G$1" pin="+3V3"/>
@@ -11079,11 +11125,15 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <segment>
 <pinref part="LDO_5V" gate="G$1" pin="OUT"/>
 <pinref part="P+4" gate="1" pin="+5V"/>
-<wire x1="226.06" y1="35.56" x2="233.68" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="226.06" y1="35.56" x2="228.6" y2="35.56" width="0.1524" layer="91"/>
 <pinref part="C17" gate="G$1" pin="1"/>
-<wire x1="233.68" y1="35.56" x2="236.22" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="228.6" y1="35.56" x2="233.68" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="233.68" y1="35.56" x2="241.3" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="233.68" y1="27.94" x2="233.68" y2="35.56" width="0.1524" layer="91"/>
 <junction x="233.68" y="35.56"/>
+<pinref part="C9" gate="G$1" pin="2"/>
+<wire x1="228.6" y1="35.56" x2="228.6" y2="38.1" width="0.1524" layer="91"/>
+<junction x="228.6" y="35.56"/>
 </segment>
 <segment>
 <pinref part="U$10" gate="G$1" pin="5V_CAN"/>
