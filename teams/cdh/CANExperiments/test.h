@@ -3,55 +3,55 @@
 
 #include <stdint.h>
 
-typedef struct {
-	int32_ttotalMisfires2;
-	int32_ttotalMisfires1;
+typedef struct PPTMisfireCount {
+	uint32_ttotalMisfires2;
+	uint32_ttotalMisfires1;
 } PPTMisfireCount;
 
-typedef struct {
-	int16_taverageChargeTime;
-	int32_tminutesSinceSuccessfulFire;
-	int32_tminutesSinceAttemptedFire;
-	int16_tmedianChargeTime;
+typedef struct PPTTimingStatus {
+	uint16_taverageChargeTime;
+	uint32_tminutesSinceSuccessfulFire;
+	uint32_tminutesSinceAttemptedFire;
+	uint16_tmedianChargeTime;
 } PPTTimingStatus;
 
-typedef struct {
-	int32_tsuccessfullFires1;
-	int32_tsuccessfulFires2;
-	int16_tnumberOfMisfires;
-	int8_tlastFiringRate;
+typedef struct FiringStatus {
+	uint32_tsuccessfullFires1;
+	uint32_tsuccessfulFires2;
+	uint16_tnumberOfMisfires;
+	uint8_tlastFiringRate;
 } FiringStatus;
 
-typedef struct {
-	int16_tadcCurrent;
-	int8_tcom1Current;
-	int16_tcom2Current;
-	int16_tLineVoltage;
-	int16_trahsCurrent;
+typedef struct VoltageCurrentInfo {
+	uint16_tadcCurrent;
+	uint8_tcom1Current;
+	uint16_tcom2Current;
+	uint16_tLineVoltage;
+	uint16_trahsCurrent;
 } VoltageCurrentInfo;
 
-typedef struct {
-	int32_tbatteryFullChargeCount;
+typedef struct BatteryStatus {
+	uint32_tbatteryFullChargeCount;
 	int16_tbatteryTemperature;
 	uint32_tbatteryVoltage;
 	uint16_tLowestBatteryVoltage;
-	int32_tunderVoltageEvents;
+	uint32_tunderVoltageEvents;
 } BatteryStatus;
 
-typedef struct {
-	int32_tpowerGeneration;
-	int16_tovercurrent;
-	int32_toutputPower;
-	int16_toutputConfig;
-	int16_tcoulombCount;
-	int8_tbatteryFullyCharged;
-	int16_tavePowerGeneration;
+typedef struct PowerStatus {
+	uint16_tpowerGeneration;
+	uint8_tovercurrent;
+	uint16_toutputPower;
+	uint8_toutputConfig;
+	uint16_tcoulombCount;
+	uint8_tbatteryFullyCharged;
+	uint16_tavePowerGeneration;
 } PowerStatus;
 
-typedef struct {
-	int32_tnumOfTurnons;
-	int32_tminutesSinceTurnon;
-	int16_tMCUTemp;
+typedef struct MCUStatus {
+	uint32_tnumOfTurnons;
+	uint32_tminutesSinceTurnon;
+	int8_tMCUTemp;
 } MCUStatus;
 
 
