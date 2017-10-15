@@ -6,10 +6,11 @@
  */
 
 #include <stdint.h>
+#include "../core/utils.h"
 #include "ltc2481.h"
 
-uint8_t read[3];
-uint8_t i2cInitialized = 0;
+FILE_STATIC uint8_t read[3];
+FILE_STATIC uint8_t i2cInitialized = 0;
 
 void ltc2481Init(uint8_t addr)
 {
