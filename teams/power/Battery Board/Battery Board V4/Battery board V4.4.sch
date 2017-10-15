@@ -10487,7 +10487,7 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <instance part="R8" gate="G$1" x="124.46" y="17.78" rot="R180"/>
 <instance part="C1" gate="G$1" x="134.62" y="22.86"/>
 <instance part="C2" gate="G$1" x="134.62" y="15.24"/>
-<instance part="R9" gate="G$1" x="124.46" y="10.16" rot="R180"/>
+<instance part="R9" gate="G$1" x="124.46" y="7.62" rot="R180"/>
 <instance part="C3" gate="G$1" x="213.36" y="12.7"/>
 <instance part="C4" gate="G$1" x="149.86" y="2.54"/>
 <instance part="GND12" gate="1" x="165.1" y="-5.08"/>
@@ -10552,7 +10552,7 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <pinref part="R8" gate="G$1" pin="2"/>
 <pinref part="R9" gate="G$1" pin="2"/>
 <wire x1="119.38" y1="17.78" x2="119.38" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="119.38" y1="15.24" x2="119.38" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="15.24" x2="119.38" y2="7.62" width="0.1524" layer="91"/>
 <junction x="119.38" y="15.24"/>
 <wire x1="119.38" y1="15.24" x2="109.22" y2="15.24" width="0.1524" layer="91"/>
 </segment>
@@ -10593,13 +10593,7 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <junction x="63.5" y="78.74"/>
 </segment>
 <segment>
-<wire x1="149.86" y1="15.24" x2="144.78" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="144.78" y1="15.24" x2="144.78" y2="10.16" width="0.1524" layer="91"/>
 <pinref part="C2" gate="G$1" pin="2"/>
-<wire x1="144.78" y1="10.16" x2="134.62" y2="10.16" width="0.1524" layer="91"/>
-<pinref part="R9" gate="G$1" pin="1"/>
-<wire x1="134.62" y1="10.16" x2="129.54" y2="10.16" width="0.1524" layer="91"/>
-<junction x="134.62" y="10.16"/>
 <wire x1="134.62" y1="10.16" x2="134.62" y2="-2.54" width="0.1524" layer="91"/>
 <pinref part="C4" gate="G$1" pin="2"/>
 <wire x1="149.86" y1="-2.54" x2="134.62" y2="-2.54" width="0.1524" layer="91"/>
@@ -10616,7 +10610,6 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <junction x="180.34" y="-2.54"/>
 <wire x1="134.62" y1="-2.54" x2="109.22" y2="-2.54" width="0.1524" layer="91"/>
 <junction x="134.62" y="-2.54"/>
-<pinref part="U$8" gate="G$1" pin="VC1_CB"/>
 <pinref part="U$8" gate="G$1" pin="GND"/>
 <pinref part="U$8" gate="G$1" pin="PWR_PAD"/>
 </segment>
@@ -11379,6 +11372,15 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <pinref part="J5" gate="G$1" pin="7"/>
 <wire x1="510.54" y1="60.96" x2="500.38" y2="60.96" width="0.1524" layer="91"/>
 <label x="495.3" y="60.96" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="N$36" class="0">
+<segment>
+<pinref part="U$8" gate="G$1" pin="VC1_CB"/>
+<wire x1="149.86" y1="15.24" x2="144.78" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="144.78" y1="15.24" x2="144.78" y2="7.62" width="0.1524" layer="91"/>
+<pinref part="R9" gate="G$1" pin="1"/>
+<wire x1="129.54" y1="7.62" x2="144.78" y2="7.62" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
