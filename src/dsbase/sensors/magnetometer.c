@@ -39,7 +39,7 @@ void magInit()
     i2cBuff[4] = MAG_HMC5883L_REG_ADDR_MR;
     i2cBuff[5] = MAG_HMC5883L_OPERATING_MODE_CONTINUOUS;
 
-    i2cRawWrite(i2cBuff, 6);
+    i2cMasterWrite(i2cBuff, 6);
 
 #elif defined( __BSP_HW_MAGTOM_MAG3110__)
 
@@ -51,7 +51,7 @@ void magInit()
     i2cBuff[0] = MAG_MAG3110_REG_ADDR_CTRL_REG1;
     i2cBuff[1] = (MAG_MAG3110_CTRL_REG1_FAST_READ_OFF | MAG_MAG3110_CTRL_REG1_AUTO_MODE | \
             MAG_MAG3110_CTRL_REG1_OSDR_COMBINATION_80HZ | MAG_MAG3110_CTRL_REG1_MODE_SELECT_ACTIVE);
-    i2cRawWrite(i2cBuff, 2);
+    i2cMasterWrite(i2cBuff, 2);
 
 #else
 
@@ -63,7 +63,7 @@ void magInit()
 MagnetometerData *magReadXYZData(UnitConversionMode desiredConversion)
 {
     mdata.conversionMode = desiredConversion;
-    i2cCombinedAddressWriteThenRead(MAG_XYZ_OUTPUT_REG_ADDR_START, i2cBuff, 6 );
+    i2cMasterRegisterRead(MAG_XYZ_OUTPUT_REG_ADDR_START, i2cBuff, 6 );
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)
 

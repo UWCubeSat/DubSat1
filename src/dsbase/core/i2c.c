@@ -21,7 +21,17 @@ void i2cInit(uint8_t slaveaddr)
     UCB2CTLW1 |= UCASTP_2;                                      // Automatic stop generated after transmission complete
 }
 
-void i2cCombinedAddressWriteThenRead(uint8_t registeraddr, uint8_t * buff, uint8_t szToRead)
+void i2cMasterCombinedWriteRead(uint8_t * wbuff, uint8_t szToWrite, uint8_t * rbuff, uint8_t szToRead)
+{
+
+}
+
+void i2cMasterRead(uint8_t * buff, uint8_t szToRead)
+{
+
+}
+
+void i2cMasterRegisterRead(uint8_t registeraddr, uint8_t * buff, uint8_t szToRead)
 {
     uint8_t indexBuff = 0;
 
@@ -53,7 +63,7 @@ void i2cCombinedAddressWriteThenRead(uint8_t registeraddr, uint8_t * buff, uint8
     }
 }
 
-void i2cRawWrite(uint8_t * buff, uint8_t szToWrite)
+void i2cMasterWrite(uint8_t * buff, uint8_t szToWrite)
 {
     i2cDisable();
     i2cAutoStopSetTotalBytes(szToWrite);

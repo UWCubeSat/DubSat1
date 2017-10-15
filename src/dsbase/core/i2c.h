@@ -48,8 +48,11 @@ void inline i2cWaitReadyToReceiveByte()  { while ( (UCB2IFG & UCRXIFG) == 0); }
 /***************************/
 /* I2C MID-LEVEL FUNCTIONS */
 /***************************/
-void i2cCombinedAddressWriteThenRead(uint8_t registeraddr, uint8_t * buff, uint8_t szToRead);
-void i2cRawWrite(uint8_t * buff, uint8_t szToWrite);
+void i2cMasterRead(uint8_t * buff, uint8_t szToRead);
+void i2cMasterWrite(uint8_t * buff, uint8_t szToWrite);
+void i2cMasterRegisterRead(uint8_t registeraddr, uint8_t * buff, uint8_t szToRead);
+void i2cMasterCombinedWriteRead(uint8_t * wbuff, uint8_t szToWrite, uint8_t * rbuff, uint8_t szToRead);
+
 
 #endif /* DISABLE_SYNC_I2C_CALLS */
 

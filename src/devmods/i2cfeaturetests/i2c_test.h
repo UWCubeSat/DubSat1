@@ -12,6 +12,6 @@
 #include "bsp/bsp.h"
 #include "sensors/magnetometer.h"
 
-MagnetometerData *pReceivedMagData;
+MagnetometerData *pmagdata;
 
 #endif /* I2C_TEST_H_ */
