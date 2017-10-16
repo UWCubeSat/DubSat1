@@ -1,0 +1,15 @@
+This document captures the list of software required to build up a Windows lab/test machine for the HSL, based on current plans.  The latest version of Windows 10 is assumed, as well as the latest version of each of the software packages listed below (unless otherwise noted.)
+
+Software to Install for the Internets:
+
+* MATLAB (https://www.mathworks.com/products/matlab.html):  a number of toolboxes are assumed as well - the best route is to use a copy purchased through the UW 30$-for-everything program (http://itconnect.uw.edu/wares/uware/matlab/), which includes practically everything Mathworks makes.
+
+* COSMOS (http://cosmosrb.com/):  The main guts of our testing and operations apparatus.  Helpful batch file install for Windows works perfectly; other operating systems slightly less so.  Installs the core framework, a demonstration environment with simulated targets/instruments, and a full Ruby installation (needed for all things Ruby).  Note that following the instructions on cosmosrb.com for UPDGRADING the installation later on often doesn't work exaclty was prescribed - please talk to HSL IT for help with that.
+
+* SourceTree (https://www.sourcetreeapp.com/):  the blessed Git client for the lab.  Not perfect, but lots of folks use it and can help each other.  For official lab machines, please use the HSL/UWCubesat credentials - contact HSL IT for details.
+
+* Anaconda (https://www.anaconda.com/distribution/):  one of the better ways to get Python and all the interesting libraries on a Windows machine.  
+
+Software to Install from GitHub Repo Downloads Area:
+
+* TBD
