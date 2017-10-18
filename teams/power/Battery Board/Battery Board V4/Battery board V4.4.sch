@@ -10559,6 +10559,7 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <segment>
 <pinref part="U$6" gate="G$1" pin="P$2"/>
 <wire x1="40.64" y1="15.24" x2="35.56" y2="15.24" width="0.1524" layer="91"/>
+<label x="27.94" y="12.7" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -10944,6 +10945,7 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <pinref part="U$3" gate="G$1" pin="2"/>
 <pinref part="U$6" gate="G$1" pin="P$1"/>
 <wire x1="25.4" y1="33.02" x2="40.64" y2="33.02" width="0.1524" layer="91"/>
+<junction x="25.4" y="33.02"/>
 </segment>
 <segment>
 <wire x1="134.62" y1="91.44" x2="134.62" y2="88.9" width="0.1524" layer="91"/>
@@ -11270,6 +11272,7 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <pinref part="VR1" gate="R?" pin="CCW"/>
 <pinref part="TP1" gate="G$1" pin="TP"/>
 <junction x="185.42" y="172.72"/>
+<junction x="190.5" y="172.72"/>
 </segment>
 </net>
 <net name="5V" class="0">
@@ -11386,6 +11389,18 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 </nets>
 </sheet>
 </sheets>
+<errors>
+<approved hash="110,1,391.16,139.7,N$3,N$12,,,,"/>
+<approved hash="110,1,391.16,139.7,N$3,N$12,,,,"/>
+<approved hash="113,1,158.93,180.34,R24,,,,,"/>
+<approved hash="113,1,173.81,152.4,R25,,,,,"/>
+<approved hash="113,1,173.81,165.1,R26,,,,,"/>
+<approved hash="113,1,194.49,154.94,R27,,,,,"/>
+<approved hash="113,1,194.49,139.7,R28,,,,,"/>
+<approved hash="113,1,513.757,63.4323,J5,,,,,"/>
+<approved hash="115,1,116.84,25.4,IN-OUT,,,,,"/>
+<approved hash="115,1,119.38,16.51,BT-NODE,,,,,"/>
+</errors>
 </schematic>
 </drawing>
 <compatibility>
