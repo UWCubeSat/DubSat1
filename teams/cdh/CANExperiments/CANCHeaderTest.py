@@ -188,8 +188,9 @@ def createCHeader(candb, cFileName):
                 raise Exception('We can\'t handle numbers that big:' + sig.name)
             cFile.write(sig.name + ";\n")
         cFile.write("} " + frame.name + ";\n\n")
-    # for frame in candb.frames:
-        # cFile.write("canWrapper* ")
+    for frame in candb.frames:
+        cFile.write("CANPacket *encode"
+            + frame.name + "(" + frame.name + " *input);\n\n")
     cFile.close()
 
 def createCMain(candb, cFileName):

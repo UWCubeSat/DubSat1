@@ -45,7 +45,7 @@ void blinkLight(uint8_t lightNum){
     }
 }
 void SendbackSameMessage(uint8_t length, uint8_t* data, uint32_t id){
-    struct CANPacket *p;
+    CANPacket *p;
     blinkLight(LED_BLUE);
     if(data[0] == BOARD_NUM){
         p->data[0] = 0xF0 | BOARD_NUM;

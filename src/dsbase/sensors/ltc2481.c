@@ -9,15 +9,15 @@
 #include "ltc2481.h"
 
 uint8_t read[3];
-uint8_t i2cInitialized = 0;
+uint8_t i2cInitializedx = 0;
 
 void ltc2481Init(uint8_t addr)
 {
 //Connect to the LTC2481 at addr and initialize default settings
-	if (i2cInitialized != 0)
+	if (i2cInitializedx != 0)
 		return;
 	
-	i2cInitialized = 1;
+	i2cInitializedx = 1;
 	i2cEnable();
 	i2cInit(addr);
 	i2cRawWrite(defaultWrite, 1);

@@ -21,19 +21,19 @@ void canPacketInit(uint8_t boardNum){
 }
 
 
-void canSetPacketType(uint8_t type, struct CANPacket *packet){
+void canSetPacketType(uint8_t type, CANPacket *packet){
     packet->id |= (uint32_t) type << 20;
 }
 
-void canSetPacketDestination(uint32_t board, struct CANPacket *packet){
+void canSetPacketDestination(uint32_t board, CANPacket *packet){
     packet->id |= board;
 }
 
-void canSetPacketParameter(uint64_t param, struct CANPacket *packet, uint8_t* value){
+void canSetPacketParameter(uint64_t param, CANPacket *packet, uint8_t* value){
     // TODO: DBC Magic.
 }
 
-void canSendPacket(struct CANPacket *packet){
+void canSendPacket(CANPacket *packet){
     const uint8_t length = 0x08;
     uint8_t tech[5] = {
        (uint8_t) (packet->id >> 21),
@@ -53,7 +53,7 @@ struct CANPacket *canConvertToPacket(uint32_t id, uint8_t* data){
     return p;
 }
 
-uint16_t *canGetPacketParameter(uint64_t param, struct CANPacket *packet, uint8_t *value){
+uint16_t *canGetPacketParameter(uint64_t param, CANPacket *packet, uint8_t *value){
     // TODO: DBC Magic.
     uint16_t* ret;
     return ret;
