@@ -1,58 +1,51 @@
-#ifndef CANDB_HEADER
-#define CANDB_HEADER
-
-#include <stdint.h>
-
 typedef struct PPTMisfireCount {
-	uint32_ttotalMisfires2;
-	uint32_ttotalMisfires1;
+	uint32_t totalMisfires2;
+	uint32_t totalMisfires1;
 } PPTMisfireCount;
 
 typedef struct PPTTimingStatus {
-	uint16_taverageChargeTime;
-	uint32_tminutesSinceSuccessfulFire;
-	uint32_tminutesSinceAttemptedFire;
-	uint16_tmedianChargeTime;
+	uint16_t averageChargeTime;
+	uint32_t minutesSinceSuccessfulFire;
+	uint32_t minutesSinceAttemptedFire;
+	uint16_t medianChargeTime;
 } PPTTimingStatus;
 
 typedef struct FiringStatus {
-	uint32_tsuccessfullFires1;
-	uint32_tsuccessfulFires2;
-	uint16_tnumberOfMisfires;
-	uint8_tlastFiringRate;
+	uint32_t successfullFires1;
+	uint32_t successfulFires2;
+	uint16_t numberOfMisfires;
+	uint8_t lastFiringRate;
 } FiringStatus;
 
 typedef struct VoltageCurrentInfo {
-	uint16_tadcCurrent;
-	uint8_tcom1Current;
-	uint16_tcom2Current;
-	uint16_tLineVoltage;
-	uint16_trahsCurrent;
+	uint16_t adcCurrent;
+	uint8_t com1Current;
+	uint16_t com2Current;
+	uint16_t LineVoltage;
+	uint16_t rahsCurrent;
 } VoltageCurrentInfo;
 
 typedef struct BatteryStatus {
-	uint32_tbatteryFullChargeCount;
-	int16_tbatteryTemperature;
-	uint32_tbatteryVoltage;
-	uint16_tLowestBatteryVoltage;
-	uint32_tunderVoltageEvents;
+	uint32_t batteryFullChargeCount;
+	int16_t batteryTemperature;
+	uint32_t batteryVoltage;
+	uint16_t LowestBatteryVoltage;
+	uint32_t underVoltageEvents;
 } BatteryStatus;
 
 typedef struct PowerStatus {
-	uint16_tpowerGeneration;
-	uint8_tovercurrent;
-	uint16_toutputPower;
-	uint8_toutputConfig;
-	uint16_tcoulombCount;
-	uint8_tbatteryFullyCharged;
-	uint16_tavePowerGeneration;
+	uint16_t powerGeneration;
+	uint8_t overcurrent;
+	uint16_t outputPower;
+	uint8_t outputConfig;
+	uint16_t coulombCount;
+	uint8_t batteryFullyCharged;
+	uint16_t avePowerGeneration;
 } PowerStatus;
 
 typedef struct MCUStatus {
-	uint32_tnumOfTurnons;
-	uint32_tminutesSinceTurnon;
-	int8_tMCUTemp;
+	uint32_t numOfTurnons;
+	uint32_t minutesSinceTurnon;
+	int8_t MCUTemp;
 } MCUStatus;
 
-
-#endif

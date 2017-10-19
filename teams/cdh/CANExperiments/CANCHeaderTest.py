@@ -162,8 +162,6 @@ def createCHeaderBackup(candb, cFileName):
 def createCHeader(candb, cFileName):
     #print(candb.frames._list[0]._name)
     cFile = open(cFileName, "w")
-    cFile.write("#ifndef CANDB_HEADER\n#define CANDB_HEADER\n\n")
-    cFile.write("#include <stdint.h>\n\n")
     for frame in candb.frames:
         cFile.write("typedef struct " + frame.name + " {\n")
         for sig in frame:
@@ -171,26 +169,27 @@ def createCHeader(candb, cFileName):
             print(str(sig.min))
             print(str(sig.max))
             if sig.min >= 0 and sig.max <= 2 ** 8 - 1:
-                cFile.write("\tuint8_t")
+                cFile.write("\tuint8_t ")
             elif sig.min >= 0 and sig.max <=  2 ** 16 - 1:
-                cFile.write("\tuint16_t")
+                cFile.write("\tuint16_t ")
             elif sig.min >= 0 and sig.max <=  2 ** 32 - 1:
-                cFile.write("\tuint32_t")
+                cFile.write("\tuint32_t ")
             elif sig.min >= 0 and sig.max <=  2 ** 64 - 1:
-                cFile.write("\tuint64_t")
+                cFile.write("\tuint64_t ")
             elif sig.min >= - (2 ** (8-1)) and sig.max <=  2 ** (8-1) - 1:
-                cFile.write("\tint8_t")
+                cFile.write("\tint8_t ")
             elif sig.min >= - (2 ** (16-1)) and sig.max <=  2 ** (16-1) - 1:
-                cFile.write("\tint16_t")
+                cFile.write("\tint16_t ")
             elif sig.min >= - (2 ** (32-1)) and sig.max <=  2 ** (32-1) - 1:
-                cFile.write("\tint32_t")
+                cFile.write("\tint32_t ")
             elif sig.min >= - (2 ** (64-1)) and sig.max <=  2 ** (64-1) - 1:
-                cFile.write("\tint64_t")
+                cFile.write("\tint64_t ")
             else:
                 raise Exception('We can\'t handle numbers that big:' + sig.name)
             cFile.write(sig.name + ";\n")
         cFile.write("} " + frame.name + ";\n\n")
-    cFile.write("\n#endif")
+    # for frame in candb.frames:
+        # cFile.write("canWrapper* ")
     cFile.close()
 
 def createCMain(candb, cFileName):
