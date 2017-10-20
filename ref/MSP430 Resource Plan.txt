@@ -14,9 +14,9 @@ eUSCI Peripherals (A blocks = UART/SPI/Irda, B blocks =SPI/I2C)
 Timer Blocks:
 - A0 (3 CCRs):  Main timer driving BDot controller >>> let's use this for any timers needed for subsystem-specific use
 - A1 (3 CCRs):  
-- A2 (2 CCRs):  
-- A3 (2 CCRs):
-- A4 (2 CCRs): 
+- A2 (2 CCRs):  Used by reaction wheels (but could move if necessary)
+- A3 (2 CCRs):  SYSTEM TIMER - stay away!
+- A4 (2 CCRs):  Used by reaction wheels
 
 - B0 (7(!!) CCRs) - Reserved for PWM on boards that need it (MTQ, RWs)
 
