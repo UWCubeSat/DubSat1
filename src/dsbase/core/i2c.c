@@ -5,13 +5,14 @@
  *      Author: jeffc
  */
 
-#include <stdint.h>
 #include "i2c.h"
-#include "bsp/bsp.h"
 
-void i2cInit(uint8_t slaveaddr)
+FILE_STATIC status_i2c i2c_status;
+FILE_STATIC bus_context_i2c buses[CONFIGM_i2c_maxperipheralinstances];
+
+void i2cInit(bus_instance_i2c instance, uint8_t slaveaddr)
 {
-    bspI2CInit(I2CBus2);
+    bspI2CInit(instance);
 
     // USCI Configuration:  Common for both TX and RX
     i2cDisable();                                             // Software reset enabled

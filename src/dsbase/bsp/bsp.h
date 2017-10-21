@@ -8,17 +8,17 @@
 #ifndef BSP_BSP_H_
 #define BSP_BSP_H_
 
-#include "../core/i2c.h"
+
 #include "../core/debugtools.h"
 #include "../core/uart.h"
 #include "../core/utils.h"
 #include "../interfaces/systeminfo.h"
+#include "../core/i2c.h"
 
 // Various helper functions
 void bspInit(SubsystemModule mod);
-//void bspUARTInit(bus_instance_UART instance);
-void bspI2CInit(bus_instance_I2C instance);
 SubsystemModule bspGetModule();
+
 
 // Hard-wired assignments for a given board are stashed in these #if defined(...)
 // blocks
@@ -170,17 +170,6 @@ SubsystemModule bspGetModule();
 #else
 #error Unspecified board hardware, unable to determine correct BSP implementation.  Please specify board.
 #endif
-
-// Hardware assignments that will (hopefully) NOT vary between boards goes below this point ...
-// If that changes, they get "bumped" back into the #if defined(...) blocks above
-// Currently valid for following boards:
-//     MSP4305994 LaunchPad
-//     CAN-MSP Block v1
-#define I2C_PORT_SEL0       P7SEL0
-#define I2C_PORT_SEL1       P7SEL1
-#define I2C_SDA_BIT         BIT0
-#define I2C_SCL_BIT         BIT1
-
 
 
 #endif /* BSP_BSP_H_ */

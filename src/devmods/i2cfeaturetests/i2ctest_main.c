@@ -17,7 +17,7 @@ int main(void) {
         pmagdata = magReadXYZData(ConvertToTeslas);
         debugPrintF(debugOutputFormatString,
                     pmagdata->rawX, pmagdata->rawY, pmagdata->rawZ,
-                    pmagdata->convertedX*1000, pmagdata->convertedY*1000, pmagdata->convertedZ*1000);
+                    pmagdata->convertedX, pmagdata->convertedY, pmagdata->convertedZ);
 
         __delay_cycles(.25 * SEC);
     }

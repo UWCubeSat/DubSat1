@@ -10,13 +10,22 @@
 #include <msp430.h>
 #include <stdint.h>
 
-// TODO:  Introduce pre-processor hackery to "build up" each register name based on
-// passed in USCI_MODULE selected.
+#include "bsp/bsp.h"
+#include "utils.h"
 
-typedef enum _bus_instance_I2C {
+typedef enum _bus_instance_i2c {
     I2CBus1 = 0,
     I2CBus2 = 1,
-} bus_instance_I2C;
+} bus_instance_i2c;
+
+typedef struct {
+
+} status_i2c;
+
+typedef struct {
+
+
+} bus_context_i2c;
 
 // Core helper definitions
 #define I2C_MASTER_RECEIVE_INTERRUPT_MASK     (UCRXEIE | UCNACKIE )
@@ -59,6 +68,6 @@ void i2cMasterCombinedWriteRead(uint8_t * wbuff, uint8_t szToWrite, uint8_t * rb
 // TODO:  Add "async" interrupt-based alternative to synchronous versions
 
 // Core functions
-void i2cInit(uint8_t slaveaddr);  // TODO: change this to return a handle?
+void i2cInit(bus_instance_i2c instance, uint8_t slaveaddr);  // TODO: change this to return a handle?
 
 #endif /* I2C_SUPPORT_H_ */

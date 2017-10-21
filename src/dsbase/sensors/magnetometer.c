@@ -11,10 +11,9 @@
 #define MAX_BUFF_SIZE   0x25
 
 // TODO:  Need some const decorations
-uint8_t szBuff;
-uint8_t i2cBuff[MAX_BUFF_SIZE];
-
-uint8_t i2cInitialized = 0;
+FILE_STATIC uint8_t szBuff;
+FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
+FILE_STATIC uint8_t i2cInitialized = 0;
 
 MagnetometerData mdata;
 
@@ -26,7 +25,7 @@ void magInit()
 
     i2cInitialized = 1;
     i2cEnable();
-    i2cInit(MAG_I2C_7BIT_ADDRESS);
+    i2cInit(I2CBus2, MAG_I2C_7BIT_ADDRESS);
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)  /* */
 

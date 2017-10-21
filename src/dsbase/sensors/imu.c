@@ -19,7 +19,7 @@ void imuInit()
 
     imuInitialized = 1;
     i2cEnable();
-    i2cInit(IMU_I2C_7BIT_ADDRESS);
+    i2cInit(I2CBus2, IMU_I2C_7BIT_ADDRESS);
 
 #if defined (__BSP_HW_IMU_BMI160__)
 
@@ -47,7 +47,7 @@ IMUData *imuReadGyroAccelData()
 #if defined (__BSP_HW_IMU_BMI160__)
 
     // TODO:  Add state read code, populate IMU data struct
-    i2cMasterRegisterWrite(0x0C, i2cBuff, 12);  // read data bytes, little-endian pairs
+    i2cMasterRegisterRead(0x0C, i2cBuff, 12);  // read data bytes, little-endian pairs
     idata.rawGyroX = (int16_t)(i2cBuff[0] | ((int16_t)i2cBuff[1] << 8));
     idata.rawGyroY = (int16_t)(i2cBuff[2] | ((int16_t)i2cBuff[3] << 8));
     idata.rawGyroZ = (int16_t)(i2cBuff[4] | ((int16_t)i2cBuff[5] << 8));
