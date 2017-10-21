@@ -200,7 +200,7 @@ def createCMain(candb, cFileName):
         # Decode Function Implementation
         cFile.write(frame.name + " *decode"
             + frame.name + "(CANPacket *input){\n")
-        cFile.write("    uint64_t fullData = (uint64_t) (input -> data);\n")
+        cFile.write("    const uint64_t fullData = (uint64_t) (input -> data);\n")
         cFile.write("    " + frame.name + " *output;\n")
         for sig in frame:
             # print (str(sig.is_signed))
@@ -209,18 +209,38 @@ def createCMain(candb, cFileName):
                 + sig.name
                 + " = ("
                 + getSignalSize(sig)
-                + ") ((fullData & 0b"
+                + ") (((fullData & ((uint64_t) 0b"
                 + str(int(1/9 * (-1 + 10 ** sig.signalsize)))
                 + " << "
                 + str(int(frame.size * 8 - sig.getStartbit() - sig.signalsize))
-                + ") >> "
+                + ")) >> "
                 + str(int(frame.size * 8 - sig.getStartbit() - sig.signalsize))
+                + ") * "
+                + str(int(sig.factor))
+                + " + "
+                + str(int(sig.offset))
                 + ");\n")
         cFile.write("    return output;\n")
         cFile.write("}\n\n")
+        # Encode Function Implementation
+        cFile.write("CANPacket *encode" + frame.name
+            + "(" + frame.name + " *input){\n")
+        cFile.write("    CANPacket *output;\n")
+        cFile.write("    uint64_t fullPacketData = 0x0000000000000000;\n")
+        for sig in frame:
+            cFile.write("    fullPacketData |= ((uint64_t)((input -> "
+                + sig.name
+                + " - "
+                + str(int(sig.offset))
+                + ") * "
+                + str(int(sig.factor))
+                + ")) << "
+                + str(sig.getStartbit())
+                + ";\n")
+        cFile.write("    output -> data[0] = fullPacketData;\n")
+        cFile.write("    return output;\n")
+        cFile.write("}\n\n")
     cFile.close()
-
-
 
 def main():
     from optparse import OptionParser

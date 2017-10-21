@@ -85,18 +85,25 @@ typedef struct MCUStatus {
     int8_t MCUTemp;
 } MCUStatus;
 
+CANPacket *encodePPTMisfireCount(PPTMisfireCount *input);
 PPTMisfireCount *decodePPTMisfireCount(CANPacket *input);
 
+CANPacket *encodePPTTimingStatus(PPTTimingStatus *input);
 PPTTimingStatus *decodePPTTimingStatus(CANPacket *input);
 
+CANPacket *encodeFiringStatus(FiringStatus *input);
 FiringStatus *decodeFiringStatus(CANPacket *input);
 
+CANPacket *encodeVoltageCurrentInfo(VoltageCurrentInfo *input);
 VoltageCurrentInfo *decodeVoltageCurrentInfo(CANPacket *input);
 
+CANPacket *encodeBatteryStatus(BatteryStatus *input);
 BatteryStatus *decodeBatteryStatus(CANPacket *input);
 
+CANPacket *encodePowerStatus(PowerStatus *input);
 PowerStatus *decodePowerStatus(CANPacket *input);
 
+CANPacket *encodeMCUStatus(MCUStatus *input);
 MCUStatus *decodeMCUStatus(CANPacket *input);
 
 
