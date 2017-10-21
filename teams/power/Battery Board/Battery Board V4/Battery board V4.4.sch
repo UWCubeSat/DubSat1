@@ -10487,7 +10487,7 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <instance part="R8" gate="G$1" x="124.46" y="17.78" rot="R180"/>
 <instance part="C1" gate="G$1" x="134.62" y="22.86"/>
 <instance part="C2" gate="G$1" x="134.62" y="15.24"/>
-<instance part="R9" gate="G$1" x="124.46" y="10.16" rot="R180"/>
+<instance part="R9" gate="G$1" x="124.46" y="7.62" rot="R180"/>
 <instance part="C3" gate="G$1" x="213.36" y="12.7"/>
 <instance part="C4" gate="G$1" x="149.86" y="2.54"/>
 <instance part="GND12" gate="1" x="165.1" y="-5.08"/>
@@ -10552,13 +10552,14 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <pinref part="R8" gate="G$1" pin="2"/>
 <pinref part="R9" gate="G$1" pin="2"/>
 <wire x1="119.38" y1="17.78" x2="119.38" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="119.38" y1="15.24" x2="119.38" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="15.24" x2="119.38" y2="7.62" width="0.1524" layer="91"/>
 <junction x="119.38" y="15.24"/>
 <wire x1="119.38" y1="15.24" x2="109.22" y2="15.24" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="U$6" gate="G$1" pin="P$2"/>
 <wire x1="40.64" y1="15.24" x2="35.56" y2="15.24" width="0.1524" layer="91"/>
+<label x="27.94" y="12.7" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -10593,13 +10594,7 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <junction x="63.5" y="78.74"/>
 </segment>
 <segment>
-<wire x1="149.86" y1="15.24" x2="144.78" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="144.78" y1="15.24" x2="144.78" y2="10.16" width="0.1524" layer="91"/>
 <pinref part="C2" gate="G$1" pin="2"/>
-<wire x1="144.78" y1="10.16" x2="134.62" y2="10.16" width="0.1524" layer="91"/>
-<pinref part="R9" gate="G$1" pin="1"/>
-<wire x1="134.62" y1="10.16" x2="129.54" y2="10.16" width="0.1524" layer="91"/>
-<junction x="134.62" y="10.16"/>
 <wire x1="134.62" y1="10.16" x2="134.62" y2="-2.54" width="0.1524" layer="91"/>
 <pinref part="C4" gate="G$1" pin="2"/>
 <wire x1="149.86" y1="-2.54" x2="134.62" y2="-2.54" width="0.1524" layer="91"/>
@@ -10616,7 +10611,6 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <junction x="180.34" y="-2.54"/>
 <wire x1="134.62" y1="-2.54" x2="109.22" y2="-2.54" width="0.1524" layer="91"/>
 <junction x="134.62" y="-2.54"/>
-<pinref part="U$8" gate="G$1" pin="VC1_CB"/>
 <pinref part="U$8" gate="G$1" pin="GND"/>
 <pinref part="U$8" gate="G$1" pin="PWR_PAD"/>
 </segment>
@@ -10951,6 +10945,7 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <pinref part="U$3" gate="G$1" pin="2"/>
 <pinref part="U$6" gate="G$1" pin="P$1"/>
 <wire x1="25.4" y1="33.02" x2="40.64" y2="33.02" width="0.1524" layer="91"/>
+<junction x="25.4" y="33.02"/>
 </segment>
 <segment>
 <wire x1="134.62" y1="91.44" x2="134.62" y2="88.9" width="0.1524" layer="91"/>
@@ -11277,6 +11272,7 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <pinref part="VR1" gate="R?" pin="CCW"/>
 <pinref part="TP1" gate="G$1" pin="TP"/>
 <junction x="185.42" y="172.72"/>
+<junction x="190.5" y="172.72"/>
 </segment>
 </net>
 <net name="5V" class="0">
@@ -11381,9 +11377,30 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <label x="495.3" y="60.96" size="1.778" layer="95"/>
 </segment>
 </net>
+<net name="N$36" class="0">
+<segment>
+<pinref part="U$8" gate="G$1" pin="VC1_CB"/>
+<wire x1="149.86" y1="15.24" x2="144.78" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="144.78" y1="15.24" x2="144.78" y2="7.62" width="0.1524" layer="91"/>
+<pinref part="R9" gate="G$1" pin="1"/>
+<wire x1="129.54" y1="7.62" x2="144.78" y2="7.62" width="0.1524" layer="91"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>
+<errors>
+<approved hash="110,1,391.16,139.7,N$3,N$12,,,,"/>
+<approved hash="110,1,391.16,139.7,N$3,N$12,,,,"/>
+<approved hash="113,1,158.93,180.34,R24,,,,,"/>
+<approved hash="113,1,173.81,152.4,R25,,,,,"/>
+<approved hash="113,1,173.81,165.1,R26,,,,,"/>
+<approved hash="113,1,194.49,154.94,R27,,,,,"/>
+<approved hash="113,1,194.49,139.7,R28,,,,,"/>
+<approved hash="113,1,513.757,63.4323,J5,,,,,"/>
+<approved hash="115,1,116.84,25.4,IN-OUT,,,,,"/>
+<approved hash="115,1,119.38,16.51,BT-NODE,,,,,"/>
+</errors>
 </schematic>
 </drawing>
 <compatibility>
