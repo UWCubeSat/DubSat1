@@ -1,58 +1,72 @@
-#ifndef CANDB_HEADER
-#define CANDB_HEADER
+PPTMisfireCount *decodePPTMisfireCount(CANPacket *input){
+    uint64_t fullData = (uint64_t) (input -> data);
+    PPTMisfireCount *output;
+    output -> totalMisfires2 = (uint32_t) ((fullData & 0b1111111111111111 << 0) >> 0);
+    output -> totalMisfires1 = (uint32_t) ((fullData & 0b1111111111111111 << 16) >> 16);
+    return output;
+}
 
-#include <stdint.h>
+PPTTimingStatus *decodePPTTimingStatus(CANPacket *input){
+    uint64_t fullData = (uint64_t) (input -> data);
+    PPTTimingStatus *output;
+    output -> averageChargeTime = (uint16_t) ((fullData & 0b11111111 << 32) >> 32);
+    output -> minutesSinceSuccessfulFire = (uint32_t) ((fullData & 0b1111111111111111 << 0) >> 0);
+    output -> minutesSinceAttemptedFire = (uint32_t) ((fullData & 0b1111111111111111 << 16) >> 16);
+    output -> medianChargeTime = (uint16_t) ((fullData & 0b11111111 << 40) >> 40);
+    return output;
+}
 
-typedef struct {
-	uint16_t totalMisfires2;
-	uint16_t totalMisfires1;
-} PPTMisfireCount;
+FiringStatus *decodeFiringStatus(CANPacket *input){
+    uint64_t fullData = (uint64_t) (input -> data);
+    FiringStatus *output;
+    output -> successfullFires1 = (uint32_t) ((fullData & 0b1111111111111111 << 0) >> 0);
+    output -> successfulFires2 = (uint32_t) ((fullData & 0b1111111111111111 << 16) >> 16);
+    output -> numberOfMisfires = (uint16_t) ((fullData & 0b11111111 << 32) >> 32);
+    output -> lastFiringRate = (uint8_t) ((fullData & 0b11111111 << 40) >> 40);
+    return output;
+}
 
-typedef struct {
-	uint8_t averageChargeTime;
-	uint16_t minutesSinceSuccessfulFire;
-	uint16_t minutesSinceAttemptedFire;
-	uint8_t medianChargeTime;
-} PPTTimingStatus;
+VoltageCurrentInfo *decodeVoltageCurrentInfo(CANPacket *input){
+    uint64_t fullData = (uint64_t) (input -> data);
+    VoltageCurrentInfo *output;
+    output -> adcCurrent = (uint16_t) ((fullData & 0b11111111 << 0) >> 0);
+    output -> com1Current = (uint8_t) ((fullData & 0b11111111 << 8) >> 8);
+    output -> com2Current = (uint16_t) ((fullData & 0b11111111 << 16) >> 16);
+    output -> LineVoltage = (uint16_t) ((fullData & 0b11111111 << 24) >> 24);
+    output -> rahsCurrent = (uint16_t) ((fullData & 0b11111111 << 32) >> 32);
+    return output;
+}
 
-typedef struct {
-	uint16_t successfullFires1;
-	int16_t successfulFires2;
-	uint8_t numberOfMisfires;
-	uint8_t lastFiringRate;
-} FiringStatus;
+BatteryStatus *decodeBatteryStatus(CANPacket *input){
+    uint64_t fullData = (uint64_t) (input -> data);
+    BatteryStatus *output;
+    output -> batteryFullChargeCount = (uint32_t) ((fullData & 0b1111111111111111 << 0) >> 0);
+    output -> batteryTemperature = (int16_t) ((fullData & 0b11111111 << 24) >> 24);
+    output -> batteryVoltage = (uint32_t) ((fullData & 0b11111111 << 32) >> 32);
+    output -> LowestBatteryVoltage = (uint16_t) ((fullData & 0b11111111 << 40) >> 40);
+    output -> underVoltageEvents = (uint32_t) ((fullData & 0b1111111111111111 << 48) >> 48);
+    return output;
+}
 
-typedef struct {
-	uint8_t adcCurrent;
-	uint8_t com1Current;
-	uint8_t com2Current;
-	uint8_t LineVoltage;
-	uint8_t rahsCurrent;
-} VoltageCurrentInfo;
+PowerStatus *decodePowerStatus(CANPacket *input){
+    uint64_t fullData = (uint64_t) (input -> data);
+    PowerStatus *output;
+    output -> powerGeneration = (uint16_t) ((fullData & 0b11111111 << 0) >> 0);
+    output -> overcurrent = (uint8_t) ((fullData & 0b11111111 << 8) >> 8);
+    output -> outputPower = (uint16_t) ((fullData & 0b11111111 << 16) >> 16);
+    output -> outputConfig = (uint8_t) ((fullData & 0b11111111 << 24) >> 24);
+    output -> coulombCount = (uint16_t) ((fullData & 0b11111111 << 40) >> 40);
+    output -> batteryFullyCharged = (uint8_t) ((fullData & 0b11111111 << 48) >> 48);
+    output -> avePowerGeneration = (uint16_t) ((fullData & 0b11111111 << 56) >> 56);
+    return output;
+}
 
-typedef struct {
-	int16_t batteryFullChargeCount;
-	int8_t batteryTemperature;
-	uint8_t batteryVoltage;
-	uint8_t LowestBatteryVoltage;
-	uint16_t underVoltageEvents;
-} BatteryStatus;
+MCUStatus *decodeMCUStatus(CANPacket *input){
+    uint64_t fullData = (uint64_t) (input -> data);
+    MCUStatus *output;
+    output -> numOfTurnons = (uint32_t) ((fullData & 0b1111111111111111 << 0) >> 0);
+    output -> minutesSinceTurnon = (uint32_t) ((fullData & 0b1111111111111111 << 16) >> 16);
+    output -> MCUTemp = (int8_t) ((fullData & 0b11111111 << 40) >> 40);
+    return output;
+}
 
-typedef struct {
-	uint8_t powerGeneration;
-	uint8_t overcurrent;
-	uint8_t outputPower;
-	uint8_t outputConfig;
-	uint8_t coulombCount;
-	uint8_t batteryFullyCharged;
-	uint8_t avePowerGeneration;
-} PowerStatus;
-
-typedef struct {
-	uint16_t numOfTurnons;
-	uint16_t minutesSinceTurnon;
-	int8_t MCUTemp;
-} MCUStatus;
-
-
-#endif

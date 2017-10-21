@@ -71,6 +71,8 @@ int main(void) {
     PJOUT &= ~0x07;
     blinkLight(LED_RED);
 
+
+
 #if defined(__DEBUG__)
 
     // TODO:  Insert debug-specific stuff here, including registering info/status/action handlers, etc.
