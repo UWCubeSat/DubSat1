@@ -1,3 +1,21 @@
+#include <stdint.h>
+#include <stdlib.h>
+#include <printf.h>
+#include "CanWrap.h"
+#include "inttypes.h"
+void reverseArray(uint8_t arr[], int start, int end)
+{
+    uint8_t temp;
+    if (start >= end)
+        return;
+    temp = arr[start];
+    arr[start] = arr[end];
+    arr[end] = temp;
+    reverseArray(arr, start+1, end-1);
+}
+//
+// Created by Emory Eng on 10/21/17.
+//
 PPTMisfireCount *decodePPTMisfireCount(CANPacket *input){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);

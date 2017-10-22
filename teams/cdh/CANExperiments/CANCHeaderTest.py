@@ -200,11 +200,14 @@ def createCMain(candb, cFileName):
         # Decode Function Implementation
         cFile.write(frame.name + " *decode"
             + frame.name + "(CANPacket *input){\n")
-        cFile.write("    const uint64_t fullData = (uint64_t) (input -> data);\n")
-        cFile.write("    " + frame.name + " *output;\n")
+        cFile.write("    uint64_t *thePointer = (uint64_t *) input -> data;\n")
+        cFile.write("    reverseArray(input -> data, 0, 7);\n")
+        cFile.write("    const uint64_t fullData = *thePointer;\n")
+        cFile.write("    " + frame.name + " *output = malloc(sizeof("+frame.name+"));\n")
         for sig in frame:
             # print (str(sig.is_signed))
             # print(dir(sig))
+            print(sig.getStartbit())
             cFile.write("    output -> "
                 + sig.name
                 + " = ("
@@ -212,32 +215,37 @@ def createCMain(candb, cFileName):
                 + ") (((fullData & ((uint64_t) 0b"
                 + str(int(1/9 * (-1 + 10 ** sig.signalsize)))
                 + " << "
-                + str(int(frame.size * 8 - sig.getStartbit() - sig.signalsize))
+                + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize))
                 + ")) >> "
-                + str(int(frame.size * 8 - sig.getStartbit() - sig.signalsize))
+                + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize))
                 + ") * "
-                + str(int(sig.factor))
+                + str(sig.factor)
                 + " + "
-                + str(int(sig.offset))
+                + str(sig.offset)
                 + ");\n")
         cFile.write("    return output;\n")
         cFile.write("}\n\n")
         # Encode Function Implementation
         cFile.write("CANPacket *encode" + frame.name
             + "(" + frame.name + " *input){\n")
-        cFile.write("    CANPacket *output;\n")
+        cFile.write("    CANPacket *output = malloc(sizeof(CANPacket));\n")
+        cFile.write("    output -> id = "
+            + (str(frame.id) if frame.id != 2147483648 else "0")
+            + ";\n")
         cFile.write("    uint64_t fullPacketData = 0x0000000000000000;\n")
         for sig in frame:
             cFile.write("    fullPacketData |= ((uint64_t)((input -> "
                 + sig.name
                 + " - "
-                + str(int(sig.offset))
-                + ") * "
-                + str(int(sig.factor))
+                + str(sig.offset)
+                + ") / "
+                + str(sig.factor)
                 + ")) << "
-                + str(sig.getStartbit())
+                + str(64 - int(sig.getStartbit()) - sig.signalsize)
                 + ";\n")
-        cFile.write("    output -> data[0] = fullPacketData;\n")
+        cFile.write("    uint64_t *thePointer = (uint64_t *) output -> data;\n")
+        cFile.write("    *thePointer = fullPacketData;\n")
+        cFile.write("    reverseArray((output->data), 0, 7);\n")
         cFile.write("    return output;\n")
         cFile.write("}\n\n")
     cFile.close()

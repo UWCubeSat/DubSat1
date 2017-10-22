@@ -1,0 +1,1 @@
+/usr/bin/cc  -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/CANWrapTest.dir/main.c.o CMakeFiles/CANWrapTest.dir/CanWrap.c.o  -o CANWrapTest 
