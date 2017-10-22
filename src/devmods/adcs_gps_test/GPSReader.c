@@ -62,7 +62,8 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
             bytesRead++;
 
             // once the header is read, move on to the message
-            if (bytesRead >= sizeof(GPSHeader)) {
+            if (bytesRead >= sizeof(GPSHeader))
+            {
                 bytesRead = 0;
                 state = State_Message;
             }

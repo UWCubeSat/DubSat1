@@ -26,7 +26,7 @@ typedef enum message_id
 
 FILE_STATIC hBus uartHandle;
 
-// these should probably go in so status struct
+// these should probably go in some status struct
 FILE_STATIC uint32_t rxStatus = 0;
 FILE_STATIC double timeOffset = 0;
 
@@ -74,6 +74,16 @@ FILE_STATIC void parseMessage(GPSPackage *package)
     case Message_BestXYZ:
     {
         const GPSBestXYZ m = package->message.bestXYZ;
+
+        if (m.pSolStatus || m.vSolStatus)
+        {
+            // Skip the invalid message. An RXSTATUSEVENT should trigger another
+            // log once position becomes valid
+            // TODO log the error
+            debugTraceF(4, "BESTXYZ invalid\r\n");
+            break;
+        }
+
         debugTraceF(4, "BESTXYZ (%u)\r\n\tx: %f\r\n\ty: %f\r\n\tz: %f\r\n",
                     m.pSolStatus, m.pos.x, m.pos.y, m.pos.z);
         // TODO send CAN packet
@@ -83,14 +93,13 @@ FILE_STATIC void parseMessage(GPSPackage *package)
     {
         const GPSTime m = package->message.time;
 
-        // TODO real error handling
-        if (!m.clockStatus)
+        if (!m.clockStatus || m.utcStatus != 1)
         {
-            debugTraceF(4, "bad clock status: %u\r\n", m.clockStatus);
-        }
-        if (m.utcStatus != 1)
-        {
-            debugTraceF(4, "bad utc status: %u\r\n", m.utcStatus);
+            // Skip the invalid message. An RXSTATUSEVENT should trigger another
+            // log once either becomes valid
+            // TODO log the error
+            debugTraceF(4, "TIME invalid\r\n");
+            break;
         }
 
         // update the time offset
@@ -135,12 +144,17 @@ FILE_STATIC void parseMessage(GPSPackage *package)
     }
     case Message_HWMonitor:
     {
-        const GPSHWMonitor m = package->message.hwMonitor;
+        const GPSHWMonitor monLog = package->message.hwMonitor;
         debugTraceF(4, "HWMonitor:\r\n");
-        unsigned int i = m.numMeasurements;
-        while (i--) {
-            debugTraceF(4, "\tm: %f\r\n", m.measurements[i].reading);
+
+        // read only the measurements supported by this model (615)
+        // TODO revisit this for the OEM719
+        if (monLog.numMeasurements < 2) {
+            debugPrintF("HWMonitor missing measurements!\r\n");
+            break;
         }
+        const GPSMeasurement m = monLog.measurements[1];
+        debugTraceF(4, "\ttemp: %f, status: %u\r\n", m.reading, m.status);
         break;
     }
     default:
@@ -189,11 +203,7 @@ int main(void)
     GPSPackage packageBuffer[PACKAGE_BUFFER_LENGTH];
     GPSReaderInit(uartHandle, packageBuffer, PACKAGE_BUFFER_LENGTH);
 
-#if defined(__DEBUG__)
-
     debugRegisterEntity(Entity_Test, NULL, gpsStatus, actionHandler);
-
-#endif
 
     // configure to reply in binary only
     gpsSendCommand("iterfacemode com2 novatel novatelbinary on\r\n");

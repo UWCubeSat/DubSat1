@@ -94,7 +94,12 @@ typedef struct PACKED_STRUCT GPSRXStatus {
 // for use in GPSHWMonitor
 typedef struct PACKED_STRUCT GPSMeasurement {
     float reading;
-    uint32_t status;
+
+    // these three fields are combined as "status" in the firmware guide, but
+    // it makes more sense for parsing to treat them as separate.
+    uint8_t status;
+    uint8_t type;
+    uint8_t pad[2];
 } GPSMeasurement;
 
 // TODO This is by far the biggest message and most of the space is wasted. If
