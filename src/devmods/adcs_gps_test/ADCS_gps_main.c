@@ -1,5 +1,5 @@
 #define MS_IN_WEEK 604800000
-#define PACKAGE_CAPACITY 10
+#define PACKAGE_CAPACITY 3
 
 #include <msp430.h>
 #include <stdint.h>
@@ -17,8 +17,10 @@
 
 typedef enum message_id
 {
-    Message_BestXYZ = 241,
+    Message_RXStatus = 93,
     Message_Time = 101,
+    Message_BestXYZ = 241,
+    Message_HWMonitor = 963,
 } message_id;
 
 typedef enum gps_state
@@ -31,12 +33,10 @@ typedef enum gps_state
 
 FILE_STATIC uint8_t bytesRead = 0;
 FILE_STATIC gps_state state;
-
 FILE_STATIC Queue queue;
+FILE_STATIC hBus uartHandle;
 
 FILE_STATIC uint32_t rxStatus = 0;
-
-FILE_STATIC hBus uartHandle;
 
 #ifdef __DEBUG__
 FILE_STATIC const char *GPS_ERROR[] = { "Error (use RXSTATUS for details)",
@@ -106,6 +106,22 @@ FILE_STATIC void parseMessage(GPSPackage *package)
         toUtc(&week, &ms, m.offset + m.utcOffset);
 
         debugTraceF(4, "TIME \r\n\tweek: %u \r\n\tms: %u\r\n", week, ms);
+        break;
+    }
+    case Message_RXStatus:
+    {
+        const GPSRXStatus m = package->message.rxstatus;
+        debugTraceF(4, "RXSTATUS error word: %X \r\n", m.error);
+        break;
+    }
+    case Message_HWMonitor:
+    {
+        const GPSHWMonitor m = package->message.hwMonitor;
+        debugPrintF("HWMonitor:\r\n");
+        unsigned int i = m.numMeasurements;
+        while (i-- > 0) {
+            debugPrintF("\tm: %f\r\n", m.measurements[i].reading);
+        }
         break;
     }
     default:
@@ -220,7 +236,7 @@ int main(void)
     __bis_SR_register(GIE);
 
     // make that stack frame extra thicc
-    uint8_t queueContents[10 * sizeof(GPSPackage)];
+    uint8_t queueContents[PACKAGE_CAPACITY * sizeof(GPSPackage)];
     queue = CreateQueue(queueContents, sizeof(GPSPackage), PACKAGE_CAPACITY);
 
     uartHandle = uartInit(ApplicationUART, 0, Speed_115200);
@@ -230,9 +246,9 @@ int main(void)
     debugRegisterEntity(Entity_Test, NULL, gpsStatus, actionHandler);
 
     // send configuration and commands to receiver
-    gpsSendCommand("interfacemode com1 novatel novatelbinary on\n\r");
+    gpsSendCommand("interfacemode com2 novatel novatelbinary on\n\r");
     gpsSendCommand("unlogall\n\r");
-    gpsSendCommand("log bestxyzb ontime 3\n\r");
+    gpsSendCommand("log hwmonitorb ontime 5\n\r");
 
 #endif
 
@@ -242,8 +258,6 @@ int main(void)
     {
         // wait for next message
         while (isQueueEmpty(&queue));
-
-        debugPrintF("size of queue: %u\r\n", queue.length);
 
         // get the next message
         GPSPackage *package = (GPSPackage *) ReadQueue(&queue);

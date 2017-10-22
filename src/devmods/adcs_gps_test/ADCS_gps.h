@@ -73,9 +73,40 @@ typedef struct PACKED_STRUCT GPSTime {
     gps_enum utcStatus; // 0 = invalid, 1 = valid, 2 = warning
 } GPSTime;
 
+// a status code for use in RXStatus
+typedef struct PACKED_STRUCT GPSStatusCode {
+    uint32_t word;
+    uint32_t pri;  // priority mask
+    uint32_t set;  // set mask
+    uint32_t clear;  // clear mask
+} GPSStatusCode;
+
+typedef struct PACKED_STRUCT GPSRXStatus {
+    uint32_t error;
+    uint32_t numStats;
+    GPSStatusCode rxstat;
+    GPSStatusCode aux1stat;
+    GPSStatusCode aux2stat;
+    GPSStatusCode aux3stat;
+} GPSRXStatus;
+
+
+// for use in GPSHWMonitor
+typedef struct PACKED_STRUCT GPSMeasurement {
+    float reading;
+    uint32_t status;
+} GPSMeasurement;
+
+typedef struct PACKED_STRUCT GPSHWMonitor {
+    uint32_t numMeasurements;
+    GPSMeasurement measurements[22];
+} GPSHWMonitor;
+
 typedef union GPSMessage {
     GPSBestXYZ bestXYZ;
     GPSTime time;
+    GPSRXStatus rxstatus;
+    GPSHWMonitor hwMonitor;
 } GPSMessage;
 
 typedef struct PACKED_STRUCT GPSPackage {
