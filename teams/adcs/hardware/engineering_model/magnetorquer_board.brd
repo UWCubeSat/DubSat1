@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.3.2">
+<eagle version="8.4.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -2057,10 +2057,9 @@ design rules under a new name.</description>
 <param name="slThermalsForVias" value="0"/>
 <param name="dpMaxLengthDifference" value="10mm"/>
 <param name="dpGapFactor" value="2.5"/>
-<param name="checkGrid" value="0"/>
-<param name="checkAngle" value="0"/>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
+<param name="checkStop" value="0"/>
 <param name="useDiameter" value="13"/>
 <param name="maxErrors" value="50"/>
 </designrules>
@@ -2196,6 +2195,7 @@ design rules under a new name.</description>
 <element name="C5" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="" x="85.725" y="35.56" rot="R180"/>
 <element name="R5" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="" x="81.28" y="35.56" rot="R180"/>
 <element name="R6" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="" x="80.01" y="45.72"/>
+<element name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="" x="83.5025" y="73.025" rot="R180"/>
 </elements>
 <signals>
 <signal name="GND">
@@ -2211,7 +2211,6 @@ design rules under a new name.</description>
 <via x="55.118" y="29.2862" extent="1-16" drill="0.3" shape="square"/>
 <via x="65.278" y="29.2608" extent="1-16" drill="0.3" shape="square"/>
 <via x="74.9808" y="29.2608" extent="1-16" drill="0.3048" shape="square"/>
-<via x="87.2744" y="72.4916" extent="1-16" drill="0.3" shape="square"/>
 <contactref element="U1" pad="GND@1"/>
 <contactref element="U1" pad="GND@2"/>
 <contactref element="U2" pad="GND@1"/>
@@ -2372,6 +2371,13 @@ design rules under a new name.</description>
 <wire x1="55.230115625" y1="27.327315625" x2="54.708515625" y2="27.327315625" width="0.2032" layer="1"/>
 <wire x1="54.483" y1="27.6352" x2="54.790884375" y2="27.327315625" width="0.2032" layer="1"/>
 <wire x1="54.790884375" y1="27.327315625" x2="55.230115625" y2="27.327315625" width="0.2032" layer="1"/>
+<contactref element="C6" pad="1"/>
+<via x="85.4075" y="73.3425" extent="1-16" drill="0.35" shape="square"/>
+<via x="85.4075" y="72.7075" extent="1-16" drill="0.35" shape="square"/>
+<wire x1="85.4075" y1="72.7075" x2="84.77" y2="72.7075" width="0.508" layer="1"/>
+<wire x1="84.77" y1="72.7075" x2="84.4525" y2="73.025" width="0.508" layer="1"/>
+<wire x1="84.4525" y1="73.025" x2="85.09" y2="73.025" width="0.508" layer="1"/>
+<wire x1="85.09" y1="73.025" x2="85.4075" y2="73.3425" width="0.508" layer="1"/>
 <wire x1="42.2402" y1="49.1109" x2="42.23" y2="50.165" width="0" layer="19" extent="1-1"/>
 <wire x1="49.215" y1="37.465" x2="48.2967" y2="37.1893" width="0" layer="19" extent="1-1"/>
 </signal>
@@ -2653,7 +2659,7 @@ design rules under a new name.</description>
 <contactref element="U$1" pad="P$87"/>
 <contactref element="C12" pad="1"/>
 <contactref element="C13" pad="1"/>
-<wire x1="78.0034" y1="76.31194375" x2="78.0034" y2="75.568" width="0.254" layer="1"/>
+<wire x1="78.0034" y1="75.568" x2="78.0034" y2="76.31194375" width="0.254" layer="1"/>
 <wire x1="79.2734" y1="78.63405625" x2="79.2734" y2="77.58194375" width="0.254" layer="1"/>
 <wire x1="78.0034" y1="79.90405625" x2="78.0034" y2="80.648" width="0.254" layer="1"/>
 <wire x1="78.0034" y1="79.90405625" x2="79.2734" y2="78.63405625" width="0.254" layer="1"/>
@@ -2684,9 +2690,7 @@ design rules under a new name.</description>
 <wire x1="47.3075" y1="35.8775" x2="47.625" y2="35.56" width="0.254" layer="1"/>
 <wire x1="47.625" y1="35.56" x2="48.8125" y2="35.56" width="0.254" layer="1"/>
 <wire x1="48.8125" y1="35.56" x2="48.815" y2="35.5575" width="0.254" layer="1"/>
-<wire x1="78.0034" y1="75.568" x2="78.0034" y2="73.8759" width="0.508" layer="1"/>
-<wire x1="78.0034" y1="73.8759" x2="77.7875" y2="73.66" width="0.508" layer="1"/>
-<wire x1="77.7875" y1="73.66" x2="61.595" y2="73.66" width="0.508" layer="1"/>
+<wire x1="61.595" y1="73.66" x2="77.7875" y2="73.66" width="0.508" layer="1"/>
 <via x="61.595" y="73.66" extent="1-16" drill="0.35"/>
 <wire x1="61.595" y1="73.66" x2="59.982834375" y2="72.047834375" width="0.508" layer="16"/>
 <via x="59.982834375" y="72.047834375" extent="1-16" drill="0.35"/>
@@ -2712,8 +2716,7 @@ design rules under a new name.</description>
 <wire x1="48.895" y1="60.325" x2="48.895" y2="64.77" width="0.508" layer="1"/>
 <wire x1="43.18" y1="54.2925" x2="43.18" y2="60.325" width="0.508" layer="1"/>
 <wire x1="48.895" y1="64.77" x2="50.0916" y2="64.77" width="0.508" layer="1"/>
-<wire x1="77.7875" y1="73.66" x2="77.7875" y2="66.3575" width="0.508" layer="1"/>
-<wire x1="77.7875" y1="66.3575" x2="86.995" y2="57.15" width="0.508" layer="1"/>
+<wire x1="86.995" y1="57.15" x2="77.7875" y2="66.3575" width="0.508" layer="1"/>
 <wire x1="86.995" y1="57.15" x2="86.995" y2="52.705" width="0.508" layer="1"/>
 <wire x1="86.995" y1="52.705" x2="85.725" y2="51.435" width="0.508" layer="1"/>
 <wire x1="85.725" y1="51.435" x2="85.725" y2="49.85" width="0.508" layer="1"/>
@@ -2738,6 +2741,12 @@ design rules under a new name.</description>
 <wire x1="84.7725" y1="42.8625" x2="84.7725" y2="47.9425" width="0.508" layer="16"/>
 <wire x1="84.7725" y1="47.9425" x2="85.24875" y2="48.41875" width="0.508" layer="16"/>
 <via x="85.24875" y="48.41875" extent="1-16" drill="0.35"/>
+<contactref element="C6" pad="2"/>
+<wire x1="77.7875" y1="66.3575" x2="77.7875" y2="73.025" width="0.508" layer="1"/>
+<wire x1="77.7875" y1="73.025" x2="77.7875" y2="73.66" width="0.508" layer="1"/>
+<wire x1="77.7875" y1="73.025" x2="82.5525" y2="73.025" width="0.508" layer="1"/>
+<wire x1="77.7875" y1="73.66" x2="77.7875" y2="75.3521" width="0.508" layer="1"/>
+<wire x1="77.7875" y1="75.3521" x2="78.0034" y2="75.568" width="0.508" layer="1"/>
 </signal>
 <signal name="N$1">
 <contactref element="R1" pad="2"/>

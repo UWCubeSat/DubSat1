@@ -27,3 +27,5 @@ teams/cdh/KvaserExperiments/Tests/*/Debug/
 teams/cdh/KvaserExperiments/Tests/*/HelloKvaser/Debug/
 *.suo
 teams/cdh/KvaserExperiments/Tests/*/.vs/
+
+*.docx
