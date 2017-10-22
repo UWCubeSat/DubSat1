@@ -69,6 +69,7 @@ int main(void) {
 
     PJDIR |= 0x07;
     PJOUT &= ~0x07;
+
     blinkLight(LED_RED);
 
 

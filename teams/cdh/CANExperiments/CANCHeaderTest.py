@@ -203,7 +203,8 @@ def createCMain(candb, cFileName):
         cFile.write("    uint64_t *thePointer = (uint64_t *) input -> data;\n")
         cFile.write("    reverseArray(input -> data, 0, 7);\n")
         cFile.write("    const uint64_t fullData = *thePointer;\n")
-        cFile.write("    " + frame.name + " *output = malloc(sizeof("+frame.name+"));\n")
+        # cFile.write("    " + frame.name + " *output = malloc(sizeof("+frame.name+"));\n")
+        cFile.write("    " + frame.name + " *output;\n")
         for sig in frame:
             # print (str(sig.is_signed))
             # print(dir(sig))
@@ -228,7 +229,8 @@ def createCMain(candb, cFileName):
         # Encode Function Implementation
         cFile.write("CANPacket *encode" + frame.name
             + "(" + frame.name + " *input){\n")
-        cFile.write("    CANPacket *output = malloc(sizeof(CANPacket));\n")
+        # cFile.write("    CANPacket *output = malloc(sizeof(CANPacket));\n")
+        cFile.write("    CANPacket *output;\n")
         cFile.write("    output -> id = "
             + (str(frame.id) if frame.id != 2147483648 else "0")
             + ";\n")

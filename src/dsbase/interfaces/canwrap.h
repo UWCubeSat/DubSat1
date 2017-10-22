@@ -17,19 +17,19 @@ typedef struct CANPacket {
    uint8_t data[8];
 } CANPacket;
 
-void canPacketInit(uint8_t boardNum);
+//void canPacketInit(uint8_t boardNum);
 
-void canSetPacketType(uint8_t type, CANPacket *packet);
+//void canSetPacketType(uint8_t type, CANPacket *packet);
 
-void canSetPacketDestination(uint32_t board, CANPacket *packet);
+//void canSetPacketDestination(uint32_t board, CANPacket *packet);
 
-void canSetPacketParameter(uint64_t param, CANPacket *packet, uint8_t* value);
+//void canSetPacketParameter(uint64_t param, CANPacket *packet, uint8_t* value);
 
 void canSendPacket(CANPacket *packet);
 
 CANPacket *canConvertToPacket(uint32_t id, uint8_t* data);
 
-uint16_t *canGetPacketParameter(uint64_t param, CANPacket *packet, uint8_t *value);
+//uint16_t *canGetPacketParameter(uint64_t param, CANPacket *packet, uint8_t *value);
 
 
 // BEGIN AUTOGEN

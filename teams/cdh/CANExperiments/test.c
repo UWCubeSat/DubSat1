@@ -2,14 +2,14 @@ PPTMisfireCount *decodePPTMisfireCount(CANPacket *input){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    PPTMisfireCount *output = malloc(sizeof(PPTMisfireCount));
+    PPTMisfireCount *output;
     output -> totalMisfires2 = (uint32_t) (((fullData & ((uint64_t) 0b1111111111111111 << 0)) >> 0) * 1.0 + 0.0);
     output -> totalMisfires1 = (uint32_t) (((fullData & ((uint64_t) 0b1111111111111111 << 16)) >> 16) * 1.0 + 0.0);
     return output;
 }
 
 CANPacket *encodePPTMisfireCount(PPTMisfireCount *input){
-    CANPacket *output = malloc(sizeof(CANPacket));
+    CANPacket *output;
     output -> id = 6;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= ((uint64_t)((input -> totalMisfires2 - 0.0) / 1.0)) << 32;
@@ -24,7 +24,7 @@ PPTTimingStatus *decodePPTTimingStatus(CANPacket *input){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    PPTTimingStatus *output = malloc(sizeof(PPTTimingStatus));
+    PPTTimingStatus *output;
     output -> averageChargeTime = (uint16_t) (((fullData & ((uint64_t) 0b11111111 << 32)) >> 32) * 2.0 + 0.0);
     output -> minutesSinceSuccessfulFire = (uint32_t) (((fullData & ((uint64_t) 0b1111111111111111 << 0)) >> 0) * 1.0 + 0.0);
     output -> minutesSinceAttemptedFire = (uint32_t) (((fullData & ((uint64_t) 0b1111111111111111 << 16)) >> 16) * 1.0 + 0.0);
@@ -33,7 +33,7 @@ PPTTimingStatus *decodePPTTimingStatus(CANPacket *input){
 }
 
 CANPacket *encodePPTTimingStatus(PPTTimingStatus *input){
-    CANPacket *output = malloc(sizeof(CANPacket));
+    CANPacket *output;
     output -> id = 5;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= ((uint64_t)((input -> averageChargeTime - 0.0) / 2.0)) << 48;
@@ -50,7 +50,7 @@ FiringStatus *decodeFiringStatus(CANPacket *input){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    FiringStatus *output = malloc(sizeof(FiringStatus));
+    FiringStatus *output;
     output -> successfullFires1 = (uint32_t) (((fullData & ((uint64_t) 0b1111111111111111 << 0)) >> 0) * 1.0 + 0.0);
     output -> successfulFires2 = (uint32_t) (((fullData & ((uint64_t) 0b1111111111111111 << 16)) >> 16) * 1.0 + 0.0);
     output -> numberOfMisfires = (uint16_t) (((fullData & ((uint64_t) 0b11111111 << 32)) >> 32) * 1.0 + 0.0);
@@ -59,7 +59,7 @@ FiringStatus *decodeFiringStatus(CANPacket *input){
 }
 
 CANPacket *encodeFiringStatus(FiringStatus *input){
-    CANPacket *output = malloc(sizeof(CANPacket));
+    CANPacket *output;
     output -> id = 4;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= ((uint64_t)((input -> successfullFires1 - 0.0) / 1.0)) << 16;
@@ -76,7 +76,7 @@ VoltageCurrentInfo *decodeVoltageCurrentInfo(CANPacket *input){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    VoltageCurrentInfo *output = malloc(sizeof(VoltageCurrentInfo));
+    VoltageCurrentInfo *output;
     output -> adcCurrent = (uint16_t) (((fullData & ((uint64_t) 0b11111111 << 0)) >> 0) * 25.0 + 0.0);
     output -> com1Current = (uint8_t) (((fullData & ((uint64_t) 0b11111111 << 8)) >> 8) * 1.0 + 0.0);
     output -> com2Current = (uint16_t) (((fullData & ((uint64_t) 0b11111111 << 16)) >> 16) * 25.0 + 0.0);
@@ -86,7 +86,7 @@ VoltageCurrentInfo *decodeVoltageCurrentInfo(CANPacket *input){
 }
 
 CANPacket *encodeVoltageCurrentInfo(VoltageCurrentInfo *input){
-    CANPacket *output = malloc(sizeof(CANPacket));
+    CANPacket *output;
     output -> id = 3;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= ((uint64_t)((input -> adcCurrent - 0.0) / 25.0)) << 24;
@@ -104,7 +104,7 @@ BatteryStatus *decodeBatteryStatus(CANPacket *input){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    BatteryStatus *output = malloc(sizeof(BatteryStatus));
+    BatteryStatus *output;
     output -> batteryFullChargeCount = (uint32_t) (((fullData & ((uint64_t) 0b1111111111111111 << 0)) >> 0) * 1.0 + 0.0);
     output -> batteryTemperature = (int16_t) (((fullData & ((uint64_t) 0b11111111 << 24)) >> 24) * 1.5 + 0.0);
     output -> batteryVoltage = (uint32_t) (((fullData & ((uint64_t) 0b11111111 << 32)) >> 32) * 25.0 + 0.0);
@@ -114,7 +114,7 @@ BatteryStatus *decodeBatteryStatus(CANPacket *input){
 }
 
 CANPacket *encodeBatteryStatus(BatteryStatus *input){
-    CANPacket *output = malloc(sizeof(CANPacket));
+    CANPacket *output;
     output -> id = 2;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= ((uint64_t)((input -> batteryFullChargeCount - 0.0) / 1.0)) << 0;
@@ -132,7 +132,7 @@ PowerStatus *decodePowerStatus(CANPacket *input){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    PowerStatus *output = malloc(sizeof(PowerStatus));
+    PowerStatus *output;
     output -> powerGeneration = (uint16_t) (((fullData & ((uint64_t) 0b11111111 << 0)) >> 0) * 150.0 + 0.0);
     output -> overcurrent = (uint8_t) (((fullData & ((uint64_t) 0b11111111 << 8)) >> 8) * 1.0 + 0.0);
     output -> outputPower = (uint16_t) (((fullData & ((uint64_t) 0b11111111 << 16)) >> 16) * 150.0 + 0.0);
@@ -144,7 +144,7 @@ PowerStatus *decodePowerStatus(CANPacket *input){
 }
 
 CANPacket *encodePowerStatus(PowerStatus *input){
-    CANPacket *output = malloc(sizeof(CANPacket));
+    CANPacket *output;
     output -> id = 1;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= ((uint64_t)((input -> powerGeneration - 0.0) / 150.0)) << 0;
@@ -164,7 +164,7 @@ MCUStatus *decodeMCUStatus(CANPacket *input){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    MCUStatus *output = malloc(sizeof(MCUStatus));
+    MCUStatus *output;
     output -> numOfTurnons = (uint32_t) (((fullData & ((uint64_t) 0b1111111111111111 << 0)) >> 0) * 1.0 + 0.0);
     output -> minutesSinceTurnon = (uint32_t) (((fullData & ((uint64_t) 0b1111111111111111 << 16)) >> 16) * 1.0 + 0.0);
     output -> MCUTemp = (int8_t) (((fullData & ((uint64_t) 0b11111111 << 40)) >> 40) * 1.0 + 0.0);
@@ -172,7 +172,7 @@ MCUStatus *decodeMCUStatus(CANPacket *input){
 }
 
 CANPacket *encodeMCUStatus(MCUStatus *input){
-    CANPacket *output = malloc(sizeof(CANPacket));
+    CANPacket *output;
     output -> id = 0;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= ((uint64_t)((input -> numOfTurnons - 0.0) / 1.0)) << 16;
