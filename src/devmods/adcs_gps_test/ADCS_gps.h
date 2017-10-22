@@ -90,22 +90,31 @@ typedef struct PACKED_STRUCT GPSRXStatus {
     GPSStatusCode aux3stat;
 } GPSRXStatus;
 
-
 // for use in GPSHWMonitor
 typedef struct PACKED_STRUCT GPSMeasurement {
     float reading;
     uint32_t status;
 } GPSMeasurement;
 
+// TODO This is by far the biggest message and most of the space is wasted. If
+// the message size becomes a problem this will probably be why.
 typedef struct PACKED_STRUCT GPSHWMonitor {
     uint32_t numMeasurements;
-    GPSMeasurement measurements[22];
+    GPSMeasurement measurements[23];
 } GPSHWMonitor;
+
+typedef struct PACKED_STRUCT GPSRXStatusEvent {
+    gps_enum word;
+    uint32_t bitPosition;
+    gps_enum event;
+    uint8_t description[32];
+} GPSRXStatusEvent;
 
 typedef union GPSMessage {
     GPSBestXYZ bestXYZ;
     GPSTime time;
     GPSRXStatus rxstatus;
+    GPSRXStatusEvent rxstatusEvent;
     GPSHWMonitor hwMonitor;
 } GPSMessage;
 
