@@ -10,8 +10,9 @@
 FILE_STATIC status_i2c i2c_status;
 FILE_STATIC bus_context_i2c buses[CONFIGM_i2c_maxperipheralinstances];
 
-void i2cInit(bus_instance_i2c instance, uint8_t slaveaddr)
+hDev i2cInit(bus_instance_i2c instance, uint8_t slaveaddr)
 {
+    // TODO:  Make sure this only gets called once
     bspI2CInit(instance);
 
     // USCI Configuration:  Common for both TX and RX
@@ -20,68 +21,89 @@ void i2cInit(bus_instance_i2c instance, uint8_t slaveaddr)
     UCB2BRW = 12;                                               // Baudrate = SMCLK / 12
     UCB2I2CSA = slaveaddr;                                      // Slave address
     UCB2CTLW1 |= UCASTP_2;                                      // Automatic stop generated after transmission complete
+
+    // TODO: TEMPORARY RETURN
+    return (hDev)0;
 }
 
-void i2cMasterCombinedWriteRead(uint8_t * wbuff, uint8_t szToWrite, uint8_t * rbuff, uint8_t szToRead)
+static void i2cCoreRead(hDev device, uint8_t * buff, uint8_t szToRead, BOOL initialAutoStopSetup)
 {
+    uint8_t index = 0;
 
-}
+    // Setup autostop if havne't already done so
+    if (initialAutoStopSetup)
+    {
+        i2cDisable();
+        i2cAutoStopSetTotalBytes(szToRead);
+        i2cEnable();
+    }
 
-void i2cMasterRead(uint8_t * buff, uint8_t szToRead)
-{
-
-}
-
-void i2cMasterRegisterRead(uint8_t registeraddr, uint8_t * buff, uint8_t szToRead)
-{
-    uint8_t indexBuff = 0;
-
-    i2cWaitForStopComplete();
-
-    // Set total number of bytes
-    // TODO:  BUG BUG - need to check combined operation behavior for byte counts (reset?  need szToRead + 1?)
-    i2cDisable();
-    i2cAutoStopSetTotalBytes(szToRead);
-    i2cEnable();
-
-    // First, send "cursor move" write -> an address, but no payload data
-    // TODO:  Add hw-conditional logic if slave doesn't support auto-advance of address
-    i2cMasterTransmitStart();
-    i2cWaitForStartComplete();
-    i2cWaitReadyToTransmitByte();
-    i2cLoadTransmitBuffer(registeraddr);
-    i2cWaitReadyToTransmitByte();
-
-    // Now send Restart condition, switching over to receive mode
+    // Send start message, in receive mode
     i2cMasterReceiveStart();
     i2cWaitForStartComplete();
 
     //  Stop bit will be auto-set once we read szToRead bytes
-    while ( (UCB2IFG & UCSTPIFG) == 0)
+    while ( (UCB2IFG & UCSTPIFG) == 0 && index < szToRead)
     {
         if ( (UCB2IFG & UCRXIFG) != 0)
-            buff[indexBuff++] = i2cRetrieveReceiveBuffer();
+            buff[index++] = i2cRetrieveReceiveBuffer();
     }
 }
 
-void i2cMasterWrite(uint8_t * buff, uint8_t szToWrite)
+static void i2cCoreWrite(hDev device, uint8_t * buff, uint8_t szToWrite, BOOL initialAutoStopSetup )
 {
-    i2cDisable();
-    i2cAutoStopSetTotalBytes(szToWrite);
-    i2cEnable();
+    uint8_t index = 0;
 
-    i2cWaitForStopComplete();
+    if (initialAutoStopSetup)
+    {
+        i2cDisable();
+        i2cAutoStopSetTotalBytes(szToWrite);
+        i2cEnable();
+    }
+
     i2cMasterTransmitStart();
     i2cWaitForStartComplete();
 
-    uint8_t index = 0;
-    while ( (UCB2IFG & UCSTPIFG) == 0)
+    // Send in auto-stop or managed mode
+    while ( (UCB2IFG & UCSTPIFG) == 0 && index < szToWrite)
     {
         if ( (UCB2IFG & UCTXIFG0) != 0)
         {
             UCB2TXBUF = buff[index++];
         }
     }
+}
+
+void i2cMasterRead(hDev device, uint8_t * buff, uint8_t szToRead)
+{
+    i2cCoreRead(device, buff, szToRead, TRUE);
+}
+
+void i2cMasterWrite(hDev device, uint8_t * buff, uint8_t szToWrite)
+{
+    i2cCoreWrite(device, buff, szToWrite, TRUE);
+}
+
+void i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWrite, uint8_t * rbuff, uint8_t szToRead)
+{
+    uint8_t indexBuff = 0;
+    i2cWaitForStopComplete();
+
+    i2cDisable();
+    i2cAutoStopSetTotalBytes(szToWrite + szToRead);
+    i2cEnable();
+
+    i2cCoreWrite(device, wbuff, szToWrite, FALSE);
+    i2cWaitReadyToTransmitByte();
+    i2cCoreRead(device, rbuff, szToRead, FALSE);
+}
+
+void i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, uint8_t szToRead)
+{
+    i2cWaitForStopComplete();
+
+    i2cMasterCombinedWriteRead(device, &registeraddr, 1, buff, szToRead);
+
 }
 
 // Primary interrupt vector for I2C on module B2 on the 430

@@ -14,6 +14,7 @@
 FILE_STATIC uint8_t szBuff;
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 FILE_STATIC uint8_t i2cInitialized = 0;
+FILE_STATIC hDev hSensor;
 
 MagnetometerData mdata;
 
@@ -25,7 +26,7 @@ void magInit()
 
     i2cInitialized = 1;
     i2cEnable();
-    i2cInit(I2CBus2, MAG_I2C_7BIT_ADDRESS);
+    hSensor = i2cInit(I2CBus2, MAG_I2C_7BIT_ADDRESS);
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)  /* */
 
@@ -38,7 +39,7 @@ void magInit()
     i2cBuff[4] = MAG_HMC5883L_REG_ADDR_MR;
     i2cBuff[5] = MAG_HMC5883L_OPERATING_MODE_CONTINUOUS;
 
-    i2cMasterWrite(i2cBuff, 6);
+    i2cMasterWrite(hSensor, i2cBuff, 6);
 
 #elif defined( __BSP_HW_MAGTOM_MAG3110__)
 
@@ -62,7 +63,7 @@ void magInit()
 MagnetometerData *magReadXYZData(UnitConversionMode desiredConversion)
 {
     mdata.conversionMode = desiredConversion;
-    i2cMasterRegisterRead(MAG_XYZ_OUTPUT_REG_ADDR_START, i2cBuff, 6 );
+    i2cMasterRegisterRead(hSensor, MAG_XYZ_OUTPUT_REG_ADDR_START, i2cBuff, 6 );
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)
 
