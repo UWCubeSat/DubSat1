@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.3.2">
+<eagle version="8.4.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -10239,6 +10239,8 @@ P2.6 Rx and P2.5 Tx</text>
 <part name="R5" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2"/>
 <part name="R6" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2"/>
 <part name="GND21" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="GND23" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -10306,6 +10308,8 @@ P2.6 Rx and P2.5 Tx</text>
 <instance part="R5" gate="G$1" x="66.04" y="162.56" rot="R90"/>
 <instance part="R6" gate="G$1" x="58.42" y="147.32" rot="R90"/>
 <instance part="GND21" gate="1" x="58.42" y="139.7" rot="MR0"/>
+<instance part="C6" gate="G$1" x="43.18" y="43.18"/>
+<instance part="GND23" gate="1" x="43.18" y="50.8" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -10447,6 +10451,11 @@ P2.6 Rx and P2.5 Tx</text>
 <segment>
 <pinref part="R6" gate="G$1" pin="1"/>
 <pinref part="GND21" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="C6" gate="G$1" pin="1"/>
+<pinref part="GND23" gate="1" pin="GND"/>
+<wire x1="43.18" y1="45.72" x2="43.18" y2="48.26" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PWM_X_1" class="0">
@@ -10677,8 +10686,13 @@ P2.6 Rx and P2.5 Tx</text>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="BDOT_GND@87"/>
-<wire x1="55.88" y1="33.02" x2="50.8" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="33.02" x2="53.34" y2="33.02" width="0.1524" layer="91"/>
 <label x="50.8" y="33.02" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="C6" gate="G$1" pin="2"/>
+<wire x1="53.34" y1="33.02" x2="50.8" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="43.18" y1="38.1" x2="53.34" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="38.1" x2="53.34" y2="33.02" width="0.1524" layer="91"/>
+<junction x="53.34" y="33.02"/>
 </segment>
 <segment>
 <pinref part="U$6" gate="G$1" pin="V_IN"/>
