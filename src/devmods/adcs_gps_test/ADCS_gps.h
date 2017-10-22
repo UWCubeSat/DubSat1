@@ -1,7 +1,6 @@
 #ifndef ADCS_GPS_H_
 #define ADCS_GPS_H_
 
-#include <stdint.h>
 #include "core/debugtools.h"
 #include "core/utils.h"
 
@@ -9,7 +8,7 @@ typedef int32_t gps_ec;
 typedef uint32_t gps_enum;
 
 typedef struct PACKED_STRUCT GPSHeader {
-    int8_t sync[3];
+    uint8_t sync[3];
     uint8_t headerLength;
     uint16_t messageId;
     int8_t messageType;
@@ -38,7 +37,6 @@ typedef struct PACKED_STRUCT GPSVectorF {
 } GPSVectorF;
 
 typedef struct PACKED_STRUCT GPSBestXYZ {
-    GPSHeader header;
     gps_enum pSolStatus; // position solution status
     gps_enum posType;
     GPSVectorD pos;
@@ -62,7 +60,6 @@ typedef struct PACKED_STRUCT GPSBestXYZ {
 } GPSBestXYZ;
 
 typedef struct PACKED_STRUCT GPSTime {
-    GPSHeader header;
     gps_enum clockStatus;
     double offset;
     double offsetStdDev;
@@ -75,5 +72,22 @@ typedef struct PACKED_STRUCT GPSTime {
     uint32_t utcMs;
     gps_enum utcStatus; // 0 = invalid, 1 = valid, 2 = warning
 } GPSTime;
+
+typedef union GPSMessage {
+    GPSBestXYZ bestXYZ;
+    GPSTime time;
+} GPSMessage;
+
+typedef struct PACKED_STRUCT GPSPackage {
+    GPSHeader header;
+    GPSMessage message;
+    uint32_t crc;
+} GPSPackage;
+
+uint8_t gpsStatus(DebugMode mode);
+
+void gpsSendCommand(uint8_t *command);
+
+uint8_t actionHandler(DebugMode mode, uint8_t *command);
 
 #endif /* ADCS_GPS_H_ */

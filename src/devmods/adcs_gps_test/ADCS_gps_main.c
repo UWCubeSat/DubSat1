@@ -1,18 +1,19 @@
-#define cast(TYPE, PTR) (*((TYPE*) (PTR)))
-#define GPS_BUFFER_LENGTH 256
+#define MS_IN_WEEK 604800000
+#define PACKAGE_CAPACITY 10
 
 #include <msp430.h>
-
-#include "ADCS_GPS.h"
-#include "bsp/bsp.h"
 #include <stdint.h>
+#include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include "core/uart.h"
-#include "core/utils.h"
-#include "crc.h"
+
+#include "ADCS_GPS.h"
 #include "queue.h"
+
+#include "bsp/bsp.h"
+#include "core/debugtools.h"
+#include "core/uart.h"
+#include "crc.h"
 
 typedef enum message_id
 {
@@ -20,11 +21,18 @@ typedef enum message_id
     Message_Time = 101,
 } message_id;
 
-FILE_STATIC uint8_t buf[GPS_BUFFER_LENGTH];
-FILE_STATIC uint8_t bytesRead = 0;
-FILE_STATIC uint8_t synced = 0;
+typedef enum gps_state
+{
+    State_Sync,
+    State_Header,
+    State_Message,
+    State_CRC
+} gps_state;
 
-FILE_STATIC Queue *queue;
+FILE_STATIC uint8_t bytesRead = 0;
+FILE_STATIC gps_state state;
+
+FILE_STATIC Queue queue;
 
 FILE_STATIC uint32_t rxStatus = 0;
 
@@ -54,104 +62,125 @@ FILE_STATIC const char *GPS_ERROR[] = { "Error (use RXSTATUS for details)",
 const char *GPS_ERROR[];
 #endif /* __DEBUG__ */
 
+FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset) {
+    double tmp = *ms;
+    tmp += offset * 1000;
+    if (tmp < 0) {
+        (*week)--;
+        tmp += MS_IN_WEEK;
+    } else if (tmp > MS_IN_WEEK) {
+        (*week)++;
+        tmp -= MS_IN_WEEK;
+    }
+    *ms = (gps_ec) round(tmp);
+}
+
  // TODO send CAN packets
-FILE_STATIC void parseMessage(uint8_t* buf)
+FILE_STATIC void parseMessage(GPSPackage *package)
  {
-    GPSHeader *header = (GPSHeader*) buf;
-    switch (header->messageId)
+    switch (package->header.messageId)
     {
     case Message_BestXYZ:
     {
-        GPSBestXYZ *m = (GPSBestXYZ*) buf;
+        const GPSBestXYZ m = package->message.bestXYZ;
         debugTraceF(4, "BESTXYZ (%u)\r\n\tx: %f\r\n\ty: %f\r\n\tz: %f\r\n",
-                    m->pSolStatus, m->pos.x, m->pos.y, m->pos.z);
+                    m.pSolStatus, m.pos.x, m.pos.y, m.pos.z);
         break;
     }
     case Message_Time:
     {
-        GPSTime *m = (GPSTime*) buf;
-
-        // year and ms are officially unsigned longs, but in practice they can never exceed the max
-        // value of a short. I cast them to uint16_t to fit into one CAN packet.
+        const GPSTime m = package->message.time;
 
         // TODO real error handling
-        if (!m->clockStatus)
+        if (!m.clockStatus)
         {
-            debugTraceF(4, "bad clock status: %u\r\n", m->clockStatus);
+            debugTraceF(4, "bad clock status: %u\r\n", m.clockStatus);
         }
-        if (m->utcStatus != 1)
+        if (m.utcStatus != 1)
         {
-            debugTraceF(4, "bad utc status: %u\r\n", m->utcStatus);
+            debugTraceF(4, "bad utc status: %u\r\n", m.utcStatus);
         }
 
-        debugTraceF(
-                4,
-                "TIME \r\n\tyear: %u \r\n\tmonth: %u\r\n\tday: %u\r\n\thour: %u\r\n\tmin: %u\r\n\tms: %u\r\n",
-                m->utcYear, m->utcMonth, m->utcDay, m->utcHour, m->utcMin, m->utcMs);
+        uint16_t week = package->header.week;
+        gps_ec ms = package->header.ms;
+        toUtc(&week, &ms, m.offset + m.utcOffset);
+
+        debugTraceF(4, "TIME \r\n\tweek: %u \r\n\tms: %u\r\n", week, ms);
         break;
     }
     default:
-        debugTraceF(4, "unsupported message ID: %u\r\n", header->messageType);
+        debugTraceF(4, "unsupported message ID: %u\r\n",
+                    package->header.messageType);
         break;
     }
 }
 
 FILE_STATIC void readCallback(uint8_t rcvdbyte)
 {
-    if (synced == 0)
-    {
-        // sync using magic sync bytes 170, 68, 18
-        buf[0] = buf[1];
-        buf[1] = buf[2];
-        buf[2] = rcvdbyte;
-        if (buf[0] == 170 && buf[1] == 68 && buf[2] == 18)
-        {
-            bytesRead = 3;
-            synced = 1;
-        }
+    GPSPackage *p = (GPSPackage *) WriteQueue(&queue);
+    if (p == NULL) {
+        debugPrintF("GPS buffer out of memory\r\n");
+
+        // skipping a single byte this way will (probably) skip the whole
+        // message. If some space is freed up in the queue, this should be able
+        // to pick up the next message's sync bytes and carry on.
+        return;
     }
-    else
+
+    switch (state)
     {
-        buf[bytesRead] = rcvdbyte;
-        bytesRead++;
-
-        if (bytesRead > GPS_BUFFER_LENGTH)
-        {
-            // TODO handle buffer overflow
-            debugPrintF("buffer overflow\r\n");
+        case State_Sync: {
+            // sync using magic sync bytes 170, 68, 18
+            uint8_t *buf = p->header.sync;
+            buf[0] = buf[1];
+            buf[1] = buf[2];
+            buf[2] = rcvdbyte;
+            if (buf[0] == 170 && buf[1] == 68 && buf[2] == 18) {
+                bytesRead = 3;
+                state = State_Header;
+            }
+            break;
         }
+        case State_Header: {
+            // write directly into header
+            uint8_t *buf = (uint8_t *) &p->header;
+            buf[bytesRead] = rcvdbyte;
+            bytesRead++;
 
-        // if the header, message, and crc have been read, copy them into the
-        // queue and reset the buffer
-        GPSHeader *header = (GPSHeader*) buf;
-        if (bytesRead >= 4
-                && bytesRead >= header->headerLength
-                && bytesRead >= header->headerLength + header->messageLength + 4)
-        {
-            // allocate buffer and node
-            const size_t bufSize = header->headerLength + header->messageLength + 4;
-            uint8_t *bufCopy = (uint8_t*) malloc(bufSize);
-            if (bufCopy == NULL) {
-                // TODO out of memory
-                // running out of memory is probably a sign that the read is
-                // consistently happening much slower than write. This shouldn't
-                // be a problem since we're writing at 1Hz, but it should be
-                // addressed.
-                debugPrintF("out of memory\r\n");
+            // once the header is read, move on to the message
+            if (bytesRead >= sizeof(GPSHeader)) {
+                bytesRead = 0;
+                state = State_Message;
             }
-            memcpy(bufCopy, buf, bufSize); // copy buffer
-            if (!PushQueue(queue, bufCopy))
+            break;
+        }
+        case State_Message: {
+            // write directly into message
+            uint8_t *buf = (uint8_t *) &p->message;
+            buf[bytesRead] = rcvdbyte;
+            bytesRead++;
+
+            // once the message is read, move on to the crc
+            if (bytesRead >= p->header.messageLength)
             {
-                // TODO out of memory
-                debugPrintF("out of memory\r\n");
+                bytesRead = 0;
+                state = State_CRC;
             }
+            break;
+        }
+        case State_CRC: {
+            // write directly into the crc
+            uint8_t *buf = (uint8_t *) &p->crc;
+            buf[bytesRead] = rcvdbyte;
+            bytesRead++;
 
-            // reset to initial state
-            bytesRead = 0;
-            buf[0] = 0;
-            buf[1] = 0;
-            buf[2] = 0;
-            synced = 0;
+            // once the crc is read, restart the process
+            if (bytesRead >= sizeof(p->crc)) {
+                bytesRead = 0;
+                PushQueue(&queue);
+                state = State_Sync;
+            }
+            break;
         }
     }
 }
@@ -190,7 +219,9 @@ int main(void)
     bspInit(Module_Test);
     __bis_SR_register(GIE);
 
-    queue = AllocateQueue();
+    // make that stack frame extra thicc
+    uint8_t queueContents[10 * sizeof(GPSPackage)];
+    queue = CreateQueue(queueContents, sizeof(GPSPackage), PACKAGE_CAPACITY);
 
     uartHandle = uartInit(ApplicationUART, 0, Speed_115200);
 
@@ -210,47 +241,42 @@ int main(void)
     while (1)
     {
         // wait for next message
-        while (!QueueHasNext(queue));
+        while (isQueueEmpty(&queue));
+
+        debugPrintF("size of queue: %u\r\n", queue.length);
 
         // get the next message
-        uint8_t *message;
-        PopQueue(queue, (void **) &message);
-
-        // extract header from message
-        GPSHeader *header = (GPSHeader*) message;
-        uint16_t messageLength = header->headerLength + header->messageLength;
+        GPSPackage *package = (GPSPackage *) ReadQueue(&queue);
 
         // check the CRC
-        const uint32_t crcExpected = cast(uint32_t, message + messageLength);
-        const uint32_t crcActual = calculateBlockCrc32(messageLength, message);
-        if (crcActual != crcExpected)
+        const uint32_t crcActual = calculateBlockCrc32(
+                package->header.headerLength + package->header.messageLength,
+                (uint8_t *) package);
+        if (crcActual != package->crc)
         {
             // TODO real error handling
             debugPrintF(
-                        "invalid CRC\r\n\texpected: %X\r\n\tactual:   %X\r\n",
-                        crcExpected, crcActual);
+                    "invalid CRC\r\n\texpected: %X\r\n\tactual:   %X\r\n",
+                    package->crc, crcActual);
         }
 
         // set rxStatus for status callback
-        rxStatus = header->rxStatus;
+        rxStatus = package->header.rxStatus;
 
         // filter out response messages
-        if (header->messageType & 0b1000000)
+        if (package->header.messageType & 0b1000000)
         {
             // the receiver responds to commands with a confirmation message,
             // which can be ignored
-            debugPrintF("received command: %u", header->messageId);
+            debugPrintF("received command: %u", package->header.messageId);
         }
         else
         {
-            parseMessage(message);
+            parseMessage(package);
         }
 
-        free(message);
+        PopQueue(&queue);
     }
-
-    // TODO unreachable code. Resolve this memory leak.
-    FreeQueue(queue, free);
 
     return EXIT_SUCCESS;
 }
