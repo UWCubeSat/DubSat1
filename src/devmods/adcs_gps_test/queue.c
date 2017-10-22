@@ -1,76 +1,72 @@
 #include "queue.h"
 #include <stdbool.h>
-#include <stdlib.h>
+#include <stdint.h>
 
-Queue *AllocateQueue(void)
+#include "core/utils.h"
+
+Queue CreateQueue(uint8_t *contents, uint32_t itemSize, uint8_t capacity)
 {
-    Queue *queue = (Queue*) malloc(sizeof(Queue));
-    if (queue == NULL)
-    {
-        return NULL;
-    }
-    queue->length = 0;
-    queue->head = NULL;
-    queue->tail = NULL;
+    Queue queue = {
+            contents,
+            itemSize,
+            0,  // head
+            0,  // length
+            capacity
+    };
     return queue;
 }
 
-void FreeQueue(Queue *queue, void (*payloadFreeFn)(void*))
+FILE_STATIC uint8_t toArrayIndex(Queue *queue, uint8_t queueIndex)
 {
-    if (queue == NULL)
+    return (uint8_t) ((queue->head + queueIndex) % queue->capacity);
+}
+
+bool isQueueFull(Queue *queue)
+{
+    return queue->length >= queue->capacity;
+}
+
+bool isQueueEmpty(Queue *queue)
+{
+    return queue->length == 0;
+}
+
+uint8_t *WriteQueue(Queue *queue)
+{
+    if (queue == NULL || isQueueFull(queue))
+    {
+        return NULL;
+    }
+    return queue->contents
+           + toArrayIndex(queue, queue->length) * queue->itemSize;
+}
+
+void PushQueue(Queue *queue)
+{
+    if (queue == NULL || isQueueFull(queue))
     {
         return;
     }
-    while (QueueHasNext(queue))
-    {
-        void *payload;
-        PopQueue(queue, &payload);
-        payloadFreeFn(payload);
-    }
-    free(queue);
-}
-
-bool QueueHasNext(Queue *queue)
-{
-    return queue != NULL && queue->length > 0;
-}
-
-bool PushQueue(Queue *queue, void *payload)
-{
-    if (queue == NULL)
-    {
-        return false;
-    }
-    QueueNode *node = (QueueNode*) malloc(sizeof(QueueNode));
-    if (node == NULL)
-    {
-        return false;
-    }
-    node->next = NULL;
-    node->payload = payload;
-    if (queue->length > 0)
-    {
-        queue->tail->next = node;
-    }
-    else
-    {
-        queue->head = node;
-    }
-    queue->tail = node;
     queue->length++;
-    return true;
 }
 
-bool PopQueue(Queue *queue, void **payload)
-{
-    if (!QueueHasNext(queue))
-    {
-        return false;
+uint8_t *ReadQueue(Queue *queue) {
+    if (queue == NULL || isQueueEmpty(queue)) {
+        return NULL;
     }
-    QueueNode *node = queue->head;
-    queue->head = queue->head->next;
+    return queue->contents + queue->head * queue->itemSize;
+}
+
+void PopQueue(Queue *queue)
+{
+    if (isQueueEmpty(queue))
+    {
+        return;
+    }
+
+    queue->head++;
+    if (queue->head >= queue->capacity) {
+        queue->head = 0;
+    }
     queue->length--;
-    *payload = node->payload;
-    free(node);
-    return true;
 }
