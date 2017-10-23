@@ -1,4 +1,0 @@
-TARGET "BLINK"
-  SCREEN "soh.txt" -953 24
-    SHOW_ON_STARTUP
-
