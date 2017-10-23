@@ -20,7 +20,7 @@ void ltc2481Init(uint8_t addr)
 		return;
 	
 	i2cInitialized = 1;
-	i2cEnable();
+	i2cEnable(I2CBus2);
 	hSensor = i2cInit(I2CBus2, addr);
 	i2cMasterWrite(hSensor, defaultWrite, 1);
 }

@@ -25,7 +25,7 @@ void magInit()
         return;
 
     i2cInitialized = 1;
-    i2cEnable();
+    i2cEnable(I2CBus2);
     hSensor = i2cInit(I2CBus2, MAG_I2C_7BIT_ADDRESS);
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)  /* */

@@ -12,6 +12,7 @@
 
 // CONFIGM... configuration values are defined as MACROS
 // Use these for values that will be needed in other initializers (best example:  buffer sizes)
-#define CONFIGM_i2c_maxperipheralinstances   2
+#define CONFIGM_i2c_maxperipheralinstances   3     // KEEP at 3, for ... stupid reasons, please.
+#define CONFIGM_i2c_maxdevices               8
 
 #endif /* DSBASE_CONFIG_CONFIG_BUS_I2C_H_ */

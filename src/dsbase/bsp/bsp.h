@@ -41,11 +41,13 @@ SubsystemModule bspGetModule();
 #define LP5994_BACKCHANNEL_UART_BITS    (BIT0 | BIT1)
 
 // NOTE:  I2C1 (mapping to P5.0/5.1) is not accessible on LaunchPad
+// These map to eUSCI B1
 //#define LP5994_I2C1_PORTSEL0        P5SEL0
 //#define LP5994_I2C1_PORTSEL1        P5SEL1
 //#define LP5994_I2C1_SDA_BIT         BIT0
 //#define LP5994_I2C1_SCL_BIT         BIT1
 
+// These map to eUSCI B2
 #define LP5994_I2C2_PORTSEL0        P7SEL0
 #define LP5994_I2C2_PORTSEL1        P7SEL1
 #define LP5994_I2C2_SDA_BIT         BIT0
@@ -103,11 +105,13 @@ SubsystemModule bspGetModule();
 #define CANMSP_BLOCKV24_BACKCHANNEL_UART_SEL1    P2SEL1  // Maps to USCI A0
 #define CANMSP_BLOCKV24_BACKCHANNEL_UART_BITS    (BIT0 | BIT1)
 
+// These map to eUSCI B1
 #define CANMSP_BLOCKV24_I2C1_PORTSEL0        P5SEL0
 #define CANMSP_BLOCKV24_I2C1_PORTSEL1        P5SEL1
 #define CANMSP_BLOCKV24_I2C1_SDA_BIT         BIT0
 #define CANMSP_BLOCKV24_I2C1_SCL_BIT         BIT1
 
+// These map to eUSCI B2
 #define CANMSP_BLOCKV24_I2C2_PORTSEL0        P7SEL0
 #define CANMSP_BLOCKV24_I2C2_PORTSEL1        P7SEL1
 #define CANMSP_BLOCKV24_I2C2_SDA_BIT         BIT0
