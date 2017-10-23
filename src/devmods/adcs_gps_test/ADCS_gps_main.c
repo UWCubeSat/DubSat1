@@ -54,13 +54,17 @@ FILE_STATIC const char *GPS_ERROR[] = { "Error (use RXSTATUS for details)",
 FILE_STATIC const char *GPS_ERROR[];
 #endif /* __DEBUG__ */
 
-FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset) {
+FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset)
+{
     double tmp = *ms;
     tmp += offset * 1000;
-    if (tmp < 0) {
+    if (tmp < 0)
+    {
         (*week)--;
         tmp += MS_IN_WEEK;
-    } else if (tmp > MS_IN_WEEK) {
+    }
+    else if (tmp > MS_IN_WEEK)
+    {
         (*week)++;
         tmp -= MS_IN_WEEK;
     }
@@ -83,6 +87,10 @@ FILE_STATIC void parseMessage(GPSPackage *package)
             debugTraceF(4, "BESTXYZ invalid\r\n");
             break;
         }
+
+        uint16_t week = package->header.week;
+        gps_ec ms = package->header.ms;
+        toUtc(&week, &ms, timeOffset - m.velLatency);
 
         debugTraceF(4, "BESTXYZ (%u)\r\n\tx: %f\r\n\ty: %f\r\n\tz: %f\r\n",
                     m.pSolStatus, m.pos.x, m.pos.y, m.pos.z);
@@ -121,20 +129,24 @@ FILE_STATIC void parseMessage(GPSPackage *package)
 
         // only read the status events
         // TODO read and deal with error/aux events too
-        if (e.word != 1) {
+        if (e.word != 1)
+        {
             return;
         }
 
         debugPrintF("GPS status event: %s\r\n", e.description);
-        switch(e.bitPosition) {
+        switch (e.bitPosition)
+        {
         case 19: // position valid flag
-            if (e.event == 0) { // if the position became valid
+            if (e.event == 0) // if the position became valid
+            {
                 gpsSendCommand("log bestxyzb ontime 1\r\n");
             }
             break;
         case 18: // almanac/UTC valid flag
         case 22: // clock model flag
-            if (e.event == 0) {
+            if (e.event == 0)
+            {
                 // if either the clock model or UTC became valid, log time
                 gpsSendCommand("log timeb\r\n");
             }
@@ -149,7 +161,8 @@ FILE_STATIC void parseMessage(GPSPackage *package)
 
         // read only the measurements supported by this model (615)
         // TODO revisit this for the OEM719
-        if (monLog.numMeasurements < 2) {
+        if (monLog.numMeasurements < 2)
+        {
             debugPrintF("HWMonitor missing measurements!\r\n");
             break;
         }

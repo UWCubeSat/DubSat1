@@ -10,10 +10,7 @@
 
 typedef enum gps_state
 {
-    State_Sync,
-    State_Header,
-    State_Message,
-    State_CRC
+    State_Sync, State_Header, State_Message, State_CRC
 } gps_state;
 
 FILE_STATIC Queue queue;
@@ -32,7 +29,8 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
     static gps_state state = State_CRC;
 
     GPSPackage *p = (GPSPackage *) WriteQueue(&queue);
-    if (p == NULL) {
+    if (p == NULL)
+    {
         debugPrintF("GPS buffer out of memory\r\n");
 
         // skipping a single byte this way will (probably) skip the whole
@@ -43,67 +41,75 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
 
     switch (state)
     {
-        case State_Sync: {
-            // sync using magic sync bytes 170, 68, 18
-            uint8_t *buf = p->header.sync;
-            buf[0] = buf[1];
-            buf[1] = buf[2];
-            buf[2] = rcvdbyte;
-            if (buf[0] == 170 && buf[1] == 68 && buf[2] == 18) {
-                bytesRead = 3;
-                state = State_Header;
-            }
-            break;
+    case State_Sync:
+    {
+        // sync using magic sync bytes 170, 68, 18
+        uint8_t *buf = p->header.sync;
+        buf[0] = buf[1];
+        buf[1] = buf[2];
+        buf[2] = rcvdbyte;
+        if (buf[0] == 170 && buf[1] == 68 && buf[2] == 18)
+        {
+            bytesRead = 3;
+            state = State_Header;
         }
-        case State_Header: {
-            // write directly into header
-            uint8_t *buf = (uint8_t *) &p->header;
-            buf[bytesRead] = rcvdbyte;
-            bytesRead++;
+        break;
+    }
+    case State_Header:
+    {
+        // write directly into header
+        uint8_t *buf = (uint8_t *) &p->header;
+        buf[bytesRead] = rcvdbyte;
+        bytesRead++;
 
-            // once the header is read, move on to the message
-            if (bytesRead >= sizeof(GPSHeader))
-            {
-                bytesRead = 0;
-                state = State_Message;
-            }
-            break;
+        // once the header is read, move on to the message
+        if (bytesRead >= sizeof(GPSHeader))
+        {
+            bytesRead = 0;
+            state = State_Message;
         }
-        case State_Message: {
-            // write directly into message
-            uint8_t *buf = (uint8_t *) &p->message;
-            buf[bytesRead] = rcvdbyte;
-            bytesRead++;
+        break;
+    }
+    case State_Message:
+    {
+        // write directly into message
+        uint8_t *buf = (uint8_t *) &p->message;
+        buf[bytesRead] = rcvdbyte;
+        bytesRead++;
 
-            // once the message is read, move on to the crc
-            if (bytesRead >= p->header.messageLength)
-            {
-                bytesRead = 0;
-                state = State_CRC;
-            }
-            break;
+        // once the message is read, move on to the crc
+        if (bytesRead >= p->header.messageLength)
+        {
+            bytesRead = 0;
+            state = State_CRC;
         }
-        case State_CRC: {
-            // write directly into the crc
-            uint8_t *buf = (uint8_t *) &p->crc;
-            buf[bytesRead] = rcvdbyte;
-            bytesRead++;
+        break;
+    }
+    case State_CRC:
+    {
+        // write directly into the crc
+        uint8_t *buf = (uint8_t *) &p->crc;
+        buf[bytesRead] = rcvdbyte;
+        bytesRead++;
 
-            // once the crc is read, restart the process
-            if (bytesRead >= sizeof(p->crc)) {
-                bytesRead = 0;
-                PushQueue(&queue);
-                state = State_Sync;
-            }
-            break;
+        // once the crc is read, restart the process
+        if (bytesRead >= sizeof(p->crc))
+        {
+            bytesRead = 0;
+            PushQueue(&queue);
+            state = State_Sync;
         }
+        break;
+    }
     }
 }
 
-GPSPackage *ReadGPSPackage() {
+GPSPackage *ReadGPSPackage()
+{
     return (GPSPackage *) ReadQueue(&queue);
 }
 
-void PopGPSPackage() {
+void PopGPSPackage()
+{
     PopQueue(&queue);
 }
