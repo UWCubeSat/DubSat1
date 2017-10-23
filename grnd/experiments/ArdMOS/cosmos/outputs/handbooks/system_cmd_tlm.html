@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SYSTEM Command and Telemetry Handbook</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="assets/css/bootstrap-theme.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="assets/js/html5shiv.js"></script>
+      <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+<div class="navbar navbar-default" role="navigation">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="index.html">Command and Telemetry Handbook</a>
+  </div>
+  <div class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+      <li><a href="command_handbook.html">All Commands</a></li>
+      <li><a href="telemetry_handbook.html">All Telemetry</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Targets <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          
+          
+          
+            <li><a href="blink_cmd_tlm.html">BLINK</a></li>
+          
+            <li><a href="cantest_cmd_tlm.html">CANTEST</a></li>
+          
+            <li><a href="matlab_cmd_tlm.html">MATLAB</a></li>
+          
+            <li><a href="ps_dp832a_cmd_tlm.html">PS_DP832A</a></li>
+          
+            <li><a href="rws_cmd_tlm.html">RWS</a></li>
+          
+            <li><a href="system_cmd_tlm.html">SYSTEM</a></li>
+          
+            <li><a href="visa_dm3058e_usb_cmd_tlm.html">VISA_DM3058E_USB</a></li>
+          
+        </ul>
+      </li>
+    </ul>
+  </div><!--/.nav-collapse -->
+</div>
+<h1>SYSTEM Command and Telemetry Handbook</h1>
+
+
+
+
+
+
+
+
+  <h2>Commands</h2>
+
+
+<div class="col-md-4">
+  <ul class="list-unstyled">
+    
+      <li><a href="#cmd_SYSTEM_META">SYSTEM META</a></li>
+    
+  </ul>
+</div>
+
+<div class="col-md-4">
+  <ul class="list-unstyled">
+    
+  </ul>
+</div>
+
+<div class="col-md-4">
+  <ul class="list-unstyled">
+    
+  </ul>
+</div>
+
+<div class="clearfix"></div>
+
+
+
+
+
+
+
+
+  <h2>Telemetry</h2>
+
+
+<div class="col-md-4">
+  <ul class="list-unstyled">
+    
+      <li><a href="#tlm_SYSTEM_META">SYSTEM META</a></li>
+    
+  </ul>
+</div>
+
+<div class="col-md-4">
+  <ul class="list-unstyled">
+    
+  </ul>
+</div>
+
+<div class="col-md-4">
+  <ul class="list-unstyled">
+    
+  </ul>
+</div>
+
+<div class="clearfix"></div>
+<h1 style="background:#555555;color:white;padding:10px;">Commands</h1>
+
+  <div id="cmd_SYSTEM_META">
+    <h2>SYSTEM META</h2>
+    <div><span style="font-size:18px;background:#555555;color:white;"></span></div>
+    <div></div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Item Name</th>
+          <th>Description</th>
+          <th class="text-center">Min</th>
+          <th class="text-center">Max</th>
+          <th class="text-center">Default</th>
+          <th class="text-center">Bit Offset</th>
+          <th class="text-center">Bit Size</th>
+          <th class="text-center">Data Type</th>
+          <th class="text-center">Units</th>
+        </tr>
+      <thead>
+      <tbody>
+        
+          <tr>
+            <td>
+              PKTID
+              
+            </td>
+            <td>
+              Packet Id
+              
+                <div><strong>Id Value: 1</strong></div>
+              
+              
+              
+            </td>
+            <td class="text-center" style="white-space: nowrap;"></td>
+            <td class="text-center" style="white-space: nowrap;"></td>
+            <td class="text-center" style="white-space: nowrap;">
+              
+            </td>
+            <td class="text-center">0</td>
+            <td class="text-center">8</td>
+            <td class="text-center">UINT</td>
+            <td class="text-center"></td>
+          </tr>
+        
+          <tr>
+            <td>
+              CONFIG
+              
+            </td>
+            <td>
+              Configuration Name
+              
+              
+              
+            </td>
+            <td class="text-center" style="white-space: nowrap;"></td>
+            <td class="text-center" style="white-space: nowrap;"></td>
+            <td class="text-center" style="white-space: nowrap;">
+              
+            </td>
+            <td class="text-center">8</td>
+            <td class="text-center">256</td>
+            <td class="text-center">STRING</td>
+            <td class="text-center"></td>
+          </tr>
+        
+          <tr>
+            <td>
+              COSMOS_VERSION
+              
+            </td>
+            <td>
+              COSMOS Version
+              
+              
+              
+            </td>
+            <td class="text-center" style="white-space: nowrap;"></td>
+            <td class="text-center" style="white-space: nowrap;"></td>
+            <td class="text-center" style="white-space: nowrap;">
+              
+            </td>
+            <td class="text-center">264</td>
+            <td class="text-center">240</td>
+            <td class="text-center">STRING</td>
+            <td class="text-center"></td>
+          </tr>
+        
+          <tr>
+            <td>
+              USER_VERSION
+              
+            </td>
+            <td>
+              User Project Version
+              
+              
+              
+            </td>
+            <td class="text-center" style="white-space: nowrap;"></td>
+            <td class="text-center" style="white-space: nowrap;"></td>
+            <td class="text-center" style="white-space: nowrap;">
+              
+            </td>
+            <td class="text-center">504</td>
+            <td class="text-center">240</td>
+            <td class="text-center">STRING</td>
+            <td class="text-center"></td>
+          </tr>
+        
+          <tr>
+            <td>
+              RUBY_VERSION
+              
+            </td>
+            <td>
+              Ruby Version
+              
+              
+              
+            </td>
+            <td class="text-center" style="white-space: nowrap;"></td>
+            <td class="text-center" style="white-space: nowrap;"></td>
+            <td class="text-center" style="white-space: nowrap;">
+              
+            </td>
+            <td class="text-center">744</td>
+            <td class="text-center">240</td>
+            <td class="text-center">STRING</td>
+            <td class="text-center"></td>
+          </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  <hr></hr>
+
+<h1 style="background:#555555;color:white;padding:10px;">Telemetry Packets</h1>
+
+  <div id="tlm_SYSTEM_META">
+    <h2>SYSTEM META</h2>
+    <div>System Meta Data Telemetry Packet</div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Item Name</th>
+          <th>Description</th>
+          <th class="text-center">Bit Offset</th>
+          <th class="text-center">Bit Size</th>
+          <th class="text-center">Data Type</th>
+          <th class="text-center">Units</th>
+          <th class="text-center">Format</th>
+        </tr>
+      <thead>
+      <tbody>
+        
+          <tr>
+            <td>RECEIVED_TIMESECONDS</td>
+            <td>
+              COSMOS Received Time (UTC, Floating point, Unix epoch)
+              
+              
+              
+                <table class="table table-striped table-bordered table-condensed" style="margin-top:10px">
+                  <tbody>
+                  
+                  
+                    <tr><td>Read Conversion:</td><td>ReceivedTimeSecondsConversion</td></tr>
+                  
+                  
+                  
+                  
+                  </tbody>
+                </table>
+              
+            </td>
+            <td class="text-center">0</td>
+            <td class="text-center">0</td>
+            <td class="text-center">DERIVED</td>
+            <td class="text-center"></td>
+            <td class="text-center">%0.6f</td>
+          </tr>
+        
+          <tr>
+            <td>RECEIVED_TIMEFORMATTED</td>
+            <td>
+              COSMOS Received Time (Local time zone, Formatted string)
+              
+              
+              
+                <table class="table table-striped table-bordered table-condensed" style="margin-top:10px">
+                  <tbody>
+                  
+                  
+                    <tr><td>Read Conversion:</td><td>ReceivedTimeFormattedConversion</td></tr>
+                  
+                  
+                  
+                  
+                  </tbody>
+                </table>
+              
+            </td>
+            <td class="text-center">0</td>
+            <td class="text-center">0</td>
+            <td class="text-center">DERIVED</td>
+            <td class="text-center"></td>
+            <td class="text-center"></td>
+          </tr>
+        
+          <tr>
+            <td>RECEIVED_COUNT</td>
+            <td>
+              COSMOS packet received count
+              
+              
+              
+                <table class="table table-striped table-bordered table-condensed" style="margin-top:10px">
+                  <tbody>
+                  
+                  
+                    <tr><td>Read Conversion:</td><td>ReceivedCountConversion</td></tr>
+                  
+                  
+                  
+                  
+                  </tbody>
+                </table>
+              
+            </td>
+            <td class="text-center">0</td>
+            <td class="text-center">0</td>
+            <td class="text-center">DERIVED</td>
+            <td class="text-center"></td>
+            <td class="text-center"></td>
+          </tr>
+        
+          <tr>
+            <td>PKTID</td>
+            <td>
+              Packet Id
+              
+                <div><strong>Id Value: 1</strong></div>
+              
+              
+              
+            </td>
+            <td class="text-center">0</td>
+            <td class="text-center">8</td>
+            <td class="text-center">UINT</td>
+            <td class="text-center"></td>
+            <td class="text-center"></td>
+          </tr>
+        
+          <tr>
+            <td>CONFIG</td>
+            <td>
+              Configuration Name
+              
+              
+              
+            </td>
+            <td class="text-center">8</td>
+            <td class="text-center">256</td>
+            <td class="text-center">STRING</td>
+            <td class="text-center"></td>
+            <td class="text-center"></td>
+          </tr>
+        
+          <tr>
+            <td>COSMOS_VERSION</td>
+            <td>
+              COSMOS Version
+              
+              
+              
+            </td>
+            <td class="text-center">264</td>
+            <td class="text-center">240</td>
+            <td class="text-center">STRING</td>
+            <td class="text-center"></td>
+            <td class="text-center"></td>
+          </tr>
+        
+          <tr>
+            <td>USER_VERSION</td>
+            <td>
+              User Project Version
+              
+              
+              
+            </td>
+            <td class="text-center">504</td>
+            <td class="text-center">240</td>
+            <td class="text-center">STRING</td>
+            <td class="text-center"></td>
+            <td class="text-center"></td>
+          </tr>
+        
+          <tr>
+            <td>RUBY_VERSION</td>
+            <td>
+              Ruby Version
+              
+              
+              
+            </td>
+            <td class="text-center">744</td>
+            <td class="text-center">240</td>
+            <td class="text-center">STRING</td>
+            <td class="text-center"></td>
+            <td class="text-center"></td>
+          </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  <hr></hr>
+
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/js/jquery-1.10.2.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+  </body>
+</html>

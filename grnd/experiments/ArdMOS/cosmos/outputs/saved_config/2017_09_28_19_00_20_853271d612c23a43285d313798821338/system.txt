@@ -1,2 +1,0 @@
-DECLARE_TARGET BLINK nil target.txt
-DECLARE_TARGET SYSTEM nil target.txt

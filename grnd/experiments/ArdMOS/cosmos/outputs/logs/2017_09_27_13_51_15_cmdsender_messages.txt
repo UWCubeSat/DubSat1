@@ -1,7 +1,0 @@
-2017/09/27 13:51:15.163  cmd("BLINK DELAY with DELAY 500")
-2017/09/27 13:51:15.168  Error sending BLINK DELAY due to Command parameter 'BLINK DELAY DELAY' = 500 not in valid range of 0 to 255
-2017/09/27 13:51:21.030  cmd("BLINK DELAY with DELAY 255")
-2017/09/27 13:51:27.793  cmd("BLINK DELAY with DELAY 75")
-2017/09/27 13:51:38.768  cmd("BLINK DELAY with DELAY 500")
-2017/09/27 13:51:38.780  Error sending BLINK DELAY due to Command parameter 'BLINK DELAY DELAY' = 500 not in valid range of 0 to 255
-2017/09/27 13:51:43.973  cmd("BLINK DELAY with DELAY 255")
