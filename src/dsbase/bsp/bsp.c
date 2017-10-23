@@ -10,6 +10,8 @@
 #include "core/uart.h"
 #include "core/i2c.h"
 
+void bspUARTInit(bus_instance_UART instance);
+void bspI2CInit( bus_instance_i2c instance);
 
 FILE_STATIC SubsystemModule ssModule;
 
@@ -92,7 +94,7 @@ void bspUARTInit(bus_instance_UART instance)
 }
 
 // NOTE:  The LaunchPad only exposes pins for the I2C bus we call "Bus2", hence the macro usage
-void bspI2CInit(bus_instance_I2C instance)
+void bspI2CInit(bus_instance_i2c instance)
 {
     if (instance == I2CBus2)
     {

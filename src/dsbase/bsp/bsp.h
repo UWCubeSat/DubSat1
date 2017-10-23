@@ -8,17 +8,17 @@
 #ifndef BSP_BSP_H_
 #define BSP_BSP_H_
 
-#include "../core/i2c.h"
+
 #include "../core/debugtools.h"
 #include "../core/uart.h"
 #include "../core/utils.h"
 #include "../interfaces/systeminfo.h"
+#include "../core/i2c.h"
 
 // Various helper functions
 void bspInit(SubsystemModule mod);
-//void bspUARTInit(bus_instance_UART instance);
-void bspI2CInit(bus_instance_I2C instance);
 SubsystemModule bspGetModule();
+
 
 // Hard-wired assignments for a given board are stashed in these #if defined(...)
 // blocks
@@ -41,11 +41,13 @@ SubsystemModule bspGetModule();
 #define LP5994_BACKCHANNEL_UART_BITS    (BIT0 | BIT1)
 
 // NOTE:  I2C1 (mapping to P5.0/5.1) is not accessible on LaunchPad
+// These map to eUSCI B1
 //#define LP5994_I2C1_PORTSEL0        P5SEL0
 //#define LP5994_I2C1_PORTSEL1        P5SEL1
 //#define LP5994_I2C1_SDA_BIT         BIT0
 //#define LP5994_I2C1_SCL_BIT         BIT1
 
+// These map to eUSCI B2
 #define LP5994_I2C2_PORTSEL0        P7SEL0
 #define LP5994_I2C2_PORTSEL1        P7SEL1
 #define LP5994_I2C2_SDA_BIT         BIT0
@@ -103,11 +105,13 @@ SubsystemModule bspGetModule();
 #define CANMSP_BLOCKV24_BACKCHANNEL_UART_SEL1    P2SEL1  // Maps to USCI A0
 #define CANMSP_BLOCKV24_BACKCHANNEL_UART_BITS    (BIT0 | BIT1)
 
+// These map to eUSCI B1
 #define CANMSP_BLOCKV24_I2C1_PORTSEL0        P5SEL0
 #define CANMSP_BLOCKV24_I2C1_PORTSEL1        P5SEL1
 #define CANMSP_BLOCKV24_I2C1_SDA_BIT         BIT0
 #define CANMSP_BLOCKV24_I2C1_SCL_BIT         BIT1
 
+// These map to eUSCI B2
 #define CANMSP_BLOCKV24_I2C2_PORTSEL0        P7SEL0
 #define CANMSP_BLOCKV24_I2C2_PORTSEL1        P7SEL1
 #define CANMSP_BLOCKV24_I2C2_SDA_BIT         BIT0
@@ -170,17 +174,6 @@ SubsystemModule bspGetModule();
 #else
 #error Unspecified board hardware, unable to determine correct BSP implementation.  Please specify board.
 #endif
-
-// Hardware assignments that will (hopefully) NOT vary between boards goes below this point ...
-// If that changes, they get "bumped" back into the #if defined(...) blocks above
-// Currently valid for following boards:
-//     MSP4305994 LaunchPad
-//     CAN-MSP Block v1
-#define I2C_PORT_SEL0       P7SEL0
-#define I2C_PORT_SEL1       P7SEL1
-#define I2C_SDA_BIT         BIT0
-#define I2C_SCL_BIT         BIT1
-
 
 
 #endif /* BSP_BSP_H_ */
