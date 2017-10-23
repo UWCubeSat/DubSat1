@@ -6,13 +6,11 @@
 
 Queue CreateQueue(uint8_t *contents, uint32_t itemSize, uint8_t capacity)
 {
-    Queue queue = {
-            contents,
-            itemSize,
-            0,  // head
-            0,  // length
-            capacity
-    };
+    Queue queue = { contents,
+                    itemSize,
+                    0,  // head
+                    0,  // length
+                    capacity };
     return queue;
 }
 
@@ -38,7 +36,7 @@ uint8_t *WriteQueue(Queue *queue)
         return NULL;
     }
     return queue->contents
-           + toArrayIndex(queue, queue->length) * queue->itemSize;
+            + toArrayIndex(queue, queue->length) * queue->itemSize;
 }
 
 void PushQueue(Queue *queue)
@@ -50,8 +48,10 @@ void PushQueue(Queue *queue)
     queue->length++;
 }
 
-uint8_t *ReadQueue(Queue *queue) {
-    if (queue == NULL || isQueueEmpty(queue)) {
+uint8_t *ReadQueue(Queue *queue)
+{
+    if (queue == NULL || isQueueEmpty(queue))
+    {
         return NULL;
     }
     return queue->contents + queue->head * queue->itemSize;
@@ -65,7 +65,8 @@ void PopQueue(Queue *queue)
     }
 
     queue->head++;
-    if (queue->head >= queue->capacity) {
+    if (queue->head >= queue->capacity)
+    {
         queue->head = 0;
     }
     queue->length--;

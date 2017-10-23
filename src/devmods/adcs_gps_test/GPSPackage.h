@@ -8,7 +8,8 @@
 typedef int32_t gps_ec;
 typedef uint32_t gps_enum;
 
-typedef struct PACKED_STRUCT GPSHeader {
+typedef struct PACKED_STRUCT GPSHeader
+{
     uint8_t sync[3];
     uint8_t headerLength;
     uint16_t messageId;
@@ -25,19 +26,22 @@ typedef struct PACKED_STRUCT GPSHeader {
     uint16_t rxVersion; // receiver S/W version
 } GPSHeader;
 
-typedef struct PACKED_STRUCT GPSVectorD {
+typedef struct PACKED_STRUCT GPSVectorD
+{
     double x;
     double y;
     double z;
 } GPSVectorD;
 
-typedef struct PACKED_STRUCT GPSVectorF {
+typedef struct PACKED_STRUCT GPSVectorF
+{
     float x;
     float y;
     float z;
 } GPSVectorF;
 
-typedef struct PACKED_STRUCT GPSBestXYZ {
+typedef struct PACKED_STRUCT GPSBestXYZ
+{
     gps_enum pSolStatus; // position solution status
     gps_enum posType;
     GPSVectorD pos;
@@ -60,7 +64,8 @@ typedef struct PACKED_STRUCT GPSBestXYZ {
     uint8_t sigMaskGPSGLO;
 } GPSBestXYZ;
 
-typedef struct PACKED_STRUCT GPSTime {
+typedef struct PACKED_STRUCT GPSTime
+{
     gps_enum clockStatus;
     double offset;
     double offsetStdDev;
@@ -75,14 +80,16 @@ typedef struct PACKED_STRUCT GPSTime {
 } GPSTime;
 
 // a status code for use in RXStatus
-typedef struct PACKED_STRUCT GPSStatusCode {
+typedef struct PACKED_STRUCT GPSStatusCode
+{
     uint32_t word;
     uint32_t pri;  // priority mask
     uint32_t set;  // set mask
     uint32_t clear;  // clear mask
 } GPSStatusCode;
 
-typedef struct PACKED_STRUCT GPSRXStatus {
+typedef struct PACKED_STRUCT GPSRXStatus
+{
     uint32_t error;
     uint32_t numStats;
     GPSStatusCode rxstat;
@@ -92,7 +99,8 @@ typedef struct PACKED_STRUCT GPSRXStatus {
 } GPSRXStatus;
 
 // for use in GPSHWMonitor
-typedef struct PACKED_STRUCT GPSMeasurement {
+typedef struct PACKED_STRUCT GPSMeasurement
+{
     float reading;
 
     // these three fields are combined as "status" in the firmware guide, but
@@ -104,19 +112,22 @@ typedef struct PACKED_STRUCT GPSMeasurement {
 
 // TODO This is by far the biggest message and most of the space is wasted. If
 // the message size becomes a problem this will probably be why.
-typedef struct PACKED_STRUCT GPSHWMonitor {
+typedef struct PACKED_STRUCT GPSHWMonitor
+{
     uint32_t numMeasurements;
     GPSMeasurement measurements[23];
 } GPSHWMonitor;
 
-typedef struct PACKED_STRUCT GPSRXStatusEvent {
+typedef struct PACKED_STRUCT GPSRXStatusEvent
+{
     gps_enum word;
     uint32_t bitPosition;
     gps_enum event;
     uint8_t description[32];
 } GPSRXStatusEvent;
 
-typedef union GPSMessage {
+typedef union GPSMessage
+{
     GPSBestXYZ bestXYZ;
     GPSTime time;
     GPSRXStatus rxstatus;
@@ -124,7 +135,8 @@ typedef union GPSMessage {
     GPSHWMonitor hwMonitor;
 } GPSMessage;
 
-typedef struct PACKED_STRUCT GPSPackage {
+typedef struct PACKED_STRUCT GPSPackage
+{
     GPSHeader header;
     GPSMessage message;
     uint32_t crc;
