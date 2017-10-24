@@ -36,6 +36,14 @@ void imuInit()
     i2cBuff[1] = 0x11;
     i2cMasterWrite(hSensor, i2cBuff, 2);
 
+#elif defined(__BSP_HW_IMU_LSM6DSM__)
+
+    i2cBuff[0] = IMU_LSM6DSM_CTRL2_G;
+    i2cBuff[1] = IMU_LSM6DSM_ODR_12p5_FS125;
+    i2cBuff[2] = IMU_LSM6DSM_CTRL7_G;
+    i2cBuff[3] = IMU_LSM6DSM_HIGH_PERF_ON;
+    i2cMasterWrite(hSensor, i2cBuff, 4);
+
 #else
 
 #error Unknown - or no - IMU hardware selected.
@@ -51,6 +59,7 @@ IMUData *imuReadGyroAccelData()
 
     // TODO:  Add state read code, populate IMU data struct
     i2cMasterRegisterRead(hSensor, 0x0C, i2cBuff, 12);  // read data bytes, little-endian pairs
+
     idata.rawGyroX = (int16_t)(i2cBuff[0] | ((int16_t)i2cBuff[1] << 8));
     idata.rawGyroY = (int16_t)(i2cBuff[2] | ((int16_t)i2cBuff[3] << 8));
     idata.rawGyroZ = (int16_t)(i2cBuff[4] | ((int16_t)i2cBuff[5] << 8));
@@ -61,6 +70,14 @@ IMUData *imuReadGyroAccelData()
 
 
     //i2cCombinedAddressWriteThenRead(0x1B, i2cBuff, 1);  // read status byte
+
+#elif defined(__BSP_HW_IMU_LSM6DSM__)
+
+    i2cMasterRegisterRead(hSensor, IMU_LSM6DSM_OUTPUT_DATA_REGS, i2cBuff, IMU_LSM6DSM_DATA_NUM_BYTES);
+
+    idata.rawGyroX = (int16_t)(i2cBuff[0] | ((int16_t)i2cBuff[1] << 8));
+    idata.rawGyroY = (int16_t)(i2cBuff[2] | ((int16_t)i2cBuff[3] << 8));
+    idata.rawGyroZ = (int16_t)(i2cBuff[4] | ((int16_t)i2cBuff[5] << 8));
 
 #else
 

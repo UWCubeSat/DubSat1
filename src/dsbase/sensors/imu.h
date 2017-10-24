@@ -24,6 +24,11 @@
 #define IMU_GYRO_OUTPUT_REG_ADDR_START              IMU_BMI160_GYRO_OUTPUT_REG_ADDR_START
 #define IMU_ACCEL_OUTPUT_REG_ADDR_START             IMU_BMI160_ACCEL_OUTPUT_REG_ADDR_START
 
+#elif defined(__BSP_HW_IMU_LSM6DSM__)
+
+#include "LSM6DSM_IMU.h"
+
+#define IMU_I2C_7BIT_ADDRESS                        IMU_LSM6DSM_I2C_7BIT_ADDRESS
 
 #else
 
@@ -37,10 +42,6 @@ typedef struct  {
     int16_t rawGyroX;
     int16_t rawGyroY;
     int16_t rawGyroZ;
-    int16_t rawAccelX;
-    int16_t rawAccelY;
-    int16_t rawAccelZ;
-
     // TODO:  add timestamp?
 } IMUData;
 

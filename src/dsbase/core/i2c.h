@@ -95,6 +95,6 @@ void i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWrite,
 // TODO:  Add "async" interrupt-based alternative to synchronous versions
 
 // Core functions
-hDev i2cInit(bus_instance_i2c instance, uint8_t slaveaddr);  // TODO: change this to return a handle?
+hDev i2cInit(bus_instance_i2c instance, uint8_t slaveaddr);
 
 #endif /* I2C_SUPPORT_H_ */

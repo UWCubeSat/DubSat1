@@ -46,6 +46,7 @@ Important symbols include (note:  underbars are DOUBLED (i.e. '__') for the begi
         * TODO:  the closely related HMC5983L will likely get its own definition and code chunks ... 
     * IMU sensor (for imu.c/.h):
         * `__BSP_HW_IMU_BMI160__`:  Bosch BMI160 IMU (default if no imu symbol defined)
+		* `__BSP_HW_IMU_LSM6DSM__`:  ST LSM6DSM IMU 
 
 ## Workspace Creation Strategy
 

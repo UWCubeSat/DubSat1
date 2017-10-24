@@ -22,7 +22,7 @@ static void populateBusRegisters(bus_instance_i2c instance)
     {
         pRegs = &busregs[1];
         pRegs->UCBxCTLW0 =  &UCB1CTLW0;
-        pRegs->UCBxCTL1 =   &UCB1CTL1;
+        pRegs->UCBxCTL1 =   &UCB1CTL1;   // MSB of CTLW0
         pRegs->UCBxCTLW1 =  &UCB1CTLW1;
         pRegs->UCBxBRW =    &UCB1BRW;
         pRegs->UCBxSTATW =  &UCB1STATW;
@@ -38,7 +38,7 @@ static void populateBusRegisters(bus_instance_i2c instance)
     {
         pRegs = &busregs[2];
         pRegs->UCBxCTLW0 =  &UCB2CTLW0;
-        pRegs->UCBxCTL1 =   &UCB2CTL1;
+        pRegs->UCBxCTL1 =   &UCB2CTL1;   // MSB of CTLW0
         pRegs->UCBxCTLW1 =  &UCB2CTLW1;
         pRegs->UCBxBRW =    &UCB2BRW;
         pRegs->UCBxSTATW =  &UCB2STATW;
@@ -61,7 +61,6 @@ hDev i2cInit(bus_instance_i2c bus, uint8_t slaveaddr)
     {
         pBus->initialized = TRUE;
 
-        // TODO:  Make sure this only gets called once
         bspI2CInit(bus);
         populateBusRegisters(bus);
 
@@ -78,9 +77,7 @@ hDev i2cInit(bus_instance_i2c bus, uint8_t slaveaddr)
 
     devices[currindex].bus = bus;
     devices[currindex].slaveaddr = slaveaddr;
-//    I2CREG(bus, UCBxI2CSA) = <<slaveaddr>>
-//    }
-    // TODO: TEMPORARY RETURN
+
     return (hDev)currindex;
 }
 
@@ -170,7 +167,6 @@ void i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, ui
     i2cWaitForStopComplete(bus);
 
     i2cMasterCombinedWriteRead(device, &registeraddr, 1, buff, szToRead);
-
 }
 
 // Primary interrupt vector for I2C on module B1 (I2C #1)
