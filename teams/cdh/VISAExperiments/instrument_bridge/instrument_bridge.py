@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 
-import data_collector
-import data_server
+from data_collector import DataCollector
+from data_server import DataServer
+import signal
 
 class InstrumentBridge:
     def __init__(self):
-        self.instrument_data_collector = data_collector.DataCollector();
-        self.data_transmitter = data_server.DataServer();
+        with DataCollector() as collector, DataServer() as transmitter:
+            print("Press ctrl+c to exit")
+            signal.signal(signal.SIGINT, self.exit_handler)
+            signal.pause()
 
-    def shutdown(self):
-        if self.instrument_data_collector is not None:
-            self.instrument_data_collector.close()
+    def exit_handler(self, signal, frame):
+        print("\nClosing cleanly.")
 
 if __name__ == "__main__":
     InstrumentBridge()
