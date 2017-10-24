@@ -44,11 +44,6 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
         return;
     }
 
-    if (state != State_CRC)
-    {
-        crc = continueCrc32(crc, rcvdbyte);
-    }
-
     switch (state)
     {
     case State_Sync:
@@ -61,6 +56,7 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
         if (buf[0] == 170 && buf[1] == 68 && buf[2] == 18)
         {
             bytesRead = 3;
+            crc = calculateBlockCrc32(3, buf);
             state = State_Header;
         }
         break;
@@ -70,6 +66,7 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
         // write directly into header
         uint8_t *buf = (uint8_t *) &p->header;
         buf[bytesRead] = rcvdbyte;
+        crc = continueCrc32(crc, rcvdbyte);
         bytesRead++;
 
         // once the header is read, move on to the message
@@ -85,6 +82,7 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
         // write directly into message
         uint8_t *buf = (uint8_t *) &p->message;
         buf[bytesRead] = rcvdbyte;
+        crc = continueCrc32(crc, rcvdbyte);
         bytesRead++;
 
         // once the message is read, move on to the crc

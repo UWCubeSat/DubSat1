@@ -161,13 +161,13 @@ FILE_STATIC void parseMessage(GPSPackage *package)
 
         // read only the measurements supported by this model (615)
         // TODO revisit this for the OEM719
-        if (monLog.numMeasurements < 2)
-        {
-            debugPrintF("HWMonitor missing measurements!\r\n");
-            break;
+        uint32_t i = monLog.numMeasurements;
+        while (i-- > 0) {
+            const GPSMeasurement m = monLog.measurements[i];
+            if (m.type == 1) {
+                debugTraceF(4, "\ttemp: %f, status: %u\r\n", m.reading, m.status);
+            }
         }
-        const GPSMeasurement m = monLog.measurements[1];
-        debugTraceF(4, "\ttemp: %f, status: %u\r\n", m.reading, m.status);
         break;
     }
     default:
