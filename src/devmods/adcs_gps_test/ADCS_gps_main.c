@@ -242,16 +242,6 @@ int main(void)
         // wait for next package
         while ((package = ReadGPSPackage()) == NULL);
 
-        // validate package using crc
-        if (!isGPSPackageValid(package))
-        {
-            debugPrintF("invalid CRC\r\n");
-            // skip the corrupted message
-            // TODO log the error somehow
-            PopGPSPackage();
-            continue;
-        }
-
         // filter out response messages
         // TODO start checking these for confirmation (see LOG command)
         if (package->header.messageType & 0b1000000)

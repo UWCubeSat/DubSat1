@@ -7,6 +7,7 @@
 #include "GPSReader.h"
 #include "GPSPackage.h"
 #include "queue.h"
+#include "crc.h"
 
 typedef enum gps_state
 {
@@ -26,7 +27,9 @@ void GPSReaderInit(hBus uartHandle, GPSPackage *buffer, uint32_t bufferLength)
 FILE_STATIC void readCallback(uint8_t rcvdbyte)
 {
     static uint8_t bytesRead = 0;
-    static gps_state state = State_CRC;
+    static gps_state state = State_Sync;
+    static uint32_t crc = 0;
+    static uint32_t readCrc = 0;
 
     GPSPackage *p = (GPSPackage *) WriteQueue(&queue);
     if (p == NULL)
@@ -36,7 +39,14 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
         // skipping a single byte this way will (probably) skip the whole
         // message. If some space is freed up in the queue, this should be able
         // to pick up the next message's sync bytes and carry on.
+        bytesRead = 0;
+        state = State_Sync;
         return;
+    }
+
+    if (state != State_CRC)
+    {
+        crc = continueCrc32(crc, rcvdbyte);
     }
 
     switch (state)
@@ -88,15 +98,24 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
     case State_CRC:
     {
         // write directly into the crc
-        uint8_t *buf = (uint8_t *) &p->crc;
+        uint8_t *buf = (uint8_t *) &readCrc;
         buf[bytesRead] = rcvdbyte;
         bytesRead++;
 
         // once the crc is read, restart the process
-        if (bytesRead >= sizeof(p->crc))
+        if (bytesRead >= sizeof(readCrc))
         {
+            if (readCrc != crc)
+            {
+                debugPrintF("invalid crc\r\n");
+            }
+            else
+            {
+                PushQueue(&queue);
+            }
+            crc = 0;
+            readCrc = 0;
             bytesRead = 0;
-            PushQueue(&queue);
             state = State_Sync;
         }
         break;

@@ -22,7 +22,6 @@ uint32_t crc32Value(int32_t i)
     return ulCRC;
 }
 
-//
 /**
  * Calculates the CRC-32 of a block of data all at once
  *
@@ -42,4 +41,11 @@ uint32_t calculateBlockCrc32(uint32_t ulCount, uint8_t *ucBuffer)
         ulCRC = ulTemp1 ^ ulTemp2;
     }
     return (ulCRC);
+}
+
+uint32_t continueCrc32(uint32_t pre, uint8_t byte)
+{
+    uint32_t tmp1 = (pre >> 8) & 0x00FFFFFFL;
+    uint32_t tmp2 = crc32Value(((int16_t) pre ^ byte) & 0xff);
+    return tmp1 ^ tmp2;
 }

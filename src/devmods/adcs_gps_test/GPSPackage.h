@@ -135,13 +135,10 @@ typedef union GPSMessage
     GPSHWMonitor hwMonitor;
 } GPSMessage;
 
-typedef struct PACKED_STRUCT GPSPackage
+typedef struct GPSPackage
 {
     GPSHeader header;
     GPSMessage message;
-    uint32_t crc;
 } GPSPackage;
-
-bool isGPSPackageValid(GPSPackage *p);
 
 #endif /* GPSPACKAGE_H_ */
