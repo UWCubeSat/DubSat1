@@ -1,6 +1,7 @@
 import visa
 import threading
 from time import sleep
+from queue import Queue
 
 INSTRUMENT_CONFIGURATION_FOLDER = "instrument-configurations"
 
@@ -10,14 +11,19 @@ INSTRUMENT_CONFIGURATION_FOLDER = "instrument-configurations"
 class DataCollector:
     def __init__(self):
         self.resource_manager = visa.ResourceManager()
-        self.instruments = self.get_connected_instruments_resources()
-        self.instrument_listeners = self.attach_instrument_listeners(self.instruments)
+        self.instruments = self._get_connected_instruments_resources()
+        self.telemetry_results = self._map_workers_to_outputs(self.instruments)
+
+    def __enter__(self):
+        return self
 
     '''
         Close every device's VISA session and then close the resource manager
     '''
-    def close(self):
-        # check that this is not done already by resource_manager.close
+    def __exit__(self, exc_type, exc_value, traceback):
+        for thread in self.telemetry_results.keys():
+            thread.stop()
+
         for instrument in self.instruments:
             if instrument is not None:
                 instrument.close()
@@ -25,11 +31,16 @@ class DataCollector:
         if self.resource_manager is not None:
             self.resource_manager.close()
 
+    def get_telemetry_outputs(self):
+            result = []
+            for thread, output_queue in self.telemetry_results.items():
+                result.append(output_queue)
+            return result
     ''' 
         For every instrument connected, open the VISA resource and return
         a list of instruments.
     '''
-    def get_connected_instruments_resources(self):
+    def _get_connected_instruments_resources(self):
         instrument_resources = []
 
         for instrument_identifier in self.resource_manager.list_resources():
@@ -39,34 +50,42 @@ class DataCollector:
         return instrument_resources
 
     '''
-        Start a new process for each instrument to interface with it.
+        Returns a map of telemetry gathering workers to their outputs,
+        which are Queues. The telemetry gathering workers are created
+        and run, data is ready to be consumed from the output queues.
     '''
-    def attach_instrument_listeners(self, instruments):
-        threads = []
+    def _map_workers_to_outputs(self, instruments):
+        worker_to_output = {}
+
         for instrument in instruments:
-            t = threading.Thread(target=self.instrument_listening_worker, args=(instrument,))
-            t.start()
-            threads.append(t)
-        for thread in threads:
-            thread.join()
+            output = Queue()
+            telemetry_thread = InstrumentWorker(instrument, output)
+            telemetry_thread.start()
+            worker_to_output[telemetry_thread] = output
+
+        return worker_to_output
+
+class InstrumentWorker(threading.Thread):
+    def __init__(self, instrument, output):
+        threading.Thread.__init__(self)
+        self.instrument = instrument
+        self.output = output
 
     '''
-        Interfaces with the given instrument. Designed to run on its own process.
+        Worker function to interface with the given instrument. Writes telemetry
+        data to the queue provided. Should be run seperate thread.
     '''
-    def instrument_listening_worker(self, instrument):
-        for x in range(10):
-            sleep(0.25)
-            print(instrument.query("*IDN?"))
+    def run(self):
+        self.alive = True
 
-    '''
-        Read configuration files in INSTRUMENT_CONFIGURATION_FOLDER
-    '''
-    def load_instrument_configurations(self):
-        None
+        while self.alive:
+            sleep(1) # 1 second
+            # TODO change this to something more useful
+            query_result = self.instrument.query("*IDN?") 
+            self.output.put(query_result)
 
-    '''
-        Detect when instruments are inserted or removed and make neccesary changes
-    '''
-    def detect_instrument_changes(self):
-        None
+    def stop(self):
+        self.alive = False
+        self.join()
+
 
