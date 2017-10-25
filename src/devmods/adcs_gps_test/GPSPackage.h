@@ -1,3 +1,8 @@
+/**
+ * A GPSPackage is a header with a message. These are raw structs in the same
+ * format as sent by the GPS itself. They should all be packed.
+ */
+
 #ifndef GPSPACKAGE_H_
 #define GPSPACKAGE_H_
 

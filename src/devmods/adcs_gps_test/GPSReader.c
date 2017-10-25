@@ -39,6 +39,7 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
         // skipping a single byte this way will (probably) skip the whole
         // message. If some space is freed up in the queue, this should be able
         // to pick up the next message's sync bytes and carry on.
+        // TODO log skipped message errors
         bytesRead = 0;
         state = State_Sync;
         return;
