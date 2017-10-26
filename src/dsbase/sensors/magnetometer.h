@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #include "../core/i2c.h"
+#include "../core/utils.h"
 
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)   // Honeywell HMC5883L

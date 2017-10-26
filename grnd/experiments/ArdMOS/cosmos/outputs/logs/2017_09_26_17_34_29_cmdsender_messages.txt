@@ -1,7 +1,0 @@
-2017/09/26 17:34:29.096  cmd("BLINK DELAY with DELAY 1000")
-2017/09/26 17:34:29.106  Error sending BLINK DELAY due to Command parameter 'BLINK DELAY DELAY' = 1000 not in valid range of 0 to 255
-2017/09/26 17:34:35.042  cmd("BLINK DELAY with DELAY 255")
-2017/09/26 17:34:35.046  Error sending BLINK DELAY due to Interface not connected for write: BLINKINT
-2017/09/26 17:34:39.813  cmd("BLINK DELAY with DELAY 255")
-2017/09/26 17:34:59.170  cmd("BLINK DELAY with DELAY 100")
-2017/09/26 17:35:40.364  cmd("BLINK DELAY with DELAY 200")

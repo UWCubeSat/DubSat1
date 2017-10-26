@@ -183,10 +183,10 @@ Board Template: V2.1</text>
 <text x="20" y="-33" size="2" layer="26" font="vector" rot="MR0">&gt;LAST_DATE_TIME</text>
 </package>
 <package name="PC104_CONNECTOR">
-<pad name="P$1" x="-31.75" y="32.134" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$2" x="-31.75" y="34.674" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$3" x="-31.75" y="37.214" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$4" x="-31.75" y="39.754" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$1" x="-31.75" y="31.88" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$2" x="-31.75" y="34.42" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$3" x="-31.75" y="36.96" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$4" x="-31.75" y="39.5" drill="0.9525" diameter="1.8796" shape="octagon"/>
 <pad name="P$5" x="-29.21" y="31.88" drill="0.9525" diameter="1.8796" shape="octagon"/>
 <pad name="P$6" x="-29.21" y="34.42" drill="0.9525" diameter="1.8796" shape="octagon"/>
 <pad name="P$7" x="-29.21" y="36.96" drill="0.9525" diameter="1.8796" shape="octagon"/>
@@ -283,10 +283,10 @@ Board Template: V2.1</text>
 <pad name="P$98" x="29.21" y="34.42" drill="0.9525" diameter="1.8796" shape="octagon"/>
 <pad name="P$99" x="29.21" y="36.96" drill="0.9525" diameter="1.8796" shape="octagon"/>
 <pad name="P$100" x="29.21" y="39.5" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$101" x="31.75" y="32.134" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$102" x="31.75" y="34.674" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$103" x="31.75" y="37.214" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$104" x="31.75" y="39.754" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$101" x="31.75" y="31.88" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$102" x="31.75" y="34.42" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$103" x="31.75" y="36.96" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$104" x="31.75" y="39.5" drill="0.9525" diameter="1.8796" shape="octagon"/>
 <wire x1="-33.02" y1="30.61" x2="-33.02" y2="40.77" width="0.2032" layer="21"/>
 <wire x1="-33.02" y1="40.77" x2="33.02" y2="40.77" width="0.2032" layer="21"/>
 <wire x1="33.02" y1="40.77" x2="33.02" y2="30.61" width="0.2032" layer="21"/>
@@ -441,14 +441,14 @@ Board Template: V2.1</text>
 <wire x1="-8.23" y1="9.7" x2="-8.23" y2="11.3" width="0.127" layer="21"/>
 <wire x1="-8.23" y1="11.3" x2="-5.23" y2="11.3" width="0.127" layer="21"/>
 <wire x1="-5.23" y1="11.3" x2="-5.23" y2="9.7" width="0.127" layer="21"/>
-<text x="-6.5" y="10" size="0.3" layer="27" font="vector" rot="R90">14p</text>
+<text x="-6.5" y="10" size="0.3" layer="27" font="vector" rot="R90">12.5p</text>
 <smd name="7" x="-3.58" y="13" dx="0.8" dy="1.2" layer="1" rot="R180"/>
 <smd name="8" x="-5.38" y="13" dx="0.8" dy="1.2" layer="1" rot="R180"/>
 <wire x1="-2.98" y1="12.2" x2="-5.98" y2="12.2" width="0.127" layer="21"/>
 <wire x1="-5.98" y1="12.2" x2="-5.98" y2="13.8" width="0.127" layer="21"/>
 <wire x1="-5.98" y1="13.8" x2="-2.98" y2="13.8" width="0.127" layer="21"/>
 <wire x1="-2.98" y1="13.8" x2="-2.98" y2="12.2" width="0.127" layer="21"/>
-<text x="-4.25" y="12.5" size="0.3" layer="27" font="vector" rot="R90">14p</text>
+<text x="-4.25" y="12.5" size="0.3" layer="27" font="vector" rot="R90">12.5p</text>
 <wire x1="-3.75" y1="5.75" x2="-8.625" y2="5.75" width="0.2032" layer="1"/>
 <pad name="GND@7" x="-8.5" y="10.5" drill="0.6096" thermals="no"/>
 <pad name="GND@8" x="-7.25" y="8" drill="0.6096" thermals="no"/>
@@ -532,7 +532,7 @@ Board Template: V2.1</text>
 <wire x1="-6.145" y1="25.55" x2="-6.145" y2="23.95" width="0.127" layer="21"/>
 <wire x1="-6.145" y1="23.95" x2="-9.145" y2="23.95" width="0.127" layer="21"/>
 <wire x1="-9.145" y1="23.95" x2="-9.145" y2="25.55" width="0.127" layer="21"/>
-<text x="-7.875" y="25.25" size="0.3" layer="27" font="vector" rot="R270">34pF</text>
+<text x="-7.875" y="25.25" size="0.3" layer="27" font="vector" rot="R270">20pF</text>
 <pad name="GND@2" x="-5.875" y="24.75" drill="0.6096" rot="R180" thermals="no"/>
 <pad name="GND@4" x="0.5" y="20.75" drill="0.6096" thermals="no"/>
 <pad name="GND@3" x="-3.75" y="17.5" drill="0.6096" thermals="no"/>
@@ -546,7 +546,7 @@ Board Template: V2.1</text>
 <wire x1="-8.23" y1="14.95" x2="-8.23" y2="16.55" width="0.127" layer="21"/>
 <wire x1="-8.23" y1="16.55" x2="-5.23" y2="16.55" width="0.127" layer="21"/>
 <wire x1="-5.23" y1="16.55" x2="-5.23" y2="14.95" width="0.127" layer="21"/>
-<text x="-6.5" y="15.25" size="0.3" layer="27" font="vector" rot="R90">34pF</text>
+<text x="-6.5" y="15.25" size="0.3" layer="27" font="vector" rot="R90">20pF</text>
 <pad name="GND@5" x="-8.5" y="15.75" drill="0.6096" thermals="no"/>
 <wire x1="-5.75" y1="15.5" x2="-5.75" y2="18.25" width="0.2032" layer="1"/>
 <wire x1="-1.75" y1="19.25" x2="-3.66583125" y2="19.25" width="0.2032" layer="1"/>
@@ -708,42 +708,6 @@ Board Template: V2.1</text>
 <rectangle x1="17.526" y1="-0.254" x2="18.034" y2="0.254" layer="51"/>
 <text x="0.635" y="2.54" size="1.27" layer="21" font="vector" rot="R90">SBWTCK</text>
 <text x="19.685" y="-2.54" size="1.27" layer="48" font="vector" rot="R180">BOARD EDGE THIS SIDE</text>
-</package>
-<package name="REACTION_WHEEL_BRACKET">
-<circle x="-11" y="11" radius="0.889" width="0.001" layer="21"/>
-<circle x="11" y="11" radius="0.889" width="0.001" layer="21"/>
-<circle x="-11" y="-11" radius="0.889" width="0.001" layer="21"/>
-<circle x="11" y="-11" radius="0.889" width="0.001" layer="21"/>
-<wire x1="-14" y1="1.35" x2="-14" y2="14" width="0.001" layer="21"/>
-<wire x1="-14" y1="1.35" x2="-22" y2="1.35" width="0.001" layer="21"/>
-<wire x1="-22" y1="1.35" x2="-22" y2="-12" width="0.001" layer="21"/>
-<wire x1="-34" y1="-12" x2="-22" y2="-12" width="0.001" layer="21"/>
-<wire x1="-34" y1="1.35" x2="-34" y2="-12" width="0.001" layer="21"/>
-<wire x1="-42" y1="1.35" x2="-34" y2="1.35" width="0.001" layer="21"/>
-<wire x1="-42" y1="1.35" x2="-42" y2="-14" width="0.001" layer="21"/>
-<wire x1="-40" y1="-14" x2="-42" y2="-14" width="0.001" layer="21"/>
-<wire x1="-37" y1="-17" x2="-40" y2="-14" width="0.001" layer="21" curve="90"/>
-<wire x1="-37" y1="-17" x2="-31" y2="-17" width="0.001" layer="21" curve="180"/>
-<wire x1="-28" y1="-14" x2="-31" y2="-17" width="0.001" layer="21" curve="90"/>
-<wire x1="15.35" y1="-14" x2="-28" y2="-14" width="0.001" layer="21"/>
-<wire x1="18.35" y1="-17" x2="15.35" y2="-14" width="0.001" layer="21" curve="90"/>
-<wire x1="18.35" y1="-17" x2="24.35" y2="-17" width="0.001" layer="21" curve="180"/>
-<wire x1="27.35" y1="-14" x2="24.35" y2="-17" width="0.001" layer="21" curve="90"/>
-<wire x1="29.35" y1="-14" x2="27.35" y2="-14" width="0.001" layer="21"/>
-<wire x1="29.35" y1="-14" x2="29.35" y2="-6" width="0.001" layer="21"/>
-<wire x1="29.35" y1="-6" x2="16" y2="-6" width="0.001" layer="21"/>
-<wire x1="16" y1="6" x2="16" y2="-6" width="0.001" layer="21"/>
-<wire x1="29.35" y1="6" x2="16" y2="6" width="0.001" layer="21"/>
-<wire x1="29.35" y1="14" x2="29.35" y2="6" width="0.001" layer="21"/>
-<wire x1="-14" y1="14" x2="29.35" y2="14" width="0.001" layer="21"/>
-<circle x="-34" y="-17" radius="1.355" width="0.001" layer="21"/>
-<circle x="21.35" y="-17" radius="1.355" width="0.001" layer="21"/>
-<hole x="-11" y="11" drill="2.39"/>
-<hole x="11" y="11" drill="2.39"/>
-<hole x="11" y="-11" drill="2.39"/>
-<hole x="-11" y="-11" drill="2.39"/>
-<hole x="21.35" y="-17" drill="2.39"/>
-<hole x="-34" y="-17" drill="2.39"/>
 </package>
 <package name="DRV10970">
 <smd name="V" x="3.6" y="2.925" dx="0.75" dy="0.3" layer="1" rot="R90"/>
@@ -999,7 +963,7 @@ Board Template: V2.1</text>
 <wire x1="17.78" y1="33.02" x2="58.42" y2="33.02" width="0.254" layer="94"/>
 <wire x1="58.42" y1="33.02" x2="58.42" y2="-35.56" width="0.254" layer="94"/>
 <wire x1="58.42" y1="-35.56" x2="17.78" y2="-35.56" width="0.254" layer="94"/>
-<text x="-48.768" y="-38.862" size="1.778" layer="94">version: V2.3</text>
+<text x="-48.768" y="-38.862" size="1.778" layer="94">version: V2.2</text>
 <wire x1="-59.69" y1="-6.35" x2="57.15" y2="-6.35" width="0" layer="98"/>
 <wire x1="57.15" y1="-6.35" x2="57.15" y2="-29.21" width="0" layer="98"/>
 <wire x1="57.15" y1="-29.21" x2="7.62" y2="-29.21" width="0" layer="98"/>
@@ -1389,7 +1353,7 @@ PM package</text>
 <wire x1="-20.32" y1="16.1925" x2="-19.685" y2="16.1925" width="0.1524" layer="94"/>
 <wire x1="-19.685" y1="16.1925" x2="-19.05" y2="16.1925" width="0.1524" layer="94"/>
 <wire x1="-19.685" y1="16.1925" x2="-19.685" y2="17.145" width="0.1016" layer="94"/>
-<text x="-18.2245" y="14.097" size="0.762" layer="97" rot="R90">14p</text>
+<text x="-18.2245" y="14.097" size="0.762" layer="97" rot="R90">12.5p</text>
 <wire x1="-19.685" y1="17.145" x2="-17.145" y2="17.145" width="0.1016" layer="91"/>
 <wire x1="-4.445" y1="14.9225" x2="-3.81" y2="14.9225" width="0.1016" layer="94"/>
 <wire x1="-3.81" y1="14.9225" x2="-3.175" y2="14.9225" width="0.1016" layer="94"/>
@@ -1401,7 +1365,7 @@ PM package</text>
 <wire x1="-3.81" y1="16.1925" x2="-3.175" y2="16.1925" width="0.1524" layer="94"/>
 <wire x1="-3.81" y1="16.1925" x2="-3.81" y2="17.145" width="0.1016" layer="94"/>
 <wire x1="-3.81" y1="17.145" x2="-6.35" y2="17.145" width="0.1016" layer="91"/>
-<text x="-2.3495" y="14.097" size="0.762" layer="97" rot="R90">14p</text>
+<text x="-2.3495" y="14.097" size="0.762" layer="97" rot="R90">12.5p</text>
 <wire x1="-17.145" y1="17.145" x2="-17.145" y2="14.605" width="0.1016" layer="91"/>
 <wire x1="-17.145" y1="14.605" x2="-7.62" y2="14.605" width="0.1016" layer="91"/>
 <wire x1="-7.62" y1="14.605" x2="-7.62" y2="8.89" width="0.1016" layer="91"/>
@@ -1677,7 +1641,7 @@ PWM</text>
 <wire x1="-13.6525" y1="21.59" x2="-13.6525" y2="22.225" width="0.1524" layer="94"/>
 <wire x1="-13.6525" y1="22.225" x2="-13.6525" y2="22.86" width="0.1524" layer="94"/>
 <wire x1="-13.6525" y1="22.225" x2="-14.605" y2="22.225" width="0.1016" layer="94"/>
-<text x="-11.557" y="23.6855" size="0.762" layer="97" rot="R180">34p</text>
+<text x="-11.557" y="23.6855" size="0.762" layer="97" rot="R180">20p</text>
 <wire x1="-14.605" y1="22.225" x2="-14.605" y2="24.765" width="0.1016" layer="91"/>
 <wire x1="-12.3825" y1="37.465" x2="-12.3825" y2="38.1" width="0.1016" layer="94"/>
 <wire x1="-12.3825" y1="38.1" x2="-12.3825" y2="38.735" width="0.1016" layer="94"/>
@@ -1689,7 +1653,7 @@ PWM</text>
 <wire x1="-13.6525" y1="38.1" x2="-13.6525" y2="38.735" width="0.1524" layer="94"/>
 <wire x1="-13.6525" y1="38.1" x2="-14.605" y2="38.1" width="0.1016" layer="94"/>
 <wire x1="-14.605" y1="38.1" x2="-14.605" y2="35.56" width="0.1016" layer="91"/>
-<text x="-11.557" y="39.5605" size="0.762" layer="97" rot="R180">34p</text>
+<text x="-11.557" y="39.5605" size="0.762" layer="97" rot="R180">20p</text>
 <wire x1="-14.605" y1="24.765" x2="-12.065" y2="24.765" width="0.1016" layer="91"/>
 <wire x1="-12.065" y1="24.765" x2="-12.065" y2="34.29" width="0.1016" layer="91"/>
 <wire x1="-12.065" y1="34.29" x2="-6.35" y2="34.29" width="0.1016" layer="91"/>
@@ -1898,13 +1862,6 @@ P2.6 Rx and P2.5 Tx</text>
 <pin name="P3.4_GPIO_DEBUG" x="-17.78" y="10.16" visible="pin" length="middle"/>
 <pin name="P3.5_GPIO_DEBUG" x="-17.78" y="12.7" visible="pin" length="middle"/>
 <text x="-15.24" y="16.51" size="2.54" layer="95">Program/Debug Port</text>
-</symbol>
-<symbol name="REACTION_WHEEL_BRACKET">
-<text x="-2.54" y="0" size="5.08" layer="94" align="center">REACTION WHEEL BRACKET</text>
-<wire x1="-53.34" y1="5.08" x2="-53.34" y2="-5.08" width="0.254" layer="94"/>
-<wire x1="-53.34" y1="-5.08" x2="48.26" y2="-5.08" width="0.254" layer="94"/>
-<wire x1="48.26" y1="-5.08" x2="48.26" y2="5.08" width="0.254" layer="94"/>
-<wire x1="48.26" y1="5.08" x2="-53.34" y2="5.08" width="0.254" layer="94"/>
 </symbol>
 <symbol name="DRV10970">
 <pin name="DAA" x="-20.32" y="27.94" visible="pin" length="middle"/>
@@ -2230,18 +2187,6 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="SBWTCK" pad="SBWTCK"/>
 <connect gate="G$1" pin="SBWTDIO" pad="2"/>
 </connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="REACTION_WHEEL_BRACKET">
-<gates>
-<gate name="G$1" symbol="REACTION_WHEEL_BRACKET" x="2.54" y="0"/>
-</gates>
-<devices>
-<device name="" package="REACTION_WHEEL_BRACKET">
 <technologies>
 <technology name=""/>
 </technologies>
@@ -10241,7 +10186,6 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="GND4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="+3V1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="P+1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
-<part name="U$9" library="DubSat1 Components" deviceset="REACTION_WHEEL_BRACKET" device=""/>
 <part name="U$7" library="DubSat1 Components" deviceset="DRV10970" device=""/>
 <part name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="2.2uF"/>
 <part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="3.3K"/>
@@ -10345,21 +10289,29 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="GND48" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U$5" library="DubSat1 Components" deviceset="LT8335" device=""/>
 <part name="GND17" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C23" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C23" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
 <part name="GND18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C24" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C24" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF"/>
 <part name="GND19" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R12" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2"/>
+<part name="R12" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="43 kΩ"/>
 <part name="D2" library="DubSat1 Components" deviceset="PMEG6010CEJ" device=""/>
-<part name="L2" library="DubSat1 Components" deviceset="WURTH_ELEKTRONIK_INDDD_744877001" device=""/>
-<part name="C25" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="L2" library="DubSat1 Components" deviceset="WURTH_ELEKTRONIK_INDDD_744877001" device="" value="WURTH_ELEKTRONIK_INDDD_744877001 (1.8 μH)"/>
+<part name="C25" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF"/>
 <part name="GND20" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C26" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C26" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="22 μF"/>
 <part name="GND23" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C27" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
-<part name="R13" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2"/>
-<part name="R14" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2"/>
+<part name="C27" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="5.6 pF"/>
+<part name="R13" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="499 kΩ"/>
+<part name="R14" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="232 kΩ"/>
 <part name="GND49" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF"/>
+<part name="GND5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF"/>
+<part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C8" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
+<part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C9" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
+<part name="GND16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -10376,7 +10328,6 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <instance part="GND4" gate="1" x="-48.26" y="-60.96" rot="R270"/>
 <instance part="+3V1" gate="G$1" x="-63.5" y="-55.88" rot="R90"/>
 <instance part="P+1" gate="1" x="-63.5" y="-35.56" rot="R90"/>
-<instance part="U$9" gate="G$1" x="157.48" y="71.12"/>
 <instance part="U$7" gate="G$1" x="-2.54" y="-246.38" rot="R270"/>
 <instance part="C1" gate="G$1" x="15.24" y="-274.32"/>
 <instance part="R1" gate="G$1" x="-15.24" y="-302.26" rot="R90"/>
@@ -10408,8 +10359,8 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <instance part="LDO_5V" gate="G$1" x="215.9" y="30.48"/>
 <instance part="GND38" gate="1" x="193.04" y="30.48" rot="R270"/>
 <instance part="GND39" gate="1" x="124.46" y="30.48" rot="R270"/>
-<instance part="+3V4" gate="G$1" x="170.18" y="35.56" rot="R270"/>
-<instance part="P+4" gate="1" x="238.76" y="35.56" rot="R270"/>
+<instance part="+3V4" gate="G$1" x="175.26" y="35.56" rot="R270"/>
+<instance part="P+4" gate="1" x="243.84" y="35.56" rot="R270"/>
 <instance part="C16" gate="G$1" x="165.1" y="25.4"/>
 <instance part="C17" gate="G$1" x="233.68" y="25.4"/>
 <instance part="U$10" gate="G$1" x="147.32" y="-71.12"/>
@@ -10495,6 +10446,14 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <instance part="R13" gate="G$1" x="302.26" y="60.96" rot="R90"/>
 <instance part="R14" gate="G$1" x="294.64" y="45.72" rot="R90"/>
 <instance part="GND49" gate="1" x="294.64" y="38.1" rot="MR0"/>
+<instance part="C6" gate="G$1" x="127" y="43.18"/>
+<instance part="GND5" gate="1" x="127" y="50.8" rot="R180"/>
+<instance part="C7" gate="G$1" x="195.58" y="43.18"/>
+<instance part="GND6" gate="1" x="195.58" y="50.8" rot="R180"/>
+<instance part="C8" gate="G$1" x="160.02" y="43.18"/>
+<instance part="GND7" gate="1" x="160.02" y="50.8" rot="R180"/>
+<instance part="C9" gate="G$1" x="228.6" y="43.18"/>
+<instance part="GND16" gate="1" x="228.6" y="50.8" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -10819,6 +10778,26 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <pinref part="R14" gate="G$1" pin="1"/>
 <pinref part="GND49" gate="1" pin="GND"/>
 </segment>
+<segment>
+<pinref part="C6" gate="G$1" pin="1"/>
+<pinref part="GND5" gate="1" pin="GND"/>
+<wire x1="127" y1="45.72" x2="127" y2="48.26" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="C7" gate="G$1" pin="1"/>
+<pinref part="GND6" gate="1" pin="GND"/>
+<wire x1="195.58" y1="45.72" x2="195.58" y2="48.26" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="C8" gate="G$1" pin="1"/>
+<pinref part="GND7" gate="1" pin="GND"/>
+<wire x1="160.02" y1="45.72" x2="160.02" y2="48.26" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="C9" gate="G$1" pin="1"/>
+<pinref part="GND16" gate="1" pin="GND"/>
+<wire x1="228.6" y1="45.72" x2="228.6" y2="48.26" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="CANH" class="0">
 <segment>
@@ -11010,15 +10989,31 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 </segment>
 <segment>
 <pinref part="LDO_3V3" gate="G$1" pin="IN"/>
-<wire x1="134.62" y1="35.56" x2="129.54" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="129.54" y1="35.56" x2="129.54" y2="40.64" width="0.1524" layer="91"/>
-<label x="129.54" y="40.64" size="1.778" layer="95" rot="R90" xref="yes"/>
+<wire x1="134.62" y1="35.56" x2="127" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="127" y1="35.56" x2="119.38" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="35.56" x2="119.38" y2="40.64" width="0.1524" layer="91"/>
+<label x="119.38" y="40.64" size="1.778" layer="95" rot="R90" xref="yes"/>
+<junction x="119.38" y="35.56"/>
+<pinref part="LDO_3V3" gate="G$1" pin="EN"/>
+<wire x1="119.38" y1="35.56" x2="119.38" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="25.4" x2="134.62" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="C6" gate="G$1" pin="2"/>
+<wire x1="127" y1="35.56" x2="127" y2="38.1" width="0.1524" layer="91"/>
+<junction x="127" y="35.56"/>
 </segment>
 <segment>
 <pinref part="LDO_5V" gate="G$1" pin="IN"/>
-<wire x1="203.2" y1="35.56" x2="198.12" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="198.12" y1="35.56" x2="198.12" y2="40.64" width="0.1524" layer="91"/>
-<label x="198.12" y="40.64" size="1.778" layer="95" rot="R90" xref="yes"/>
+<wire x1="203.2" y1="35.56" x2="195.58" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="195.58" y1="35.56" x2="187.96" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="187.96" y1="35.56" x2="187.96" y2="40.64" width="0.1524" layer="91"/>
+<label x="187.96" y="40.64" size="1.778" layer="95" rot="R90" xref="yes"/>
+<junction x="187.96" y="35.56"/>
+<pinref part="LDO_5V" gate="G$1" pin="EN"/>
+<wire x1="187.96" y1="35.56" x2="187.96" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="187.96" y1="25.4" x2="203.2" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="C7" gate="G$1" pin="2"/>
+<wire x1="195.58" y1="35.56" x2="195.58" y2="38.1" width="0.1524" layer="91"/>
+<junction x="195.58" y="35.56"/>
 </segment>
 <segment>
 <pinref part="U$5" gate="G$1" pin="V_IN"/>
@@ -11066,11 +11061,15 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <segment>
 <pinref part="LDO_3V3" gate="G$1" pin="OUT"/>
 <pinref part="+3V4" gate="G$1" pin="+3V3"/>
-<wire x1="157.48" y1="35.56" x2="165.1" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="157.48" y1="35.56" x2="160.02" y2="35.56" width="0.1524" layer="91"/>
 <pinref part="C16" gate="G$1" pin="1"/>
-<wire x1="165.1" y1="35.56" x2="167.64" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="160.02" y1="35.56" x2="165.1" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="35.56" x2="172.72" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="165.1" y1="27.94" x2="165.1" y2="35.56" width="0.1524" layer="91"/>
 <junction x="165.1" y="35.56"/>
+<pinref part="C8" gate="G$1" pin="2"/>
+<wire x1="160.02" y1="35.56" x2="160.02" y2="38.1" width="0.1524" layer="91"/>
+<junction x="160.02" y="35.56"/>
 </segment>
 <segment>
 <pinref part="+3V3" gate="G$1" pin="+3V3"/>
@@ -11126,11 +11125,15 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <segment>
 <pinref part="LDO_5V" gate="G$1" pin="OUT"/>
 <pinref part="P+4" gate="1" pin="+5V"/>
-<wire x1="226.06" y1="35.56" x2="233.68" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="226.06" y1="35.56" x2="228.6" y2="35.56" width="0.1524" layer="91"/>
 <pinref part="C17" gate="G$1" pin="1"/>
-<wire x1="233.68" y1="35.56" x2="236.22" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="228.6" y1="35.56" x2="233.68" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="233.68" y1="35.56" x2="241.3" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="233.68" y1="27.94" x2="233.68" y2="35.56" width="0.1524" layer="91"/>
 <junction x="233.68" y="35.56"/>
+<pinref part="C9" gate="G$1" pin="2"/>
+<wire x1="228.6" y1="35.56" x2="228.6" y2="38.1" width="0.1524" layer="91"/>
+<junction x="228.6" y="35.56"/>
 </segment>
 <segment>
 <pinref part="U$10" gate="G$1" pin="5V_CAN"/>
@@ -11258,6 +11261,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="17.78" y="-205.74"/>
 <pinref part="MOTOR_X" gate="G$1" pin="P$6"/>
 </segment>
+<segment>
+<pinref part="U$3" gate="G$1" pin="P3.6_GPIO/PWM"/>
+<wire x1="45.72" y1="-86.36" x2="66.04" y2="-86.36" width="0.1524" layer="91"/>
+<wire x1="66.04" y1="-86.36" x2="66.04" y2="-88.9" width="0.1524" layer="91"/>
+<wire x1="66.04" y1="-88.9" x2="68.58" y2="-88.9" width="0.1524" layer="91"/>
+<label x="68.58" y="-88.9" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="HP_V_X" class="0">
 <segment>
@@ -11273,6 +11283,11 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="20.32" y="-198.12"/>
 <pinref part="MOTOR_X" gate="G$1" pin="P$7"/>
 </segment>
+<segment>
+<pinref part="U$3" gate="G$1" pin="P3.7_GPIO/PWM"/>
+<wire x1="45.72" y1="-83.82" x2="68.58" y2="-83.82" width="0.1524" layer="91"/>
+<label x="68.58" y="-83.82" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="HP_U_X" class="0">
 <segment>
@@ -11285,6 +11300,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <wire x1="22.86" y1="-190.5" x2="22.86" y2="-167.64" width="0.1524" layer="91"/>
 <junction x="22.86" y="-190.5"/>
 <pinref part="MOTOR_X" gate="G$1" pin="P$8"/>
+</segment>
+<segment>
+<pinref part="U$3" gate="G$1" pin="P1.6_GPIO/PWM"/>
+<wire x1="45.72" y1="-81.28" x2="66.04" y2="-81.28" width="0.1524" layer="91"/>
+<wire x1="66.04" y1="-81.28" x2="66.04" y2="-78.74" width="0.1524" layer="91"/>
+<wire x1="66.04" y1="-78.74" x2="68.58" y2="-78.74" width="0.1524" layer="91"/>
+<label x="68.58" y="-78.74" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="CS_X" class="0">
@@ -11686,6 +11708,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="180.34" y="-205.74"/>
 <pinref part="MOTOR_Y" gate="G$1" pin="P$6"/>
 </segment>
+<segment>
+<pinref part="U$10" gate="G$1" pin="P3.6_GPIO/PWM"/>
+<wire x1="193.04" y1="-78.74" x2="213.36" y2="-78.74" width="0.1524" layer="91"/>
+<wire x1="213.36" y1="-78.74" x2="213.36" y2="-81.28" width="0.1524" layer="91"/>
+<wire x1="213.36" y1="-81.28" x2="215.9" y2="-81.28" width="0.1524" layer="91"/>
+<label x="215.9" y="-81.28" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="HP_V_Y" class="0">
 <segment>
@@ -11701,6 +11730,11 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="182.88" y="-198.12"/>
 <pinref part="MOTOR_Y" gate="G$1" pin="P$7"/>
 </segment>
+<segment>
+<pinref part="U$10" gate="G$1" pin="P3.7_GPIO/PWM"/>
+<wire x1="193.04" y1="-76.2" x2="215.9" y2="-76.2" width="0.1524" layer="91"/>
+<label x="215.9" y="-76.2" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="HP_U_Y" class="0">
 <segment>
@@ -11713,6 +11747,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <wire x1="185.42" y1="-190.5" x2="185.42" y2="-167.64" width="0.1524" layer="91"/>
 <junction x="185.42" y="-190.5"/>
 <pinref part="MOTOR_Y" gate="G$1" pin="P$8"/>
+</segment>
+<segment>
+<pinref part="U$10" gate="G$1" pin="P1.6_GPIO/PWM"/>
+<wire x1="193.04" y1="-73.66" x2="213.36" y2="-73.66" width="0.1524" layer="91"/>
+<wire x1="213.36" y1="-73.66" x2="213.36" y2="-71.12" width="0.1524" layer="91"/>
+<wire x1="213.36" y1="-71.12" x2="215.9" y2="-71.12" width="0.1524" layer="91"/>
+<label x="215.9" y="-71.12" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="CS_Y" class="0">
@@ -12043,6 +12084,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="330.2" y="-208.28"/>
 <pinref part="MOTOR_Z" gate="G$1" pin="P$6"/>
 </segment>
+<segment>
+<pinref part="U$13" gate="G$1" pin="P3.6_GPIO/PWM"/>
+<wire x1="342.9" y1="-81.28" x2="363.22" y2="-81.28" width="0.1524" layer="91"/>
+<wire x1="363.22" y1="-81.28" x2="363.22" y2="-83.82" width="0.1524" layer="91"/>
+<wire x1="363.22" y1="-83.82" x2="365.76" y2="-83.82" width="0.1524" layer="91"/>
+<label x="365.76" y="-83.82" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="HP_V_Z" class="0">
 <segment>
@@ -12058,6 +12106,11 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="332.74" y="-200.66"/>
 <pinref part="MOTOR_Z" gate="G$1" pin="P$7"/>
 </segment>
+<segment>
+<pinref part="U$13" gate="G$1" pin="P3.7_GPIO/PWM"/>
+<wire x1="342.9" y1="-78.74" x2="365.76" y2="-78.74" width="0.1524" layer="91"/>
+<label x="365.76" y="-78.74" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="HP_U_Z" class="0">
 <segment>
@@ -12070,6 +12123,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <wire x1="335.28" y1="-193.04" x2="335.28" y2="-170.18" width="0.1524" layer="91"/>
 <junction x="335.28" y="-193.04"/>
 <pinref part="MOTOR_Z" gate="G$1" pin="P$8"/>
+</segment>
+<segment>
+<pinref part="U$13" gate="G$1" pin="P1.6_GPIO/PWM"/>
+<wire x1="342.9" y1="-76.2" x2="363.22" y2="-76.2" width="0.1524" layer="91"/>
+<wire x1="363.22" y1="-76.2" x2="363.22" y2="-73.66" width="0.1524" layer="91"/>
+<wire x1="363.22" y1="-73.66" x2="365.76" y2="-73.66" width="0.1524" layer="91"/>
+<label x="365.76" y="-73.66" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="CS_Z" class="0">

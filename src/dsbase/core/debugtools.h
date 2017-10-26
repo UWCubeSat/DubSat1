@@ -77,6 +77,7 @@ typedef enum _entityID {
     Entity_BSP,
     Entity_UART,
     Entity_RWS,
+    Entity_SUBSYSTEM,
 } entityID;
 
 
