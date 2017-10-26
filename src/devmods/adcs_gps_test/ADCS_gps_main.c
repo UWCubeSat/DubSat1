@@ -11,12 +11,16 @@ int main(void)
     bspInit(Module_Test);
     __bis_SR_register(GIE);
 
+    debugSetMode(Mode_ASCIIInteractive);
+
     gpsInit();
+    gpsPowerOn();
 
     while (1)
     {
         // if the GPS updated, send telemetry by invoking the status handler
-        if(gpsUpdate()) {
+        if(gpsUpdate())
+        {
             debugInvokeStatusHandler(Entity_Test);
         }
     }

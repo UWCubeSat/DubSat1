@@ -6,13 +6,34 @@
 #include "core/utils.h"
 #include "GPSPackage.h"
 
+/**
+ * Initializes MSP for IO with GPS. Should be called before powering on.
+ */
 void gpsInit();
 
 /**
- * returns true if anything changed
+ * Powers on and configures the GPS
+ */
+void gpsPowerOn();
+
+/**
+ * Powers off the GPS and finishes processing any leftover logs
+ */
+void gpsPowerOff();
+
+/**
+ * Returns true if anything changed
  */
 bool gpsUpdate();
 
+/**
+ * Continue to update until there are no incoming messages
+ */
+bool gpsFlush();
+
+/**
+ * Send an ASCII command directly to the GPS
+ */
 void gpsSendCommand(uint8_t *command);
 
 // the following structs are for telemetry. The raw data is in GPSPackage.h

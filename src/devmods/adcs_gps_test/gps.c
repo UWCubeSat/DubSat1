@@ -83,6 +83,7 @@ FILE_STATIC void parseMessage(GPSPackage *package)
             // Skip the invalid message. An RXSTATUSEVENT should trigger another
             // log once position becomes valid
             debugTraceF(4, "BESTXYZ invalid\r\n");
+            gpsSendCommand("unlog bestxyzb\r\n");
             rxStatusInfo.invalidMessages++;
             break;
         }
@@ -115,6 +116,7 @@ FILE_STATIC void parseMessage(GPSPackage *package)
             // Skip the invalid message. An RXSTATUSEVENT should trigger another
             // log once either becomes valid
             debugTraceF(4, "TIME invalid\r\n");
+            gpsSendCommand("unlog timeb\r\n");
             rxStatusInfo.invalidMessages++;
             break;
         }
@@ -163,7 +165,7 @@ FILE_STATIC void parseMessage(GPSPackage *package)
             if (e.event == 0)
             {
                 // if either the clock model or UTC became valid, log time
-                gpsSendCommand("log timeb\r\n");
+                gpsSendCommand("log timeb ontime 1\r\n");
             }
             break;
         }
@@ -253,9 +255,19 @@ void gpsInit()
     bcbinPopulateHeader(&hwMonitorInfo.header, 126, sizeof(hwMonitorInfo));
     debugRegisterEntity(Entity_Test, NULL, gpsStatusCallback,
                         gpsActionCallback);
+}
+
+void gpsPowerOn()
+{
+    // TODO switch on the power
+    /*
+     * Using timers, periodically poll the GPS with a log to see if its on.
+     * Consider doing this asynchronously with some powered on callback that
+     * configures the GPS.
+     */
 
     // configure to reply in binary only
-    gpsSendCommand("iterfacemode com2 novatel novatelbinary on\r\n");
+    gpsSendCommand("iterfacemode thisport novatel novatelbinary on\r\n");
 
     // stop logging defaults
     gpsSendCommand("unlogall\r\n");
@@ -266,10 +278,16 @@ void gpsInit()
     gpsSendCommand("log rxstatuseventb onnew\r\n");
 
     // monitor hardware
-    gpsSendCommand("log hwmonitorb ontime 10\r\n");
+    gpsSendCommand("log hwmonitorb ontime 1\r\n");
 
     // TODO do we need to log bestxyz? The log will be triggered when the
     // position becomes valid, but what if it was valid to being with?
+}
+
+void gpsPowerOff()
+{
+    // TODO switch off the power
+    gpsFlush();
 }
 
 bool gpsUpdate()
@@ -304,4 +322,14 @@ bool gpsUpdate()
     PopGPSPackage();
 
     return true;
+}
+
+bool gpsFlush()
+{
+    bool updated = false;
+    while (gpsUpdate())
+    {
+        updated = true;
+    }
+    return updated;
 }
