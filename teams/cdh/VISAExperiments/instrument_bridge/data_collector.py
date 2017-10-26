@@ -79,9 +79,9 @@ class InstrumentWorker(threading.Thread):
         self.alive = True
 
         while self.alive:
-            sleep(1) # 1 second
+            sleep(0.5) # 1 second
             # TODO change this to something more useful
-            query_result = self.instrument.query("*IDN?") 
+            query_result = self.instrument.query(":Measure:Voltage:DC?") 
             self.output.put(query_result)
 
     def stop(self):
