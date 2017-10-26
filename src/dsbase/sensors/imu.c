@@ -64,9 +64,9 @@ IMUData *imuReadGyroAccelData()
     idata.rawGyroY = (int16_t)(i2cBuff[2] | ((int16_t)i2cBuff[3] << 8));
     idata.rawGyroZ = (int16_t)(i2cBuff[4] | ((int16_t)i2cBuff[5] << 8));
 
-    idata.rawAccelX = (int16_t)(i2cBuff[6] | ((int16_t)i2cBuff[7] << 8));
-    idata.rawAccelY = (int16_t)(i2cBuff[8] | ((int16_t)i2cBuff[9] << 8));
-    idata.rawAccelZ = (int16_t)(i2cBuff[10] | ((int16_t)i2cBuff[11] << 8));
+    //idata.rawAccelX = (int16_t)(i2cBuff[6] | ((int16_t)i2cBuff[7] << 8));
+    //idata.rawAccelY = (int16_t)(i2cBuff[8] | ((int16_t)i2cBuff[9] << 8));
+    //idata.rawAccelZ = (int16_t)(i2cBuff[10] | ((int16_t)i2cBuff[11] << 8));
 
 
     //i2cCombinedAddressWriteThenRead(0x1B, i2cBuff, 1);  // read status byte

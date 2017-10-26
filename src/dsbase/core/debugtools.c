@@ -44,6 +44,7 @@ FILE_STATIC uint8_t *DebugEntityFriendlyNames[] =  {
                                                     "Core/BSP",
                                                     "UART Bus",
                                                     "RWheels",
+                                                    "SUBSYSTEM",  // For the "main" entity in each subsystem module
                                                     };
 
 // KEEP THESE STRINGS IN SYNC WITH HEADER FILE and previous array
@@ -59,6 +60,7 @@ FILE_STATIC uint8_t DebugEntityPathChars[] = {
                                               'b',
                                               'u',
                                               'R',
+                                              '%',
                                             };
 
 uint8_t reportStatusCallback(DebugMode mode)
