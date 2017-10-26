@@ -1,13 +1,11 @@
 #include <msp430.h> 
+#include <PPT.h>
 
-#include "SUBSYSTEMNAME_MODULENAME.h"
 #include "bsp/bsp.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
 FILE_STATIC ModuleStatus mod_status;
-FILE_STATIC volatile SubsystemState ss_state    = State_FirstState;
-FILE_STATIC volatile SubsystemMode ss_mode      = Mode_FirstMode;
 
 // These are sample "trigger" flags, used to indicate to the main loop
 // that a transition should occur
@@ -26,22 +24,23 @@ int main(void)
     // it sets up critical hardware settings for board specified by the __BSP_Board... defintion used.
     // If module not yet available in enum, add to SubsystemModule enumeration AND
     // SubsystemModulePaths (a string name) in systeminfo.c/.h
-    bspInit(Module_Test);  // <<DO NOT DELETE or MOVE>>
+    bspInit(Module_PPT);  // <<DO NOT DELETE or MOVE>>
 
     // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
     // Also hooks up sync pulse handlers.  Note that actual pulse interrupt handlers will update the
     // firing state structures before calling the provided handler function pointers.
     mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
+    mod_status.ss_mode = Mode_Undetermined;
+    mod_status.ss_state = State_Undetermined;
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
     // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
     // debugtools.h.  Also, be sure to change the "path char"
-    debugRegisterEntity(Entity_Test, '%', handleDebugInfoCallback,
+    debugRegisterEntity(Entity_SUBSYSTEM, handleDebugInfoCallback,
                                           handleDebugStatusCallback,
                                           handleDebugActionCallback);
-
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
@@ -58,32 +57,40 @@ int main(void)
     while (1)
     {
         // This assumes that some interrupt code will change the value of the triggerStaten variables
-        switch (ss_state)
+        switch (mod_status.ss_state)
         {
+        case State_Undetermined:
+            // Perform actions to figure out what true state should be and set to that state, for example ...
+            mod_status.ss_state = State_FirstState;
+            break;
         case State_FirstState:
             if (triggerState2)
             {
                 triggerState2 = 0;
-                ss_state = State_SecondState;
+                mod_status.ss_state = State_SecondState;
             }
             break;
         case State_SecondState:
             if (triggerState3)
             {
                 triggerState3 = 0;
-                ss_state = State_ThirdState;
+                mod_status.ss_state = State_ThirdState;
             }
             break;
         case State_ThirdState:
             if (triggerState1)
             {
                 triggerState1 = 0;
-                ss_state = State_FirstState;
+                mod_status.ss_state = State_FirstState;
             }
             break;
         default:
             mod_status.state_transition_errors++;
             mod_status.in_unknown_state++;
+
+            mod_status.ss_state = State_Undetermined;
+            mod_status.ss_mode = Mode_Undetermined;
+
             break;
         }
     }
@@ -102,6 +109,9 @@ int main(void)
 // not be exact, and may even change - don't rely on it being 2 seconds every time, and it may
 // be shut off entirely during early or late stages of mission, so also do NOT use as a "heartbeat"
 // for other, unrelated functionality.
+//
+// FOR PPT:  Note that sync pulse 1 is SOURCED from the PPT, but for code cleanliness it might still make
+// sense to handle certain other things here.
 void handleSyncPulse1()
 {
     __no_operation();
@@ -123,15 +133,15 @@ void handleSyncPulse2()
 // often left off.
 uint8_t handleDebugInfoCallback(DebugMode mode)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
     {
         // debugPrintF information in a user-friendly, formatted way
     }
-    else if (mode == HeadlessInteractiveMode)
+    else if (mode == Mode_ASCIIHeadless)
     {
         // debugPrintF information without field names, as CSV
     }
-    else if (mode == StreamingMode)
+    else if (mode == Mode_BinaryStreaming)
     {
         // debugPrintF into a ground segment-friendly "packet" mode
     }
@@ -143,15 +153,15 @@ uint8_t handleDebugInfoCallback(DebugMode mode)
 // common to be surfaced, particularly as "streaming telemetry".
 uint8_t handleDebugStatusCallback(DebugMode mode)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
     {
         // debugPrintF status in a user-friendly, formatted way
     }
-    else if (mode == HeadlessInteractiveMode)
+    else if (mode == Mode_ASCIIHeadless)
     {
         // debugPrintF status without field names, as CSV
     }
-    else if (mode == StreamingMode)
+    else if (mode == Mode_BinaryStreaming)
     {
         // debugPrintF status a ground segment-friendly "packet" format
     }
@@ -160,18 +170,24 @@ uint8_t handleDebugStatusCallback(DebugMode mode)
 
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
     {
         // handle actions in a user-friendly way
     }
-    else if (mode == HeadlessInteractiveMode)
+    else if (mode == Mode_ASCIIHeadless)
     {
         // handle actions in a low-output way
     }
-    else if (mode == StreamingMode)
+    else if (mode == Mode_BinaryStreaming)
     {
         // handle actions, any output should be ground-segment friendly
         // "packet" format
     }
     return 1;
+}
+
+BOOL readyToFire()
+{
+    // TODO:  Walk through all of the data items that are necessary to determine if it's
+    // time to go into a firing sequence
 }
