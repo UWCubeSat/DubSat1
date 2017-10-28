@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 #include "../core/utils.h"
-#include "ltc2481.h"
+#include "photodiode.h"
 
 FILE_STATIC uint8_t read[3];
 FILE_STATIC uint8_t i2cInitialized = 0;
