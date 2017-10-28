@@ -12,7 +12,7 @@ Standardized APIs that other subsystems can use such
 as I2C, SPI, and CAN to communicate with other subsystems and
 sensors.
 
-### /devmods/ss_[Whatever]
+### /devmods/[Whatever]
 For code that eventually will exist in the context of a subsystem module (meaning it will fly, and be on a MSP43x), but is for testing e.g. a vehicle for testing new dsbase-based libraries.
 
 ### /ssmods/ss_[Subsystem]_[Submodule]
