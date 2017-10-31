@@ -5,29 +5,10 @@
 #include "dataArray.h"
 
 void main() {
-	dataArray *x = initArray();
-	/* -----test-----*/
-	int value1 = 1;
-	int value2 = 6;
-	addValue(x, value1);
-	addValue(x, value2);
-	addValue(x, value2);
-	addValue(x, value2);
-	addValue(x, value2);
-	addValue(x, value2);
-	addValue(x, value2);
-	value2 = 4;
-	addValue(x, value2);
-	addValue(x, value2);
-	addValue(x, value2);
-	value2 = 3;
-	addValue(x, value2);
-	addValue(x, value2);
-	addValue(x, value2);
-	printArray(x);
-	int min = getMin(x);
-	int max = getMax(x);
-	int avg = getAvg(x);
-	printf("Min: %d, Max: %d, Average: %d\n", min, max, avg);
-
+	int myArray[] = { 1,3,-2,5,9,8,14,-12 };
+	printArray(myArray, 8);
+	int avg = getAvg(myArray, 8);
+	int maxVal = getMax(myArray, 8);
+	int minVal = getMin(myArray, 8);
+	printf("Avg: %d, Max: %d, Min: %d\n", avg, maxVal, minVal);
 }
