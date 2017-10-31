@@ -1,9 +1,12 @@
+import datetime
+import pytz
 import visa
 import threading
 from time import sleep
 from queue import Queue
 
 INSTRUMENT_CONFIGURATION_FOLDER = "instrument-configurations"
+MEASUREMENT_TIMEZONE = "US/Pacific"
 
 '''
     Collect data from instruments and provide an interface to get it
@@ -70,6 +73,8 @@ class InstrumentWorker(threading.Thread):
         threading.Thread.__init__(self)
         self.instrument = instrument
         self.output = output
+        self.clock = datetime.datetime
+        self.my_timezone = pytz.timezone(MEASUREMENT_TIMEZONE)
 
     '''
         Worker function to interface with the given instrument. Writes telemetry
@@ -80,8 +85,10 @@ class InstrumentWorker(threading.Thread):
 
         while self.alive:
             sleep(0.5) # 1 second
+            query_result = {}
             # TODO change this to something more useful
-            query_result = self.instrument.query(":Measure:Voltage:DC?") 
+            query_result["value"] = float(self.instrument.query(":Measure:Voltage:DC?"))
+            query_result["time"] = self.clock.now(tz=self.my_timezone)
             self.output.put(query_result)
 
     def stop(self):

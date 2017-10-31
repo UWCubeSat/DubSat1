@@ -1,6 +1,11 @@
+import datetime
 import threading
 import socketserver
 from queue import Queue
+import struct
+
+PACKET_ID_LENGTH_BITS = 8
+PACKET_SIZE_INDICATOR_LENGTH_BITS = 8
 
 class DataServer:
     def __init__(self, telemetry_outputs, base_port=13000):
@@ -100,12 +105,52 @@ class TCPHandler(socketserver.BaseRequestHandler):
         self.id = self.server.largest_handler_id;
         self.server.largest_handler_id += 1;
         self.server.copy_queues[self.id] = Queue()
+        self.packet_generator = CosmosLengthPacketGenerator()
 
     def handle(self):
         instrumentation_queue = self.server.copy_queues[self.id]
         while True:
-            self.request.sendall(instrumentation_queue.get().encode('ascii'))
+            reading = instrumentation_queue.get()
+            packet_bytes = self.packet_generator.new_packet(reading["time"], reading["value"])
+
+            self.request.sendall(packet_bytes)
 
     def finish(self):
         del self.server.copy_queues[self.id]
 
+"""
+    Packet format:
+    [Packet length (not including self) in bytes | 8 bits]
+    [Packet ID | 8 bits]
+    [Packet timestamp, ISO 8601 | 232 bits]
+    [Telemetry value, float | 32 bits]
+"""
+class CosmosLengthPacketGenerator:
+    def __init__(self):
+        self.clock = datetime.datetime;
+        self.packet_id_counter = 1;
+
+    def new_packet(self, time, value):
+        packet = b""
+
+        packet_id_bytes = self.packet_id_counter.to_bytes(int(PACKET_ID_LENGTH_BITS / 8),
+            byteorder='big', signed=False)
+        packet += packet_id_bytes
+
+        # time expressed as string in format exactly as '2017-10-30T13:37:39.814-07:00'
+        time_ISO_8601 = time.isoformat(timespec="milliseconds")
+        time_bytes = time_ISO_8601.encode('ascii')
+        assert 29, len(time_bytes)
+        packet += time_bytes
+
+        value_bytes = bytearray(struct.pack(">f", value))
+        assert 4, len(value_bytes)
+        packet += value_bytes
+
+        # cosmos expects packet length in bytes
+        packet_length_bytes = (len(packet)+1).to_bytes(int(PACKET_SIZE_INDICATOR_LENGTH_BITS / 8),
+            byteorder='big', signed=False)
+        # append as suffix
+        packet = packet_length_bytes + packet
+
+        return packet
