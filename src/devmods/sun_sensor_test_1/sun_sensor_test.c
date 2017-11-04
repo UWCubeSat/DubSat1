@@ -17,14 +17,26 @@ int main(void)
 
     while (TRUE)
     {
-        SunSensorAngle *angleData = sunSensorReadAngle();
-        if (angleData != NULLP)
+        // measure voltage
+//        sun_sensor_voltage *voltages = sunSensorReadUnfiltered();
+//        if (voltages != NULLP)
+//        {
+//            debugPrintF("voltages\r\n");
+//            uint8_t i;
+//            for (i = 0; i < 4; i++) {
+//                debugPrintF("\t%f\r\n", voltages[i]);
+//            }
+//        }
+
+        // measure angle
+        SunSensorAngle *angle = sunSensorReadAngle();
+        if (angle != NULLP)
         {
-            debugPrintF("alpha: %f, beta: %f, error: %u\r\n", angleData->alpha,
-                        angleData->beta, angleData->error);
+            debugPrintF("alpha: %f, beta: %f, error: %u\r\n", angle->alpha,
+                        angle->beta, angle->error);
         }
 
-        __delay_cycles(10 * MSEC); // 10 ms recommended
+        __delay_cycles(SEC); // 10 ms recommended
     }
 
     return 0;
