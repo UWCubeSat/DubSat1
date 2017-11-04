@@ -1,2 +1,18 @@
+
 Compute Module,Type,Board Stack #,General ID #,Programmatic Name, CAN Node ID,Notes
-Test Module, MSP430, 0, 0, 0, Module_Test, A placeholder/sample compute node
+Test Module, MSP430, 0, 0, sdfssdfsdf0, Module_Test, A placeholder/sample compute node
+COM2Pi,,,,,,
+COM1ST,,,,,,
+BDot,,,,,,
+EKF,,,,,,
+MCP,,,,,,
+GPS(sensor processor),,,,,,
+RAHSPi,,,,,,
+MTQ,,,,,,
+RWSX,,,,,,
+RWSY,,,,,,
+RWSZ,,,,,,
+PowerGen,,,,,,
+PowerDist,,,,,,
+Battery,,,,,,
+PPT
