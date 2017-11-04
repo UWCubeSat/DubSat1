@@ -1,0 +1,16 @@
+TELEMETRY GPS RXSTATUS BIG_ENDIAN "Receiver status"
+    APPEND_ITEM LENGTH 8 UINT "Length of packet." LITTLE_ENDIAN
+    APPEND_ID_ITEM ID 8 UINT 8 "ID of command" LITTLE_ENDIAN
+    APPEND_ITEM TIMECHANGE 64 FLOAT "Time change covered by this telemetry entry." LITTLE_ENDIAN
+      UNITS seconds s
+    APPEND_ITEM ERROR 32 UINT "Receiver error word." LITTLE_ENDIAN
+      FORMAT_STRING "0x%0x"
+    APPEND_ITEM STATUS 32 UINT "Receiver status word." LITTLE_ENDIAN
+      FORMAT_STRING "0x%0x"
+    APPEND_ITEM AUX1 32 UINT "Auxillary status word 1." LITTLE_ENDIAN
+      FORMAT_STRING "0x%0x"
+    APPEND_ITEM AUX2 32 UINT "Auxillary status word 2." LITTLE_ENDIAN
+      FORMAT_STRING "0x%0x"
+    APPEND_ITEM AUX3 32 UINT "Auxillary status word 3." LITTLE_ENDIAN
+      FORMAT_STRING "0x%0x"
+    APPEND_ITEM INVMSGS 32 UINT "Number of invalid messages." LITTLE_ENDIAN

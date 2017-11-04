@@ -1,0 +1,8 @@
+# This is a segment of the main config/tools/cmd_tlm_server/cmd_tlm_server.txt
+# that will be used when that files specifies AUTO_INTERFACE_TARGETS or INTERFACE_TARGET CAN_LOCAL.
+
+# Modify this according to your actual target connection
+# Please see the COSMOS Interface Configuration documentation
+
+INTERFACE CAN_LOCAL_INT tcpip_server_interface.rb 3000 2000 10 nil LENGTH 0 16 0 1 BIG_ENDIAN
+  TARGET CAN_LOCAL

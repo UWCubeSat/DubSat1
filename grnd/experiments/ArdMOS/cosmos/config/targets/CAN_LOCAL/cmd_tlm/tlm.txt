@@ -1,0 +1,28 @@
+TELEMETRY CAN_LOCAL GENERIC_CAN_MESSAGE BIG_ENDIAN "Telemetry description"
+
+  # BOILERPLATE for ALL CAN messages coming through the PCAN-Ethernet Gateway ...
+  APPEND_ITEM LENGTH 16 UINT "Length of TCP-ized CAN message (always 36/0x24 bytes)."
+  APPEND_ID_ITEM FIXED_TYPE 16 UINT 128 "Fixed message type for all CAN messages, regardless of actual type - always 0x80." BIG_ENDIAN
+  APPEND_ITEM TAG 64 UINT "NOT USED in current PCAN-Ethernet Gateway DR hardware/software."
+  APPEND_ITEM TIMESTAMP_L 32 UINT "Timestamp of the CAN message, in microseconds.  This is the lower 4 bytes of the timestamp."
+  APPEND_ITEM TIMESTAMP_H 32 UINT "Timestamp of the CAN message, in microseconds.  This is the upper 4 bytes of the timestamp."    
+  APPEND_ITEM CHANNEL 8 UINT "NOT USED in current PCAN-Ethernet Gateway DR hardware/software."
+  APPEND_ITEM DLC 8 UINT "Date Length Count from the CAN message."
+  APPEND_ITEM FLAGS 16 UINT "NOT USED in current PCAN-Ethernet Gateway DR hardware/software."
+  #  END BOILERPLATE
+  
+  # NOTE: for "real" CAN telemetry messages, this ID would be an APPEND_ID_ITEM with the correct CAN ID
+  APPEND_ITEM CANID_ID 29 UINT "The ID (normal or extended) portion of the 'CAN ID' set of headers."
+
+  # BOILERPLATE for ALL CAN messages coming through the PCAN-Ethernet Gateway ...
+  APPEND_ITEM CANID_PADDING 1 UINT "Fixed value of 0 - reserved."
+  APPEND_ITEM CANID_RTR 1 UINT "RTR value."
+  APPEND_ITEM CANID_TYPE 1 UINT "Indicates whether the message is a standard or extended frame."
+    STATE EXTENDED 1
+    STATE STANDARD 0
+  # END BOILERPLATE
+    
+  # NOTE:  for "real" CAN telemetry messages, here would follow a sequence of individual APPEND_ITEM's for 
+  # each of the chosen CAN message's signal field.  Unused space must be filled with a final APPEND_ITEM PADDING item, to 
+  # force the overall length of this section to be 8 bytes.
+  APPEND_ITEM CANDATA 64 UINT "Actual data from the CAN message.  This telemetry item is always 8 bytes long, but only DLC bytes of this 8 byte field are valid, however."

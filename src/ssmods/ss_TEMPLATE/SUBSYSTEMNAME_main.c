@@ -6,8 +6,8 @@
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
 FILE_STATIC ModuleStatus mod_status;
-FILE_STATIC volatile SubsystemState ss_state = State_FirstState;
-FILE_STATIC volatile SubsystemMode ss_mode = Mode_FirstMode;
+FILE_STATIC volatile SubsystemState ss_state    = State_FirstState;
+FILE_STATIC volatile SubsystemMode ss_mode      = Mode_FirstMode;
 
 // These are sample "trigger" flags, used to indicate to the main loop
 // that a transition should occur

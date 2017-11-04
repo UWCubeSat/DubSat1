@@ -8656,7 +8656,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <smd name="P$2" x="60.95" y="-2" dx="6" dy="6" layer="16"/>
 <smd name="P$3" x="27.13" y="57.15" dx="6" dy="6" layer="16"/>
 </package>
-<package name="BOARD_TEMPLATE" urn="urn:adsk.eagle:footprint:348175/1" library_version="8">
+<package name="BOARD_TEMPLATE" urn="urn:adsk.eagle:footprint:348175/1" library_version="19">
 <wire x1="-40" y1="-45" x2="-45" y2="-40" width="0" layer="20"/>
 <wire x1="-45" y1="-40" x2="-45" y2="40" width="0" layer="20"/>
 <wire x1="-45" y1="40" x2="-40" y2="45" width="0" layer="20"/>
@@ -9460,7 +9460,7 @@ Holes are offset 0.005" to hold pins in place while soldering.
 </package>
 </packages>
 <packages3d>
-<package3d name="BATTERY_PACK" urn="urn:adsk.eagle:package:508328/2" type="model" library_version="8">
+<package3d name="BATTERY_PACK" urn="urn:adsk.eagle:package:508328/3" type="model" library_version="20">
 </package3d>
 <package3d name="BOARD_TEMPLATE" urn="urn:adsk.eagle:package:348254/2" type="model" library_version="8">
 </package3d>
@@ -9846,7 +9846,7 @@ Datasheet (22AR10KTR)</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="POWER_PACK" urn="urn:adsk.eagle:component:508329/4" library_version="17">
+<deviceset name="POWER_PACK" urn="urn:adsk.eagle:component:508329/5" library_version="20">
 <gates>
 <gate name="G$1" symbol="BATTERY_PACK" x="0" y="0"/>
 </gates>
@@ -9858,7 +9858,7 @@ Datasheet (22AR10KTR)</description>
 <connect gate="G$1" pin="P$3" pad="P$2"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:508328/2"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:508328/3"/>
 </package3dinstances>
 <technologies>
 <technology name=""/>
@@ -9866,7 +9866,7 @@ Datasheet (22AR10KTR)</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="BOARD_TEMPLATE" urn="urn:adsk.eagle:component:348304/5" library_version="17">
+<deviceset name="BOARD_TEMPLATE" urn="urn:adsk.eagle:component:348304/5" library_version="19">
 <gates>
 <gate name="G$1" symbol="BOARD_TEMPLATE" x="0" y="0"/>
 </gates>
@@ -10331,7 +10331,7 @@ This footprint was designed to help hold the alignment of a through-hole compone
 </device>
 </devices>
 </deviceset>
-<deviceset name="LM135Z" urn="urn:adsk.eagle:component:348295/7" library_version="18">
+<deviceset name="LM135Z" urn="urn:adsk.eagle:component:348295/7" library_version="19">
 <description>Mounted temp sensor
 
 Datasheet: http://www.ti.com/lit/ds/symlink/lm235a.pdf
@@ -10460,7 +10460,7 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <part name="R13" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="500k"/>
 <part name="GND18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="J5" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:348159" deviceset="CONN_10" device="LOCK" package3d_urn="urn:adsk.eagle:package:515997/2"/>
-<part name="U$6" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:348159" deviceset="POWER_PACK" device="" package3d_urn="urn:adsk.eagle:package:508328/2"/>
+<part name="U$6" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:348159" deviceset="POWER_PACK" device="" package3d_urn="urn:adsk.eagle:package:508328/3"/>
 <part name="U$11" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:348159" deviceset="BOARD_TEMPLATE" device="" package3d_urn="urn:adsk.eagle:package:348254/2"/>
 <part name="U$9" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:348159" deviceset="PICOLOCK_6" device="" package3d_urn="urn:adsk.eagle:package:348288/2"/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
