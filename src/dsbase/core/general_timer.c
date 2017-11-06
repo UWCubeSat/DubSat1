@@ -1,8 +1,7 @@
 #include <msp430.h>
 #include <stdint.h>
 #include "general_timer.h"
-#define WDTCL   WDTPW | WDTHOLD
-#define TA1CTL  TASSEL__SMCLK | MC__CONTINUOUS | ID__8
+
 #define MAX 2e16
 static uint64_t counter = 0;    // 1 counter = 65.53 ms --> counter overflow at 71.58 minutes
 
