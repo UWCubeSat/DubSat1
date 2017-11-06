@@ -2907,6 +2907,16 @@ Board Template: V2.1</text>
 <text x="-2" y="2" size="0.7" layer="25" font="vector">&gt;NAME</text>
 <text x="-2" y="-2" size="0.7" layer="27" font="vector" align="top-left">&gt;VALUE</text>
 </package>
+<package name="COILCRAFT_XAL4020">
+<smd name="P$1" x="-1.185" y="0" dx="0.98" dy="3.4" layer="1"/>
+<smd name="P$2" x="1.185" y="0" dx="0.98" dy="3.4" layer="1"/>
+<wire x1="-2" y1="2" x2="2" y2="2" width="0.1524" layer="21"/>
+<wire x1="2" y1="2" x2="2" y2="-2" width="0.1524" layer="21"/>
+<wire x1="2" y1="-2" x2="-2" y2="-2" width="0.1524" layer="21"/>
+<wire x1="-2" y1="-2" x2="-2" y2="2" width="0.1524" layer="21"/>
+<text x="-2" y="2.5" size="1" layer="25" font="vector">&gt;NAME</text>
+<text x="-2" y="-2.5" size="1" layer="27" font="vector" align="top-left">&gt;VALUE</text>
+</package>
 </packages>
 <symbols>
 <symbol name="LM57">
@@ -5159,14 +5169,24 @@ Allows current flow when high potential at base.</description>
 <wire x1="15.24" y1="10.16" x2="15.24" y2="-15.24" width="0.1524" layer="94"/>
 <wire x1="15.24" y1="-15.24" x2="-10.16" y2="-15.24" width="0.1524" layer="94"/>
 <wire x1="-10.16" y1="-15.24" x2="-10.16" y2="10.16" width="0.1524" layer="94"/>
-<pin name="SW" x="-15.24" y="5.08" length="middle"/>
-<pin name="V_IN" x="-15.24" y="0" length="middle"/>
-<pin name="RUN" x="-15.24" y="-5.08" length="middle"/>
-<pin name="PGOOD" x="-15.24" y="-10.16" length="middle"/>
-<pin name="GND" x="20.32" y="5.08" length="middle" rot="R180"/>
-<pin name="MODE/SYNC" x="20.32" y="0" length="middle" rot="R180"/>
-<pin name="INTVCC" x="20.32" y="-5.08" length="middle" rot="R180"/>
-<pin name="FB" x="20.32" y="-10.16" length="middle" rot="R180"/>
+<pin name="SW" x="-15.24" y="5.08" visible="pin" length="middle"/>
+<pin name="V_IN" x="-15.24" y="0" visible="pin" length="middle"/>
+<pin name="RUN" x="-15.24" y="-5.08" visible="pin" length="middle"/>
+<pin name="PGOOD" x="-15.24" y="-10.16" visible="pin" length="middle"/>
+<pin name="GND" x="20.32" y="5.08" visible="pin" length="middle" rot="R180"/>
+<pin name="MODE/SYNC" x="20.32" y="0" visible="pin" length="middle" rot="R180"/>
+<pin name="INTVCC" x="20.32" y="-5.08" visible="pin" length="middle" rot="R180"/>
+<pin name="FB" x="20.32" y="-10.16" visible="pin" length="middle" rot="R180"/>
+</symbol>
+<symbol name="COILCRAFT_XAL4020">
+<wire x1="0" y1="0" x2="5.08" y2="0" width="0.1524" layer="94" curve="-180"/>
+<wire x1="5.08" y1="0" x2="10.16" y2="0" width="0.1524" layer="94" curve="-180"/>
+<wire x1="-10.16" y1="0" x2="-5.08" y2="0" width="0.1524" layer="94" curve="-180"/>
+<wire x1="-5.08" y1="0" x2="0" y2="0" width="0.1524" layer="94" curve="-180"/>
+<text x="-10.16" y="5.08" size="1.778" layer="95">&gt;NAME</text>
+<text x="-10.16" y="-5.08" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="P$1" x="-15.24" y="0" visible="off" length="middle"/>
+<pin name="P$2" x="15.24" y="0" visible="off" length="middle" rot="R180"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -6807,6 +6827,22 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 <connect gate="G$1" pin="RUN" pad="RUN"/>
 <connect gate="G$1" pin="SW" pad="SW"/>
 <connect gate="G$1" pin="V_IN" pad="V_IN"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="COILCRAFT_XAL4020-222ME">
+<gates>
+<gate name="G$1" symbol="COILCRAFT_XAL4020" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="COILCRAFT_XAL4020">
+<connects>
+<connect gate="G$1" pin="P$1" pad="P$1"/>
+<connect gate="G$1" pin="P$2" pad="P$2"/>
 </connects>
 <technologies>
 <technology name=""/>
