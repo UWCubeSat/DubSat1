@@ -9025,7 +9025,7 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="GND14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C13" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
 <part name="GND15" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="PHOTODIODES" library="DubSat1 Components" deviceset="PICOLOCK_4" device="PICOLOCK_4"/>
+<part name="PHOTODIODE" library="DubSat1 Components" deviceset="PICOLOCK_4" device="PICOLOCK_4"/>
 <part name="SUNSENSOR" library="DubSat1 Components" deviceset="PICOLOCK_4" device="PICOLOCK_4"/>
 <part name="P+2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="+3V2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
@@ -9034,7 +9034,7 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="GND9" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="+3V3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="+3V4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
-<part name="I2C_PULL_SDA" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="2.2KΩ"/>
+<part name="I2C_PULL_SDA" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="10KΩ"/>
 <part name="I2C_PULL_SCL" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="10KΩ"/>
 <part name="+3V5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="+3V6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
@@ -9081,19 +9081,19 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <instance part="GND14" gate="1" x="152.4" y="22.86" rot="R180"/>
 <instance part="C13" gate="G$1" x="180.34" y="15.24"/>
 <instance part="GND15" gate="1" x="180.34" y="22.86" rot="R180"/>
-<instance part="PHOTODIODES" gate="G$1" x="134.62" y="-55.88" rot="R270"/>
-<instance part="SUNSENSOR" gate="G$1" x="134.62" y="-83.82" rot="R270"/>
+<instance part="PHOTODIODE" gate="G$1" x="137.16" y="-55.88" rot="R270"/>
+<instance part="SUNSENSOR" gate="G$1" x="137.16" y="-83.82" rot="R270"/>
 <instance part="P+2" gate="1" x="-35.56" y="-40.64" rot="R90"/>
 <instance part="+3V2" gate="G$1" x="-35.56" y="-60.96" rot="R90"/>
 <instance part="GND6" gate="1" x="-22.86" y="-66.04" rot="R270"/>
-<instance part="GND8" gate="1" x="121.92" y="-53.34" rot="R270"/>
-<instance part="GND9" gate="1" x="121.92" y="-81.28" rot="R270"/>
-<instance part="+3V3" gate="G$1" x="121.92" y="-58.42" rot="R90"/>
-<instance part="+3V4" gate="G$1" x="121.92" y="-86.36" rot="R90"/>
-<instance part="I2C_PULL_SDA" gate="G$1" x="93.98" y="-73.66" rot="R90"/>
-<instance part="I2C_PULL_SCL" gate="G$1" x="104.14" y="-73.66" rot="R90"/>
-<instance part="+3V5" gate="G$1" x="93.98" y="-83.82" rot="R180"/>
-<instance part="+3V6" gate="G$1" x="104.14" y="-83.82" rot="R180"/>
+<instance part="GND8" gate="1" x="127" y="-53.34" rot="R270"/>
+<instance part="GND9" gate="1" x="127" y="-81.28" rot="R270"/>
+<instance part="+3V3" gate="G$1" x="124.46" y="-58.42" rot="R90"/>
+<instance part="+3V4" gate="G$1" x="124.46" y="-86.36" rot="R90"/>
+<instance part="I2C_PULL_SDA" gate="G$1" x="96.52" y="-38.1" rot="R270"/>
+<instance part="I2C_PULL_SCL" gate="G$1" x="106.68" y="-38.1" rot="R270"/>
+<instance part="+3V5" gate="G$1" x="96.52" y="-22.86"/>
+<instance part="+3V6" gate="G$1" x="106.68" y="-22.86"/>
 <instance part="U$5" gate="G$1" x="248.92" y="30.48"/>
 <instance part="GND10" gate="1" x="281.94" y="35.56" rot="R90"/>
 <instance part="C4" gate="G$1" x="276.86" y="30.48" rot="R180"/>
@@ -9268,13 +9268,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 </segment>
 <segment>
 <pinref part="GND8" gate="1" pin="GND"/>
-<pinref part="PHOTODIODES" gate="G$1" pin="P$3"/>
-<wire x1="124.46" y1="-53.34" x2="129.54" y2="-53.34" width="0.1524" layer="91"/>
+<pinref part="PHOTODIODE" gate="G$1" pin="P$3"/>
+<wire x1="129.54" y1="-53.34" x2="132.08" y2="-53.34" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND9" gate="1" pin="GND"/>
 <pinref part="SUNSENSOR" gate="G$1" pin="P$3"/>
-<wire x1="124.46" y1="-81.28" x2="129.54" y2="-81.28" width="0.1524" layer="91"/>
+<wire x1="129.54" y1="-81.28" x2="132.08" y2="-81.28" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="U$5" gate="G$1" pin="GND"/>
@@ -9424,24 +9424,24 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="-12.7" y="-48.26"/>
 </segment>
 <segment>
-<pinref part="PHOTODIODES" gate="G$1" pin="P$4"/>
+<pinref part="PHOTODIODE" gate="G$1" pin="P$4"/>
 <pinref part="+3V3" gate="G$1" pin="+3V3"/>
-<wire x1="129.54" y1="-58.42" x2="124.46" y2="-58.42" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="-58.42" x2="127" y2="-58.42" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="SUNSENSOR" gate="G$1" pin="P$4"/>
 <pinref part="+3V4" gate="G$1" pin="+3V3"/>
-<wire x1="129.54" y1="-86.36" x2="124.46" y2="-86.36" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="-86.36" x2="127" y2="-86.36" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="+3V5" gate="G$1" pin="+3V3"/>
 <pinref part="I2C_PULL_SDA" gate="G$1" pin="1"/>
-<wire x1="93.98" y1="-81.28" x2="93.98" y2="-78.74" width="0.1524" layer="91"/>
+<wire x1="96.52" y1="-25.4" x2="96.52" y2="-33.02" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="+3V6" gate="G$1" pin="+3V3"/>
 <pinref part="I2C_PULL_SCL" gate="G$1" pin="1"/>
-<wire x1="104.14" y1="-81.28" x2="104.14" y2="-78.74" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="-25.4" x2="106.68" y2="-33.02" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$3" class="0">
@@ -9454,54 +9454,49 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <wire x1="185.42" y1="-7.62" x2="185.42" y2="-5.08" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$2" class="0">
-<segment>
-<pinref part="U$3" gate="G$1" pin="P2.6_GPIO/PWM"/>
-<wire x1="76.2" y1="-96.52" x2="165.1" y2="-96.52" width="0.1524" layer="91"/>
-<pinref part="U$4" gate="G$1" pin="RESETIN"/>
-</segment>
-</net>
 <net name="N$4" class="0">
 <segment>
-<pinref part="U$3" gate="G$1" pin="P2.2_GPIO/PWM"/>
-<wire x1="76.2" y1="-93.98" x2="154.94" y2="-93.98" width="0.1524" layer="91"/>
 <wire x1="154.94" y1="-93.98" x2="154.94" y2="-35.56" width="0.1524" layer="91"/>
 <pinref part="U$4" gate="G$1" pin="PV"/>
 <wire x1="154.94" y1="-35.56" x2="165.1" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="154.94" y1="-93.98" x2="106.68" y2="-93.98" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="-93.98" x2="106.68" y2="-83.82" width="0.1524" layer="91"/>
+<pinref part="U$3" gate="G$1" pin="P1.7_GPIO/PWM"/>
+<wire x1="106.68" y1="-83.82" x2="76.2" y2="-83.82" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$5" class="0">
 <segment>
-<pinref part="PHOTODIODES" gate="G$1" pin="P$1"/>
-<wire x1="129.54" y1="-43.18" x2="111.76" y2="-43.18" width="0.1524" layer="91"/>
-<wire x1="111.76" y1="-43.18" x2="111.76" y2="-58.42" width="0.1524" layer="91"/>
+<pinref part="PHOTODIODE" gate="G$1" pin="P$1"/>
+<wire x1="132.08" y1="-43.18" x2="114.3" y2="-43.18" width="0.1524" layer="91"/>
+<wire x1="114.3" y1="-43.18" x2="114.3" y2="-58.42" width="0.1524" layer="91"/>
 <pinref part="U$3" gate="G$1" pin="P5.0_I2C-SDA-1"/>
-<wire x1="111.76" y1="-58.42" x2="93.98" y2="-58.42" width="0.1524" layer="91"/>
+<wire x1="114.3" y1="-58.42" x2="96.52" y2="-58.42" width="0.1524" layer="91"/>
 <pinref part="SUNSENSOR" gate="G$1" pin="P$1"/>
-<wire x1="93.98" y1="-58.42" x2="76.2" y2="-58.42" width="0.1524" layer="91"/>
-<wire x1="129.54" y1="-71.12" x2="111.76" y2="-71.12" width="0.1524" layer="91"/>
-<wire x1="111.76" y1="-71.12" x2="111.76" y2="-58.42" width="0.1524" layer="91"/>
-<junction x="111.76" y="-58.42"/>
+<wire x1="96.52" y1="-58.42" x2="76.2" y2="-58.42" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="-71.12" x2="114.3" y2="-71.12" width="0.1524" layer="91"/>
+<wire x1="114.3" y1="-71.12" x2="114.3" y2="-58.42" width="0.1524" layer="91"/>
+<junction x="114.3" y="-58.42"/>
 <pinref part="I2C_PULL_SDA" gate="G$1" pin="2"/>
-<wire x1="93.98" y1="-68.58" x2="93.98" y2="-58.42" width="0.1524" layer="91"/>
-<junction x="93.98" y="-58.42"/>
+<wire x1="96.52" y1="-43.18" x2="96.52" y2="-58.42" width="0.1524" layer="91"/>
+<junction x="96.52" y="-58.42"/>
 </segment>
 </net>
 <net name="N$6" class="0">
 <segment>
-<pinref part="PHOTODIODES" gate="G$1" pin="P$2"/>
-<wire x1="129.54" y1="-48.26" x2="116.84" y2="-48.26" width="0.1524" layer="91"/>
-<wire x1="116.84" y1="-48.26" x2="116.84" y2="-55.88" width="0.1524" layer="91"/>
+<pinref part="PHOTODIODE" gate="G$1" pin="P$2"/>
+<wire x1="132.08" y1="-48.26" x2="119.38" y2="-48.26" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="-48.26" x2="119.38" y2="-55.88" width="0.1524" layer="91"/>
 <pinref part="U$3" gate="G$1" pin="P5.1_I2C-SCL-1"/>
-<wire x1="116.84" y1="-55.88" x2="104.14" y2="-55.88" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="-55.88" x2="106.68" y2="-55.88" width="0.1524" layer="91"/>
 <pinref part="SUNSENSOR" gate="G$1" pin="P$2"/>
-<wire x1="104.14" y1="-55.88" x2="76.2" y2="-55.88" width="0.1524" layer="91"/>
-<wire x1="129.54" y1="-76.2" x2="116.84" y2="-76.2" width="0.1524" layer="91"/>
-<wire x1="116.84" y1="-76.2" x2="116.84" y2="-55.88" width="0.1524" layer="91"/>
-<junction x="116.84" y="-55.88"/>
+<wire x1="106.68" y1="-55.88" x2="76.2" y2="-55.88" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="-76.2" x2="119.38" y2="-76.2" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="-76.2" x2="119.38" y2="-55.88" width="0.1524" layer="91"/>
+<junction x="119.38" y="-55.88"/>
 <pinref part="I2C_PULL_SCL" gate="G$1" pin="2"/>
-<wire x1="104.14" y1="-68.58" x2="104.14" y2="-55.88" width="0.1524" layer="91"/>
-<junction x="104.14" y="-55.88"/>
+<wire x1="106.68" y1="-43.18" x2="106.68" y2="-55.88" width="0.1524" layer="91"/>
+<junction x="106.68" y="-55.88"/>
 </segment>
 </net>
 <net name="3V3_BUCK_ENABLE" class="0">
@@ -9509,6 +9504,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <pinref part="U$5" gate="G$1" pin="RUN"/>
 <wire x1="233.68" y1="25.4" x2="228.6" y2="25.4" width="0.1524" layer="91"/>
 <label x="228.6" y="25.4" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="U$3" gate="G$1" pin="P3.7_GPIO/PWM"/>
+<wire x1="76.2" y1="-88.9" x2="101.6" y2="-88.9" width="0.1524" layer="91"/>
+<wire x1="101.6" y1="-88.9" x2="101.6" y2="-101.6" width="0.1524" layer="91"/>
+<wire x1="101.6" y1="-101.6" x2="111.76" y2="-101.6" width="0.1524" layer="91"/>
+<label x="111.76" y="-101.6" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="3V3_BUCK_INTVCC" class="0">
@@ -9582,6 +9584,22 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <pinref part="U$5" gate="G$1" pin="PGOOD"/>
 <wire x1="233.68" y1="20.32" x2="228.6" y2="20.32" width="0.1524" layer="91"/>
 <label x="228.6" y="20.32" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="U$3" gate="G$1" pin="P3.6_GPIO/PWM"/>
+<wire x1="76.2" y1="-91.44" x2="99.06" y2="-91.44" width="0.1524" layer="91"/>
+<wire x1="99.06" y1="-91.44" x2="99.06" y2="-106.68" width="0.1524" layer="91"/>
+<wire x1="99.06" y1="-106.68" x2="111.76" y2="-106.68" width="0.1524" layer="91"/>
+<label x="111.76" y="-106.68" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="N$2" class="0">
+<segment>
+<pinref part="U$4" gate="G$1" pin="RESETIN"/>
+<wire x1="165.1" y1="-96.52" x2="104.14" y2="-96.52" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="-96.52" x2="104.14" y2="-86.36" width="0.1524" layer="91"/>
+<pinref part="U$3" gate="G$1" pin="P1.6_GPIO/PWM"/>
+<wire x1="104.14" y1="-86.36" x2="76.2" y2="-86.36" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
