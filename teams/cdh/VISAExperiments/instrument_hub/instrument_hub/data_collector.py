@@ -5,7 +5,6 @@ import threading
 from time import sleep
 from queue import Queue
 
-INSTRUMENT_CONFIGURATION_FOLDER = "instrument-configurations"
 MEASUREMENT_TIMEZONE = "US/Pacific"
 
 '''
