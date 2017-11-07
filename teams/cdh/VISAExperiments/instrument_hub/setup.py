@@ -16,7 +16,7 @@ setup(
 
 	packages=find_packages(exclude=['docs', 'tests']),
 
-	install_requires=['pyvisa', 'toml', 'appdirs'],
+	install_requires=['pyvisa', 'toml', 'appdirs', 'tzlocal'],
 
 	entry_points={
         'console_scripts': [

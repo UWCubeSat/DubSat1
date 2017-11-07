@@ -4,14 +4,13 @@ import visa
 import threading
 from time import sleep
 from queue import Queue
-
-MEASUREMENT_TIMEZONE = "US/Pacific"
+from tzlocal import get_localzone
 
 '''
     Collect data from instruments and provide an interface to get it
 '''
 class DataCollector:
-    def __init__(self):
+    def __init__(self, instrument_configs):
         self.resource_manager = visa.ResourceManager()
         self.instruments = self._get_connected_instruments_resources()
         self.telemetry_results = self._map_workers_to_outputs(self.instruments)
@@ -73,7 +72,7 @@ class InstrumentWorker(threading.Thread):
         self.instrument = instrument
         self.output = output
         self.clock = datetime.datetime
-        self.my_timezone = pytz.timezone(MEASUREMENT_TIMEZONE)
+        self.my_timezone = pytz.timezone(get_localzone())
 
     '''
         Worker function to interface with the given instrument. Writes telemetry
