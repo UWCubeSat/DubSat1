@@ -7,7 +7,7 @@
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="50" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -2917,6 +2917,55 @@ Board Template: V2.1</text>
 <text x="-2" y="2.5" size="1" layer="25" font="vector">&gt;NAME</text>
 <text x="-2" y="-2.5" size="1" layer="27" font="vector" align="top-left">&gt;VALUE</text>
 </package>
+<package name="OEM719">
+<pad name="P$1" x="69.22" y="13.84" drill="0.8" shape="square" rot="R90"/>
+<pad name="P$2" x="67.22" y="13.84" drill="0.8" rot="R90"/>
+<pad name="P$3" x="69.22" y="15.84" drill="0.8" rot="R90"/>
+<pad name="P$4" x="67.22" y="15.84" drill="0.8" rot="R90"/>
+<wire x1="0" y1="0" x2="0" y2="9.78" width="0.1524" layer="21"/>
+<wire x1="0" y1="9.78" x2="0" y2="35.94" width="0.1524" layer="21"/>
+<wire x1="0" y1="35.94" x2="0" y2="45.7" width="0.1524" layer="21"/>
+<wire x1="0" y1="45.7" x2="71.1" y2="45.7" width="0.1524" layer="21"/>
+<wire x1="0" y1="0" x2="71.1" y2="0" width="0.1524" layer="21"/>
+<wire x1="71.1" y1="0" x2="71.1" y2="45.7" width="0.1524" layer="21"/>
+<hole x="3.18" y="5.72" drill="3.45"/>
+<hole x="3.18" y="40.01" drill="3.45"/>
+<hole x="67.95" y="5.72" drill="3.45"/>
+<hole x="67.95" y="40.01" drill="3.45"/>
+<pad name="P$5" x="69.22" y="17.84" drill="0.8" rot="R90"/>
+<pad name="P$6" x="67.22" y="17.84" drill="0.8" rot="R90"/>
+<pad name="P$7" x="69.22" y="19.84" drill="0.8" rot="R90"/>
+<pad name="P$8" x="67.22" y="19.84" drill="0.8" rot="R90"/>
+<pad name="P$9" x="69.22" y="21.84" drill="0.8" rot="R90"/>
+<pad name="P$10" x="67.22" y="21.84" drill="0.8" rot="R90"/>
+<pad name="P$11" x="69.22" y="23.84" drill="0.8" rot="R90"/>
+<pad name="P$12" x="67.22" y="23.84" drill="0.8" rot="R90"/>
+<pad name="P$13" x="69.22" y="25.84" drill="0.8" rot="R90"/>
+<pad name="P$14" x="67.22" y="25.84" drill="0.8" rot="R90"/>
+<pad name="P$15" x="69.22" y="27.84" drill="0.8" rot="R90"/>
+<pad name="P$16" x="67.22" y="27.84" drill="0.8" rot="R90"/>
+<pad name="P$17" x="69.22" y="29.84" drill="0.8" rot="R90"/>
+<pad name="P$18" x="67.22" y="29.84" drill="0.8" rot="R90"/>
+<pad name="P$19" x="69.22" y="31.84" drill="0.8" rot="R90"/>
+<pad name="P$20" x="67.22" y="31.84" drill="0.8" rot="R90"/>
+<text x="64" y="12" size="2" layer="27" font="vector" rot="R90">&gt;VALUE</text>
+<text x="61" y="12" size="1" layer="25" font="vector" rot="R90">&gt;NAME</text>
+<wire x1="-0.3" y1="25.86" x2="9.2" y2="25.86" width="0.1" layer="39"/>
+<wire x1="9.2" y1="25.86" x2="9.2" y2="35.36" width="0.1" layer="39"/>
+<wire x1="9.2" y1="35.36" x2="-0.3" y2="35.36" width="0.1" layer="39"/>
+<wire x1="-0.3" y1="35.36" x2="-0.3" y2="25.86" width="0.1" layer="39"/>
+<wire x1="7.24" y1="1.75" x2="63.88" y2="1.75" width="0.1" layer="21"/>
+<wire x1="63.88" y1="1.75" x2="63.88" y2="9.78" width="0.1" layer="21"/>
+<wire x1="63.88" y1="9.78" x2="70.6" y2="9.78" width="0.1" layer="21"/>
+<wire x1="70.6" y1="9.78" x2="70.6" y2="35.94" width="0.1" layer="21"/>
+<wire x1="70.6" y1="35.94" x2="63.88" y2="35.94" width="0.1" layer="21"/>
+<wire x1="63.88" y1="35.94" x2="63.88" y2="43.97" width="0.1" layer="21"/>
+<wire x1="63.88" y1="43.97" x2="7.24" y2="43.97" width="0.1" layer="21"/>
+<wire x1="7.24" y1="43.97" x2="7.24" y2="35.94" width="0.1" layer="21"/>
+<wire x1="7.24" y1="35.94" x2="0" y2="35.94" width="0.1" layer="21"/>
+<wire x1="0" y1="9.78" x2="7.24" y2="9.78" width="0.1" layer="21"/>
+<wire x1="7.24" y1="9.78" x2="7.24" y2="1.75" width="0.1" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="LM57">
@@ -5188,6 +5237,34 @@ Allows current flow when high potential at base.</description>
 <pin name="P$1" x="-15.24" y="0" visible="off" length="middle"/>
 <pin name="P$2" x="15.24" y="0" visible="off" length="middle" rot="R180"/>
 </symbol>
+<symbol name="OEM719">
+<wire x1="-12.7" y1="50.8" x2="12.7" y2="50.8" width="0.254" layer="94"/>
+<wire x1="12.7" y1="50.8" x2="12.7" y2="-50.8" width="0.254" layer="94"/>
+<wire x1="12.7" y1="-50.8" x2="-12.7" y2="-50.8" width="0.254" layer="94"/>
+<wire x1="-12.7" y1="-50.8" x2="-12.7" y2="50.8" width="0.254" layer="94"/>
+<pin name="NC" x="17.78" y="48.26" length="middle" rot="R180"/>
+<pin name="3V3" x="17.78" y="43.18" length="middle" rot="R180"/>
+<pin name="USB_D-" x="17.78" y="38.1" length="middle" rot="R180"/>
+<pin name="USB_D+/RXD3" x="17.78" y="33.02" length="middle" rot="R180"/>
+<pin name="RESET_IN" x="17.78" y="27.94" length="middle" rot="R180"/>
+<pin name="VARF/CAN1RX" x="17.78" y="22.86" length="middle" rot="R180"/>
+<pin name="EVENT2/CAN1TX" x="17.78" y="17.78" length="middle" rot="R180"/>
+<pin name="CAN2RX" x="17.78" y="12.7" length="middle" rot="R180"/>
+<pin name="EVENT1/TXD3" x="17.78" y="7.62" length="middle" rot="R180"/>
+<pin name="GND@1" x="17.78" y="2.54" length="middle" rot="R180"/>
+<pin name="TXD1" x="17.78" y="-2.54" length="middle" rot="R180"/>
+<pin name="RXD1" x="17.78" y="-7.62" length="middle" rot="R180"/>
+<pin name="GND@2" x="17.78" y="-12.7" length="middle" rot="R180"/>
+<pin name="TXD2" x="17.78" y="-17.78" length="middle" rot="R180"/>
+<pin name="RXD2" x="17.78" y="-22.86" length="middle" rot="R180"/>
+<pin name="GND@3" x="17.78" y="-27.94" length="middle" rot="R180"/>
+<pin name="PV" x="17.78" y="-33.02" length="middle" rot="R180"/>
+<pin name="GND@4" x="17.78" y="-38.1" length="middle" rot="R180"/>
+<pin name="PPS" x="17.78" y="-43.18" length="middle" rot="R180"/>
+<pin name="CAN2TX" x="17.78" y="-48.26" length="middle" rot="R180"/>
+<text x="-5.08" y="-45.72" size="3.556" layer="96" rot="R90">&gt;VALUE</text>
+<text x="-12.7" y="53.34" size="1.778" layer="95">&gt;NAME</text>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="LM57">
@@ -6843,6 +6920,40 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$2" pad="P$2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="OEM719">
+<gates>
+<gate name="G$1" symbol="OEM719" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="OEM719">
+<connects>
+<connect gate="G$1" pin="3V3" pad="P$2"/>
+<connect gate="G$1" pin="CAN2RX" pad="P$8"/>
+<connect gate="G$1" pin="CAN2TX" pad="P$20"/>
+<connect gate="G$1" pin="EVENT1/TXD3" pad="P$9"/>
+<connect gate="G$1" pin="EVENT2/CAN1TX" pad="P$7"/>
+<connect gate="G$1" pin="GND@1" pad="P$10"/>
+<connect gate="G$1" pin="GND@2" pad="P$13"/>
+<connect gate="G$1" pin="GND@3" pad="P$16"/>
+<connect gate="G$1" pin="GND@4" pad="P$18"/>
+<connect gate="G$1" pin="NC" pad="P$1"/>
+<connect gate="G$1" pin="PPS" pad="P$19"/>
+<connect gate="G$1" pin="PV" pad="P$17"/>
+<connect gate="G$1" pin="RESET_IN" pad="P$5"/>
+<connect gate="G$1" pin="RXD1" pad="P$12"/>
+<connect gate="G$1" pin="RXD2" pad="P$15"/>
+<connect gate="G$1" pin="TXD1" pad="P$11"/>
+<connect gate="G$1" pin="TXD2" pad="P$14"/>
+<connect gate="G$1" pin="USB_D+/RXD3" pad="P$4"/>
+<connect gate="G$1" pin="USB_D-" pad="P$3"/>
+<connect gate="G$1" pin="VARF/CAN1RX" pad="P$6"/>
 </connects>
 <technologies>
 <technology name=""/>
