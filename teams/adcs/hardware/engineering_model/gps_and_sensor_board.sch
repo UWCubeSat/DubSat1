@@ -9562,6 +9562,11 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="309.88" y="58.42"/>
 <label x="317.5" y="58.42" size="1.778" layer="95" xref="yes"/>
 </segment>
+<segment>
+<pinref part="U$4" gate="G$1" pin="3V3"/>
+<wire x1="167.64" y1="-111.76" x2="160.02" y2="-111.76" width="0.1524" layer="91"/>
+<label x="160.02" y="-111.76" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="3V3_BUCK_FB" class="0">
 <segment>
