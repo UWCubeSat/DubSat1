@@ -32,6 +32,17 @@
 //void canSetPacketParameter(uint64_t param, CANPacket *packet, uint8_t* value){
 //}
 
+void reverseArray(uint8_t arr[], int start, int end)
+{
+    uint8_t temp;
+    if (start >= end)
+        return;
+    temp = arr[start];
+    arr[start] = arr[end];
+    arr[end] = temp;
+    reverseArray(arr, start+1, end-1);
+}
+
 void canSendPacket(CANPacket *packet){
     const uint8_t length = 0x08;
     uint8_t tech[5] = {
@@ -162,32 +173,29 @@ CANPacket *encodeVoltageCurrentInfo(VoltageCurrentInfo *input){
     return output;
 }
 
-BatteryStatus *decodeBatteryStatus(CANPacket *input){
+void decodeBatteryStatus(CANPacket *input, BatteryStatus *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    BatteryStatus *output;
     output -> batteryFullChargeCount = (uint32_t) (((fullData & ((uint64_t) 0b1111111111111111 << 0)) >> 0) * 1.0 + 0.0);
     output -> batteryTemperature = (int16_t) (((fullData & ((uint64_t) 0b11111111 << 24)) >> 24) * 1.5 + 0.0);
     output -> batteryVoltage = (uint32_t) (((fullData & ((uint64_t) 0b11111111 << 32)) >> 32) * 25.0 + 0.0);
     output -> LowestBatteryVoltage = (uint16_t) (((fullData & ((uint64_t) 0b11111111 << 40)) >> 40) * 25.0 + 0.0);
     output -> underVoltageEvents = (uint32_t) (((fullData & ((uint64_t) 0b1111111111111111 << 48)) >> 48) * 1.0 + 0.0);
-    return output;
 }
 
-CANPacket *encodeBatteryStatus(BatteryStatus *input){
-    CANPacket *output;
-    output -> id = 2;
+void encodeBatteryStatus(BatteryStatus *input, CANPacket *output){
+    output -> id = 69;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= ((uint64_t)((input -> batteryFullChargeCount - 0.0) / 1.0)) << 0;
-    fullPacketData |= ((uint64_t)((input -> batteryTemperature - 0.0) / 1.5)) << 24;
-    fullPacketData |= ((uint64_t)((input -> batteryVoltage - 0.0) / 25.0)) << 32;
+    fullPacketData |= ((uint64_t)((input -> batteryFullChargeCount))) << 0;
+    fullPacketData |= ((uint64_t)((input -> batteryTemperature - 0) / 1.5)) << 24;
+    fullPacketData |= ((uint64_t)((input -> batteryVoltage - 0) / 25)) << 32;
     fullPacketData |= ((uint64_t)((input -> LowestBatteryVoltage - 0.0) / 25.0)) << 40;
     fullPacketData |= ((uint64_t)((input -> underVoltageEvents - 0.0) / 1.0)) << 48;
-    uint64_t *thePointer = (uint64_t *) output -> data;
+//    fullPacketData |= ((uint64_t)((input -> batteryFullChargeCount))) << 0;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
-    return output;
 }
 
 PowerStatus *decodePowerStatus(CANPacket *input){
