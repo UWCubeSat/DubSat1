@@ -184,13 +184,19 @@ def createCHeader(candb, cFileName):
         cFile.write("typedef struct " + frame.name + " {\n")
         for sig in frame:
             # print(str(sig.offset + sig.scale));
-            cFile.write("    " + getSignalSize(sig) + " " + sig.name + ";\n")
+            cFile.write("    "
+                + getSignalSize(sig)
+                + " " + sig.name
+                + "; // "
+                + (sig.unit if sig.unit != "" else " (No Units)")
+                + "\n"
+            )
         cFile.write("} " + frame.name + ";\n\n")
     for frame in candb.frames:
-        cFile.write("CANPacket *encode"
-            + frame.name + "(" + frame.name + " *input);\n")
-        cFile.write(frame.name + " *decode"
-            + frame.name + "(CANPacket *input);\n\n")
+        cFile.write("void encode"
+            + frame.name + "(" + frame.name + " *input, CANPacket* output);\n")
+        cFile.write("void decode" + frame.name + "(CANPacket *input, "
+            + frame.name + " *output);\n\n")
     cFile.close()
 
 def createCMain(candb, cFileName):
@@ -198,17 +204,16 @@ def createCMain(candb, cFileName):
     cFile = open(cFileName, "w")
     for frame in candb.frames:
         # Decode Function Implementation
-        cFile.write(frame.name + " *decode"
-            + frame.name + "(CANPacket *input){\n")
+        cFile.write("void decode"
+            + frame.name + "(CANPacket *input, " + frame.name + " *output){\n")
         cFile.write("    uint64_t *thePointer = (uint64_t *) input -> data;\n")
         cFile.write("    reverseArray(input -> data, 0, 7);\n")
         cFile.write("    const uint64_t fullData = *thePointer;\n")
         # cFile.write("    " + frame.name + " *output = malloc(sizeof("+frame.name+"));\n")
-        cFile.write("    " + frame.name + " *output;\n")
         for sig in frame:
             # print (str(sig.is_signed))
             # print(dir(sig))
-            print(sig.getStartbit())
+            # print(sig.getStartbit())
             cFile.write("    output -> "
                 + sig.name
                 + " = ("
@@ -220,17 +225,15 @@ def createCMain(candb, cFileName):
                 + ")) >> "
                 + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize))
                 + ") * "
-                + str(sig.factor)
+                + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor))
                 + " + "
-                + str(sig.offset)
+                + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset))
                 + ");\n")
-        cFile.write("    return output;\n")
         cFile.write("}\n\n")
         # Encode Function Implementation
-        cFile.write("CANPacket *encode" + frame.name
-            + "(" + frame.name + " *input){\n")
+        cFile.write("void encode" + frame.name
+            + "(" + frame.name + " *input, CANPacket *output){\n")
         # cFile.write("    CANPacket *output = malloc(sizeof(CANPacket));\n")
-        cFile.write("    CANPacket *output;\n")
         cFile.write("    output -> id = "
             + (str(frame.id) if frame.id != 2147483648 else "0")
             + ";\n")
@@ -239,16 +242,15 @@ def createCMain(candb, cFileName):
             cFile.write("    fullPacketData |= ((uint64_t)((input -> "
                 + sig.name
                 + " - "
-                + str(sig.offset)
+                + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset))
                 + ") / "
-                + str(sig.factor)
+                + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor))
                 + ")) << "
                 + str(64 - int(sig.getStartbit()) - sig.signalsize)
                 + ";\n")
-        cFile.write("    uint64_t *thePointer = (uint64_t *) output -> data;\n")
+        cFile.write("    uint64_t *thePointer = (uint64_t *) (&(output -> data));\n")
         cFile.write("    *thePointer = fullPacketData;\n")
         cFile.write("    reverseArray((output->data), 0, 7);\n")
-        cFile.write("    return output;\n")
         cFile.write("}\n\n")
     cFile.close()
 

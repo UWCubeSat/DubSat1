@@ -85,26 +85,26 @@ typedef struct MCUStatus {
     int8_t MCUTemp; // C
 } MCUStatus;
 
-CANPacket *encodePPTMisfireCount(PPTMisfireCount *input);
-PPTMisfireCount *decodePPTMisfireCount(CANPacket *input);
+void encodePPTMisfireCount(PPTMisfireCount *input, CANPacket* output);
+void decodePPTMisfireCount(CANPacket *input, PPTMisfireCount *output);
 
-CANPacket *encodePPTTimingStatus(PPTTimingStatus *input);
-PPTTimingStatus *decodePPTTimingStatus(CANPacket *input);
+void encodePPTTimingStatus(PPTTimingStatus *input, CANPacket* output);
+void decodePPTTimingStatus(CANPacket *input, PPTTimingStatus *output);
 
-CANPacket *encodeFiringStatus(FiringStatus *input);
-FiringStatus *decodeFiringStatus(CANPacket *input);
+void encodeFiringStatus(FiringStatus *input, CANPacket* output);
+void decodeFiringStatus(CANPacket *input, FiringStatus *output);
 
-CANPacket *encodeVoltageCurrentInfo(VoltageCurrentInfo *input);
-VoltageCurrentInfo *decodeVoltageCurrentInfo(CANPacket *input);
+void encodeVoltageCurrentInfo(VoltageCurrentInfo *input, CANPacket* output);
+void decodeVoltageCurrentInfo(CANPacket *input, VoltageCurrentInfo *output);
 
-void encodeBatteryStatus(BatteryStatus *input, CANPacket *output);
+void encodeBatteryStatus(BatteryStatus *input, CANPacket* output);
 void decodeBatteryStatus(CANPacket *input, BatteryStatus *output);
 
-CANPacket *encodePowerStatus(PowerStatus *input);
-PowerStatus *decodePowerStatus(CANPacket *input);
+void encodePowerStatus(PowerStatus *input, CANPacket* output);
+void decodePowerStatus(CANPacket *input, PowerStatus *output);
 
-CANPacket *encodeMCUStatus(MCUStatus *input);
-MCUStatus *decodeMCUStatus(CANPacket *input);
+void encodeMCUStatus(MCUStatus *input, CANPacket* output);
+void decodeMCUStatus(CANPacket *input, MCUStatus *output);
 
 
 #endif /* DSBASE_INTERFACES_CANWRAP_H_ */
