@@ -7,7 +7,7 @@
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="50" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -5314,7 +5314,7 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 </device>
 </devices>
 </deviceset>
-<deviceset name="LTC2943">
+<deviceset name="LTC2943" prefix="U">
 <gates>
 <gate name="G$1" symbol="LTC2943" x="0" y="-15.24"/>
 </gates>
@@ -5405,7 +5405,7 @@ datasheats:
 </device>
 </devices>
 </deviceset>
-<deviceset name="PC104_CONNECTOR">
+<deviceset name="PC104_CONNECTOR" prefix="CONN">
 <gates>
 <gate name="G$1" symbol="PC104_CONNECTOR" x="-2.54" y="30.48"/>
 </gates>
@@ -5523,7 +5523,7 @@ datasheats:
 </device>
 </devices>
 </deviceset>
-<deviceset name="BOARD_TEMPLATE">
+<deviceset name="BOARD_TEMPLATE" prefix="B">
 <gates>
 <gate name="G$1" symbol="BOARD_TEMPLATE" x="0" y="0"/>
 </gates>
@@ -5589,7 +5589,7 @@ datasheats:
 </device>
 </devices>
 </deviceset>
-<deviceset name="HMC5983">
+<deviceset name="HMC5983" prefix="U">
 <gates>
 <gate name="G$1" symbol="HMC5983" x="0" y="0"/>
 </gates>
@@ -5680,7 +5680,7 @@ datasheats:
 </device>
 </devices>
 </deviceset>
-<deviceset name="DRV10970">
+<deviceset name="DRV10970" prefix="U">
 <gates>
 <gate name="G$1" symbol="DRV10970" x="0" y="0"/>
 </gates>
@@ -6308,7 +6308,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="OEM615">
+<deviceset name="OEM615" prefix="U">
 <gates>
 <gate name="G$1" symbol="OEM615" x="0" y="0"/>
 </gates>
@@ -6342,12 +6342,12 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="PICOLOCK_4">
+<deviceset name="PICOLOCK_4" prefix="CONN">
 <gates>
 <gate name="G$1" symbol="PICOLOCK_4" x="15.24" y="0"/>
 </gates>
 <devices>
-<device name="PICOLOCK_4" package="PICOLOCK_4">
+<device name="" package="PICOLOCK_4">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$2" pad="P$2"/>
@@ -6360,7 +6360,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="PICOLOCK_5">
+<deviceset name="PICOLOCK_5" prefix="CONN">
 <gates>
 <gate name="G$1" symbol="PICOLOCK_5" x="12.7" y="0"/>
 </gates>
@@ -6379,7 +6379,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="PICOLOCK_6">
+<deviceset name="PICOLOCK_6" prefix="CONN">
 <gates>
 <gate name="G$1" symbol="PICOLOCK_6" x="12.7" y="0"/>
 </gates>
@@ -6399,7 +6399,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="PICOLOCK_7">
+<deviceset name="PICOLOCK_7" prefix="CONN">
 <gates>
 <gate name="G$1" symbol="PICOLOCK_7" x="12.7" y="0"/>
 </gates>
@@ -6420,7 +6420,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="PICOLOCK_8">
+<deviceset name="PICOLOCK_8" prefix="CONN">
 <gates>
 <gate name="G$1" symbol="PICOLOCK_8" x="12.7" y="0"/>
 </gates>
@@ -6442,7 +6442,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="PICOLOCK_10">
+<deviceset name="PICOLOCK_10" prefix="CONN">
 <gates>
 <gate name="G$1" symbol="PICOLOCK_10" x="12.7" y="0"/>
 </gates>
@@ -6466,7 +6466,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="PICOLOCK_12">
+<deviceset name="PICOLOCK_12" prefix="CONN">
 <gates>
 <gate name="G$1" symbol="PICOLOCK_12" x="12.7" y="0"/>
 </gates>
@@ -6780,7 +6780,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="LINEAR_LDO_LT1761-X">
+<deviceset name="LINEAR_LDO_LT1761-X" prefix="U">
 <gates>
 <gate name="G$1" symbol="LT1761" x="2.54" y="0"/>
 </gates>
@@ -6849,7 +6849,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="LT8335">
+<deviceset name="LT8335" prefix="U">
 <gates>
 <gate name="G$1" symbol="LT833X" x="0" y="0"/>
 </gates>
@@ -6889,7 +6889,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="LTC3624">
+<deviceset name="LTC3624" prefix="U">
 <gates>
 <gate name="G$1" symbol="LTC3624" x="-2.54" y="2.54"/>
 </gates>
@@ -6911,7 +6911,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="COILCRAFT_XAL4020-222ME">
+<deviceset name="COILCRAFT_XAL4020-222ME" prefix="L">
 <gates>
 <gate name="G$1" symbol="COILCRAFT_XAL4020" x="0" y="0"/>
 </gates>
@@ -6927,7 +6927,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="OEM719">
+<deviceset name="OEM719" prefix="U">
 <gates>
 <gate name="G$1" symbol="OEM719" x="0" y="0"/>
 </gates>
