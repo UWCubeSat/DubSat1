@@ -5733,7 +5733,7 @@ datasheats:
 </device>
 </devices>
 </deviceset>
-<deviceset name="MSP-CAN_BLOCK">
+<deviceset name="MSP-CAN_BLOCK" prefix="BLK">
 <gates>
 <gate name="G$1" symbol="MSP-CAN_BLOCK" x="-10.16" y="22.86"/>
 </gates>
