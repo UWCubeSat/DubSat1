@@ -70,6 +70,7 @@ uint8_t canInit() {
     //Set in Interrupt
     // TODO: Enable individual interrupt for Port 1
     //       pg 26 in Interrupts Workshop
+    P5DIR |= BIT7;
     P5IE |= BIT7; // P5.7 interrupt enabled
     P5IES |= BIT7; // P5.7 Hi/lo edge
     P5IFG &= ~BIT7; // P5.7 IFG cleared
@@ -235,6 +236,9 @@ void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t)
 // GPIO port interrupts are all grouped together.
 #pragma vector=PORT5_VECTOR
 __interrupt void ReceivedMsg(void) {
+    P5IFG &=~BIT7;
+    PJDIR |= 0x01;
+    PJOUT |= 0x01;
     uint8_t status, rx0if, rx1if, res, length;
     readStatus(&status);
     rx0if = status & 0x01;

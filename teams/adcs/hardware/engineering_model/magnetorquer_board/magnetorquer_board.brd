@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.1">
+<eagle version="7.5.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
-<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="10" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="1" altunitdist="mil" altunit="mil"/>
@@ -159,7 +158,7 @@
 <plain>
 </plain>
 <libraries>
-<library name="rcl" urn="urn:adsk.eagle:library:334">
+<library name="rcl">
 <description>&lt;b&gt;Resistors, Capacitors, Inductors&lt;/b&gt;&lt;p&gt;
 Based on the previous libraries:
 &lt;ul&gt;
@@ -1208,7 +1207,7 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 &lt;/tr&gt;
 &lt;/table&gt;</description>
 <packages>
-<package name="R0603" urn="urn:adsk.eagle:footprint:23044/1" library_version="2">
+<package name="R0603">
 <description>&lt;b&gt;RESISTOR&lt;/b&gt;</description>
 <wire x1="-0.432" y1="-0.356" x2="0.432" y2="-0.356" width="0.1524" layer="51"/>
 <wire x1="0.432" y1="0.356" x2="-0.432" y2="0.356" width="0.1524" layer="51"/>
@@ -1224,7 +1223,7 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <rectangle x1="-0.8382" y1="-0.4318" x2="-0.4318" y2="0.4318" layer="51"/>
 <rectangle x1="-0.1999" y1="-0.4001" x2="0.1999" y2="0.4001" layer="35"/>
 </package>
-<package name="C0805" urn="urn:adsk.eagle:footprint:23124/1" library_version="2">
+<package name="C0805">
 <description>&lt;b&gt;CAPACITOR&lt;/b&gt;&lt;p&gt;</description>
 <wire x1="-1.973" y1="0.983" x2="1.973" y2="0.983" width="0.0508" layer="39"/>
 <wire x1="1.973" y1="-0.983" x2="-1.973" y2="-0.983" width="0.0508" layer="39"/>
@@ -1240,7 +1239,7 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <rectangle x1="0.3556" y1="-0.7239" x2="1.1057" y2="0.7262" layer="51"/>
 <rectangle x1="-0.1001" y1="-0.4001" x2="0.1001" y2="0.4001" layer="35"/>
 </package>
-<package name="R0805" urn="urn:adsk.eagle:footprint:23045/1" library_version="2">
+<package name="R0805">
 <description>&lt;b&gt;RESISTOR&lt;/b&gt;&lt;p&gt;</description>
 <wire x1="-0.41" y1="0.635" x2="0.41" y2="0.635" width="0.1524" layer="51"/>
 <wire x1="-0.41" y1="-0.635" x2="0.41" y2="-0.635" width="0.1524" layer="51"/>
@@ -1257,17 +1256,6 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <rectangle x1="-0.1999" y1="-0.5001" x2="0.1999" y2="0.5001" layer="35"/>
 </package>
 </packages>
-<packages3d>
-<package3d name="C0805" urn="urn:adsk.eagle:package:23617/2" type="model" library_version="2">
-<description>CAPACITOR</description>
-</package3d>
-<package3d name="R0603" urn="urn:adsk.eagle:package:23555/2" type="model" library_version="2">
-<description>RESISTOR</description>
-</package3d>
-<package3d name="R0805" urn="urn:adsk.eagle:package:23553/2" type="model" library_version="2">
-<description>RESISTOR</description>
-</package3d>
-</packages3d>
 </library>
 <library name="DubSat1 Components">
 <description>Coulomb counter
@@ -1316,10 +1304,10 @@ Board Template: V2.1</text>
 <text x="20" y="-33" size="2" layer="26" font="vector" rot="MR0">&gt;LAST_DATE_TIME</text>
 </package>
 <package name="PC104_CONNECTOR">
-<pad name="P$1" x="-31.75" y="31.88" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$2" x="-31.75" y="34.42" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$3" x="-31.75" y="36.96" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$4" x="-31.75" y="39.5" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$1" x="-31.75" y="32.134" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$2" x="-31.75" y="34.674" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$3" x="-31.75" y="37.214" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$4" x="-31.75" y="39.754" drill="0.9525" diameter="1.8796" shape="octagon"/>
 <pad name="P$5" x="-29.21" y="31.88" drill="0.9525" diameter="1.8796" shape="octagon"/>
 <pad name="P$6" x="-29.21" y="34.42" drill="0.9525" diameter="1.8796" shape="octagon"/>
 <pad name="P$7" x="-29.21" y="36.96" drill="0.9525" diameter="1.8796" shape="octagon"/>
@@ -1416,10 +1404,10 @@ Board Template: V2.1</text>
 <pad name="P$98" x="29.21" y="34.42" drill="0.9525" diameter="1.8796" shape="octagon"/>
 <pad name="P$99" x="29.21" y="36.96" drill="0.9525" diameter="1.8796" shape="octagon"/>
 <pad name="P$100" x="29.21" y="39.5" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$101" x="31.75" y="31.88" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$102" x="31.75" y="34.42" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$103" x="31.75" y="36.96" drill="0.9525" diameter="1.8796" shape="octagon"/>
-<pad name="P$104" x="31.75" y="39.5" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$101" x="31.75" y="32.134" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$102" x="31.75" y="34.674" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$103" x="31.75" y="37.214" drill="0.9525" diameter="1.8796" shape="octagon"/>
+<pad name="P$104" x="31.75" y="39.754" drill="0.9525" diameter="1.8796" shape="octagon"/>
 <wire x1="-33.02" y1="30.61" x2="-33.02" y2="40.77" width="0.2032" layer="21"/>
 <wire x1="-33.02" y1="40.77" x2="33.02" y2="40.77" width="0.2032" layer="21"/>
 <wire x1="33.02" y1="40.77" x2="33.02" y2="30.61" width="0.2032" layer="21"/>
@@ -1574,14 +1562,14 @@ Board Template: V2.1</text>
 <wire x1="-8.23" y1="9.7" x2="-8.23" y2="11.3" width="0.127" layer="21"/>
 <wire x1="-8.23" y1="11.3" x2="-5.23" y2="11.3" width="0.127" layer="21"/>
 <wire x1="-5.23" y1="11.3" x2="-5.23" y2="9.7" width="0.127" layer="21"/>
-<text x="-6.5" y="10" size="0.3" layer="27" font="vector" rot="R90">12.5p</text>
+<text x="-6.5" y="10" size="0.3" layer="27" font="vector" rot="R90">14p</text>
 <smd name="7" x="-3.58" y="13" dx="0.8" dy="1.2" layer="1" rot="R180"/>
 <smd name="8" x="-5.38" y="13" dx="0.8" dy="1.2" layer="1" rot="R180"/>
 <wire x1="-2.98" y1="12.2" x2="-5.98" y2="12.2" width="0.127" layer="21"/>
 <wire x1="-5.98" y1="12.2" x2="-5.98" y2="13.8" width="0.127" layer="21"/>
 <wire x1="-5.98" y1="13.8" x2="-2.98" y2="13.8" width="0.127" layer="21"/>
 <wire x1="-2.98" y1="13.8" x2="-2.98" y2="12.2" width="0.127" layer="21"/>
-<text x="-4.25" y="12.5" size="0.3" layer="27" font="vector" rot="R90">12.5p</text>
+<text x="-4.25" y="12.5" size="0.3" layer="27" font="vector" rot="R90">14p</text>
 <wire x1="-3.75" y1="5.75" x2="-8.625" y2="5.75" width="0.2032" layer="1"/>
 <pad name="GND@7" x="-8.5" y="10.5" drill="0.6096" thermals="no"/>
 <pad name="GND@8" x="-7.25" y="8" drill="0.6096" thermals="no"/>
@@ -1665,7 +1653,7 @@ Board Template: V2.1</text>
 <wire x1="-6.145" y1="25.55" x2="-6.145" y2="23.95" width="0.127" layer="21"/>
 <wire x1="-6.145" y1="23.95" x2="-9.145" y2="23.95" width="0.127" layer="21"/>
 <wire x1="-9.145" y1="23.95" x2="-9.145" y2="25.55" width="0.127" layer="21"/>
-<text x="-7.875" y="25.25" size="0.3" layer="27" font="vector" rot="R270">20pF</text>
+<text x="-7.875" y="25.25" size="0.3" layer="27" font="vector" rot="R270">34pF</text>
 <pad name="GND@2" x="-5.875" y="24.75" drill="0.6096" rot="R180" thermals="no"/>
 <pad name="GND@4" x="0.5" y="20.75" drill="0.6096" thermals="no"/>
 <pad name="GND@3" x="-3.75" y="17.5" drill="0.6096" thermals="no"/>
@@ -1679,7 +1667,7 @@ Board Template: V2.1</text>
 <wire x1="-8.23" y1="14.95" x2="-8.23" y2="16.55" width="0.127" layer="21"/>
 <wire x1="-8.23" y1="16.55" x2="-5.23" y2="16.55" width="0.127" layer="21"/>
 <wire x1="-5.23" y1="16.55" x2="-5.23" y2="14.95" width="0.127" layer="21"/>
-<text x="-6.5" y="15.25" size="0.3" layer="27" font="vector" rot="R90">20pF</text>
+<text x="-6.5" y="15.25" size="0.3" layer="27" font="vector" rot="R90">34pF</text>
 <pad name="GND@5" x="-8.5" y="15.75" drill="0.6096" thermals="no"/>
 <wire x1="-5.75" y1="15.5" x2="-5.75" y2="18.25" width="0.2032" layer="1"/>
 <wire x1="-1.75" y1="19.25" x2="-3.66583125" y2="19.25" width="0.2032" layer="1"/>
@@ -1973,6 +1961,44 @@ Board Template: V2.1</text>
 </package>
 </packages>
 </library>
+<library name="SparkFun-Connectors">
+<description>&lt;h3&gt;SparkFun Electronics' preferred foot prints&lt;/h3&gt;
+In this library you'll find connectors and sockets- basically anything that can be plugged into or onto.&lt;br&gt;&lt;br&gt;
+We've spent an enormous amount of time creating and checking these footprints and parts, but it is the end user's responsibility to ensure correctness and suitablity for a given componet or application. If you enjoy using this library, please buy one of our products at www.sparkfun.com.
+&lt;br&gt;&lt;br&gt;
+&lt;b&gt;Licensing:&lt;/b&gt; Creative Commons ShareAlike 4.0 International - https://creativecommons.org/licenses/by-sa/4.0/ 
+&lt;br&gt;&lt;br&gt;
+You are welcome to use this library for commercial purposes. For attribution, we ask that when you begin to sell your device using our footprint, you email us with a link to the product being sold. We want bragging rights that we helped (in a very small part) to create your 8th world wonder. We would like the opportunity to feature your device on our homepage.</description>
+<packages>
+<package name="1X02_LOCK">
+<wire x1="-0.635" y1="1.27" x2="0.635" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="0.635" y1="1.27" x2="1.27" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="1.27" y1="-0.635" x2="0.635" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="1.27" y1="0.635" x2="1.905" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="1.905" y1="1.27" x2="3.175" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="3.175" y1="1.27" x2="3.81" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="3.81" y1="-0.635" x2="3.175" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="3.175" y1="-1.27" x2="1.905" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="1.905" y1="-1.27" x2="1.27" y2="-0.635" width="0.2032" layer="21"/>
+<wire x1="-1.27" y1="0.635" x2="-1.27" y2="-0.635" width="0.2032" layer="21"/>
+<wire x1="-0.635" y1="1.27" x2="-1.27" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="-1.27" y1="-0.635" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="0.635" y1="-1.27" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="3.81" y1="0.635" x2="3.81" y2="-0.635" width="0.2032" layer="21"/>
+<pad name="1" x="-0.1778" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="2" x="2.7178" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<text x="-1.3462" y="1.8288" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="-1.27" y="-3.175" size="1.27" layer="27">&gt;VALUE</text>
+<rectangle x1="-0.2921" y1="-0.2921" x2="0.2921" y2="0.2921" layer="51"/>
+<rectangle x1="2.2479" y1="-0.2921" x2="2.8321" y2="0.2921" layer="51"/>
+</package>
+<package name="1X01NS-KIT">
+<pad name="1" x="0" y="0" drill="1.016" diameter="1.8796" rot="R90" stop="no"/>
+<circle x="0" y="0" radius="0.508" width="0" layer="29"/>
+<circle x="0" y="0" radius="0.9398" width="0" layer="30"/>
+</package>
+</packages>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -2059,10 +2085,10 @@ design rules under a new name.</description>
 <param name="slThermalsForVias" value="0"/>
 <param name="dpMaxLengthDifference" value="10mm"/>
 <param name="dpGapFactor" value="2.5"/>
+<param name="checkGrid" value="0"/>
 <param name="checkAngle" value="0"/>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
-<param name="checkStop" value="0"/>
 <param name="useDiameter" value="13"/>
 <param name="maxErrors" value="50"/>
 </designrules>
@@ -2163,42 +2189,44 @@ design rules under a new name.</description>
 </pass>
 </autorouter>
 <elements>
-<element name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0603" package3d_urn="urn:adsk.eagle:package:23555/2" value="1K" x="56.080115625" y="27.327315625"/>
+<element name="R1" library="rcl" package="R0603" value="1K" x="56.080115625" y="27.327315625"/>
 <element name="U1" library="DubSat1 Components" package="DFN-8EE" value="" x="55.118" y="29.6418"/>
 <element name="U$1" library="DubSat1 Components" package="PC104_CONNECTOR" value="PC104_CONNECTOR" x="56.388" y="43.688"/>
-<element name="U$2" library="DubSat1 Components" package="BOARD_TEMPLATE" value="BOARD_TEMPLATE" x="56.388" y="43.688"/>
+<element name="U$2" library="DubSat1 Components" package="BOARD_TEMPLATE" value="BOARD_TEMPLATE1" x="56.388" y="43.688"/>
 <element name="U$3" library="DubSat1 Components" package="MT_AIRCORE" value="MT_AIRCORE" x="61.976" y="43.18" rot="R180"/>
 <element name="U$4" library="DubSat1 Components" package="MT_FERROCORE" value="MT_FERROCORE" x="12.256" y="43.688"/>
 <element name="U$5" library="DubSat1 Components" package="MT_FERROCORE" value="MT_FERROCORE" x="55.896" y="0.048" rot="R90"/>
 <element name="U2" library="DubSat1 Components" package="DFN-8EE" value="" x="65.3034" y="29.6164"/>
 <element name="U3" library="DubSat1 Components" package="DFN-8EE" value="" x="74.9554" y="29.6164"/>
-<element name="R2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0603" package3d_urn="urn:adsk.eagle:package:23555/2" value="1K" x="66.816878125" y="27.523078125"/>
-<element name="R3" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0603" package3d_urn="urn:adsk.eagle:package:23555/2" value="1K" x="75.794875" y="27.382478125"/>
-<element name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10uF" x="49.7874" y="30.6124" rot="R270"/>
-<element name="C8" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10uF" x="62.3114" y="30.6124" rot="R270"/>
-<element name="C9" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10uF" x="72.0574" y="30.6124" rot="R270"/>
+<element name="R2" library="rcl" package="R0603" value="1K" x="66.816878125" y="27.523078125"/>
+<element name="R3" library="rcl" package="R0603" value="1K" x="75.794875" y="27.382478125"/>
+<element name="C7" library="rcl" package="C0805" value="10uF" x="49.7874" y="30.6124" rot="R270"/>
+<element name="C8" library="rcl" package="C0805" value="10uF" x="62.3114" y="30.6124" rot="R270"/>
+<element name="C9" library="rcl" package="C0805" value="10uF" x="72.0574" y="30.6124" rot="R270"/>
 <element name="U$7" library="DubSat1 Components" package="MSP-CAN_BLOCK" value="MSP-CAN_BLOCK" x="52.5526" y="50.292" rot="R270"/>
 <element name="U$8" library="DubSat1 Components" package="1X08_CONNECTOR" value="PROGRAM/DEBUG_PORT" x="36.703" y="40.1574"/>
 <element name="U$6" library="DubSat1 Components" package="DDB" value="LT8335" x="84.455" y="46.355" rot="R90"/>
-<element name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="" x="86.6775" y="49.8475"/>
-<element name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="" x="82.55" y="50.8" rot="R180"/>
-<element name="R4" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="" x="80.645" y="47.9425" rot="R180"/>
+<element name="C1" library="rcl" package="C0805" value="" x="86.6775" y="49.8475"/>
+<element name="C2" library="rcl" package="C0805" value="" x="82.55" y="50.8" rot="R180"/>
+<element name="R4" library="rcl" package="R0805" value="" x="80.645" y="47.9425" rot="R180"/>
 <element name="D1" library="DubSat1 Components" package="SC-90" value="PMEG6010CEJ" x="87.9475" y="42.545" rot="R270"/>
 <element name="L1" library="DubSat1 Components" package="WURTH_ELEKTRONIK_INDDD_744877001" value="WURTH_ELEKTRONIK_INDDD_744877001" x="82.55" y="40.64" rot="R90"/>
-<element name="C4" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="" x="87.9475" y="46.0375" rot="R270"/>
-<element name="C3" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="" x="87.9475" y="38.735" rot="R270"/>
-<element name="C5" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="" x="85.725" y="35.56" rot="R180"/>
-<element name="R5" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="" x="81.28" y="35.56" rot="R180"/>
-<element name="R6" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="" x="80.01" y="45.72"/>
-<element name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="" x="83.5025" y="73.025" rot="R180"/>
+<element name="C4" library="rcl" package="C0805" value="" x="87.9475" y="46.0375" rot="R270"/>
+<element name="C3" library="rcl" package="C0805" value="" x="87.9475" y="38.735" rot="R270"/>
+<element name="C5" library="rcl" package="C0805" value="" x="85.725" y="35.56" rot="R180"/>
+<element name="R5" library="rcl" package="R0805" value="" x="81.28" y="35.56" rot="R180"/>
+<element name="R6" library="rcl" package="R0805" value="" x="80.01" y="45.72"/>
+<element name="C6" library="rcl" package="C0805" value="" x="83.5025" y="73.025" rot="R180"/>
 <element name="LDO_3V1" library="DubSat1 Components" package="SOT-23-5" value="LINEAR_LDO_LT1761-X" x="27.178" y="71.5645" rot="R270"/>
-<element name="C12" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF" x="30.6705" y="71.5645" rot="R270"/>
-<element name="C13" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF" x="25.5905" y="68.072" rot="R90"/>
-<element name="C14" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF" x="32.893" y="71.5645" rot="R90"/>
+<element name="C12" library="rcl" package="C0805" value="0.01 μF" x="30.6705" y="71.5645" rot="R270"/>
+<element name="C13" library="rcl" package="C0805" value="1 μF" x="25.5905" y="68.072" rot="R90"/>
+<element name="C14" library="rcl" package="C0805" value="4.7 μF" x="32.893" y="71.5645" rot="R90"/>
 <element name="LDO_5V1" library="DubSat1 Components" package="SOT-23-5" value="LINEAR_LDO_LT1761-X" x="92.71" y="75.8825" rot="R270"/>
-<element name="C19" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF" x="95.885" y="75.8825" rot="R270"/>
-<element name="C20" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF" x="91.1225" y="79.375" rot="R270"/>
-<element name="C21" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF" x="98.1075" y="75.8825" rot="R90"/>
+<element name="C19" library="rcl" package="C0805" value="0.01 μF" x="95.885" y="75.8825" rot="R270"/>
+<element name="C20" library="rcl" package="C0805" value="1 μF" x="91.1225" y="79.375" rot="R270"/>
+<element name="C21" library="rcl" package="C0805" value="4.7 μF" x="98.1075" y="75.8825" rot="R90"/>
+<element name="JP1" library="SparkFun-Connectors" package="1X02_LOCK" value="M02LOCK" x="73.1774" y="34.3916" smashed="yes"/>
+<element name="JP2" library="SparkFun-Connectors" package="1X01NS-KIT" value="M01NOSILK-KIT" x="89.662" y="71.882"/>
 </elements>
 <signals>
 <signal name="GND">
@@ -2446,11 +2474,11 @@ design rules under a new name.</description>
 <wire x1="77.1311" y1="29.8664" x2="77.47" y2="29.5275" width="0.254" layer="1"/>
 <via x="77.47" y="29.5275" extent="1-16" drill="0.35"/>
 <wire x1="77.47" y1="29.5275" x2="77.47" y2="30.03976875" width="0.254" layer="16"/>
-<wire x1="75.1078" y1="33.7947" x2="73.9775" y2="34.925" width="0.254" layer="16"/>
-<wire x1="77.47" y1="30.03976875" x2="75.1078" y2="32.40196875" width="0.254" layer="16"/>
-<wire x1="75.1078" y1="32.40196875" x2="75.1078" y2="33.7947" width="0.254" layer="16"/>
-<via x="73.9775" y="34.925" extent="1-16" drill="0.35"/>
-<wire x1="73.9775" y1="34.925" x2="72.0725" y2="36.83" width="0.254" layer="1"/>
+<wire x1="75.3872" y1="36.4617" x2="72.4535" y2="36.449" width="0.254" layer="16"/>
+<wire x1="77.47" y1="30.03976875" x2="77.3938" y2="36.46596875" width="0.254" layer="16"/>
+<wire x1="77.3938" y1="36.46596875" x2="75.3872" y2="36.4617" width="0.254" layer="16"/>
+<via x="72.4535" y="36.449" extent="1-16" drill="0.35"/>
+<wire x1="72.4535" y1="36.449" x2="72.0725" y2="36.83" width="0.254" layer="1"/>
 <wire x1="72.0725" y1="36.83" x2="67.6275" y2="36.83" width="0.254" layer="1"/>
 <via x="67.6275" y="36.83" extent="1-16" drill="0.35"/>
 <wire x1="63.5" y1="36.83" x2="67.6275" y2="36.83" width="0.254" layer="16"/>
@@ -2478,13 +2506,12 @@ design rules under a new name.</description>
 <wire x1="76.0204" y1="30.3664" x2="76.0606" y2="30.4066" width="0.254" layer="1"/>
 <wire x1="76.0606" y1="30.4066" x2="78.105" y2="30.4066" width="0.254" layer="1"/>
 <via x="78.105" y="30.4066" extent="1-16" drill="0.35"/>
-<wire x1="78.105" y1="30.4066" x2="75.565" y2="32.9466" width="0.254" layer="16"/>
-<wire x1="75.565" y1="32.9466" x2="75.565" y2="34.925" width="0.254" layer="16"/>
-<via x="75.565" y="34.925" extent="1-16" drill="0.35"/>
-<wire x1="75.565" y1="34.925" x2="73.025" y2="37.465" width="0.254" layer="1"/>
+<wire x1="78.105" y1="30.4066" x2="78.105" y2="37.5186" width="0.254" layer="16"/>
+<wire x1="78.105" y1="37.5186" x2="73.279" y2="37.465" width="0.254" layer="16"/>
+<via x="73.279" y="37.465" extent="1-16" drill="0.35"/>
 <wire x1="68.6534" y1="37.465" x2="68.58" y2="37.5384" width="0.254" layer="1"/>
 <via x="68.58" y="37.5384" extent="1-16" drill="0.35"/>
-<wire x1="73.025" y1="37.465" x2="68.6534" y2="37.465" width="0.254" layer="1"/>
+<wire x1="73.279" y1="37.465" x2="68.6534" y2="37.465" width="0.254" layer="1"/>
 <wire x1="62.25406875" y1="37.5384" x2="62.205334375" y2="37.489665625" width="0.254" layer="16"/>
 <via x="62.205334375" y="37.489665625" extent="1-16" drill="0.35"/>
 <wire x1="62.205334375" y1="37.489665625" x2="62.23" y2="37.465" width="0.254" layer="1"/>
@@ -2646,7 +2673,6 @@ design rules under a new name.</description>
 <wire x1="80.33" y1="34.9225" x2="80.33" y2="35.56" width="0.508" layer="1"/>
 <wire x1="81.28" y1="33.9725" x2="80.33" y2="34.9225" width="0.508" layer="1"/>
 <wire x1="80.33" y1="35.56" x2="78.7425" y2="33.9725" width="0.508" layer="1"/>
-<wire x1="68.58" y1="33.9725" x2="78.7425" y2="33.9725" width="0.508" layer="1"/>
 <wire x1="59.69" y1="33.9725" x2="68.58" y2="33.9725" width="0.508" layer="1"/>
 <wire x1="69.0574" y1="29.6124" x2="68.58" y2="30.0898" width="0.508" layer="1"/>
 <wire x1="68.58" y1="30.0898" x2="68.58" y2="33.9725" width="0.508" layer="1"/>
@@ -2664,6 +2690,13 @@ design rules under a new name.</description>
 <via x="51.308" y="29.3918" extent="1-16" drill="0.35"/>
 <via x="51.816" y="29.3918" extent="1-16" drill="0.35"/>
 <wire x1="51.308" y1="29.3918" x2="51.816" y2="29.3918" width="0.508" layer="16"/>
+<contactref element="JP1" pad="1"/>
+<contactref element="JP1" pad="2"/>
+<wire x1="72.9996" y1="34.3916" x2="75.8952" y2="34.3916" width="0" layer="19" extent="1-1"/>
+<wire x1="68.58" y1="33.9725" x2="72.9996" y2="33.9725" width="0.508" layer="1"/>
+<wire x1="72.9996" y1="33.9725" x2="72.9996" y2="34.3916" width="0.6096" layer="1"/>
+<wire x1="78.7425" y1="33.9725" x2="75.8952" y2="33.9725" width="0.508" layer="1"/>
+<wire x1="75.8952" y1="33.9725" x2="75.8952" y2="34.3916" width="0.508" layer="1"/>
 </signal>
 <signal name="VBAT">
 <contactref element="U$1" pad="P$85"/>
@@ -2710,7 +2743,6 @@ design rules under a new name.</description>
 <wire x1="92.71" y1="76.835" x2="92.71" y2="74.93" width="0.6096" layer="1"/>
 <contactref element="C20" pad="2"/>
 <wire x1="91.1225" y1="78.74" x2="91.1225" y2="78.425" width="0.508" layer="1"/>
-<wire x1="92.7075" y1="74.9325" x2="92.71" y2="74.93" width="0.6096" layer="1"/>
 <wire x1="92.7075" y1="74.9325" x2="91.36" y2="74.9325" width="0.6096" layer="1"/>
 <wire x1="91.36" y1="76.8325" x2="91.1225" y2="77.07" width="0.6096" layer="1"/>
 <wire x1="91.1225" y1="78.74" x2="91.1225" y2="77.07" width="0.6096" layer="1"/>
@@ -2745,7 +2777,7 @@ design rules under a new name.</description>
 <via x="48.26" y="73.914" extent="1-16" drill="0.35"/>
 <via x="62.484" y="73.914" extent="1-16" drill="0.35"/>
 <via x="62.992" y="73.914" extent="1-16" drill="0.35"/>
-<wire x1="61.976" y1="73.914" x2="62.738" y2="73.914" width="0.6096" layer="1"/>
+<wire x1="61.976" y1="73.914" x2="62.484" y2="73.914" width="0.6096" layer="1"/>
 <wire x1="62.738" y1="73.914" x2="76.324" y2="73.914" width="0.6096" layer="1"/>
 <wire x1="62.484" y1="73.914" x2="62.738" y2="73.914" width="0.6096" layer="1"/>
 <wire x1="62.992" y1="73.914" x2="61.976" y2="73.914" width="0.6096" layer="1"/>
@@ -2753,6 +2785,8 @@ design rules under a new name.</description>
 <wire x1="48.768" y1="73.914" x2="48.26" y2="73.914" width="0.6096" layer="16"/>
 <wire x1="61.976" y1="73.914" x2="62.484" y2="73.914" width="0.6096" layer="16"/>
 <wire x1="62.484" y1="73.914" x2="62.992" y2="73.914" width="0.6096" layer="16"/>
+<contactref element="JP2" pad="1"/>
+<wire x1="90.424" y1="71.374" x2="89.662" y2="71.882" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$1">
 <contactref element="R1" pad="2"/>
@@ -3385,21 +3419,6 @@ design rules under a new name.</description>
 <note version="6.3" minversion="6.2.2" severity="warning">
 Since Version 6.2.2 text objects can contain more than one line,
 which will not be processed correctly with this version.
-</note>
-<note version="8.2" severity="warning">
-Since Version 8.2, EAGLE supports online libraries. The ids
-of those online libraries will not be understood (or retained)
-with this version.
-</note>
-<note version="8.3" severity="warning">
-Since Version 8.3, EAGLE supports URNs for individual library
-assets (packages, symbols, and devices). The URNs of those assets
-will not be understood (or retained) with this version.
-</note>
-<note version="8.3" severity="warning">
-Since Version 8.3, EAGLE supports the association of 3D packages
-with devices in libraries, schematics, and board files. Those 3D
-packages will not be understood (or retained) with this version.
 </note>
 </compatibility>
 </eagle>

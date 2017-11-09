@@ -9848,6 +9848,11 @@ input bypass capacitors</text>
 <wire x1="83.82" y1="-48.26" x2="86.36" y2="-48.26" width="0.1524" layer="91"/>
 <pinref part="U1" gate="B" pin="AVSS2"/>
 <wire x1="83.82" y1="-45.72" x2="86.36" y2="-45.72" width="0.1524" layer="91"/>
+<junction x="86.36" y="-58.42"/>
+<junction x="86.36" y="-55.88"/>
+<junction x="86.36" y="-53.34"/>
+<junction x="86.36" y="-48.26"/>
+<junction x="86.36" y="-45.72"/>
 </segment>
 <segment>
 <pinref part="GND3" gate="1" pin="GND"/>
@@ -9944,6 +9949,11 @@ input bypass capacitors</text>
 <wire x1="284.48" y1="-45.72" x2="287.02" y2="-45.72" width="0.1524" layer="91"/>
 <pinref part="U2" gate="B" pin="AVSS2"/>
 <wire x1="284.48" y1="-43.18" x2="287.02" y2="-43.18" width="0.1524" layer="91"/>
+<junction x="287.02" y="-43.18"/>
+<junction x="287.02" y="-45.72"/>
+<junction x="287.02" y="-50.8"/>
+<junction x="287.02" y="-53.34"/>
+<junction x="287.02" y="-55.88"/>
 </segment>
 <segment>
 <pinref part="GND13" gate="1" pin="GND"/>
@@ -10185,6 +10195,7 @@ input bypass capacitors</text>
 <wire x1="-91.44" y1="66.04" x2="-99.06" y2="66.04" width="0.1524" layer="91"/>
 <wire x1="-99.06" y1="66.04" x2="-99.06" y2="68.58" width="0.1524" layer="91"/>
 <pinref part="SUPPLY6" gate="G$1" pin="3.3V"/>
+<junction x="-99.06" y="68.58"/>
 </segment>
 <segment>
 <pinref part="C38" gate="G$1" pin="1"/>
@@ -10232,6 +10243,7 @@ input bypass capacitors</text>
 <wire x1="104.14" y1="66.04" x2="96.52" y2="66.04" width="0.1524" layer="91"/>
 <wire x1="96.52" y1="66.04" x2="96.52" y2="68.58" width="0.1524" layer="91"/>
 <pinref part="SUPPLY5" gate="G$1" pin="3.3V"/>
+<junction x="96.52" y="68.58"/>
 </segment>
 <segment>
 <pinref part="U$6" gate="G$1" pin="ESTIMAT_3.3V@76"/>
