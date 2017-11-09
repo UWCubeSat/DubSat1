@@ -111,7 +111,8 @@ class TCPHandler(socketserver.BaseRequestHandler):
         instrumentation_queue = self.server.copy_queues[self.id]
         while True:
             reading = instrumentation_queue.get()
-            packet_bytes = self.packet_generator.new_packet(reading["time"], reading["value"])
+            packet_bytes = self.packet_generator.new_packet(reading["id"], 
+                reading["value"], reading["time"])
 
             self.request.sendall(packet_bytes)
 
@@ -128,12 +129,11 @@ class TCPHandler(socketserver.BaseRequestHandler):
 class CosmosLengthPacketGenerator:
     def __init__(self):
         self.clock = datetime.datetime;
-        self.packet_id_counter = 1;
 
-    def new_packet(self, time, value):
+    def new_packet(self, id, value, time):
         packet = b""
 
-        packet_id_bytes = self.packet_id_counter.to_bytes(int(PACKET_ID_LENGTH_BITS / 8),
+        packet_id_bytes = id.to_bytes(int(PACKET_ID_LENGTH_BITS / 8),
             byteorder='big', signed=False)
         packet += packet_id_bytes
 

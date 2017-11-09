@@ -11,6 +11,7 @@ from tzlocal import get_localzone
 '''
 class DataCollector:
     def __init__(self, instrument_configs):
+        self.instrument_configs = instrument_configs
         self.resource_manager = visa.ResourceManager()
         self.instruments = self._get_connected_instruments_resources()
         self.telemetry_results = self._map_workers_to_outputs(self.instruments)
@@ -60,19 +61,31 @@ class DataCollector:
 
         for instrument in instruments:
             output = Queue()
-            telemetry_thread = InstrumentWorker(instrument, output)
+            telemetry_thread = InstrumentWorker(instrument, output, self.instrument_configs)
             telemetry_thread.start()
             worker_to_output[telemetry_thread] = output
 
         return worker_to_output
 
 class InstrumentWorker(threading.Thread):
-    def __init__(self, instrument, output):
+    def __init__(self, instrument, output, telemetry_configs):
         threading.Thread.__init__(self)
         self.instrument = instrument
         self.output = output
         self.clock = datetime.datetime
-        self.my_timezone = pytz.timezone(get_localzone())
+        self.my_timezone = get_localzone()
+        self.instrument_config = self.choose_telemetry_config(telemetry_configs)
+
+    def choose_telemetry_config(self, telemetry_configs):
+        id = self.instrument.query("*IDN?")
+        id = id.split(",")
+        make = id[0]
+        model = id[1]
+        for telemetry_config in telemetry_configs:
+            if make == telemetry_config["instrument-information"]["visa-make"]:
+                if model == telemetry_config["instrument-information"]["visa-model"]:
+                    return telemetry_config
+        raise Exception("Unable to find config file for device: " + id)
 
     '''
         Worker function to interface with the given instrument. Writes telemetry
@@ -81,13 +94,17 @@ class InstrumentWorker(threading.Thread):
     def run(self):
         self.alive = True
 
+        counter = 0
         while self.alive:
-            sleep(0.5) # 1 second
+            sleep(0.5)
+            query_string = self.instrument_config["telemetry-item"][counter]["command"]
             query_result = {}
-            # TODO change this to something more useful
-            query_result["value"] = float(self.instrument.query(":Measure:Voltage:DC?"))
+            query_result["value"] = float(self.instrument.query(query_string))
             query_result["time"] = self.clock.now(tz=self.my_timezone)
+            query_result["id"] = self.instrument_config["telemetry-item"][counter]["id"]
             self.output.put(query_result)
+            counter += 1
+            counter %= len(self.instrument_config["telemetry-item"])
 
     def stop(self):
         self.alive = False
