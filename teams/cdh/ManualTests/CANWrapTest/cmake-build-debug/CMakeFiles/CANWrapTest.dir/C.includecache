@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/emoryeng/Documents/Projects/DubSat1/teams/cdh/ManualTests/CANWrapTest/CanWrap.c
+stdint.h
+-
+stdlib.h
+-
+printf.h
+-
+CanWrap.h
+/Users/emoryeng/Documents/Projects/DubSat1/teams/cdh/ManualTests/CANWrapTest/CanWrap.h
+inttypes.h
+/Users/emoryeng/Documents/Projects/DubSat1/teams/cdh/ManualTests/CANWrapTest/inttypes.h
+
+/Users/emoryeng/Documents/Projects/DubSat1/teams/cdh/ManualTests/CANWrapTest/CanWrap.h
+stdint.h
+-
+
+/Users/emoryeng/Documents/Projects/DubSat1/teams/cdh/ManualTests/CANWrapTest/main.c
+stdio.h
+-
+inttypes.h
+-
+stdlib.h
+-
+CanWrap.h
+/Users/emoryeng/Documents/Projects/DubSat1/teams/cdh/ManualTests/CANWrapTest/CanWrap.h
+
