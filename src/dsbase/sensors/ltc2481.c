@@ -6,12 +6,10 @@
  */
 
 #include <stdint.h>
-#include "../core/utils.h"
 #include "ltc2481.h"
 
-FILE_STATIC uint8_t read[3];
-FILE_STATIC uint8_t i2cInitialized = 0;
-FILE_STATIC hDev hSensor;
+uint8_t read[3];
+uint8_t i2cInitialized = 0;
 
 void ltc2481Init(uint8_t addr)
 {
@@ -20,9 +18,9 @@ void ltc2481Init(uint8_t addr)
 		return;
 	
 	i2cInitialized = 1;
-	i2cEnable(I2CBus2);
-	hSensor = i2cInit(I2CBus2, addr);
-	i2cMasterWrite(hSensor, defaultWrite, 1);
+	i2cEnable();
+	i2cInit(addr);
+	i2cRawWrite(defaultWrite, 1);
 }
 
 double ltc2481Voltage()
@@ -43,7 +41,7 @@ double ltc2481Read(uint8_t write)
 {
 	volatile double reading;
 	volatile uint32_t x;
-	i2cMasterRegisterRead(hSensor, write, read, 3);
+	i2cCombinedAddressWriteThenRead(write, read, 3);
     read[2] &= 0b10000000;
     read[0] &= 0b01111111;
     x = 0;

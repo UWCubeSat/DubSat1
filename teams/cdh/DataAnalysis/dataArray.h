@@ -2,37 +2,35 @@
 #ifndef DATAARRAY_H
 #define DATAARRAY_H
 
-#define ARRAY_SIZE 10
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
 
-struct dataArray;
-typedef struct dataArray dataArray;
+struct buffer;
 
-// Initialized dataArray
-dataArray* initArray();
+// initialize buffer struct
+int init(uint16_t *userBuffer, uint16_t size);
 
-// Print out Array
-void printArray(dataArray *self);
+// Print out given buffer
+void printArray(int handle);
 
-// Add single number to the data set. Return 1 if overflow, else return 0
-int addValue(dataArray *self, int value);
+// Add new data to given buffer
+void addData(int handle, uint16_t data);
 
-// Add given value to the current running sum
-void sum(dataArray *self, int value);
+// reset all data in the given buffer
+void resetData(int handle);
 
-// Record max value
-void maxValue(dataArray *self, int value);
+// return uint16_t sum of data in the given buffer
+uint16_t getSum(int handle);
 
-// Record min value
-void minValue(dataArray *self, int value);
+// return uint16_t average of data in the given buffer
+uint16_t getAvg(int handle);
 
-// Return average value of given data
-int getAvg(dataArray *self);
+// return uint16_t min of data in the given buffer
+uint16_t getMin(int handle);
 
-// Return max value recorded
-int getMax(dataArray *self);
-
-// Return min value recorded
-int getMin(dataArray *self);
-
+// return uint16_t max of data in the given buffer
+uint16_t getMax(int handle);
 
 #endif //DATAARRAY_H

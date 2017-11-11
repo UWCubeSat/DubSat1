@@ -1,0 +1,24 @@
+[instrument-information]
+friendly-name = "Rigol DP811A Power Supply"
+visa-name = "RIGOL TECHNOLOGIES"
+visa-model = "DP811A"
+tcp-port = 13001
+
+[[telemetry-item]]
+name = "Voltage"
+command = ":measure:voltage?"
+frequency = 1 #Hz
+
+[[telemetry-item]]
+name = "Current"
+command = ":measure:current?"
+frequency = 2 #Hz
+
+[[telemetry-item]]
+name = "Power"
+command = ":measure:power?"
+frequency = 0.5 #Hz
+
+[[command]]
+name = "Select channel"
+command = ":instrument:nselect %d"

@@ -23,7 +23,7 @@
 #include "adcs_fsw_main_skeleton.h"
 #include "rtwtypes.h"
 
-#include "ti/devices/msp432p4xx/inc/msp.h"
+#include <msp.h>
 #include <stdint.h>
 
 //

@@ -14,5 +14,6 @@
 #include "config_bus_uart.h"
 #include "config_bus_i2c.h"
 #include "config_svc_debug.h"
+#include "config_sensor_analog.h"
 
 #endif /* CONFIG_CONFIG_H_ */
