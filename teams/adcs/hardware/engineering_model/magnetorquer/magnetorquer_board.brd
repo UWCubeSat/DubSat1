@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.5.0">
+<eagle version="8.4.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
+<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="10" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="1" altunitdist="mil" altunit="mil"/>
@@ -2085,10 +2086,10 @@ design rules under a new name.</description>
 <param name="slThermalsForVias" value="0"/>
 <param name="dpMaxLengthDifference" value="10mm"/>
 <param name="dpGapFactor" value="2.5"/>
-<param name="checkGrid" value="0"/>
 <param name="checkAngle" value="0"/>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
+<param name="checkStop" value="0"/>
 <param name="useDiameter" value="13"/>
 <param name="maxErrors" value="50"/>
 </designrules>
@@ -2703,14 +2704,12 @@ design rules under a new name.</description>
 <contactref element="U$1" pad="P$87"/>
 <contactref element="U$6" pad="P$6"/>
 <contactref element="C1" pad="1"/>
-<contactref element="R4" pad="1"/>
 <contactref element="L1" pad="P$4"/>
 <wire x1="84.705" y1="47.28" x2="84.705" y2="47.875" width="0.254" layer="1"/>
 <wire x1="85.7275" y1="48.8975" x2="85.7275" y2="49.8475" width="0.508" layer="1"/>
 <wire x1="84.705" y1="47.875" x2="85.24875" y2="48.41875" width="0.254" layer="1"/>
 <wire x1="85.24875" y1="48.41875" x2="85.7275" y2="48.8975" width="0.508" layer="1"/>
 <wire x1="81.5975" y1="47.9425" x2="81.915" y2="47.9425" width="0.254" layer="1"/>
-<wire x1="81.5975" y1="47.9425" x2="81.595" y2="47.9425" width="0.254" layer="1"/>
 <wire x1="85.7275" y1="49.8475" x2="84.7725" y2="49.8475" width="0.254" layer="1"/>
 <wire x1="84.7725" y1="49.8475" x2="84.320915625" y2="49.395915625" width="0.254" layer="1"/>
 <via x="84.320915625" y="49.395915625" extent="1-16" drill="0.35"/>
@@ -2786,7 +2785,10 @@ design rules under a new name.</description>
 <wire x1="61.976" y1="73.914" x2="62.484" y2="73.914" width="0.6096" layer="16"/>
 <wire x1="62.484" y1="73.914" x2="62.992" y2="73.914" width="0.6096" layer="16"/>
 <contactref element="JP2" pad="1"/>
+<contactref element="R4" pad="1"/>
 <wire x1="90.424" y1="71.374" x2="89.662" y2="71.882" width="0" layer="19" extent="1-1"/>
+<wire x1="81.595" y1="47.9425" x2="81.5975" y2="47.9425" width="0" layer="19" extent="1-1"/>
+<wire x1="77.978" y1="80.648" x2="77.978" y2="75.568" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$1">
 <contactref element="R1" pad="2"/>

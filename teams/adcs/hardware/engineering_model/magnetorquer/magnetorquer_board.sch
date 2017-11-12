@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.5.0">
+<eagle version="8.4.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
+<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
@@ -9946,8 +9947,8 @@ Standard 1-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <instance part="GND26" gate="1" x="-30.48" y="142.24" rot="R180"/>
 <instance part="C21" gate="G$1" x="-2.54" y="134.62"/>
 <instance part="GND27" gate="1" x="-2.54" y="142.24" rot="R180"/>
-<instance part="JP1" gate="G$1" x="71.12" y="182.88" rot="R270"/>
-<instance part="JP2" gate="G$1" x="104.14" y="160.02"/>
+<instance part="JP1" gate="G$1" x="71.12" y="185.42" rot="R270"/>
+<instance part="JP2" gate="G$1" x="93.98" y="162.56"/>
 </instances>
 <busses>
 </busses>
@@ -10277,9 +10278,6 @@ Standard 1-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <label x="78.74" y="175.26" size="1.778" layer="95" rot="MR180" xref="yes"/>
 <pinref part="C3" gate="G$1" pin="1"/>
 <wire x1="48.26" y1="175.26" x2="58.42" y2="175.26" width="0.1524" layer="91"/>
-<wire x1="58.42" y1="175.26" x2="71.12" y2="175.26" width="0.1524" layer="91"/>
-<wire x1="71.12" y1="175.26" x2="73.66" y2="175.26" width="0.1524" layer="91"/>
-<wire x1="73.66" y1="175.26" x2="78.74" y2="175.26" width="0.1524" layer="91"/>
 <wire x1="48.26" y1="175.26" x2="48.26" y2="172.72" width="0.1524" layer="91"/>
 <junction x="48.26" y="175.26"/>
 <pinref part="C5" gate="G$1" pin="1"/>
@@ -10291,9 +10289,14 @@ Standard 1-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <pinref part="R5" gate="G$1" pin="2"/>
 <wire x1="66.04" y1="170.18" x2="66.04" y2="167.64" width="0.1524" layer="91"/>
 <pinref part="JP1" gate="G$1" pin="1"/>
-<junction x="71.12" y="175.26"/>
 <pinref part="JP1" gate="G$1" pin="2"/>
+<wire x1="58.42" y1="175.26" x2="71.12" y2="175.26" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="175.26" x2="73.66" y2="175.26" width="0.1524" layer="91"/>
+<wire x1="73.66" y1="175.26" x2="78.74" y2="175.26" width="0.1524" layer="91"/>
+<wire x1="73.66" y1="177.8" x2="73.66" y2="175.26" width="0.1524" layer="91"/>
 <junction x="73.66" y="175.26"/>
+<wire x1="71.12" y1="177.8" x2="71.12" y2="175.26" width="0.1524" layer="91"/>
+<junction x="71.12" y="175.26"/>
 </segment>
 </net>
 <net name="VBAT" class="0">
@@ -10322,11 +10325,13 @@ Standard 1-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <junction x="127" y="137.16"/>
 </segment>
 <segment>
-<pinref part="R4" gate="G$1" pin="1"/>
-<wire x1="111.76" y1="160.02" x2="111.76" y2="162.56" width="0.1524" layer="91"/>
-<label x="111.76" y="162.56" size="1.778" layer="95" rot="R90" xref="yes"/>
+<label x="111.76" y="165.1" size="1.778" layer="95" rot="R90" xref="yes"/>
 <pinref part="JP2" gate="G$1" pin="1"/>
-<junction x="111.76" y="160.02"/>
+<pinref part="R4" gate="G$1" pin="1"/>
+<wire x1="111.76" y1="165.1" x2="111.76" y2="162.56" width="0.1524" layer="91"/>
+<wire x1="111.76" y1="162.56" x2="111.76" y2="160.02" width="0.1524" layer="91"/>
+<wire x1="111.76" y1="162.56" x2="101.6" y2="162.56" width="0.1524" layer="91"/>
+<junction x="111.76" y="162.56"/>
 </segment>
 <segment>
 <pinref part="L1" gate="G$1" pin="2B"/>
