@@ -10026,8 +10026,8 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="GND10" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C4" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
 <part name="GND12" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="CONN2" library="DubSat1 Components" deviceset="PICOLOCK_4" device=""/>
-<part name="CONN3" library="DubSat1 Components" deviceset="PICOLOCK_4" device=""/>
+<part name="PHOTODIODE" library="DubSat1 Components" deviceset="PICOLOCK_4" device=""/>
+<part name="SUNSENSOR" library="DubSat1 Components" deviceset="PICOLOCK_4" device=""/>
 <part name="P+1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="+3V31" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="GND1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -10083,8 +10083,8 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <instance part="GND10" gate="1" x="152.4" y="22.86" rot="R180"/>
 <instance part="C4" gate="G$1" x="180.34" y="15.24"/>
 <instance part="GND12" gate="1" x="180.34" y="22.86" rot="R180"/>
-<instance part="CONN2" gate="G$1" x="137.16" y="-55.88" rot="R270"/>
-<instance part="CONN3" gate="G$1" x="137.16" y="-81.28" rot="R270"/>
+<instance part="PHOTODIODE" gate="G$1" x="137.16" y="-55.88" rot="R270"/>
+<instance part="SUNSENSOR" gate="G$1" x="137.16" y="-81.28" rot="R270"/>
 <instance part="P+1" gate="1" x="-35.56" y="-40.64" rot="R90"/>
 <instance part="+3V31" gate="G$1" x="-35.56" y="-60.96" rot="R90"/>
 <instance part="GND1" gate="1" x="-22.86" y="-66.04" rot="R270"/>
@@ -10271,12 +10271,12 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 </segment>
 <segment>
 <pinref part="GND4" gate="1" pin="GND"/>
-<pinref part="CONN2" gate="G$1" pin="P$3"/>
+<pinref part="PHOTODIODE" gate="G$1" pin="P$3"/>
 <wire x1="129.54" y1="-53.34" x2="132.08" y2="-53.34" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND5" gate="1" pin="GND"/>
-<pinref part="CONN3" gate="G$1" pin="P$3"/>
+<pinref part="SUNSENSOR" gate="G$1" pin="P$3"/>
 <wire x1="129.54" y1="-78.74" x2="132.08" y2="-78.74" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -10427,12 +10427,12 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <junction x="-12.7" y="-48.26"/>
 </segment>
 <segment>
-<pinref part="CONN2" gate="G$1" pin="P$4"/>
+<pinref part="PHOTODIODE" gate="G$1" pin="P$4"/>
 <pinref part="+3V34" gate="G$1" pin="+3V3"/>
 <wire x1="132.08" y1="-58.42" x2="127" y2="-58.42" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="CONN3" gate="G$1" pin="P$4"/>
+<pinref part="SUNSENSOR" gate="G$1" pin="P$4"/>
 <pinref part="+3V35" gate="G$1" pin="+3V3"/>
 <wire x1="132.08" y1="-83.82" x2="127" y2="-83.82" width="0.1524" layer="91"/>
 </segment>
@@ -10470,12 +10470,12 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 </net>
 <net name="I2C_SDA" class="0">
 <segment>
-<pinref part="CONN2" gate="G$1" pin="P$1"/>
+<pinref part="PHOTODIODE" gate="G$1" pin="P$1"/>
 <wire x1="132.08" y1="-43.18" x2="114.3" y2="-43.18" width="0.1524" layer="91"/>
 <wire x1="114.3" y1="-43.18" x2="114.3" y2="-58.42" width="0.1524" layer="91"/>
 <pinref part="BLK1" gate="G$1" pin="P5.0_I2C-SDA-1"/>
 <wire x1="114.3" y1="-58.42" x2="96.52" y2="-58.42" width="0.1524" layer="91"/>
-<pinref part="CONN3" gate="G$1" pin="P$1"/>
+<pinref part="SUNSENSOR" gate="G$1" pin="P$1"/>
 <wire x1="96.52" y1="-58.42" x2="76.2" y2="-58.42" width="0.1524" layer="91"/>
 <wire x1="132.08" y1="-68.58" x2="114.3" y2="-68.58" width="0.1524" layer="91"/>
 <wire x1="114.3" y1="-68.58" x2="114.3" y2="-58.42" width="0.1524" layer="91"/>
@@ -10487,12 +10487,12 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 </net>
 <net name="I2C_SCL" class="0">
 <segment>
-<pinref part="CONN2" gate="G$1" pin="P$2"/>
+<pinref part="PHOTODIODE" gate="G$1" pin="P$2"/>
 <wire x1="132.08" y1="-48.26" x2="119.38" y2="-48.26" width="0.1524" layer="91"/>
 <wire x1="119.38" y1="-48.26" x2="119.38" y2="-55.88" width="0.1524" layer="91"/>
 <pinref part="BLK1" gate="G$1" pin="P5.1_I2C-SCL-1"/>
 <wire x1="119.38" y1="-55.88" x2="106.68" y2="-55.88" width="0.1524" layer="91"/>
-<pinref part="CONN3" gate="G$1" pin="P$2"/>
+<pinref part="SUNSENSOR" gate="G$1" pin="P$2"/>
 <wire x1="106.68" y1="-55.88" x2="76.2" y2="-55.88" width="0.1524" layer="91"/>
 <wire x1="132.08" y1="-73.66" x2="119.38" y2="-73.66" width="0.1524" layer="91"/>
 <wire x1="119.38" y1="-73.66" x2="119.38" y2="-55.88" width="0.1524" layer="91"/>
