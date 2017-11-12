@@ -2041,7 +2041,7 @@ P2.6 Rx and P2.5 Tx</text>
 </device>
 </devices>
 </deviceset>
-<deviceset name="MSP-CAN_BLOCK">
+<deviceset name="MSP-CAN_BLOCK" prefix="BLK">
 <gates>
 <gate name="G$1" symbol="MSP-CAN_BLOCK" x="-10.16" y="22.86"/>
 </gates>
@@ -2138,7 +2138,7 @@ P2.6 Rx and P2.5 Tx</text>
 </device>
 </devices>
 </deviceset>
-<deviceset name="LINEAR_LDO_LT1761-X">
+<deviceset name="LINEAR_LDO_LT1761-X" prefix="U">
 <gates>
 <gate name="G$1" symbol="LT1761" x="2.54" y="0"/>
 </gates>
@@ -2157,12 +2157,12 @@ P2.6 Rx and P2.5 Tx</text>
 </device>
 </devices>
 </deviceset>
-<deviceset name="PICOLOCK_4">
+<deviceset name="PICOLOCK_4" prefix="CONN">
 <gates>
 <gate name="G$1" symbol="PICOLOCK_4" x="15.24" y="0"/>
 </gates>
 <devices>
-<device name="PICOLOCK_4" package="PICOLOCK_4">
+<device name="" package="PICOLOCK_4">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$2" pad="P$2"/>
@@ -10026,8 +10026,8 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="GND10" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C4" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
 <part name="GND12" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="CONN2" library="DubSat1 Components" deviceset="PICOLOCK_4" device="PICOLOCK_4"/>
-<part name="CONN3" library="DubSat1 Components" deviceset="PICOLOCK_4" device="PICOLOCK_4"/>
+<part name="CONN2" library="DubSat1 Components" deviceset="PICOLOCK_4" device=""/>
+<part name="CONN3" library="DubSat1 Components" deviceset="PICOLOCK_4" device=""/>
 <part name="P+1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="+3V31" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="GND1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
