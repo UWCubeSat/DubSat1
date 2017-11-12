@@ -5282,16 +5282,21 @@ Allows current flow when high potential at base.</description>
 <text x="-2.54" y="-5.08" size="1.778" layer="95" font="vector" align="top-left">&gt;VALUE</text>
 </symbol>
 <symbol name="WURTH_ELEKTRONIK_INDDD_744877001">
-<text x="-7.62" y="7.62" size="1.778" layer="95">&gt;NAME</text>
-<text x="-7.62" y="-7.62" size="1.778" layer="96" align="top-left">&gt;VALUE</text>
-<wire x1="-7.62" y1="5.08" x2="7.62" y2="5.08" width="0.1524" layer="94"/>
-<wire x1="7.62" y1="5.08" x2="7.62" y2="-5.08" width="0.1524" layer="94"/>
-<wire x1="7.62" y1="-5.08" x2="-7.62" y2="-5.08" width="0.1524" layer="94"/>
-<wire x1="-7.62" y1="-5.08" x2="-7.62" y2="5.08" width="0.1524" layer="94"/>
-<pin name="1A" x="-12.7" y="2.54" length="middle"/>
-<pin name="2A" x="-12.7" y="-2.54" length="middle"/>
-<pin name="1B" x="12.7" y="2.54" length="middle" rot="R180"/>
-<pin name="2B" x="12.7" y="-2.54" length="middle" rot="R180"/>
+<text x="-10.16" y="7.62" size="1.778" layer="95">&gt;NAME</text>
+<text x="-10.16" y="-7.62" size="1.778" layer="96" align="top-left">&gt;VALUE</text>
+<pin name="1A" x="-15.24" y="2.54" visible="pin" length="middle"/>
+<pin name="2A" x="-15.24" y="-2.54" visible="pin" length="middle"/>
+<pin name="1B" x="15.24" y="2.54" visible="pin" length="middle" rot="R180"/>
+<pin name="2B" x="15.24" y="-2.54" visible="pin" length="middle" rot="R180"/>
+<wire x1="-10.16" y1="2.54" x2="-5.08" y2="2.54" width="0.1524" layer="94" curve="-180"/>
+<wire x1="-5.08" y1="2.54" x2="0" y2="2.54" width="0.1524" layer="94" curve="-180"/>
+<wire x1="0" y1="2.54" x2="5.08" y2="2.54" width="0.1524" layer="94" curve="-180"/>
+<wire x1="5.08" y1="2.54" x2="10.16" y2="2.54" width="0.1524" layer="94" curve="-180"/>
+<wire x1="10.16" y1="-2.54" x2="5.08" y2="-2.54" width="0.1524" layer="94" curve="-180"/>
+<wire x1="5.08" y1="-2.54" x2="0" y2="-2.54" width="0.1524" layer="94" curve="-180"/>
+<wire x1="0" y1="-2.54" x2="-5.08" y2="-2.54" width="0.1524" layer="94" curve="-180"/>
+<wire x1="-5.08" y1="-2.54" x2="-10.16" y2="-2.54" width="0.1524" layer="94" curve="-180"/>
+<wire x1="-7.62" y1="0" x2="7.62" y2="0" width="1.27" layer="94"/>
 </symbol>
 <symbol name="OEM719">
 <wire x1="-12.7" y1="50.8" x2="12.7" y2="50.8" width="0.254" layer="94"/>
