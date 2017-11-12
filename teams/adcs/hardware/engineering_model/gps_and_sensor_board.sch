@@ -10035,13 +10035,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="GND5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="+3V34" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="+3V35" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
-<part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="10KΩ"/>
-<part name="R2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="10KΩ"/>
+<part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="2.2KΩ"/>
+<part name="R2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="2.2KΩ"/>
 <part name="+3V32" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="+3V33" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="U4" library="DubSat1 Components" deviceset="LTC3624" device=""/>
 <part name="GND13" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="2.2μF"/>
 <part name="L1" library="DubSat1 Components" deviceset="COILCRAFT_XAL4020-222ME" device=""/>
 <part name="GND14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R3" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="450kΩ"/>
@@ -10097,8 +10097,8 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <instance part="+3V32" gate="G$1" x="96.52" y="-22.86"/>
 <instance part="+3V33" gate="G$1" x="106.68" y="-22.86"/>
 <instance part="U4" gate="G$1" x="248.92" y="30.48"/>
-<instance part="GND13" gate="1" x="281.94" y="35.56" rot="R90"/>
-<instance part="C7" gate="G$1" x="276.86" y="30.48" rot="R180"/>
+<instance part="GND13" gate="1" x="284.48" y="35.56" rot="R90"/>
+<instance part="C7" gate="G$1" x="279.4" y="30.48" rot="R180"/>
 <instance part="L1" gate="G$1" x="248.92" y="58.42"/>
 <instance part="GND14" gate="1" x="297.18" y="0"/>
 <instance part="R3" gate="G$1" x="297.18" y="27.94" rot="R90"/>
@@ -10284,13 +10284,13 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <pinref part="GND13" gate="1" pin="GND"/>
 <wire x1="269.24" y1="35.56" x2="271.78" y2="35.56" width="0.1524" layer="91"/>
 <pinref part="U4" gate="G$1" pin="MODE/SYNC"/>
-<wire x1="271.78" y1="35.56" x2="276.86" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="276.86" y1="35.56" x2="279.4" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="271.78" y1="35.56" x2="279.4" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="279.4" y1="35.56" x2="281.94" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="269.24" y1="30.48" x2="271.78" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="271.78" y1="30.48" x2="271.78" y2="35.56" width="0.1524" layer="91"/>
 <junction x="271.78" y="35.56"/>
 <pinref part="C7" gate="G$1" pin="2"/>
-<junction x="276.86" y="35.56"/>
+<junction x="279.4" y="35.56"/>
 </segment>
 <segment>
 <pinref part="R4" gate="G$1" pin="1"/>
@@ -10520,8 +10520,8 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <segment>
 <pinref part="U4" gate="G$1" pin="INTVCC"/>
 <pinref part="C7" gate="G$1" pin="1"/>
-<wire x1="269.24" y1="25.4" x2="276.86" y2="25.4" width="0.1524" layer="91"/>
-<wire x1="276.86" y1="25.4" x2="276.86" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="269.24" y1="25.4" x2="279.4" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="279.4" y1="25.4" x2="279.4" y2="27.94" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="3V3_BUCK_SW" class="0">
