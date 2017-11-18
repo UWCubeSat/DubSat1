@@ -20,19 +20,37 @@
 //    setTheFilter(CAN_FILTER_5, 0x01 << boardNum);
 //}
 
+void wrapCB0(uint8_t length, uint8_t* data, uint32_t id){
+    CANPacket packet = {0};
+    CANPacket *p = &packet;
+    p -> id = id;
+    uint8_t i;
+    for(i = 0 ; i < length; i++){
+        p -> data[i] = data[i];
+    }
+    p -> bufferNum = 0;
+    CANPacketReceived(p);
+}
 
-//void canSetPacketType(uint8_t type, CANPacket *packet){
-//    packet->id |= (uint32_t) type << 20;
-//}
-//
-//void canSetPacketDestination(uint32_t board, CANPacket *packet){
-//    packet->id |= board;
-//}
-//
-//void canSetPacketParameter(uint64_t param, CANPacket *packet, uint8_t* value){
-//}
+void wrapCB1(uint8_t length, uint8_t* data, uint32_t id){
+    CANPacket packet = {0};
+    CANPacket *p = &packet;
+    p -> id = id;
+    uint8_t i;
+    for(i = 0 ; i < length; i++){
+        p -> data[i] = data[i];
+    }
+    p -> bufferNum = 1;
+    CANPacketReceived(p);
+}
 
-void reverseArray(uint8_t arr[], int start, int end)
+void canWrapInit(){
+    canInit();
+    setReceiveCallback0(wrapCB0);
+    setReceiveCallback1(wrapCB1);
+}
+
+void reverseArray(uint8_t arr[], uint8_t start, uint8_t end)
 {
     uint8_t temp;
     if (start >= end)
@@ -63,11 +81,9 @@ struct CANPacket *canConvertToPacket(uint32_t id, uint8_t* data){
     return p;
 }
 
-//uint16_t *canGetPacketParameter(uint64_t param, CANPacket *packet, uint8_t *value){
-//    // TODO: DBC Magic.
-//    uint16_t* ret;
-//    return ret;
-//}
+void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
+    CANPacketReceived = ReceiveCallbackArg;
+}
 
 // AUTOGEN STUFF HERE
 

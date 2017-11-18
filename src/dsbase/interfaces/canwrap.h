@@ -13,24 +13,24 @@
 #define PARAM_ADCS_STATUS_VELOCITY_RPM 0x4201;
 
 typedef struct CANPacket {
-   uint32_t id;
-   uint8_t data[8];
+   uint32_t id; // Actual physical ID of the packet
+   uint8_t data[8]; // Data
+   uint8_t bufferNum; // Only applicable for Rx, which buffer it landed in
 } CANPacket;
 
-//void canPacketInit(uint8_t boardNum);
+void canWrapInit();
 
-//void canSetPacketType(uint8_t type, CANPacket *packet);
+// Global function pointer to point to the function
+// when a packet is received through CAN
+void (*CANPacketReceived)(CANPacket *);
 
-//void canSetPacketDestination(uint32_t board, CANPacket *packet);
-
-//void canSetPacketParameter(uint64_t param, CANPacket *packet, uint8_t* value);
+void canPacketInit(uint8_t boardNum);
 
 void canSendPacket(CANPacket *packet);
 
 CANPacket *canConvertToPacket(uint32_t id, uint8_t* data);
 
-//uint16_t *canGetPacketParameter(uint64_t param, CANPacket *packet, uint8_t *value);
-
+void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
 
 // BEGIN AUTOGEN
 
