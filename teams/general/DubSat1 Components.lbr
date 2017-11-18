@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.1">
+<eagle version="8.4.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -1709,7 +1709,7 @@ Board Template: V2.1</text>
 <wire x1="53.5" y1="7" x2="46.5" y2="7" width="0.127" layer="21"/>
 <smd name="P$4" x="50" y="-2.5" dx="8" dy="3.5" layer="1"/>
 </package>
-<package name="S008">
+<package name="SOT-23-8">
 <circle x="-1.0034" y="-0.4906" radius="0.1436" width="0.127" layer="21"/>
 <wire x1="-1.5" y1="-0.85" x2="1.5" y2="-0.85" width="0.1524" layer="51"/>
 <wire x1="1.5" y1="-0.85" x2="1.5" y2="0.85" width="0.1524" layer="21"/>
@@ -2752,7 +2752,7 @@ Board Template: V2.1</text>
 <text x="0" y="3.048" size="0.6096" layer="25" font="vector" ratio="20" align="bottom-center">&gt;NAME</text>
 <text x="0" y="-1.905" size="0.6096" layer="27" font="vector" ratio="20" align="top-center">&gt;VALUE</text>
 </package>
-<package name="SOT23-3">
+<package name="SOT-23-3">
 <description>SOT23-3</description>
 <wire x1="1.4224" y1="0.6604" x2="1.4224" y2="-0.6604" width="0.1524" layer="51"/>
 <wire x1="1.4224" y1="-0.6604" x2="-1.4224" y2="-0.6604" width="0.1524" layer="51"/>
@@ -4308,7 +4308,7 @@ P2.6 Rx and P2.5 Tx</text>
 <wire x1="-2.54" y1="0" x2="-5.08" y2="0" width="0.254" layer="94"/>
 <wire x1="-5.08" y1="0" x2="-5.08" y2="-2.54" width="0.254" layer="94"/>
 <wire x1="-5.08" y1="-2.54" x2="-7.62" y2="-2.54" width="0.254" layer="94"/>
-<text x="-2.54" y="-7.62" size="1.778" layer="95">20MHz</text>
+<text x="-3.302" y="-7.62" size="1.778" layer="95">20MHz</text>
 <text x="-5.334" y="3.048" size="1.27" layer="95">XC1514CT-ND</text>
 </symbol>
 <symbol name="ADM7172">
@@ -6362,33 +6362,6 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 </device>
 </devices>
 </deviceset>
-<deviceset name="INA219">
-<description>INA219 is an integrated voltage, current, and temperature sensor that comunicates over I2C. 
-
-Datasheet: http://www.ti.com/lit/ds/symlink/ina219.pdf
-
-Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
-<gates>
-<gate name="G$1" symbol="INA219" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="S008">
-<connects>
-<connect gate="G$1" pin="A0" pad="7"/>
-<connect gate="G$1" pin="A1" pad="8"/>
-<connect gate="G$1" pin="GND" pad="3"/>
-<connect gate="G$1" pin="IN+" pad="1"/>
-<connect gate="G$1" pin="IN-" pad="2"/>
-<connect gate="G$1" pin="SCL" pad="5"/>
-<connect gate="G$1" pin="SDA" pad="6"/>
-<connect gate="G$1" pin="VS" pad="4"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 <deviceset name="OEM615">
 <gates>
 <gate name="G$1" symbol="OEM615" x="0" y="0"/>
@@ -6787,7 +6760,7 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 <gate name="G$1" symbol="NPN" x="0" y="0"/>
 </gates>
 <devices>
-<device name="-MMBT2222AL" package="SOT23-3">
+<device name="-MMBT2222AL" package="SOT-23-3">
 <connects>
 <connect gate="G$1" pin="B" pad="1"/>
 <connect gate="G$1" pin="C" pad="3"/>
@@ -7073,6 +7046,28 @@ Used in Dubsat1 in the Power Gen Board and the Solar Panels.</description>
 <connect gate="G$1" pin="RUN" pad="RUN"/>
 <connect gate="G$1" pin="SW" pad="SW"/>
 <connect gate="G$1" pin="V_IN" pad="V_IN"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="INA219">
+<gates>
+<gate name="G$1" symbol="INA219" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="SOT-23-8">
+<connects>
+<connect gate="G$1" pin="A0" pad="7"/>
+<connect gate="G$1" pin="A1" pad="8"/>
+<connect gate="G$1" pin="GND" pad="3"/>
+<connect gate="G$1" pin="IN+" pad="1"/>
+<connect gate="G$1" pin="IN-" pad="2"/>
+<connect gate="G$1" pin="SCL" pad="5"/>
+<connect gate="G$1" pin="SDA" pad="6"/>
+<connect gate="G$1" pin="VS" pad="4"/>
 </connects>
 <technologies>
 <technology name=""/>
