@@ -4,7 +4,7 @@
 <designblock>
 <description>Power switch used on distribution board</description>
 <attributes>
-<attribute name="BOARDSIZE" value="6299 x 3937 mil"/>
+<attribute name="BOARDSIZE" value="315 x 306 mil"/>
 <attribute name="LAYERS" value="1: 1"/>
 </attributes>
 <drawings>
@@ -777,10 +777,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </layers>
 <board>
 <plain>
-<wire x1="0" y1="0" x2="160" y2="0" width="0" layer="20"/>
-<wire x1="160" y1="0" x2="160" y2="100" width="0" layer="20"/>
-<wire x1="160" y1="100" x2="0" y2="100" width="0" layer="20"/>
-<wire x1="0" y1="100" x2="0" y2="0" width="0" layer="20"/>
 </plain>
 <libraries>
 <library name="DubSat1 Components">
