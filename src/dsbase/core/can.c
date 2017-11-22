@@ -141,6 +141,7 @@ uint8_t canSend(uint8_t bufNum, uint8_t* tech, uint8_t* msg) {
             return CAN_FAIL;
         }
 
+    // Send the ID to the MCP
     // 1 byte for the LoadTx instruction
     // 5 bytes for the settings TXB0SDIH to TXB0DLC
     int i = 0;
@@ -149,6 +150,7 @@ uint8_t canSend(uint8_t bufNum, uint8_t* tech, uint8_t* msg) {
     }
     spiTransceive(sendBuf, sendBuf, 6, CS_1);
 
+    // Send the Data to the MCP
     // 1 byte for the LoadTX instruction
     // 8 bytes for the actual message.
     for (i = 0; i < 8; i++) {
