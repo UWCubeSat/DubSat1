@@ -19,6 +19,9 @@
 //    setTheFilter(CAN_FILTER_4, 0x01 << boardNum);
 //    setTheFilter(CAN_FILTER_5, 0x01 << boardNum);
 //}
+void setMaskOrFilter(uint8_t addr, uint32_t filter){
+    setTheFilter(addr, filter);
+}
 
 void wrapCB0(uint8_t length, uint8_t* data, uint32_t id){
     CANPacket packet = {0};

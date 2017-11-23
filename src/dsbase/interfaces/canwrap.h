@@ -12,6 +12,14 @@
 
 #define PARAM_ADCS_STATUS_VELOCITY_RPM 0x4201;
 
+#define CAN_WRAP_ID_PPTMISFIRECOUNT 6
+#define CAN_WRAP_ID_PPTTIMINGSTATUS 5
+#define CAN_WRAP_ID_FIRINGSTATUS 4
+#define CAN_WRAP_ID_VOLTAGECURRENTINFO 3
+#define CAN_WRAP_ID_BATTERYSTATUS 2
+#define CAN_WRAP_ID_POWERSTATUS 1
+#define CAN_WRAP_ID_MCUSTATUS 0
+
 typedef struct CANPacket {
    uint32_t id; // Actual physical ID of the packet
    uint8_t data[8]; // Data
@@ -84,7 +92,7 @@ typedef struct MCUStatus {
     uint32_t minutesSinceTurnon; // min/16
     int8_t MCUTemp; // C
 } MCUStatus;
-
+void setMaskOrFilter(uint8_t addr, uint32_t filter);
 void encodePPTMisfireCount(PPTMisfireCount *input, CANPacket* output);
 void decodePPTMisfireCount(CANPacket *input, PPTMisfireCount *output);
 

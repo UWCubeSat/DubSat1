@@ -253,7 +253,12 @@ def createCMain(candb, cFileName):
         cFile.write("    reverseArray((output->data), 0, 7);\n")
         cFile.write("}\n\n")
     cFile.close()
-
+def createCMacros(candb, cFileName):
+    #print(candb.frames._list[0]._name)
+    cFile = open(cFileName, "w")
+    for frame in candb.frames:
+        cFile.write("#define CAN_WRAP_ID_" + frame.name.upper() + " " + (str(frame.id) if frame.id != 2147483648 else "0") + "\n")
+    cFile.close()
 def main():
     from optparse import OptionParser
 
@@ -407,6 +412,7 @@ def main():
     CANObj = toPyObject(infile, outfileName, **cmdlineOptions.__dict__)
     createCHeader(CANObj, "test.h")
     createCMain(CANObj, "test.c")
+    createCMacros(CANObj, "macros.c")
 
 
 if __name__ == '__main__':

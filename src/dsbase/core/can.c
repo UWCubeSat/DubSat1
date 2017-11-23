@@ -19,8 +19,6 @@ void setTheFilter(uint8_t address, uint32_t value){
     setRegister(address + 1, (uint8_t) (value >> 16) & 0x03 | (uint8_t) (value >> 13) & 0xE0 | 0x08);
     setRegister(address + 2, (uint8_t) (value >> 8));
     setRegister(address + 3, (uint8_t) value);
-    //readRegister(0x60, NULL);
-    //readRegister(0x70, NULL);
     // Add Masks and Filters
 
     //Set mode to Normal

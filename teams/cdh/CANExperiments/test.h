@@ -69,3 +69,4 @@ void decodePowerStatus(CANPacket *input, PowerStatus *output);
 
 void encodeMCUStatus(MCUStatus *input, CANPacket* output);
 void decodeMCUStatus(CANPacket *input, MCUStatus *output);
+
