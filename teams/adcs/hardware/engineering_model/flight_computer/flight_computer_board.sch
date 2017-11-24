@@ -15101,6 +15101,20 @@ Debug/Programming</text>
 <wire x1="93.98" y1="-142.24" x2="93.98" y2="-134.62" width="0.1524" layer="91"/>
 <junction x="93.98" y="-134.62"/>
 </segment>
+<segment>
+<pinref part="J2" gate="G$1" pin="3"/>
+<wire x1="205.74" y1="-134.62" x2="200.66" y2="-134.62" width="0.1524" layer="91"/>
+<wire x1="200.66" y1="-134.62" x2="200.66" y2="-127" width="0.1524" layer="91"/>
+<wire x1="200.66" y1="-127" x2="193.04" y2="-127" width="0.1524" layer="91"/>
+<label x="193.04" y="-127" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J2" gate="G$1" pin="7"/>
+<wire x1="205.74" y1="-139.7" x2="195.58" y2="-139.7" width="0.1524" layer="91"/>
+<wire x1="195.58" y1="-139.7" x2="195.58" y2="-137.16" width="0.1524" layer="91"/>
+<wire x1="195.58" y1="-137.16" x2="193.04" y2="-137.16" width="0.1524" layer="91"/>
+<label x="193.04" y="-137.16" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="ESTIMAT_SCL_JP" class="0">
 <segment>
@@ -15113,6 +15127,20 @@ Debug/Programming</text>
 <pinref part="R10" gate="G$1" pin="2"/>
 <wire x1="101.6" y1="-142.24" x2="101.6" y2="-137.16" width="0.1524" layer="91"/>
 <junction x="101.6" y="-137.16"/>
+</segment>
+<segment>
+<pinref part="J2" gate="G$1" pin="1"/>
+<wire x1="205.74" y1="-132.08" x2="203.2" y2="-132.08" width="0.1524" layer="91"/>
+<wire x1="203.2" y1="-132.08" x2="203.2" y2="-121.92" width="0.1524" layer="91"/>
+<wire x1="203.2" y1="-121.92" x2="193.04" y2="-121.92" width="0.1524" layer="91"/>
+<label x="193.04" y="-121.92" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J2" gate="G$1" pin="5"/>
+<wire x1="205.74" y1="-137.16" x2="198.12" y2="-137.16" width="0.1524" layer="91"/>
+<wire x1="198.12" y1="-137.16" x2="198.12" y2="-132.08" width="0.1524" layer="91"/>
+<wire x1="198.12" y1="-132.08" x2="193.04" y2="-132.08" width="0.1524" layer="91"/>
+<label x="193.04" y="-132.08" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="ESTIMAT_SDA_IMU" class="0">
@@ -15144,15 +15172,6 @@ Debug/Programming</text>
 <label x="408.94" y="-109.22" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
-<net name="ESTIMAT_SDA_IMU_JP" class="0">
-<segment>
-<pinref part="J2" gate="G$1" pin="7"/>
-<wire x1="205.74" y1="-139.7" x2="195.58" y2="-139.7" width="0.1524" layer="91"/>
-<wire x1="195.58" y1="-139.7" x2="195.58" y2="-137.16" width="0.1524" layer="91"/>
-<wire x1="195.58" y1="-137.16" x2="193.04" y2="-137.16" width="0.1524" layer="91"/>
-<label x="193.04" y="-137.16" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
 <net name="IMU_INT1_JP" class="0">
 <segment>
 <pinref part="J2" gate="G$1" pin="9"/>
@@ -15160,33 +15179,6 @@ Debug/Programming</text>
 <wire x1="195.58" y1="-142.24" x2="195.58" y2="-144.78" width="0.1524" layer="91"/>
 <wire x1="195.58" y1="-144.78" x2="193.04" y2="-144.78" width="0.1524" layer="91"/>
 <label x="193.04" y="-144.78" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="ESTIMAT_MAG_SCL_IMU" class="0">
-<segment>
-<pinref part="J2" gate="G$1" pin="5"/>
-<wire x1="205.74" y1="-137.16" x2="198.12" y2="-137.16" width="0.1524" layer="91"/>
-<wire x1="198.12" y1="-137.16" x2="198.12" y2="-132.08" width="0.1524" layer="91"/>
-<wire x1="198.12" y1="-132.08" x2="193.04" y2="-132.08" width="0.1524" layer="91"/>
-<label x="193.04" y="-132.08" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="ESTIMAT_SDA_MAG_JP" class="0">
-<segment>
-<pinref part="J2" gate="G$1" pin="3"/>
-<wire x1="205.74" y1="-134.62" x2="200.66" y2="-134.62" width="0.1524" layer="91"/>
-<wire x1="200.66" y1="-134.62" x2="200.66" y2="-127" width="0.1524" layer="91"/>
-<wire x1="200.66" y1="-127" x2="193.04" y2="-127" width="0.1524" layer="91"/>
-<label x="193.04" y="-127" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="ESTIMAT_SCL_MAG_JP" class="0">
-<segment>
-<pinref part="J2" gate="G$1" pin="1"/>
-<wire x1="205.74" y1="-132.08" x2="203.2" y2="-132.08" width="0.1524" layer="91"/>
-<wire x1="203.2" y1="-132.08" x2="203.2" y2="-121.92" width="0.1524" layer="91"/>
-<wire x1="203.2" y1="-121.92" x2="193.04" y2="-121.92" width="0.1524" layer="91"/>
-<label x="193.04" y="-121.92" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="IMU_INT2_JP" class="0">
