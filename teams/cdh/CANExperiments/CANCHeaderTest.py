@@ -258,15 +258,16 @@ def createCMacros(candb, cFileName):
     cFile = open(cFileName, "w")
     for frame in candb.frames:
         cFile.write("#define CAN_WRAP_ID_" + frame.name.upper() + " " + (str(frame.id) if frame.id != 2147483648 else "0") + "\n")
+        for sig in frame:
+            print(sig.multiplex);
     cFile.close()
 def main():
     from optparse import OptionParser
 
     usage = """
-    %prog [options] import-file export-file
+    %prog [options] import-file
 
     import-file: *.dbc|*.dbf|*.kcd|*.arxml|*.json|*.xls(x)|*.sym
-    export-file: *.dbc|*.dbf|*.kcd|*.arxml|*.json|*.xls(x)|*.sym
 
     followig formats are availible at this installation:
     \n"""
@@ -395,12 +396,11 @@ def main():
                       help="rename Signal form databases. (comma separated list)\nSyntax: --renameSignal=myOldSignal:myNewSignal,mySecondSignal:mySecondNewSignal")
 
     (cmdlineOptions, args) = parser.parse_args()
-    if len(args) < 2:
+    if len(args) < 1:
         parser.print_help()
         sys.exit(1)
 
     infile = args[0]
-    outfileName = args[1]
 
     verbosity = cmdlineOptions.verbosity
     if cmdlineOptions.silent:
@@ -409,10 +409,12 @@ def main():
 
     #set_log_level(logger, verbosity)
 
-    CANObj = toPyObject(infile, outfileName, **cmdlineOptions.__dict__)
-    createCHeader(CANObj, "test.h")
-    createCMain(CANObj, "test.c")
-    createCMacros(CANObj, "macros.c")
+    CANObj = toPyObject(infile, "", **cmdlineOptions.__dict__)
+    if not os.path.exists("codeGenOutput"):
+        os.makedirs("codeGenOutput")
+    createCHeader(CANObj, "codeGenOutput/headerCode.c")
+    createCMain(CANObj, "codeGenOutput/mainCode.c")
+    createCMacros(CANObj, "codeGenOutput/macros.c")
 
 
 if __name__ == '__main__':
