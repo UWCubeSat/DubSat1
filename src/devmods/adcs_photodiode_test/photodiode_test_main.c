@@ -32,37 +32,14 @@ int main(void)
     // previously configured port settings
     PM5CTL0 &= ~LOCKLPM5;
 
-    ltc2481Init(LTC2481_I2C_ADDR);
+    uint8_t handle = photodiodeInit(LTC2481_I2C_ADDR);
 
     for (;;)
     {
-        volatile double adcTemp;
         volatile double adcVoltage;
         volatile unsigned int i;
 
-        adcTemp = ltc2481Temperature();
-
-        i = 50000;
-        while (i > 0)
-        {
-            i--;
-        }
-        adcTemp = ltc2481Temperature();
-
-        i = 50000;
-        while (i > 0)
-        {
-            i--;
-        }
-
-        adcVoltage = ltc2481Voltage();
-
-        i = 50000;
-        while (i > 0)
-        {
-            i--;
-        }
-        adcVoltage = ltc2481Voltage();
+        adcVoltage = photodiodeVoltage(handle);
 
         i = 50000;
         while (i > 0)
