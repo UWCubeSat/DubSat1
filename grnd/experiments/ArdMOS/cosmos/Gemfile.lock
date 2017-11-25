@@ -2,20 +2,24 @@ GEM
   remote: https://rubygems.org/
   specs:
     coderay (1.1.2)
-    cosmos (4.0.3)
+    cosmos (4.1.0)
       bundler (~> 1.3)
+      httpclient (~> 2.8.3)
       json (>= 1.5, < 1.9)
       nokogiri (~> 1.6)
       opengl (>= 0.7, < 0.10)
       pry (>= 0.9, < 0.11)
       pry-doc (>= 0.5, < 0.7)
+      puma (~> 3.10.0)
       qtbindings (~> 4.8.6, >= 4.8.6.2)
+      rack (~> 2.0.3)
       rake (>= 0, < 13)
       rdoc (>= 3, < 5)
-      rubyzip (~> 1.1.0)
+      rubyzip (~> 1.2.1)
       snmp (~> 1.0)
       uuidtools (~> 2.1.0)
       yard (>= 0.8, < 0.10)
+    httpclient (2.8.3)
     json (1.8.6)
     method_source (0.8.2)
     mini_portile2 (2.3.0)
@@ -29,16 +33,18 @@ GEM
     pry-doc (0.6.0)
       pry (~> 0.9)
       yard (~> 0.8)
-    qtbindings (4.8.6.3-x64-mingw32)
-      qtbindings-qt (~> 4.8.6.0)
-    qtbindings-qt (4.8.6.3-x64-mingw32)
-    rake (12.1.0)
+    puma (3.10.0)
+    qtbindings (4.8.6.4-x64-mingw32)
+      qtbindings-qt (~> 4.8.6.0, >= 4.8.6.4)
+    qtbindings-qt (4.8.6.4-x64-mingw32)
+    rack (2.0.3)
+    rake (12.3.0)
     rdoc (4.3.0)
-    rubyzip (1.1.7)
+    rubyzip (1.2.1)
     slop (3.6.0)
     snmp (1.2.0)
     uuidtools (2.1.5)
-    yard (0.9.9)
+    yard (0.9.11)
 
 PLATFORMS
   x64-mingw32
@@ -47,4 +53,4 @@ DEPENDENCIES
   cosmos
 
 BUNDLED WITH
-   1.15.4
+   1.16.0
