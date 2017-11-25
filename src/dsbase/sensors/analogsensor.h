@@ -14,8 +14,12 @@
 #include "config/config_sensor_analog.h"
 
 typedef struct _analog_sensor_context {
+    uint8_t channel;
+
     uint16_t something;
     uint16_t somethingelse;
+
+
 } analog_sensor_context;
 
 

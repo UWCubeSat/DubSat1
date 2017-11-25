@@ -7,4 +7,5 @@
 
 #include "sensors/analogsensor.h"
 
-FILE_STATIC analog_sensor_context sensors[CONFIGM_sensor_analog_maxsensors];
+FILE_STATIC analog_sensor_context asensors[CONFIGM_sensor_analog_maxsensors];
+

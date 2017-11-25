@@ -2,9 +2,9 @@
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
 <eagle version="8.4.1">
 <designblock>
-<description>3V3/Pulse skipping configuration for the LTC3624</description>
+<description>3v3 Buck converter using the LTC 3624</description>
 <attributes>
-<attribute name="BOARDSIZE" value="668 x 967 mil"/>
+<attribute name="BOARDSIZE" value="967 x 696 mil"/>
 <attribute name="LAYERS" value="1: 1"/>
 </attributes>
 <drawings>
@@ -73,6 +73,8 @@
 <layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
 <layer number="59" name="tCarbon" color="7" fill="1" visible="no" active="no"/>
 <layer number="60" name="bCarbon" color="7" fill="1" visible="no" active="no"/>
+<layer number="88" name="SimResults" color="9" fill="1" visible="yes" active="yes"/>
+<layer number="89" name="SimProbes" color="9" fill="1" visible="yes" active="yes"/>
 <layer number="90" name="Modules" color="5" fill="1" visible="yes" active="yes"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
@@ -225,7 +227,7 @@ Datsheet: http://cds.linear.com/docs/en/datasheet/2943fa.pdf</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="LTC3624">
+<deviceset name="LTC3624" prefix="U">
 <gates>
 <gate name="G$1" symbol="LTC3624" x="-2.54" y="2.54"/>
 </gates>
@@ -247,7 +249,7 @@ Datsheet: http://cds.linear.com/docs/en/datasheet/2943fa.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="COILCRAFT_XAL4020-222ME">
+<deviceset name="COILCRAFT_XAL4020-222ME" prefix="L">
 <gates>
 <gate name="G$1" symbol="COILCRAFT_XAL4020" x="0" y="0"/>
 </gates>
@@ -7097,19 +7099,19 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 </class>
 </classes>
 <parts>
-<part name="U$5" library="DubSat1 Components" deviceset="LTC3624" device=""/>
-<part name="GND10" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C4" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
-<part name="U$6" library="DubSat1 Components" deviceset="COILCRAFT_XAL4020-222ME" device=""/>
-<part name="GND12" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="450kΩ"/>
-<part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="100kΩ"/>
-<part name="C5" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="22pF"/>
-<part name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="0.1µF"/>
-<part name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1µF"/>
-<part name="C8" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10µF"/>
-<part name="C9" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="47µF"/>
-<part name="GND11" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="U4" library="DubSat1 Components" deviceset="LTC3624" device=""/>
+<part name="GND13" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="2.2μF"/>
+<part name="L1" library="DubSat1 Components" deviceset="COILCRAFT_XAL4020-222ME" device=""/>
+<part name="GND14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="R3" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="450kΩ"/>
+<part name="R4" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="100kΩ"/>
+<part name="C10" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="22pF"/>
+<part name="C8" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="0.1µF"/>
+<part name="C9" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1µF"/>
+<part name="C11" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10µF"/>
+<part name="C12" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="47µF"/>
+<part name="GND15" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -7117,97 +7119,97 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <text x="251.46" y="5.08" size="1.778" layer="97">V_OUT = 0.6V × ( 1 + ( R2 / R1 ) )</text>
 </plain>
 <instances>
-<instance part="U$5" gate="G$1" x="248.92" y="30.48"/>
-<instance part="GND10" gate="1" x="281.94" y="35.56" rot="R90"/>
-<instance part="C4" gate="G$1" x="276.86" y="30.48" rot="R180"/>
-<instance part="U$6" gate="G$1" x="248.92" y="58.42"/>
-<instance part="GND12" gate="1" x="297.18" y="0"/>
-<instance part="R2" gate="G$1" x="297.18" y="27.94" rot="R90"/>
-<instance part="R1" gate="G$1" x="297.18" y="12.7" rot="R90"/>
-<instance part="C5" gate="G$1" x="289.56" y="25.4" rot="R180"/>
-<instance part="C6" gate="G$1" x="279.4" y="53.34"/>
-<instance part="C7" gate="G$1" x="289.56" y="53.34"/>
-<instance part="C8" gate="G$1" x="299.72" y="53.34"/>
-<instance part="C9" gate="G$1" x="309.88" y="53.34"/>
-<instance part="GND11" gate="1" x="309.88" y="38.1"/>
+<instance part="U4" gate="G$1" x="248.92" y="30.48"/>
+<instance part="GND13" gate="1" x="284.48" y="35.56" rot="R90"/>
+<instance part="C7" gate="G$1" x="279.4" y="30.48" rot="R180"/>
+<instance part="L1" gate="G$1" x="248.92" y="58.42"/>
+<instance part="GND14" gate="1" x="297.18" y="0"/>
+<instance part="R3" gate="G$1" x="297.18" y="27.94" rot="R90"/>
+<instance part="R4" gate="G$1" x="297.18" y="12.7" rot="R90"/>
+<instance part="C10" gate="G$1" x="289.56" y="25.4" rot="R180"/>
+<instance part="C8" gate="G$1" x="279.4" y="53.34"/>
+<instance part="C9" gate="G$1" x="289.56" y="53.34"/>
+<instance part="C11" gate="G$1" x="299.72" y="53.34"/>
+<instance part="C12" gate="G$1" x="309.88" y="53.34"/>
+<instance part="GND15" gate="1" x="309.88" y="38.1"/>
 </instances>
 <busses>
 </busses>
 <nets>
 <net name="GND" class="0">
 <segment>
-<pinref part="U$5" gate="G$1" pin="GND"/>
-<pinref part="GND10" gate="1" pin="GND"/>
+<pinref part="U4" gate="G$1" pin="GND"/>
+<pinref part="GND13" gate="1" pin="GND"/>
 <wire x1="269.24" y1="35.56" x2="271.78" y2="35.56" width="0.1524" layer="91"/>
-<pinref part="U$5" gate="G$1" pin="MODE/SYNC"/>
-<wire x1="271.78" y1="35.56" x2="276.86" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="276.86" y1="35.56" x2="279.4" y2="35.56" width="0.1524" layer="91"/>
+<pinref part="U4" gate="G$1" pin="MODE/SYNC"/>
+<wire x1="271.78" y1="35.56" x2="279.4" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="279.4" y1="35.56" x2="281.94" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="269.24" y1="30.48" x2="271.78" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="271.78" y1="30.48" x2="271.78" y2="35.56" width="0.1524" layer="91"/>
 <junction x="271.78" y="35.56"/>
-<pinref part="C4" gate="G$1" pin="2"/>
-<junction x="276.86" y="35.56"/>
+<pinref part="C7" gate="G$1" pin="2"/>
+<junction x="279.4" y="35.56"/>
 </segment>
 <segment>
-<pinref part="R1" gate="G$1" pin="1"/>
-<pinref part="GND12" gate="1" pin="GND"/>
+<pinref part="R4" gate="G$1" pin="1"/>
+<pinref part="GND14" gate="1" pin="GND"/>
 <wire x1="297.18" y1="7.62" x2="297.18" y2="2.54" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="C6" gate="G$1" pin="2"/>
+<pinref part="C8" gate="G$1" pin="2"/>
 <wire x1="279.4" y1="48.26" x2="279.4" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="279.4" y1="45.72" x2="289.56" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="GND11" gate="1" pin="GND"/>
+<pinref part="GND15" gate="1" pin="GND"/>
 <wire x1="289.56" y1="45.72" x2="299.72" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="299.72" y1="45.72" x2="309.88" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="309.88" y1="45.72" x2="309.88" y2="40.64" width="0.1524" layer="91"/>
-<pinref part="C9" gate="G$1" pin="2"/>
+<pinref part="C12" gate="G$1" pin="2"/>
 <wire x1="309.88" y1="45.72" x2="309.88" y2="48.26" width="0.1524" layer="91"/>
 <junction x="309.88" y="45.72"/>
-<pinref part="C8" gate="G$1" pin="2"/>
+<pinref part="C11" gate="G$1" pin="2"/>
 <wire x1="299.72" y1="45.72" x2="299.72" y2="48.26" width="0.1524" layer="91"/>
 <junction x="299.72" y="45.72"/>
-<pinref part="C7" gate="G$1" pin="2"/>
+<pinref part="C9" gate="G$1" pin="2"/>
 <wire x1="289.56" y1="45.72" x2="289.56" y2="48.26" width="0.1524" layer="91"/>
 <junction x="289.56" y="45.72"/>
 </segment>
 </net>
 <net name="VBAT" class="0">
 <segment>
-<pinref part="U$5" gate="G$1" pin="V_IN"/>
+<pinref part="U4" gate="G$1" pin="V_IN"/>
 <wire x1="233.68" y1="30.48" x2="228.6" y2="30.48" width="0.1524" layer="91"/>
 <label x="228.6" y="30.48" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="3V3_BUCK_ENABLE" class="0">
 <segment>
-<pinref part="U$5" gate="G$1" pin="RUN"/>
+<pinref part="U4" gate="G$1" pin="RUN"/>
 <wire x1="233.68" y1="25.4" x2="228.6" y2="25.4" width="0.1524" layer="91"/>
 <label x="228.6" y="25.4" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="3V3_BUCK_INTVCC" class="0">
 <segment>
-<pinref part="U$5" gate="G$1" pin="INTVCC"/>
-<pinref part="C4" gate="G$1" pin="1"/>
-<wire x1="269.24" y1="25.4" x2="276.86" y2="25.4" width="0.1524" layer="91"/>
-<wire x1="276.86" y1="25.4" x2="276.86" y2="27.94" width="0.1524" layer="91"/>
+<pinref part="U4" gate="G$1" pin="INTVCC"/>
+<pinref part="C7" gate="G$1" pin="1"/>
+<wire x1="269.24" y1="25.4" x2="279.4" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="279.4" y1="25.4" x2="279.4" y2="27.94" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="3V3_BUCK_SW" class="0">
 <segment>
-<pinref part="U$5" gate="G$1" pin="SW"/>
+<pinref part="U4" gate="G$1" pin="SW"/>
 <wire x1="233.68" y1="35.56" x2="228.6" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="228.6" y1="35.56" x2="228.6" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="228.6" y1="58.42" x2="233.68" y2="58.42" width="0.1524" layer="91"/>
-<pinref part="U$6" gate="G$1" pin="P$1"/>
+<pinref part="L1" gate="G$1" pin="P$1"/>
 </segment>
 </net>
 <net name="3V3_BUCK_VOUT" class="0">
 <segment>
-<pinref part="U$6" gate="G$1" pin="P$2"/>
+<pinref part="L1" gate="G$1" pin="P$2"/>
 <wire x1="264.16" y1="58.42" x2="274.32" y2="58.42" width="0.1524" layer="91"/>
-<pinref part="R2" gate="G$1" pin="2"/>
+<pinref part="R3" gate="G$1" pin="2"/>
 <wire x1="274.32" y1="58.42" x2="279.4" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="279.4" y1="58.42" x2="289.56" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="289.56" y1="58.42" x2="299.72" y2="58.42" width="0.1524" layer="91"/>
@@ -7215,22 +7217,22 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <wire x1="289.56" y1="40.64" x2="289.56" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="289.56" y1="35.56" x2="297.18" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="297.18" y1="35.56" x2="297.18" y2="33.02" width="0.1524" layer="91"/>
-<pinref part="C5" gate="G$1" pin="2"/>
+<pinref part="C10" gate="G$1" pin="2"/>
 <wire x1="289.56" y1="30.48" x2="289.56" y2="35.56" width="0.1524" layer="91"/>
 <junction x="289.56" y="35.56"/>
 <wire x1="289.56" y1="40.64" x2="274.32" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="274.32" y1="40.64" x2="274.32" y2="58.42" width="0.1524" layer="91"/>
 <junction x="274.32" y="58.42"/>
-<pinref part="C6" gate="G$1" pin="1"/>
+<pinref part="C8" gate="G$1" pin="1"/>
 <wire x1="279.4" y1="55.88" x2="279.4" y2="58.42" width="0.1524" layer="91"/>
 <junction x="279.4" y="58.42"/>
-<pinref part="C7" gate="G$1" pin="1"/>
+<pinref part="C9" gate="G$1" pin="1"/>
 <wire x1="289.56" y1="55.88" x2="289.56" y2="58.42" width="0.1524" layer="91"/>
 <junction x="289.56" y="58.42"/>
-<pinref part="C8" gate="G$1" pin="1"/>
+<pinref part="C11" gate="G$1" pin="1"/>
 <wire x1="299.72" y1="55.88" x2="299.72" y2="58.42" width="0.1524" layer="91"/>
 <junction x="299.72" y="58.42"/>
-<pinref part="C9" gate="G$1" pin="1"/>
+<pinref part="C12" gate="G$1" pin="1"/>
 <wire x1="309.88" y1="55.88" x2="309.88" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="309.88" y1="58.42" x2="317.5" y2="58.42" width="0.1524" layer="91"/>
 <junction x="309.88" y="58.42"/>
@@ -7239,22 +7241,22 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 </net>
 <net name="3V3_BUCK_FB" class="0">
 <segment>
-<pinref part="R2" gate="G$1" pin="1"/>
-<pinref part="R1" gate="G$1" pin="2"/>
+<pinref part="R3" gate="G$1" pin="1"/>
+<pinref part="R4" gate="G$1" pin="2"/>
 <wire x1="297.18" y1="22.86" x2="297.18" y2="20.32" width="0.1524" layer="91"/>
-<pinref part="U$5" gate="G$1" pin="FB"/>
+<pinref part="U4" gate="G$1" pin="FB"/>
 <wire x1="297.18" y1="20.32" x2="297.18" y2="17.78" width="0.1524" layer="91"/>
 <wire x1="269.24" y1="20.32" x2="289.56" y2="20.32" width="0.1524" layer="91"/>
 <wire x1="289.56" y1="20.32" x2="297.18" y2="20.32" width="0.1524" layer="91"/>
 <junction x="297.18" y="20.32"/>
-<pinref part="C5" gate="G$1" pin="1"/>
+<pinref part="C10" gate="G$1" pin="1"/>
 <wire x1="289.56" y1="20.32" x2="289.56" y2="22.86" width="0.1524" layer="91"/>
 <junction x="289.56" y="20.32"/>
 </segment>
 </net>
 <net name="3V3_BUCK_PGOOD" class="0">
 <segment>
-<pinref part="U$5" gate="G$1" pin="PGOOD"/>
+<pinref part="U4" gate="G$1" pin="PGOOD"/>
 <wire x1="233.68" y1="20.32" x2="228.6" y2="20.32" width="0.1524" layer="91"/>
 <label x="228.6" y="20.32" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
@@ -7329,6 +7331,8 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
 <layer number="59" name="tCarbon" color="7" fill="1" visible="no" active="no"/>
 <layer number="60" name="bCarbon" color="7" fill="1" visible="no" active="no"/>
+<layer number="88" name="SimResults" color="9" fill="1" visible="no" active="no"/>
+<layer number="89" name="SimProbes" color="9" fill="1" visible="no" active="no"/>
 <layer number="90" name="Modules" color="5" fill="1" visible="no" active="no"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="no" active="no"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="no" active="no"/>
@@ -8755,141 +8759,141 @@ design rules under a new name.</description>
 </pass>
 </autorouter>
 <elements>
-<element name="U$5" library="DubSat1 Components" package="LTC3624" value="LTC3624" x="70.358" y="62.23" rot="R180"/>
-<element name="C4" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="" x="66.04" y="61.468" rot="R180"/>
-<element name="U$6" library="DubSat1 Components" package="COILCRAFT_XAL4020" value="COILCRAFT_XAL4020-222ME" x="74.676" y="59.944" rot="R270"/>
-<element name="R2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="450kΩ" x="69.596" y="58.928"/>
-<element name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="100kΩ" x="66.04" y="63.754"/>
-<element name="C5" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="22pF" x="66.294" y="57.912" rot="R270"/>
-<element name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="0.1µF" x="76.962" y="55.245" rot="R270"/>
-<element name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1µF" x="74.676" y="55.626" rot="R270"/>
-<element name="C8" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10µF" x="72.39" y="55.626" rot="R270"/>
-<element name="C9" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="47µF" x="70.104" y="55.626" rot="R270"/>
+<element name="U4" library="DubSat1 Components" package="LTC3624" value="LTC3624" x="69.596" y="68.58" rot="R270"/>
+<element name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="2.2μF" x="70.358" y="64.262" rot="R270"/>
+<element name="L1" library="DubSat1 Components" package="COILCRAFT_XAL4020" value="COILCRAFT_XAL4020-222ME" x="71.882" y="72.898"/>
+<element name="R3" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="450kΩ" x="72.898" y="67.818" rot="R90"/>
+<element name="R4" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="100kΩ" x="68.072" y="64.262" rot="R90"/>
+<element name="C10" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="22pF" x="73.914" y="64.516"/>
+<element name="C8" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="0.1µF" x="76.581" y="75.184"/>
+<element name="C9" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1µF" x="76.2" y="72.898"/>
+<element name="C11" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10µF" x="76.2" y="70.612"/>
+<element name="C12" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="47µF" x="76.2" y="68.326"/>
 </elements>
 <signals>
 <signal name="GND">
-<contactref element="U$5" pad="GND@1"/>
-<contactref element="U$5" pad="GND@PAD"/>
-<contactref element="U$5" pad="MODE/SYNC"/>
-<contactref element="R1" pad="1"/>
-<contactref element="C4" pad="2"/>
-<contactref element="C6" pad="2"/>
-<contactref element="C9" pad="2"/>
-<contactref element="C8" pad="2"/>
+<contactref element="U4" pad="GND@1"/>
+<contactref element="U4" pad="GND@PAD"/>
+<contactref element="U4" pad="MODE/SYNC"/>
+<contactref element="R4" pad="1"/>
 <contactref element="C7" pad="2"/>
-<wire x1="68.958" y1="61.48" x2="69.608" y2="61.48" width="0.254" layer="1"/>
-<wire x1="69.608" y1="61.48" x2="70.358" y2="62.23" width="0.254" layer="1"/>
-<wire x1="68.958" y1="61.98" x2="70.108" y2="61.98" width="0.254" layer="1"/>
-<wire x1="70.108" y1="61.98" x2="70.358" y2="62.23" width="0.254" layer="1"/>
-<via x="70.739" y="61.468" extent="1-16" drill="0.4" shape="octagon"/>
-<via x="69.977" y="61.468" extent="1-16" drill="0.4" shape="octagon"/>
-<via x="70.739" y="62.23" extent="1-16" drill="0.4" shape="octagon"/>
-<via x="70.739" y="62.992" extent="1-16" drill="0.4" shape="octagon"/>
-<via x="69.977" y="62.23" extent="1-16" drill="0.4" shape="octagon"/>
-<via x="69.977" y="62.992" extent="1-16" drill="0.4" shape="octagon"/>
-<wire x1="70.358" y1="62.23" x2="70.739" y2="62.23" width="0.254" layer="1"/>
-<via x="64.135" y="61.1378" extent="1-16" drill="0.4" shape="square"/>
-<via x="64.135" y="61.7728" extent="1-16" drill="0.4" shape="square"/>
-<wire x1="65.09" y1="61.468" x2="64.4398" y2="61.468" width="0.254" layer="1"/>
-<wire x1="64.4398" y1="61.468" x2="64.135" y2="61.7728" width="0.254" layer="1"/>
-<wire x1="64.135" y1="61.1378" x2="64.7598" y2="61.1378" width="0.254" layer="1"/>
-<wire x1="64.7598" y1="61.1378" x2="65.09" y2="61.468" width="0.254" layer="1"/>
-<via x="64.135" y="63.4238" extent="1-16" drill="0.4" shape="square"/>
-<via x="64.135" y="64.0588" extent="1-16" drill="0.4" shape="square"/>
-<wire x1="64.135" y1="64.0588" x2="64.7852" y2="64.0588" width="0.254" layer="1"/>
-<wire x1="64.7852" y1="64.0588" x2="65.09" y2="63.754" width="0.254" layer="1"/>
-<wire x1="64.135" y1="63.4238" x2="64.135" y2="64.0588" width="0.254" layer="1"/>
-<via x="77.724" y="52.5018" extent="1-16" drill="0.4" shape="square"/>
+<contactref element="C8" pad="2"/>
+<contactref element="C12" pad="2"/>
+<contactref element="C11" pad="2"/>
+<contactref element="C9" pad="2"/>
+<wire x1="70.346" y1="67.18" x2="70.346" y2="67.83" width="0.254" layer="1"/>
+<wire x1="70.346" y1="67.83" x2="69.596" y2="68.58" width="0.254" layer="1"/>
+<wire x1="69.846" y1="67.18" x2="69.846" y2="68.33" width="0.254" layer="1"/>
+<wire x1="69.846" y1="68.33" x2="69.596" y2="68.58" width="0.254" layer="1"/>
+<via x="70.358" y="68.961" extent="1-16" drill="0.4" shape="octagon"/>
+<via x="70.358" y="68.199" extent="1-16" drill="0.4" shape="octagon"/>
+<via x="69.596" y="68.961" extent="1-16" drill="0.4" shape="octagon"/>
+<via x="68.834" y="68.961" extent="1-16" drill="0.4" shape="octagon"/>
+<via x="69.596" y="68.199" extent="1-16" drill="0.4" shape="octagon"/>
+<via x="68.834" y="68.199" extent="1-16" drill="0.4" shape="octagon"/>
+<wire x1="69.596" y1="68.58" x2="69.596" y2="68.961" width="0.254" layer="1"/>
+<via x="70.6882" y="62.357" extent="1-16" drill="0.4" shape="square"/>
+<via x="70.0532" y="62.357" extent="1-16" drill="0.4" shape="square"/>
+<wire x1="70.358" y1="63.312" x2="70.358" y2="62.6618" width="0.254" layer="1"/>
+<wire x1="70.358" y1="62.6618" x2="70.0532" y2="62.357" width="0.254" layer="1"/>
+<wire x1="70.6882" y1="62.357" x2="70.6882" y2="62.9818" width="0.254" layer="1"/>
+<wire x1="70.6882" y1="62.9818" x2="70.358" y2="63.312" width="0.254" layer="1"/>
+<via x="68.4022" y="62.357" extent="1-16" drill="0.4" shape="square"/>
+<via x="67.7672" y="62.357" extent="1-16" drill="0.4" shape="square"/>
+<wire x1="67.7672" y1="62.357" x2="67.7672" y2="63.0072" width="0.254" layer="1"/>
+<wire x1="67.7672" y1="63.0072" x2="68.072" y2="63.312" width="0.254" layer="1"/>
+<wire x1="68.4022" y1="62.357" x2="67.7672" y2="62.357" width="0.254" layer="1"/>
+<via x="79.3242" y="75.946" extent="1-16" drill="0.4" shape="square"/>
 <polygon width="0.1524" layer="1" thermals="no">
-<vertex x="69.088" y="53.594"/>
-<vertex x="69.088" y="55.372"/>
-<vertex x="78.232" y="55.372"/>
-<vertex x="78.232" y="52.832"/>
-<vertex x="76.2" y="52.832"/>
-<vertex x="76.2" y="53.594"/>
+<vertex x="78.232" y="67.31"/>
+<vertex x="76.454" y="67.31"/>
+<vertex x="76.454" y="76.454"/>
+<vertex x="78.994" y="76.454"/>
+<vertex x="78.994" y="74.422"/>
+<vertex x="78.232" y="74.422"/>
 </polygon>
-<via x="77.089" y="52.5018" extent="1-16" drill="0.4" shape="square"/>
-<via x="76.454" y="52.5018" extent="1-16" drill="0.4" shape="square"/>
-<via x="75.819" y="53.2638" extent="1-16" drill="0.4" shape="square"/>
-<via x="75.184" y="53.2638" extent="1-16" drill="0.4" shape="square"/>
-<via x="74.549" y="53.2638" extent="1-16" drill="0.4" shape="square"/>
-<via x="73.914" y="53.2638" extent="1-16" drill="0.4" shape="square"/>
-<via x="73.279" y="53.2638" extent="1-16" drill="0.4" shape="square"/>
-<via x="72.644" y="53.2638" extent="1-16" drill="0.4" shape="square"/>
-<via x="72.009" y="53.2638" extent="1-16" drill="0.4" shape="square"/>
-<via x="71.374" y="53.2638" extent="1-16" drill="0.4" shape="square"/>
-<via x="70.739" y="53.2638" extent="1-16" drill="0.4" shape="square"/>
-<via x="70.104" y="53.2638" extent="1-16" drill="0.4" shape="square"/>
-<via x="69.469" y="53.2638" extent="1-16" drill="0.4" shape="square"/>
-<via x="75.819" y="52.5018" extent="1-16" drill="0.4" shape="square"/>
+<via x="79.3242" y="75.311" extent="1-16" drill="0.4" shape="square"/>
+<via x="79.3242" y="74.676" extent="1-16" drill="0.4" shape="square"/>
+<via x="78.5622" y="74.041" extent="1-16" drill="0.4" shape="square"/>
+<via x="78.5622" y="73.406" extent="1-16" drill="0.4" shape="square"/>
+<via x="78.5622" y="72.771" extent="1-16" drill="0.4" shape="square"/>
+<via x="78.5622" y="72.136" extent="1-16" drill="0.4" shape="square"/>
+<via x="78.5622" y="71.501" extent="1-16" drill="0.4" shape="square"/>
+<via x="78.5622" y="70.866" extent="1-16" drill="0.4" shape="square"/>
+<via x="78.5622" y="70.231" extent="1-16" drill="0.4" shape="square"/>
+<via x="78.5622" y="69.596" extent="1-16" drill="0.4" shape="square"/>
+<via x="78.5622" y="68.961" extent="1-16" drill="0.4" shape="square"/>
+<via x="78.5622" y="68.326" extent="1-16" drill="0.4" shape="square"/>
+<via x="78.5622" y="67.691" extent="1-16" drill="0.4" shape="square"/>
+<via x="79.3242" y="74.041" extent="1-16" drill="0.4" shape="square"/>
 </signal>
 <signal name="VBAT">
-<contactref element="U$5" pad="V_IN"/>
+<contactref element="U4" pad="V_IN"/>
+<wire x1="69.846" y1="69.98" x2="69.85" y2="69.984" width="0.254" layer="1"/>
 </signal>
 <signal name="3V3_BUCK_ENABLE">
-<contactref element="U$5" pad="RUN"/>
+<contactref element="U4" pad="RUN"/>
 </signal>
 <signal name="3V3_BUCK_INTVCC">
-<contactref element="U$5" pad="INTVCC"/>
-<contactref element="C4" pad="1"/>
-<wire x1="68.958" y1="62.48" x2="67.306" y2="62.48" width="0.254" layer="1"/>
-<wire x1="67.306" y1="62.48" x2="67.056" y2="62.23" width="0.254" layer="1"/>
-<wire x1="67.056" y1="62.23" x2="67.056" y2="61.534" width="0.254" layer="1"/>
-<wire x1="67.056" y1="61.534" x2="66.99" y2="61.468" width="0.254" layer="1"/>
+<contactref element="U4" pad="INTVCC"/>
+<contactref element="C7" pad="1"/>
+<wire x1="69.346" y1="67.18" x2="69.346" y2="65.528" width="0.254" layer="1"/>
+<wire x1="69.346" y1="65.528" x2="69.596" y2="65.278" width="0.254" layer="1"/>
+<wire x1="69.596" y1="65.278" x2="70.292" y2="65.278" width="0.254" layer="1"/>
+<wire x1="70.292" y1="65.278" x2="70.358" y2="65.212" width="0.254" layer="1"/>
 </signal>
 <signal name="3V3_BUCK_SW">
-<contactref element="U$5" pad="SW"/>
-<contactref element="U$6" pad="P$1"/>
-<wire x1="71.758" y1="61.48" x2="72.644" y2="61.48" width="0.254" layer="1"/>
-<wire x1="72.644" y1="61.48" x2="72.644" y2="61.468" width="0.254" layer="1"/>
-<wire x1="72.644" y1="61.468" x2="72.983" y2="61.129" width="0.254" layer="1"/>
-<wire x1="72.983" y1="61.129" x2="74.676" y2="61.129" width="0.254" layer="1"/>
+<contactref element="U4" pad="SW"/>
+<contactref element="L1" pad="P$1"/>
+<wire x1="70.346" y1="69.98" x2="70.346" y2="70.866" width="0.254" layer="1"/>
+<wire x1="70.346" y1="70.866" x2="70.358" y2="70.866" width="0.254" layer="1"/>
+<wire x1="70.358" y1="70.866" x2="70.697" y2="71.205" width="0.254" layer="1"/>
+<wire x1="70.697" y1="71.205" x2="70.697" y2="72.898" width="0.254" layer="1"/>
 </signal>
 <signal name="3V3_BUCK_VOUT">
-<contactref element="U$6" pad="P$2"/>
-<contactref element="R2" pad="2"/>
-<contactref element="C5" pad="2"/>
-<contactref element="C6" pad="1"/>
-<contactref element="C7" pad="1"/>
+<contactref element="L1" pad="P$2"/>
+<contactref element="R3" pad="2"/>
+<contactref element="C10" pad="2"/>
 <contactref element="C8" pad="1"/>
 <contactref element="C9" pad="1"/>
+<contactref element="C11" pad="1"/>
+<contactref element="C12" pad="1"/>
 <polygon width="0.1524" layer="1" thermals="no">
-<vertex x="78.232" y="55.88"/>
-<vertex x="78.232" y="59.69"/>
-<vertex x="69.85" y="59.69"/>
-<vertex x="69.85" y="57.658"/>
-<vertex x="65.278" y="57.658"/>
-<vertex x="65.278" y="55.88"/>
+<vertex x="75.946" y="76.454"/>
+<vertex x="72.136" y="76.454"/>
+<vertex x="72.136" y="68.072"/>
+<vertex x="74.168" y="68.072"/>
+<vertex x="74.168" y="63.5"/>
+<vertex x="75.946" y="63.5"/>
 </polygon>
 </signal>
 <signal name="3V3_BUCK_FB">
-<contactref element="R2" pad="1"/>
-<contactref element="R1" pad="2"/>
-<contactref element="U$5" pad="FB"/>
-<contactref element="C5" pad="1"/>
-<wire x1="68.958" y1="62.98" x2="68.946" y2="62.992" width="0.254" layer="1"/>
-<wire x1="68.946" y1="62.992" x2="68.326" y2="62.992" width="0.254" layer="1"/>
-<wire x1="67.564" y1="63.754" x2="68.326" y2="62.992" width="0.254" layer="1"/>
-<wire x1="66.99" y1="63.754" x2="67.564" y2="63.754" width="0.254" layer="1"/>
-<wire x1="63.414225" y1="60.3878" x2="63.2208" y2="60.581225" width="0.254" layer="1"/>
-<wire x1="63.2208" y1="60.581225" x2="63.2208" y2="62.354775" width="0.254" layer="1"/>
-<wire x1="63.2208" y1="62.354775" x2="63.414225" y2="62.5482" width="0.254" layer="1"/>
-<wire x1="65.7842" y1="62.5482" x2="63.414225" y2="62.5482" width="0.254" layer="1"/>
-<wire x1="65.7842" y1="62.5482" x2="66.99" y2="63.754" width="0.254" layer="1"/>
-<wire x1="68.646" y1="58.928" x2="67.1862" y2="60.3878" width="0.254" layer="1"/>
-<wire x1="66.421" y1="60.3878" x2="63.414225" y2="60.3878" width="0.254" layer="1"/>
-<wire x1="66.294" y1="60.2608" x2="66.294" y2="58.862" width="0.508" layer="1"/>
-<wire x1="67.1862" y1="60.3878" x2="66.421" y2="60.3878" width="0.254" layer="1"/>
-<wire x1="66.421" y1="60.3878" x2="66.294" y2="60.2608" width="0.254" layer="1"/>
+<contactref element="R3" pad="1"/>
+<contactref element="R4" pad="2"/>
+<contactref element="U4" pad="FB"/>
+<contactref element="C10" pad="1"/>
+<wire x1="68.072" y1="65.786" x2="68.072" y2="65.212" width="0.254" layer="1"/>
+<wire x1="71.4382" y1="61.636225" x2="71.244775" y2="61.4428" width="0.254" layer="1"/>
+<wire x1="71.244775" y1="61.4428" x2="69.471225" y2="61.4428" width="0.254" layer="1"/>
+<wire x1="69.471225" y1="61.4428" x2="69.2778" y2="61.636225" width="0.254" layer="1"/>
+<wire x1="69.2778" y1="64.0062" x2="69.2778" y2="61.636225" width="0.254" layer="1"/>
+<wire x1="69.2778" y1="64.0062" x2="68.072" y2="65.212" width="0.254" layer="1"/>
+<wire x1="72.898" y1="66.868" x2="71.4382" y2="65.4082" width="0.254" layer="1"/>
+<wire x1="71.4382" y1="64.643" x2="71.4382" y2="61.636225" width="0.254" layer="1"/>
+<wire x1="71.5652" y1="64.516" x2="72.964" y2="64.516" width="0.508" layer="1"/>
+<wire x1="71.4382" y1="65.4082" x2="71.4382" y2="64.643" width="0.254" layer="1"/>
+<wire x1="71.4382" y1="64.643" x2="71.5652" y2="64.516" width="0.254" layer="1"/>
 <polygon width="0.1524" layer="1" thermals="no">
-<vertex x="65.532" y="58.166"/>
-<vertex x="69.342" y="58.166"/>
-<vertex x="69.342" y="60.452"/>
-<vertex x="65.532" y="60.452"/>
+<vertex x="73.66" y="63.754"/>
+<vertex x="73.66" y="67.564"/>
+<vertex x="71.374" y="67.564"/>
+<vertex x="71.374" y="63.754"/>
 </polygon>
+<wire x1="68.846" y1="67.18" x2="68.846" y2="66.56" width="0.254" layer="1"/>
+<wire x1="68.846" y1="66.56" x2="68.072" y2="65.786" width="0.254" layer="1"/>
 </signal>
 <signal name="3V3_BUCK_PGOOD">
-<contactref element="U$5" pad="PGOOD"/>
+<contactref element="U4" pad="PGOOD"/>
 </signal>
 </signals>
 </board>
