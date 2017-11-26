@@ -176,7 +176,9 @@ def getSignalSize(sig):
     elif sig.min >= - (2 ** (64-1)) and sig.max <=  2 ** (64-1) - 1:
         return "int64_t"
     else:
-        raise Exception('We can\'t handle numbers that big:' + sig.name)
+        print("Warning: " + sig.name + " is too big. Using uint8_t instead.")
+        return "uint8_t"
+        # raise Exception('We can\'t handle numbers that big:' + sig.name)
 def createCHeader(candb, cFileName):
     #print(candb.frames._list[0]._name)
     cFile = open(cFileName, "w")
@@ -219,15 +221,11 @@ def createCMain(candb, cFileName):
                 + " = ("
                 + getSignalSize(sig)
                 + ") (((fullData & ((uint64_t) 0b"
-                + str(int(1/9 * (-1 + 10 ** sig.signalsize)))
-                + " << "
-                + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize))
-                + ")) >> "
-                + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize))
-                + ") * "
-                + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor))
-                + " + "
-                + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset))
+                + str(int((-1 + 10 ** sig.signalsize)//9))
+                + (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
+                + (")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
+                + (") * " + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor)) if sig.factor != 1.0 else ")")
+                + (" + " + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset)) if sig.offset != 0.0 else "")
                 + ");\n")
         cFile.write("}\n\n")
         # Encode Function Implementation
@@ -241,12 +239,9 @@ def createCMain(candb, cFileName):
         for sig in frame:
             cFile.write("    fullPacketData |= ((uint64_t)((input -> "
                 + sig.name
-                + " - "
-                + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset))
-                + ") / "
-                + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor))
-                + ")) << "
-                + str(64 - int(sig.getStartbit()) - sig.signalsize)
+                + (" - " + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset)) if sig.offset != 0.0 else "")
+                + ((") / " + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor))) if (sig.factor != 1.0) else (")"))
+                + (")) << " + str(64 - int(sig.getStartbit()) - sig.signalsize) if 64 - int(sig.getStartbit()) - sig.signalsize != 0 else "))")
                 + ";\n")
         cFile.write("    uint64_t *thePointer = (uint64_t *) (&(output -> data));\n")
         cFile.write("    *thePointer = fullPacketData;\n")
@@ -254,12 +249,21 @@ def createCMain(candb, cFileName):
         cFile.write("}\n\n")
     cFile.close()
 def createCMacros(candb, cFileName):
-    #print(candb.frames._list[0]._name)
     cFile = open(cFileName, "w")
+    # Add macros for packet IDs for filter purposes.
     for frame in candb.frames:
-        cFile.write("#define CAN_WRAP_ID_" + frame.name.upper() + " " + (str(frame.id) if frame.id != 2147483648 else "0") + "\n")
+        cFile.write("#define CAN_ID_" + frame.name.upper() + " " + (str(frame.id) if frame.id != 2147483648 else "0") + "\n")
+    # Add macros for ENUMS defined at the signal level.
+    cFile.write("\n")
+    for frame in candb.frames:
         for sig in frame:
-            print(sig.multiplex);
+            for a in sig.values.keys():
+                cFile.write ("#define CAN_ENUM_" + sig.name.upper() + "_" + sig.values[a].upper().replace(" ", "") + " " + str(a) + "\n")
+    # Add macros for ENUMS defined at the global level.
+    cFile.write("\n")
+    for vt in candb.valueTables:
+        for a in candb.valueTables[vt].keys():
+            cFile.write ("#define CAN_ENUM_" + vt.upper() + "_" + candb.valueTables[vt][a].upper().replace(" ", "") + " " + str(a) + "\n")
     cFile.close()
 def main():
     from optparse import OptionParser
@@ -269,7 +273,7 @@ def main():
 
     import-file: *.dbc|*.dbf|*.kcd|*.arxml|*.json|*.xls(x)|*.sym
 
-    followig formats are availible at this installation:
+    following formats are availible at this installation:
     \n"""
 
     for suppFormat, features in canmatrix.formats.supportedFormats.items():

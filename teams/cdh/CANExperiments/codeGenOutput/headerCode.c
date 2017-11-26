@@ -1,72 +1,40 @@
-typedef struct PPTMisfireCount {
-    uint32_t totalMisfires2; //  (No Units)
-    uint32_t totalMisfires1; //  (No Units)
-} PPTMisfireCount;
+typedef struct Message5ValueTableSigs {
+    uint8_t ValueTableSignal1; //  (No Units)
+} Message5ValueTableSigs;
 
-typedef struct PPTTimingStatus {
-    uint16_t averageChargeTime; //  (No Units)
-    uint32_t minutesSinceSuccessfulFire; // min
-    uint32_t minutesSinceAttemptedFire; // min
-    uint16_t medianChargeTime; // ms
-} PPTTimingStatus;
+typedef struct Message4OddSizes {
+    uint64_t OddSize3; //  (No Units)
+    int16_t OddSize2; //  (No Units)
+    uint8_t OddSize1; //  (No Units)
+} Message4OddSizes;
 
-typedef struct FiringStatus {
-    uint32_t successfullFires1; //  (No Units)
-    uint32_t successfulFires2; //  (No Units)
-    uint16_t numberOfMisfires; //  (No Units)
-    uint8_t lastFiringRate; //  (No Units)
-} FiringStatus;
+typedef struct Message3 {
+    uint8_t NormalDouble; //  (No Units)
+} Message3;
 
-typedef struct VoltageCurrentInfo {
-    uint16_t adcCurrent; // mA
-    uint8_t com1Current; // mA
-    uint16_t com2Current; // mA
-    uint16_t LineVoltage; // mV
-    uint16_t rahsCurrent; // mA
-} VoltageCurrentInfo;
+typedef struct Message2Smaller {
+    uint8_t NormalFloat; // 2.752
+} Message2Smaller;
 
-typedef struct BatteryStatus {
-    uint32_t batteryFullChargeCount; //  (No Units)
-    int16_t batteryTemperature; // C
-    uint32_t batteryVoltage; // mV
-    uint16_t LowestBatteryVoltage; // mV
-    uint32_t underVoltageEvents; //  (No Units)
-} BatteryStatus;
+typedef struct Message1 {
+    int8_t NormalSignedInt; //  (No Units)
+    int32_t IntFactorOffset; //  (No Units)
+    uint8_t FloatFactor; // FFGFGF!!!
+    uint8_t NormalUint; // m/s
+} Message1;
 
-typedef struct PowerStatus {
-    uint16_t powerGeneration; // mW
-    uint8_t overcurrent; // bools
-    uint16_t outputPower; // mW
-    uint8_t outputConfig; // bools
-    uint16_t coulombCount; // mA*hr
-    uint8_t batteryFullyCharged; // Boolean
-    uint16_t avePowerGeneration; // mW
-} PowerStatus;
+void encodeMessage5ValueTableSigs(Message5ValueTableSigs *input, CANPacket* output);
+void decodeMessage5ValueTableSigs(CANPacket *input, Message5ValueTableSigs *output);
 
-typedef struct MCUStatus {
-    uint32_t numOfTurnons; //  (No Units)
-    uint32_t minutesSinceTurnon; // min/16
-    int8_t MCUTemp; // C
-} MCUStatus;
+void encodeMessage4OddSizes(Message4OddSizes *input, CANPacket* output);
+void decodeMessage4OddSizes(CANPacket *input, Message4OddSizes *output);
 
-void encodePPTMisfireCount(PPTMisfireCount *input, CANPacket* output);
-void decodePPTMisfireCount(CANPacket *input, PPTMisfireCount *output);
+void encodeMessage3(Message3 *input, CANPacket* output);
+void decodeMessage3(CANPacket *input, Message3 *output);
 
-void encodePPTTimingStatus(PPTTimingStatus *input, CANPacket* output);
-void decodePPTTimingStatus(CANPacket *input, PPTTimingStatus *output);
+void encodeMessage2Smaller(Message2Smaller *input, CANPacket* output);
+void decodeMessage2Smaller(CANPacket *input, Message2Smaller *output);
 
-void encodeFiringStatus(FiringStatus *input, CANPacket* output);
-void decodeFiringStatus(CANPacket *input, FiringStatus *output);
-
-void encodeVoltageCurrentInfo(VoltageCurrentInfo *input, CANPacket* output);
-void decodeVoltageCurrentInfo(CANPacket *input, VoltageCurrentInfo *output);
-
-void encodeBatteryStatus(BatteryStatus *input, CANPacket* output);
-void decodeBatteryStatus(CANPacket *input, BatteryStatus *output);
-
-void encodePowerStatus(PowerStatus *input, CANPacket* output);
-void decodePowerStatus(CANPacket *input, PowerStatus *output);
-
-void encodeMCUStatus(MCUStatus *input, CANPacket* output);
-void decodeMCUStatus(CANPacket *input, MCUStatus *output);
+void encodeMessage1(Message1 *input, CANPacket* output);
+void decodeMessage1(CANPacket *input, Message1 *output);
 
