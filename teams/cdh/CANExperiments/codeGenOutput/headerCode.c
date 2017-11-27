@@ -9,17 +9,17 @@ typedef struct Message4OddSizes {
 } Message4OddSizes;
 
 typedef struct Message3 {
-    uint8_t NormalDouble; //  (No Units)
+    double NormalDouble; //  (No Units)
 } Message3;
 
 typedef struct Message2Smaller {
-    uint8_t NormalFloat; // 2.752
+    float NormalFloat; // 2.752
 } Message2Smaller;
 
 typedef struct Message1 {
     int8_t NormalSignedInt; //  (No Units)
     int32_t IntFactorOffset; //  (No Units)
-    uint8_t FloatFactor; // FFGFGF!!!
+    float FloatFactor; // FFGFGF!!!
     uint8_t NormalUint; // m/s
 } Message1;
 

@@ -2,7 +2,7 @@ void decodeMessage5ValueTableSigs(CANPacket *input, Message5ValueTableSigs *outp
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> ValueTableSignal1 = (uint8_t) (((fullData & ((uint64_t) 0b11111111))));
+    output -> ValueTableSignal1 = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
 
 void encodeMessage5ValueTableSigs(Message5ValueTableSigs *input, CANPacket *output){
@@ -18,9 +18,9 @@ void decodeMessage4OddSizes(CANPacket *input, Message4OddSizes *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> OddSize3 = (uint64_t) (((fullData & ((uint64_t) 0b1111111111111111111111111111111111111 << 3)) >> 3));
-    output -> OddSize2 = (int16_t) (((fullData & ((uint64_t) 0b111111111 << 43)) >> 43));
-    output -> OddSize1 = (uint8_t) (((fullData & ((uint64_t) 0b111 << 58)) >> 58));
+    output -> OddSize3 = (uint64_t) (((fullData & ((uint64_t) 0x1fffffffff << 3)) >> 3));
+    output -> OddSize2 = (int16_t) (((fullData & ((uint64_t) 0x1ff << 43)) >> 43));
+    output -> OddSize1 = (uint8_t) (((fullData & ((uint64_t) 0x7 << 58)) >> 58));
 }
 
 void encodeMessage4OddSizes(Message4OddSizes *input, CANPacket *output){
@@ -38,7 +38,7 @@ void decodeMessage3(CANPacket *input, Message3 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> NormalDouble = (uint8_t) (((fullData & ((uint64_t) 0b1111111111111111111111111111111111111111111111111111111111111111))));
+    output -> NormalDouble = (uint8_t) (((fullData & ((uint64_t) 0xffffffffffffffff))));
 }
 
 void encodeMessage3(Message3 *input, CANPacket *output){
@@ -54,7 +54,7 @@ void decodeMessage2Smaller(CANPacket *input, Message2Smaller *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> NormalFloat = (uint8_t) (((fullData & ((uint64_t) 0b11111111111111111111111111111111))));
+    output -> NormalFloat = (uint32_t) (((fullData & ((uint64_t) 0xffffffff))));
 }
 
 void encodeMessage2Smaller(Message2Smaller *input, CANPacket *output){
@@ -70,10 +70,10 @@ void decodeMessage1(CANPacket *input, Message1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> NormalSignedInt = (int8_t) (((fullData & ((uint64_t) 0b11111111))));
-    output -> IntFactorOffset = (int32_t) (((fullData & ((uint64_t) 0b1111111111111111 << 8)) >> 8) * 3 + 357);
-    output -> FloatFactor = (uint8_t) (((fullData & ((uint64_t) 0b11111111111111111111111111111111 << 24)) >> 24) * 2.75);
-    output -> NormalUint = (uint8_t) (((fullData & ((uint64_t) 0b11111111 << 56)) >> 56));
+    output -> NormalSignedInt = (int8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> IntFactorOffset = (int32_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8) * 3 + 357);
+    output -> FloatFactor = (uint32_t) (((fullData & ((uint64_t) 0xffffffff << 24)) >> 24) * 2.75);
+    output -> NormalUint = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
 void encodeMessage1(Message1 *input, CANPacket *output){
