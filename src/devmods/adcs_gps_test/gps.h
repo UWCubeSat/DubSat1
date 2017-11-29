@@ -69,8 +69,7 @@ typedef struct PACKED_STRUCT _time_info {
 
 typedef struct PACKED_STRUCT _hwmonitor_info {
     BcTlmHeader header;
-    float temp;
-    uint8_t status;
+    GPSHWMonitor info;
 } HWMonitorInfo;
 
 #endif /* GPS_H_ */

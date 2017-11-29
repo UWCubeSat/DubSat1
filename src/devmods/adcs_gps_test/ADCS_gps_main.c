@@ -1,3 +1,5 @@
+#define __BSP_HW_GPS_OEM719__
+
 #include <msp430.h>
 
 #include "bsp/bsp.h"

@@ -115,12 +115,25 @@ typedef struct PACKED_STRUCT GPSMeasurement
     uint8_t pad[2];
 } GPSMeasurement;
 
-// TODO This is by far the biggest message and most of the space is wasted. If
-// the message size becomes a problem this will probably be why.
 typedef struct PACKED_STRUCT GPSHWMonitor
 {
     uint32_t numMeasurements;
-    GPSMeasurement measurements[23];
+#if defined(__BSP_HW_GPS_OEM615__)
+    GPSMeasurement temp;
+#elif defined(__BSP_HW_GPS_OEM719__)
+    GPSMeasurement temp;
+    GPSMeasurement antCurrent;
+    GPSMeasurement antVolt;
+    GPSMeasurement digCoreVolt;
+    GPSMeasurement supplyVolt;
+    GPSMeasurement oneVEight;
+    GPSMeasurement secTemp;
+    GPSMeasurement periphCoreVolt;
+#else
+
+#error GPS HW unspecified
+
+#endif
 } GPSHWMonitor;
 
 typedef struct PACKED_STRUCT GPSRXStatusEvent
