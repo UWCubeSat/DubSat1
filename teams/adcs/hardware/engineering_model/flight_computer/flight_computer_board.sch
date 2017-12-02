@@ -12976,10 +12976,10 @@ Debug/Programming</text>
 <text x="-231.14" y="33.02" size="1.778" layer="97">Power/Smoothing for U1</text>
 <wire x1="-233.68" y1="-63.5" x2="-106.68" y2="-63.5" width="0.1524" layer="97"/>
 <wire x1="-106.68" y1="-63.5" x2="-106.68" y2="38.1" width="0.1524" layer="97"/>
-<wire x1="289.56" y1="-144.78" x2="434.34" y2="-144.78" width="0.1524" layer="97"/>
-<wire x1="434.34" y1="-144.78" x2="434.34" y2="-266.7" width="0.1524" layer="97"/>
-<wire x1="434.34" y1="-266.7" x2="289.56" y2="-266.7" width="0.1524" layer="97"/>
-<wire x1="289.56" y1="-266.7" x2="289.56" y2="-144.78" width="0.1524" layer="97"/>
+<wire x1="289.56" y1="-144.78" x2="444.5" y2="-144.78" width="0.1524" layer="97"/>
+<wire x1="444.5" y1="-144.78" x2="444.5" y2="-256.54" width="0.1524" layer="97"/>
+<wire x1="444.5" y1="-256.54" x2="289.56" y2="-256.54" width="0.1524" layer="97"/>
+<wire x1="289.56" y1="-256.54" x2="289.56" y2="-144.78" width="0.1524" layer="97"/>
 <text x="294.64" y="-149.86" size="1.778" layer="97">Estimator IMU</text>
 <text x="294.64" y="-22.86" size="1.778" layer="97">Estimator Magnetometer</text>
 <text x="284.48" y="223.52" size="1.778" layer="97">BDOT magnetometer</text>
