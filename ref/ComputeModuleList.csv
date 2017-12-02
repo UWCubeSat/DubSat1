@@ -1,2 +1,18 @@
+,,,,,,
 Compute Module,Type,Board Stack #,General ID #,Programmatic Name, CAN Node ID,Notes
-Test Module, MSP430, 0, 0, 0, Module_Test, A placeholder/sample compute node
+Test Module, MSP430, 0, 0, sdfssdfsdf0, Module_Test, A placeholder/sample compute node
+COM2Pi,Pi3,1,1,"",Module_COM2,
+COM1ST,STM32,2,2,"",Module_COM1,
+BDot,MSP430,3,3,"",Module_ADCS_BDot,
+StateEst,MSP432,4,4,"",Module_ADCS_StateEst,
+MPC,MSP432,5,5,"",Module_ADCS_MPC,
+SensorProcessor,MSP430,6,6,"",Module_ADCS_SensorProc,
+RAHSPi,Pi0,7,7,"",Module_RAHS,
+MTQ,MSP430,8,8,"",Module_ADCS_MTQ,
+RWSX,MSP430,9,9,"",Module_ADCS_RWX,
+RWSY,MSP430,10,10,"",Module_ADCS_RWY,
+RWSZ,MSP430,11,11,"",Module_ADCS_RWZ,
+PowerGen,MSP430,12,12,"",Module_EPSGen,
+PowerDist,MSP430,13,13,"",Module_EPSDist,
+Battery,MSP430,14,14,"",Module_EPSBatt,
+PPT,MSP430,15,15,"",Module_PPT,

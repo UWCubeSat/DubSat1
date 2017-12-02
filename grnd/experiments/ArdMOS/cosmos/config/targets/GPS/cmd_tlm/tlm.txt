@@ -1,6 +1,6 @@
 TELEMETRY GPS RXSTATUS BIG_ENDIAN "Receiver status"
     APPEND_ITEM LENGTH 8 UINT "Length of packet." LITTLE_ENDIAN
-    APPEND_ID_ITEM ID 8 UINT 8 "ID of command" LITTLE_ENDIAN
+    APPEND_ID_ITEM ID 8 UINT 123 "ID of command" LITTLE_ENDIAN
     APPEND_ITEM TIMECHANGE 64 FLOAT "Time change covered by this telemetry entry." LITTLE_ENDIAN
       UNITS seconds s
     APPEND_ITEM ERROR 32 UINT "Receiver error word." LITTLE_ENDIAN
@@ -14,3 +14,51 @@ TELEMETRY GPS RXSTATUS BIG_ENDIAN "Receiver status"
     APPEND_ITEM AUX3 32 UINT "Auxillary status word 3." LITTLE_ENDIAN
       FORMAT_STRING "0x%0x"
     APPEND_ITEM INVMSGS 32 UINT "Number of invalid messages." LITTLE_ENDIAN
+
+TELEMETRY GPS POSVEL BIG_ENDIAN "Position and velocity with timestamp"
+    APPEND_ITEM LENGTH 8 UINT "Length of packet." LITTLE_ENDIAN
+    APPEND_ID_ITEM ID 8 UINT 124 "ID of command" LITTLE_ENDIAN
+    APPEND_ITEM TIMECHANGE 64 FLOAT "Time change covered by this telemetry entry." LITTLE_ENDIAN
+      UNITS seconds s
+    APPEND_ITEM POSX 64 FLOAT "Position X-coordinate." LITTLE_ENDIAN
+      UNITS meters m
+    APPEND_ITEM POSY 64 FLOAT "Position Y-coordinate." LITTLE_ENDIAN
+      UNITS meters m
+    APPEND_ITEM POSZ 64 FLOAT "Position Z-coordinate." LITTLE_ENDIAN
+      UNITS meters m
+    APPEND_ITEM VELX 64 FLOAT "Velocity X-coordinate." LITTLE_ENDIAN
+      UNITS meters_per_second mps
+    APPEND_ITEM VELY 64 FLOAT "Velocity Y-coordinate." LITTLE_ENDIAN
+      UNITS meters_per_second mps
+    APPEND_ITEM VELZ 64 FLOAT "Velocity Z-coordinate." LITTLE_ENDIAN
+      UNITS meters_per_second mps
+    APPEND_ITEM WEEK 16 UINT "GPS Reference Week, UTC." LITTLE_ENDIAN
+      UNITS weeks w
+    APPEND_ITEM MS 32 INT "Milliseconds into this reference week, UTC." LITTLE_ENDIAN
+      UNITS milliseconds ms
+
+TELEMETRY GPS TIME BIG_ENDIAN "Time of latest message"
+    APPEND_ITEM LENGTH 8 UINT "Length of packet." LITTLE_ENDIAN
+    APPEND_ID_ITEM ID 8 UINT 125 "ID of command" LITTLE_ENDIAN
+    APPEND_ITEM TIMECHANGE 64 FLOAT "Time change covered by this telemetry entry." LITTLE_ENDIAN
+      UNITS seconds s
+    APPEND_ITEM OFFSET 32 FLOAT "Combined offset between GPS reference time and UTC." LITTLE_ENDIAN
+      UNITS seconds s
+    APPEND_ITEM WEEK 16 UINT "GPS Reference Week, UTC." LITTLE_ENDIAN
+      UNITS weeks w
+    APPEND_ITEM MS 32 INT "Milliseconds into this reference week, UTC." LITTLE_ENDIAN
+      UNITS milliseconds ms
+
+TELEMETRY GPS HWMONITOR BIG_ENDIAN "Hardware measurements"
+    APPEND_ITEM LENGTH 8 UINT "Length of packet." LITTLE_ENDIAN
+    APPEND_ID_ITEM ID 8 UINT 126 "ID of command" LITTLE_ENDIAN
+    APPEND_ITEM TIMECHANGE 64 FLOAT "Time change covered by this telemetry entry." LITTLE_ENDIAN
+      UNITS seconds s
+    APPEND_ITEM TEMP 32 FLOAT "Temperature."
+      UNITS Celcius C
+    APPEND_ITEM STATUS 8 UINT "Boundary limit status."
+      STATE OK 0 GREEN
+      STATE UNDERWARN 1 YELLOW
+      STATE UNDERERR 2 YELLOW
+      STATE OVERWARN 3 RED
+      STATE OVERERR 4 RED
