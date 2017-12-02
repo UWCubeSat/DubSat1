@@ -134,8 +134,7 @@ def toPyObject(infile, outfileName, **options):
 
     #print(outdbs[''].frames._list[0]._name)
     return outdbs['']
-
-def createCHeader(candb, cFileName):
+def createCHeaderBackup(candb, cFileName):
     #print(candb.frames._list[0]._name)
     cFile = open(cFileName, "w")
     cFile.write("#ifndef CANDB_HEADER\n#define CANDB_HEADER\n\n")
@@ -159,7 +158,101 @@ def createCHeader(candb, cFileName):
         cFile.write("} " + frame.name + ";\n\n")
     cFile.write("\n#endif")
     cFile.close()
+def getSignalSize(sig):
+    if sig.min >= 0 and sig.max <= 2 ** 8 - 1:
+        return "uint8_t"
+    elif sig.min >= 0 and sig.max <=  2 ** 16 - 1:
+        return "uint16_t"
+    elif sig.min >= 0 and sig.max <=  2 ** 32 - 1:
+        return "uint32_t"
+    elif sig.min >= 0 and sig.max <=  2 ** 64 - 1:
+        return "uint64_t"
+    elif sig.min >= - (2 ** (8-1)) and sig.max <=  2 ** (8-1) - 1:
+        return "int8_t"
+    elif sig.min >= - (2 ** (16-1)) and sig.max <=  2 ** (16-1) - 1:
+        return "int16_t"
+    elif sig.min >= - (2 ** (32-1)) and sig.max <=  2 ** (32-1) - 1:
+        return "int32_t"
+    elif sig.min >= - (2 ** (64-1)) and sig.max <=  2 ** (64-1) - 1:
+        return "int64_t"
+    else:
+        raise Exception('We can\'t handle numbers that big:' + sig.name)
+def createCHeader(candb, cFileName):
+    #print(candb.frames._list[0]._name)
+    cFile = open(cFileName, "w")
+    for frame in candb.frames:
+        cFile.write("typedef struct " + frame.name + " {\n")
+        for sig in frame:
+            # print(str(sig.offset + sig.scale));
+            cFile.write("    "
+                + getSignalSize(sig)
+                + " " + sig.name
+                + "; // "
+                + (sig.unit if sig.unit != "" else " (No Units)")
+                + "\n"
+            )
+        cFile.write("} " + frame.name + ";\n\n")
+    for frame in candb.frames:
+        cFile.write("void encode"
+            + frame.name + "(" + frame.name + " *input, CANPacket* output);\n")
+        cFile.write("void decode" + frame.name + "(CANPacket *input, "
+            + frame.name + " *output);\n\n")
+    cFile.close()
 
+def createCMain(candb, cFileName):
+    #print(candb.frames._list[0]._name)
+    cFile = open(cFileName, "w")
+    for frame in candb.frames:
+        # Decode Function Implementation
+        cFile.write("void decode"
+            + frame.name + "(CANPacket *input, " + frame.name + " *output){\n")
+        cFile.write("    uint64_t *thePointer = (uint64_t *) input -> data;\n")
+        cFile.write("    reverseArray(input -> data, 0, 7);\n")
+        cFile.write("    const uint64_t fullData = *thePointer;\n")
+        # cFile.write("    " + frame.name + " *output = malloc(sizeof("+frame.name+"));\n")
+        for sig in frame:
+            # print (str(sig.is_signed))
+            # print(dir(sig))
+            # print(sig.getStartbit())
+            cFile.write("    output -> "
+                + sig.name
+                + " = ("
+                + getSignalSize(sig)
+                + ") (((fullData & ((uint64_t) 0b"
+                + str(int(1/9 * (-1 + 10 ** sig.signalsize)))
+                + " << "
+                + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize))
+                + ")) >> "
+                + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize))
+                + ") * "
+                + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor))
+                + " + "
+                + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset))
+                + ");\n")
+        cFile.write("}\n\n")
+        # Encode Function Implementation
+        cFile.write("void encode" + frame.name
+            + "(" + frame.name + " *input, CANPacket *output){\n")
+        # cFile.write("    CANPacket *output = malloc(sizeof(CANPacket));\n")
+        cFile.write("    output -> id = "
+            + (str(frame.id) if frame.id != 2147483648 else "0")
+            + ";\n")
+        cFile.write("    uint64_t fullPacketData = 0x0000000000000000;\n")
+        for sig in frame:
+            cFile.write("    fullPacketData |= ((uint64_t)((input -> "
+                + sig.name
+                + " - "
+                + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset))
+                + ") / "
+                + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor))
+                + ")) << "
+                + str(64 - int(sig.getStartbit()) - sig.signalsize)
+                + ";\n")
+        cFile.write("    uint64_t *thePointer = (uint64_t *) (&(output -> data));\n")
+        cFile.write("    *thePointer = fullPacketData;\n")
+        cFile.write("    reverseArray((output->data), 0, 7);\n")
+        cFile.write("}\n\n")
+    cFile.close()
 
 def main():
     from optparse import OptionParser
@@ -312,7 +405,8 @@ def main():
     #set_log_level(logger, verbosity)
 
     CANObj = toPyObject(infile, outfileName, **cmdlineOptions.__dict__)
-    createCHeader(CANObj, "test.c")
+    createCHeader(CANObj, "test.h")
+    createCMain(CANObj, "test.c")
 
 
 if __name__ == '__main__':

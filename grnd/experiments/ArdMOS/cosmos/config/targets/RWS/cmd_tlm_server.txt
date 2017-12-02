@@ -1,2 +1,2 @@
-INTERFACE RWSINT serial_interface.rb com5 com5 9600 NONE 1 10.0 nil LENGTH 8 8 0 1 LITTLE_ENDIAN 1 0xFC nil true
+INTERFACE RWSINT serial_interface.rb com7 com7 9600 NONE 1 10.0 nil LENGTH 8 8 0 1 LITTLE_ENDIAN 1 0xFC nil true
   TARGET RWS

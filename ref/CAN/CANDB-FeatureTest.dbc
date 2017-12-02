@@ -1,0 +1,81 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: CANNode3 CANNode2 CANNode1
+VAL_TABLE_ SimpleValueTable 2 "Invalid Garbage" 1 "Finished" 0 "Started" ;
+
+
+BO_ 4 Message5ValueTableSigs: 1 CANNode3
+ SG_ ValueTableSignal1 : 0|8@1- (1,0) [0|2] "" Vector__XXX
+
+BO_ 2147483651 Message4OddSizes: 8 CANNode1
+ SG_ OddSize3 : 24|37@1+ (1,0) [0|137438953471] ""  CANNode2
+ SG_ OddSize2 : 12|9@1- (1,0) [-256|255] ""  CANNode2
+ SG_ OddSize1 : 3|3@1+ (1,0) [0|7] ""  CANNode2
+
+BO_ 2147483650 Message3: 8 CANNode1
+ SG_ NormalDouble : 0|64@1- (1,0) [-1.7E+308|1.7E+308] ""  CANNode3
+
+BO_ 2147483649 Message2Smaller: 4 CANNode1
+ SG_ NormalFloat : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "2.752"  CANNode3
+
+BO_ 2147483648 Message1: 8 CANNode1
+ SG_ NormalSignedInt : 56|8@1- (1,0) [-128|127] ""  CANNode3
+ SG_ IntFactorOffset : 40|16@1- (3,357) [-97947|98658] ""  CANNode3
+ SG_ FloatFactor : 8|32@1- (2.75,0) [-9.35E+038|9.35E+038] "FFGFGF!!!"  CANNode3
+ SG_ NormalUint : 0|8@1+ (1,0) [0|255] "m/s"  CANNode3
+
+
+
+CM_ BU_ CANNode1 "Comment about this node.";
+CM_ SG_ 2147483649 NormalFloat "Goofy unit, long description, here is some stuff and some other stuff, blah blah blah blah ...";
+BA_DEF_ BO_  "EnumerationAttributeForMessages" ENUM  "WHAT?","BLAH","BLAH BLAH";
+BA_DEF_ BO_  "NumericAttributeForMessages" INT 0 17;
+BA_DEF_ BU_  "AttributeForNode1" INT 0 3;
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "EnumerationAttributeForMessages" "BLAH";
+BA_DEF_DEF_  "NumericAttributeForMessages" 0;
+BA_DEF_DEF_  "AttributeForNode1" 0;
+BA_DEF_DEF_  "BusType" "";
+BA_ "AttributeForNode1" BU_ CANNode1 2;
+BA_ "EnumerationAttributeForMessages" BO_ 2147483650 0;
+BA_ "NumericAttributeForMessages" BO_ 2147483650 2;
+BA_ "NumericAttributeForMessages" BO_ 2147483649 4;
+BA_ "EnumerationAttributeForMessages" BO_ 2147483648 2;
+VAL_ 4 ValueTableSignal1 2 "Invalid Garbage" 1 "Finished" 0 "Started" ;
+SIG_VALTYPE_ 2147483650 NormalDouble : 2;
+SIG_VALTYPE_ 2147483649 NormalFloat : 1;
+SIG_VALTYPE_ 2147483648 FloatFactor : 1;
+
