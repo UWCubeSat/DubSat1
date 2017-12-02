@@ -123,6 +123,8 @@ typedef struct PACKED_STRUCT GPSHWMonitor
 #elif defined(__BSP_HW_GPS_OEM719__)
     GPSMeasurement temp;
     GPSMeasurement antCurrent;
+    GPSMeasurement supVolt; // firmware guide claims this measurement isn't
+                            // supported but it is
     GPSMeasurement antVolt;
     GPSMeasurement digCoreVolt;
     GPSMeasurement supplyVolt;

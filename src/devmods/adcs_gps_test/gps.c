@@ -30,28 +30,49 @@ FILE_STATIC BestXYZInfo bestXYZInfo;
 FILE_STATIC TimeInfo timeInfo;
 FILE_STATIC HWMonitorInfo hwMonitorInfo;
 
+FILE_STATIC GPSPackage packageBuffer[PACKAGE_BUFFER_LENGTH];
+
 #ifdef __DEBUG__
-FILE_STATIC const char *GPS_ERROR[] = { "Error (use RXSTATUS for details)",
-                                        "Temperature warning",
-                                        "Voltage supply warning",
-                                        "Antenna not powered", "LNA Failure",
-                                        "Antenna open", "Antenna shorted",
-                                        "CPU overload", "COM1 buffer overrun",
-                                        "COM2 buffer overrun",
-                                        "COM3 buffer overrun", "Link overrun",
-                                        "", "Aux transmit overrun",
-                                        "AGC out of range", "", "INS reset", "",
-                                        "GPS Almanac/UTC invalid",
-                                        "Position invalid", "Position fixed",
-                                        "Clock steering disabled",
-                                        "Clock model invalid",
-                                        "External oscillator locked",
-                                        "Software resource warning", "", "", "",
-                                        "", "Aux 3 status event",
-                                        "Aux 2 status event",
-                                        "Aux 1 status event" };
+
+#if defined(__BSP_HW_GPS_OEM615__)
+
+FILE_STATIC const char *GPS_STATUS_DESC[] =
+{
+    "Error (use RXSTATUS for details)", "Temperature warning",
+    "Voltage supply warning", "Antenna not powered", "LNA Failure",
+    "Antenna open", "Antenna shorted", "CPU overload",
+    "COM1 buffer overrun", "COM2 buffer overrun", "COM3 buffer overrun",
+    "Link overrun", "", "Aux transmit overrun", "AGC out of range", "",
+    "INS reset", "", "GPS Almanac/UTC invalid", "Position invalid",
+    "Position fixed", "Clock steering disabled", "Clock model invalid",
+    "External oscillator locked", "Software resource warning", "", "", "",
+    "", "Aux 3 status event", "Aux 2 status event", "Aux 1 status event"};
+
+#elif defined(__BSP_HW_GPS_OEM719__)
+
+FILE_STATIC const char *GPS_STATUS_DESC[] = {
+        "Error (use RXSTATUS for details)", "Temperature warning",
+        "Voltage supply warning", "Antenna not powered", "LNA Failure",
+        "Antenna open", "Antenna shorted", "CPU overload",
+        "COM1 buffer overrun", "", "", "Link overrun", "Input overrun",
+        "Aux transmit overrun", "AGC out of range", "Jammer detected",
+        "INS reset", "IMU communication failure", "GPS Almanac/UTC invalid",
+        "Position invalid", "Position fixed", "Clock steering disabled",
+        "Clock model invalid", "External oscillator locked",
+        "Software resource warning", "Version bit 0", "Version bit 1",
+        "HDR tracking", "Digital filtering enabled", "Aux 3 status event",
+        "Aux 2 status event", "Aux 1 status event" };
+
 #else
-FILE_STATIC const char *GPS_ERROR[];
+
+#error GPS hardware unspecified
+
+#endif /* __BPS_HW_GPS_*__ */
+
+#else
+
+FILE_STATIC const char *GPS_STATUS_DESC[];
+
 #endif /* __DEBUG__ */
 
 FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset)
@@ -93,7 +114,8 @@ FILE_STATIC void parseMessage(GPSPackage *package)
         gps_ec ms = package->header.ms;
         toUtc(&week, &ms, timeInfo.offset - m.velLatency);
 
-        debugTraceF(GPS_TRACE_LEVEL, "BESTXYZ (%u)\r\n\tx: %f\r\n\ty: %f\r\n\tz: %f\r\n",
+        debugTraceF(GPS_TRACE_LEVEL,
+                    "BESTXYZ (%u)\r\n\tx: %f\r\n\ty: %f\r\n\tz: %f\r\n",
                     m.pSolStatus, m.pos.x, m.pos.y, m.pos.z);
 
         // TODO send CAN packet
@@ -176,7 +198,7 @@ FILE_STATIC void parseMessage(GPSPackage *package)
     {
         const GPSHWMonitor monLog = package->message.hwMonitor;
         debugTraceF(GPS_TRACE_LEVEL, "HWMonitor:\r\n");
-        debugTraceF(GPS_TRACE_LEVEL, "\ttemp: %f C\r\n", monLog.temp);
+        debugTraceF(GPS_TRACE_LEVEL, "\ttemp: %f C\r\n", monLog.temp.reading);
 
         hwMonitorInfo.info = monLog;
 
@@ -201,13 +223,13 @@ uint8_t gpsStatusCallback(DebugMode mode)
 {
     if (mode == Mode_ASCIIInteractive)
     {
-        debugPrintF("GPS Status: %08lx\r\n", rxStatusInfo.status);
+        debugPrintF("GPS Status: 0x%08lx\r\n", rxStatusInfo.status);
         uint8_t i = 32;
         while (i--)
         {
             if (rxStatusInfo.status & ((uint32_t) 1 << i))
             {
-                debugPrintF("\terror #%u - %s\r\n", i, GPS_ERROR[i]);
+                debugPrintF("\terror #%u - %s\r\n", i, GPS_STATUS_DESC[i]);
             }
         }
     }
@@ -234,7 +256,6 @@ void gpsInit()
     uartHandle = uartInit(ApplicationUART, 0, Speed_115200);
 
     // initialize the reader
-    GPSPackage packageBuffer[PACKAGE_BUFFER_LENGTH];
     GPSReaderInit(uartHandle, packageBuffer, PACKAGE_BUFFER_LENGTH);
 
     // TODO what should the opcodes be?
@@ -266,11 +287,15 @@ void gpsPowerOn()
     gpsSendCommand("statusconfig clear status 004c0000\r\n");
     gpsSendCommand("log rxstatuseventb onnew\r\n");
 
+    // log the status once
+    gpsSendCommand("log rxstatusb\r\n");
+
     // monitor hardware
-    gpsSendCommand("log bestxyzb ontime 1\r\n");
+    gpsSendCommand("log hwmonitorb ontime 3\r\n");
 
     // TODO do we need to log bestxyz? The log will be triggered when the
     // position becomes valid, but what if it was valid to being with?
+    gpsSendCommand("log bestposb\r\n");
 }
 
 void gpsPowerOff()
@@ -293,7 +318,7 @@ bool gpsUpdate()
     {
         // the receiver responds to commands with a confirmation message,
         // which can be ignored
-        debugPrintF("received command: %u", package->header.messageId);
+        debugPrintF("received command: %u\r\n", package->header.messageId);
     }
     else
     {
