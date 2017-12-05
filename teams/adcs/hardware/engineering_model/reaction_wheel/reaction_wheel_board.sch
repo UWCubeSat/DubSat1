@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.3">
+<eagle version="8.4.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -7907,6 +7907,9 @@ Source: AVX .. aphvc.pdf</description>
 <part name="GND22" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND38" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND39" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="MOTOR_X_DEBUG" library="SparkFun-Connectors" deviceset="CONN_03" device="LOCK"/>
+<part name="MOTOR_Y_DEBUG" library="SparkFun-Connectors" deviceset="CONN_03" device="LOCK"/>
+<part name="MOTOR_Z_DEBUG" library="SparkFun-Connectors" deviceset="CONN_03" device="LOCK"/>
 </parts>
 <sheets>
 <sheet>
@@ -8066,6 +8069,9 @@ Source: AVX .. aphvc.pdf</description>
 <instance part="GND22" gate="1" x="86.36" y="-127"/>
 <instance part="GND38" gate="1" x="233.68" y="-124.46"/>
 <instance part="GND39" gate="1" x="383.54" y="-124.46"/>
+<instance part="MOTOR_X_DEBUG" gate="J$1" x="81.28" y="-66.04" rot="R180"/>
+<instance part="MOTOR_Y_DEBUG" gate="J$1" x="228.6" y="-58.42" rot="R180"/>
+<instance part="MOTOR_Z_DEBUG" gate="J$1" x="381" y="-58.42" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -8438,6 +8444,27 @@ Source: AVX .. aphvc.pdf</description>
 <pinref part="R9" gate="G$1" pin="1"/>
 <wire x1="86.36" y1="-124.46" x2="86.36" y2="-121.92" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="MOTOR_X_DEBUG" gate="J$1" pin="1"/>
+<wire x1="73.66" y1="-63.5" x2="71.12" y2="-63.5" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="-63.5" x2="71.12" y2="-60.96" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="-60.96" x2="68.58" y2="-60.96" width="0.1524" layer="91"/>
+<label x="68.58" y="-60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="MOTOR_Y_DEBUG" gate="J$1" pin="1"/>
+<wire x1="220.98" y1="-55.88" x2="218.44" y2="-55.88" width="0.1524" layer="91"/>
+<wire x1="218.44" y1="-55.88" x2="218.44" y2="-53.34" width="0.1524" layer="91"/>
+<wire x1="218.44" y1="-53.34" x2="215.9" y2="-53.34" width="0.1524" layer="91"/>
+<label x="215.9" y="-53.34" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="MOTOR_Z_DEBUG" gate="J$1" pin="1"/>
+<wire x1="373.38" y1="-55.88" x2="370.84" y2="-55.88" width="0.1524" layer="91"/>
+<wire x1="370.84" y1="-55.88" x2="370.84" y2="-53.34" width="0.1524" layer="91"/>
+<wire x1="370.84" y1="-53.34" x2="368.3" y2="-53.34" width="0.1524" layer="91"/>
+<label x="368.3" y="-53.34" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="CANH" class="0">
 <segment>
@@ -8564,6 +8591,13 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="0" y1="-271.78" x2="0" y2="-266.7" width="0.1524" layer="91"/>
 <label x="0" y="-271.78" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
+<segment>
+<pinref part="MOTOR_X_DEBUG" gate="J$1" pin="3"/>
+<wire x1="73.66" y1="-68.58" x2="71.12" y2="-68.58" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="-68.58" x2="71.12" y2="-71.12" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="-71.12" x2="68.58" y2="-71.12" width="0.1524" layer="91"/>
+<label x="68.58" y="-71.12" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="RD_X" class="0">
 <segment>
@@ -8601,6 +8635,11 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="50.8" y1="-274.32" x2="58.42" y2="-274.32" width="0.1524" layer="91"/>
 <wire x1="50.8" y1="-271.78" x2="50.8" y2="-274.32" width="0.1524" layer="91"/>
 <junction x="50.8" y="-274.32"/>
+</segment>
+<segment>
+<pinref part="MOTOR_X_DEBUG" gate="J$1" pin="2"/>
+<wire x1="73.66" y1="-66.04" x2="68.58" y2="-66.04" width="0.1524" layer="91"/>
+<label x="68.58" y="-66.04" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="FR_X" class="0">
@@ -9173,6 +9212,13 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="162.56" y1="-271.78" x2="162.56" y2="-266.7" width="0.1524" layer="91"/>
 <label x="162.56" y="-271.78" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
+<segment>
+<pinref part="MOTOR_Y_DEBUG" gate="J$1" pin="3"/>
+<wire x1="220.98" y1="-60.96" x2="218.44" y2="-60.96" width="0.1524" layer="91"/>
+<wire x1="218.44" y1="-60.96" x2="218.44" y2="-63.5" width="0.1524" layer="91"/>
+<wire x1="218.44" y1="-63.5" x2="215.9" y2="-63.5" width="0.1524" layer="91"/>
+<label x="215.9" y="-63.5" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="RD_Y" class="0">
 <segment>
@@ -9210,6 +9256,11 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="213.36" y1="-274.32" x2="220.98" y2="-274.32" width="0.1524" layer="91"/>
 <wire x1="213.36" y1="-271.78" x2="213.36" y2="-274.32" width="0.1524" layer="91"/>
 <junction x="213.36" y="-274.32"/>
+</segment>
+<segment>
+<pinref part="MOTOR_Y_DEBUG" gate="J$1" pin="2"/>
+<wire x1="220.98" y1="-58.42" x2="215.9" y2="-58.42" width="0.1524" layer="91"/>
+<label x="215.9" y="-58.42" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="FR_Y" class="0">
@@ -9553,6 +9604,13 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="312.42" y1="-274.32" x2="312.42" y2="-269.24" width="0.1524" layer="91"/>
 <label x="312.42" y="-274.32" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
+<segment>
+<pinref part="MOTOR_Z_DEBUG" gate="J$1" pin="3"/>
+<wire x1="373.38" y1="-60.96" x2="370.84" y2="-60.96" width="0.1524" layer="91"/>
+<wire x1="370.84" y1="-60.96" x2="370.84" y2="-63.5" width="0.1524" layer="91"/>
+<wire x1="370.84" y1="-63.5" x2="368.3" y2="-63.5" width="0.1524" layer="91"/>
+<label x="368.3" y="-63.5" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="RD_Z" class="0">
 <segment>
@@ -9590,6 +9648,11 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="363.22" y1="-276.86" x2="370.84" y2="-276.86" width="0.1524" layer="91"/>
 <wire x1="363.22" y1="-274.32" x2="363.22" y2="-276.86" width="0.1524" layer="91"/>
 <junction x="363.22" y="-276.86"/>
+</segment>
+<segment>
+<pinref part="MOTOR_Z_DEBUG" gate="J$1" pin="2"/>
+<wire x1="373.38" y1="-58.42" x2="368.3" y2="-58.42" width="0.1524" layer="91"/>
+<label x="368.3" y="-58.42" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="FR_Z" class="0">
