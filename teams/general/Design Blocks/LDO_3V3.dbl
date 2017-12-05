@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.2">
+<eagle version="8.4.3">
 <designblock>
-<description>3v3 preconfigured LT1761 LDO</description>
+<description>3v3 preconfigured LDO</description>
 <attributes>
-<attribute name="BOARDSIZE" value="417 x 316 mil"/>
+<attribute name="BOARDSIZE" value="377 x 306 mil"/>
 <attribute name="LAYERS" value="1: 1"/>
 </attributes>
 <drawings>
@@ -478,86 +478,86 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 </class>
 </classes>
 <parts>
-<part name="U2" library="DubSat1 Components" deviceset="TPS732XX" device=""/>
-<part name="GND8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="+3V36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
-<part name="C6" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.01 μF"/>
-<part name="C2" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 μF"/>
-<part name="GND10" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C4" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 μF"/>
-<part name="GND12" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="U1" library="DubSat1 Components" deviceset="TPS732XX" device=""/>
+<part name="GND1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="+3V1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
+<part name="C1" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.01 μF"/>
+<part name="C3" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 μF"/>
+<part name="GND2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C5" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 μF"/>
+<part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
 <plain>
 </plain>
 <instances>
-<instance part="U2" gate="G$1" x="167.64" y="2.54"/>
-<instance part="GND8" gate="1" x="149.86" y="2.54" rot="R270"/>
-<instance part="+3V36" gate="G$1" x="195.58" y="7.62" rot="R270"/>
-<instance part="C6" gate="G$1" x="185.42" y="0"/>
-<instance part="C2" gate="G$1" x="152.4" y="15.24"/>
-<instance part="GND10" gate="1" x="152.4" y="22.86" rot="R180"/>
-<instance part="C4" gate="G$1" x="180.34" y="15.24"/>
-<instance part="GND12" gate="1" x="180.34" y="22.86" rot="R180"/>
+<instance part="U1" gate="G$1" x="33.02" y="15.24"/>
+<instance part="GND1" gate="1" x="15.24" y="15.24" rot="R270"/>
+<instance part="+3V1" gate="G$1" x="60.96" y="20.32" rot="R270"/>
+<instance part="C1" gate="G$1" x="50.8" y="12.7"/>
+<instance part="C3" gate="G$1" x="17.78" y="27.94"/>
+<instance part="GND2" gate="1" x="17.78" y="35.56" rot="R180"/>
+<instance part="C5" gate="G$1" x="45.72" y="27.94"/>
+<instance part="GND3" gate="1" x="45.72" y="35.56" rot="R180"/>
 </instances>
 <busses>
 </busses>
 <nets>
 <net name="GND" class="0">
 <segment>
-<pinref part="GND8" gate="1" pin="GND"/>
-<pinref part="U2" gate="G$1" pin="GND"/>
-<wire x1="152.4" y1="2.54" x2="154.94" y2="2.54" width="0.1524" layer="91"/>
+<pinref part="GND1" gate="1" pin="GND"/>
+<pinref part="U1" gate="G$1" pin="GND"/>
+<wire x1="17.78" y1="15.24" x2="20.32" y2="15.24" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="C2" gate="G$1" pin="1"/>
-<pinref part="GND10" gate="1" pin="GND"/>
+<pinref part="C3" gate="G$1" pin="1"/>
+<pinref part="GND2" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="C4" gate="G$1" pin="1"/>
-<pinref part="GND12" gate="1" pin="GND"/>
+<pinref part="C5" gate="G$1" pin="1"/>
+<pinref part="GND3" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="VBAT" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="IN"/>
-<wire x1="154.94" y1="7.62" x2="152.4" y2="7.62" width="0.1524" layer="91"/>
-<wire x1="152.4" y1="7.62" x2="144.78" y2="7.62" width="0.1524" layer="91"/>
-<wire x1="144.78" y1="7.62" x2="144.78" y2="12.7" width="0.1524" layer="91"/>
-<label x="144.78" y="12.7" size="1.778" layer="95" rot="R90" xref="yes"/>
-<junction x="144.78" y="7.62"/>
-<pinref part="U2" gate="G$1" pin="EN"/>
-<wire x1="144.78" y1="7.62" x2="144.78" y2="-2.54" width="0.1524" layer="91"/>
-<wire x1="144.78" y1="-2.54" x2="154.94" y2="-2.54" width="0.1524" layer="91"/>
-<pinref part="C2" gate="G$1" pin="2"/>
-<wire x1="152.4" y1="7.62" x2="152.4" y2="12.7" width="0.1524" layer="91"/>
-<junction x="152.4" y="7.62"/>
+<pinref part="U1" gate="G$1" pin="IN"/>
+<wire x1="20.32" y1="20.32" x2="17.78" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="17.78" y1="20.32" x2="10.16" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="20.32" x2="10.16" y2="25.4" width="0.1524" layer="91"/>
+<label x="10.16" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
+<junction x="10.16" y="20.32"/>
+<pinref part="U1" gate="G$1" pin="EN"/>
+<wire x1="10.16" y1="20.32" x2="10.16" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="10.16" x2="20.32" y2="10.16" width="0.1524" layer="91"/>
+<pinref part="C3" gate="G$1" pin="2"/>
+<wire x1="17.78" y1="20.32" x2="17.78" y2="25.4" width="0.1524" layer="91"/>
+<junction x="17.78" y="20.32"/>
 </segment>
 </net>
 <net name="LDO_3V3" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="OUT"/>
-<pinref part="+3V36" gate="G$1" pin="+3V3"/>
-<wire x1="177.8" y1="7.62" x2="180.34" y2="7.62" width="0.1524" layer="91"/>
-<pinref part="C6" gate="G$1" pin="1"/>
-<wire x1="180.34" y1="7.62" x2="185.42" y2="7.62" width="0.1524" layer="91"/>
-<wire x1="185.42" y1="7.62" x2="193.04" y2="7.62" width="0.1524" layer="91"/>
-<wire x1="185.42" y1="5.08" x2="185.42" y2="7.62" width="0.1524" layer="91"/>
-<junction x="185.42" y="7.62"/>
-<pinref part="C4" gate="G$1" pin="2"/>
-<wire x1="180.34" y1="7.62" x2="180.34" y2="12.7" width="0.1524" layer="91"/>
-<junction x="180.34" y="7.62"/>
+<pinref part="U1" gate="G$1" pin="OUT"/>
+<pinref part="+3V1" gate="G$1" pin="+3V3"/>
+<wire x1="43.18" y1="20.32" x2="45.72" y2="20.32" width="0.1524" layer="91"/>
+<pinref part="C1" gate="G$1" pin="1"/>
+<wire x1="45.72" y1="20.32" x2="50.8" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="50.8" y1="20.32" x2="58.42" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="50.8" y1="17.78" x2="50.8" y2="20.32" width="0.1524" layer="91"/>
+<junction x="50.8" y="20.32"/>
+<pinref part="C5" gate="G$1" pin="2"/>
+<wire x1="45.72" y1="20.32" x2="45.72" y2="25.4" width="0.1524" layer="91"/>
+<junction x="45.72" y="20.32"/>
 </segment>
 </net>
-<net name="LDO_3V3_BYP" class="0">
+<net name="LDO_3V3_BYP1" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="BYP"/>
-<wire x1="177.8" y1="-2.54" x2="180.34" y2="-2.54" width="0.1524" layer="91"/>
-<wire x1="180.34" y1="-2.54" x2="180.34" y2="-7.62" width="0.1524" layer="91"/>
-<pinref part="C6" gate="G$1" pin="2"/>
-<wire x1="180.34" y1="-7.62" x2="185.42" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="185.42" y1="-7.62" x2="185.42" y2="-2.54" width="0.1524" layer="91"/>
+<pinref part="U1" gate="G$1" pin="BYP"/>
+<wire x1="43.18" y1="10.16" x2="45.72" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="10.16" x2="45.72" y2="5.08" width="0.1524" layer="91"/>
+<pinref part="C1" gate="G$1" pin="2"/>
+<wire x1="45.72" y1="5.08" x2="50.8" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="50.8" y1="5.08" x2="50.8" y2="10.16" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
@@ -570,7 +570,7 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="10" unitdist="mil" unit="mil" style="lines" multiple="1" display="no" altdistance="5" altunitdist="mil" altunit="mil"/>
+<grid distance="50" unitdist="mil" unit="mil" style="lines" multiple="1" display="no" altdistance="5" altunitdist="mil" altunit="mil"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -762,7 +762,7 @@ Datsheet: http://cds.linear.com/docs/en/datasheet/2943fa.pdf</description>
 <clearance class="0" value="0.1524"/>
 </class>
 </classes>
-<designrules name="default *">
+<designrules name="default">
 <description language="de">&lt;b&gt;EAGLE Design Rules&lt;/b&gt;
 &lt;p&gt;
 Die Standard-Design-Rules sind so gewählt, dass sie für 
@@ -780,22 +780,22 @@ design rules under a new name.</description>
 <param name="layerSetup" value="(1*16)"/>
 <param name="mtCopper" value="0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm"/>
 <param name="mtIsolate" value="1.5mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm"/>
-<param name="mdWireWire" value="8mil"/>
-<param name="mdWirePad" value="8mil"/>
-<param name="mdWireVia" value="8mil"/>
-<param name="mdPadPad" value="8mil"/>
-<param name="mdPadVia" value="8mil"/>
-<param name="mdViaVia" value="8mil"/>
-<param name="mdSmdPad" value="8mil"/>
-<param name="mdSmdVia" value="0mil"/>
-<param name="mdSmdSmd" value="8mil"/>
+<param name="mdWireWire" value="6mil"/>
+<param name="mdWirePad" value="6mil"/>
+<param name="mdWireVia" value="6mil"/>
+<param name="mdPadPad" value="6mil"/>
+<param name="mdPadVia" value="6mil"/>
+<param name="mdViaVia" value="6mil"/>
+<param name="mdSmdPad" value="6mil"/>
+<param name="mdSmdVia" value="6mil"/>
+<param name="mdSmdSmd" value="6mil"/>
 <param name="mdViaViaSameLayer" value="6mil"/>
 <param name="mnLayersViaInSmd" value="2"/>
 <param name="mdCopperDimension" value="40mil"/>
 <param name="mdDrill" value="6mil"/>
 <param name="mdSmdStop" value="0mil"/>
-<param name="msWidth" value="8mil"/>
-<param name="msDrill" value="0.4mm"/>
+<param name="msWidth" value="6mil"/>
+<param name="msDrill" value="0.35mm"/>
 <param name="msMicroVia" value="9.99mm"/>
 <param name="msBlindViaRatio" value="0.5"/>
 <param name="rvPadTop" value="0.25"/>
@@ -942,57 +942,58 @@ design rules under a new name.</description>
 </pass>
 </autorouter>
 <elements>
-<element name="U2" library="DubSat1 Components" package="SOT-23-5" value="TPS732XX" x="14.605" y="80.9625" rot="R90"/>
-<element name="C6" library="DubSat1 Components" package="0805" value="0.01 μF" x="11.1125" y="80.9625" rot="R90"/>
-<element name="C2" library="DubSat1 Components" package="0805" value="1 μF" x="16.1925" y="84.455" rot="R270"/>
-<element name="C4" library="DubSat1 Components" package="0805" value="1 μF" x="8.89" y="80.9625" rot="R270"/>
+<element name="U1" library="DubSat1 Components" package="SOT-23-5" value="TPS732XX" x="12.065" y="7.3025" rot="R90"/>
+<element name="C1" library="DubSat1 Components" package="0805" value="0.01 μF" x="9.2075" y="7.3025" rot="R90"/>
+<element name="C3" library="DubSat1 Components" package="0805" value="1 μF" x="13.6525" y="10.795" rot="R270"/>
+<element name="C5" library="DubSat1 Components" package="0805" value="1 μF" x="7.493" y="7.3025" rot="R270"/>
 </elements>
 <signals>
 <signal name="GND">
-<contactref element="U2" pad="P$2"/>
-<wire x1="15.955" y1="80.9625" x2="17.145" y2="80.9625" width="0.6096" layer="1"/>
-<via x="17.145" y="80.9625" extent="1-16" drill="0.35"/>
-<contactref element="C2" pad="1"/>
-<contactref element="C4" pad="1"/>
-<via x="8.60011875" y="82.89455" extent="1-16" drill="0.35" shape="square"/>
-<via x="9.23511875" y="82.89455" extent="1-16" drill="0.35" shape="square"/>
-<via x="15.90261875" y="86.38705" extent="1-16" drill="0.35" shape="square"/>
-<via x="16.53761875" y="86.38705" extent="1-16" drill="0.35" shape="square"/>
-<wire x1="9.23511875" y1="82.89455" x2="9.10811875" y2="82.13061875" width="0.3048" layer="1"/>
-<wire x1="9.05" y1="82.0725" x2="9.10811875" y2="82.13061875" width="0.3048" layer="1"/>
-<wire x1="9.05" y1="82.0725" x2="8.89" y2="81.8625" width="0.3048" layer="1"/>
-<wire x1="8.60011875" y1="82.89455" x2="9.05" y2="82.31766875" width="0.3048" layer="1"/>
-<wire x1="9.05" y1="82.31766875" x2="9.05" y2="82.0725" width="0.3048" layer="1"/>
-<wire x1="16.41061875" y1="85.62311875" x2="16.1925" y2="85.355" width="0.3048" layer="1"/>
-<wire x1="16.41061875" y1="85.62311875" x2="16.53761875" y2="86.38705" width="0.3048" layer="1"/>
-<wire x1="16.1925" y1="85.355" x2="15.77561875" y2="85.82188125" width="0.3048" layer="1"/>
-<wire x1="15.77561875" y1="85.82188125" x2="15.90261875" y2="86.38705" width="0.3048" layer="1"/>
-<via x="17.145" y="81.5975" extent="1-16" drill="0.35"/>
-<wire x1="17.145" y1="80.9625" x2="17.145" y2="81.5975" width="0.6096" layer="1"/>
+<contactref element="U1" pad="P$2"/>
+<wire x1="13.415" y1="7.3025" x2="14.605" y2="7.3025" width="0.6096" layer="1"/>
+<via x="14.605" y="7.3025" extent="1-16" drill="0.35"/>
+<contactref element="C3" pad="1"/>
+<contactref element="C5" pad="1"/>
+<via x="7.07611875" y="8.98055" extent="1-16" drill="0.35" shape="square"/>
+<via x="7.71111875" y="8.98055" extent="1-16" drill="0.35" shape="square"/>
+<via x="13.36261875" y="12.47305" extent="1-16" drill="0.35" shape="square"/>
+<via x="13.99761875" y="12.47305" extent="1-16" drill="0.35" shape="square"/>
+<via x="14.605" y="7.9375" extent="1-16" drill="0.35"/>
+<wire x1="14.605" y1="7.3025" x2="14.605" y2="7.9375" width="0.6096" layer="1"/>
+<wire x1="7.493" y1="8.2025" x2="7.493" y2="8.56366875" width="0.6096" layer="1"/>
+<wire x1="7.493" y1="8.56366875" x2="7.07611875" y2="8.98055" width="0.6096" layer="1"/>
+<wire x1="7.71111875" y1="8.98055" x2="7.71111875" y2="8.42061875" width="0.6096" layer="1"/>
+<wire x1="7.71111875" y1="8.42061875" x2="7.493" y2="8.2025" width="0.6096" layer="1"/>
+<wire x1="13.36261875" y1="12.47305" x2="13.36261875" y2="11.98488125" width="0.6096" layer="1"/>
+<wire x1="13.6525" y1="11.695" x2="13.36261875" y2="11.98488125" width="0.6096" layer="1"/>
+<wire x1="13.99761875" y1="12.47305" x2="13.6525" y2="12.12793125" width="0.6096" layer="1"/>
+<wire x1="13.6525" y1="12.12793125" x2="13.6525" y2="11.695" width="0.6096" layer="1"/>
 </signal>
 <signal name="VBAT">
-<contactref element="U2" pad="P$1"/>
-<wire x1="15.955" y1="80.0125" x2="15.955" y2="80.01" width="0.508" layer="1"/>
-<contactref element="U2" pad="P$3"/>
-<wire x1="15.9525" y1="81.915" x2="15.955" y2="81.9125" width="0.254" layer="1"/>
-<wire x1="15.9525" y1="81.915" x2="14.605" y2="81.915" width="0.6096" layer="1"/>
-<wire x1="14.605" y1="80.01" x2="14.605" y2="81.915" width="0.6096" layer="1"/>
-<wire x1="14.605" y1="80.01" x2="15.955" y2="80.01" width="0.6096" layer="1"/>
-<contactref element="C2" pad="2"/>
-<wire x1="15.955" y1="83.2675" x2="15.955" y2="81.9125" width="0.6096" layer="1"/>
-<wire x1="15.955" y1="83.2675" x2="16.1925" y2="83.555" width="0.254" layer="1"/>
+<contactref element="U1" pad="P$1"/>
+<wire x1="13.415" y1="6.3525" x2="13.415" y2="6.35" width="0.508" layer="1"/>
+<contactref element="U1" pad="P$3"/>
+<wire x1="13.4125" y1="8.255" x2="13.415" y2="8.2525" width="0.254" layer="1"/>
+<wire x1="13.4125" y1="8.255" x2="12.065" y2="8.255" width="0.6096" layer="1"/>
+<wire x1="12.065" y1="6.35" x2="12.065" y2="8.255" width="0.6096" layer="1"/>
+<wire x1="12.065" y1="6.35" x2="13.415" y2="6.35" width="0.6096" layer="1"/>
+<contactref element="C3" pad="2"/>
+<wire x1="13.415" y1="9.6075" x2="13.415" y2="8.2525" width="0.6096" layer="1"/>
+<wire x1="13.415" y1="9.6075" x2="13.6525" y2="9.895" width="0.254" layer="1"/>
 </signal>
 <signal name="LDO_3V3">
-<contactref element="U2" pad="P$5"/>
-<contactref element="C6" pad="1"/>
-<wire x1="11.1125" y1="80.0625" x2="13.255" y2="80.0125" width="0.6096" layer="1"/>
-<contactref element="C4" pad="2"/>
-<wire x1="11.1125" y1="80.0625" x2="8.89" y2="80.0625" width="0.6096" layer="1"/>
+<contactref element="U1" pad="P$5"/>
+<contactref element="C1" pad="1"/>
+<contactref element="C5" pad="2"/>
+<wire x1="9.2075" y1="6.4025" x2="7.493" y2="6.4025" width="0.6096" layer="1"/>
+<wire x1="10.715" y1="6.3525" x2="9.2575" y2="6.3525" width="0.6096" layer="1"/>
+<wire x1="9.2575" y1="6.3525" x2="9.2075" y2="6.4025" width="0.6096" layer="1"/>
 </signal>
-<signal name="LDO_3V3_BYP">
-<contactref element="U2" pad="P$4"/>
-<contactref element="C6" pad="2"/>
-<wire x1="13.255" y1="81.9125" x2="11.1125" y2="81.8625" width="0.6096" layer="1"/>
+<signal name="LDO_3V3_BYP1">
+<contactref element="U1" pad="P$4"/>
+<contactref element="C1" pad="2"/>
+<wire x1="10.715" y1="8.2525" x2="9.2575" y2="8.2525" width="0.6096" layer="1"/>
+<wire x1="9.2575" y1="8.2525" x2="9.2075" y2="8.2025" width="0.6096" layer="1"/>
 </signal>
 </signals>
 </board>
