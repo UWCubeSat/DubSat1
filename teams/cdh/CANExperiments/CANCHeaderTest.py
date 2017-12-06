@@ -68,6 +68,8 @@ def createCHeaderBackup(candb, cFileName):
     cFile.close()
 
 def getSignalSize(sig, frame, floatList):
+    if sig.is_signed and sig.signalsize != 8 and sig.signalsize != 16 and sig.signalsize != 32 and sig.signalsize != 64:
+        print("Warning: "+ sig.name +" is signed and not a standard width. This may not work right.")
     if ((frame.id, sig.name, 1) in floatList):
         return "float"
     elif ((frame.id, sig.name, 2) in floatList):
@@ -89,7 +91,7 @@ def getSignalSize(sig, frame, floatList):
     elif sig.min >= - (2 ** (64-1)) and sig.max <=  2 ** (64-1) - 1:
         return "int64_t"
     else:
-        # print("Warning: " + sig.name + " type unknown. Using uint8_t instead.")
+        print("Warning: " + sig.name + " type unknown. Using uint8_t instead.")
         return "uint8_t"
 
 def createCHeader(candb, cFileName, floatList):
@@ -111,7 +113,88 @@ def createCHeader(candb, cFileName, floatList):
         cFile.write("void decode" + frame.name + "(CANPacket *input, "
             + frame.name + " *output);\n\n")
     cFile.close()
-
+def cMainDecodeInteger(frame, sig, sigType):
+    return ("    output -> "
+        + sig.name
+        + " = ("
+        + sigType
+        + ") (((fullData & ((uint64_t) "
+        + str(hex(int(str(int((-1 + 10 ** sig.signalsize)//9)), 2)))
+        + (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
+        + (")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
+        + (") * " + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor)) if sig.factor != 1.0 else ")")
+        + (" + " + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset)) if sig.offset != 0.0 else "")
+        + ");\n")
+def cMainDecodeFloat(frame, sig, sigType):
+    # output -> NormalFloat = (*((float *)(&((uint32_t) ((fullData & ((uint64_t) 0xffffffff << 8)) >> 8))))) * factor + offset;
+    if sigType == "float":
+        out = "    uint32_t temp" + sig.name
+        out += " = (uint32_t) ((fullData & ((uint64_t) "
+        out += str(hex(int(str(int((-1 + 10 ** sig.signalsize)//9)), 2)))
+        out += (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
+        out +=(")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
+        out += (");\n")
+        out += "    output -> "
+        out += sig.name
+        out += " = (*((float *)(&(" + "temp" + sig.name
+        out += ("))))")
+        out += (" * " + str(sig.factor) if sig.factor != 1.0 else "")
+        out += ("+" + str(sig.offset) if sig.offset != 0.0 else "")
+        out += ";\n"
+        return out;
+    else:
+        out = "    uint64_t temp" + sig.name
+        out += " = (uint64_t) ((fullData & ((uint64_t) "
+        out += str(hex(int(str(int((-1 + 10 ** sig.signalsize)//9)), 2)))
+        out += (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
+        out +=(")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
+        out += (");\n")
+        out += "output -> "
+        out += sig.name
+        out += " = (*((double *)(&(" + "temp" + sig.name
+        out += ("))))")
+        out += (" * " + str(sig.factor) if sig.factor != 1.0 else "")
+        out += ("+" + str(sig.offset) if sig.offset != 0.0 else "")
+        out += ";\n"
+        return out;
+def cMainEncodeInteger(frame, sig, sigType):
+    return ("    fullPacketData |= (((uint64_t)((input -> "
+        + sig.name
+        + (" - " + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset)) if sig.offset != 0.0 else "")
+        + ((") / " + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor))) if (sig.factor != 1.0) else (")"))
+        + (")) & " + str(hex(int(str(int((-1 + 10 ** sig.signalsize)//9)), 2))))
+        + (") << " + str(64 - int(sig.getStartbit()) - sig.signalsize) if 64 - int(sig.getStartbit()) - sig.signalsize != 0 else ")")
+        + ";\n")
+def cMainEncodeFloat(frame, sig, sigType):
+    # fullPacketData |= ((uint64_t)(*((uint32_t *)(&(((input -> SigName) - offset) / factor))))) << slidybit;
+    if sigType == "float":
+        return (
+            "    const float temp"
+            + sig.name
+            + " = ((input -> "
+            + sig.name
+            + (" - " + str(sig.offset) + ")" if sig.offset != 0.0 else ")")
+            + (") / " + str(sig.factor) if (sig.factor != 1.0) else (")"))
+            + ";\n"
+            + "    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(temp"
+            + sig.name
+            + ")))))"
+            + (" << " + str(64 - int(sig.getStartbit()) - sig.signalsize) if 64 - int(sig.getStartbit()) - sig.signalsize != 0 else "")
+            + ";\n")
+    else:
+        return (
+            "    const double temp"
+            + sig.name
+            + " = ((input -> "
+            + sig.name
+            + (" - " + str(sig.offset) + ")" if sig.offset != 0.0 else ")")
+            + (") / " + str(sig.factor) if (sig.factor != 1.0) else (")"))
+            + ";\n"
+            + "    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temp"
+            + sig.name
+            + ")))))"
+            + (" << " + str(64 - int(sig.getStartbit()) - sig.signalsize) if 64 - int(sig.getStartbit()) - sig.signalsize != 0 else "")
+            + ";\n")
 def createCMain(candb, cFileName, floatList):
     cFile = open(cFileName, "w")
     for frame in candb.frames:
@@ -123,17 +206,10 @@ def createCMain(candb, cFileName, floatList):
         cFile.write("    const uint64_t fullData = *thePointer;\n")
         for sig in frame:
             sigType = getSignalSize(sig, frame, floatList)
-            cFile.write("    output -> "
-                + sig.name
-                + " = ("
-                + ("uint32_t" if (sigType == "float") else ("uint8_t" if (sigType == "double") else sigType))
-                + ") (((fullData & ((uint64_t) "
-                + str(hex(int(str(int((-1 + 10 ** sig.signalsize)//9)), 2)))
-                + (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
-                + (")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
-                + (") * " + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor)) if sig.factor != 1.0 else ")")
-                + (" + " + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset)) if sig.offset != 0.0 else "")
-                + ");\n")
+            if sigType == "float" or sigType == "double":
+                cFile.write(cMainDecodeFloat(frame, sig, sigType))
+            else:
+                cFile.write(cMainDecodeInteger(frame, sig, sigType))
         cFile.write("}\n\n")
         # Encode Function Implementation
         cFile.write("void encode" + frame.name
@@ -142,14 +218,14 @@ def createCMain(candb, cFileName, floatList):
         cFile.write("    output -> id = "
             + (str(frame.id) if frame.id != 2147483648 else "0")
             + ";\n")
+        cFile.write("    output -> length = " + str(frame.size) + ";\n")
         cFile.write("    uint64_t fullPacketData = 0x0000000000000000;\n")
         for sig in frame:
-            cFile.write("    fullPacketData |= ((uint64_t)((input -> "
-                + sig.name
-                + (" - " + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset)) if sig.offset != 0.0 else "")
-                + ((") / " + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor))) if (sig.factor != 1.0) else (")"))
-                + (")) << " + str(64 - int(sig.getStartbit()) - sig.signalsize) if 64 - int(sig.getStartbit()) - sig.signalsize != 0 else "))")
-                + ";\n")
+            sigType = getSignalSize(sig, frame, floatList)
+            if sigType == "float" or sigType == "double":
+                cFile.write(cMainEncodeFloat(frame, sig, sigType))
+            else:
+                cFile.write(cMainEncodeInteger(frame, sig, sigType))
         cFile.write("    uint64_t *thePointer = (uint64_t *) (&(output -> data));\n")
         cFile.write("    *thePointer = fullPacketData;\n")
         cFile.write("    reverseArray((output->data), 0, 7);\n")
@@ -180,7 +256,6 @@ def handleFloats(infile):
         linearr = line.split()
         if len(linearr) > 4 and linearr[0] == "SIG_VALTYPE_":
             out.append(((int(linearr[1]) - 2 ** (32 - 1) if int(linearr[1]) != 2147483648 else 2147483648), linearr[2], int(linearr[4][0])))
-    print (out)
     return out
 def main():
     # Command line stuff

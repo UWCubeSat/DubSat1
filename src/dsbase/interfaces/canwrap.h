@@ -12,18 +12,30 @@
 
 #define PARAM_ADCS_STATUS_VELOCITY_RPM 0x4201;
 
-#define CAN_WRAP_ID_PPTMISFIRECOUNT 6
-#define CAN_WRAP_ID_PPTTIMINGSTATUS 5
-#define CAN_WRAP_ID_FIRINGSTATUS 4
-#define CAN_WRAP_ID_VOLTAGECURRENTINFO 3
-#define CAN_WRAP_ID_BATTERYSTATUS 2
-#define CAN_WRAP_ID_POWERSTATUS 1
-#define CAN_WRAP_ID_MCUSTATUS 0
+
+// BEGIN GENERATOR MACROS
+
+#define CAN_ID_MESSAGE5VALUETABLESIGS 4
+#define CAN_ID_MESSAGE4ODDSIZES 3
+#define CAN_ID_MESSAGE3 2
+#define CAN_ID_MESSAGE2SMALLER 1
+#define CAN_ID_MESSAGE1 0
+
+#define CAN_ENUM_VALUETABLESIGNAL1_INVALIDGARBAGE 2
+#define CAN_ENUM_VALUETABLESIGNAL1_FINISHED 1
+#define CAN_ENUM_VALUETABLESIGNAL1_STARTED 0
+
+#define CAN_ENUM_SIMPLEVALUETABLE_INVALIDGARBAGE 2
+#define CAN_ENUM_SIMPLEVALUETABLE_FINISHED 1
+#define CAN_ENUM_SIMPLEVALUETABLE_STARTED 0
+
+// END GENERATOR MACROS
 
 typedef struct CANPacket {
    uint32_t id; // Actual physical ID of the packet
    uint8_t data[8]; // Data
    uint8_t bufferNum; // Only applicable for Rx, which buffer it landed in
+   uint8_t length; // Only applies to sending packets. We don't know how long incoming packets are.
 } CANPacket;
 
 void canWrapInit();
@@ -42,77 +54,46 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
 
 // BEGIN AUTOGEN
 
-typedef struct PPTMisfireCount {
-    uint32_t totalMisfires2; //  (No Units)
-    uint32_t totalMisfires1; //  (No Units)
-} PPTMisfireCount;
+typedef struct Message5ValueTableSigs {
+    uint8_t ValueTableSignal1; //  (No Units)
+} Message5ValueTableSigs;
 
-typedef struct PPTTimingStatus {
-    uint16_t averageChargeTime; //  (No Units)
-    uint32_t minutesSinceSuccessfulFire; // min
-    uint32_t minutesSinceAttemptedFire; // min
-    uint16_t medianChargeTime; // ms
-} PPTTimingStatus;
+typedef struct Message4OddSizes {
+    uint64_t OddSize3; //  (No Units)
+    int16_t OddSize2; //  (No Units)
+    uint8_t OddSize1; //  (No Units)
+} Message4OddSizes;
 
-typedef struct FiringStatus {
-    uint32_t successfullFires1; //  (No Units)
-    uint32_t successfulFires2; //  (No Units)
-    uint16_t numberOfMisfires; //  (No Units)
-    uint8_t lastFiringRate; //  (No Units)
-} FiringStatus;
+typedef struct Message3 {
+    double NormalDouble; //  (No Units)
+} Message3;
 
-typedef struct VoltageCurrentInfo {
-    uint16_t adcCurrent; // mA
-    uint8_t com1Current; // mA
-    uint16_t com2Current; // mA
-    uint16_t LineVoltage; // mV
-    uint16_t rahsCurrent; // mA
-} VoltageCurrentInfo;
+typedef struct Message2Smaller {
+    float NormalFloat; // 2.752
+} Message2Smaller;
 
-typedef struct BatteryStatus {
-    uint32_t batteryFullChargeCount; //  (No Units)
-    int16_t batteryTemperature; // C
-    uint32_t batteryVoltage; // mV
-    uint16_t LowestBatteryVoltage; // mV
-    uint32_t underVoltageEvents; //  (No Units)
-} BatteryStatus;
+typedef struct Message1 {
+    int8_t NormalSignedInt; //  (No Units)
+    int32_t IntFactorOffset; //  (No Units)
+    float FloatFactor; // FFGFGF!!!
+    uint8_t NormalUint; // m/s
+} Message1;
 
-typedef struct PowerStatus {
-    uint16_t powerGeneration; // mW
-    uint8_t overcurrent; // bools
-    uint16_t outputPower; // mW
-    uint8_t outputConfig; // bools
-    uint16_t coulombCount; // mA*hr
-    uint8_t batteryFullyCharged; // Boolean
-    uint16_t avePowerGeneration; // mW
-} PowerStatus;
+void encodeMessage5ValueTableSigs(Message5ValueTableSigs *input, CANPacket* output);
+void decodeMessage5ValueTableSigs(CANPacket *input, Message5ValueTableSigs *output);
 
-typedef struct MCUStatus {
-    uint32_t numOfTurnons; //  (No Units)
-    uint32_t minutesSinceTurnon; // min/16
-    int8_t MCUTemp; // C
-} MCUStatus;
-void setMaskOrFilter(uint8_t addr, uint32_t filter);
-void encodePPTMisfireCount(PPTMisfireCount *input, CANPacket* output);
-void decodePPTMisfireCount(CANPacket *input, PPTMisfireCount *output);
+void encodeMessage4OddSizes(Message4OddSizes *input, CANPacket* output);
+void decodeMessage4OddSizes(CANPacket *input, Message4OddSizes *output);
 
-void encodePPTTimingStatus(PPTTimingStatus *input, CANPacket* output);
-void decodePPTTimingStatus(CANPacket *input, PPTTimingStatus *output);
+void encodeMessage3(Message3 *input, CANPacket* output);
+void decodeMessage3(CANPacket *input, Message3 *output);
 
-void encodeFiringStatus(FiringStatus *input, CANPacket* output);
-void decodeFiringStatus(CANPacket *input, FiringStatus *output);
+void encodeMessage2Smaller(Message2Smaller *input, CANPacket* output);
+void decodeMessage2Smaller(CANPacket *input, Message2Smaller *output);
 
-void encodeVoltageCurrentInfo(VoltageCurrentInfo *input, CANPacket* output);
-void decodeVoltageCurrentInfo(CANPacket *input, VoltageCurrentInfo *output);
+void encodeMessage1(Message1 *input, CANPacket* output);
+void decodeMessage1(CANPacket *input, Message1 *output);
 
-void encodeBatteryStatus(BatteryStatus *input, CANPacket* output);
-void decodeBatteryStatus(CANPacket *input, BatteryStatus *output);
-
-void encodePowerStatus(PowerStatus *input, CANPacket* output);
-void decodePowerStatus(CANPacket *input, PowerStatus *output);
-
-void encodeMCUStatus(MCUStatus *input, CANPacket* output);
-void decodeMCUStatus(CANPacket *input, MCUStatus *output);
 
 
 #endif /* DSBASE_INTERFACES_CANWRAP_H_ */

@@ -18,18 +18,12 @@
 
 void newCB(CANPacket *packet){
 
-          // Example of sending a packet via canWrap.
-//        BatteryStatus pst = {0};
-//        CANPacket ppst = {0};
-//        CANPacket *pps = &ppst;
-//        pst.batteryFullChargeCount = 0xffff;
-//        pst.batteryTemperature = 0;
-//        pst.batteryVoltage = 0;
-//        pst.LowestBatteryVoltage = 0;
-//        pst.underVoltageEvents = 4;
-//        encodeBatteryStatus(&pst,pps);
-//        canSendPacket(pps);
-    canSendPacket(packet);
+    Message5ValueTableSigs pst = {0};
+    CANPacket ppst = {0};
+    CANPacket *pps = &ppst;
+    pst.ValueTableSignal1 = CAN_ENUM_VALUETABLESIGNAL1_INVALIDGARBAGE;
+    encodeMessage5ValueTableSigs(&pst,pps);
+    canSendPacket(pps);
 }
 
 int main(void) {
