@@ -120,12 +120,10 @@ FILE_STATIC void parseMessage(GPSPackage *package)
 
         // TODO send CAN packet
 
-        bestXYZInfo.pX = m.pos.x;
-        bestXYZInfo.pY = m.pos.y;
-        bestXYZInfo.pZ = m.pos.z;
-        bestXYZInfo.vX = m.vel.x;
-        bestXYZInfo.vY = m.vel.y;
-        bestXYZInfo.vZ = m.vel.z;
+        bestXYZInfo.pos = m.pos;
+        bestXYZInfo.posStdDev = m.posStdDev;
+        bestXYZInfo.vel = m.vel;
+        bestXYZInfo.velStdDev = m.velStdDev;
         bestXYZInfo.week = week;
         bestXYZInfo.ms = ms;
         break;
@@ -200,7 +198,9 @@ FILE_STATIC void parseMessage(GPSPackage *package)
         debugTraceF(GPS_TRACE_LEVEL, "HWMonitor:\r\n");
         debugTraceF(GPS_TRACE_LEVEL, "\ttemp: %f C\r\n", monLog.temp.reading);
 
-        hwMonitorInfo.info = monLog;
+        // TODO add other measurements to COSMOS
+        hwMonitorInfo.temp = monLog.temp.reading;
+        hwMonitorInfo.tempStatus = monLog.temp.status;
 
         break;
     }

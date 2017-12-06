@@ -50,12 +50,10 @@ typedef struct PACKED_STRUCT _rxstatus_info {
 
 typedef struct PACKED_STRUCT _bestxyz_info {
     BcTlmHeader header;
-    double pX;
-    double pY;
-    double pZ;
-    double vX;
-    double vY;
-    double vZ;
+    GPSVectorD pos;
+    GPSVectorF posStdDev;
+    GPSVectorD vel;
+    GPSVectorF velStdDev;
     uint16_t week;
     int32_t ms;
 } BestXYZInfo;
@@ -69,7 +67,8 @@ typedef struct PACKED_STRUCT _time_info {
 
 typedef struct PACKED_STRUCT _hwmonitor_info {
     BcTlmHeader header;
-    GPSHWMonitor info;
+    float temp;
+    uint8_t tempStatus;
 } HWMonitorInfo;
 
 #endif /* GPS_H_ */
