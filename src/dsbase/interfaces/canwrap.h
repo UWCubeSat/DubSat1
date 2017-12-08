@@ -44,11 +44,7 @@ void canWrapInit();
 // when a packet is received through CAN
 void (*CANPacketReceived)(CANPacket *);
 
-void canPacketInit(uint8_t boardNum);
-
 void canSendPacket(CANPacket *packet);
-
-CANPacket *canConvertToPacket(uint32_t id, uint8_t* data);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
 

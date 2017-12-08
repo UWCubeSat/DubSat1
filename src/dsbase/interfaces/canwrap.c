@@ -72,17 +72,7 @@ void canSendPacket(CANPacket *packet){
        (uint8_t) packet->id,
        packet->length
     };
-    packet -> data[1] = packet->length;
     canSend(0,tech, packet->data);
-}
-
-struct CANPacket *canConvertToPacket(uint32_t id, uint8_t* data){
-    CANPacket ps = {0};
-    struct CANPacket *p = &ps;
-    p -> id = id;
-    uint8_t i;
-    for (i = 8; i; i--) p -> data[i-1] = data[i-1];
-    return p;
 }
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
