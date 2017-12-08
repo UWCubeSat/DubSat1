@@ -100,16 +100,6 @@ FILE_STATIC void parseMessage(GPSPackage *package)
     {
         const GPSBestXYZ m = package->message.bestXYZ;
 
-        if (m.pSolStatus || m.vSolStatus)
-        {
-            // Skip the invalid message. An RXSTATUSEVENT should trigger another
-            // log once position becomes valid
-            debugTraceF(GPS_TRACE_LEVEL, "BESTXYZ invalid\r\n");
-            gpsSendCommand("unlog bestxyzb\r\n");
-            rxStatusInfo.invalidMessages++;
-            break;
-        }
-
         uint16_t week = package->header.week;
         gps_ec ms = package->header.ms;
         toUtc(&week, &ms, timeInfo.offset - m.velLatency);
@@ -120,8 +110,10 @@ FILE_STATIC void parseMessage(GPSPackage *package)
 
         // TODO send CAN packet
 
+        bestXYZInfo.posStatus = m.pSolStatus;
         bestXYZInfo.pos = m.pos;
         bestXYZInfo.posStdDev = m.posStdDev;
+        bestXYZInfo.velStatus = m.vSolStatus;
         bestXYZInfo.vel = m.vel;
         bestXYZInfo.velStdDev = m.velStdDev;
         bestXYZInfo.week = week;
@@ -132,21 +124,13 @@ FILE_STATIC void parseMessage(GPSPackage *package)
     {
         const GPSTime m = package->message.time;
 
-        if (!m.clockStatus || m.utcStatus != 1)
-        {
-            // Skip the invalid message. An RXSTATUSEVENT should trigger another
-            // log once either becomes valid
-            debugTraceF(GPS_TRACE_LEVEL, "TIME invalid\r\n");
-            gpsSendCommand("unlog timeb\r\n");
-            rxStatusInfo.invalidMessages++;
-            break;
-        }
-
         debugTraceF(GPS_TRACE_LEVEL, "TIME offset: %f\r\n", timeInfo.offset);
 
         // update the time offset
         // used in pos/vel messages and updating MET
         timeInfo.offset = m.offset + m.utcOffset;
+        timeInfo.clockStatus = m.clockStatus;
+        timeInfo.utcStatus = m.utcStatus;
         break;
     }
     case Message_RXStatus:
@@ -178,7 +162,7 @@ FILE_STATIC void parseMessage(GPSPackage *package)
         case 19: // position valid flag
             if (e.event == 0) // if the position became valid
             {
-                gpsSendCommand("log bestxyzb ontime 1\r\n");
+                gpsSendCommand("log bestxyzb\r\n");
             }
             break;
         case 18: // almanac/UTC valid flag
@@ -186,7 +170,7 @@ FILE_STATIC void parseMessage(GPSPackage *package)
             if (e.event == 0)
             {
                 // if either the clock model or UTC became valid, log time
-                gpsSendCommand("log timeb ontime 1\r\n");
+                gpsSendCommand("log timeb\r\n");
             }
             break;
         }
@@ -206,16 +190,21 @@ FILE_STATIC void parseMessage(GPSPackage *package)
     }
     default:
         debugTraceF(GPS_TRACE_LEVEL, "unsupported message ID: %u\r\n",
-                    package->header.messageType);
+                    package->header.messageId);
         break;
     }
 }
 
 void bcbinSendTlm()
 {
+    // These packets are updated in the header of every message, so they should
+    // be sent at every update
     bcbinSendPacket((uint8_t *) &rxStatusInfo, sizeof(rxStatusInfo));
-    bcbinSendPacket((uint8_t *) &bestXYZInfo, sizeof(bestXYZInfo));
     bcbinSendPacket((uint8_t *) &timeInfo, sizeof(timeInfo));
+
+    // These packets are only updated when the message comes in from the GPS.
+    // Sending them could be postponed until they are updated.
+    bcbinSendPacket((uint8_t *) &bestXYZInfo, sizeof(bestXYZInfo));
     bcbinSendPacket((uint8_t *) &hwMonitorInfo, sizeof(hwMonitorInfo));
 }
 
@@ -279,23 +268,18 @@ void gpsPowerOn()
     // configure to reply in binary only
     gpsSendCommand("interfacemode thisport novatel novatelbinary on\r\n");
 
-    // stop logging defaults
-    gpsSendCommand("unlogall\r\n");
-
     // configure to send an RXSTATUSEVENT when either the position, clock model,
     // or utc/almanac becomes valid
     gpsSendCommand("statusconfig clear status 004c0000\r\n");
-    gpsSendCommand("log rxstatuseventb onnew\r\n");
 
-    // log the status once
+    // log the status once. Status word will be updated at every message.
     gpsSendCommand("log rxstatusb\r\n");
 
     // monitor hardware
-    gpsSendCommand("log hwmonitorb ontime 3\r\n");
+    gpsSendCommand("log hwmonitorb ontime 10\r\n");
 
-    // TODO do we need to log bestxyz? The log will be triggered when the
-    // position becomes valid, but what if it was valid to being with?
-    gpsSendCommand("log bestposb\r\n");
+    // monitor position
+    gpsSendCommand("log bestxyzb ontime 1\r\n");
 }
 
 void gpsPowerOff()

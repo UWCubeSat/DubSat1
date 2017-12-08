@@ -45,13 +45,14 @@ typedef struct PACKED_STRUCT _rxstatus_info {
     uint32_t aux1;
     uint32_t aux2;
     uint32_t aux3;
-    uint32_t invalidMessages; // this should maybe move somewhere else
 } RXStatusInfo;
 
 typedef struct PACKED_STRUCT _bestxyz_info {
     BcTlmHeader header;
+    gps_enum posStatus;
     GPSVectorD pos;
     GPSVectorF posStdDev;
+    gps_enum velStatus;
     GPSVectorD vel;
     GPSVectorF velStdDev;
     uint16_t week;
@@ -63,6 +64,8 @@ typedef struct PACKED_STRUCT _time_info {
     double offset;
     int32_t ms;
     uint16_t week;
+    gps_enum clockStatus;
+    gps_enum utcStatus;
 } TimeInfo;
 
 typedef struct PACKED_STRUCT _hwmonitor_info {
