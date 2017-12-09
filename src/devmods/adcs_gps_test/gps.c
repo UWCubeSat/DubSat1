@@ -236,13 +236,36 @@ void gpsSendCommand(uint8_t *command)
 
 uint8_t gpsActionCallback(DebugMode mode, uint8_t *command)
 {
-    gpsSendCommand(command);
+    uint8_t len = strlen((const char *) command);
+
+    if (mode == Mode_ASCIIInteractive) {
+        // TODO
+        debugPrintF("GPS ASCIIInteractive command interface not yet implemented");
+    }
+    else
+    {
+        // switch based on the OPCODE of the command
+        switch(command[0])
+        {
+            case OPCODE_SEND_ASCII:
+                if (len > 1) {
+                    // send the part of the command that comes after the opcode
+                    uartTransmit(uartHandle, command + 1, len - 1);
+
+                    // execute the command
+                    uartTransmit(uartHandle, "\r\n", 3);
+                } else {
+                    return 0;
+                }
+                break;
+        }
+    }
     return 1;
 }
 
 void gpsInit()
 {
-    uartHandle = uartInit(ApplicationUART, 0, Speed_115200);
+    uartHandle = uartInit(ApplicationUART, 0, Speed_9600);
 
     // initialize the reader
     GPSReaderInit(uartHandle, packageBuffer, PACKAGE_BUFFER_LENGTH);
@@ -274,6 +297,7 @@ void gpsPowerOn()
 
     // log the status once. Status word will be updated at every message.
     gpsSendCommand("log rxstatusb\r\n");
+    gpsSendCommand("log timeb\r\n");
 
     // monitor hardware
     gpsSendCommand("log hwmonitorb ontime 10\r\n");

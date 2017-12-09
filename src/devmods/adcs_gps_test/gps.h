@@ -1,6 +1,8 @@
 #ifndef GPS_H_
 #define GPS_H_
 
+#define OPCODE_SEND_ASCII 1
+
 #include <stdbool.h>
 
 #include "core/utils.h"
