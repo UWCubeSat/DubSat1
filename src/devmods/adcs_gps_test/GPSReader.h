@@ -2,6 +2,7 @@
 #define GPSREADER_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "GPSPackage.h"
 
