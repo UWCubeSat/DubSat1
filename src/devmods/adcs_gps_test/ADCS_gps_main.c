@@ -11,7 +11,8 @@ int main(void)
     bspInit(Module_Test);
     __bis_SR_register(GIE);
 
-    debugSetMode(Mode_BinaryStreaming);
+    const DebugMode mode = Mode_ASCIIInteractive;
+    debugSetMode(mode);
 
     gpsInit();
     gpsPowerOn();
@@ -19,7 +20,7 @@ int main(void)
     while (1)
     {
         // if the GPS updated, send telemetry by invoking the status handler
-        if(gpsUpdate())
+        if(gpsUpdate() && mode == Mode_BinaryStreaming)
         {
             debugInvokeStatusHandler(Entity_Test);
         }
