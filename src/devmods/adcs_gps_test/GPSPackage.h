@@ -6,18 +6,20 @@
 #ifndef GPSPACKAGE_H_
 #define GPSPACKAGE_H_
 
-#include <stdbool.h>
+#include <stdint.h>
 
 #include "core/utils.h"
 
 typedef int32_t gps_ec;
 typedef uint32_t gps_enum;
+typedef uint16_t gps_message_id;
+typedef uint32_t gps_event_id;
 
 typedef struct PACKED_STRUCT GPSHeader
 {
     uint8_t sync[3];
     uint8_t headerLength;
-    uint16_t messageId;
+    gps_message_id messageId;
     int8_t messageType;
     uint8_t portAddress;
     uint16_t messageLength;
@@ -141,7 +143,7 @@ typedef struct PACKED_STRUCT GPSHWMonitor
 typedef struct PACKED_STRUCT GPSRXStatusEvent
 {
     gps_enum word;
-    uint32_t bitPosition;
+    gps_event_id bitPosition;
     gps_enum event;
     uint8_t description[32];
 } GPSRXStatusEvent;
