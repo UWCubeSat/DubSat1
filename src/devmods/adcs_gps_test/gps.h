@@ -1,6 +1,8 @@
 #ifndef GPS_H_
 #define GPS_H_
 
+#define OPCODE_SEND_ASCII 1
+
 #include <stdbool.h>
 
 #include "core/utils.h"
@@ -45,17 +47,16 @@ typedef struct PACKED_STRUCT _rxstatus_info {
     uint32_t aux1;
     uint32_t aux2;
     uint32_t aux3;
-    uint32_t invalidMessages; // this should maybe move somewhere else
 } RXStatusInfo;
 
 typedef struct PACKED_STRUCT _bestxyz_info {
     BcTlmHeader header;
-    double pX;
-    double pY;
-    double pZ;
-    double vX;
-    double vY;
-    double vZ;
+    gps_enum posStatus;
+    GPSVectorD pos;
+    GPSVectorF posStdDev;
+    gps_enum velStatus;
+    GPSVectorD vel;
+    GPSVectorF velStdDev;
     uint16_t week;
     int32_t ms;
 } BestXYZInfo;
@@ -65,11 +66,14 @@ typedef struct PACKED_STRUCT _time_info {
     double offset;
     int32_t ms;
     uint16_t week;
+    gps_enum clockStatus;
+    gps_enum utcStatus;
 } TimeInfo;
 
 typedef struct PACKED_STRUCT _hwmonitor_info {
     BcTlmHeader header;
-    GPSHWMonitor info;
+    float temp;
+    uint8_t tempStatus;
 } HWMonitorInfo;
 
 #endif /* GPS_H_ */

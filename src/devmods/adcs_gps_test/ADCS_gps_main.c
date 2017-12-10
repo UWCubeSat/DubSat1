@@ -11,7 +11,7 @@ int main(void)
     bspInit(Module_Test);
     __bis_SR_register(GIE);
 
-    debugSetMode(Mode_ASCIIInteractive);
+    debugSetMode(Mode_BinaryStreaming);
 
     gpsInit();
     gpsPowerOn();

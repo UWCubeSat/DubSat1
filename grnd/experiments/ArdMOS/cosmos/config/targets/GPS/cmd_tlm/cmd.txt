@@ -1,0 +1,8 @@
+COMMAND GPS SEND_ASCII LITTLE_ENDIAN "Send a raw ASCII command to the GPS receiver."
+  APPEND_PARAMETER LENGTH 8 UINT 0 255 0
+  # TODO update the entity ID to match the GPS, not just test
+  APPEND_ID_PARAMETER ENTITYID 8 UINT 1 1 1 "Entity ID for the GPS software in the module."
+  APPEND_ID_PARAMETER OPCODE 8 UINT 1 1 1 "Opcode passed to the entity command handler."
+  
+  # Following parameters are sent to the action handler
+  APPEND_PARAMETER CMD 0 STRING REQUIRED "ASCII command to send."

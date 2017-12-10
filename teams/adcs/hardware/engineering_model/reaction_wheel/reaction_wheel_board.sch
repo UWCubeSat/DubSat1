@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.3">
+<eagle version="8.4.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -162,7 +162,7 @@
 <description>Shared Library (on github) for components used in Dubsat1</description>
 <packages>
 <package name="BOARD_TEMPLATE_SECURED">
-<wire x1="-45" y1="-32.5" x2="-45" y2="32" width="0" layer="20"/>
+<wire x1="-45" y1="-32.5" x2="-45" y2="32.5" width="0" layer="20"/>
 <pad name="P$1" x="-39.5" y="39.5" drill="2.9" diameter="7.5"/>
 <pad name="P$2" x="-39.5" y="-39.5" drill="2.9" diameter="7.5"/>
 <pad name="P$3" x="39.5" y="-39.5" drill="2.9" diameter="7.5"/>
@@ -174,11 +174,6 @@
 <wire x1="-33.02" y1="40.77" x2="33.02" y2="40.77" width="0" layer="21"/>
 <wire x1="33.02" y1="40.77" x2="33.02" y2="30.61" width="0" layer="21"/>
 <wire x1="33.02" y1="30.61" x2="-33.02" y2="30.61" width="0" layer="21"/>
-<text x="30" y="-36" size="2" layer="26" font="vector" rot="MR0">Title:
-Date:
-Board Template: V2.1</text>
-<text x="20" y="-30" size="2" layer="26" font="vector" rot="MR0">&gt;DRAWING_NAME</text>
-<text x="20" y="-33" size="2" layer="26" font="vector" rot="MR0">&gt;LAST_DATE_TIME</text>
 <wire x1="-47" y1="47" x2="47" y2="47" width="0.127" layer="51"/>
 <wire x1="47" y1="47" x2="47" y2="-47" width="0.127" layer="51"/>
 <wire x1="47" y1="-47" x2="-47" y2="-47" width="0.127" layer="51"/>
@@ -191,46 +186,26 @@ Board Template: V2.1</text>
 <wire x1="34.5" y1="-34.5" x2="69" y2="-34.5" width="0.127" layer="51"/>
 <wire x1="-34.5" y1="-69" x2="-34.5" y2="-34.5" width="0.127" layer="51"/>
 <wire x1="-34.5" y1="-34.5" x2="-69" y2="-34.5" width="0.127" layer="51"/>
-<wire x1="-47" y1="-47" x2="-47" y2="-34.5" width="0" layer="20"/>
+<wire x1="-47" y1="-46" x2="-47" y2="-34.5" width="0" layer="20"/>
 <wire x1="-47" y1="-34.5" x2="-45" y2="-32.5" width="0" layer="20" curve="90"/>
-<wire x1="-47" y1="-47" x2="-34.5" y2="-47" width="0" layer="20"/>
+<wire x1="-46" y1="-47" x2="-34.5" y2="-47" width="0" layer="20"/>
 <wire x1="-34.5" y1="-47" x2="-32.5" y2="-45" width="0" layer="20" curve="-90"/>
-<wire x1="34.5" y1="-47" x2="47" y2="-47" width="0" layer="20"/>
-<wire x1="47" y1="-47" x2="47" y2="-34.5" width="0" layer="20"/>
+<wire x1="34.5" y1="-47" x2="46" y2="-47" width="0" layer="20"/>
+<wire x1="47" y1="-46" x2="47" y2="-34.5" width="0" layer="20"/>
 <wire x1="47" y1="-34.5" x2="45" y2="-32.5" width="0" layer="20" curve="-90"/>
 <wire x1="34.5" y1="-47" x2="32.5" y2="-45" width="0" layer="20" curve="90"/>
-<wire x1="34.5" y1="47" x2="47" y2="47" width="0" layer="20"/>
-<wire x1="47" y1="47" x2="47" y2="34.5" width="0" layer="20"/>
+<wire x1="34.5" y1="47" x2="46" y2="47" width="0" layer="20"/>
+<wire x1="47" y1="46" x2="47" y2="34.5" width="0" layer="20"/>
 <wire x1="47" y1="34.5" x2="45" y2="32.5" width="0" layer="20" curve="90"/>
 <wire x1="34.5" y1="47" x2="32.5" y2="45" width="0" layer="20" curve="-90"/>
-<wire x1="-47" y1="34.5" x2="-47" y2="47" width="0" layer="20"/>
-<wire x1="-47" y1="47" x2="-34.5" y2="47" width="0" layer="20"/>
+<wire x1="-47" y1="34.5" x2="-47" y2="46" width="0" layer="20"/>
+<wire x1="-46" y1="47" x2="-34.5" y2="47" width="0" layer="20"/>
 <wire x1="-34.5" y1="47" x2="-32.5" y2="45" width="0" layer="20" curve="90"/>
 <wire x1="-47" y1="34.5" x2="-45" y2="32.5" width="0" layer="20" curve="-90"/>
-<wire x1="-45" y1="32.5" x2="-45" y2="32" width="0" layer="20"/>
-</package>
-<package name="BOARD_TEMPLATE">
-<wire x1="-40" y1="-45" x2="-45" y2="-40" width="0" layer="20"/>
-<wire x1="-45" y1="-40" x2="-45" y2="40" width="0" layer="20"/>
-<wire x1="-45" y1="40" x2="-40" y2="45" width="0" layer="20"/>
-<wire x1="-40" y1="45" x2="40" y2="45" width="0" layer="20"/>
-<wire x1="40" y1="45" x2="45" y2="40" width="0" layer="20"/>
-<wire x1="45" y1="40" x2="45" y2="-40" width="0" layer="20"/>
-<wire x1="45" y1="-40" x2="40" y2="-45" width="0" layer="20"/>
-<wire x1="40" y1="-45" x2="-40" y2="-45" width="0" layer="20"/>
-<pad name="P$1" x="-39.5" y="39.5" drill="2.9" diameter="7.5"/>
-<pad name="P$2" x="-39.5" y="-39.5" drill="2.9" diameter="7.5"/>
-<pad name="P$3" x="39.5" y="-39.5" drill="2.9" diameter="7.5"/>
-<pad name="P$4" x="39.5" y="39.5" drill="2.9" diameter="7.5"/>
-<wire x1="-33.02" y1="30.61" x2="-33.02" y2="40.77" width="0" layer="21"/>
-<wire x1="-33.02" y1="40.77" x2="33.02" y2="40.77" width="0" layer="21"/>
-<wire x1="33.02" y1="40.77" x2="33.02" y2="30.61" width="0" layer="21"/>
-<wire x1="33.02" y1="30.61" x2="-33.02" y2="30.61" width="0" layer="21"/>
-<text x="30" y="-36" size="2" layer="26" font="vector" rot="MR0">Title:
-Date:
-Board Template: V2.1</text>
-<text x="20" y="-30" size="2" layer="26" font="vector" rot="MR0">&gt;DRAWING_NAME</text>
-<text x="20" y="-33" size="2" layer="26" font="vector" rot="MR0">&gt;LAST_DATE_TIME</text>
+<wire x1="-47" y1="46" x2="-46" y2="47" width="0" layer="20"/>
+<wire x1="46" y1="47" x2="47" y2="46" width="0" layer="20"/>
+<wire x1="46" y1="-47" x2="47" y2="-46" width="0" layer="20"/>
+<wire x1="-47" y1="-46" x2="-46" y2="-47" width="0" layer="20"/>
 </package>
 <package name="PC104_CONNECTOR">
 <pad name="P$1" x="-31.75" y="32.134" drill="0.9525" diameter="1.8796" shape="octagon"/>
@@ -1099,6 +1074,24 @@ chip</description>
 <smd name="C" x="1.5" y="0" dx="1.2" dy="1.4" layer="1"/>
 <text x="-1.524" y="1.397" size="1.016" layer="25" font="vector">&gt;NAME</text>
 </package>
+<package name="BOARD_TEMPLATE">
+<wire x1="-40" y1="-45" x2="-45" y2="-40" width="0" layer="20"/>
+<wire x1="-45" y1="-40" x2="-45" y2="40" width="0" layer="20"/>
+<wire x1="-45" y1="40" x2="-40" y2="45" width="0" layer="20"/>
+<wire x1="-40" y1="45" x2="40" y2="45" width="0" layer="20"/>
+<wire x1="40" y1="45" x2="45" y2="40" width="0" layer="20"/>
+<wire x1="45" y1="40" x2="45" y2="-40" width="0" layer="20"/>
+<wire x1="45" y1="-40" x2="40" y2="-45" width="0" layer="20"/>
+<wire x1="40" y1="-45" x2="-40" y2="-45" width="0" layer="20"/>
+<pad name="P$1" x="-39.5" y="39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$2" x="-39.5" y="-39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$3" x="39.5" y="-39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$4" x="39.5" y="39.5" drill="2.9" diameter="7.5"/>
+<wire x1="-33.02" y1="30.61" x2="-33.02" y2="40.77" width="0" layer="21"/>
+<wire x1="-33.02" y1="40.77" x2="33.02" y2="40.77" width="0" layer="21"/>
+<wire x1="33.02" y1="40.77" x2="33.02" y2="30.61" width="0" layer="21"/>
+<wire x1="33.02" y1="30.61" x2="-33.02" y2="30.61" width="0" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="BOARD_TEMPLATE">
@@ -1141,12 +1134,12 @@ chip</description>
 <pin name="DISTRI_GND@30" x="-12.7" y="12.7" length="middle" rot="R180"/>
 <pin name="DISTRI_VBAT@31" x="12.7" y="12.7" length="middle"/>
 <pin name="DISTRI_GND@32" x="63.5" y="12.7" length="middle" rot="R180"/>
-<pin name="P$33" x="-66.04" y="10.16" length="middle"/>
-<pin name="P$34" x="-12.7" y="10.16" length="middle" rot="R180"/>
-<pin name="P$35" x="12.7" y="10.16" length="middle"/>
-<pin name="P$36" x="63.5" y="10.16" length="middle" rot="R180"/>
-<pin name="P$37" x="-66.04" y="7.62" length="middle"/>
-<pin name="P$38" x="-12.7" y="7.62" length="middle" rot="R180"/>
+<pin name="BATT_VBAT$33" x="-66.04" y="10.16" length="middle"/>
+<pin name="BATT_VBATT$34" x="-12.7" y="10.16" length="middle" rot="R180"/>
+<pin name="GEN_VBATT$35" x="12.7" y="10.16" length="middle"/>
+<pin name="GEN_VBATT$36" x="63.5" y="10.16" length="middle" rot="R180"/>
+<pin name="PWRCONNECT$37" x="-66.04" y="7.62" length="middle"/>
+<pin name="PWRCONNECT$38" x="-12.7" y="7.62" length="middle" rot="R180"/>
 <pin name="P$39" x="12.7" y="7.62" length="middle"/>
 <pin name="P$40" x="63.5" y="7.62" length="middle" rot="R180"/>
 <pin name="P$41" x="-66.04" y="5.08" length="middle"/>
@@ -1154,20 +1147,20 @@ chip</description>
 <pin name="P$43" x="12.7" y="5.08" length="middle"/>
 <pin name="P$44" x="63.5" y="5.08" length="middle" rot="R180"/>
 <pin name="SYNC1" x="-66.04" y="2.54" length="middle"/>
-<pin name="MCU_GND@46" x="-12.7" y="2.54" length="middle" rot="R180"/>
-<pin name="MCU_GND@47" x="12.7" y="2.54" length="middle"/>
+<pin name="P@46" x="-12.7" y="2.54" length="middle" rot="R180"/>
+<pin name="P@47" x="12.7" y="2.54" length="middle"/>
 <pin name="P$48" x="63.5" y="2.54" length="middle" rot="R180"/>
 <pin name="SYNC2" x="-66.04" y="0" length="middle"/>
-<pin name="5V@50" x="-12.7" y="0" length="middle" rot="R180"/>
-<pin name="5V@51" x="12.7" y="0" length="middle"/>
-<pin name="P$52" x="63.5" y="0" length="middle" rot="R180"/>
+<pin name="P@50" x="-12.7" y="0" length="middle" rot="R180"/>
+<pin name="TOPDEPLOY+@51" x="12.7" y="0" length="middle"/>
+<pin name="TOPDEPLOY-$52" x="63.5" y="0" length="middle" rot="R180"/>
 <pin name="CANH" x="-66.04" y="-2.54" length="middle"/>
-<pin name="3.3V@54" x="-12.7" y="-2.54" length="middle" rot="R180"/>
-<pin name="3.3V@55" x="12.7" y="-2.54" length="middle"/>
-<pin name="P$56" x="63.5" y="-2.54" length="middle" rot="R180"/>
+<pin name="P@54" x="-12.7" y="-2.54" length="middle" rot="R180"/>
+<pin name="TOPDEPLOY+@55" x="12.7" y="-2.54" length="middle"/>
+<pin name="TOPDEPLOY-$56" x="63.5" y="-2.54" length="middle" rot="R180"/>
 <pin name="CANL" x="-66.04" y="-5.08" length="middle"/>
-<pin name="MCU_GND@58" x="-12.7" y="-5.08" length="middle" rot="R180"/>
-<pin name="MCU_GND@59" x="12.7" y="-5.08" length="middle"/>
+<pin name="P@58" x="-12.7" y="-5.08" length="middle" rot="R180"/>
+<pin name="P@59" x="12.7" y="-5.08" length="middle"/>
 <pin name="P$60" x="63.5" y="-5.08" length="middle" rot="R180"/>
 <pin name="P$61" x="-66.04" y="-7.62" length="middle"/>
 <pin name="P$62" x="-12.7" y="-7.62" length="middle" rot="R180"/>
@@ -2097,6 +2090,7 @@ PWM</text>
 <text x="-13.589" y="52.197" size="2.54" layer="95">MSP-CAN block V2.4</text>
 <text x="16.637" y="-43.942" size="2.54" layer="97">eUSCI_A1 UART use: 
 P2.6 Rx and P2.5 Tx</text>
+<text x="47.879" y="-18.288" size="1.778" layer="97">add off of P3.5</text>
 </symbol>
 <symbol name="PROGRAM/DEBUG_PORT">
 <wire x1="-13.97" y1="15.24" x2="10.16" y2="15.24" width="0.4064" layer="94"/>
@@ -2325,10 +2319,8 @@ P2.6 Rx and P2.5 Tx</text>
 <devices>
 <device name="" package="PC104_CONNECTOR">
 <connects>
-<connect gate="G$1" pin="3.3V@54" pad="P$54"/>
-<connect gate="G$1" pin="3.3V@55" pad="P$55"/>
-<connect gate="G$1" pin="5V@50" pad="P$50"/>
-<connect gate="G$1" pin="5V@51" pad="P$51"/>
+<connect gate="G$1" pin="BATT_VBAT$33" pad="P$33"/>
+<connect gate="G$1" pin="BATT_VBATT$34" pad="P$34"/>
 <connect gate="G$1" pin="BDOT_3.3V@83" pad="P$83"/>
 <connect gate="G$1" pin="BDOT_3.3V@84" pad="P$84"/>
 <connect gate="G$1" pin="BDOT_5V@81" pad="P$81"/>
@@ -2371,16 +2363,8 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="ESTIMAT_GND@80" pad="P$80"/>
 <connect gate="G$1" pin="ESTIMAT_VBAT@77" pad="P$77"/>
 <connect gate="G$1" pin="ESTIMAT_VBAT@78" pad="P$78"/>
-<connect gate="G$1" pin="MCU_GND@46" pad="P$46"/>
-<connect gate="G$1" pin="MCU_GND@47" pad="P$47"/>
-<connect gate="G$1" pin="MCU_GND@58" pad="P$58"/>
-<connect gate="G$1" pin="MCU_GND@59" pad="P$59"/>
-<connect gate="G$1" pin="P$33" pad="P$33"/>
-<connect gate="G$1" pin="P$34" pad="P$34"/>
-<connect gate="G$1" pin="P$35" pad="P$35"/>
-<connect gate="G$1" pin="P$36" pad="P$36"/>
-<connect gate="G$1" pin="P$37" pad="P$37"/>
-<connect gate="G$1" pin="P$38" pad="P$38"/>
+<connect gate="G$1" pin="GEN_VBATT$35" pad="P$35"/>
+<connect gate="G$1" pin="GEN_VBATT$36" pad="P$36"/>
 <connect gate="G$1" pin="P$39" pad="P$39"/>
 <connect gate="G$1" pin="P$40" pad="P$40"/>
 <connect gate="G$1" pin="P$41" pad="P$41"/>
@@ -2388,8 +2372,6 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="P$43" pad="P$43"/>
 <connect gate="G$1" pin="P$44" pad="P$44"/>
 <connect gate="G$1" pin="P$48" pad="P$48"/>
-<connect gate="G$1" pin="P$52" pad="P$52"/>
-<connect gate="G$1" pin="P$56" pad="P$56"/>
 <connect gate="G$1" pin="P$60" pad="P$60"/>
 <connect gate="G$1" pin="P$61" pad="P$61"/>
 <connect gate="G$1" pin="P$62" pad="P$62"/>
@@ -2405,6 +2387,12 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="P$92" pad="P$92"/>
 <connect gate="G$1" pin="P$95" pad="P$95"/>
 <connect gate="G$1" pin="P$96" pad="P$96"/>
+<connect gate="G$1" pin="P@46" pad="P$46"/>
+<connect gate="G$1" pin="P@47" pad="P$47"/>
+<connect gate="G$1" pin="P@50" pad="P$50"/>
+<connect gate="G$1" pin="P@54" pad="P$54"/>
+<connect gate="G$1" pin="P@58" pad="P$58"/>
+<connect gate="G$1" pin="P@59" pad="P$59"/>
 <connect gate="G$1" pin="PPT_GND@1" pad="P$1"/>
 <connect gate="G$1" pin="PPT_GND@11" pad="P$11"/>
 <connect gate="G$1" pin="PPT_GND@14" pad="P$14"/>
@@ -2421,10 +2409,16 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="PPT_VBAT@4" pad="P$4"/>
 <connect gate="G$1" pin="PPT_VBAT@5" pad="P$5"/>
 <connect gate="G$1" pin="PPT_VBAT@7" pad="P$7"/>
+<connect gate="G$1" pin="PWRCONNECT$37" pad="P$37"/>
+<connect gate="G$1" pin="PWRCONNECT$38" pad="P$38"/>
 <connect gate="G$1" pin="RAHS_GND@94" pad="P$94"/>
 <connect gate="G$1" pin="RAHS_VBAT@93" pad="P$93"/>
 <connect gate="G$1" pin="SYNC1" pad="P$45"/>
 <connect gate="G$1" pin="SYNC2" pad="P$49"/>
+<connect gate="G$1" pin="TOPDEPLOY+@51" pad="P$51"/>
+<connect gate="G$1" pin="TOPDEPLOY+@55" pad="P$55"/>
+<connect gate="G$1" pin="TOPDEPLOY-$52" pad="P$52"/>
+<connect gate="G$1" pin="TOPDEPLOY-$56" pad="P$56"/>
 <connect gate="G$1" pin="WHEEL_GND@71" pad="P$71"/>
 <connect gate="G$1" pin="WHEEL_GND@72" pad="P$72"/>
 <connect gate="G$1" pin="WHEEL_VBATT@69" pad="P$69"/>
@@ -7907,6 +7901,9 @@ Source: AVX .. aphvc.pdf</description>
 <part name="GND22" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND38" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND39" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="MOTOR_X_DEBUG" library="SparkFun-Connectors" deviceset="CONN_03" device="LOCK"/>
+<part name="MOTOR_Y_DEBUG" library="SparkFun-Connectors" deviceset="CONN_03" device="LOCK"/>
+<part name="MOTOR_Z_DEBUG" library="SparkFun-Connectors" deviceset="CONN_03" device="LOCK"/>
 </parts>
 <sheets>
 <sheet>
@@ -8066,6 +8063,9 @@ Source: AVX .. aphvc.pdf</description>
 <instance part="GND22" gate="1" x="86.36" y="-127"/>
 <instance part="GND38" gate="1" x="233.68" y="-124.46"/>
 <instance part="GND39" gate="1" x="383.54" y="-124.46"/>
+<instance part="MOTOR_X_DEBUG" gate="J$1" x="81.28" y="-66.04" rot="R180"/>
+<instance part="MOTOR_Y_DEBUG" gate="J$1" x="228.6" y="-58.42" rot="R180"/>
+<instance part="MOTOR_Z_DEBUG" gate="J$1" x="381" y="-58.42" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -8438,6 +8438,27 @@ Source: AVX .. aphvc.pdf</description>
 <pinref part="R9" gate="G$1" pin="1"/>
 <wire x1="86.36" y1="-124.46" x2="86.36" y2="-121.92" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="MOTOR_X_DEBUG" gate="J$1" pin="1"/>
+<wire x1="73.66" y1="-63.5" x2="71.12" y2="-63.5" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="-63.5" x2="71.12" y2="-60.96" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="-60.96" x2="68.58" y2="-60.96" width="0.1524" layer="91"/>
+<label x="68.58" y="-60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="MOTOR_Y_DEBUG" gate="J$1" pin="1"/>
+<wire x1="220.98" y1="-55.88" x2="218.44" y2="-55.88" width="0.1524" layer="91"/>
+<wire x1="218.44" y1="-55.88" x2="218.44" y2="-53.34" width="0.1524" layer="91"/>
+<wire x1="218.44" y1="-53.34" x2="215.9" y2="-53.34" width="0.1524" layer="91"/>
+<label x="215.9" y="-53.34" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="MOTOR_Z_DEBUG" gate="J$1" pin="1"/>
+<wire x1="373.38" y1="-55.88" x2="370.84" y2="-55.88" width="0.1524" layer="91"/>
+<wire x1="370.84" y1="-55.88" x2="370.84" y2="-53.34" width="0.1524" layer="91"/>
+<wire x1="370.84" y1="-53.34" x2="368.3" y2="-53.34" width="0.1524" layer="91"/>
+<label x="368.3" y="-53.34" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="CANH" class="0">
 <segment>
@@ -8564,6 +8585,13 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="0" y1="-271.78" x2="0" y2="-266.7" width="0.1524" layer="91"/>
 <label x="0" y="-271.78" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
+<segment>
+<pinref part="MOTOR_X_DEBUG" gate="J$1" pin="3"/>
+<wire x1="73.66" y1="-68.58" x2="71.12" y2="-68.58" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="-68.58" x2="71.12" y2="-71.12" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="-71.12" x2="68.58" y2="-71.12" width="0.1524" layer="91"/>
+<label x="68.58" y="-71.12" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="RD_X" class="0">
 <segment>
@@ -8601,6 +8629,11 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="50.8" y1="-274.32" x2="58.42" y2="-274.32" width="0.1524" layer="91"/>
 <wire x1="50.8" y1="-271.78" x2="50.8" y2="-274.32" width="0.1524" layer="91"/>
 <junction x="50.8" y="-274.32"/>
+</segment>
+<segment>
+<pinref part="MOTOR_X_DEBUG" gate="J$1" pin="2"/>
+<wire x1="73.66" y1="-66.04" x2="68.58" y2="-66.04" width="0.1524" layer="91"/>
+<label x="68.58" y="-66.04" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="FR_X" class="0">
@@ -9173,6 +9206,13 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="162.56" y1="-271.78" x2="162.56" y2="-266.7" width="0.1524" layer="91"/>
 <label x="162.56" y="-271.78" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
+<segment>
+<pinref part="MOTOR_Y_DEBUG" gate="J$1" pin="3"/>
+<wire x1="220.98" y1="-60.96" x2="218.44" y2="-60.96" width="0.1524" layer="91"/>
+<wire x1="218.44" y1="-60.96" x2="218.44" y2="-63.5" width="0.1524" layer="91"/>
+<wire x1="218.44" y1="-63.5" x2="215.9" y2="-63.5" width="0.1524" layer="91"/>
+<label x="215.9" y="-63.5" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="RD_Y" class="0">
 <segment>
@@ -9210,6 +9250,11 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="213.36" y1="-274.32" x2="220.98" y2="-274.32" width="0.1524" layer="91"/>
 <wire x1="213.36" y1="-271.78" x2="213.36" y2="-274.32" width="0.1524" layer="91"/>
 <junction x="213.36" y="-274.32"/>
+</segment>
+<segment>
+<pinref part="MOTOR_Y_DEBUG" gate="J$1" pin="2"/>
+<wire x1="220.98" y1="-58.42" x2="215.9" y2="-58.42" width="0.1524" layer="91"/>
+<label x="215.9" y="-58.42" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="FR_Y" class="0">
@@ -9553,6 +9598,13 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="312.42" y1="-274.32" x2="312.42" y2="-269.24" width="0.1524" layer="91"/>
 <label x="312.42" y="-274.32" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
+<segment>
+<pinref part="MOTOR_Z_DEBUG" gate="J$1" pin="3"/>
+<wire x1="373.38" y1="-60.96" x2="370.84" y2="-60.96" width="0.1524" layer="91"/>
+<wire x1="370.84" y1="-60.96" x2="370.84" y2="-63.5" width="0.1524" layer="91"/>
+<wire x1="370.84" y1="-63.5" x2="368.3" y2="-63.5" width="0.1524" layer="91"/>
+<label x="368.3" y="-63.5" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="RD_Z" class="0">
 <segment>
@@ -9590,6 +9642,11 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="363.22" y1="-276.86" x2="370.84" y2="-276.86" width="0.1524" layer="91"/>
 <wire x1="363.22" y1="-274.32" x2="363.22" y2="-276.86" width="0.1524" layer="91"/>
 <junction x="363.22" y="-276.86"/>
+</segment>
+<segment>
+<pinref part="MOTOR_Z_DEBUG" gate="J$1" pin="2"/>
+<wire x1="373.38" y1="-58.42" x2="368.3" y2="-58.42" width="0.1524" layer="91"/>
+<label x="368.3" y="-58.42" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="FR_Z" class="0">
