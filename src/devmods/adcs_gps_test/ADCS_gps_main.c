@@ -11,7 +11,7 @@ int main(void)
     bspInit(Module_Test);
     __bis_SR_register(GIE);
 
-    const DebugMode mode = Mode_ASCIIInteractive;
+    const DebugMode mode = Mode_BinaryStreaming;
     debugSetMode(mode);
 
     gpsInit();

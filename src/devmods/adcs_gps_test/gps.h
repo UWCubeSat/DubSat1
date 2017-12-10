@@ -3,19 +3,6 @@
 
 #define OPCODE_SEND_ASCII 1
 
-#define MSGID_RXSTATUS 93
-#define MSGID_RXSTATUSEVENT 94
-#define MSGID_TIME 101
-#define MSGID_BESTXYZ 241
-#define MSGID_HWMONITOR 963
-
-#define EVTID_POSITION 19
-#define EVTID_UTC 18
-#define EVTID_CLOCK 22
-
-#define EVTTYPE_CLEAR 0
-#define EVTTYPE_SET 1
-
 #include <stdbool.h>
 
 #include "core/utils.h"
@@ -107,5 +94,12 @@ typedef struct PACKED_STRUCT _hwmonitor_info {
     float temp;
     uint8_t tempStatus;
 } HWMonitorInfo;
+
+typedef struct PACKED_STRUCT _satvis2_info {
+    BcTlmHeader header;
+    uint32_t numGPS;
+    uint32_t numGLONASS;
+    uint32_t numSBAS;
+} Satvis2Info;
 
 #endif /* GPS_H_ */
