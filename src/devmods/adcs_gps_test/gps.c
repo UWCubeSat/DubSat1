@@ -14,6 +14,7 @@
 #include "gps.h"
 #include "GPSPackage.h"
 #include "GPSReader.h"
+#include "GPSIDs.h"
 
 typedef struct message_handler_entity
 {
@@ -42,6 +43,7 @@ FILE_STATIC RXStatusInfo rxStatusInfo;
 FILE_STATIC BestXYZInfo bestXYZInfo;
 FILE_STATIC TimeInfo timeInfo;
 FILE_STATIC HWMonitorInfo hwMonitorInfo;
+FILE_STATIC Satvis2Info satvis2Info;
 
 #ifdef __DEBUG__
 
@@ -96,6 +98,7 @@ FILE_STATIC void handleRxStatus(const GPSPackage *package);
 FILE_STATIC void handleTime(const GPSPackage *package);
 FILE_STATIC void handleBestXYZ(const GPSPackage *package);
 FILE_STATIC void handleHwMonitor(const GPSPackage *package);
+FILE_STATIC void handleSatvis2(const GPSPackage *package);
 
 // status event handlers
 FILE_STATIC void handlePositionStatusEvent(const GPSRXStatusEvent *e);
@@ -117,12 +120,15 @@ void gpsInit()
     gpsRegisterMessageHandler(MSGID_TIME, handleTime);
     gpsRegisterMessageHandler(MSGID_BESTXYZ, handleBestXYZ);
     gpsRegisterMessageHandler(MSGID_HWMONITOR, handleHwMonitor);
+    gpsRegisterMessageHandler(MSGID_SATVIS2, handleSatvis2);
 
     // TODO what should the opcodes be?
     bcbinPopulateHeader(&rxStatusInfo.header, 123, sizeof(rxStatusInfo));
     bcbinPopulateHeader(&bestXYZInfo.header, 124, sizeof(bestXYZInfo));
     bcbinPopulateHeader(&timeInfo.header, 125, sizeof(timeInfo));
     bcbinPopulateHeader(&hwMonitorInfo.header, 126, sizeof(hwMonitorInfo));
+    bcbinPopulateHeader(&satvis2Info.header, 127, sizeof(satvis2Info));
+
     debugRegisterEntity(Entity_Test, NULL, statusCallback, actionCallback);
 }
 
@@ -170,7 +176,11 @@ bool gpsUpdate()
     }
 
     // filter out response messages
-    // TODO start checking these for confirmation (see LOG command)
+    /*
+     * TODO start checking these for confirmation (see LOG command).
+     * Replies are in the same form as the command, so we need to switch to
+     * sending binary commands if we want confirmation messages.
+     */
     if (package->header.messageType & 0b1000000)
     {
         // the receiver responds to commands with a confirmation message,
@@ -287,6 +297,7 @@ FILE_STATIC uint8_t statusCallback(DebugMode mode)
         // GPS. Sending them could be postponed until they are updated.
         bcbinSendPacket((uint8_t *) &bestXYZInfo, sizeof(bestXYZInfo));
         bcbinSendPacket((uint8_t *) &hwMonitorInfo, sizeof(hwMonitorInfo));
+        bcbinSendPacket((uint8_t *) &satvis2Info, sizeof(satvis2Info));
     }
     return 1;
 }
@@ -297,8 +308,8 @@ FILE_STATIC uint8_t actionCallback(DebugMode mode, uint8_t *command)
 
     if (mode == Mode_ASCIIInteractive)
     {
-        // TODO
-        debugPrintF("GPS ASCIIInteractive command interface not yet implemented");
+        uartTransmit(uartHandle, command, len);
+        uartTransmit(uartHandle, "\r\n", 2);
     }
     else
     {
@@ -311,7 +322,7 @@ FILE_STATIC uint8_t actionCallback(DebugMode mode, uint8_t *command)
                     uartTransmit(uartHandle, command + 1, len - 1);
 
                     // execute the command
-                    uartTransmit(uartHandle, "\r\n", 3);
+                    uartTransmit(uartHandle, "\r\n", 2);
                 } else {
                     return 0;
                 }
@@ -408,6 +419,27 @@ FILE_STATIC void handleHwMonitor(const GPSPackage *package)
     // TODO add other measurements to COSMOS
     hwMonitorInfo.temp = monLog.temp.reading;
     hwMonitorInfo.tempStatus = monLog.temp.status;
+}
+
+FILE_STATIC void handleSatvis2(const GPSPackage *package)
+{
+    const GPSSatvis2 satvis2 = package->message.satvis2;
+    debugTraceF(GPS_TRACE_LEVEL, "Satvis2:\r\n");
+    debugTraceF(GPS_TRACE_LEVEL, "\tsystem: %u\r\n", satvis2.system);
+    debugTraceF(GPS_TRACE_LEVEL, "\tnum:    %u\r\n", satvis2.numSats);
+
+    switch (satvis2.system)
+    {
+        case SATSYSTEM_GPS:
+            satvis2Info.numGPS = satvis2.numSats;
+            break;
+        case SATSYSTEM_GLONASS:
+            satvis2Info.numGLONASS = satvis2.numSats;
+            break;
+        case SATSYSTEM_SBAS:
+            satvis2Info.numSBAS = satvis2.numSats;
+            break;
+    }
 }
 
 FILE_STATIC void handlePositionStatusEvent(const GPSRXStatusEvent *e)

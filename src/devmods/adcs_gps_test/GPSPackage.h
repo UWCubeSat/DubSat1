@@ -148,6 +148,14 @@ typedef struct PACKED_STRUCT GPSRXStatusEvent
     uint8_t description[32];
 } GPSRXStatusEvent;
 
+typedef struct PACKED_STRUCT GPSSatvis2
+{
+    gps_enum system;
+    gps_enum isValid;
+    gps_enum usedGNSSAlmanac;
+    uint32_t numSats;
+} GPSSatvis2;
+
 typedef union GPSMessage
 {
     GPSBestXYZ bestXYZ;
@@ -155,6 +163,7 @@ typedef union GPSMessage
     GPSRXStatus rxstatus;
     GPSRXStatusEvent rxstatusEvent;
     GPSHWMonitor hwMonitor;
+    GPSSatvis2 satvis2;
 } GPSMessage;
 
 typedef struct GPSPackage

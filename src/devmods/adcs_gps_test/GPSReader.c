@@ -6,6 +6,7 @@
 
 #include "GPSReader.h"
 #include "GPSPackage.h"
+#include "GPSIDs.h"
 #include "queue.h"
 #include "crc.h"
 
@@ -17,6 +18,11 @@ typedef enum gps_state
 FILE_STATIC Queue queue;
 
 FILE_STATIC void readCallback(uint8_t rcvdbyte);
+
+// custom parsing callbacks
+FILE_STATIC void parseSatvis2(GPSMessage *message,
+                              uint8_t rcvdbyte,
+                              uint8_t bytesRead);
 
 void GPSReaderInit(hBus uartHandle, GPSPackage *buffer, uint32_t bufferLength)
 {
@@ -80,9 +86,23 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
     }
     case State_Message:
     {
-        // write directly into message
-        uint8_t *buf = (uint8_t *) &p->message;
-        buf[bytesRead] = rcvdbyte;
+        // TODO use a registration thing instead
+        switch (p->header.messageId)
+        {
+            case MSGID_SATVIS2:
+            {
+                parseSatvis2(&p->message, rcvdbyte, bytesRead);
+                break;
+            }
+            default:
+            {
+                // write directly into message
+                uint8_t *buf = (uint8_t *) &p->message;
+                buf[bytesRead] = rcvdbyte;
+                break;
+            }
+        }
+
         crc = continueCrc32(crc, rcvdbyte);
         bytesRead++;
 
@@ -130,4 +150,16 @@ GPSPackage *ReadGPSPackage()
 void PopGPSPackage()
 {
     PopQueue(&queue);
+}
+
+FILE_STATIC void parseSatvis2(GPSMessage *message,
+                              uint8_t rcvdbyte,
+                              uint8_t bytesRead)
+{
+    if (bytesRead < 16) {
+        uint8_t *buf = (uint8_t *) message;
+        buf[bytesRead] = rcvdbyte;
+    }
+    // ignore everything after the first 16 bytes, which only includes
+    // satellite-specific information
 }
