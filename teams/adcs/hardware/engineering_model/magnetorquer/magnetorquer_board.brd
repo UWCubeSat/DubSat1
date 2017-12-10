@@ -3090,14 +3090,18 @@ design rules under a new name.</description>
 <vertex x="84.201" y="37.3634"/>
 <vertex x="85.8901" y="39.0525"/>
 <vertex x="86.106" y="39.0525"/>
+<vertex x="86.106" y="41.148"/>
+<vertex x="86.868" y="41.91"/>
+<vertex x="87.884" y="41.91"/>
+<vertex x="88.392" y="42.418"/>
+<vertex x="88.392" y="43.942"/>
+<vertex x="86.868" y="43.942"/>
+<vertex x="86.868" y="42.9895"/>
 <vertex x="86.106" y="42.2275"/>
 <vertex x="83.8835" y="42.2275"/>
 <vertex x="83.8835" y="38.227"/>
 <vertex x="82.9945" y="38.227"/>
 </polygon>
-<wire x1="87.6935" y1="43.1825" x2="87.6935" y2="42.2275" width="0.254" layer="1"/>
-<wire x1="87.6935" y1="42.2275" x2="85.5285" y2="42.2275" width="0.254" layer="1"/>
-<wire x1="85.5285" y1="42.2275" x2="84.946" y2="41.645" width="0.254" layer="1"/>
 </signal>
 <signal name="VD">
 <contactref element="C5" pad="2"/>
@@ -3106,15 +3110,16 @@ design rules under a new name.</description>
 <polygon width="0.254" layer="1" thermals="no">
 <vertex x="78.486" y="42.8625"/>
 <vertex x="81.026" y="42.8625"/>
-<vertex x="81.026" y="46.355"/>
+<vertex x="81.026" y="45.212"/>
+<vertex x="86.868" y="45.212"/>
+<vertex x="86.868" y="44.45"/>
+<vertex x="88.392" y="44.45"/>
+<vertex x="88.392" y="45.847"/>
+<vertex x="81.5086" y="45.847"/>
 <vertex x="80.0735" y="47.3075"/>
 <vertex x="80.0735" y="48.26"/>
 <vertex x="78.486" y="48.26"/>
 </polygon>
-<wire x1="87.6935" y1="45.0825" x2="87.3735" y2="45.4025" width="0.254" layer="1"/>
-<wire x1="87.3735" y1="45.4025" x2="79.756" y2="45.4025" width="0.254" layer="1"/>
-<wire x1="79.756" y1="45.4025" x2="79.646" y2="45.2925" width="0.254" layer="1"/>
-<wire x1="79.646" y1="45.2925" x2="79.646" y2="43.445" width="0.254" layer="1"/>
 </signal>
 <signal name="FBX">
 <contactref element="C11" pad="2"/>
