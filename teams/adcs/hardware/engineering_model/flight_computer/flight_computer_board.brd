@@ -4336,19 +4336,19 @@ design rules under a new name.</description>
 <element name="R10" library="DubSat1 Components" package="0805" value="10 kohm" x="-8.508" y="-10.016"/>
 <element name="R7" library="DubSat1 Components" package="0805" value="10 kohm" x="34.29" y="-11.684" rot="R180"/>
 <element name="R3" library="DubSat1 Components" package="0805" value="10 kohm" x="34.29" y="-14.224" rot="R180"/>
-<element name="U4" library="DubSat1 Components" package="SOT-23-5" value="LINEAR_LDO_LT1761-X" x="-38.227" y="30.4165" rot="R90"/>
+<element name="U4" library="DubSat1 Components" package="SOT-23-5" value="TPS732XX" x="-38.227" y="30.4165" rot="R90"/>
 <element name="C32" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF" x="-41.7195" y="30.4165" rot="R90"/>
 <element name="C36" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF" x="-36.6395" y="33.909" rot="R270"/>
 <element name="C44" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF" x="-43.942" y="30.4165" rot="R270"/>
-<element name="U6" library="DubSat1 Components" package="SOT-23-5" value="LINEAR_LDO_LT1761-X" x="-42.1005" y="21.717"/>
+<element name="U6" library="DubSat1 Components" package="SOT-23-5" value="TPS732XX" x="-42.1005" y="21.717"/>
 <element name="C48" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF" x="-42.1005" y="24.892"/>
 <element name="C49" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF" x="-45.1485" y="20.955" rot="R270"/>
 <element name="C51" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF" x="-42.1005" y="27.1145" rot="R180"/>
-<element name="U5" library="DubSat1 Components" package="SOT-23-5" value="LINEAR_LDO_LT1761-X" x="36.449" y="25.3365" rot="R90"/>
+<element name="U5" library="DubSat1 Components" package="SOT-23-5" value="TPS732XX" x="36.449" y="25.3365" rot="R90"/>
 <element name="C45" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF" x="32.9565" y="25.3365" rot="R90"/>
 <element name="C46" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF" x="40.7035" y="25.527" rot="R90"/>
 <element name="C47" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF" x="30.734" y="25.3365" rot="R270"/>
-<element name="U8" library="DubSat1 Components" package="SOT-23-5" value="LINEAR_LDO_LT1761-X" x="34.417" y="30.1625" rot="R270"/>
+<element name="U8" library="DubSat1 Components" package="SOT-23-5" value="TPS732XX" x="34.417" y="30.1625" rot="R270"/>
 <element name="C55" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF" x="37.592" y="30.1625" rot="R270"/>
 <element name="C56" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF" x="32.8295" y="33.655" rot="R270"/>
 <element name="C57" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF" x="39.8145" y="30.1625" rot="R90"/>
