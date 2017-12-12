@@ -1,4 +1,7 @@
+#define PARSER_BUFFER_LENGTH 10
+
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "core/debugtools.h"
 #include "core/utils.h"
@@ -15,8 +18,19 @@ typedef enum gps_state
     State_Sync, State_Header, State_Message, State_CRC
 } gps_state;
 
+typedef struct parser_entity
+{
+    gps_parser handler;
+    gps_message_id id;
+} parser_entity;
+
+FILE_STATIC parser_entity parsers[PARSER_BUFFER_LENGTH];
+FILE_STATIC uint8_t numParsers = 0;
+
+// message queue
 FILE_STATIC Queue queue;
 
+// uart read callback
 FILE_STATIC void readCallback(uint8_t rcvdbyte);
 
 // custom parsing callbacks
@@ -28,6 +42,9 @@ void GPSReaderInit(hBus uartHandle, GPSPackage *buffer, uint32_t bufferLength)
 {
     queue = CreateQueue((uint8_t *) buffer, sizeof(GPSPackage), bufferLength);
     uartRegisterRxCallback(uartHandle, readCallback);
+
+    // register default parsers
+    gpsRegisterParser(MSGID_SATVIS2, parseSatvis2);
 }
 
 FILE_STATIC void readCallback(uint8_t rcvdbyte)
@@ -86,21 +103,24 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
     }
     case State_Message:
     {
-        // TODO use a registration thing instead
-        switch (p->header.messageId)
+        // check if there is some custom parser for this message id
+        uint8_t i = numParsers;
+        bool usedParser = false;
+        while (i-- != 0)
         {
-            case MSGID_SATVIS2:
+            if (parsers[i].id == p->header.messageId)
             {
-                parseSatvis2(&p->message, rcvdbyte, bytesRead);
+                (parsers[i].handler)(&p->message, rcvdbyte, bytesRead);
+                usedParser = true;
                 break;
             }
-            default:
-            {
-                // write directly into message
-                uint8_t *buf = (uint8_t *) &p->message;
-                buf[bytesRead] = rcvdbyte;
-                break;
-            }
+        }
+
+        // otherwise write directly into the message struct
+        if (!usedParser)
+        {
+            uint8_t *buf = (uint8_t *) &p->message;
+            buf[bytesRead] = rcvdbyte;
         }
 
         crc = continueCrc32(crc, rcvdbyte);
@@ -150,6 +170,18 @@ GPSPackage *ReadGPSPackage()
 void PopGPSPackage()
 {
     PopQueue(&queue);
+}
+
+bool gpsRegisterParser(gps_message_id messageId,
+                       gps_parser parser)
+{
+    if (numParsers >= PARSER_BUFFER_LENGTH)
+    {
+        debugPrintF("too many parsers\r\n");
+        return false;
+    }
+    parsers[numParsers++] = (parser_entity){ parser, messageId };
+    return true;
 }
 
 FILE_STATIC void parseSatvis2(GPSMessage *message,

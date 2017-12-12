@@ -7,6 +7,16 @@
 #include "GPSPackage.h"
 
 /**
+ * A function to override the default parsing behavior of placing the received
+ * byte directly into the message struct.
+ *
+ * message:   the message to write into
+ * rcvdbyte:  the received byte
+ * bytesRead: the index of this byte within the raw input message
+ */
+typedef void (*gps_parser)(GPSMessage *message, uint8_t rcvdbyte, uint8_t bytesRead);
+
+/**
  * Initialize the reader to read from uart. The maximum number of packages in
  * the buffer will be equal to bufferLength / sizeof(GPSPackage).
  */
@@ -23,5 +33,10 @@ GPSPackage *ReadGPSPackage();
  * the pointer returned from readGPSPackage after calling this function.
  */
 void PopGPSPackage();
+
+/**
+ * Register a callback to parse a message. Returns true iff success.
+ */
+bool gpsRegisterParser(gps_message_id messageId, gps_parser handler);
 
 #endif /* GPSREADER_H_ */
