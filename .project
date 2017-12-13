@@ -8,4 +8,10 @@
 	</buildSpec>
 	<natures>
 	</natures>
+	<variableList>
+		<variable>
+			<name>dbase</name>
+			<value>$%7BPROJECT_LOC%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>

@@ -6,18 +6,20 @@
 #ifndef GPSPACKAGE_H_
 #define GPSPACKAGE_H_
 
-#include <stdbool.h>
+#include <stdint.h>
 
 #include "core/utils.h"
 
 typedef int32_t gps_ec;
 typedef uint32_t gps_enum;
+typedef uint16_t gps_message_id;
+typedef uint32_t gps_event_id;
 
 typedef struct PACKED_STRUCT GPSHeader
 {
     uint8_t sync[3];
     uint8_t headerLength;
-    uint16_t messageId;
+    gps_message_id messageId;
     int8_t messageType;
     uint8_t portAddress;
     uint16_t messageLength;
@@ -115,21 +117,44 @@ typedef struct PACKED_STRUCT GPSMeasurement
     uint8_t pad[2];
 } GPSMeasurement;
 
-// TODO This is by far the biggest message and most of the space is wasted. If
-// the message size becomes a problem this will probably be why.
 typedef struct PACKED_STRUCT GPSHWMonitor
 {
     uint32_t numMeasurements;
-    GPSMeasurement measurements[23];
+#if defined(__BSP_HW_GPS_OEM615__)
+    GPSMeasurement temp;
+#elif defined(__BSP_HW_GPS_OEM719__)
+    GPSMeasurement temp;
+    GPSMeasurement antCurrent;
+    GPSMeasurement supVolt; // firmware guide claims this measurement isn't
+                            // supported but it is
+    GPSMeasurement antVolt;
+    GPSMeasurement digCoreVolt;
+    GPSMeasurement supplyVolt;
+    GPSMeasurement oneVEight;
+    GPSMeasurement secTemp;
+    GPSMeasurement periphCoreVolt;
+#else
+
+#error GPS HW unspecified
+
+#endif
 } GPSHWMonitor;
 
 typedef struct PACKED_STRUCT GPSRXStatusEvent
 {
     gps_enum word;
-    uint32_t bitPosition;
+    gps_event_id bitPosition;
     gps_enum event;
     uint8_t description[32];
 } GPSRXStatusEvent;
+
+typedef struct PACKED_STRUCT GPSSatvis2
+{
+    gps_enum system;
+    gps_enum isValid;
+    gps_enum usedGNSSAlmanac;
+    uint32_t numSats;
+} GPSSatvis2;
 
 typedef union GPSMessage
 {
@@ -138,6 +163,7 @@ typedef union GPSMessage
     GPSRXStatus rxstatus;
     GPSRXStatusEvent rxstatusEvent;
     GPSHWMonitor hwMonitor;
+    GPSSatvis2 satvis2;
 } GPSMessage;
 
 typedef struct GPSPackage
