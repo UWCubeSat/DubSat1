@@ -4,7 +4,8 @@
 <designblock>
 <description>for use in battery disconnection, solar panel disconnection, and PPT power switch</description>
 <attributes>
-<attribute name="BOARDSIZE" value="12.2 x 14.3 mm"/>
+<attribute name="AIRWIRES" value="YES"/>
+<attribute name="BOARDSIZE" value="23.5 x 18 mm"/>
 <attribute name="LAYERS" value="1: 1"/>
 </attributes>
 <drawings>
@@ -657,25 +658,22 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <parts>
 <part name="U$1" library="DubSat1 Components" deviceset="DMN5L06WK" device=""/>
 <part name="U$2" library="DubSat1 Components" deviceset="DMP2002UPS" device=""/>
-<part name="C1" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
+<part name="C1" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10n"/>
 <part name="R1" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="1M"/>
 <part name="R2" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="20k"/>
 <part name="R3" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="GND1" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R4" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100"/>
+<part name="R4" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="C2" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="DNP"/>
 <part name="C3" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="DNP"/>
 </parts>
 <sheets>
 <sheet>
 <plain>
-<wire x1="7.62" y1="2.54" x2="7.62" y2="22.86" width="0" layer="97"/>
+<wire x1="7.62" y1="0" x2="7.62" y2="22.86" width="0" layer="97"/>
 <wire x1="7.62" y1="22.86" x2="35.56" y2="22.86" width="0" layer="97"/>
-<wire x1="35.56" y1="22.86" x2="35.56" y2="2.54" width="0" layer="97"/>
-<wire x1="35.56" y1="2.54" x2="7.62" y2="2.54" width="0" layer="97"/>
-<text x="9.144" y="19.05" size="0.762" layer="97">Pi filter for use only if noise present
-begin by do not populate
-if needed, add 100ohm series, and 1uF caps</text>
+<wire x1="35.56" y1="22.86" x2="35.56" y2="0" width="0" layer="97"/>
+<wire x1="35.56" y1="0" x2="7.62" y2="0" width="0" layer="97"/>
 </plain>
 <instances>
 <instance part="U$1" gate="G$1" x="53.34" y="15.24"/>
@@ -692,24 +690,22 @@ if needed, add 100ohm series, and 1uF caps</text>
 <busses>
 </busses>
 <nets>
-<net name="IN" class="0">
+<net name="N$1" class="0">
 <segment>
 <pinref part="U$2" gate="G$1" pin="S"/>
 <wire x1="48.26" y1="50.8" x2="45.72" y2="50.8" width="0.1524" layer="91"/>
 <pinref part="R1" gate="G$1" pin="2"/>
-<wire x1="45.72" y1="50.8" x2="40.64" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="50.8" x2="15.24" y2="50.8" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="48.26" x2="45.72" y2="50.8" width="0.1524" layer="91"/>
-<label x="40.64" y="50.8" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="OUT" class="0">
+<net name="N$2" class="0">
 <segment>
 <pinref part="U$2" gate="G$1" pin="D"/>
 <wire x1="68.58" y1="50.8" x2="71.12" y2="50.8" width="0.1524" layer="91"/>
 <pinref part="C1" gate="G$1" pin="1"/>
-<wire x1="71.12" y1="50.8" x2="73.66" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="50.8" x2="91.44" y2="50.8" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="45.72" x2="71.12" y2="50.8" width="0.1524" layer="91"/>
-<label x="73.66" y="50.8" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$3" class="0">
@@ -782,7 +778,7 @@ if needed, add 100ohm series, and 1uF caps</text>
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.25" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.25" altunitdist="mm" altunit="mm"/>
+<grid distance="1" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.25" altunitdist="mm" altunit="mm"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -1173,104 +1169,83 @@ design rules under a new name.</description>
 </pass>
 </autorouter>
 <elements>
-<element name="C1" library="DubSat1 Components" package="0805" value=".1u" x="26" y="26" rot="R180"/>
-<element name="R1" library="DubSat1 Components" package="0805" value="1M" x="22" y="26" rot="R180"/>
-<element name="R2" library="DubSat1 Components" package="0805" value="20k" x="26.5" y="23" rot="R270"/>
-<element name="R3" library="DubSat1 Components" package="0805" value="100k" x="21" y="23" rot="R90"/>
-<element name="U$1" library="DubSat1 Components" package="SOT-323" value="DMN5L06WK" x="24" y="23" rot="R270"/>
+<element name="C1" library="DubSat1 Components" package="0805" value="10n" x="26" y="25" rot="R180"/>
+<element name="R1" library="DubSat1 Components" package="0805" value="1M" x="22" y="25" rot="R180"/>
+<element name="R2" library="DubSat1 Components" package="0805" value="20k" x="28" y="21" rot="R270"/>
+<element name="R3" library="DubSat1 Components" package="0805" value="100k" x="20" y="21" rot="R90"/>
+<element name="U$1" library="DubSat1 Components" package="SOT-323" value="DMN5L06WK" x="24" y="21" rot="R270"/>
 <element name="U$2" library="DubSat1 Components" package="POWERDI5060-8" value="DMP2002UPS" x="24" y="30" rot="R270"/>
-<element name="R4" library="DubSat1 Components" package="0805" value="100" x="18" y="26" rot="R180"/>
-<element name="C2" library="DubSat1 Components" package="0805" value="DNP" x="19" y="23" rot="R270"/>
-<element name="C3" library="DubSat1 Components" package="0805" value="DNP" x="17" y="23" rot="R270"/>
+<element name="R4" library="DubSat1 Components" package="0805" value="DNP" x="16" y="21"/>
+<element name="C2" library="DubSat1 Components" package="0805" value="DNP" x="12" y="21"/>
+<element name="C3" library="DubSat1 Components" package="0805" value="DNP" x="8" y="21"/>
 </elements>
 <signals>
-<signal name="IN">
+<signal name="N$1">
 <contactref element="U$2" pad="S1"/>
 <contactref element="U$2" pad="S2"/>
 <contactref element="U$2" pad="S3"/>
 <contactref element="R1" pad="2"/>
-<polygon width="0.2032" layer="1" thermals="no">
-<vertex x="21.5" y="32"/>
-<vertex x="19.5" y="32"/>
-<vertex x="19.5" y="29.5"/>
-<vertex x="21.5" y="29.5"/>
-</polygon>
-<wire x1="20.3902" y1="28.52625" x2="20.3902" y2="27.66375" width="0.2032" layer="1"/>
-<wire x1="21.205" y1="29.365" x2="21.205" y2="29.34105" width="0.2032" layer="1"/>
-<wire x1="21.205" y1="29.34105" x2="20.3902" y2="28.52625" width="0.2032" layer="1"/>
-<wire x1="20.3902" y1="27.66375" x2="21.1" y2="26.95395" width="0.2032" layer="1"/>
-<wire x1="21.1" y1="26.95395" x2="21.1" y2="26" width="0.2032" layer="1"/>
+<wire x1="21.1" y1="25" x2="19" y2="27.1" width="0.2" layer="1"/>
+<wire x1="19" y1="27.1" x2="19" y2="28" width="0.2" layer="1"/>
+<wire x1="19" y1="28" x2="20.365" y2="29.365" width="0.2" layer="1"/>
+<wire x1="20.365" y1="29.365" x2="21.205" y2="29.365" width="0.2" layer="1"/>
+<wire x1="21.205" y1="29.365" x2="21.205" y2="30.635" width="0.2" layer="1"/>
+<wire x1="21.205" y1="30.635" x2="21.205" y2="31.905" width="0.2" layer="1"/>
 </signal>
-<signal name="OUT">
+<signal name="N$2">
 <contactref element="U$2" pad="D1"/>
 <contactref element="U$2" pad="D2"/>
 <contactref element="U$2" pad="D3"/>
 <contactref element="U$2" pad="D4"/>
 <contactref element="U$2" pad="D5"/>
 <contactref element="C1" pad="1"/>
-<wire x1="26.9" y1="26" x2="26.9" y2="27.54" width="0.2" layer="1"/>
+<wire x1="26.9" y1="25" x2="26.9" y2="27.54" width="0.2" layer="1"/>
 <wire x1="26.9" y1="27.54" x2="24.44" y2="30" width="0.2" layer="1"/>
-<polygon width="0.2032" layer="1" thermals="no">
-<vertex x="26" y="31.75"/>
-<vertex x="28" y="31.75"/>
-<vertex x="28" y="28.25"/>
-<vertex x="26" y="28.25"/>
-</polygon>
+<wire x1="26.795" y1="30.635" x2="26.795" y2="31.905" width="0" layer="19" extent="1-1"/>
+<wire x1="26.795" y1="29.365" x2="26.795" y2="30.635" width="0" layer="19" extent="1-1"/>
+<wire x1="26.795" y1="28.095" x2="26.795" y2="29.365" width="0" layer="19" extent="1-1"/>
+<wire x1="26.9" y1="27.54" x2="26.795" y2="28.095" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$3">
 <contactref element="U$2" pad="G"/>
 <contactref element="C1" pad="2"/>
 <contactref element="R1" pad="1"/>
 <contactref element="R2" pad="1"/>
-<wire x1="22.9" y1="26" x2="25.1" y2="26" width="0.2" layer="1"/>
-<wire x1="21.205" y1="28.095" x2="22.9" y2="26.4" width="0.2032" layer="1"/>
-<wire x1="22.9" y1="26.4" x2="22.9" y2="26" width="0.2032" layer="1"/>
-<wire x1="25.1" y1="26" x2="25.1" y2="25.3" width="0.2032" layer="1"/>
-<wire x1="25.1" y1="25.3" x2="26.5" y2="23.9" width="0.2032" layer="1"/>
+<wire x1="21.205" y1="28.095" x2="22.9" y2="26.4" width="0.2" layer="1"/>
+<wire x1="22.9" y1="26.4" x2="22.9" y2="25" width="0.2" layer="1"/>
+<wire x1="22.9" y1="25" x2="25.1" y2="25" width="0.2" layer="1"/>
+<wire x1="25.1" y1="25" x2="25.1" y2="24.8" width="0.2" layer="1"/>
+<wire x1="25.1" y1="24.8" x2="28" y2="21.9" width="0.2" layer="1"/>
 </signal>
 <signal name="GND">
 <contactref element="R3" pad="1"/>
 <contactref element="U$1" pad="2"/>
+<wire x1="23.05" y1="20.35" x2="22.95" y2="20.1" width="0.2" layer="1"/>
+<wire x1="22.95" y1="20.1" x2="20" y2="20.1" width="0.2" layer="1"/>
 <contactref element="C3" pad="2"/>
 <contactref element="C2" pad="2"/>
-<wire x1="17" y1="21.5" x2="17" y2="22.1" width="0.2032" layer="1"/>
-<via x="17" y="21.5" extent="1-16" drill="0.35"/>
-<wire x1="19" y1="21.5" x2="19" y2="22.1" width="0.2032" layer="1"/>
-<via x="19" y="21.5" extent="1-16" drill="0.35"/>
-<via x="21" y="21.25" extent="1-16" drill="0.35"/>
-<wire x1="21" y1="21.25" x2="21" y2="22.1" width="0.2032" layer="1"/>
-<wire x1="23.05" y1="22.35" x2="23.05" y2="22.05" width="0.2032" layer="1"/>
-<wire x1="23.05" y1="22.05" x2="22.75" y2="21.75" width="0.2032" layer="1"/>
-<via x="22.75" y="21.75" extent="1-16" drill="0.35"/>
-<wire x1="17" y1="22.1" x2="19" y2="22.1" width="0.2032" layer="1"/>
-<wire x1="19" y1="22.1" x2="21" y2="22.1" width="0.2032" layer="1"/>
-<wire x1="21" y1="22.1" x2="22.8" y2="22.1" width="0.2032" layer="1"/>
-<wire x1="22.8" y1="22.1" x2="23.05" y2="22.35" width="0.2032" layer="1"/>
+<wire x1="12.9" y1="21" x2="20" y2="20.1" width="0" layer="19" extent="1-1"/>
+<wire x1="8.9" y1="21" x2="12.9" y2="21" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="EN">
 <contactref element="R4" pad="2"/>
 <contactref element="C3" pad="1"/>
-<wire x1="17" y1="23.9" x2="17.1" y2="24" width="0.2032" layer="1"/>
-<wire x1="17.1" y1="24" x2="17.1" y2="26" width="0.2032" layer="1"/>
+<wire x1="7.1" y1="21" x2="16.9" y2="21" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$5">
 <contactref element="R3" pad="2"/>
 <contactref element="U$1" pad="1"/>
 <contactref element="R4" pad="1"/>
+<wire x1="23.05" y1="21.65" x2="22.95" y2="21.9" width="0.2" layer="1"/>
+<wire x1="22.95" y1="21.9" x2="20" y2="21.9" width="0.2" layer="1"/>
 <contactref element="C2" pad="1"/>
-<wire x1="23.05" y1="23.65" x2="21.25" y2="23.65" width="0.2032" layer="1"/>
-<wire x1="21.25" y1="23.65" x2="21" y2="23.9" width="0.2032" layer="1"/>
-<wire x1="21" y1="23.9" x2="19" y2="23.9" width="0.2032" layer="1"/>
-<wire x1="19" y1="23.9" x2="18.9" y2="24" width="0.2032" layer="1"/>
-<wire x1="18.9" y1="24" x2="18.9" y2="26" width="0.2032" layer="1"/>
+<wire x1="15.1" y1="21" x2="20" y2="21.9" width="0" layer="19" extent="1-1"/>
+<wire x1="11.1" y1="21" x2="15.1" y2="21" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$4">
 <contactref element="R2" pad="2"/>
 <contactref element="U$1" pad="3"/>
-<wire x1="24.95" y1="23" x2="24.95" y2="22.8" width="0.2032" layer="1"/>
-<wire x1="24.95" y1="22.8" x2="26" y2="21.75" width="0.2032" layer="1"/>
-<wire x1="26" y1="21.75" x2="26.15" y2="21.75" width="0.2032" layer="1"/>
-<wire x1="26.15" y1="21.75" x2="26.5" y2="22.1" width="0.2032" layer="1"/>
+<wire x1="24.95" y1="21" x2="28" y2="20.1" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 </board>
