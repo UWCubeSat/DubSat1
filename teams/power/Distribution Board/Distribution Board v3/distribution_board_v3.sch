@@ -1022,6 +1022,24 @@ chip</description>
 <text x="-1.816" y="-3.437" size="1.016" layer="25" font="vector">&gt;NAME</text>
 <text x="-1.816" y="2.532" size="1.016" layer="25" font="vector">&gt;VALUE</text>
 </package>
+<package name="BOARD_TEMPLATE_SILKONLY">
+<wire x1="-40" y1="-45" x2="-45" y2="-40" width="0.2032" layer="21"/>
+<wire x1="-45" y1="-40" x2="-45" y2="40" width="0.2032" layer="21"/>
+<wire x1="-45" y1="40" x2="-40" y2="45" width="0.2032" layer="21"/>
+<wire x1="-40" y1="45" x2="40" y2="45" width="0.2032" layer="21"/>
+<wire x1="40" y1="45" x2="45" y2="40" width="0.2032" layer="21"/>
+<wire x1="45" y1="40" x2="45" y2="-40" width="0.2032" layer="21"/>
+<wire x1="45" y1="-40" x2="40" y2="-45" width="0.2032" layer="21"/>
+<wire x1="40" y1="-45" x2="-40" y2="-45" width="0.2032" layer="21"/>
+<pad name="P$1" x="-39.5" y="39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$2" x="-39.5" y="-39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$3" x="39.5" y="-39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$4" x="39.5" y="39.5" drill="2.9" diameter="7.5"/>
+<wire x1="-33.02" y1="30.61" x2="-33.02" y2="40.77" width="0" layer="21"/>
+<wire x1="-33.02" y1="40.77" x2="33.02" y2="40.77" width="0" layer="21"/>
+<wire x1="33.02" y1="40.77" x2="33.02" y2="30.61" width="0" layer="21"/>
+<wire x1="33.02" y1="30.61" x2="-33.02" y2="30.61" width="0" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="MSP-CAN_BLOCK">
@@ -1984,22 +2002,22 @@ P2.6 Rx and P2.5 Tx</text>
 <pin name="P$66" x="-12.7" y="-10.16" length="middle" rot="R180"/>
 <pin name="P$67" x="12.7" y="-10.16" length="middle"/>
 <pin name="P$68" x="63.5" y="-10.16" length="middle" rot="R180"/>
-<pin name="WHEEL_VBATT@69" x="-66.04" y="-12.7" length="middle"/>
-<pin name="WHEEL_VBATT@70" x="-12.7" y="-12.7" length="middle" rot="R180"/>
+<pin name="WHEEL_VBAT@69" x="-66.04" y="-12.7" length="middle"/>
+<pin name="WHEEL_VBAT@70" x="-12.7" y="-12.7" length="middle" rot="R180"/>
 <pin name="WHEEL_GND@71" x="12.7" y="-12.7" length="middle"/>
 <pin name="WHEEL_GND@72" x="63.5" y="-12.7" length="middle" rot="R180"/>
-<pin name="ESTIMAT_5V@73" x="-66.04" y="-15.24" length="middle"/>
-<pin name="ESTIMAT_5V@74" x="-12.7" y="-15.24" length="middle" rot="R180"/>
-<pin name="ESTIMAT_3.3V@75" x="12.7" y="-15.24" length="middle"/>
-<pin name="ESTIMAT_3.3V@76" x="63.5" y="-15.24" length="middle" rot="R180"/>
+<pin name="P$73" x="-66.04" y="-15.24" length="middle"/>
+<pin name="P$74" x="-12.7" y="-15.24" length="middle" rot="R180"/>
+<pin name="P$75" x="12.7" y="-15.24" length="middle"/>
+<pin name="P$76" x="63.5" y="-15.24" length="middle" rot="R180"/>
 <pin name="ESTIMAT_VBAT@77" x="-66.04" y="-17.78" length="middle"/>
 <pin name="ESTIMAT_VBAT@78" x="-12.7" y="-17.78" length="middle" rot="R180"/>
 <pin name="ESTIMAT_GND@79" x="12.7" y="-17.78" length="middle"/>
 <pin name="ESTIMAT_GND@80" x="63.5" y="-17.78" length="middle" rot="R180"/>
-<pin name="BDOT_5V@81" x="-66.04" y="-20.32" length="middle"/>
-<pin name="BDOT_5V@82" x="-12.7" y="-20.32" length="middle" rot="R180"/>
-<pin name="BDOT_3.3V@83" x="12.7" y="-20.32" length="middle"/>
-<pin name="BDOT_3.3V@84" x="63.5" y="-20.32" length="middle" rot="R180"/>
+<pin name="P$81" x="-66.04" y="-20.32" length="middle"/>
+<pin name="P$82" x="-12.7" y="-20.32" length="middle" rot="R180"/>
+<pin name="P$83" x="12.7" y="-20.32" length="middle"/>
+<pin name="P$84" x="63.5" y="-20.32" length="middle" rot="R180"/>
 <pin name="BDOT_VBAT@85" x="-66.04" y="-22.86" length="middle"/>
 <pin name="BDOT_VBAT@86" x="-12.7" y="-22.86" length="middle" rot="R180"/>
 <pin name="BDOT_GND@87" x="12.7" y="-22.86" length="middle"/>
@@ -2310,10 +2328,6 @@ P2.6 Rx and P2.5 Tx</text>
 <connects>
 <connect gate="G$1" pin="BATT_VBAT$33" pad="P$33"/>
 <connect gate="G$1" pin="BATT_VBATT$34" pad="P$34"/>
-<connect gate="G$1" pin="BDOT_3.3V@83" pad="P$83"/>
-<connect gate="G$1" pin="BDOT_3.3V@84" pad="P$84"/>
-<connect gate="G$1" pin="BDOT_5V@81" pad="P$81"/>
-<connect gate="G$1" pin="BDOT_5V@82" pad="P$82"/>
 <connect gate="G$1" pin="BDOT_GND@87" pad="P$87"/>
 <connect gate="G$1" pin="BDOT_GND@88" pad="P$88"/>
 <connect gate="G$1" pin="BDOT_VBAT@85" pad="P$85"/>
@@ -2344,10 +2358,6 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="DISTRI_VBAT@28" pad="P$28"/>
 <connect gate="G$1" pin="DISTRI_VBAT@29" pad="P$29"/>
 <connect gate="G$1" pin="DISTRI_VBAT@31" pad="P$31"/>
-<connect gate="G$1" pin="ESTIMAT_3.3V@75" pad="P$75"/>
-<connect gate="G$1" pin="ESTIMAT_3.3V@76" pad="P$76"/>
-<connect gate="G$1" pin="ESTIMAT_5V@73" pad="P$73"/>
-<connect gate="G$1" pin="ESTIMAT_5V@74" pad="P$74"/>
 <connect gate="G$1" pin="ESTIMAT_GND@79" pad="P$79"/>
 <connect gate="G$1" pin="ESTIMAT_GND@80" pad="P$80"/>
 <connect gate="G$1" pin="ESTIMAT_VBAT@77" pad="P$77"/>
@@ -2377,6 +2387,14 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="P$66" pad="P$66"/>
 <connect gate="G$1" pin="P$67" pad="P$67"/>
 <connect gate="G$1" pin="P$68" pad="P$68"/>
+<connect gate="G$1" pin="P$73" pad="P$73"/>
+<connect gate="G$1" pin="P$74" pad="P$74"/>
+<connect gate="G$1" pin="P$75" pad="P$75"/>
+<connect gate="G$1" pin="P$76" pad="P$76"/>
+<connect gate="G$1" pin="P$81" pad="P$81"/>
+<connect gate="G$1" pin="P$82" pad="P$82"/>
+<connect gate="G$1" pin="P$83" pad="P$83"/>
+<connect gate="G$1" pin="P$84" pad="P$84"/>
 <connect gate="G$1" pin="P$89" pad="P$89"/>
 <connect gate="G$1" pin="P$90" pad="P$90"/>
 <connect gate="G$1" pin="P$91" pad="P$91"/>
@@ -2410,8 +2428,8 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="TOPDEPLOY-$56" pad="P$56"/>
 <connect gate="G$1" pin="WHEEL_GND@71" pad="P$71"/>
 <connect gate="G$1" pin="WHEEL_GND@72" pad="P$72"/>
-<connect gate="G$1" pin="WHEEL_VBATT@69" pad="P$69"/>
-<connect gate="G$1" pin="WHEEL_VBATT@70" pad="P$70"/>
+<connect gate="G$1" pin="WHEEL_VBAT@69" pad="P$69"/>
+<connect gate="G$1" pin="WHEEL_VBAT@70" pad="P$70"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -2435,6 +2453,11 @@ P2.6 Rx and P2.5 Tx</text>
 </technologies>
 </device>
 <device name="RAHS" package="BOARD_TEMPLATE_RAHS">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="SILKONLY" package="BOARD_TEMPLATE_SILKONLY">
 <technologies>
 <technology name=""/>
 </technologies>
@@ -6573,12 +6596,12 @@ if needed, add 100ohm series, and 1uF caps</text>
 <junction x="40.64" y="447.04"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="WHEEL_VBATT@69"/>
+<pinref part="U$2" gate="G$1" pin="WHEEL_VBAT@69"/>
 <wire x1="76.2" y1="50.8" x2="73.66" y2="50.8" width="0.1524" layer="91"/>
 <label x="73.66" y="50.8" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="WHEEL_VBATT@70"/>
+<pinref part="U$2" gate="G$1" pin="WHEEL_VBAT@70"/>
 <wire x1="129.54" y1="50.8" x2="132.08" y2="50.8" width="0.1524" layer="91"/>
 <label x="132.08" y="50.8" size="1.778" layer="95" xref="yes"/>
 </segment>
