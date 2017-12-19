@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.2">
+<eagle version="8.4.3">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -1058,16 +1058,15 @@
 <wire x1="6.125" y1="18.125" x2="7.875" y2="18.125" width="0.2032" layer="1"/>
 <wire x1="7.875" y1="18.125" x2="8.625" y2="18.875" width="0.2032" layer="1"/>
 <wire x1="8.875" y1="16.875" x2="8.875" y2="18.875" width="0.2032" layer="1"/>
-<smd name="27" x="-3.375" y="25.205" dx="0.8" dy="1.2" layer="1" rot="R90"/>
-<smd name="28" x="-3.375" y="27.005" dx="0.8" dy="1.2" layer="1" rot="R90"/>
-<wire x1="-4.175" y1="24.605" x2="-4.175" y2="27.605" width="0.127" layer="21"/>
-<wire x1="-4.175" y1="27.605" x2="-2.575" y2="27.605" width="0.127" layer="21"/>
-<wire x1="-2.575" y1="27.605" x2="-2.575" y2="24.605" width="0.127" layer="21"/>
-<wire x1="-2.575" y1="24.605" x2="-4.175" y2="24.605" width="0.127" layer="21"/>
-<text x="-3.875" y="25.875" size="0.3" layer="27" font="vector">.1u</text>
-<pad name="GND@1" x="-3.375" y="27.875" drill="0.6096" rot="R270" thermals="no"/>
-<wire x1="-1.704459375" y1="23.95445625" x2="-2.875" y2="25.125" width="0.2032" layer="1"/>
-<smd name="3.3V@CAN1" x="-3.375" y="25.125" dx="1" dy="0.25" layer="1" rot="R180"/>
+<smd name="27" x="-3.975" y="22.105" dx="0.8" dy="1.2" layer="1" rot="R90"/>
+<smd name="28" x="-3.975" y="23.905" dx="0.8" dy="1.2" layer="1" rot="R90"/>
+<wire x1="-4.775" y1="21.505" x2="-4.775" y2="24.505" width="0.127" layer="21"/>
+<wire x1="-4.775" y1="24.505" x2="-3.175" y2="24.505" width="0.127" layer="21"/>
+<wire x1="-3.175" y1="24.505" x2="-3.175" y2="21.505" width="0.127" layer="21"/>
+<wire x1="-3.175" y1="21.505" x2="-4.775" y2="21.505" width="0.127" layer="21"/>
+<text x="-4.475" y="22.775" size="0.3" layer="27" font="vector">.1u</text>
+<pad name="GND@1" x="-3.975" y="24.775" drill="0.6096" rot="R270" thermals="no"/>
+<smd name="3.3V@CAN1" x="-3.975" y="22.025" dx="1" dy="0.25" layer="1" rot="R180"/>
 <wire x1="9.125" y1="18.875" x2="9.125" y2="18.75" width="0.2032" layer="1"/>
 <wire x1="5.1885" y1="16.0635" x2="3.5635" y2="16.0635" width="0.2032" layer="1"/>
 <wire x1="3.5635" y1="16.0635" x2="1.25" y2="13.75" width="0.2032" layer="1"/>
@@ -1093,6 +1092,11 @@
 <smd name="3.3V_ANALOG@MSP2" x="-8.4824" y="5.9042" dx="1" dy="0.25" layer="1" rot="R180"/>
 <smd name="3.3V@MSP2" x="-8.5332" y="-5.9624" dx="1" dy="0.25" layer="1" rot="R180"/>
 <wire x1="2.1336" y1="12.3444" x2="1.4986" y2="12.3444" width="0.6096" layer="1"/>
+<wire x1="-1.7" y1="24" x2="-2.5" y2="24" width="0.2032" layer="1"/>
+<wire x1="-2.5" y1="24" x2="-2.9" y2="23.6" width="0.2032" layer="1"/>
+<wire x1="-2.9" y1="23.6" x2="-2.9" y2="22.5" width="0.2032" layer="1"/>
+<wire x1="-2.9" y1="22.5" x2="-3.3" y2="22.1" width="0.2032" layer="1"/>
+<wire x1="-3.3" y1="22.1" x2="-4" y2="22.1" width="0.2032" layer="1"/>
 </package>
 <package name="LED-1206">
 <wire x1="-1" y1="1" x2="-2.4" y2="1" width="0.2032" layer="21"/>
@@ -5612,6 +5616,28 @@ Allows current flow when high potential at base.</description>
 <wire x1="5.08" y1="-7.62" x2="-7.62" y2="-7.62" width="0.254" layer="94"/>
 <text x="-7.62" y="-10.16" size="1.27" layer="95">TPS732xx</text>
 </symbol>
+<symbol name="LM36">
+<wire x1="-15.24" y1="-10.16" x2="-15.24" y2="10.16" width="0.1524" layer="94"/>
+<wire x1="-15.24" y1="10.16" x2="15.24" y2="10.16" width="0.1524" layer="94"/>
+<wire x1="15.24" y1="10.16" x2="15.24" y2="-10.16" width="0.1524" layer="94"/>
+<wire x1="15.24" y1="-10.16" x2="-15.24" y2="-10.16" width="0.1524" layer="94"/>
+<pin name="VS" x="20.32" y="7.62" length="middle" rot="R180"/>
+<pin name="VOUT" x="20.32" y="0" length="middle" rot="R180"/>
+<pin name="GND" x="20.32" y="-7.62" length="middle" rot="R180"/>
+<text x="-2.54" y="0" size="1.778" layer="94">LM36</text>
+</symbol>
+<symbol name="TMP36">
+<wire x1="-7.62" y1="10.16" x2="-7.62" y2="-10.16" width="0.1524" layer="94"/>
+<wire x1="-7.62" y1="-10.16" x2="7.62" y2="-10.16" width="0.1524" layer="94"/>
+<wire x1="7.62" y1="-10.16" x2="7.62" y2="10.16" width="0.1524" layer="94"/>
+<wire x1="7.62" y1="10.16" x2="-7.62" y2="10.16" width="0.1524" layer="94"/>
+<pin name="VOUT" x="-12.7" y="7.62" length="middle"/>
+<pin name="VS" x="-12.7" y="0" length="middle"/>
+<pin name="NC" x="-12.7" y="-7.62" length="middle"/>
+<pin name="GND" x="12.7" y="5.08" length="middle" rot="R180"/>
+<pin name="SHTDWN" x="12.7" y="-5.08" length="middle" rot="R180"/>
+<text x="-2.54" y="-12.7" size="1.778" layer="94">TMP36</text>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="LM57">
@@ -7468,6 +7494,42 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="GND" pad="P$2"/>
 <connect gate="G$1" pin="IN" pad="P$1"/>
 <connect gate="G$1" pin="OUT" pad="P$5"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="LM36">
+<gates>
+<gate name="G$1" symbol="LM36" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="TO-92-3">
+<connects>
+<connect gate="G$1" pin="GND" pad="1"/>
+<connect gate="G$1" pin="VOUT" pad="2"/>
+<connect gate="G$1" pin="VS" pad="3"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="TMP36">
+<gates>
+<gate name="G$1" symbol="TMP36" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="SOT-23-5">
+<connects>
+<connect gate="G$1" pin="GND" pad="P$5"/>
+<connect gate="G$1" pin="NC" pad="P$3"/>
+<connect gate="G$1" pin="SHTDWN" pad="P$4"/>
+<connect gate="G$1" pin="VOUT" pad="P$1"/>
+<connect gate="G$1" pin="VS" pad="P$2"/>
 </connects>
 <technologies>
 <technology name=""/>
