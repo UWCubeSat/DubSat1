@@ -1882,8 +1882,8 @@ Board Template: V2.1</text>
 <pin name="BATT_VBATT$34" x="-12.7" y="10.16" length="middle" rot="R180"/>
 <pin name="GEN_VBATT$35" x="12.7" y="10.16" length="middle"/>
 <pin name="GEN_VBATT$36" x="63.5" y="10.16" length="middle" rot="R180"/>
-<pin name="PWRCONNECT$37" x="-66.04" y="7.62" length="middle"/>
-<pin name="PWRCONNECT$38" x="-12.7" y="7.62" length="middle" rot="R180"/>
+<pin name="P$37" x="-66.04" y="7.62" length="middle"/>
+<pin name="P$38" x="-12.7" y="7.62" length="middle" rot="R180"/>
 <pin name="P$39" x="12.7" y="7.62" length="middle"/>
 <pin name="P$40" x="63.5" y="7.62" length="middle" rot="R180"/>
 <pin name="P$41" x="-66.04" y="5.08" length="middle"/>
@@ -1891,19 +1891,19 @@ Board Template: V2.1</text>
 <pin name="P$43" x="12.7" y="5.08" length="middle"/>
 <pin name="P$44" x="63.5" y="5.08" length="middle" rot="R180"/>
 <pin name="SYNC1" x="-66.04" y="2.54" length="middle"/>
-<pin name="P@46" x="-12.7" y="2.54" length="middle" rot="R180"/>
-<pin name="P@47" x="12.7" y="2.54" length="middle"/>
+<pin name="P$46" x="-12.7" y="2.54" length="middle" rot="R180"/>
+<pin name="P$47" x="12.7" y="2.54" length="middle"/>
 <pin name="P$48" x="63.5" y="2.54" length="middle" rot="R180"/>
 <pin name="SYNC2" x="-66.04" y="0" length="middle"/>
-<pin name="P@50" x="-12.7" y="0" length="middle" rot="R180"/>
+<pin name="P$50" x="-12.7" y="0" length="middle" rot="R180"/>
 <pin name="TOPDEPLOY+@51" x="12.7" y="0" length="middle"/>
 <pin name="TOPDEPLOY-$52" x="63.5" y="0" length="middle" rot="R180"/>
 <pin name="CANH" x="-66.04" y="-2.54" length="middle"/>
-<pin name="P@54" x="-12.7" y="-2.54" length="middle" rot="R180"/>
+<pin name="P$54" x="-12.7" y="-2.54" length="middle" rot="R180"/>
 <pin name="TOPDEPLOY+@55" x="12.7" y="-2.54" length="middle"/>
 <pin name="TOPDEPLOY-$56" x="63.5" y="-2.54" length="middle" rot="R180"/>
 <pin name="CANL" x="-66.04" y="-5.08" length="middle"/>
-<pin name="P@58" x="-12.7" y="-5.08" length="middle" rot="R180"/>
+<pin name="P$58" x="-12.7" y="-5.08" length="middle" rot="R180"/>
 <pin name="P@59" x="12.7" y="-5.08" length="middle"/>
 <pin name="P$60" x="63.5" y="-5.08" length="middle" rot="R180"/>
 <pin name="P$61" x="-66.04" y="-7.62" length="middle"/>
@@ -2834,7 +2834,7 @@ PWM</text>
 <text x="-13.589" y="52.197" size="2.54" layer="95">MSP-CAN block V2.4</text>
 <text x="16.637" y="-43.942" size="2.54" layer="97">eUSCI_A1 UART use: 
 P2.6 Rx and P2.5 Tx</text>
-<text x="47.879" y="-18.288" size="1.778" layer="97">add off of P3.5</text>
+<text x="47.879" y="-18.288" size="1.778" layer="97">add LED off of P3.5</text>
 </symbol>
 <symbol name="CAN_BLOCK">
 <pin name="GND" x="-30.48" y="-2.54" visible="pin" length="middle"/>
@@ -3201,7 +3201,7 @@ P2.6 Rx and P2.5 Tx</text>
 <pin name="SIG" x="-15.24" y="-2.54" visible="pin" length="middle"/>
 <text x="-10.16" y="5.08" size="1.778" layer="95" align="center-left">&gt;NAME</text>
 </symbol>
-<symbol name="LT1761">
+<symbol name="TPS732XX">
 <pin name="IN" x="-12.7" y="5.08" visible="pin" length="middle"/>
 <pin name="GND" x="-12.7" y="0" visible="pin" length="middle"/>
 <pin name="EN" x="-12.7" y="-5.08" visible="pin" length="middle"/>
@@ -3211,7 +3211,7 @@ P2.6 Rx and P2.5 Tx</text>
 <wire x1="-7.62" y1="7.62" x2="5.08" y2="7.62" width="0.254" layer="94"/>
 <wire x1="5.08" y1="7.62" x2="5.08" y2="-7.62" width="0.254" layer="94"/>
 <wire x1="5.08" y1="-7.62" x2="-7.62" y2="-7.62" width="0.254" layer="94"/>
-<text x="-7.62" y="-10.16" size="1.27" layer="95">LT1761</text>
+<text x="-7.62" y="-10.16" size="1.27" layer="95">TPS732xx</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -3449,13 +3449,20 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="ESTIMAT_VBAT@78" pad="P$78"/>
 <connect gate="G$1" pin="GEN_VBATT$35" pad="P$35"/>
 <connect gate="G$1" pin="GEN_VBATT$36" pad="P$36"/>
+<connect gate="G$1" pin="P$37" pad="P$37"/>
+<connect gate="G$1" pin="P$38" pad="P$38"/>
 <connect gate="G$1" pin="P$39" pad="P$39"/>
 <connect gate="G$1" pin="P$40" pad="P$40"/>
 <connect gate="G$1" pin="P$41" pad="P$41"/>
 <connect gate="G$1" pin="P$42" pad="P$42"/>
 <connect gate="G$1" pin="P$43" pad="P$43"/>
 <connect gate="G$1" pin="P$44" pad="P$44"/>
+<connect gate="G$1" pin="P$46" pad="P$46"/>
+<connect gate="G$1" pin="P$47" pad="P$47"/>
 <connect gate="G$1" pin="P$48" pad="P$48"/>
+<connect gate="G$1" pin="P$50" pad="P$50"/>
+<connect gate="G$1" pin="P$54" pad="P$54"/>
+<connect gate="G$1" pin="P$58" pad="P$58"/>
 <connect gate="G$1" pin="P$60" pad="P$60"/>
 <connect gate="G$1" pin="P$61" pad="P$61"/>
 <connect gate="G$1" pin="P$62" pad="P$62"/>
@@ -3471,11 +3478,6 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="P$92" pad="P$92"/>
 <connect gate="G$1" pin="P$95" pad="P$95"/>
 <connect gate="G$1" pin="P$96" pad="P$96"/>
-<connect gate="G$1" pin="P@46" pad="P$46"/>
-<connect gate="G$1" pin="P@47" pad="P$47"/>
-<connect gate="G$1" pin="P@50" pad="P$50"/>
-<connect gate="G$1" pin="P@54" pad="P$54"/>
-<connect gate="G$1" pin="P@58" pad="P$58"/>
 <connect gate="G$1" pin="P@59" pad="P$59"/>
 <connect gate="G$1" pin="PPT_GND@1" pad="P$1"/>
 <connect gate="G$1" pin="PPT_GND@11" pad="P$11"/>
@@ -3493,8 +3495,6 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="PPT_VBAT@4" pad="P$4"/>
 <connect gate="G$1" pin="PPT_VBAT@5" pad="P$5"/>
 <connect gate="G$1" pin="PPT_VBAT@7" pad="P$7"/>
-<connect gate="G$1" pin="PWRCONNECT$37" pad="P$37"/>
-<connect gate="G$1" pin="PWRCONNECT$38" pad="P$38"/>
 <connect gate="G$1" pin="RAHS_GND@94" pad="P$94"/>
 <connect gate="G$1" pin="RAHS_VBAT@93" pad="P$93"/>
 <connect gate="G$1" pin="SYNC1" pad="P$45"/>
@@ -3750,9 +3750,9 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 </device>
 </devices>
 </deviceset>
-<deviceset name="LINEAR_LDO_LT1761-X" prefix="U">
+<deviceset name="TPS732XX">
 <gates>
-<gate name="G$1" symbol="LT1761" x="2.54" y="0"/>
+<gate name="G$1" symbol="TPS732XX" x="0" y="0"/>
 </gates>
 <devices>
 <device name="" package="SOT-23-5">
@@ -13004,22 +13004,22 @@ Source: AVX .. aphvc.pdf</description>
 <part name="GND30" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="R7" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10 kohm"/>
 <part name="R3" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10 kohm"/>
-<part name="U4" library="DubSat1 Components" deviceset="LINEAR_LDO_LT1761-X" device=""/>
+<part name="U4" library="DubSat1 Components" deviceset="TPS732XX" device=""/>
 <part name="GND38" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C32" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF"/>
 <part name="C36" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF"/>
 <part name="C44" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
-<part name="U6" library="DubSat1 Components" deviceset="LINEAR_LDO_LT1761-X" device=""/>
+<part name="U6" library="DubSat1 Components" deviceset="TPS732XX" device=""/>
 <part name="GND44" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C48" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF"/>
 <part name="C49" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF"/>
 <part name="C51" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
-<part name="U5" library="DubSat1 Components" deviceset="LINEAR_LDO_LT1761-X" device=""/>
+<part name="U5" library="DubSat1 Components" deviceset="TPS732XX" device=""/>
 <part name="GND41" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C45" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF"/>
 <part name="C46" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF"/>
 <part name="C47" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
-<part name="U8" library="DubSat1 Components" deviceset="LINEAR_LDO_LT1761-X" device=""/>
+<part name="U8" library="DubSat1 Components" deviceset="TPS732XX" device=""/>
 <part name="GND50" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C55" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF"/>
 <part name="C56" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF"/>

@@ -3170,6 +3170,24 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="-34.5" y1="-35.75" x2="-34.5" y2="-0.53" width="0.127" layer="21"/>
 <wire x1="-32.5" y1="-0.53" x2="-34.5" y2="-0.53" width="0.127" layer="21"/>
 </package>
+<package name="BOARD_TEMPLATE_SILKONLY">
+<wire x1="-40" y1="-45" x2="-45" y2="-40" width="0.2032" layer="21"/>
+<wire x1="-45" y1="-40" x2="-45" y2="40" width="0.2032" layer="21"/>
+<wire x1="-45" y1="40" x2="-40" y2="45" width="0.2032" layer="21"/>
+<wire x1="-40" y1="45" x2="40" y2="45" width="0.2032" layer="21"/>
+<wire x1="40" y1="45" x2="45" y2="40" width="0.2032" layer="21"/>
+<wire x1="45" y1="40" x2="45" y2="-40" width="0.2032" layer="21"/>
+<wire x1="45" y1="-40" x2="40" y2="-45" width="0.2032" layer="21"/>
+<wire x1="40" y1="-45" x2="-40" y2="-45" width="0.2032" layer="21"/>
+<pad name="P$1" x="-39.5" y="39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$2" x="-39.5" y="-39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$3" x="39.5" y="-39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$4" x="39.5" y="39.5" drill="2.9" diameter="7.5"/>
+<wire x1="-33.02" y1="30.61" x2="-33.02" y2="40.77" width="0" layer="21"/>
+<wire x1="-33.02" y1="40.77" x2="33.02" y2="40.77" width="0" layer="21"/>
+<wire x1="33.02" y1="40.77" x2="33.02" y2="30.61" width="0" layer="21"/>
+<wire x1="33.02" y1="30.61" x2="-33.02" y2="30.61" width="0" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="LM57">
@@ -3285,8 +3303,8 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <pin name="BATT_VBATT$34" x="-12.7" y="10.16" length="middle" rot="R180"/>
 <pin name="GEN_VBATT$35" x="12.7" y="10.16" length="middle"/>
 <pin name="GEN_VBATT$36" x="63.5" y="10.16" length="middle" rot="R180"/>
-<pin name="PWRCONNECT$37" x="-66.04" y="7.62" length="middle"/>
-<pin name="PWRCONNECT$38" x="-12.7" y="7.62" length="middle" rot="R180"/>
+<pin name="P$37" x="-66.04" y="7.62" length="middle"/>
+<pin name="P$38" x="-12.7" y="7.62" length="middle" rot="R180"/>
 <pin name="P$39" x="12.7" y="7.62" length="middle"/>
 <pin name="P$40" x="63.5" y="7.62" length="middle" rot="R180"/>
 <pin name="P$41" x="-66.04" y="5.08" length="middle"/>
@@ -3294,19 +3312,19 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <pin name="P$43" x="12.7" y="5.08" length="middle"/>
 <pin name="P$44" x="63.5" y="5.08" length="middle" rot="R180"/>
 <pin name="SYNC1" x="-66.04" y="2.54" length="middle"/>
-<pin name="P@46" x="-12.7" y="2.54" length="middle" rot="R180"/>
-<pin name="P@47" x="12.7" y="2.54" length="middle"/>
+<pin name="P$46" x="-12.7" y="2.54" length="middle" rot="R180"/>
+<pin name="P$47" x="12.7" y="2.54" length="middle"/>
 <pin name="P$48" x="63.5" y="2.54" length="middle" rot="R180"/>
 <pin name="SYNC2" x="-66.04" y="0" length="middle"/>
-<pin name="P@50" x="-12.7" y="0" length="middle" rot="R180"/>
+<pin name="P$50" x="-12.7" y="0" length="middle" rot="R180"/>
 <pin name="TOPDEPLOY+@51" x="12.7" y="0" length="middle"/>
 <pin name="TOPDEPLOY-$52" x="63.5" y="0" length="middle" rot="R180"/>
 <pin name="CANH" x="-66.04" y="-2.54" length="middle"/>
-<pin name="P@54" x="-12.7" y="-2.54" length="middle" rot="R180"/>
+<pin name="P$54" x="-12.7" y="-2.54" length="middle" rot="R180"/>
 <pin name="TOPDEPLOY+@55" x="12.7" y="-2.54" length="middle"/>
 <pin name="TOPDEPLOY-$56" x="63.5" y="-2.54" length="middle" rot="R180"/>
 <pin name="CANL" x="-66.04" y="-5.08" length="middle"/>
-<pin name="P@58" x="-12.7" y="-5.08" length="middle" rot="R180"/>
+<pin name="P$58" x="-12.7" y="-5.08" length="middle" rot="R180"/>
 <pin name="P@59" x="12.7" y="-5.08" length="middle"/>
 <pin name="P$60" x="63.5" y="-5.08" length="middle" rot="R180"/>
 <pin name="P$61" x="-66.04" y="-7.62" length="middle"/>
@@ -3317,22 +3335,22 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <pin name="P$66" x="-12.7" y="-10.16" length="middle" rot="R180"/>
 <pin name="P$67" x="12.7" y="-10.16" length="middle"/>
 <pin name="P$68" x="63.5" y="-10.16" length="middle" rot="R180"/>
-<pin name="WHEEL_VBATT@69" x="-66.04" y="-12.7" length="middle"/>
-<pin name="WHEEL_VBATT@70" x="-12.7" y="-12.7" length="middle" rot="R180"/>
+<pin name="WHEEL_VBAT@69" x="-66.04" y="-12.7" length="middle"/>
+<pin name="WHEEL_VBAT@70" x="-12.7" y="-12.7" length="middle" rot="R180"/>
 <pin name="WHEEL_GND@71" x="12.7" y="-12.7" length="middle"/>
 <pin name="WHEEL_GND@72" x="63.5" y="-12.7" length="middle" rot="R180"/>
-<pin name="ESTIMAT_5V@73" x="-66.04" y="-15.24" length="middle"/>
-<pin name="ESTIMAT_5V@74" x="-12.7" y="-15.24" length="middle" rot="R180"/>
-<pin name="ESTIMAT_3.3V@75" x="12.7" y="-15.24" length="middle"/>
-<pin name="ESTIMAT_3.3V@76" x="63.5" y="-15.24" length="middle" rot="R180"/>
+<pin name="P$73" x="-66.04" y="-15.24" length="middle"/>
+<pin name="P$74" x="-12.7" y="-15.24" length="middle" rot="R180"/>
+<pin name="P$75" x="12.7" y="-15.24" length="middle"/>
+<pin name="P$76" x="63.5" y="-15.24" length="middle" rot="R180"/>
 <pin name="ESTIMAT_VBAT@77" x="-66.04" y="-17.78" length="middle"/>
 <pin name="ESTIMAT_VBAT@78" x="-12.7" y="-17.78" length="middle" rot="R180"/>
 <pin name="ESTIMAT_GND@79" x="12.7" y="-17.78" length="middle"/>
 <pin name="ESTIMAT_GND@80" x="63.5" y="-17.78" length="middle" rot="R180"/>
-<pin name="BDOT_5V@81" x="-66.04" y="-20.32" length="middle"/>
-<pin name="BDOT_5V@82" x="-12.7" y="-20.32" length="middle" rot="R180"/>
-<pin name="BDOT_3.3V@83" x="12.7" y="-20.32" length="middle"/>
-<pin name="BDOT_3.3V@84" x="63.5" y="-20.32" length="middle" rot="R180"/>
+<pin name="P$81" x="-66.04" y="-20.32" length="middle"/>
+<pin name="P$82" x="-12.7" y="-20.32" length="middle" rot="R180"/>
+<pin name="P$83" x="12.7" y="-20.32" length="middle"/>
+<pin name="P$84" x="63.5" y="-20.32" length="middle" rot="R180"/>
 <pin name="BDOT_VBAT@85" x="-66.04" y="-22.86" length="middle"/>
 <pin name="BDOT_VBAT@86" x="-12.7" y="-22.86" length="middle" rot="R180"/>
 <pin name="BDOT_GND@87" x="12.7" y="-22.86" length="middle"/>
@@ -4381,7 +4399,7 @@ PWM</text>
 <text x="-13.589" y="52.197" size="2.54" layer="95">MSP-CAN block V2.4</text>
 <text x="16.637" y="-43.942" size="2.54" layer="97">eUSCI_A1 UART use: 
 P2.6 Rx and P2.5 Tx</text>
-<text x="47.879" y="-18.288" size="1.778" layer="97">add off of P3.5</text>
+<text x="47.879" y="-18.288" size="1.778" layer="97">add LED off of P3.5</text>
 </symbol>
 <symbol name="LED">
 <wire x1="1.27" y1="0" x2="0" y2="-2.54" width="0.254" layer="94"/>
@@ -5787,10 +5805,6 @@ datasheats:
 <connects>
 <connect gate="G$1" pin="BATT_VBAT$33" pad="P$33"/>
 <connect gate="G$1" pin="BATT_VBATT$34" pad="P$34"/>
-<connect gate="G$1" pin="BDOT_3.3V@83" pad="P$83"/>
-<connect gate="G$1" pin="BDOT_3.3V@84" pad="P$84"/>
-<connect gate="G$1" pin="BDOT_5V@81" pad="P$81"/>
-<connect gate="G$1" pin="BDOT_5V@82" pad="P$82"/>
 <connect gate="G$1" pin="BDOT_GND@87" pad="P$87"/>
 <connect gate="G$1" pin="BDOT_GND@88" pad="P$88"/>
 <connect gate="G$1" pin="BDOT_VBAT@85" pad="P$85"/>
@@ -5821,23 +5835,26 @@ datasheats:
 <connect gate="G$1" pin="DISTRI_VBAT@28" pad="P$28"/>
 <connect gate="G$1" pin="DISTRI_VBAT@29" pad="P$29"/>
 <connect gate="G$1" pin="DISTRI_VBAT@31" pad="P$31"/>
-<connect gate="G$1" pin="ESTIMAT_3.3V@75" pad="P$75"/>
-<connect gate="G$1" pin="ESTIMAT_3.3V@76" pad="P$76"/>
-<connect gate="G$1" pin="ESTIMAT_5V@73" pad="P$73"/>
-<connect gate="G$1" pin="ESTIMAT_5V@74" pad="P$74"/>
 <connect gate="G$1" pin="ESTIMAT_GND@79" pad="P$79"/>
 <connect gate="G$1" pin="ESTIMAT_GND@80" pad="P$80"/>
 <connect gate="G$1" pin="ESTIMAT_VBAT@77" pad="P$77"/>
 <connect gate="G$1" pin="ESTIMAT_VBAT@78" pad="P$78"/>
 <connect gate="G$1" pin="GEN_VBATT$35" pad="P$35"/>
 <connect gate="G$1" pin="GEN_VBATT$36" pad="P$36"/>
+<connect gate="G$1" pin="P$37" pad="P$37"/>
+<connect gate="G$1" pin="P$38" pad="P$38"/>
 <connect gate="G$1" pin="P$39" pad="P$39"/>
 <connect gate="G$1" pin="P$40" pad="P$40"/>
 <connect gate="G$1" pin="P$41" pad="P$41"/>
 <connect gate="G$1" pin="P$42" pad="P$42"/>
 <connect gate="G$1" pin="P$43" pad="P$43"/>
 <connect gate="G$1" pin="P$44" pad="P$44"/>
+<connect gate="G$1" pin="P$46" pad="P$46"/>
+<connect gate="G$1" pin="P$47" pad="P$47"/>
 <connect gate="G$1" pin="P$48" pad="P$48"/>
+<connect gate="G$1" pin="P$50" pad="P$50"/>
+<connect gate="G$1" pin="P$54" pad="P$54"/>
+<connect gate="G$1" pin="P$58" pad="P$58"/>
 <connect gate="G$1" pin="P$60" pad="P$60"/>
 <connect gate="G$1" pin="P$61" pad="P$61"/>
 <connect gate="G$1" pin="P$62" pad="P$62"/>
@@ -5847,17 +5864,20 @@ datasheats:
 <connect gate="G$1" pin="P$66" pad="P$66"/>
 <connect gate="G$1" pin="P$67" pad="P$67"/>
 <connect gate="G$1" pin="P$68" pad="P$68"/>
+<connect gate="G$1" pin="P$73" pad="P$73"/>
+<connect gate="G$1" pin="P$74" pad="P$74"/>
+<connect gate="G$1" pin="P$75" pad="P$75"/>
+<connect gate="G$1" pin="P$76" pad="P$76"/>
+<connect gate="G$1" pin="P$81" pad="P$81"/>
+<connect gate="G$1" pin="P$82" pad="P$82"/>
+<connect gate="G$1" pin="P$83" pad="P$83"/>
+<connect gate="G$1" pin="P$84" pad="P$84"/>
 <connect gate="G$1" pin="P$89" pad="P$89"/>
 <connect gate="G$1" pin="P$90" pad="P$90"/>
 <connect gate="G$1" pin="P$91" pad="P$91"/>
 <connect gate="G$1" pin="P$92" pad="P$92"/>
 <connect gate="G$1" pin="P$95" pad="P$95"/>
 <connect gate="G$1" pin="P$96" pad="P$96"/>
-<connect gate="G$1" pin="P@46" pad="P$46"/>
-<connect gate="G$1" pin="P@47" pad="P$47"/>
-<connect gate="G$1" pin="P@50" pad="P$50"/>
-<connect gate="G$1" pin="P@54" pad="P$54"/>
-<connect gate="G$1" pin="P@58" pad="P$58"/>
 <connect gate="G$1" pin="P@59" pad="P$59"/>
 <connect gate="G$1" pin="PPT_GND@1" pad="P$1"/>
 <connect gate="G$1" pin="PPT_GND@11" pad="P$11"/>
@@ -5875,8 +5895,6 @@ datasheats:
 <connect gate="G$1" pin="PPT_VBAT@4" pad="P$4"/>
 <connect gate="G$1" pin="PPT_VBAT@5" pad="P$5"/>
 <connect gate="G$1" pin="PPT_VBAT@7" pad="P$7"/>
-<connect gate="G$1" pin="PWRCONNECT$37" pad="P$37"/>
-<connect gate="G$1" pin="PWRCONNECT$38" pad="P$38"/>
 <connect gate="G$1" pin="RAHS_GND@94" pad="P$94"/>
 <connect gate="G$1" pin="RAHS_VBAT@93" pad="P$93"/>
 <connect gate="G$1" pin="SYNC1" pad="P$45"/>
@@ -5887,8 +5905,8 @@ datasheats:
 <connect gate="G$1" pin="TOPDEPLOY-$56" pad="P$56"/>
 <connect gate="G$1" pin="WHEEL_GND@71" pad="P$71"/>
 <connect gate="G$1" pin="WHEEL_GND@72" pad="P$72"/>
-<connect gate="G$1" pin="WHEEL_VBATT@69" pad="P$69"/>
-<connect gate="G$1" pin="WHEEL_VBATT@70" pad="P$70"/>
+<connect gate="G$1" pin="WHEEL_VBAT@69" pad="P$69"/>
+<connect gate="G$1" pin="WHEEL_VBAT@70" pad="P$70"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -7270,6 +7288,11 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 </technologies>
 </device>
 <device name="RAHS" package="BOARD_TEMPLATE_RAHS">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="SILKONLY" package="BOARD_TEMPLATE_SILKONLY">
 <technologies>
 <technology name=""/>
 </technologies>
