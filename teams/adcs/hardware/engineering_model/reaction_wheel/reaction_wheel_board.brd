@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.3">
+<eagle version="8.4.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -2272,7 +2272,7 @@ design rules under a new name.</description>
 <element name="U$2" library="DubSat1 Components" package="PC104_CONNECTOR" value="PC104_CONNECTOR" x="45.72" y="45.72"/>
 <element name="U$3" library="DubSat1 Components" package="MSP-CAN_BLOCK" value="MSP-CAN_BLOCK" x="12.065" y="61.595" rot="MR180"/>
 <element name="U$4" library="DubSat1 Components" package="1X08_CONNECTOR" value="PROGRAM/DEBUG_PORT" x="25.0825" y="37.1475" rot="R90"/>
-<element name="U$9" library="DubSat1 Components" package="REACTION_WHEEL_BRACKET" value="REACTION_WHEEL_BRACKET" x="85.725" y="15.5575" rot="R180"/>
+<element name="U$9" library="DubSat1 Components" package="REACTION_WHEEL_BRACKET" value="REACTION_WHEEL_BRACKET" x="43.815" y="15.24" rot="R180"/>
 <element name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="2.2uF" x="25.61811875" y="74.32205"/>
 <element name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.1uF" x="13.87061875" y="67.65455" rot="R90"/>
 <element name="C3" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="1uF" x="11.33061875" y="68.28955" rot="R90"/>
