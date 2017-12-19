@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.3">
+<eagle version="8.4.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -160,20 +160,19 @@
 <board>
 <plain>
 <text x="-9.27" y="20.73" size="1.778" layer="51" font="vector">LSM6DSM</text>
-<wire x1="-0.762" y1="-9.652" x2="-0.762" y2="6.096" width="0.2032" layer="112"/>
 <text x="0.508" y="-9.525" size="1.778" layer="112">mag.</text>
 <text x="-6.3754" y="-9.7028" size="1.778" layer="112">IMU</text>
-<text x="-8.9662" y="1.905" size="1.5" layer="112" font="vector" rot="R90">SCL_MAG</text>
-<text x="-6.5532" y="1.8796" size="1.5" layer="112" font="vector" rot="R90">SDA_MAG</text>
-<text x="-4.1402" y="1.7526" size="1.5" layer="112" font="vector" rot="R90">SCL_IMU</text>
-<text x="-1.524" y="1.7272" size="1.5" layer="112" font="vector" rot="R90">SDA_IMU</text>
+<text x="-8.9662" y="1.905" size="1.5" layer="112" font="vector" rot="R90">MAG_SCL</text>
+<text x="-6.5532" y="1.8796" size="1.5" layer="112" font="vector" rot="R90">MAG_SDA</text>
+<text x="-4.1402" y="1.7526" size="1.5" layer="112" font="vector" rot="R90">IMU_SCL</text>
+<text x="-1.524" y="1.7272" size="1.5" layer="112" font="vector" rot="R90">IMU_SDA</text>
 <text x="1.143" y="1.7018" size="1.5" layer="112" font="vector" rot="R90">IMU_INT1</text>
 <text x="3.5306" y="1.6256" size="1.5" layer="112" font="vector" rot="R90">IMU_INT2</text>
 <text x="6.35" y="1.7526" size="1.5" layer="112" font="vector" rot="R90">MAG_DRDY</text>
 <text x="24.638" y="-25.1206" size="1.5" layer="112" font="vector" rot="R270">SCL</text>
 <text x="27.4574" y="-24.9936" size="1.5" layer="112" font="vector" rot="R270">SDA</text>
 <text x="29.845" y="-25.0698" size="1.5" layer="112" font="vector" rot="R270">DRDY</text>
-<text x="8.89" y="1.7526" size="1.5" layer="112" font="vector" rot="R90">MAG_DRDY</text>
+<text x="8.89" y="1.7526" size="1.5" layer="112" font="vector" rot="R90">MAG_SoC</text>
 </plain>
 <libraries>
 <library name="DubSat1 Components">
