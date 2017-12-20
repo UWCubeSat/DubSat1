@@ -11,6 +11,8 @@
 #include "INA219_pcvsensor.h"
 #include "../core/i2c.h"
 
+#define MAX_NUM_PCVSENSORS  16
+
 typedef struct _pcvSensorData {
 
     uint16_t rawBusVoltage;
@@ -20,5 +22,17 @@ typedef struct _pcvSensorData {
     float shuntVoltageV;
 
 } PCVSensorData;
+
+typedef struct _device_context_pcvsensor {
+    BOOL initialized;
+    bus_instance_i2c bus;
+    uint8_t slaveaddr;
+    hDev hI2CDevice;
+
+    PCVSensorData sensordata;
+} deviceContextPCVSensor;
+
+hDev pcvsensorInit(bus_instance_i2c bus, uint8_t i2cAddr);
+PCVSensorData *pcvsensorRead(hDev hSensor);
 
 #endif /* POWER_CURRENT_SENSOR_H_ */
