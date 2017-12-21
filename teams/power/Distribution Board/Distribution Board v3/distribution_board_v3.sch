@@ -1022,6 +1022,24 @@ chip</description>
 <text x="-1.816" y="-3.437" size="1.016" layer="25" font="vector">&gt;NAME</text>
 <text x="-1.816" y="2.532" size="1.016" layer="25" font="vector">&gt;VALUE</text>
 </package>
+<package name="BOARD_TEMPLATE_SILKONLY">
+<wire x1="-40" y1="-45" x2="-45" y2="-40" width="0.2032" layer="21"/>
+<wire x1="-45" y1="-40" x2="-45" y2="40" width="0.2032" layer="21"/>
+<wire x1="-45" y1="40" x2="-40" y2="45" width="0.2032" layer="21"/>
+<wire x1="-40" y1="45" x2="40" y2="45" width="0.2032" layer="21"/>
+<wire x1="40" y1="45" x2="45" y2="40" width="0.2032" layer="21"/>
+<wire x1="45" y1="40" x2="45" y2="-40" width="0.2032" layer="21"/>
+<wire x1="45" y1="-40" x2="40" y2="-45" width="0.2032" layer="21"/>
+<wire x1="40" y1="-45" x2="-40" y2="-45" width="0.2032" layer="21"/>
+<pad name="P$1" x="-39.5" y="39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$2" x="-39.5" y="-39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$3" x="39.5" y="-39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$4" x="39.5" y="39.5" drill="2.9" diameter="7.5"/>
+<wire x1="-33.02" y1="30.61" x2="-33.02" y2="40.77" width="0" layer="21"/>
+<wire x1="-33.02" y1="40.77" x2="33.02" y2="40.77" width="0" layer="21"/>
+<wire x1="33.02" y1="40.77" x2="33.02" y2="30.61" width="0" layer="21"/>
+<wire x1="33.02" y1="30.61" x2="-33.02" y2="30.61" width="0" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="MSP-CAN_BLOCK">
@@ -1984,22 +2002,22 @@ P2.6 Rx and P2.5 Tx</text>
 <pin name="P$66" x="-12.7" y="-10.16" length="middle" rot="R180"/>
 <pin name="P$67" x="12.7" y="-10.16" length="middle"/>
 <pin name="P$68" x="63.5" y="-10.16" length="middle" rot="R180"/>
-<pin name="WHEEL_VBATT@69" x="-66.04" y="-12.7" length="middle"/>
-<pin name="WHEEL_VBATT@70" x="-12.7" y="-12.7" length="middle" rot="R180"/>
+<pin name="WHEEL_VBAT@69" x="-66.04" y="-12.7" length="middle"/>
+<pin name="WHEEL_VBAT@70" x="-12.7" y="-12.7" length="middle" rot="R180"/>
 <pin name="WHEEL_GND@71" x="12.7" y="-12.7" length="middle"/>
 <pin name="WHEEL_GND@72" x="63.5" y="-12.7" length="middle" rot="R180"/>
-<pin name="ESTIMAT_5V@73" x="-66.04" y="-15.24" length="middle"/>
-<pin name="ESTIMAT_5V@74" x="-12.7" y="-15.24" length="middle" rot="R180"/>
-<pin name="ESTIMAT_3.3V@75" x="12.7" y="-15.24" length="middle"/>
-<pin name="ESTIMAT_3.3V@76" x="63.5" y="-15.24" length="middle" rot="R180"/>
+<pin name="P$73" x="-66.04" y="-15.24" length="middle"/>
+<pin name="P$74" x="-12.7" y="-15.24" length="middle" rot="R180"/>
+<pin name="P$75" x="12.7" y="-15.24" length="middle"/>
+<pin name="P$76" x="63.5" y="-15.24" length="middle" rot="R180"/>
 <pin name="ESTIMAT_VBAT@77" x="-66.04" y="-17.78" length="middle"/>
 <pin name="ESTIMAT_VBAT@78" x="-12.7" y="-17.78" length="middle" rot="R180"/>
 <pin name="ESTIMAT_GND@79" x="12.7" y="-17.78" length="middle"/>
 <pin name="ESTIMAT_GND@80" x="63.5" y="-17.78" length="middle" rot="R180"/>
-<pin name="BDOT_5V@81" x="-66.04" y="-20.32" length="middle"/>
-<pin name="BDOT_5V@82" x="-12.7" y="-20.32" length="middle" rot="R180"/>
-<pin name="BDOT_3.3V@83" x="12.7" y="-20.32" length="middle"/>
-<pin name="BDOT_3.3V@84" x="63.5" y="-20.32" length="middle" rot="R180"/>
+<pin name="P$81" x="-66.04" y="-20.32" length="middle"/>
+<pin name="P$82" x="-12.7" y="-20.32" length="middle" rot="R180"/>
+<pin name="P$83" x="12.7" y="-20.32" length="middle"/>
+<pin name="P$84" x="63.5" y="-20.32" length="middle" rot="R180"/>
 <pin name="BDOT_VBAT@85" x="-66.04" y="-22.86" length="middle"/>
 <pin name="BDOT_VBAT@86" x="-12.7" y="-22.86" length="middle" rot="R180"/>
 <pin name="BDOT_GND@87" x="12.7" y="-22.86" length="middle"/>
@@ -2310,10 +2328,6 @@ P2.6 Rx and P2.5 Tx</text>
 <connects>
 <connect gate="G$1" pin="BATT_VBAT$33" pad="P$33"/>
 <connect gate="G$1" pin="BATT_VBATT$34" pad="P$34"/>
-<connect gate="G$1" pin="BDOT_3.3V@83" pad="P$83"/>
-<connect gate="G$1" pin="BDOT_3.3V@84" pad="P$84"/>
-<connect gate="G$1" pin="BDOT_5V@81" pad="P$81"/>
-<connect gate="G$1" pin="BDOT_5V@82" pad="P$82"/>
 <connect gate="G$1" pin="BDOT_GND@87" pad="P$87"/>
 <connect gate="G$1" pin="BDOT_GND@88" pad="P$88"/>
 <connect gate="G$1" pin="BDOT_VBAT@85" pad="P$85"/>
@@ -2344,10 +2358,6 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="DISTRI_VBAT@28" pad="P$28"/>
 <connect gate="G$1" pin="DISTRI_VBAT@29" pad="P$29"/>
 <connect gate="G$1" pin="DISTRI_VBAT@31" pad="P$31"/>
-<connect gate="G$1" pin="ESTIMAT_3.3V@75" pad="P$75"/>
-<connect gate="G$1" pin="ESTIMAT_3.3V@76" pad="P$76"/>
-<connect gate="G$1" pin="ESTIMAT_5V@73" pad="P$73"/>
-<connect gate="G$1" pin="ESTIMAT_5V@74" pad="P$74"/>
 <connect gate="G$1" pin="ESTIMAT_GND@79" pad="P$79"/>
 <connect gate="G$1" pin="ESTIMAT_GND@80" pad="P$80"/>
 <connect gate="G$1" pin="ESTIMAT_VBAT@77" pad="P$77"/>
@@ -2377,6 +2387,14 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="P$66" pad="P$66"/>
 <connect gate="G$1" pin="P$67" pad="P$67"/>
 <connect gate="G$1" pin="P$68" pad="P$68"/>
+<connect gate="G$1" pin="P$73" pad="P$73"/>
+<connect gate="G$1" pin="P$74" pad="P$74"/>
+<connect gate="G$1" pin="P$75" pad="P$75"/>
+<connect gate="G$1" pin="P$76" pad="P$76"/>
+<connect gate="G$1" pin="P$81" pad="P$81"/>
+<connect gate="G$1" pin="P$82" pad="P$82"/>
+<connect gate="G$1" pin="P$83" pad="P$83"/>
+<connect gate="G$1" pin="P$84" pad="P$84"/>
 <connect gate="G$1" pin="P$89" pad="P$89"/>
 <connect gate="G$1" pin="P$90" pad="P$90"/>
 <connect gate="G$1" pin="P$91" pad="P$91"/>
@@ -2410,8 +2428,8 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="TOPDEPLOY-$56" pad="P$56"/>
 <connect gate="G$1" pin="WHEEL_GND@71" pad="P$71"/>
 <connect gate="G$1" pin="WHEEL_GND@72" pad="P$72"/>
-<connect gate="G$1" pin="WHEEL_VBATT@69" pad="P$69"/>
-<connect gate="G$1" pin="WHEEL_VBATT@70" pad="P$70"/>
+<connect gate="G$1" pin="WHEEL_VBAT@69" pad="P$69"/>
+<connect gate="G$1" pin="WHEEL_VBAT@70" pad="P$70"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -2435,6 +2453,11 @@ P2.6 Rx and P2.5 Tx</text>
 </technologies>
 </device>
 <device name="RAHS" package="BOARD_TEMPLATE_RAHS">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="SILKONLY" package="BOARD_TEMPLATE_SILKONLY">
 <technologies>
 <technology name=""/>
 </technologies>
@@ -3203,16 +3226,16 @@ Pogo pins- HW-11044</description>
 <part name="U$3" library="DubSat1 Components" deviceset="BOARD_TEMPLATE" device="1"/>
 <part name="U$5" library="DubSat1 Components" deviceset="INA219" device=""/>
 <part name="C2" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
-<part name="R11" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R12" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R13" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R14" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R11" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R12" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R13" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R14" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="SUPPLY4" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND4" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R15" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R16" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R17" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R18" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R15" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R16" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R17" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R18" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY5" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND5" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="SUPPLY6" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
@@ -3238,16 +3261,16 @@ Pogo pins- HW-11044</description>
 <part name="R1" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value=".02"/>
 <part name="U$6" library="DubSat1 Components" deviceset="INA219" device=""/>
 <part name="C5" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
-<part name="R22" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R23" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R24" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R29" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R22" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R23" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R24" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R29" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="SUPPLY7" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND7" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R30" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R31" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R32" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R33" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R30" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R31" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R32" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R33" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY8" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND9" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="SUPPLY9" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
@@ -3294,16 +3317,16 @@ Pogo pins- HW-11044</description>
 <part name="R_PULLUP3" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="U$12" library="DubSat1 Components" deviceset="INA219" device=""/>
 <part name="C26" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
-<part name="R46" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R47" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R48" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R49" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R46" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R47" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R48" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R49" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="SUPPLY10" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND32" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R50" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R51" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R52" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R53" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R50" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R51" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R52" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R53" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY11" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND33" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="SUPPLY12" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
@@ -3333,16 +3356,16 @@ Pogo pins- HW-11044</description>
 <part name="R_PULLUP5" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="U$16" library="DubSat1 Components" deviceset="INA219" device=""/>
 <part name="C38" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
-<part name="R77" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R78" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R79" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R80" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R77" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R78" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R79" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R80" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY16" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND50" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R81" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R82" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R83" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R84" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R81" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R82" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R83" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R84" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="SUPPLY17" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND51" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="SUPPLY18" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
@@ -3372,16 +3395,16 @@ Pogo pins- HW-11044</description>
 <part name="R_PULLUP7" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="U$20" library="DubSat1 Components" deviceset="INA219" device=""/>
 <part name="C50" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
-<part name="R107" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R108" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R109" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R110" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R107" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R108" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R109" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R110" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY22" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND68" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R111" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R112" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R113" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R114" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R111" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R112" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R113" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R114" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY23" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND69" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="SUPPLY24" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
@@ -3411,16 +3434,16 @@ Pogo pins- HW-11044</description>
 <part name="R_PULLUP9" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="U$24" library="DubSat1 Components" deviceset="INA219" device=""/>
 <part name="C62" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
-<part name="R137" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R138" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R139" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R140" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R137" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R138" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R139" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R140" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY28" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND86" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R141" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R142" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R143" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R144" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R141" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R142" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R143" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R144" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY29" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND87" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="SUPPLY30" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
@@ -3444,20 +3467,20 @@ Pogo pins- HW-11044</description>
 <part name="GND93" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="R151" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="D10" library="DubSat1 Components" deviceset="LED" device=""/>
-<part name="R152" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10"/>
+<part name="R152" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="500"/>
 <part name="GND94" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="U$14" library="DubSat1 Components" deviceset="INA219" device=""/>
 <part name="C45" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
-<part name="R64" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R65" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R66" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R67" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R64" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R65" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R66" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R67" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="SUPPLY13" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND44" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R68" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R69" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R70" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R71" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R68" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R69" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R70" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R71" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="SUPPLY14" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND45" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="SUPPLY15" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
@@ -3490,7 +3513,7 @@ Pogo pins- HW-11044</description>
 <part name="C69" library="DubSat1 Components" deviceset="CAPACITOR" device="1210" value="10u"/>
 <part name="GND64" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="D4" library="DubSat1 Components" deviceset="LED" device=""/>
-<part name="R95" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10"/>
+<part name="R95" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="500"/>
 <part name="GND65" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="JP1" library="SparkFun-Connectors" deviceset="M03X2" device="NO_SILK"/>
 <part name="JP2" library="SparkFun-Connectors" deviceset="M03X2" device="NO_SILK"/>
@@ -3509,7 +3532,7 @@ Pogo pins- HW-11044</description>
 <part name="GND24" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="U2" library="DubSat1 Components" deviceset="TPS732XX" device=""/>
 <part name="GND27" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C23" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.01 μF"/>
+<part name="C23" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
 <part name="C24" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 μF"/>
 <part name="GND28" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C25" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 μF"/>
@@ -3517,7 +3540,7 @@ Pogo pins- HW-11044</description>
 <part name="U3" library="DubSat1 Components" deviceset="TPS732XX" device=""/>
 <part name="GND30" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
-<part name="C32" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.01 μF"/>
+<part name="C32" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
 <part name="C33" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 μF"/>
 <part name="GND40" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C34" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1μF"/>
@@ -3532,14 +3555,14 @@ Pogo pins- HW-11044</description>
 <part name="R101" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="53k"/>
 <part name="R100" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="GND42" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R5" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10k"/>
+<part name="R5" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100"/>
 <part name="C98" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
 <part name="GND43" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="D2" library="DubSat1 Components" deviceset="LED" device=""/>
-<part name="R6" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10"/>
+<part name="R6" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="500"/>
 <part name="GND61" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="D6" library="DubSat1 Components" deviceset="LED" device=""/>
-<part name="R7" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10"/>
+<part name="R7" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="5000"/>
 <part name="GND62" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="U$22" library="DubSat1 Components" deviceset="SI3865DDV" device=""/>
 <part name="C_SLEW_8" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
@@ -3548,16 +3571,16 @@ Pogo pins- HW-11044</description>
 <part name="R_PULLUP8" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="U$25" library="DubSat1 Components" deviceset="INA219" device=""/>
 <part name="C44" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
-<part name="R97" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R98" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R99" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R102" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R97" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R98" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R99" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R102" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY19" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND95" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R103" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R104" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R105" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R106" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R103" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R104" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R105" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R106" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY20" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND96" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="SUPPLY21" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
@@ -3647,6 +3670,14 @@ if needed, add 100ohm series, and 1uF caps</text>
 <wire x1="167.64" y1="518.16" x2="167.64" y2="491.49" width="0" layer="97"/>
 <wire x1="167.64" y1="491.49" x2="120.65" y2="491.49" width="0" layer="97"/>
 <text x="121.666" y="515.62" size="1.778" layer="97">Address Selection</text>
+<text x="-185.42" y="195.58" size="2.54" layer="97">I2C Address: 1000000</text>
+<text x="-182.88" y="109.22" size="2.54" layer="97">I2C Address: 1000001</text>
+<text x="134.62" y="218.44" size="2.54" layer="97">I2C Address: 1000010</text>
+<text x="134.62" y="274.32" size="2.54" layer="97">I2C Address: 1000011</text>
+<text x="134.62" y="325.12" size="2.54" layer="97">I2C Address: 1000100</text>
+<text x="134.62" y="381" size="2.54" layer="97">I2C Address: 1000101</text>
+<text x="134.62" y="431.8" size="2.54" layer="97">I2C Address: 1000110</text>
+<text x="134.62" y="485.14" size="2.54" layer="97">I2C Address: 1000110</text>
 </plain>
 <instances>
 <instance part="BLK1" gate="G$1" x="-96.52" y="38.1"/>
@@ -6565,12 +6596,12 @@ if needed, add 100ohm series, and 1uF caps</text>
 <junction x="40.64" y="447.04"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="WHEEL_VBATT@69"/>
+<pinref part="U$2" gate="G$1" pin="WHEEL_VBAT@69"/>
 <wire x1="76.2" y1="50.8" x2="73.66" y2="50.8" width="0.1524" layer="91"/>
 <label x="73.66" y="50.8" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="WHEEL_VBATT@70"/>
+<pinref part="U$2" gate="G$1" pin="WHEEL_VBAT@70"/>
 <wire x1="129.54" y1="50.8" x2="132.08" y2="50.8" width="0.1524" layer="91"/>
 <label x="132.08" y="50.8" size="1.778" layer="95" xref="yes"/>
 </segment>

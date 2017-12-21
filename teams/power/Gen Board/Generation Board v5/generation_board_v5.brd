@@ -1315,7 +1315,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="-25.054" y="-24.018" size="0.6096" layer="25" font="vector" ratio="20" rot="R180" align="bottom-center"/>
 <attribute name="VALUE" x="-25.054" y="-20.716" size="0.6096" layer="27" font="vector" ratio="20" rot="R180" align="top-center"/>
 </element>
-<element name="R17" library="DubSat1 Components" package="0805" value="520k" x="-19.167" y="-13.13" smashed="yes" rot="R270">
+<element name="R17" library="DubSat1 Components" package="0805" value="523k" x="-19.167" y="-13.13" smashed="yes" rot="R270">
 <attribute name="NAME" x="-19.75069375" y="-13.315675" size="0.4064" layer="25" font="vector"/>
 </element>
 <element name="R26" library="DubSat1 Components" package="0805" value="5k" x="-18.04" y="-16.31" smashed="yes" rot="R180">
@@ -1324,13 +1324,13 @@ design rules under a new name.</description>
 <element name="R18" library="DubSat1 Components" package="0805" value="464k" x="-21.167" y="-13.08" smashed="yes" rot="R90">
 <attribute name="NAME" x="-20.58330625" y="-12.894325" size="0.4064" layer="25" font="vector" rot="R180"/>
 </element>
-<element name="R19" library="DubSat1 Components" package="R2010" value=".067" x="-23.35" y="-4.5" smashed="yes" rot="R270">
+<element name="R19" library="DubSat1 Components" package="R2010" value=".09" x="-23.35" y="-4.5" smashed="yes" rot="R270">
 <attribute name="NAME" x="-21.445" y="-4.8175" size="1.016" layer="25" font="vector"/>
 </element>
-<element name="R20" library="DubSat1 Components" package="0805" value="545k" x="-26.24" y="-16.34" smashed="yes" rot="R180">
+<element name="R20" library="DubSat1 Components" package="0805" value="604k" x="-26.24" y="-16.34" smashed="yes" rot="R180">
 <attribute name="NAME" x="-26.425675" y="-15.75630625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
-<element name="R21" library="DubSat1 Components" package="0805" value="545k" x="-26.21" y="-18.49" smashed="yes" rot="R180">
+<element name="R21" library="DubSat1 Components" package="0805" value="143k" x="-26.21" y="-18.49" smashed="yes" rot="R180">
 <attribute name="NAME" x="-26.395675" y="-17.90630625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
 <element name="R22" library="DubSat1 Components" package="0805" value="100k" x="-28.09" y="-22.32" smashed="yes" rot="R90">
@@ -1365,39 +1365,39 @@ design rules under a new name.</description>
 <element name="C31" library="DubSat1 Components" package="1210" value="10u" x="-32.16" y="-28.36" rot="R180"/>
 <element name="C2" library="DubSat1 Components" package="0805" value=".1u" x="-13.309" y="-32.318" rot="R180"/>
 <element name="C7" library="DubSat1 Components" package="0805" value="1u" x="-16.23" y="-29.27" rot="R90"/>
-<element name="R15" library="DubSat1 Components" package="0805" value="" x="-15.595" y="-24.825" smashed="yes" rot="R90">
+<element name="R15" library="DubSat1 Components" package="0805" value="DNP" x="-15.595" y="-24.825" smashed="yes" rot="R90">
 <attribute name="NAME" x="-15.409325" y="-25.02769375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
 <element name="R36" library="DubSat1 Components" package="0805" value="10" x="-18.77" y="-28" smashed="yes" rot="R180">
 <attribute name="NAME" x="-18.584325" y="-28.45669375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
-<element name="R16" library="DubSat1 Components" package="0805" value="" x="-13.69" y="-24.825" smashed="yes" rot="R90">
+<element name="R16" library="DubSat1 Components" package="0805" value="DNP" x="-13.69" y="-24.825" smashed="yes" rot="R90">
 <attribute name="NAME" x="-13.504325" y="-25.02769375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
-<element name="R29" library="DubSat1 Components" package="0805" value="" x="-19.405" y="-24.825" smashed="yes" rot="R90">
+<element name="R29" library="DubSat1 Components" package="0805" value="DNP" x="-19.405" y="-24.825" smashed="yes" rot="R90">
 <attribute name="NAME" x="-19.219325" y="-25.02769375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
-<element name="R30" library="DubSat1 Components" package="0805" value="" x="-17.5" y="-24.825" smashed="yes" rot="R90">
+<element name="R30" library="DubSat1 Components" package="0805" value="0" x="-17.5" y="-24.825" smashed="yes" rot="R90">
 <attribute name="NAME" x="-17.314325" y="-25.02769375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
-<element name="R31" library="DubSat1 Components" package="0805" value="" x="-15.595" y="-22.285" smashed="yes" rot="R270">
+<element name="R31" library="DubSat1 Components" package="0805" value="0" x="-15.595" y="-22.285" smashed="yes" rot="R270">
 <attribute name="NAME" x="-15.780675" y="-22.08230625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
-<element name="R32" library="DubSat1 Components" package="0805" value="" x="-13.69" y="-22.285" smashed="yes" rot="R270">
+<element name="R32" library="DubSat1 Components" package="0805" value="DNP" x="-13.69" y="-22.285" smashed="yes" rot="R270">
 <attribute name="NAME" x="-13.875675" y="-22.08230625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
-<element name="R33" library="DubSat1 Components" package="0805" value="" x="-19.405" y="-22.285" smashed="yes" rot="R270">
+<element name="R33" library="DubSat1 Components" package="0805" value="DNP" x="-19.405" y="-22.285" smashed="yes" rot="R270">
 <attribute name="NAME" x="-19.590675" y="-22.08230625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
-<element name="R34" library="DubSat1 Components" package="0805" value="" x="-17.5" y="-22.285" smashed="yes" rot="R270">
+<element name="R34" library="DubSat1 Components" package="0805" value="DNP" x="-17.5" y="-22.285" smashed="yes" rot="R270">
 <attribute name="NAME" x="-17.685675" y="-22.08230625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
 <element name="R35" library="DubSat1 Components" package="0805" value="10" x="-18.77" y="-30.54" smashed="yes" rot="R180">
 <attribute name="NAME" x="-18.584325" y="-30.86969375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
 <element name="U$4" library="DubSat1 Components" package="SOT-23-8" value="INA219" x="-13.69" y="-29.27"/>
-<element name="R37" library="DubSat1 Components" package="R2010" value="" x="-23.25" y="-29" rot="R90"/>
-<element name="R2" library="DubSat1 Components" package="0805" value="" x="-32" y="-37" rot="R270"/>
+<element name="R37" library="DubSat1 Components" package="R2010" value=".1" x="-23.25" y="-29" rot="R90"/>
+<element name="R2" library="DubSat1 Components" package="0805" value="0" x="-32" y="-37" rot="R270"/>
 <element name="CONN1" library="DubSat1 Components" package="PICOLOCK_6" value="PICOLOCK_6" x="-36.5" y="-14.5" rot="R90"/>
 <element name="C39" library="DubSat1 Components" package="0805" value=".1u" x="1.25" y="-35" rot="R270"/>
 <element name="R57" library="DubSat1 Components" package="0805" value="1M" x="1.25" y="-39" rot="R270"/>
@@ -1450,7 +1450,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="-1.054" y="-24.018" size="0.6096" layer="25" font="vector" ratio="20" rot="R180" align="bottom-center"/>
 <attribute name="VALUE" x="-1.054" y="-20.716" size="0.6096" layer="27" font="vector" ratio="20" rot="R180" align="top-center"/>
 </element>
-<element name="R61" library="DubSat1 Components" package="0805" value="520k" x="4.833" y="-13.13" smashed="yes" rot="R270">
+<element name="R61" library="DubSat1 Components" package="0805" value="523k" x="4.833" y="-13.13" smashed="yes" rot="R270">
 <attribute name="NAME" x="4.24930625" y="-13.315675" size="0.4064" layer="25" font="vector"/>
 </element>
 <element name="R70" library="DubSat1 Components" package="0805" value="5k" x="5.96" y="-16.31" smashed="yes" rot="R180">
@@ -1459,13 +1459,13 @@ design rules under a new name.</description>
 <element name="R62" library="DubSat1 Components" package="0805" value="464k" x="2.833" y="-13.08" smashed="yes" rot="R90">
 <attribute name="NAME" x="3.41669375" y="-12.894325" size="0.4064" layer="25" font="vector" rot="R180"/>
 </element>
-<element name="R63" library="DubSat1 Components" package="R2010" value=".067" x="0.65" y="-4.5" smashed="yes" rot="R270">
+<element name="R63" library="DubSat1 Components" package="R2010" value=".11" x="0.65" y="-4.5" smashed="yes" rot="R270">
 <attribute name="NAME" x="2.555" y="-4.8175" size="1.016" layer="25" font="vector"/>
 </element>
-<element name="R64" library="DubSat1 Components" package="0805" value="545k" x="-2.24" y="-16.34" smashed="yes" rot="R180">
+<element name="R64" library="DubSat1 Components" package="0805" value="604k" x="-2.24" y="-16.34" smashed="yes" rot="R180">
 <attribute name="NAME" x="-2.425675" y="-15.75630625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
-<element name="R65" library="DubSat1 Components" package="0805" value="545k" x="-2.21" y="-18.49" smashed="yes" rot="R180">
+<element name="R65" library="DubSat1 Components" package="0805" value="182k" x="-2.21" y="-18.49" smashed="yes" rot="R180">
 <attribute name="NAME" x="-2.395675" y="-17.90630625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
 <element name="R66" library="DubSat1 Components" package="0805" value="100k" x="-4.09" y="-22.32" smashed="yes" rot="R90">
@@ -1500,39 +1500,39 @@ design rules under a new name.</description>
 <element name="C55" library="DubSat1 Components" package="1210" value="10u" x="-8.16" y="-28.36" rot="R180"/>
 <element name="C56" library="DubSat1 Components" package="0805" value=".1u" x="10.691" y="-32.318" rot="R180"/>
 <element name="C57" library="DubSat1 Components" package="0805" value="1u" x="7.77" y="-29.27" rot="R90"/>
-<element name="R73" library="DubSat1 Components" package="0805" value="" x="8.405" y="-24.825" smashed="yes" rot="R90">
+<element name="R73" library="DubSat1 Components" package="0805" value="DNP" x="8.405" y="-24.825" smashed="yes" rot="R90">
 <attribute name="NAME" x="8.590675" y="-25.02769375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
 <element name="R82" library="DubSat1 Components" package="0805" value="10" x="5.23" y="-28" smashed="yes" rot="R180">
 <attribute name="NAME" x="5.415675" y="-28.45669375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
-<element name="R74" library="DubSat1 Components" package="0805" value="" x="10.31" y="-24.825" smashed="yes" rot="R90">
+<element name="R74" library="DubSat1 Components" package="0805" value="DNP" x="10.31" y="-24.825" smashed="yes" rot="R90">
 <attribute name="NAME" x="10.495675" y="-25.02769375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
-<element name="R75" library="DubSat1 Components" package="0805" value="" x="4.595" y="-24.825" smashed="yes" rot="R90">
+<element name="R75" library="DubSat1 Components" package="0805" value="DNP" x="4.595" y="-24.825" smashed="yes" rot="R90">
 <attribute name="NAME" x="4.780675" y="-25.02769375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
-<element name="R76" library="DubSat1 Components" package="0805" value="" x="6.5" y="-24.825" smashed="yes" rot="R90">
+<element name="R76" library="DubSat1 Components" package="0805" value="0" x="6.5" y="-24.825" smashed="yes" rot="R90">
 <attribute name="NAME" x="6.685675" y="-25.02769375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
-<element name="R77" library="DubSat1 Components" package="0805" value="" x="8.405" y="-22.285" smashed="yes" rot="R270">
+<element name="R77" library="DubSat1 Components" package="0805" value="DNP" x="8.405" y="-22.285" smashed="yes" rot="R270">
 <attribute name="NAME" x="8.219325" y="-22.08230625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
-<element name="R78" library="DubSat1 Components" package="0805" value="" x="10.31" y="-22.285" smashed="yes" rot="R270">
+<element name="R78" library="DubSat1 Components" package="0805" value="0" x="10.31" y="-22.285" smashed="yes" rot="R270">
 <attribute name="NAME" x="10.124325" y="-22.08230625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
-<element name="R79" library="DubSat1 Components" package="0805" value="" x="4.595" y="-22.285" smashed="yes" rot="R270">
+<element name="R79" library="DubSat1 Components" package="0805" value="DNP" x="4.595" y="-22.285" smashed="yes" rot="R270">
 <attribute name="NAME" x="4.409325" y="-22.08230625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
-<element name="R80" library="DubSat1 Components" package="0805" value="" x="6.5" y="-22.285" smashed="yes" rot="R270">
+<element name="R80" library="DubSat1 Components" package="0805" value="DNP" x="6.5" y="-22.285" smashed="yes" rot="R270">
 <attribute name="NAME" x="6.314325" y="-22.08230625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
 <element name="R81" library="DubSat1 Components" package="0805" value="10" x="5.23" y="-30.54" smashed="yes" rot="R180">
 <attribute name="NAME" x="5.415675" y="-30.86969375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
 <element name="U$20" library="DubSat1 Components" package="SOT-23-8" value="INA219" x="10.31" y="-29.27"/>
-<element name="R83" library="DubSat1 Components" package="R2010" value="" x="0.75" y="-29" rot="R90"/>
-<element name="R84" library="DubSat1 Components" package="0805" value="" x="-7.5" y="-37.5" rot="R270"/>
+<element name="R83" library="DubSat1 Components" package="R2010" value=".1" x="0.75" y="-29" rot="R90"/>
+<element name="R84" library="DubSat1 Components" package="0805" value="0" x="-7.5" y="-37.5" rot="R270"/>
 <element name="CONN3" library="DubSat1 Components" package="PICOLOCK_6" value="PICOLOCK_6" x="-36.5" y="7" rot="R90"/>
 <element name="C58" library="DubSat1 Components" package="0805" value=".1u" x="22" y="-35.25" rot="R270"/>
 <element name="R85" library="DubSat1 Components" package="0805" value="1M" x="22" y="-39.25" rot="R270"/>
@@ -1585,7 +1585,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="22.946" y="-24.018" size="0.6096" layer="25" font="vector" ratio="20" rot="R180" align="bottom-center"/>
 <attribute name="VALUE" x="22.946" y="-20.716" size="0.6096" layer="27" font="vector" ratio="20" rot="R180" align="top-center"/>
 </element>
-<element name="R89" library="DubSat1 Components" package="0805" value="520k" x="28.833" y="-13.13" smashed="yes" rot="R270">
+<element name="R89" library="DubSat1 Components" package="0805" value="523k" x="28.833" y="-13.13" smashed="yes" rot="R270">
 <attribute name="NAME" x="28.24930625" y="-13.315675" size="0.4064" layer="25" font="vector"/>
 </element>
 <element name="R98" library="DubSat1 Components" package="0805" value="5k" x="29.96" y="-16.31" smashed="yes" rot="R180">
@@ -1594,13 +1594,13 @@ design rules under a new name.</description>
 <element name="R90" library="DubSat1 Components" package="0805" value="464k" x="26.833" y="-13.08" smashed="yes" rot="R90">
 <attribute name="NAME" x="27.41669375" y="-12.894325" size="0.4064" layer="25" font="vector" rot="R180"/>
 </element>
-<element name="R91" library="DubSat1 Components" package="R2010" value=".067" x="24.65" y="-4.5" smashed="yes" rot="R270">
+<element name="R91" library="DubSat1 Components" package="R2010" value=".09" x="24.65" y="-4.5" smashed="yes" rot="R270">
 <attribute name="NAME" x="26.555" y="-4.8175" size="1.016" layer="25" font="vector"/>
 </element>
-<element name="R92" library="DubSat1 Components" package="0805" value="545k" x="21.76" y="-16.34" smashed="yes" rot="R180">
+<element name="R92" library="DubSat1 Components" package="0805" value="604k" x="21.76" y="-16.34" smashed="yes" rot="R180">
 <attribute name="NAME" x="21.574325" y="-15.75630625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
-<element name="R93" library="DubSat1 Components" package="0805" value="545k" x="21.79" y="-18.49" smashed="yes" rot="R180">
+<element name="R93" library="DubSat1 Components" package="0805" value="143k" x="21.79" y="-18.49" smashed="yes" rot="R180">
 <attribute name="NAME" x="21.604325" y="-17.90630625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
 <element name="R94" library="DubSat1 Components" package="0805" value="100k" x="19.91" y="-22.32" smashed="yes" rot="R90">
@@ -1635,39 +1635,39 @@ design rules under a new name.</description>
 <element name="C74" library="DubSat1 Components" package="1210" value="10u" x="15.84" y="-28.36" rot="R180"/>
 <element name="C75" library="DubSat1 Components" package="0805" value=".1u" x="34.691" y="-32.318" rot="R180"/>
 <element name="C76" library="DubSat1 Components" package="0805" value="1u" x="31.77" y="-29.27" rot="R90"/>
-<element name="R101" library="DubSat1 Components" package="0805" value="" x="32.405" y="-24.825" smashed="yes" rot="R90">
+<element name="R101" library="DubSat1 Components" package="0805" value="DNP" x="32.405" y="-24.825" smashed="yes" rot="R90">
 <attribute name="NAME" x="32.590675" y="-25.02769375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
 <element name="R110" library="DubSat1 Components" package="0805" value="10" x="29.23" y="-28" smashed="yes" rot="R180">
 <attribute name="NAME" x="29.415675" y="-28.45669375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
-<element name="R102" library="DubSat1 Components" package="0805" value="" x="34.31" y="-24.825" smashed="yes" rot="R90">
+<element name="R102" library="DubSat1 Components" package="0805" value="DNP" x="34.31" y="-24.825" smashed="yes" rot="R90">
 <attribute name="NAME" x="34.495675" y="-25.02769375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
-<element name="R103" library="DubSat1 Components" package="0805" value="" x="28.595" y="-24.825" smashed="yes" rot="R90">
+<element name="R103" library="DubSat1 Components" package="0805" value="0" x="28.595" y="-24.825" smashed="yes" rot="R90">
 <attribute name="NAME" x="28.780675" y="-25.02769375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
-<element name="R104" library="DubSat1 Components" package="0805" value="" x="30.5" y="-24.825" smashed="yes" rot="R90">
+<element name="R104" library="DubSat1 Components" package="0805" value="DNP" x="30.5" y="-24.825" smashed="yes" rot="R90">
 <attribute name="NAME" x="30.685675" y="-25.02769375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
-<element name="R105" library="DubSat1 Components" package="0805" value="" x="32.405" y="-22.285" smashed="yes" rot="R270">
+<element name="R105" library="DubSat1 Components" package="0805" value="DNP" x="32.405" y="-22.285" smashed="yes" rot="R270">
 <attribute name="NAME" x="32.219325" y="-22.08230625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
-<element name="R106" library="DubSat1 Components" package="0805" value="" x="34.31" y="-22.285" smashed="yes" rot="R270">
+<element name="R106" library="DubSat1 Components" package="0805" value="DNP" x="34.31" y="-22.285" smashed="yes" rot="R270">
 <attribute name="NAME" x="34.124325" y="-22.08230625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
-<element name="R107" library="DubSat1 Components" package="0805" value="" x="28.595" y="-22.285" smashed="yes" rot="R270">
+<element name="R107" library="DubSat1 Components" package="0805" value="DNP" x="28.595" y="-22.285" smashed="yes" rot="R270">
 <attribute name="NAME" x="28.409325" y="-22.08230625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
-<element name="R108" library="DubSat1 Components" package="0805" value="" x="30.5" y="-22.285" smashed="yes" rot="R270">
+<element name="R108" library="DubSat1 Components" package="0805" value="0" x="30.5" y="-22.285" smashed="yes" rot="R270">
 <attribute name="NAME" x="30.314325" y="-22.08230625" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
 <element name="R109" library="DubSat1 Components" package="0805" value="10" x="29.23" y="-30.54" smashed="yes" rot="R180">
 <attribute name="NAME" x="29.415675" y="-30.86969375" size="0.4064" layer="25" font="vector" rot="R90"/>
 </element>
 <element name="U$26" library="DubSat1 Components" package="SOT-23-8" value="INA219" x="34.31" y="-29.27"/>
-<element name="R111" library="DubSat1 Components" package="R2010" value="" x="24.75" y="-29" rot="R90"/>
-<element name="R112" library="DubSat1 Components" package="0805" value="" x="39" y="-29.5" rot="R270"/>
+<element name="R111" library="DubSat1 Components" package="R2010" value=".1" x="24.75" y="-29" rot="R90"/>
+<element name="R112" library="DubSat1 Components" package="0805" value="0" x="39" y="-29.5" rot="R270"/>
 <element name="CONN4" library="DubSat1 Components" package="PICOLOCK_6" value="PICOLOCK_6" x="36.5" y="-7.25" rot="R270"/>
 <element name="BLK1" library="DubSat1 Components" package="MSP-CAN_BLOCK" value="MSP-CAN_BLOCK" x="29" y="18" rot="R90"/>
 <element name="U$27" library="Hinges" package="#2-56_BOLT_HOLE" value="" x="13.5" y="-7"/>

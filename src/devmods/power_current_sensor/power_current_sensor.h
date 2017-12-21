@@ -11,6 +11,5 @@
 #include "power_current_sensor.h"
 
 #include "../../dsbase/core/i2c.h"
-#include "bsp/bsp.h"
 
 #endif /* POWER_CURRENT_SENSOR_H_ */

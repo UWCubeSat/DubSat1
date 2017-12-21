@@ -3002,7 +3002,7 @@ design rules under a new name.</description>
 <element name="C11" library="DubSat1 Components" package="0805" value="10 uF" x="76.2" y="68.199"/>
 <element name="C12" library="DubSat1 Components" package="1206" value="47 uF" x="76.581" y="75.819"/>
 <element name="U$1" library="HuskySat-1 Logos" package="LOGO_MOLEX" value="LOGO_MOLEX" x="37.846" y="13.462" rot="MR0"/>
-<element name="C_SLEW_1" library="DubSat1 Components" package="0805" value="empty" x="71.12" y="55.88"/>
+<element name="C_SLEW_1" library="DubSat1 Components" package="0805" value="0.1 uF" x="71.12" y="55.88"/>
 <element name="R_PULLUP1" library="DubSat1 Components" package="0805" value="100k" x="73.66" y="58.42" smashed="yes" rot="R270">
 <attribute name="NAME" x="74.617325" y="59.63869375" size="0.4064" layer="25" font="vector" rot="R270"/>
 </element>
@@ -3010,8 +3010,8 @@ design rules under a new name.</description>
 <attribute name="NAME" x="70.28230625" y="62.044325" size="0.4064" layer="25" font="vector"/>
 </element>
 <element name="U$3" library="DubSat1 Components" package="TSOP-6" value="SI3865DDV" x="71.12" y="58.42" rot="R270"/>
-<element name="C14" library="DubSat1 Components" package="PANASONIC_SVPG" value="" x="87.63" y="57.912" rot="R270"/>
-<element name="C15" library="DubSat1 Components" package="PANASONIC_SVPG" value="" x="81.28" y="61.976" rot="R90"/>
+<element name="C14" library="DubSat1 Components" package="PANASONIC_SVPG" value="230 uF" x="87.63" y="57.912" rot="R270"/>
+<element name="C15" library="DubSat1 Components" package="PANASONIC_SVPG" value="230 uF" x="81.28" y="61.976" rot="R90"/>
 <element name="C13" library="DubSat1 Components" package="1206" value="22 uF" x="76.581" y="73.66"/>
 </elements>
 <signals>

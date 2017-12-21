@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.3.2">
+<eagle version="8.4.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -8628,18 +8628,18 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <library name="DubSat1 Components" urn="urn:adsk.eagle:library:348159">
 <description>Shared Library (on github) for components used in Dubsat1</description>
 <packages>
-<package name="BATTERY_PACK" urn="urn:adsk.eagle:footprint:508327/1" library_version="8">
-<circle x="35.57218125" y="-3" radius="0.889" width="0.1" layer="21"/>
-<circle x="44.035209375" y="58.15" radius="0.889" width="0.1" layer="21"/>
-<circle x="10.205640625" y="58.15" radius="0.889" width="0.1" layer="21"/>
-<wire x1="71.144359375" y1="-6" x2="71.144359375" y2="0" width="0.1" layer="21"/>
-<wire x1="71.144359375" y1="0" x2="0" y2="0" width="0.1" layer="21"/>
-<wire x1="0" y1="-6" x2="0" y2="0" width="0.1" layer="21"/>
-<wire x1="71.144359375" y1="-6" x2="0" y2="-6" width="0.1" layer="21"/>
-<wire x1="0.005640625" y1="55.15" x2="0.005640625" y2="61.15" width="0.1" layer="21"/>
-<wire x1="71.15" y1="61.15" x2="0.005640625" y2="61.15" width="0.1" layer="21"/>
-<wire x1="71.15" y1="55.15" x2="71.15" y2="61.15" width="0.1" layer="21"/>
-<wire x1="71.15" y1="55.15" x2="0.005640625" y2="55.15" width="0.1" layer="21"/>
+<package name="BATTERY_PACK" urn="urn:adsk.eagle:footprint:508327/1" locally_modified="yes" library_version="20" library_locally_modified="yes">
+<circle x="44.035" y="-1.5" radius="1.45" width="0.1" layer="20"/>
+<circle x="44.035209375" y="56.65" radius="1.45" width="0.073659375" layer="20"/>
+<circle x="10.205640625" y="56.65" radius="1.45" width="0.073659375" layer="20"/>
+<wire x1="71.144" y1="-6" x2="71.144" y2="3" width="0.1" layer="21"/>
+<wire x1="71.144" y1="3" x2="0" y2="3" width="0.1" layer="21"/>
+<wire x1="0" y1="-6" x2="0" y2="3" width="0.1" layer="21"/>
+<wire x1="71.144" y1="-6" x2="0" y2="-6" width="0.1" layer="21"/>
+<wire x1="0" y1="52.15" x2="0" y2="61.15" width="0.1" layer="21"/>
+<wire x1="71.144" y1="61.15" x2="0" y2="61.15" width="0.1" layer="21"/>
+<wire x1="71.144" y1="52.15" x2="71.144" y2="61.15" width="0.1" layer="21"/>
+<wire x1="71.144" y1="52.15" x2="0" y2="52.15" width="0.1" layer="21"/>
 <wire x1="23" y1="62" x2="23" y2="63.5" width="0.1" layer="20"/>
 <wire x1="23" y1="63.5" x2="31" y2="63.5" width="0.1" layer="20"/>
 <wire x1="31" y1="63.5" x2="31" y2="62" width="0.1" layer="20"/>
@@ -8655,6 +8655,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <smd name="P$1" x="27.13" y="-2" dx="6" dy="6" layer="16"/>
 <smd name="P$2" x="60.95" y="-2" dx="6" dy="6" layer="16"/>
 <smd name="P$3" x="27.13" y="57.15" dx="6" dy="6" layer="16"/>
+<circle x="10.205" y="-1.5" radius="1.45" width="0.073659375" layer="20"/>
 </package>
 <package name="BOARD_TEMPLATE" urn="urn:adsk.eagle:footprint:348175/1" library_version="19">
 <wire x1="-40" y1="-45" x2="-45" y2="-40" width="0" layer="20"/>
@@ -9846,7 +9847,7 @@ Datasheet (22AR10KTR)</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="POWER_PACK" urn="urn:adsk.eagle:component:508329/5" library_version="20">
+<deviceset name="POWER_PACK" urn="urn:adsk.eagle:component:508329/5" locally_modified="yes" library_version="20" library_locally_modified="yes">
 <gates>
 <gate name="G$1" symbol="BATTERY_PACK" x="0" y="0"/>
 </gates>

@@ -4698,11 +4698,11 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="C5" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="DNP"/>
 <part name="C6" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="DNP"/>
 <part name="U2" library="SparkFun-PowerIC" deviceset="LT3652" device="" value="LT3652"/>
-<part name="R17" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="520k"/>
+<part name="R17" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="523k"/>
 <part name="R18" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="464k"/>
 <part name="C18" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10u"/>
 <part name="GND12" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R19" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value=".067"/>
+<part name="R19" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value=".09"/>
 <part name="C19" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
 <part name="C20" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10u, n/a"/>
 <part name="GND13" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
@@ -4710,8 +4710,8 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="C21" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
 <part name="C22" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
 <part name="GND14" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R20" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="545k"/>
-<part name="R21" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="545k"/>
+<part name="R20" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="604k"/>
+<part name="R21" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="143k"/>
 <part name="GND16" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="C23" library="DubSat1 Components" deviceset="CAPACITOR" device="1210" value="10u"/>
 <part name="C24" library="DubSat1 Components" deviceset="CAPACITOR" device="2917" value="718-1773-1-ND"/>
@@ -4740,16 +4740,16 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="C31" library="DubSat1 Components" deviceset="CAPACITOR" device="1210" value="10u"/>
 <part name="U$4" library="DubSat1 Components" deviceset="INA219" device=""/>
 <part name="C2" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
-<part name="R15" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R16" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R29" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R30" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R15" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R16" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R29" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R30" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="SUPPLY4" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND5" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R31" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R32" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R33" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R34" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R31" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R32" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R33" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R34" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY5" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND6" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="SUPPLY6" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
@@ -4757,8 +4757,8 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="R35" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10"/>
 <part name="R36" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10"/>
 <part name="C7" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
-<part name="R37" library="DubSat1 Components" deviceset="RESISTOR" device="2010"/>
-<part name="R2" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R37" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value=".1"/>
+<part name="R2" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="CONN1" library="DubSat1 Components" deviceset="PICOLOCK_6" device=""/>
 <part name="GND1" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="U$15" library="DubSat1 Components" deviceset="DMN5L06WK" device=""/>
@@ -4772,11 +4772,11 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="C40" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="DNP"/>
 <part name="C41" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="DNP"/>
 <part name="U3" library="SparkFun-PowerIC" deviceset="LT3652" device="" value="LT3652"/>
-<part name="R61" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="520k"/>
+<part name="R61" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="523k"/>
 <part name="R62" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="464k"/>
 <part name="C42" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10u"/>
 <part name="GND36" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R63" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value=".067"/>
+<part name="R63" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value=".11"/>
 <part name="C43" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
 <part name="C44" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10u, n/a"/>
 <part name="GND37" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
@@ -4784,8 +4784,8 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="C45" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
 <part name="C46" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
 <part name="GND38" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R64" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="545k"/>
-<part name="R65" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="545k"/>
+<part name="R64" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="604k"/>
+<part name="R65" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="182k"/>
 <part name="GND39" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="C47" library="DubSat1 Components" deviceset="CAPACITOR" device="1210" value="10u"/>
 <part name="C48" library="DubSat1 Components" deviceset="CAPACITOR" device="2917" value="718-1773-1-ND"/>
@@ -4814,16 +4814,16 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="C55" library="DubSat1 Components" deviceset="CAPACITOR" device="1210" value="10u"/>
 <part name="U$20" library="DubSat1 Components" deviceset="INA219" device=""/>
 <part name="C56" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
-<part name="R73" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R74" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R75" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R76" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R73" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R74" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R75" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R76" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="SUPPLY7" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND48" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R77" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R78" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R79" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R80" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R77" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R78" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R79" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R80" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY8" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND49" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="SUPPLY9" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
@@ -4831,8 +4831,8 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="R81" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10"/>
 <part name="R82" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10"/>
 <part name="C57" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
-<part name="R83" library="DubSat1 Components" deviceset="RESISTOR" device="2010"/>
-<part name="R84" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R83" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value=".1"/>
+<part name="R84" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="CONN3" library="DubSat1 Components" deviceset="PICOLOCK_6" device=""/>
 <part name="GND51" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="U$21" library="DubSat1 Components" deviceset="DMN5L06WK" device=""/>
@@ -4846,11 +4846,11 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="C59" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="DNP"/>
 <part name="C60" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="DNP"/>
 <part name="U4" library="SparkFun-PowerIC" deviceset="LT3652" device="" value="LT3652"/>
-<part name="R89" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="520k"/>
+<part name="R89" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="523k"/>
 <part name="R90" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="464k"/>
 <part name="C61" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10u"/>
 <part name="GND53" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R91" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value=".067"/>
+<part name="R91" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value=".09"/>
 <part name="C62" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
 <part name="C63" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10u, n/a"/>
 <part name="GND54" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
@@ -4858,8 +4858,8 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="C64" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
 <part name="C65" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
 <part name="GND55" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R92" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="545k"/>
-<part name="R93" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="545k"/>
+<part name="R92" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="604k"/>
+<part name="R93" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="143k"/>
 <part name="GND56" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="C66" library="DubSat1 Components" deviceset="CAPACITOR" device="1210" value="10u"/>
 <part name="C67" library="DubSat1 Components" deviceset="CAPACITOR" device="2917" value="718-1773-1-ND"/>
@@ -4888,16 +4888,16 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="C74" library="DubSat1 Components" deviceset="CAPACITOR" device="1210" value="10u"/>
 <part name="U$26" library="DubSat1 Components" deviceset="INA219" device=""/>
 <part name="C75" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
-<part name="R101" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R102" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R103" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R104" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R101" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R102" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R103" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R104" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY10" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND65" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R105" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R106" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R107" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
-<part name="R108" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R105" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R106" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R107" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R108" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="SUPPLY11" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND66" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="SUPPLY12" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
@@ -4905,8 +4905,8 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="R109" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10"/>
 <part name="R110" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="10"/>
 <part name="C76" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
-<part name="R111" library="DubSat1 Components" deviceset="RESISTOR" device="2010"/>
-<part name="R112" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R111" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value=".1"/>
+<part name="R112" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="CONN4" library="DubSat1 Components" deviceset="PICOLOCK_6" device=""/>
 <part name="BLK1" library="DubSat1 Components" deviceset="MSP-CAN_BLOCK" device=""/>
 <part name="GND3" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
@@ -4990,7 +4990,6 @@ if needed, add 100ohm series, and 1uF caps</text>
 <wire x1="172.72" y1="101.6" x2="172.72" y2="147.32" width="0.1524" layer="97"/>
 <wire x1="172.72" y1="147.32" x2="162.56" y2="147.32" width="0.1524" layer="97"/>
 <wire x1="162.56" y1="147.32" x2="162.56" y2="101.6" width="0.1524" layer="97"/>
-<text x="165.1" y="144.78" size="1.778" layer="97">adjust</text>
 <wire x1="181.61" y1="168.91" x2="181.61" y2="195.58" width="0" layer="97"/>
 <wire x1="181.61" y1="195.58" x2="228.6" y2="195.58" width="0" layer="97"/>
 <wire x1="228.6" y1="195.58" x2="228.6" y2="168.91" width="0" layer="97"/>
@@ -5026,11 +5025,11 @@ if needed, add 100ohm series, and 1uF caps</text>
 <text x="67.564" y="369.57" size="0.762" layer="97">Pi filter for use only if noise present
 begin by do not populate
 if needed, add 100ohm series, and 1uF caps</text>
-<wire x1="170.18" y1="368.3" x2="180.34" y2="368.3" width="0.1524" layer="97"/>
-<wire x1="180.34" y1="368.3" x2="180.34" y2="414.02" width="0.1524" layer="97"/>
-<wire x1="180.34" y1="414.02" x2="170.18" y2="414.02" width="0.1524" layer="97"/>
+<wire x1="170.18" y1="368.3" x2="185.42" y2="368.3" width="0.1524" layer="97"/>
+<wire x1="185.42" y1="368.3" x2="185.42" y2="414.02" width="0.1524" layer="97"/>
+<wire x1="185.42" y1="414.02" x2="170.18" y2="414.02" width="0.1524" layer="97"/>
 <wire x1="170.18" y1="414.02" x2="170.18" y2="368.3" width="0.1524" layer="97"/>
-<text x="172.72" y="411.48" size="1.778" layer="97">adjust</text>
+<text x="170.18" y="408.94" size="1.778" layer="97">Vmpp=14.22V</text>
 <wire x1="189.23" y1="435.61" x2="189.23" y2="462.28" width="0" layer="97"/>
 <wire x1="189.23" y1="462.28" x2="236.22" y2="462.28" width="0" layer="97"/>
 <wire x1="236.22" y1="462.28" x2="236.22" y2="435.61" width="0" layer="97"/>
@@ -5039,6 +5038,31 @@ if needed, add 100ohm series, and 1uF caps</text>
 <text x="92.202" y="407.67" size="1.778" layer="97">ferrite bead
  if needed</text>
 <text x="135.382" y="406.654" size="1.778" layer="97">shunt</text>
+<text x="15.24" y="281.94" size="7.62" layer="97">Center
+panel</text>
+<text x="314.96" y="147.32" size="2.54" layer="97">Imax=(2.409 [Vmpp] * 0.5029 [Impp] * 6 [# cells]
+          * 80% [conversion efficiency] )/ 
+          5.2 [Vbat_minimum]
+       =1.118A
+
+Rshunt=0.09, giving 1.1A current limit</text>
+<text x="322.58" y="419.1" size="2.54" layer="97">Imax=(2.409 [Vmpp] * 0.5029 [Impp] * 6 [# cells]
+          * 80% [conversion efficiency] )/ 
+          5.2 [Vbat_minimum]
+       =1.118A
+
+Rshunt=0.09, giving 1.1A current limit</text>
+<text x="314.96" y="281.94" size="2.54" layer="97">Imax=(2.409 [Vmpp] * 0.5029 [Impp] * 5 [# cells]
+          * 80% [conversion efficiency] )/ 
+          5.2 [Vbat_minimum]
+       =0.932A
+
+Rshunt=0.11, giving 0.91A current limit</text>
+<text x="162.56" y="142.24" size="1.778" layer="97">Vmpp=14.22V</text>
+<text x="165.1" y="271.78" size="1.778" layer="97">Vmpp=11.85V</text>
+<text x="200.406" y="165.1" size="1.778" layer="97">I2C Address: 1000010</text>
+<text x="205.486" y="297.18" size="1.778" layer="97">I2C Address: 1000011</text>
+<text x="210.566" y="431.8" size="1.778" layer="97">I2C Address: 1000100</text>
 </plain>
 <instances>
 <instance part="U$1" gate="G$1" x="-109.22" y="127"/>

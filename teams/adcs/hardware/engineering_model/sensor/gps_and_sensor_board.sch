@@ -10450,12 +10450,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="GND15" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U$1" library="HuskySat-1 Logos" deviceset="LOGO_MOLEX" device=""/>
 <part name="U$3" library="DubSat1 Components" deviceset="SI3865DDV" device=""/>
-<part name="C_SLEW_1" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="empty"/>
+<part name="C_SLEW_1" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.1 uF"/>
 <part name="R_SLEW_1" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="5k"/>
 <part name="GND17" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="R_PULLUP1" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
-<part name="C14" library="DubSat1 Components" deviceset="CAPACITOR" device="PANASONIC_16SVPG270M"/>
-<part name="C15" library="DubSat1 Components" deviceset="CAPACITOR" device="PANASONIC_16SVPG270M"/>
+<part name="C14" library="DubSat1 Components" deviceset="CAPACITOR" device="PANASONIC_16SVPG270M" value="230 uF"/>
+<part name="C15" library="DubSat1 Components" deviceset="CAPACITOR" device="PANASONIC_16SVPG270M" value="230 uF"/>
 <part name="GND18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND19" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C13" library="DubSat1 Components" deviceset="CAPACITOR" device="1206" value="22 uF"/>
@@ -10522,8 +10522,8 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="GND17" gate="G$1" x="307.34" y="-48.26" smashed="yes"/>
 <instance part="R_PULLUP1" gate="G$1" x="281.94" y="-45.72" rot="R90"/>
 <instance part="C14" gate="G$1" x="276.86" y="-20.32" rot="R180"/>
-<instance part="C15" gate="G$1" x="269.24" y="-20.32" rot="R180"/>
-<instance part="GND18" gate="1" x="269.24" y="-10.16" rot="R180"/>
+<instance part="C15" gate="G$1" x="261.62" y="-20.32" rot="R180"/>
+<instance part="GND18" gate="1" x="261.62" y="-10.16" rot="R180"/>
 <instance part="GND19" gate="1" x="276.86" y="-10.16" rot="R180"/>
 <instance part="C13" gate="G$1" x="309.88" y="50.8"/>
 </instances>
@@ -10738,7 +10738,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <segment>
 <pinref part="GND18" gate="1" pin="GND"/>
 <pinref part="C15" gate="G$1" pin="2"/>
-<wire x1="269.24" y1="-12.7" x2="269.24" y2="-17.78" width="0.1524" layer="91"/>
+<wire x1="261.62" y1="-12.7" x2="261.62" y2="-17.78" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND19" gate="1" pin="GND"/>
@@ -11012,11 +11012,11 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="281.94" y1="-30.48" x2="289.56" y2="-30.48" width="0.1524" layer="91"/>
 <wire x1="281.94" y1="-30.48" x2="276.86" y2="-30.48" width="0.1524" layer="91"/>
 <label x="254" y="-30.48" size="1.778" layer="95" rot="R180" xref="yes"/>
-<wire x1="276.86" y1="-30.48" x2="269.24" y2="-30.48" width="0.1524" layer="91"/>
-<wire x1="269.24" y1="-30.48" x2="254" y2="-30.48" width="0.1524" layer="91"/>
+<wire x1="276.86" y1="-30.48" x2="261.62" y2="-30.48" width="0.1524" layer="91"/>
+<wire x1="261.62" y1="-30.48" x2="254" y2="-30.48" width="0.1524" layer="91"/>
 <pinref part="C15" gate="G$1" pin="1"/>
-<wire x1="269.24" y1="-25.4" x2="269.24" y2="-30.48" width="0.1524" layer="91"/>
-<junction x="269.24" y="-30.48"/>
+<wire x1="261.62" y1="-25.4" x2="261.62" y2="-30.48" width="0.1524" layer="91"/>
+<junction x="261.62" y="-30.48"/>
 <pinref part="C14" gate="G$1" pin="1"/>
 <wire x1="276.86" y1="-25.4" x2="276.86" y2="-30.48" width="0.1524" layer="91"/>
 <junction x="276.86" y="-30.48"/>
