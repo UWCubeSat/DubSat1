@@ -3250,7 +3250,7 @@ Pogo pins- HW-11044</description>
 <part name="R26" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="20k"/>
 <part name="R27" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="GND8" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R28" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R28" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100"/>
 <part name="C9" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="DNP"/>
 <part name="C10" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="DNP"/>
 <part name="U$11" library="DubSat1 Components" deviceset="SI3865DDV" device=""/>
@@ -3435,8 +3435,8 @@ Pogo pins- HW-11044</description>
 <part name="U$24" library="DubSat1 Components" deviceset="INA219" device=""/>
 <part name="C62" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
 <part name="R137" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
-<part name="R138" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
-<part name="R139" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R138" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R139" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="R140" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="SUPPLY28" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND86" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
@@ -3495,7 +3495,7 @@ Pogo pins- HW-11044</description>
 <part name="R75" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="20k"/>
 <part name="R76" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="GND47" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
-<part name="R92" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R92" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100"/>
 <part name="C48" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="DNP"/>
 <part name="C49" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="DNP"/>
 <part name="R93" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value=".02"/>
@@ -3676,7 +3676,7 @@ if needed, add 100ohm series, and 1uF caps</text>
 <text x="134.62" y="274.32" size="2.54" layer="97">I2C Address: 1000011</text>
 <text x="134.62" y="325.12" size="2.54" layer="97">I2C Address: 1000100</text>
 <text x="134.62" y="381" size="2.54" layer="97">I2C Address: 1000101</text>
-<text x="134.62" y="431.8" size="2.54" layer="97">I2C Address: 1000110</text>
+<text x="134.62" y="431.8" size="2.54" layer="97">I2C Address: 1001110</text>
 <text x="134.62" y="485.14" size="2.54" layer="97">I2C Address: 1000110</text>
 </plain>
 <instances>
