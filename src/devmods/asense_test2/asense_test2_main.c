@@ -14,6 +14,10 @@
 // used formula.
 #define CALADC12_12V_30C  *((unsigned int *)0x1A1A)   // Temperature Sensor Calibration-30 C
 #define CALADC12_12V_85C  *((unsigned int *)0x1A1C)   // Temperature Sensor Calibration-85 C
+#define CALADC12_20V_30C  *((unsigned int *)0x1A1E)
+#define CALADC12_20V_85C  *((unsigned int *)0x1A20)
+#define CALADC12_25V_30C  *((unsigned int *)0x1A22)
+#define CALADC12_25V_85C  *((unsigned int *)0x1A24)
 
 #define ADC12INCH_TEMPSENSOR ADC12INCH_30
 
