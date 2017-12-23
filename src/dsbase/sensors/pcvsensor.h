@@ -16,9 +16,9 @@
 
 typedef struct _pcvSensorData {
 
-    uint16_t rawBusVoltage;
-    uint16_t rawShuntVoltage;
-    uint16_t rawCurrent;
+    int16_t rawBusVoltage;
+    int16_t rawShuntVoltage;
+    int16_t rawCurrent;
 
     float busVoltageV;
     float shuntVoltageV;
@@ -42,5 +42,7 @@ typedef struct _device_context_pcvsensor {
 
 hDev pcvsensorInit(bus_instance_i2c bus, uint8_t i2cAddr, float shuntResistance, float maxCurrent);
 PCVSensorData *pcvsensorRead(hDev hSensor);
+
+hDev pcvsensorGetUnderlyingDevice(hDev hSensor);
 
 #endif /* POWER_CURRENT_SENSOR_H_ */

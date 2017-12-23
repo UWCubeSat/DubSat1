@@ -8,8 +8,9 @@
 #ifndef EPSDISTTEST_H_
 #define EPSDISTTEST_H_
 
-
-
+#include "bsp/bsp.h"
+#include "sensors/pcvsensor.h"
+#include "core/utils.h"
 
 
 #endif /* EPSDISTTEST_H_ */

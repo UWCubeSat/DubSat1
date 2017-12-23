@@ -1,48 +1,11 @@
 #include <epsdisttest.h>
 #include <msp430.h> 
 
-#include "bsp/bsp.h"
+
 
 /*
  * main.c
  */
-
-// Capture power domain info, IDs, addresses, and enable pins
-typedef enum {
-    PD_COM2,
-    PD_PPT,
-    PD_BDOT,
-    PD_COM1,
-    PD_RAHS,
-    PD_ESTIM,
-    PD_EPS,
-    PD_WHEELS
-} PowerDomainID;
-
-FILE_STATIC uint8_t *powerDomainNames[] =
-                                           { "COM2",
-                                             "PPT",
-                                             "BDOT",
-                                             "COM1",
-                                             "RAHS",
-                                             "ESTIM",
-                                             "EPS",
-                                             "WHEELS"};
-
-typedef enum {
-    Disable,
-    Enable
-} DomainEnable;
-
-
-typedef struct _power_domain_info {
-    PowerDomainID id;
-    uint8_t i2caddr;
-    hDev hpcvsensor;
-    float lastShuntCurrent;
-
-    // eventually add other stuff, like handle to the averaging queues, etc.
-} PowerDomainInfo;
 
 
 #define NUM_POWER_DOMAINS  8
@@ -87,12 +50,66 @@ typedef struct _power_domain_info {
 #define LED_OUT P3OUT
 #define LED_BIT BIT5
 
-FILE_STATIC PowerDomainInfo powerdomains[NUM_POWER_DOMAINS];
-FILE_STATIC uint8_t domainsSensorAddresses[] = { 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x4E };
+#define SHUNT_HIGH_DRAW_DEVICE  0.01f
+#define SHUNT_LOW_DRAW_DEVICE   0.1f
 
-void domainInit()
+
+// Capture power domain info, IDs, addresses, and enable pins
+// DO NOT REORDER
+typedef enum {
+    PD_COM1,
+    PD_COM2,
+    PD_RAHS,
+    PD_BDOT,
+    PD_ESTIM,
+    PD_WHEELS,
+    PD_EPS,
+    PD_PPT,
+} PowerDomainID;
+
+// DO NOT REORDER
+FILE_STATIC uint8_t *powerDomainNames[] =
+                                           {
+                                            "COM1",
+                                            "COM2",
+                                            "RAHS",
+                                            "BDOT",
+                                            "ESTIM",
+                                            "WHEELS",
+                                            "EPS",
+                                            "PPT",
+                                           };
+
+typedef enum {
+    Disable,
+    Enable
+} DomainEnable;
+
+
+typedef struct _power_domain_info {
+    PowerDomainID id;
+    uint8_t i2caddr;
+    hDev hpcvsensor;
+    float lastShuntCurrent;
+
+    // eventually add other stuff, like handle to the averaging queues, etc.
+} PowerDomainInfo;
+
+
+FILE_STATIC PowerDomainInfo powerdomains[NUM_POWER_DOMAINS];
+FILE_STATIC PCVSensorData *powerdomainData[NUM_POWER_DOMAINS];
+
+// DO NOT REORDER
+FILE_STATIC uint8_t domainsSensorAddresses[] =   { 0x43, 0x40, 0x44, 0x42, 0x45, 0x4E, 0x46, 0x41  };
+FILE_STATIC float   domainShuntResistances[] =   { SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE,
+                                                   SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE };
+
+#define MAX_BUFF_SIZE   0x10
+FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
+
+void distDomainInit()
 {
-    // Setup GPIO pin used to turn on all INA219's
+    // Setup GPIO pin used to turn on all INA219's and turn them on
     DOMAIN_ENABLE_CURRENT_SENSORS_DIR |= DOMAIN_ENABLE_CURRENT_SENSORS_BIT;
 
     // Setup GPIO pins used to turn off/on each power domain
@@ -105,17 +122,20 @@ void domainInit()
     DOMAIN_ENABLE_EPS_DIR   |=  DOMAIN_ENABLE_EPS_BIT;
     DOMAIN_ENABLE_WHEELS_DIR |= DOMAIN_ENABLE_WHEELS_BIT;
 
-//    int d;
-//    for (d = 0; d < NUM_POWER_DOMAINS; d++)
-//    {
-//        powerdomains[d].id = (PowerDomainID)d;
-//        powerdomains[d].i2caddr = domainsSensorAddresses[d];
-//        powerdomains[d].hpcvsensor = pcvsensorInit(I2CBus2, powerdomains[d].i2caddr, 0.1f, 16.0f);
-//
-//    }
+    DOMAIN_ENABLE_CURRENT_SENSORS_OUT |= DOMAIN_ENABLE_CURRENT_SENSORS_BIT;
+    __delay_cycles(0.1 * SEC);
+
+    int d;
+    for (d = 0; d < NUM_POWER_DOMAINS; d++)
+    {
+        powerdomains[d].id = (PowerDomainID)d;
+        powerdomains[d].i2caddr = domainsSensorAddresses[d];
+        powerdomains[d].hpcvsensor = pcvsensorInit(I2CBus2, powerdomains[d].i2caddr, domainShuntResistances[d], 16.0f);
+        __delay_cycles(1000);  // Helps make sure the initialization is received properly
+    }
 }
 
-void domainSwitch(PowerDomainID domain, DomainEnable enable)
+void distDomainSwitch(PowerDomainID domain, DomainEnable enable)
 {
     switch (domain)
     {
@@ -171,19 +191,30 @@ void domainSwitch(PowerDomainID domain, DomainEnable enable)
             break;
 
     }
-
 }
 
+FILE_STATIC void distPopulateSensorData()
+{
+    int i;
+    for (i=0; i < NUM_POWER_DOMAINS; i++)
+    {
+        powerdomainData[i] = pcvsensorRead(powerdomains[i].hpcvsensor);
+    }
+}
+
+PCVSensorData *sensorData;
+hDev i2cdev, hSensor;
 int main(void) {
 
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
     bspInit(Module_EPS_Dist);
+    distDomainInit();
 
     P1OUT = 0;
     P2OUT = 0;
     P4OUT = 0;
     P7OUT = 0;
-    domainInit();
+
     LED_DIR |= LED_BIT;
 
 #if defined(__DEBUG__)
@@ -192,19 +223,33 @@ int main(void) {
 
 #endif  //  __DEBUG__
 	
-    DOMAIN_ENABLE_CURRENT_SENSORS_OUT |= DOMAIN_ENABLE_CURRENT_SENSORS_BIT;
-
     int domindex = 0;
     int onoff = 1;  // 0 means we are disabling power domains, 1 means enabling
     PowerDomainID currdom;
+
+    __delay_cycles(0.5 * SEC);
+
+    debugPrintF("COM1Vb,Vs,A,COM2Vb,Vs,A,RAHSVb,Vs,A,BDOTVb,Vs,A,ESTIMVb,Vs,A,WHEELVb,Vs,A,EPSVb,Vs,A,PPTVb,Vs,A\r\n");
+
     while (1)
     {
-        currdom = (PowerDomainID)domindex;
-        __delay_cycles(0.5 * SEC);
+        __delay_cycles(0.1 * SEC);
         LED_OUT ^= LED_BIT;
 
-        debugPrintF("Toggling power domain %s ...\r\n", powerDomainNames[domindex]);
-        domainSwitch(currdom, (onoff==1 ? Enable : Disable));
+        currdom = (PowerDomainID)domindex;
+
+        distPopulateSensorData();
+//        debugPrintF("%.4f,%.4f,%.4f, %.4f,%.4f,%.4f, %.4f,%.4f,%.4f, %.4f,%.4f,%.4f, %.4f,%.4f,%.4f, %.4f,%.4f,%.4f, %.4f,%.4f,%.4f, %.4f,%.4f,%.4f\r\n",
+//                    powerdomainData[0]->busVoltageV, powerdomainData[0]->shuntVoltageV, powerdomainData[0]->calcdCurrentA,
+//                    powerdomainData[1]->busVoltageV, powerdomainData[1]->shuntVoltageV, powerdomainData[1]->calcdCurrentA,
+//                    powerdomainData[2]->busVoltageV, powerdomainData[2]->shuntVoltageV, powerdomainData[2]->calcdCurrentA,
+//                    powerdomainData[3]->busVoltageV, powerdomainData[3]->shuntVoltageV, powerdomainData[3]->calcdCurrentA,
+//                    powerdomainData[4]->busVoltageV, powerdomainData[4]->shuntVoltageV, powerdomainData[4]->calcdCurrentA,
+//                    powerdomainData[5]->busVoltageV, powerdomainData[5]->shuntVoltageV, powerdomainData[5]->calcdCurrentA,
+//                    powerdomainData[6]->busVoltageV, powerdomainData[6]->shuntVoltageV, powerdomainData[6]->calcdCurrentA,
+//                    powerdomainData[7]->busVoltageV, powerdomainData[7]->shuntVoltageV, powerdomainData[7]->calcdCurrentA);
+
+        distDomainSwitch(currdom, (onoff==1 ? Enable : Disable));
 
         if (domindex >= NUM_POWER_DOMAINS-1)
         {
