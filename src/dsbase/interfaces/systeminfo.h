@@ -20,6 +20,7 @@ typedef enum _subsystemModule {
     Module_ADCS_RWY = 3,
     Module_ADCS_RWZ = 4,
     Module_PPT = 5,
+    Module_EPS_Dist = 6,
 } SubsystemModule;
 
 // REMOTE INFO STRUCTURES

@@ -16,7 +16,9 @@ FILE_STATIC uint8_t *SubsystemModulePaths[] =
                                              "ADCS/BDot",
                                              "ADCS/RWheelX",
                                              "ADCS/RWheelY",
-                                             "ADCS/RWheelZ"};
+                                             "ADCS/RWheelZ",
+                                             "PPT",
+                                             "EPS/Dist"};
 
 FILE_STATIC SpacecraftInfo sc_info;
 

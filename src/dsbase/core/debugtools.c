@@ -44,6 +44,7 @@ FILE_STATIC uint8_t *DebugEntityFriendlyNames[] =  {
                                                     "Core/BSP",
                                                     "UART Bus",
                                                     "RWheels",
+                                                    "Analog Sensors",
                                                     "SUBSYSTEM",  // For the "main" entity in each subsystem module
                                                     };
 
@@ -60,6 +61,7 @@ FILE_STATIC uint8_t DebugEntityPathChars[] = {
                                               'b',
                                               'u',
                                               'R',
+                                              'a',
                                               '%',
                                             };
 
