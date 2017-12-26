@@ -90,24 +90,33 @@ hDev pcvsensorInit(bus_instance_i2c bus, uint8_t i2cAddr, float shuntResistance,
     return (hDev)newIndex;
 }
 
-PCVSensorData *pcvsensorRead(hDev hSensor)
+PCVSensorData *pcvsensorRead(hDev hSensor, pcv_read_type rtype)
 {
     uint8_t devIndex = (uint8_t)hSensor;
     hDev i2cdevice = sensors[devIndex].hI2CDevice;
     uint16_t temp;
 
-    i2cMasterRegisterRead(i2cdevice, CUR_INA219_REG_ADDR_SHUNT_V, i2cBuff, 2 );
-    sensors[devIndex].sensordata.rawShuntVoltage = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
-    i2cMasterRegisterRead(i2cdevice, CUR_INA219_REG_ADDR_BUS_V, i2cBuff, 2 );
-    temp = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
-    sensors[devIndex].sensordata.rawBusVoltage = temp >> 3;   // value is only top 13 bits of register, gah
-    i2cMasterRegisterRead(i2cdevice, CUR_INA219_REG_ADDR_CURRENT, i2cBuff, 2 );
-    sensors[devIndex].sensordata.rawCurrent = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
+    if (rtype != Read_CurrentOnly)
+    {
+        i2cMasterRegisterRead(i2cdevice, CUR_INA219_REG_ADDR_SHUNT_V, i2cBuff, 2 );
+        sensors[devIndex].sensordata.rawShuntVoltage = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
+        sensors[devIndex].sensordata.shuntVoltageV = INA219_SHUNT_VOLTAGE_CONVERSION_FACTOR * sensors[devIndex].sensordata.rawShuntVoltage;
+    }
 
-    // Perform conversions
-    sensors[devIndex].sensordata.busVoltageV = INA219_BUS_VOLTAGE_CONVERSION_FACTOR * sensors[devIndex].sensordata.rawBusVoltage;
-    sensors[devIndex].sensordata.shuntVoltageV = INA219_SHUNT_VOLTAGE_CONVERSION_FACTOR * sensors[devIndex].sensordata.rawShuntVoltage;
-    sensors[devIndex].sensordata.calcdCurrentA = sensors[devIndex].sensordata.rawCurrent * sensors[devIndex].currentLSB;
+    if (rtype == Read_BusAndShuntV || rtype == Read_All)
+    {
+        i2cMasterRegisterRead(i2cdevice, CUR_INA219_REG_ADDR_BUS_V, i2cBuff, 2 );
+        temp = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
+        sensors[devIndex].sensordata.rawBusVoltage = temp >> 3;   // value is only top 13 bits of register, gah
+        sensors[devIndex].sensordata.busVoltageV = INA219_BUS_VOLTAGE_CONVERSION_FACTOR * sensors[devIndex].sensordata.rawBusVoltage;
+    }
+
+    if (rtype == Read_CurrentOnly || rtype == Read_All)
+    {
+        i2cMasterRegisterRead(i2cdevice, CUR_INA219_REG_ADDR_CURRENT, i2cBuff, 2 );
+        sensors[devIndex].sensordata.rawCurrent = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
+        sensors[devIndex].sensordata.calcdCurrentA = sensors[devIndex].sensordata.rawCurrent * sensors[devIndex].currentLSB;
+    }
 
     return &(sensors[devIndex].sensordata);
 }
