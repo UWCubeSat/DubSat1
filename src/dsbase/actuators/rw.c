@@ -164,7 +164,7 @@ void rwsInit()
     RW_PWM_SEL0 |= RW_PWM_PIN;
 
     // Setup binary telemetry header
-    bcbinPopulateHeader(&(pid.header), BINTLM_OPCODE_RWS_PIDMOT, sizeof(pid));
+    bcbinPopulateHeader(&(pid.header), TLM_ID_RWS_PIDMOT, sizeof(pid));
     debugRegisterEntity(Entity_RWS, NULL, rwsStatusCallback, rwsActionCallback);
 }
 

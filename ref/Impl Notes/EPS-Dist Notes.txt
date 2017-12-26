@@ -21,3 +21,5 @@ RAHS	0x44			P4.0
 ESTIM	0x45			P4.2
 EPS		0x46			P1.6
 WHEELS	0x4E  			P4.3
+
+(Though note, "cosmetic" order (right to left) on dist board is COM1, COM2, RAHS, BDOT, ESTIM, WHEELS, EPS, PPT)

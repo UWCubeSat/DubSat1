@@ -95,9 +95,26 @@ typedef struct _power_domain_info {
     // eventually add other stuff, like handle to the averaging queues, etc.
 } PowerDomainInfo;
 
+COSMOS_PACKET {
+    BcTlmHeader header;  // All COSMOS TLM packets must have this
+
+    oms_status oms;
+} general_packet;
+
+COSMOS_PACKET {
+    BcTlmHeader header;  // All COSMOS TLM packets must have this
+
+    float currents[NUM_POWER_DOMAINS];
+} sensordat__packet;
+
 
 FILE_STATIC PowerDomainInfo powerdomains[NUM_POWER_DOMAINS];
 FILE_STATIC PCVSensorData *powerdomainData[NUM_POWER_DOMAINS];
+
+PCVSensorData *sensorData;
+hDev i2cdev, hSensor;
+FILE_STATIC general_packet gpkt;
+FILE_STATIC sensordat__packet spkt;
 
 // DO NOT REORDER
 FILE_STATIC uint8_t domainsSensorAddresses[] =   { 0x43, 0x40, 0x44, 0x42, 0x45, 0x4E, 0x46, 0x41  };
@@ -196,14 +213,31 @@ void distDomainSwitch(PowerDomainID domain, DomainEnable enable)
 FILE_STATIC void distPopulateSensorData()
 {
     int i;
+    PCVSensorData *pdata;
     for (i=0; i < NUM_POWER_DOMAINS; i++)
     {
-        powerdomainData[i] = pcvsensorRead(powerdomains[i].hpcvsensor);
+        pdata = pcvsensorRead(powerdomains[i].hpcvsensor, Read_CurrentOnly);
+        powerdomainData[i] = pdata;
+        spkt.currents[i] = pdata->calcdCurrentA;
     }
 }
 
-PCVSensorData *sensorData;
-hDev i2cdev, hSensor;
+// Packetizes and sends backchannel GENERAL packet
+FILE_STATIC void distBcSendGeneral()
+{
+    // TODO:  Determine call function to determine true general status
+    // For now, everythingis always marginal ...
+    gpkt.oms = OMS_MinorIssues;
+    bcbinSendPacket((uint8_t *) &gpkt, sizeof(gpkt));
+}
+
+// Packetizes and sends backchannel SENSORDAT packet
+FILE_STATIC void distBcSendSensorDat()
+{
+    bcbinSendPacket((uint8_t *) &spkt, sizeof(spkt));
+}
+
+
 int main(void) {
 
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
@@ -227,10 +261,15 @@ int main(void) {
     int onoff = 1;  // 0 means we are disabling power domains, 1 means enabling
     PowerDomainID currdom;
 
+    // Populate the non-changing parts of the telemetry packets (e.g. fixed ID and size)
+    bcbinPopulateHeader(&(gpkt.header), TLM_ID_EPS_DIST_GENERAL, sizeof(gpkt));
+    bcbinPopulateHeader(&(spkt.header), TLM_ID_EPS_DIST_SENSORDAT, sizeof(spkt));
+
     __delay_cycles(0.5 * SEC);
 
-    debugPrintF("COM1Vb,Vs,A,COM2Vb,Vs,A,RAHSVb,Vs,A,BDOTVb,Vs,A,ESTIMVb,Vs,A,WHEELVb,Vs,A,EPSVb,Vs,A,PPTVb,Vs,A\r\n");
+    //debugPrintF("COM1Vb,Vs,A,COM2Vb,Vs,A,RAHSVb,Vs,A,BDOTVb,Vs,A,ESTIMVb,Vs,A,WHEELVb,Vs,A,EPSVb,Vs,A,PPTVb,Vs,A\r\n");
 
+    uint16_t counter = 0;
     while (1)
     {
         __delay_cycles(0.1 * SEC);
@@ -258,6 +297,14 @@ int main(void) {
         }
         else
             domindex++;
+
+        counter++;
+        distBcSendSensorDat();
+        if (counter >= 10)
+        {
+            distBcSendGeneral();
+            counter = 0;
+        }
     }
 
 	return 0;

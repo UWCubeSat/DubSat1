@@ -76,6 +76,7 @@ typedef struct PACKED_STRUCT _pid_step_info {
 
 } PidStepInfo;
 
-
+// COSMOS config
+#define TLM_ID_RWS_PIDMOT     0x07
 
 #endif /* DSBASE_ACTUATORS_RW_H_ */

@@ -110,7 +110,7 @@ void debugInvokeInfoHandlers();
 void debugInvokeStatusHandlers();
 void debugInvokeActionHandlers(uint8_t * cmdstr);
 
-// Backchannel binary telemetery/command stuff
+// COSMOS-specific backchannel binary telemetery/command stuff
 
 #define BCBIN_SYNCPATTERN           0xFC
 
@@ -131,8 +131,6 @@ typedef struct PACKED_STRUCT _bccmd_header {
 void bcbinPopulateHeader( BcTlmHeader *header, uint8_t opcode, uint8_t fulllen);
 void bcbinSendPacket(uint8_t * buff, uint8_t szBuff);
 
-#define BINTLM_OPCODE_RWS_PIDMOT     0x07
-
 typedef enum _bccmd_state {
     STATE_START,
     STATE_LEN_WAIT,
@@ -141,5 +139,16 @@ typedef enum _bccmd_state {
     STATE_GATHERING_PARAMS,
 
 } BcCmdState;
+
+#define COSMOS_PACKET typedef struct __attribute__((__packed__))
+
+typedef uint8_t oms_status;
+
+#define OMS_Nominal        0x00
+#define OMS_MinorIssues    0x01
+#define OMS_SeriousIssues  0x02
+#define OMS_FatalError     0x03
+
+
 
 #endif /* DEBUGTOOLS_H_ */
