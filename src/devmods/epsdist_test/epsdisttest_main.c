@@ -80,11 +80,6 @@ FILE_STATIC uint8_t *powerDomainNames[] =
                                             "PPT",
                                            };
 
-typedef enum {
-    Disable,
-    Enable
-} DomainEnable;
-
 
 typedef struct _power_domain_info {
     PowerDomainID id;
@@ -105,7 +100,11 @@ COSMOS_PACKET {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
     float currents[NUM_POWER_DOMAINS];
-} sensordat__packet;
+} sensordat_packet;
+
+COSMOS_PACKET {
+    uint8_t pd_cmds[NUM_POWER_DOMAINS];
+} domaincmd_packet;
 
 
 FILE_STATIC PowerDomainInfo powerdomains[NUM_POWER_DOMAINS];
@@ -114,7 +113,7 @@ FILE_STATIC PCVSensorData *powerdomainData[NUM_POWER_DOMAINS];
 PCVSensorData *sensorData;
 hDev i2cdev, hSensor;
 FILE_STATIC general_packet gpkt;
-FILE_STATIC sensordat__packet spkt;
+FILE_STATIC sensordat_packet spkt;
 
 // DO NOT REORDER
 FILE_STATIC uint8_t domainsSensorAddresses[] =   { 0x43, 0x40, 0x44, 0x42, 0x45, 0x4E, 0x46, 0x41  };
@@ -152,61 +151,79 @@ void distDomainInit()
     }
 }
 
-void distDomainSwitch(PowerDomainID domain, DomainEnable enable)
+void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
 {
+    if (cmd == PD_CMD_NoChange)
+        return;
+
     switch (domain)
     {
         case PD_COM2:
-            if (enable == Enable)
+            if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_COM2_OUT |= DOMAIN_ENABLE_COM2_BIT;
-            else
+            else if (cmd == PD_CMD_Disable)
                 DOMAIN_ENABLE_COM2_OUT &= ~DOMAIN_ENABLE_COM2_BIT;
+            else if (cmd == PD_CMD_Toggle)
+                DOMAIN_ENABLE_COM2_OUT ^= DOMAIN_ENABLE_COM2_BIT;
             break;
         case PD_PPT:
-            if (enable == Enable)
+            if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_PPT_OUT |= DOMAIN_ENABLE_PPT_BIT;
-            else
+            else if (cmd == PD_CMD_Disable)
                 DOMAIN_ENABLE_PPT_OUT &= ~DOMAIN_ENABLE_PPT_BIT;
+            else if (cmd == PD_CMD_Toggle)
+                DOMAIN_ENABLE_PPT_OUT ^= DOMAIN_ENABLE_PPT_BIT;
             break;
         case PD_BDOT:
-            if (enable == Enable)
+            if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_BDOT_OUT |= DOMAIN_ENABLE_BDOT_BIT;
-            else
+            else if (cmd == PD_CMD_Disable)
                 DOMAIN_ENABLE_BDOT_OUT &= ~DOMAIN_ENABLE_BDOT_BIT;
+            else if (cmd == PD_CMD_Toggle)
+                DOMAIN_ENABLE_BDOT_OUT ^= DOMAIN_ENABLE_BDOT_BIT;
             break;
         case PD_COM1:
-            if (enable == Enable)
+            if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_COM1_OUT |= DOMAIN_ENABLE_COM1_BIT;
-            else
+            else if (cmd == PD_CMD_Disable)
                 DOMAIN_ENABLE_COM1_OUT &= ~DOMAIN_ENABLE_COM1_BIT;
+            else if (cmd == PD_CMD_Toggle)
+                DOMAIN_ENABLE_COM1_OUT ^= DOMAIN_ENABLE_COM1_BIT;
             break;
         case PD_RAHS:
-            if (enable == Enable)
+            if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_RAHS_OUT |= DOMAIN_ENABLE_RAHS_BIT;
-            else
+            else if (cmd == PD_CMD_Disable)
                 DOMAIN_ENABLE_RAHS_OUT &= ~DOMAIN_ENABLE_RAHS_BIT;
+            else if (cmd == PD_CMD_Toggle)
+                DOMAIN_ENABLE_RAHS_OUT ^= DOMAIN_ENABLE_RAHS_BIT;
             break;
         case PD_ESTIM:
-            if (enable == Enable)
+            if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_ESTIM_OUT |= DOMAIN_ENABLE_ESTIM_BIT;
-            else
+            else if (cmd == PD_CMD_Disable)
                 DOMAIN_ENABLE_ESTIM_OUT &= ~DOMAIN_ENABLE_ESTIM_BIT;
+            else if (cmd == PD_CMD_Toggle)
+                DOMAIN_ENABLE_ESTIM_OUT ^= DOMAIN_ENABLE_ESTIM_BIT;
             break;
         case PD_EPS:
-            if (enable == Enable)
+            if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_EPS_OUT |= DOMAIN_ENABLE_EPS_BIT;
-            else
+            else if (cmd == PD_CMD_Disable)
                 DOMAIN_ENABLE_EPS_OUT &= ~DOMAIN_ENABLE_EPS_BIT;
+            else if (cmd == PD_CMD_Toggle)
+                DOMAIN_ENABLE_EPS_OUT ^= DOMAIN_ENABLE_EPS_BIT;
             break;
         case PD_WHEELS:
-            if (enable == Enable)
+            if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_WHEELS_OUT |= DOMAIN_ENABLE_WHEELS_BIT;
-            else
+            else if (cmd == PD_CMD_Disable)
                 DOMAIN_ENABLE_WHEELS_OUT &= ~DOMAIN_ENABLE_WHEELS_BIT;
+            else if (cmd == PD_CMD_Toggle)
+                DOMAIN_ENABLE_WHEELS_OUT ^= DOMAIN_ENABLE_WHEELS_BIT;
             break;
         default:
             break;
-
     }
 }
 
@@ -238,6 +255,29 @@ FILE_STATIC void distBcSendSensorDat()
 }
 
 
+uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
+{
+    domaincmd_packet *packet;
+    int i;
+
+    if (mode == Mode_BinaryStreaming)
+    {
+        // Handle the cmdstr as binary values
+        switch (cmdstr[0])
+        {
+            case OPCODE_DOMAINSWITCH:
+                packet = (domaincmd_packet *) &cmdstr[1];
+                for (i = 0; i < NUM_POWER_DOMAINS; i++)
+                {
+                    distDomainSwitch((PowerDomainID)i, (PowerDomainCmd)(packet->pd_cmds[i]));
+                }
+                break;
+            default:
+                break;
+        }
+    }
+}
+
 int main(void) {
 
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
@@ -265,6 +305,9 @@ int main(void) {
     bcbinPopulateHeader(&(gpkt.header), TLM_ID_EPS_DIST_GENERAL, sizeof(gpkt));
     bcbinPopulateHeader(&(spkt.header), TLM_ID_EPS_DIST_SENSORDAT, sizeof(spkt));
 
+    // Setup commanding callback
+    debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, distActionCallback);
+
     __delay_cycles(0.5 * SEC);
 
     //debugPrintF("COM1Vb,Vs,A,COM2Vb,Vs,A,RAHSVb,Vs,A,BDOTVb,Vs,A,ESTIMVb,Vs,A,WHEELVb,Vs,A,EPSVb,Vs,A,PPTVb,Vs,A\r\n");
@@ -288,7 +331,7 @@ int main(void) {
 //                    powerdomainData[6]->busVoltageV, powerdomainData[6]->shuntVoltageV, powerdomainData[6]->calcdCurrentA,
 //                    powerdomainData[7]->busVoltageV, powerdomainData[7]->shuntVoltageV, powerdomainData[7]->calcdCurrentA);
 
-        distDomainSwitch(currdom, (onoff==1 ? Enable : Disable));
+        //distDomainSwitch(currdom, (onoff==1 ? Enable : Disable));
 
         if (domindex >= NUM_POWER_DOMAINS-1)
         {
