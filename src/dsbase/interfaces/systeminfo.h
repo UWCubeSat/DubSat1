@@ -4,11 +4,10 @@
  *  Created on: Jun 29, 2017
  *      Author: jeffc
  */
-#include "../core/debugtools.h"
-#include "../core/timers.h"
-
 #ifndef INTERFACES_SYSTEMINFO_H_
 #define INTERFACES_SYSTEMINFO_H_
+
+#include "../core/timers.h"
 
 typedef volatile uint8_t flag_t;
 
@@ -82,9 +81,7 @@ typedef enum _activity_type {
     Activity_IMU,
 } ActivityType;
 
-uint8_t infoReport(DebugMode mode);
 uint8_t *getSubsystemModulePath();
-
 StartupType coreStartup(sync_pulse_handler sync1, sync_pulse_handler sync2);
 uint8_t coreGetPrecautionLevel();
 

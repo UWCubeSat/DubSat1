@@ -15,8 +15,8 @@
 
 #define OPCODE_DOMAINSWITCH        0x64  // Dec '100', ASCII 'd'
 
-#define TLM_ID_EPS_DIST_GENERAL    0x00
-#define TLM_ID_EPS_DIST_SENSORDAT  0x01
+#define TLM_ID_EPS_DIST_GENERAL    TLM_ID_SHARED_SSGENERAL  // == 0x01  <--- standard message ID
+#define TLM_ID_EPS_DIST_SENSORDAT  0x02
 
 typedef enum {
     PD_CMD_NoChange,
@@ -24,6 +24,11 @@ typedef enum {
     PD_CMD_Disable,
     PD_CMD_Toggle,
 } PowerDomainCmd;
+
+typedef enum {
+    Switch_Disabled,
+    Switch_Enabled,
+} PowerDomainSwitchState;
 
 
 #endif /* EPSDISTTEST_H_ */
