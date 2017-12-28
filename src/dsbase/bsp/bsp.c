@@ -33,6 +33,22 @@ void bspExampleInit(SubsystemModule mod)
 }
 */
 
+uint8_t infoReport(DebugMode mode)
+{
+    if (mode == Mode_ASCIIInteractive)
+    {
+        debugPrintF("**Subsystem Module: \t%s\r\n", getSubsystemModulePath());
+        debugPrintF("Compiler Version:\t%d\r\n", __TI_COMPILER_VERSION__);
+        debugPrintF("Standard C Version:\t%d\r\n", __STDC_VERSION__);
+        debugPrintF("Date Compiled:\t\t%s\r\n", __DATE__);
+        debugPrintF("Time Compiled:\t\t%s\r\n", __TIME__);
+    }
+    else
+    {
+        // Output raw data in CSV form, without field names
+    }
+    return 1;
+}
 
 void bspInit(SubsystemModule mod)
 {

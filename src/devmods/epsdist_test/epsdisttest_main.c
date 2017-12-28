@@ -90,19 +90,20 @@ typedef struct _power_domain_info {
     // eventually add other stuff, like handle to the averaging queues, etc.
 } PowerDomainInfo;
 
-COSMOS_PACKET {
+COSMOS_TLM_PACKET {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
-    oms_status oms;
+    uint8_t powerdomainlastcmds[NUM_POWER_DOMAINS];
+    uint8_t powerdomainswitchstate[NUM_POWER_DOMAINS];
 } general_packet;
 
-COSMOS_PACKET {
+COSMOS_TLM_PACKET {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
     float currents[NUM_POWER_DOMAINS];
 } sensordat_packet;
 
-COSMOS_PACKET {
+COSMOS_CMD_PACKET {
     uint8_t pd_cmds[NUM_POWER_DOMAINS];
 } domaincmd_packet;
 
@@ -110,10 +111,12 @@ COSMOS_PACKET {
 FILE_STATIC PowerDomainInfo powerdomains[NUM_POWER_DOMAINS];
 FILE_STATIC PCVSensorData *powerdomainData[NUM_POWER_DOMAINS];
 
+
 PCVSensorData *sensorData;
 hDev i2cdev, hSensor;
 FILE_STATIC general_packet gpkt;
 FILE_STATIC sensordat_packet spkt;
+FILE_STATIC health_packet hpkt;
 
 // DO NOT REORDER
 FILE_STATIC uint8_t domainsSensorAddresses[] =   { 0x43, 0x40, 0x44, 0x42, 0x45, 0x4E, 0x46, 0x41  };
@@ -125,6 +128,16 @@ FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 
 void distDomainInit()
 {
+    // Make sure all outputs are 0 before starting
+    DOMAIN_ENABLE_COM1_OUT = 0;
+    DOMAIN_ENABLE_COM2_OUT = 0;
+    DOMAIN_ENABLE_RAHS_OUT = 0;
+    DOMAIN_ENABLE_BDOT_OUT = 0;
+    DOMAIN_ENABLE_ESTIM_OUT = 0;
+    DOMAIN_ENABLE_WHEELS_OUT = 0;
+    DOMAIN_ENABLE_EPS_OUT = 0;
+    DOMAIN_ENABLE_PPT_OUT = 0;
+
     // Setup GPIO pin used to turn on all INA219's and turn them on
     DOMAIN_ENABLE_CURRENT_SENSORS_DIR |= DOMAIN_ENABLE_CURRENT_SENSORS_BIT;
 
@@ -151,8 +164,47 @@ void distDomainInit()
     }
 }
 
+PowerDomainSwitchState distQueryDomainSwitch(PowerDomainID domain)
+{
+    BOOL enabled = FALSE;
+
+    switch (domain)
+    {
+        case PD_COM2:
+            enabled = ((DOMAIN_ENABLE_COM2_OUT & DOMAIN_ENABLE_COM2_BIT) != 0);
+            break;
+        case PD_PPT:
+            enabled = ((DOMAIN_ENABLE_PPT_OUT & DOMAIN_ENABLE_PPT_BIT) != 0);
+            break;
+        case PD_BDOT:
+            enabled = ((DOMAIN_ENABLE_BDOT_OUT & DOMAIN_ENABLE_BDOT_BIT) != 0);
+            break;
+        case PD_COM1:
+            enabled = ((DOMAIN_ENABLE_COM1_OUT & DOMAIN_ENABLE_COM1_BIT) != 0);
+            break;
+        case PD_RAHS:
+            enabled = ((DOMAIN_ENABLE_RAHS_OUT & DOMAIN_ENABLE_RAHS_BIT) != 0);
+            break;
+        case PD_ESTIM:
+            enabled = ((DOMAIN_ENABLE_ESTIM_OUT & DOMAIN_ENABLE_ESTIM_BIT) != 0);
+            break;
+        case PD_EPS:
+            enabled = ((DOMAIN_ENABLE_EPS_OUT & DOMAIN_ENABLE_EPS_BIT) != 0);
+            break;
+        case PD_WHEELS:
+            enabled = ((DOMAIN_ENABLE_WHEELS_OUT & DOMAIN_ENABLE_WHEELS_BIT) != 0);
+            break;
+        default:
+            break;
+    }
+
+    return ( enabled == TRUE ? Switch_Enabled : Switch_Disabled);
+}
+
 void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
 {
+    gpkt.powerdomainlastcmds[(uint8_t)domain] = (uint8_t)cmd;
+
     if (cmd == PD_CMD_NoChange)
         return;
 
@@ -236,16 +288,33 @@ FILE_STATIC void distPopulateSensorData()
         pdata = pcvsensorRead(powerdomains[i].hpcvsensor, Read_CurrentOnly);
         powerdomainData[i] = pdata;
         spkt.currents[i] = pdata->calcdCurrentA;
+
     }
 }
 
 // Packetizes and sends backchannel GENERAL packet
 FILE_STATIC void distBcSendGeneral()
 {
+    int i;
+
+    for (i=0; i < NUM_POWER_DOMAINS; i++)
+    {
+        gpkt.powerdomainswitchstate[i] = (uint8_t)distQueryDomainSwitch((PowerDomainID)i);
+
+    }
     // TODO:  Determine call function to determine true general status
     // For now, everythingis always marginal ...
-    gpkt.oms = OMS_MinorIssues;
     bcbinSendPacket((uint8_t *) &gpkt, sizeof(gpkt));
+}
+
+// Packetizes and sends backchannel GENERAL packet
+FILE_STATIC void distBcSendHealth()
+{
+    // TODO:  Determine overall health based on querying various entities for their health
+    // For now, everythingis always marginal ...
+    hpkt.module = Module_EPS_Dist;
+    hpkt.oms = OMS_Unknown;
+    bcbinSendPacket((uint8_t *) &hpkt, sizeof(hpkt));
 }
 
 // Packetizes and sends backchannel SENSORDAT packet
@@ -282,12 +351,8 @@ int main(void) {
 
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
     bspInit(Module_EPS_Dist);
-    distDomainInit();
 
-    P1OUT = 0;
-    P2OUT = 0;
-    P4OUT = 0;
-    P7OUT = 0;
+    distDomainInit();
 
     LED_DIR |= LED_BIT;
 
@@ -302,6 +367,7 @@ int main(void) {
     PowerDomainID currdom;
 
     // Populate the non-changing parts of the telemetry packets (e.g. fixed ID and size)
+    bcbinPopulateHeader(&(hpkt.header), TLM_ID_SHARED_HEALTH, sizeof(hpkt));
     bcbinPopulateHeader(&(gpkt.header), TLM_ID_EPS_DIST_GENERAL, sizeof(gpkt));
     bcbinPopulateHeader(&(spkt.header), TLM_ID_EPS_DIST_SENSORDAT, sizeof(spkt));
 
@@ -313,6 +379,7 @@ int main(void) {
     //debugPrintF("COM1Vb,Vs,A,COM2Vb,Vs,A,RAHSVb,Vs,A,BDOTVb,Vs,A,ESTIMVb,Vs,A,WHEELVb,Vs,A,EPSVb,Vs,A,PPTVb,Vs,A\r\n");
 
     uint16_t counter = 0;
+    distDomainSwitch(PD_PPT, PD_CMD_Enable);
     while (1)
     {
         __delay_cycles(0.1 * SEC);
@@ -346,6 +413,7 @@ int main(void) {
         if (counter >= 10)
         {
             distBcSendGeneral();
+            distBcSendHealth();
             counter = 0;
         }
     }

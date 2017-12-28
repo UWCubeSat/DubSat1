@@ -13,6 +13,7 @@
 #include "core/utils.h"
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
+#include "core/debugtools.h"
 
 // Most subsystem modules should be implemented at least in part
 // as a state machine (specifically, a FSM).  Here the available states are

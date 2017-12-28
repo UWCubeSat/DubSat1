@@ -13,6 +13,7 @@
 #include <stdarg.h>
 
 #include "utils.h"
+#include "../interfaces/systeminfo.h"
 
 #ifndef __DEBUG__
 #warning  Header debugtools.h included, but __DEBUG__ flag not set.
@@ -140,15 +141,28 @@ typedef enum _bccmd_state {
 
 } BcCmdState;
 
-#define COSMOS_PACKET typedef struct __attribute__((__packed__))
+#define COSMOS_TLM_PACKET typedef struct __attribute__((__packed__))
+#define COSMOS_CMD_PACKET typedef struct __attribute__((__packed__))
 
 typedef uint8_t oms_status;
 
 #define OMS_Nominal        0x00
-#define OMS_MinorIssues    0x01
-#define OMS_SeriousIssues  0x02
-#define OMS_FatalError     0x03
+#define OMS_MinorFaults    0x01
+#define OMS_MajorFaults    0x02
+#define OMS_Failures       0x03
+#define OMS_FatalErrors    0x04
+#define OMS_Unknown        0x05
 
+// Standard packet definitions
+#define TLM_ID_SHARED_HEALTH     0x00   // All MSP's will implement - fixed structure defined here
+COSMOS_TLM_PACKET {
+    BcTlmHeader header;  // All COSMOS TLM packets must have this
+
+    SubsystemModule module;
+    oms_status oms;
+} health_packet;
+
+#define TLM_ID_SHARED_SSGENERAL  0x01   // Most MSP's will implement - SS-specific stuff, so defined with SS module
 
 
 #endif /* DEBUGTOOLS_H_ */

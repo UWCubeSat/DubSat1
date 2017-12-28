@@ -38,9 +38,9 @@ int main(void)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
     // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
     // debugtools.h.  Also, be sure to change the "path char"
-    debugRegisterEntity(Entity_Test, '%', handleDebugInfoCallback,
-                                          handleDebugStatusCallback,
-                                          handleDebugActionCallback);
+    debugRegisterEntity(Entity_Test, handleDebugInfoCallback,
+                                     handleDebugStatusCallback,
+                                     handleDebugActionCallback);
 
 #endif  //  __DEBUG__
 
@@ -123,15 +123,15 @@ void handleSyncPulse2()
 // often left off.
 uint8_t handleDebugInfoCallback(DebugMode mode)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
     {
         // debugPrintF information in a user-friendly, formatted way
     }
-    else if (mode == HeadlessInteractiveMode)
+    else if (mode == Mode_ASCIIHeadless)
     {
         // debugPrintF information without field names, as CSV
     }
-    else if (mode == StreamingMode)
+    else if (mode == Mode_BinaryStreaming)
     {
         // debugPrintF into a ground segment-friendly "packet" mode
     }
@@ -143,15 +143,15 @@ uint8_t handleDebugInfoCallback(DebugMode mode)
 // common to be surfaced, particularly as "streaming telemetry".
 uint8_t handleDebugStatusCallback(DebugMode mode)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
     {
         // debugPrintF status in a user-friendly, formatted way
     }
-    else if (mode == HeadlessInteractiveMode)
+    else if (mode == Mode_ASCIIHeadless)
     {
         // debugPrintF status without field names, as CSV
     }
-    else if (mode == StreamingMode)
+    else if (mode == Mode_BinaryStreaming)
     {
         // debugPrintF status a ground segment-friendly "packet" format
     }
@@ -160,15 +160,15 @@ uint8_t handleDebugStatusCallback(DebugMode mode)
 
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
-    if (mode == InteractiveMode)
+    if (mode == Mode_ASCIIInteractive)
     {
         // handle actions in a user-friendly way
     }
-    else if (mode == HeadlessInteractiveMode)
+    else if (mode == Mode_ASCIIHeadless)
     {
         // handle actions in a low-output way
     }
-    else if (mode == StreamingMode)
+    else if (mode == Mode_BinaryStreaming)
     {
         // handle actions, any output should be ground-segment friendly
         // "packet" format
