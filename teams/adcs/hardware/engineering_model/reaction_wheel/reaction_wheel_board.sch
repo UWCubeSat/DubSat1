@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.3">
+<eagle version="8.5.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -7749,9 +7749,9 @@ Source: AVX .. aphvc.pdf</description>
 </classes>
 <parts>
 <part name="U$1" library="DubSat1 Components" deviceset="BOARD_TEMPLATE" device="SERCURED"/>
-<part name="U$2" library="DubSat1 Components" deviceset="PC104_CONNECTOR" device=""/>
+<part name="PC104" library="DubSat1 Components" deviceset="PC104_CONNECTOR" device=""/>
 <part name="U$3" library="DubSat1 Components" deviceset="MSP-CAN_BLOCK" device=""/>
-<part name="U$4" library="DubSat1 Components" deviceset="PROGRAM/DEBUG_PORT" device=""/>
+<part name="MSP_X_DEBUG" library="DubSat1 Components" deviceset="PROGRAM/DEBUG_PORT" device=""/>
 <part name="GND1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -7787,7 +7787,7 @@ Source: AVX .. aphvc.pdf</description>
 <part name="SERIAL_X" library="SparkFun-Connectors" deviceset="CONN_03" device="LOCK"/>
 <part name="GND37" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U$10" library="DubSat1 Components" deviceset="MSP-CAN_BLOCK" device=""/>
-<part name="U$11" library="DubSat1 Components" deviceset="PROGRAM/DEBUG_PORT" device=""/>
+<part name="MSP_Y_DEBUG" library="DubSat1 Components" deviceset="PROGRAM/DEBUG_PORT" device=""/>
 <part name="GND24" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND25" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="+3V3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
@@ -7820,7 +7820,7 @@ Source: AVX .. aphvc.pdf</description>
 <part name="SERIAL_Y" library="SparkFun-Connectors" deviceset="CONN_03" device="LOCK"/>
 <part name="GND34" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U$13" library="DubSat1 Components" deviceset="MSP-CAN_BLOCK" device=""/>
-<part name="U$14" library="DubSat1 Components" deviceset="PROGRAM/DEBUG_PORT" device=""/>
+<part name="MSP_Z_DEBUG" library="DubSat1 Components" deviceset="PROGRAM/DEBUG_PORT" device=""/>
 <part name="GND35" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="+3V5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
@@ -7913,9 +7913,9 @@ Source: AVX .. aphvc.pdf</description>
 </plain>
 <instances>
 <instance part="U$1" gate="G$1" x="15.24" y="83.82"/>
-<instance part="U$2" gate="G$1" x="25.4" y="45.72"/>
+<instance part="PC104" gate="G$1" x="25.4" y="45.72"/>
 <instance part="U$3" gate="G$1" x="0" y="-78.74"/>
-<instance part="U$4" gate="G$1" x="63.5" y="-129.54" rot="R270"/>
+<instance part="MSP_X_DEBUG" gate="G$1" x="63.5" y="-129.54" rot="R270"/>
 <instance part="GND1" gate="1" x="33.02" y="33.02" rot="R270"/>
 <instance part="GND2" gate="1" x="93.98" y="33.02" rot="R90"/>
 <instance part="GND3" gate="1" x="71.12" y="-104.14" rot="R180"/>
@@ -7951,7 +7951,7 @@ Source: AVX .. aphvc.pdf</description>
 <instance part="SERIAL_X" gate="J$1" x="30.48" y="-121.92" rot="R270"/>
 <instance part="GND37" gate="1" x="35.56" y="-139.7"/>
 <instance part="U$10" gate="G$1" x="147.32" y="-71.12"/>
-<instance part="U$11" gate="G$1" x="210.82" y="-121.92" rot="R270"/>
+<instance part="MSP_Y_DEBUG" gate="G$1" x="210.82" y="-121.92" rot="R270"/>
 <instance part="GND24" gate="1" x="218.44" y="-96.52" rot="R180"/>
 <instance part="GND25" gate="1" x="99.06" y="-53.34" rot="R270"/>
 <instance part="+3V3" gate="G$1" x="83.82" y="-48.26" rot="R90"/>
@@ -7984,7 +7984,7 @@ Source: AVX .. aphvc.pdf</description>
 <instance part="SERIAL_Y" gate="J$1" x="177.8" y="-114.3" rot="R270"/>
 <instance part="GND34" gate="1" x="182.88" y="-132.08"/>
 <instance part="U$13" gate="G$1" x="297.18" y="-73.66"/>
-<instance part="U$14" gate="G$1" x="360.68" y="-124.46" rot="R270"/>
+<instance part="MSP_Z_DEBUG" gate="G$1" x="360.68" y="-124.46" rot="R270"/>
 <instance part="GND35" gate="1" x="368.3" y="-99.06" rot="R180"/>
 <instance part="GND36" gate="1" x="248.92" y="-55.88" rot="R270"/>
 <instance part="+3V5" gate="G$1" x="233.68" y="-50.8" rot="R90"/>
@@ -8077,14 +8077,14 @@ Source: AVX .. aphvc.pdf</description>
 <net name="SBWTCK_X" class="0">
 <segment>
 <pinref part="U$3" gate="G$1" pin="SBWTCK"/>
-<pinref part="U$4" gate="G$1" pin="SBWTCK"/>
+<pinref part="MSP_X_DEBUG" gate="G$1" pin="SBWTCK"/>
 <wire x1="45.72" y1="-109.22" x2="58.42" y2="-109.22" width="0.1524" layer="91"/>
 <wire x1="58.42" y1="-109.22" x2="58.42" y2="-111.76" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SBWTDIO_X" class="0">
 <segment>
-<pinref part="U$4" gate="G$1" pin="SBWTDIO"/>
+<pinref part="MSP_X_DEBUG" gate="G$1" pin="SBWTDIO"/>
 <pinref part="U$3" gate="G$1" pin="SBWTDIO"/>
 <wire x1="60.96" y1="-111.76" x2="60.96" y2="-106.68" width="0.1524" layer="91"/>
 <wire x1="60.96" y1="-106.68" x2="45.72" y2="-106.68" width="0.1524" layer="91"/>
@@ -8093,14 +8093,14 @@ Source: AVX .. aphvc.pdf</description>
 <net name="TXD_X" class="0">
 <segment>
 <pinref part="U$3" gate="G$1" pin="P2.0_TXD"/>
-<pinref part="U$4" gate="G$1" pin="P2.0_TXD"/>
+<pinref part="MSP_X_DEBUG" gate="G$1" pin="P2.0_TXD"/>
 <wire x1="45.72" y1="-104.14" x2="63.5" y2="-104.14" width="0.1524" layer="91"/>
 <wire x1="63.5" y1="-104.14" x2="63.5" y2="-111.76" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RXD_X" class="0">
 <segment>
-<pinref part="U$4" gate="G$1" pin="P2.1_RXD"/>
+<pinref part="MSP_X_DEBUG" gate="G$1" pin="P2.1_RXD"/>
 <pinref part="U$3" gate="G$1" pin="P2.1_RXD"/>
 <wire x1="66.04" y1="-111.76" x2="66.04" y2="-101.6" width="0.1524" layer="91"/>
 <wire x1="66.04" y1="-101.6" x2="45.72" y2="-101.6" width="0.1524" layer="91"/>
@@ -8108,7 +8108,7 @@ Source: AVX .. aphvc.pdf</description>
 </net>
 <net name="GPIO_DEBUG_3.4_X" class="0">
 <segment>
-<pinref part="U$4" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
+<pinref part="MSP_X_DEBUG" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
 <pinref part="U$3" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
 <wire x1="73.66" y1="-111.76" x2="73.66" y2="-99.06" width="0.1524" layer="91"/>
 <wire x1="73.66" y1="-99.06" x2="45.72" y2="-99.06" width="0.1524" layer="91"/>
@@ -8117,7 +8117,7 @@ Source: AVX .. aphvc.pdf</description>
 <net name="GPIO_DEBUG_3.5_X" class="0">
 <segment>
 <pinref part="U$3" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
-<pinref part="U$4" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
+<pinref part="MSP_X_DEBUG" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
 <wire x1="45.72" y1="-96.52" x2="76.2" y2="-96.52" width="0.1524" layer="91"/>
 <wire x1="76.2" y1="-96.52" x2="76.2" y2="-111.76" width="0.1524" layer="91"/>
 <pinref part="D1" gate="G$1" pin="A"/>
@@ -8128,10 +8128,10 @@ Source: AVX .. aphvc.pdf</description>
 </net>
 <net name="GND" class="0">
 <segment>
-<pinref part="U$4" gate="G$1" pin="GND@2"/>
+<pinref part="MSP_X_DEBUG" gate="G$1" pin="GND@2"/>
 <pinref part="GND3" gate="1" pin="GND"/>
 <wire x1="71.12" y1="-111.76" x2="71.12" y2="-109.22" width="0.1524" layer="91"/>
-<pinref part="U$4" gate="G$1" pin="GND@1"/>
+<pinref part="MSP_X_DEBUG" gate="G$1" pin="GND@1"/>
 <wire x1="71.12" y1="-109.22" x2="71.12" y2="-106.68" width="0.1524" layer="91"/>
 <wire x1="68.58" y1="-111.76" x2="68.58" y2="-109.22" width="0.1524" layer="91"/>
 <wire x1="68.58" y1="-109.22" x2="71.12" y2="-109.22" width="0.1524" layer="91"/>
@@ -8203,10 +8203,10 @@ Source: AVX .. aphvc.pdf</description>
 <pinref part="GND37" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="U$11" gate="G$1" pin="GND@2"/>
+<pinref part="MSP_Y_DEBUG" gate="G$1" pin="GND@2"/>
 <pinref part="GND24" gate="1" pin="GND"/>
 <wire x1="218.44" y1="-104.14" x2="218.44" y2="-101.6" width="0.1524" layer="91"/>
-<pinref part="U$11" gate="G$1" pin="GND@1"/>
+<pinref part="MSP_Y_DEBUG" gate="G$1" pin="GND@1"/>
 <wire x1="218.44" y1="-101.6" x2="218.44" y2="-99.06" width="0.1524" layer="91"/>
 <wire x1="215.9" y1="-104.14" x2="215.9" y2="-101.6" width="0.1524" layer="91"/>
 <wire x1="215.9" y1="-101.6" x2="218.44" y2="-101.6" width="0.1524" layer="91"/>
@@ -8278,10 +8278,10 @@ Source: AVX .. aphvc.pdf</description>
 <pinref part="GND34" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="U$14" gate="G$1" pin="GND@2"/>
+<pinref part="MSP_Z_DEBUG" gate="G$1" pin="GND@2"/>
 <pinref part="GND35" gate="1" pin="GND"/>
 <wire x1="368.3" y1="-106.68" x2="368.3" y2="-104.14" width="0.1524" layer="91"/>
-<pinref part="U$14" gate="G$1" pin="GND@1"/>
+<pinref part="MSP_Z_DEBUG" gate="G$1" pin="GND@1"/>
 <wire x1="368.3" y1="-104.14" x2="368.3" y2="-101.6" width="0.1524" layer="91"/>
 <wire x1="365.76" y1="-106.68" x2="365.76" y2="-104.14" width="0.1524" layer="91"/>
 <wire x1="365.76" y1="-104.14" x2="368.3" y2="-104.14" width="0.1524" layer="91"/>
@@ -8415,12 +8415,12 @@ Source: AVX .. aphvc.pdf</description>
 <label x="368.3" y="-53.34" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="WHEEL_GND@71"/>
+<pinref part="PC104" gate="G$1" pin="WHEEL_GND@71"/>
 <pinref part="GND1" gate="1" pin="GND"/>
 <wire x1="35.56" y1="33.02" x2="38.1" y2="33.02" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="WHEEL_GND@72"/>
+<pinref part="PC104" gate="G$1" pin="WHEEL_GND@72"/>
 <pinref part="GND2" gate="1" pin="GND"/>
 <wire x1="91.44" y1="33.02" x2="88.9" y2="33.02" width="0.1524" layer="91"/>
 </segment>
@@ -8478,7 +8478,7 @@ Source: AVX .. aphvc.pdf</description>
 <label x="50.8" y="-35.56" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="CANH"/>
+<pinref part="PC104" gate="G$1" pin="CANH"/>
 <wire x1="-40.64" y1="43.18" x2="-48.26" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="-48.26" y1="43.18" x2="-48.26" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="-48.26" y1="40.64" x2="-50.8" y2="40.64" width="0.1524" layer="91"/>
@@ -8508,7 +8508,7 @@ Source: AVX .. aphvc.pdf</description>
 <label x="50.8" y="-43.18" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="CANL"/>
+<pinref part="PC104" gate="G$1" pin="CANL"/>
 <wire x1="-40.64" y1="40.64" x2="-45.72" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="-45.72" y1="40.64" x2="-45.72" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="-45.72" y1="35.56" x2="-50.8" y2="35.56" width="0.1524" layer="91"/>
@@ -8538,7 +8538,7 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="-15.24" y1="-127" x2="-15.24" y2="-116.84" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="SYNC2"/>
+<pinref part="PC104" gate="G$1" pin="SYNC2"/>
 <wire x1="-40.64" y1="45.72" x2="-48.26" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="-48.26" y1="45.72" x2="-48.26" y2="48.26" width="0.1524" layer="91"/>
 <wire x1="-48.26" y1="48.26" x2="-50.8" y2="48.26" width="0.1524" layer="91"/>
@@ -8566,7 +8566,7 @@ Source: AVX .. aphvc.pdf</description>
 <label x="-12.7" y="-129.54" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="SYNC1"/>
+<pinref part="PC104" gate="G$1" pin="SYNC1"/>
 <wire x1="-40.64" y1="48.26" x2="-45.72" y2="48.26" width="0.1524" layer="91"/>
 <wire x1="-45.72" y1="48.26" x2="-45.72" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="-45.72" y1="53.34" x2="-50.8" y2="53.34" width="0.1524" layer="91"/>
@@ -8663,7 +8663,7 @@ Source: AVX .. aphvc.pdf</description>
 <label x="-50.8" y="30.48" size="1.778" layer="95" rot="R180" xref="yes"/>
 <wire x1="-45.72" y1="30.48" x2="-50.8" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="-45.72" y1="30.48" x2="-45.72" y2="33.02" width="0.1524" layer="91"/>
-<pinref part="U$2" gate="G$1" pin="WHEEL_VBATT@69"/>
+<pinref part="PC104" gate="G$1" pin="WHEEL_VBATT@69"/>
 <wire x1="-45.72" y1="33.02" x2="-40.64" y2="33.02" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -8695,7 +8695,7 @@ Source: AVX .. aphvc.pdf</description>
 <junction x="187.96" y="25.4"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="WHEEL_VBATT@70"/>
+<pinref part="PC104" gate="G$1" pin="WHEEL_VBATT@70"/>
 <wire x1="12.7" y1="33.02" x2="17.78" y2="33.02" width="0.1524" layer="91"/>
 <label x="17.78" y="33.02" size="1.778" layer="95" xref="yes"/>
 </segment>
@@ -9162,14 +9162,14 @@ Source: AVX .. aphvc.pdf</description>
 <net name="SBWTCK_Y" class="0">
 <segment>
 <pinref part="U$10" gate="G$1" pin="SBWTCK"/>
-<pinref part="U$11" gate="G$1" pin="SBWTCK"/>
+<pinref part="MSP_Y_DEBUG" gate="G$1" pin="SBWTCK"/>
 <wire x1="193.04" y1="-101.6" x2="205.74" y2="-101.6" width="0.1524" layer="91"/>
 <wire x1="205.74" y1="-101.6" x2="205.74" y2="-104.14" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SBWTDIO_Y" class="0">
 <segment>
-<pinref part="U$11" gate="G$1" pin="SBWTDIO"/>
+<pinref part="MSP_Y_DEBUG" gate="G$1" pin="SBWTDIO"/>
 <pinref part="U$10" gate="G$1" pin="SBWTDIO"/>
 <wire x1="208.28" y1="-104.14" x2="208.28" y2="-99.06" width="0.1524" layer="91"/>
 <wire x1="208.28" y1="-99.06" x2="193.04" y2="-99.06" width="0.1524" layer="91"/>
@@ -9178,14 +9178,14 @@ Source: AVX .. aphvc.pdf</description>
 <net name="TXD_Y" class="0">
 <segment>
 <pinref part="U$10" gate="G$1" pin="P2.0_TXD"/>
-<pinref part="U$11" gate="G$1" pin="P2.0_TXD"/>
+<pinref part="MSP_Y_DEBUG" gate="G$1" pin="P2.0_TXD"/>
 <wire x1="193.04" y1="-96.52" x2="210.82" y2="-96.52" width="0.1524" layer="91"/>
 <wire x1="210.82" y1="-96.52" x2="210.82" y2="-104.14" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RXD_Y" class="0">
 <segment>
-<pinref part="U$11" gate="G$1" pin="P2.1_RXD"/>
+<pinref part="MSP_Y_DEBUG" gate="G$1" pin="P2.1_RXD"/>
 <pinref part="U$10" gate="G$1" pin="P2.1_RXD"/>
 <wire x1="213.36" y1="-104.14" x2="213.36" y2="-93.98" width="0.1524" layer="91"/>
 <wire x1="213.36" y1="-93.98" x2="193.04" y2="-93.98" width="0.1524" layer="91"/>
@@ -9193,7 +9193,7 @@ Source: AVX .. aphvc.pdf</description>
 </net>
 <net name="GPIO_DEBUG_3.4_Y" class="0">
 <segment>
-<pinref part="U$11" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
+<pinref part="MSP_Y_DEBUG" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
 <pinref part="U$10" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
 <wire x1="220.98" y1="-104.14" x2="220.98" y2="-91.44" width="0.1524" layer="91"/>
 <wire x1="220.98" y1="-91.44" x2="193.04" y2="-91.44" width="0.1524" layer="91"/>
@@ -9202,7 +9202,7 @@ Source: AVX .. aphvc.pdf</description>
 <net name="GPIO_DEBUG_3.5_Y" class="0">
 <segment>
 <pinref part="U$10" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
-<pinref part="U$11" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
+<pinref part="MSP_Y_DEBUG" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
 <wire x1="193.04" y1="-88.9" x2="223.52" y2="-88.9" width="0.1524" layer="91"/>
 <wire x1="223.52" y1="-88.9" x2="223.52" y2="-104.14" width="0.1524" layer="91"/>
 <pinref part="D3" gate="G$1" pin="A"/>
@@ -9554,14 +9554,14 @@ Source: AVX .. aphvc.pdf</description>
 <net name="SBWTCK_Z" class="0">
 <segment>
 <pinref part="U$13" gate="G$1" pin="SBWTCK"/>
-<pinref part="U$14" gate="G$1" pin="SBWTCK"/>
+<pinref part="MSP_Z_DEBUG" gate="G$1" pin="SBWTCK"/>
 <wire x1="342.9" y1="-104.14" x2="355.6" y2="-104.14" width="0.1524" layer="91"/>
 <wire x1="355.6" y1="-104.14" x2="355.6" y2="-106.68" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SBWTDIO_Z" class="0">
 <segment>
-<pinref part="U$14" gate="G$1" pin="SBWTDIO"/>
+<pinref part="MSP_Z_DEBUG" gate="G$1" pin="SBWTDIO"/>
 <pinref part="U$13" gate="G$1" pin="SBWTDIO"/>
 <wire x1="358.14" y1="-106.68" x2="358.14" y2="-101.6" width="0.1524" layer="91"/>
 <wire x1="358.14" y1="-101.6" x2="342.9" y2="-101.6" width="0.1524" layer="91"/>
@@ -9570,14 +9570,14 @@ Source: AVX .. aphvc.pdf</description>
 <net name="TXD_Z" class="0">
 <segment>
 <pinref part="U$13" gate="G$1" pin="P2.0_TXD"/>
-<pinref part="U$14" gate="G$1" pin="P2.0_TXD"/>
+<pinref part="MSP_Z_DEBUG" gate="G$1" pin="P2.0_TXD"/>
 <wire x1="342.9" y1="-99.06" x2="360.68" y2="-99.06" width="0.1524" layer="91"/>
 <wire x1="360.68" y1="-99.06" x2="360.68" y2="-106.68" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RXD_Z" class="0">
 <segment>
-<pinref part="U$14" gate="G$1" pin="P2.1_RXD"/>
+<pinref part="MSP_Z_DEBUG" gate="G$1" pin="P2.1_RXD"/>
 <pinref part="U$13" gate="G$1" pin="P2.1_RXD"/>
 <wire x1="363.22" y1="-106.68" x2="363.22" y2="-96.52" width="0.1524" layer="91"/>
 <wire x1="363.22" y1="-96.52" x2="342.9" y2="-96.52" width="0.1524" layer="91"/>
@@ -9585,7 +9585,7 @@ Source: AVX .. aphvc.pdf</description>
 </net>
 <net name="GPIO_DEBUG_3.4_Z" class="0">
 <segment>
-<pinref part="U$14" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
+<pinref part="MSP_Z_DEBUG" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
 <pinref part="U$13" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
 <wire x1="370.84" y1="-106.68" x2="370.84" y2="-93.98" width="0.1524" layer="91"/>
 <wire x1="370.84" y1="-93.98" x2="342.9" y2="-93.98" width="0.1524" layer="91"/>
@@ -9594,7 +9594,7 @@ Source: AVX .. aphvc.pdf</description>
 <net name="GPIO_DEBUG_3.5_Z" class="0">
 <segment>
 <pinref part="U$13" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
-<pinref part="U$14" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
+<pinref part="MSP_Z_DEBUG" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
 <wire x1="342.9" y1="-91.44" x2="373.38" y2="-91.44" width="0.1524" layer="91"/>
 <wire x1="373.38" y1="-91.44" x2="373.38" y2="-106.68" width="0.1524" layer="91"/>
 <pinref part="D4" gate="G$1" pin="A"/>
