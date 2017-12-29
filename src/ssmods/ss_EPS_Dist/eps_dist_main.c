@@ -35,6 +35,7 @@ FILE_STATIC PCVSensorData *powerdomainData[NUM_POWER_DOMAINS];
 FILE_STATIC uint8_t domainsSensorAddresses[] =   { 0x43, 0x40, 0x44, 0x42, 0x45, 0x4E, 0x46, 0x41  };
 FILE_STATIC float   domainShuntResistances[] =   { SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE,
                                                    SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE };
+FILE_STATIC float domainCurrentThreshold[] = { 0.100, 0.200, 0.001, 0.100, 0.100, 0.100, 0.100, 0.200 };
 
 PCVSensorData *sensorData;
 hDev i2cdev, hSensor;
@@ -202,19 +203,33 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
         default:
             break;
     }
+
+    // Clear the current-limited flag if turning on
+    if (distQueryDomainSwitch(domain) == Switch_Enabled)
+        gpkt.powerdomaincurrentlimited[(uint8_t)domain] = 0;
 }
 
 // Make a pass through all the sensors
-FILE_STATIC void distPopulateSensorData()
+FILE_STATIC void distMonitorDomains()
 {
     int i;
     PCVSensorData *pdata;
     for (i=0; i < NUM_POWER_DOMAINS; i++)
     {
         pdata = pcvsensorRead(powerdomains[i].hpcvsensor, Read_CurrentOnly);
+        if (pdata->calcdCurrentA >= domainCurrentThreshold[i])
+        {
+            if (gpkt.powerdomaincurrentlimited[i] != 1)
+            {
+                distDomainSwitch((PowerDomainID)i, PD_CMD_Disable);
+                gpkt.powerdomaincurrentlimited[i] = 1;
+                gpkt.powerdomaincurrentlimitedcount[i] += 1;
+            }
+        }
+
+        // Save data for each sensor, regardless of threshold
         powerdomainData[i] = pdata;
         spkt.currents[i] = pdata->calcdCurrentA;
-
     }
 }
 
@@ -277,7 +292,6 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
  */
 int main(void)
 {
-
     /* ----- INITIALIZATION -----*/
     bspInit(Module_EPS_Dist);  // <<DO NOT DELETE or MOVE>>
     distDomainInit();
@@ -302,14 +316,11 @@ int main(void)
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
     // TODO:  Add the correct bus filters and register CAN message receive handlers
 
-    debugTraceF(1, "CAN message bus configured.\r\n");
 
     /* ----- SUBSYSTEM LOGIC -----*/
     // TODO:  Finally ... NOW, implement the actual subsystem logic!
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
-
-    debugTraceF(1, "Commencing subsystem module execution ...\r\n");
 
     uint8_t counter = 0;
     while (1)
@@ -322,7 +333,8 @@ int main(void)
         switch (ss_state)
         {
             case State_FirstState:
-                distPopulateSensorData();
+                distMonitorDomains();
+
                 counter++;
                 distBcSendSensorDat();
                 if (counter >= 10)
@@ -348,32 +360,4 @@ int main(void)
 	return 0;
 }
 
-/* ----- SYNC PULSE INTERRUPT HANDLERS ----- */
-// Both of these handlers are INTERRUPT HANDLERS, and run as such, which means that all OTHER
-// interrupts are blocked while they are running.  This can cause all sorts of issues, so
-// MAKE SURE TO MINIMIZE THE CODE RUNNING IN THESE FUNCTIONS.
-// Sync pulse 1:  typically raised every 2 seconds while PPT firing, to help each subsystem module
-// do the "correct thing" around the firing sequence.  This timing might
-// not be exact, and may even change - don't rely on it being 2 seconds every time, and it may
-// be shut off entirely during early or late stages of mission, so also do NOT use as a "heartbeat"
-// for other, unrelated functionality.
-void handleSyncPulse1()
-{
-    __no_operation();
-}
-
-// Sync pulse 2:  typically every 1-2 minutes, but again, don't count on any length.
-// General semanatics are that this pulse means all subsystems should share accumulated
-// status data on the CAN bus.  It is also the cue for the PPT to ascertain whether it
-// will use the following period as an active or suspended firing period.  All subsystems
-// will assume active until they are notified that firing has been suspended, but
-// this determination will be reset (back to active) at each sync pulse 2.
-void handleSyncPulse2()
-{
-    __no_operation();
-}
-
-// Optional callback for the debug system.  "Info" is considered static information
-// that doesn't change about the subsystem module code/executable, so this is most
-// often left off.
 

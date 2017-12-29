@@ -108,6 +108,9 @@ COSMOS_TLM_PACKET {
 
     uint8_t powerdomainlastcmds[NUM_POWER_DOMAINS];
     uint8_t powerdomainswitchstate[NUM_POWER_DOMAINS];
+
+    uint8_t powerdomaincurrentlimited[NUM_POWER_DOMAINS];
+    uint8_t powerdomaincurrentlimitedcount[NUM_POWER_DOMAINS];
 } general_packet;
 
 COSMOS_TLM_PACKET {
