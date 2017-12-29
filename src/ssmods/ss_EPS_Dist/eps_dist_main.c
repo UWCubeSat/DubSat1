@@ -29,7 +29,6 @@ FILE_STATIC uint8_t *powerDomainNames[] =
                                            };
 
 FILE_STATIC PowerDomainInfo powerdomains[NUM_POWER_DOMAINS];
-FILE_STATIC PCVSensorData *powerdomainData[NUM_POWER_DOMAINS];
 
 // DO NOT REORDER
 FILE_STATIC uint8_t domainsSensorAddresses[] =   { 0x43, 0x40, 0x44, 0x42, 0x45, 0x4E, 0x46, 0x41  };
@@ -40,7 +39,8 @@ FILE_STATIC float domainCurrentThreshold[] = { 0.100, 0.200, 0.001, 0.100, 0.100
 PCVSensorData *sensorData;
 hDev i2cdev, hSensor;
 
-// Packet instances - one of each is fine
+// Packet instances
+FILE_STATIC meta_packet mpkt;
 FILE_STATIC general_packet gpkt;
 FILE_STATIC sensordat_packet spkt;
 FILE_STATIC health_packet hpkt;
@@ -131,6 +131,10 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
 {
     gpkt.powerdomainlastcmds[(uint8_t)domain] = (uint8_t)cmd;
 
+    // Overcurrent latching command only useful as a "special" disable for reporting purposes
+    if (cmd == PD_CMD_OCLatch)
+        cmd = PD_CMD_Disable;
+
     if (cmd == PD_CMD_NoChange)
         return;
 
@@ -206,7 +210,7 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
 
     // Clear the current-limited flag if turning on
     if (distQueryDomainSwitch(domain) == Switch_Enabled)
-        gpkt.powerdomaincurrentlimited[(uint8_t)domain] = 0;
+        spkt.powerdomaincurrentlimited[(uint8_t)domain] = 0;
 }
 
 // Make a pass through all the sensors
@@ -217,18 +221,19 @@ FILE_STATIC void distMonitorDomains()
     for (i=0; i < NUM_POWER_DOMAINS; i++)
     {
         pdata = pcvsensorRead(powerdomains[i].hpcvsensor, Read_CurrentOnly);
+
         if (pdata->calcdCurrentA >= domainCurrentThreshold[i])
         {
-            if (gpkt.powerdomaincurrentlimited[i] != 1)
+            distDomainSwitch((PowerDomainID)i, PD_CMD_OCLatch);  // Yes, this means Disable is ALWAYS sent if current too high
+            if (spkt.powerdomaincurrentlimited[i] != 1)
             {
-                distDomainSwitch((PowerDomainID)i, PD_CMD_Disable);
-                gpkt.powerdomaincurrentlimited[i] = 1;
+                spkt.powerdomaincurrentlimited[i] = 1;
                 gpkt.powerdomaincurrentlimitedcount[i] += 1;
+
             }
         }
 
         // Save data for each sensor, regardless of threshold
-        powerdomainData[i] = pdata;
         spkt.currents[i] = pdata->calcdCurrentA;
     }
 }
@@ -253,7 +258,6 @@ FILE_STATIC void distBcSendHealth()
 {
     // TODO:  Determine overall health based on querying various entities for their health
     // For now, everythingis always marginal ...
-    hpkt.module = Module_EPS_Dist;
     hpkt.oms = OMS_Unknown;
     bcbinSendPacket((uint8_t *) &hpkt, sizeof(hpkt));
 }
@@ -264,10 +268,16 @@ FILE_STATIC void distBcSendSensorDat()
     bcbinSendPacket((uint8_t *) &spkt, sizeof(spkt));
 }
 
+FILE_STATIC void distBcSendMeta()
+{
+    bcbinSendPacket((uint8_t *) &mpkt, sizeof(mpkt));
+}
+
 // Called when command routing infrastructure detects a command "addressed" to the subsystem
 uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
-    domaincmd_packet *packet;
+    domaincmd_packet *dpacket;
+    commoncmd_packet *cpacket;
     int i;
 
     if (mode == Mode_BinaryStreaming)
@@ -276,12 +286,15 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
         switch (cmdstr[0])
         {
             case OPCODE_DOMAINSWITCH:
-                packet = (domaincmd_packet *) &cmdstr[1];
+                dpacket = (domaincmd_packet *) &cmdstr[1];
                 for (i = 0; i < NUM_POWER_DOMAINS; i++)
                 {
-                    distDomainSwitch((PowerDomainID)i, (PowerDomainCmd)(packet->pd_cmds[i]));
+                    distDomainSwitch((PowerDomainID)i, (PowerDomainCmd)(dpacket->pd_cmds[i]));
                 }
                 break;
+            case OPCODE_COMMONCMD:
+                cpacket = (commoncmd_packet *) &cmdstr[1];
+                LED_OUT ^= LED_BIT;
             default:
                 break;
         }
@@ -294,11 +307,13 @@ int main(void)
 {
     /* ----- INITIALIZATION -----*/
     bspInit(Module_EPS_Dist);  // <<DO NOT DELETE or MOVE>>
+
     distDomainInit();
 
     LED_DIR |= LED_BIT;
 
     // Setup COSMOS telemetry packet structures
+    bcbinPopulateMeta(&mpkt, sizeof(mpkt));
     bcbinPopulateHeader(&(hpkt.header), TLM_ID_SHARED_HEALTH, sizeof(hpkt));
     bcbinPopulateHeader(&(gpkt.header), TLM_ID_EPS_DIST_GENERAL, sizeof(gpkt));
     bcbinPopulateHeader(&(spkt.header), TLM_ID_EPS_DIST_SENSORDAT, sizeof(spkt));
@@ -311,6 +326,8 @@ int main(void)
     debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, distActionCallback);
     __delay_cycles(0.5 * SEC);
 
+
+
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
@@ -322,11 +339,11 @@ int main(void)
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
 
-    uint8_t counter = 0;
+    uint16_t counter = 0;
     while (1)
     {
         // TODO:  eventually drive this with a timer
-        LED_OUT ^= LED_BIT;
+//        LED_OUT ^= LED_BIT;
         __delay_cycles(0.1 * SEC);
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
@@ -337,12 +354,13 @@ int main(void)
 
                 counter++;
                 distBcSendSensorDat();
-                if (counter >= 10)
+                if (counter % 8 == 0)
                 {
                     distBcSendGeneral();
                     distBcSendHealth();
-                    counter = 0;
                 }
+                if (counter % 64 == 0)
+                    distBcSendMeta();
                 break;
             case State_SecondState:
                 // fall through

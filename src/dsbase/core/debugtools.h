@@ -129,8 +129,6 @@ typedef struct PACKED_STRUCT _bccmd_header {
     uint8_t opcode;
 } BcCmdHeader;
 
-void bcbinPopulateHeader( BcTlmHeader *header, uint8_t opcode, uint8_t fulllen);
-void bcbinSendPacket(uint8_t * buff, uint8_t szBuff);
 
 typedef enum _bccmd_state {
     STATE_START,
@@ -154,15 +152,40 @@ typedef uint8_t oms_status;
 #define OMS_Unknown        0x05
 
 // Standard packet definitions
-#define TLM_ID_SHARED_HEALTH     0x00   // All MSP's will implement - fixed structure defined here
+#define TLM_ID_SHARED_META       0x00
+#define TLM_ID_SHARED_HEALTH     0x01   // All MSP's will implement - fixed structure defined here
+#define MAX_META_FIELD_LEN   16
 COSMOS_TLM_PACKET {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
-    SubsystemModule module;
+    uint8_t module;
+    uint16_t compver;
+    uint16_t stdcver;
+
+    uint8_t compdate[MAX_META_FIELD_LEN];
+    uint8_t comptime[MAX_META_FIELD_LEN];
+
+} meta_packet;
+
+COSMOS_TLM_PACKET {
+    BcTlmHeader header;  // All COSMOS TLM packets must have this
+
     oms_status oms;
 } health_packet;
 
-#define TLM_ID_SHARED_SSGENERAL  0x01   // Most MSP's will implement - SS-specific stuff, so defined with SS module
+#define OPCODE_COMMONCMD  0x00
+COSMOS_CMD_PACKET {
+    BcCmdHeader header;
+
+    uint8_t stuff;
+    // Add common commands for all subsystems (like restart)
+} commoncmd_packet;
+
+#define TLM_ID_SHARED_SSGENERAL  0x02   // Most MSP's will implement - SS-specific stuff, so defined with SS module
+
+void bcbinPopulateHeader( BcTlmHeader *header, uint8_t opcode, uint8_t fulllen);
+void bcbinSendPacket(uint8_t * buff, uint8_t szBuff);
+void bcbinPopulateMeta(meta_packet *mpkt, size_t sz);
 
 
 #endif /* DEBUGTOOLS_H_ */

@@ -85,6 +85,7 @@ typedef enum {
     PD_CMD_Enable,
     PD_CMD_Disable,
     PD_CMD_Toggle,
+    PD_CMD_OCLatch
 } PowerDomainCmd;
 
 typedef enum {
@@ -109,14 +110,15 @@ COSMOS_TLM_PACKET {
     uint8_t powerdomainlastcmds[NUM_POWER_DOMAINS];
     uint8_t powerdomainswitchstate[NUM_POWER_DOMAINS];
 
-    uint8_t powerdomaincurrentlimited[NUM_POWER_DOMAINS];
     uint8_t powerdomaincurrentlimitedcount[NUM_POWER_DOMAINS];
 } general_packet;
 
+// SensorDat packet:  high-frequency sends that capture state of sensors (including overcurrent flags)
 COSMOS_TLM_PACKET {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
     float currents[NUM_POWER_DOMAINS];
+    uint8_t powerdomaincurrentlimited[NUM_POWER_DOMAINS];
 } sensordat_packet;
 
 COSMOS_CMD_PACKET {
@@ -125,8 +127,8 @@ COSMOS_CMD_PACKET {
 
 #define OPCODE_DOMAINSWITCH        0x64  // Dec '100', ASCII 'd'
 
-#define TLM_ID_EPS_DIST_GENERAL    TLM_ID_SHARED_SSGENERAL  // == 0x01  <--- standard message ID
-#define TLM_ID_EPS_DIST_SENSORDAT  0x02
+#define TLM_ID_EPS_DIST_GENERAL    TLM_ID_SHARED_SSGENERAL  // == 0x02  <--- standard message ID
+#define TLM_ID_EPS_DIST_SENSORDAT  0x03
 
 // General enums/structs
 // Most subsystem modules should be implemented at least in part

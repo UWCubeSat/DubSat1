@@ -19,7 +19,6 @@
 void bspInit(SubsystemModule mod);
 SubsystemModule bspGetModule();
 
-
 // Hard-wired assignments for a given board are stashed in these #if defined(...)
 // blocks
 #if defined(__BSP_Board_MSP430FR5994LaunchPad__)

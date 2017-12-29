@@ -20,6 +20,17 @@ typedef enum _subsystemModule {
     Module_ADCS_RWZ = 4,
     Module_PPT = 5,
     Module_EPS_Dist = 6,
+    Module_EPS_Gen = 7,
+    Module_EPS_Batt = 8,
+    Module_ADCS_Estim = 9,
+    Module_ADCS_MPC = 10,
+    Module_ADCS_SenseProc = 11,
+    Module_ADCS_MTQ = 12,
+
+    // Last three unlikely to be used, as not compiled from MSP source
+    Module_COM1 = 13,
+    Module_COM2 = 14,
+    Module_RAHS = 15,
 } SubsystemModule;
 
 // REMOTE INFO STRUCTURES

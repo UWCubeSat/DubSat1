@@ -33,6 +33,8 @@ void bspExampleInit(SubsystemModule mod)
 }
 */
 
+
+
 uint8_t infoReport(DebugMode mode)
 {
     if (mode == Mode_ASCIIInteractive)

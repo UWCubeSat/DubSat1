@@ -474,6 +474,18 @@ void bcbinSendPacket(uint8_t * buff, uint8_t szBuff)
     uartTransmit(handle, buff, szBuff);
 }
 
+void bcbinPopulateMeta(meta_packet *mpkt, size_t sz)
+{
+    bcbinPopulateHeader(&(mpkt->header), TLM_ID_SHARED_META, sz);
+
+    mpkt->module = bspGetModule();
+    mpkt->compver = __TI_COMPILER_VERSION__;
+    mpkt->stdcver = __STDC_VERSION__;
+
+    strncpy( mpkt->compdate, __DATE__, MAX_META_FIELD_LEN);
+    strncpy( mpkt->comptime, __TIME__, MAX_META_FIELD_LEN);
+}
+
 #else  /* __DEBUG__ not specified, therefore nop debug operations */
 
 void debugInit() {}

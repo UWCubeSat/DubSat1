@@ -22,6 +22,7 @@ FILE_STATIC uint8_t *SubsystemModulePaths[] =
 
 FILE_STATIC SpacecraftInfo sc_info;
 
+
 // Performs logic to "figure out" current state (1st boot? reboot? MET?)
 // Hooks up sync pulse handlers
 StartupType coreStartup(sync_pulse_handler sync1, sync_pulse_handler sync2)
