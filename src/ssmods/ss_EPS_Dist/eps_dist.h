@@ -24,6 +24,10 @@
 #define SHUNT_HIGH_DRAW_DEVICE  0.01f
 #define SHUNT_LOW_DRAW_DEVICE   0.1f
 
+#define OCP_THRESH_LOW_DRAW_DEVICE  0.100f
+#define OCP_THRESH_MED_DRAW_DEVICE  0.200f
+#define OCP_THRESH_HIGH_DRAW_DEVICE 0.500f
+
 // Configure power domain control pins
 #define DOMAIN_ENABLE_COM2_DIR  P7DIR
 #define DOMAIN_ENABLE_COM2_OUT  P7OUT
@@ -111,6 +115,7 @@ COSMOS_TLM_PACKET {
     uint8_t powerdomainswitchstate[NUM_POWER_DOMAINS];
 
     uint8_t powerdomaincurrentlimitedcount[NUM_POWER_DOMAINS];
+    float powerdomainocpthreshold[NUM_POWER_DOMAINS];
 } general_packet;
 
 // SensorDat packet:  high-frequency sends that capture state of sensors (including overcurrent flags)
@@ -125,7 +130,12 @@ COSMOS_CMD_PACKET {
     uint8_t pd_cmds[NUM_POWER_DOMAINS];
 } domaincmd_packet;
 
+COSMOS_CMD_PACKET {
+    float newCurrentThreshold[NUM_POWER_DOMAINS];
+} ocpthresh_packet;
+
 #define OPCODE_DOMAINSWITCH        0x64  // Dec '100', ASCII 'd'
+#define OPCODE_OCPTHRESH           0x74  // Dec '116', ASCII 't'
 
 #define TLM_ID_EPS_DIST_GENERAL    TLM_ID_SHARED_SSGENERAL  // == 0x02  <--- standard message ID
 #define TLM_ID_EPS_DIST_SENSORDAT  0x03

@@ -175,8 +175,6 @@ COSMOS_TLM_PACKET {
 
 #define OPCODE_COMMONCMD  0x00
 COSMOS_CMD_PACKET {
-    BcCmdHeader header;
-
     uint8_t stuff;
     // Add common commands for all subsystems (like restart)
 } commoncmd_packet;

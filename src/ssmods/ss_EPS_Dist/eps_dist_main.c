@@ -34,7 +34,10 @@ FILE_STATIC PowerDomainInfo powerdomains[NUM_POWER_DOMAINS];
 FILE_STATIC uint8_t domainsSensorAddresses[] =   { 0x43, 0x40, 0x44, 0x42, 0x45, 0x4E, 0x46, 0x41  };
 FILE_STATIC float   domainShuntResistances[] =   { SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE,
                                                    SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE };
-FILE_STATIC float domainCurrentThreshold[] = { 0.100, 0.200, 0.001, 0.100, 0.100, 0.100, 0.100, 0.200 };
+
+FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_LOW_DRAW_DEVICE, OCP_THRESH_MED_DRAW_DEVICE, OCP_THRESH_LOW_DRAW_DEVICE,
+                                               OCP_THRESH_LOW_DRAW_DEVICE, OCP_THRESH_LOW_DRAW_DEVICE, OCP_THRESH_LOW_DRAW_DEVICE,
+                                               OCP_THRESH_LOW_DRAW_DEVICE, OCP_THRESH_HIGH_DRAW_DEVICE };
 
 PCVSensorData *sensorData;
 hDev i2cdev, hSensor;
@@ -86,6 +89,8 @@ void distDomainInit()
         powerdomains[d].hpcvsensor = pcvsensorInit(I2CBus2, powerdomains[d].i2caddr, domainShuntResistances[d], 16.0f);
         __delay_cycles(1000);  // Helps make sure the initialization is received properly
     }
+
+    distInitializeOCPThresholds();
 }
 
 // Uses the actual GPIO output value to determine what is "actually" happening with the switch
@@ -222,7 +227,7 @@ FILE_STATIC void distMonitorDomains()
     {
         pdata = pcvsensorRead(powerdomains[i].hpcvsensor, Read_CurrentOnly);
 
-        if (pdata->calcdCurrentA >= domainCurrentThreshold[i])
+        if (pdata->calcdCurrentA >= gpkt.powerdomainocpthreshold[i])
         {
             distDomainSwitch((PowerDomainID)i, PD_CMD_OCLatch);  // Yes, this means Disable is ALWAYS sent if current too high
             if (spkt.powerdomaincurrentlimited[i] != 1)
@@ -273,12 +278,34 @@ FILE_STATIC void distBcSendMeta()
     bcbinSendPacket((uint8_t *) &mpkt, sizeof(mpkt));
 }
 
+void distSetOCPThreshold(PowerDomainID domain, float newval)
+{
+    int i;
+
+    // 0.0f means don't change current value
+    if (newval == 0.0f)
+        return;
+
+    gpkt.powerdomainocpthreshold[(uint8_t)domain] = newval;
+}
+
+void distInitializeOCPThresholds()
+{
+    int i;
+    for (i = 0; i < NUM_POWER_DOMAINS; i++)
+    {
+        distSetOCPThreshold((PowerDomainID)i, domainCurrentThresholdInitial[i]);
+    }
+}
+
 // Called when command routing infrastructure detects a command "addressed" to the subsystem
 uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     domaincmd_packet *dpacket;
     commoncmd_packet *cpacket;
+    ocpthresh_packet *opacket;
     int i;
+    float newval;
 
     if (mode == Mode_BinaryStreaming)
     {
@@ -295,11 +322,20 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
             case OPCODE_COMMONCMD:
                 cpacket = (commoncmd_packet *) &cmdstr[1];
                 LED_OUT ^= LED_BIT;
+                break;
+            case OPCODE_OCPTHRESH:
+                opacket = (ocpthresh_packet *) &cmdstr[1];
+                for (i = 0; i < NUM_POWER_DOMAINS; i++)
+                {
+                    distSetOCPThreshold((PowerDomainID)i, opacket->newCurrentThreshold[i]);
+                }
+                break;
             default:
                 break;
         }
     }
 }
+
 /*
  * main.c
  */
