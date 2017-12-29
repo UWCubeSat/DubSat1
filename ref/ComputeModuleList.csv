@@ -1,4 +1,3 @@
-,,,,,,
 Compute Module,Type,Board Stack #,General ID #,Programmatic Name, CAN Node ID,Notes
 Test Module, MSP430, 0, 0, sdfssdfsdf0, Module_Test, A placeholder/sample compute node
 COM2,Pi3,1,14,"",Module_COM2,
