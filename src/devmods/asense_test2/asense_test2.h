@@ -8,7 +8,6 @@
 #ifndef ASENSE_TEST2_H_
 #define ASENSE_TEST2_H_
 
-#include "bsp/bsp.h"
 
 
 
