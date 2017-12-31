@@ -2,7 +2,7 @@
 #include <math.h>
 
 #include "bsp/bsp.h"
-#include "pcvsensor.h""
+#include "pcvsensor.h"
 
 
 #define MAX_BUFF_SIZE   0x10

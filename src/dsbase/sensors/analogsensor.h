@@ -18,6 +18,7 @@
 #define NUM_MAX_ANALOG_SENSORS  (NUM_MAX_NONTEMP_ANALOG_SENSORS+1)
 
 #define TEMPSENSOR_INDEX  (0)  // Temp is first, always
+#define TEMPSENSOR_DEV  (hDev)0
 
 //See device datasheet for TLV table memory mapping
 // Temperature in Celsius. See the Device Descriptor Table section in the
@@ -65,16 +66,23 @@ typedef struct {
     uint8_t capmem;  // stores the ADC12MEMx number for this sensor
     ACHANNEL channel;
 
-    float lastvalue;
+    uint16_t lastrawvalue;
+    float lastvalueV;
 } asensor_info;
 
 
 
 void asensorInit(VPositiveReference vref);
 hDev asensorActivateChannel(ACHANNEL newchan);
-float asensorReadSensorSync(uint8_t val);
+uint16_t asensorReadSingleSensorRaw(hDev hSensor);
+float asensorReadSingleSensorV(uint8_t val);
+void asensorUpdateAllSensors();
+float asensorGetLastValueV(hDev hSensor);
 float asensorGetLastTempC();
 float asensorReadTempC();
+
+FILE_STATIC void inline enableADC() { ADC12CTL0 |= ADC12ENC; }
+FILE_STATIC void inline disableADC() { ADC12CTL0 &= ~ADC12ENC; }
 
 #define ASENSE_SEL1 P1SEL1
 #define ASENSE_SEL0 P1SEL0

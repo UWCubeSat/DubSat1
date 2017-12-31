@@ -9,7 +9,6 @@
 
 FILE_STATIC uint16_t CALADC_30C, CALADC_85C;
 
-FILE_STATIC unsigned int analog_data[NUM_MAX_ANALOG_SENSORS];
 FILE_STATIC asensor_info asensors[NUM_MAX_ANALOG_SENSORS];
 
 FILE_STATIC float lastTemperatureC;
@@ -17,6 +16,7 @@ FILE_STATIC VPositiveReference voltageref;
 FILE_STATIC float VpLSB;
 
 FILE_STATIC uint16_t ADCIn_ADC12MCTL[] = { ADC12INCH_0, ADC12INCH_1, ADC12INCH_2, ADC12INCH_3, ADC12INCH_4, ADC12INCH_5, ADC12INCH_12, ADC12INCH_13, ADC12INCH_14, ADC12INCH_15, ADC12INCH_TEMPSENSOR };
+FILE_STATIC uint16_t ADCMEMnum_ADC12CSTART[] = { ADC12CSTARTADD_0, ADC12CSTARTADD_1, ADC12CSTARTADD_2, ADC12CSTARTADD_3, ADC12CSTARTADD_4, ADC12CSTARTADD_5, ADC12CSTARTADD_6, ADC12CSTARTADD_7, ADC12CSTARTADD_8, ADC12CSTARTADD_9, ADC12CSTARTADD_10 };
 FILE_STATIC uint16_t RefV_REFCTL0_SetAndOn[] = { 0x00, REFVSEL_2 | REFON, REFVSEL_1 | REFON, REFVSEL_0 | REFON };
 FILE_STATIC uint16_t RefV_ADC12MCTL_Set[] =    { ADC12VRSEL_0, ADC12VRSEL_1, ADC12VRSEL_1, ADC12VRSEL_1 };
 
@@ -140,21 +140,41 @@ FILE_STATIC void enableMultiSampleMode()
     configSequence(num_asense_channels-1);
 }
 
-FILE_STATIC void enableSingleSampleMode()
+FILE_STATIC void enableSingleSampleMode(hDev hSensor)
 {
     ADC12CTL0 |= ADC12MSC_0;
     ADC12CTL1 |= ADC12CONSEQ_0;
+    ADC12CTL3 != ADCMEMnum_ADC12CSTART[(uint8_t)hSensor];
+}
+
+FILE_STATIC hDev coreActivateChannel(ACHANNEL newchan)
+{
+    uint8_t refindex = (uint8_t)voltageref;
+
+    if (num_asense_channels >= NUM_MAX_ANALOG_SENSORS)
+        return 0;   // TODO:  add data collection to figure out what happened
+
+    uint8_t newchannum = num_asense_channels++;
+
+    asensors[newchannum].activated = TRUE;
+    asensors[newchannum].capmem = newchannum;
+    asensors[newchannum].channel = newchan;
+    asensors[newchannum].lastrawvalue = 0.0f;
+
+    uint16_t MCTLx = (RefV_ADC12MCTL_Set[refindex] | ADCIn_ADC12MCTL[(uint8_t)newchan]);
+    configChannel(asensors[newchannum].capmem, MCTLx);
+    configSequence(newchannum);
+
+    return (hDev)newchannum;
 }
 
 FILE_STATIC initializeTempSensor()
 {
-    uint8_t refindex = (uint8_t)voltageref;
-
     // Setup the temperature sensor - used on ALL MSPs
     ADC12CTL3 |= ADC12TCMAP;                 // Enable internal temperature sensor
 
     // Temp sensor always uses ADC12MEM0
-    asensorActivateChannel(CHAN_TEMPSENSOR);
+    coreActivateChannel(CHAN_TEMPSENSOR);
 }
 
 FILE_STATIC initializeVoltageRef()
@@ -197,13 +217,16 @@ FILE_STATIC initializeVoltageRef()
 
 void asensorInit(VPositiveReference vref)
 {
+    // All public APIs for the ADC must start with disabling the engine, and enabling it at the end
+    // This is NOT done in the internal/FILE_STATIC "helper" functions
+    disableADC();   // MUST do this before changing any other settings
+
     voltageref = vref;
     uint8_t refindex = (uint8_t)vref;
 
-    // Disable ADC12 and start configuring
+    // Start configuring
     // Remember MEM0-MEM7 AND the temp MEM (30) uses SHT0 bits; others use SHT1 bits ... set both the same to preserve sanity
     // These settings are common to ALL chosen sampling modes
-    ADC12CTL0 &= ~ADC12ENC;                                 // Disable ADC12
     ADC12CTL0 = ADC12SHT0_10 | ADC12SHT1_10 | ADC12ON;      // Set sample time (512) and power on
     ADC12CTL1 = ADC12SHP;                    // Enable sample timer, sequence of channels
     ADC12CTL2 |= ADC12RES_2;                                // Make sure we're in 12-bit mode
@@ -213,8 +236,10 @@ void asensorInit(VPositiveReference vref)
 
     enableMultiSampleMode();  // TODO:  probably change this by default to single at first
 
-    // Enable the ADC
-    ADC12CTL0 |= ADC12ENC;
+    // Only re-enable the ADC engine as the last step before returning to
+    // the API user - earlier than that and it's easy to accidentally try setting some register
+    // on the ADC12 that is locked when the engine is enabled
+    enableADC();
 }
 
 void configChannel(uint8_t capmem, uint16_t mctlx)
@@ -271,61 +296,99 @@ void configChannel(uint8_t capmem, uint16_t mctlx)
     }
 }
 
+// Break out functionality for opening a channel to make it useful both from public
+// APIs (where the engine must be disabled explicitly) and the internal calls (where
+// other code has already disabled the engine)
+
 hDev asensorActivateChannel(ACHANNEL newchan)
 {
-    uint8_t refindex = (uint8_t)voltageref;
+    // All public APIs for the ADC must start with disabling the engine, and enabling it at the end
+    // This is NOT done in the internal/FILE_STATIC "helper" functions
+    disableADC();   // MUST do this before changing any other settings
 
-    if (num_asense_channels >= NUM_MAX_ANALOG_SENSORS)
-        return 0;   // TODO:  add data collection to figure out what happened
+    hDev hSensor = coreActivateChannel(newchan);
 
-    uint8_t newchannum = num_asense_channels++;
+    // Only re-enable the ADC engine as the last step before returning to
+    // the API user - earlier than that and it's easy to accidentally try setting some register
+    // on the ADC12 that is locked when the engine is enabled
+    enableADC();
 
-    asensors[newchannum].activated = TRUE;
-    asensors[newchannum].capmem = newchannum;
-    asensors[newchannum].channel = newchan;
-    asensors[newchannum].lastvalue = 0.0f;
-
-    uint16_t MCTLx = (RefV_ADC12MCTL_Set[refindex] | ADCIn_ADC12MCTL[(uint8_t)newchan]);
-    configChannel(asensors[newchannum].capmem, MCTLx);
-    configSequence(newchannum);
-
-    return (hDev)newchannum;
+    return hSensor;
 }
 
-// Read a single channel
-float asensorReadSensorSync(uint8_t val)
+uint16_t asensorReadSingleSensorRaw(hDev hSensor)
 {
-    capture_complete = 0;
-
-    // TODO:  Configure read based on passed in sensor number
+    disableADC();
+    enableSingleSampleMode(hSensor);
+    enableADC();
 
     // Start capture
+    capture_complete = 0;
     ADC12CTL0 |= ADC12SC;
 
     // Wait for both captures to complete
-    while (capture_complete < 2) {}
+    while (capture_complete < 1) {}
 
+    // capture_complete == 1 after interrupt copies appropriate ADC12MEMx value
+    // to the asensor_info struct for the correct sensor
+    return asensors[(uint8_t)hSensor].lastrawvalue;
+}
+
+// Read a single channel
+float asensorReadSingleSensorV(hDev hSensor)
+{
+    uint16_t rawval = asensorReadSingleSensorRaw(hSensor);
+    float convtval = (float)rawval * VpLSB;
+
+    asensors[(uint8_t)hSensor].lastvalueV = convtval;
+    return convtval;
+}
+
+void asensorUpdateAllSensors()
+{
+    disableADC();
+    enableMultiSampleMode();
+    enableADC();
+
+    // Start capture
     capture_complete = 0;
+    ADC12CTL0 |= ADC12SC;
 
-    if (val == TEMPSENSOR_INDEX)
-        return analog_data[0];
-    else if (val == 1)
-    {
-        return (float)analog_data[1] * VpLSB;
-    }
+    // Wait for both captures to complete
+    // TODO:  add a timeout here as well, so we don't hang in this loop
+    // TODO:  obviously add an async option to this function
+    while (capture_complete < num_asense_channels) {}
 
+    return;
+}
+
+float asensorGetLastValueV(hDev hSensor)
+{
+    // Convert in case it hasn't happened before
+    float convtval = (float)(asensors[(uint8_t)hSensor].lastrawvalue) * VpLSB;
+
+    asensors[(uint8_t)hSensor].lastvalueV = convtval;
+    return convtval;
 }
 
 // Reads last-captured value of temp, without triggering a new capture
 float asensorGetLastTempC()
 {
+    // First convert, in case that was never done
+    lastTemperatureC = tempConvertRawtoCelsius(asensors[TEMPSENSOR_INDEX].lastrawvalue);
     return lastTemperatureC;
 }
 
 // Takes a new reading
 float asensorReadTempC()
 {
-    lastTemperatureC = tempConvertRawtoCelsius(asensorReadSensorSync(TEMPSENSOR_INDEX));
+    disableADC();
+    enableSingleSampleMode(TEMPSENSOR_DEV);
+    enableADC();
+
+    uint16_t rawval = asensorReadSingleSensorRaw((hDev)TEMPSENSOR_INDEX);
+
+    lastTemperatureC = tempConvertRawtoCelsius(rawval);
     return lastTemperatureC;
 }
 
@@ -341,22 +404,49 @@ __interrupt void ADC12ISR (void)
         case ADC12IV__ADC12LOIFG:  break;   // Vector  8:  ADC12BLO
         case ADC12IV__ADC12INIFG:  break;   // Vector 10:  ADC12BIN
         case ADC12IV__ADC12IFG0:            // Vector 12:  ADC12MEM0 Interrupt
-            analog_data[0] = ADC12MEM0;               // Move results, IFG is cleared
+            asensors[0].lastrawvalue = ADC12MEM0;               // Move results, IFG is cleared
             capture_complete += 1;
             break;
         case ADC12IV__ADC12IFG1:            // Vector 14:  ADC12MEM1 Interrupt
-            analog_data[1] = ADC12MEM1;               // Move results, IFG is cleared
+            asensors[1].lastrawvalue = ADC12MEM1;               // Move results, IFG is cleared
             capture_complete += 1;
             break;
-        case ADC12IV__ADC12IFG2:   break;   // Vector 16:  ADC12MEM2
-        case ADC12IV__ADC12IFG3:   break;   // Vector 18:  ADC12MEM3
-        case ADC12IV__ADC12IFG4:   break;   // Vector 20:  ADC12MEM4
-        case ADC12IV__ADC12IFG5:   break;   // Vector 22:  ADC12MEM5
-        case ADC12IV__ADC12IFG6:   break;   // Vector 24:  ADC12MEM6
-        case ADC12IV__ADC12IFG7:   break;   // Vector 26:  ADC12MEM7
-        case ADC12IV__ADC12IFG8:   break;   // Vector 28:  ADC12MEM8
-        case ADC12IV__ADC12IFG9:   break;   // Vector 30:  ADC12MEM9
-        case ADC12IV__ADC12IFG10:  break;   // Vector 32:  ADC12MEM10
+        case ADC12IV__ADC12IFG2:
+            asensors[2].lastrawvalue = ADC12MEM2;               // Move results, IFG is cleared
+            capture_complete += 1;
+            break;
+        case ADC12IV__ADC12IFG3:
+            asensors[3].lastrawvalue = ADC12MEM3;               // Move results, IFG is cleared
+            capture_complete += 1;
+            break;
+        case ADC12IV__ADC12IFG4:
+            asensors[4].lastrawvalue = ADC12MEM4;               // Move results, IFG is cleared
+            capture_complete += 1;
+            break;
+        case ADC12IV__ADC12IFG5:
+            asensors[5].lastrawvalue = ADC12MEM5;               // Move results, IFG is cleared
+            capture_complete += 1;
+            break;
+        case ADC12IV__ADC12IFG6:
+            asensors[6].lastrawvalue = ADC12MEM6;               // Move results, IFG is cleared
+            capture_complete += 1;
+            break;
+        case ADC12IV__ADC12IFG7:
+            asensors[7].lastrawvalue = ADC12MEM7;               // Move results, IFG is cleared
+            capture_complete += 1;
+            break;
+        case ADC12IV__ADC12IFG8:
+            asensors[8].lastrawvalue = ADC12MEM8;               // Move results, IFG is cleared
+            capture_complete += 1;
+            break;
+        case ADC12IV__ADC12IFG9:
+            asensors[9].lastrawvalue = ADC12MEM9;               // Move results, IFG is cleared
+            capture_complete += 1;
+            break;
+        case ADC12IV__ADC12IFG10:
+            asensors[10].lastrawvalue = ADC12MEM10;               // Move results, IFG is cleared
+            capture_complete += 1;
+            break;
         case ADC12IV__ADC12IFG11:  break;   // Vector 34:  ADC12MEM11
         case ADC12IV__ADC12IFG12:  break;   // Vector 36:  ADC12MEM12
         case ADC12IV__ADC12IFG13:  break;   // Vector 38:  ADC12MEM13
