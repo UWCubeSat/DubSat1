@@ -59,27 +59,35 @@ typedef enum {
     CHAN_TEMPSENSOR,  // 10, --> A30, internal
 } ACHANNEL;
 
+typedef enum {
+    Type_GeneralV,
+    Type_IntTempC,
+    Type_ExtTempC,
+} sensor_type;
+
 
 
 typedef struct {
     BOOL activated;
     uint8_t capmem;  // stores the ADC12MEMx number for this sensor
     ACHANNEL channel;
+    sensor_type stype;
 
     uint16_t lastrawvalue;
-    float lastvalueV;
+    float lastvalueV;  // for sensors that will store a voltage
+    float lastvalueC;  // for sensors using a conversion to a temperature (internal or TMP-36)
 } asensor_info;
 
 
 
 void asensorInit(VPositiveReference vref);
-hDev asensorActivateChannel(ACHANNEL newchan);
+hDev asensorActivateChannel(ACHANNEL newchan, sensor_type stype);
 uint16_t asensorReadSingleSensorRaw(hDev hSensor);
 float asensorReadSingleSensorV(uint8_t val);
 void asensorUpdateAllSensors();
 float asensorGetLastValueV(hDev hSensor);
-float asensorGetLastTempC();
-float asensorReadTempC();
+float asensorGetLastIntTempC();
+float asensorReadIntTempC();
 
 FILE_STATIC void inline enableADC() { ADC12CTL0 |= ADC12ENC; }
 FILE_STATIC void inline disableADC() { ADC12CTL0 &= ~ADC12ENC; }

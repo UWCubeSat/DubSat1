@@ -11,7 +11,6 @@ FILE_STATIC uint16_t CALADC_30C, CALADC_85C;
 
 FILE_STATIC asensor_info asensors[NUM_MAX_ANALOG_SENSORS];
 
-FILE_STATIC float lastTemperatureC;
 FILE_STATIC VPositiveReference voltageref;
 FILE_STATIC float VpLSB;
 
@@ -23,9 +22,17 @@ FILE_STATIC uint16_t RefV_ADC12MCTL_Set[] =    { ADC12VRSEL_0, ADC12VRSEL_1, ADC
 FILE_STATIC volatile BOOL capture_complete = 0;
 FILE_STATIC uint8_t num_asense_channels = 0;
 
-FILE_STATIC float tempConvertRawtoCelsius(unsigned int raw)
+FILE_STATIC float tempIntConvertRawtoCelsius(uint16_t raw)
 {
     return (float)(((float)raw - CALADC_30C) * (85 - 30)) / (CALADC_85C - CALADC_30C) + 30.0f;
+}
+
+// TODO:  Implement formula for the TMP-36
+FILE_STATIC float tempExtConvertRawtoCelsius(unsigned int raw)
+{
+    // To be implemented, using datasheet for the TMP-36
+    // NOTE:  zero-crossing of transfer function has +0.5V offset, it does NOT cross at 0
+    return -13.0f;
 }
 
 // Loops through all activated channels and makes sure the EOS (end of sequence) bit
@@ -34,10 +41,6 @@ FILE_STATIC float tempConvertRawtoCelsius(unsigned int raw)
 #define NOT_END_SEQUENCE    (~ADC12EOS)
 void configSequence(uint8_t lastchan)
 {
-//    ADC12MCTL0 &= NOT_END_SEQUENCE;
-//    ADC12MCTL1 |= END_SEQUENCE;
-//    return;
-
     if (lastchan == 0)
     {
         ADC12MCTL0 |= END_SEQUENCE;
@@ -135,19 +138,72 @@ FILE_STATIC void enableMultiSampleMode()
 {
     ADC12CTL0 |= ADC12MSC_1;        // Sampling sequence only requires one Start toggle to start whole sequence (one time through)
     ADC12CTL1 |= ADC12CONSEQ_1;      // Single samples, in a sequence
-    ADC12CTL3 |= ADC12CSTARTADD_0;  // Always starts at 0, to include temperature sensor
+    ADC12CTL3 = ADC12CSTARTADD_0 | ADC12TCMAP;  // Always starts at 0, to include temperature sensor
 
     configSequence(num_asense_channels-1);
 }
 
 FILE_STATIC void enableSingleSampleMode(hDev hSensor)
 {
-    ADC12CTL0 |= ADC12MSC_0;
-    ADC12CTL1 |= ADC12CONSEQ_0;
-    ADC12CTL3 != ADCMEMnum_ADC12CSTART[(uint8_t)hSensor];
+    ADC12CTL0 &= ~ADC12MSC;
+    ADC12CTL1 &= ~ADC12CONSEQ;
+    ADC12CTL3 = ADCMEMnum_ADC12CSTART[(uint8_t)hSensor] | ADC12TCMAP;
 }
 
-FILE_STATIC hDev coreActivateChannel(ACHANNEL newchan)
+void configChannel(uint8_t capmem, uint16_t mctlx)
+{
+    switch (capmem)
+    {
+        case 0:   // For the built-in temp sensor, as it is always the first sensor added
+            ADC12MCTL0 = mctlx;
+            ADC12IER0 |= BIT0;
+            break;
+        case 1:   // For the built-in temp sensor, as it is always the first sensor added
+            ADC12MCTL1 = mctlx;
+            ADC12IER0 |= BIT1;
+            break;
+        case 2:   // For the built-in temp sensor, as it is always the first sensor added
+            ADC12MCTL2 = mctlx;
+            ADC12IER0 = BIT2;
+            break;
+        case 3:   // For the built-in temp sensor, as it is always the first sensor added
+            ADC12MCTL3 = mctlx;
+            ADC12IER0 |= BIT3;
+            break;
+        case 4:   // For the built-in temp sensor, as it is always the first sensor added
+            ADC12MCTL4 = mctlx;
+            ADC12IER0 |= BIT4;
+            break;
+        case 5:   // For the built-in temp sensor, as it is always the first sensor added
+            ADC12MCTL5 = mctlx;
+            ADC12IER0 |= BIT5;
+            break;
+        case 6:   // For the built-in temp sensor, as it is always the first sensor added
+            ADC12MCTL6 = mctlx;
+            ADC12IER0 |= BIT6;
+            break;
+        case 7:   // For the built-in temp sensor, as it is always the first sensor added
+            ADC12MCTL7 = mctlx;
+            ADC12IER0 |= BIT7;
+            break;
+        case 8:   // For the built-in temp sensor, as it is always the first sensor added
+            ADC12MCTL8 = mctlx;
+            ADC12IER0 |= BIT8;
+            break;
+        case 9:   // For the built-in temp sensor, as it is always the first sensor added
+            ADC12MCTL9 = mctlx;
+            ADC12IER0 |= BIT9;
+            break;
+        case 10:   // For the built-in temp sensor, as it is always the first sensor added
+            ADC12MCTL10 = mctlx;
+            ADC12IER0 |= BITA;
+            break;
+        default:
+            break;
+    }
+}
+
+FILE_STATIC hDev coreActivateChannel(ACHANNEL newchan, sensor_type stype)
 {
     uint8_t refindex = (uint8_t)voltageref;
 
@@ -159,6 +215,7 @@ FILE_STATIC hDev coreActivateChannel(ACHANNEL newchan)
     asensors[newchannum].activated = TRUE;
     asensors[newchannum].capmem = newchannum;
     asensors[newchannum].channel = newchan;
+    asensors[newchannum].stype = stype;
     asensors[newchannum].lastrawvalue = 0.0f;
 
     uint16_t MCTLx = (RefV_ADC12MCTL_Set[refindex] | ADCIn_ADC12MCTL[(uint8_t)newchan]);
@@ -174,7 +231,7 @@ FILE_STATIC initializeTempSensor()
     ADC12CTL3 |= ADC12TCMAP;                 // Enable internal temperature sensor
 
     // Temp sensor always uses ADC12MEM0
-    coreActivateChannel(CHAN_TEMPSENSOR);
+    coreActivateChannel(CHAN_TEMPSENSOR, Type_IntTempC);
 }
 
 FILE_STATIC initializeVoltageRef()
@@ -222,7 +279,6 @@ void asensorInit(VPositiveReference vref)
     disableADC();   // MUST do this before changing any other settings
 
     voltageref = vref;
-    uint8_t refindex = (uint8_t)vref;
 
     // Start configuring
     // Remember MEM0-MEM7 AND the temp MEM (30) uses SHT0 bits; others use SHT1 bits ... set both the same to preserve sanity
@@ -234,7 +290,7 @@ void asensorInit(VPositiveReference vref)
     initializeTempSensor();
     initializeVoltageRef();
 
-    enableMultiSampleMode();  // TODO:  probably change this by default to single at first
+    enableMultiSampleMode();
 
     // Only re-enable the ADC engine as the last step before returning to
     // the API user - earlier than that and it's easy to accidentally try setting some register
@@ -242,71 +298,17 @@ void asensorInit(VPositiveReference vref)
     enableADC();
 }
 
-void configChannel(uint8_t capmem, uint16_t mctlx)
-{
-    switch (capmem)
-    {
-        case 0:   // For the built-in temp sensor, as it is always the first sensor added
-            ADC12MCTL0 |= mctlx;
-            ADC12IER0 |= BIT0;
-            break;
-        case 1:   // For the built-in temp sensor, as it is always the first sensor added
-            ADC12MCTL1 |= mctlx;
-            //ADC12MCTL1 = 258;
-            ADC12IER0 |= BIT1;
-            break;
-        case 2:   // For the built-in temp sensor, as it is always the first sensor added
-            ADC12MCTL2 |= mctlx;
-            ADC12IER0 = BIT2;
-            break;
-        case 3:   // For the built-in temp sensor, as it is always the first sensor added
-            ADC12MCTL3 |= mctlx;
-            ADC12IER0 |= BIT3;
-            break;
-        case 4:   // For the built-in temp sensor, as it is always the first sensor added
-            ADC12MCTL4 |= mctlx;
-            ADC12IER0 |= BIT4;
-            break;
-        case 5:   // For the built-in temp sensor, as it is always the first sensor added
-            ADC12MCTL5 |= mctlx;
-            ADC12IER0 |= BIT5;
-            break;
-        case 6:   // For the built-in temp sensor, as it is always the first sensor added
-            ADC12MCTL6 |= mctlx;
-            ADC12IER0 |= BIT6;
-            break;
-        case 7:   // For the built-in temp sensor, as it is always the first sensor added
-            ADC12MCTL7 |= mctlx;
-            ADC12IER0 |= BIT7;
-            break;
-        case 8:   // For the built-in temp sensor, as it is always the first sensor added
-            ADC12MCTL8 |= mctlx;
-            ADC12IER0 |= BIT8;
-            break;
-        case 9:   // For the built-in temp sensor, as it is always the first sensor added
-            ADC12MCTL9 |= mctlx;
-            ADC12IER0 |= BIT9;
-            break;
-        case 10:   // For the built-in temp sensor, as it is always the first sensor added
-            ADC12MCTL10 |= mctlx;
-            ADC12IER0 |= BITA;
-            break;
-        default:
-            break;
-    }
-}
 
 // Break out functionality for opening a channel to make it useful both from public
 // APIs (where the engine must be disabled explicitly) and the internal calls (where
 // other code has already disabled the engine)
-
-hDev asensorActivateChannel(ACHANNEL newchan)
+hDev asensorActivateChannel(ACHANNEL newchan, sensor_type stype)
 {
     // All public APIs for the ADC must start with disabling the engine, and enabling it at the end
     // This is NOT done in the internal/FILE_STATIC "helper" functions
     disableADC();   // MUST do this before changing any other settings
 
-    hDev hSensor = coreActivateChannel(newchan);
+    hDev hSensor = coreActivateChannel(newchan, stype);
 
     // Only re-enable the ADC engine as the last step before returning to
     // the API user - earlier than that and it's easy to accidentally try setting some register
@@ -314,6 +316,30 @@ hDev asensorActivateChannel(ACHANNEL newchan)
     enableADC();
 
     return hSensor;
+}
+
+float convertRawToFloat(hDev hSensor)
+{
+    float convtval;
+    sensor_type stype = asensors[(uint8_t)hSensor].stype;
+    uint16_t rawval = asensors[(uint8_t)hSensor].lastrawvalue;
+
+    if (stype == Type_GeneralV)
+    {
+        convtval = (float)rawval * VpLSB;
+        asensors[(uint8_t)hSensor].lastvalueV = convtval;
+    }
+    else if (stype == Type_IntTempC)
+    {
+        convtval = tempIntConvertRawtoCelsius(rawval);
+        asensors[(uint8_t)hSensor].lastvalueC = convtval;
+    }
+    else
+    {
+        convtval = tempExtConvertRawtoCelsius(rawval);
+        asensors[(uint8_t)hSensor].lastvalueC = convtval;
+    }
+    return convtval;
 }
 
 uint16_t asensorReadSingleSensorRaw(hDev hSensor)
@@ -334,14 +360,31 @@ uint16_t asensorReadSingleSensorRaw(hDev hSensor)
     return asensors[(uint8_t)hSensor].lastrawvalue;
 }
 
+float asensorGetLastValueV(hDev hSensor)
+{
+    // Convert in case it hasn't happened before
+    return convertRawToFloat(hSensor);
+}
+
+// Reads last-captured value of temp, without triggering a new capture
+float asensorGetLastIntTempC()
+{
+    // Convert in case it hasn't happened before
+    return convertRawToFloat(TEMPSENSOR_DEV);
+}
+
 // Read a single channel
 float asensorReadSingleSensorV(hDev hSensor)
 {
-    uint16_t rawval = asensorReadSingleSensorRaw(hSensor);
-    float convtval = (float)rawval * VpLSB;
+    asensorReadSingleSensorRaw(hSensor);
+    return convertRawToFloat(hSensor);
+}
 
-    asensors[(uint8_t)hSensor].lastvalueV = convtval;
-    return convtval;
+// Takes a new reading
+float asensorReadIntTempC()
+{
+    asensorReadSingleSensorRaw(TEMPSENSOR_DEV);
+    return convertRawToFloat(TEMPSENSOR_DEV);
 }
 
 void asensorUpdateAllSensors()
@@ -360,36 +403,6 @@ void asensorUpdateAllSensors()
     while (capture_complete < num_asense_channels) {}
 
     return;
-}
-
-float asensorGetLastValueV(hDev hSensor)
-{
-    // Convert in case it hasn't happened before
-    float convtval = (float)(asensors[(uint8_t)hSensor].lastrawvalue) * VpLSB;
-
-    asensors[(uint8_t)hSensor].lastvalueV = convtval;
-    return convtval;
-}
-
-// Reads last-captured value of temp, without triggering a new capture
-float asensorGetLastTempC()
-{
-    // First convert, in case that was never done
-    lastTemperatureC = tempConvertRawtoCelsius(asensors[TEMPSENSOR_INDEX].lastrawvalue);
-    return lastTemperatureC;
-}
-
-// Takes a new reading
-float asensorReadTempC()
-{
-    disableADC();
-    enableSingleSampleMode(TEMPSENSOR_DEV);
-    enableADC();
-
-    uint16_t rawval = asensorReadSingleSensorRaw((hDev)TEMPSENSOR_INDEX);
-
-    lastTemperatureC = tempConvertRawtoCelsius(rawval);
-    return lastTemperatureC;
 }
 
 #pragma vector=ADC12_B_VECTOR

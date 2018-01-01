@@ -25,16 +25,16 @@ int main(void) {
 
     float tempC;
     float raw1;
-    hDev hSensor = asensorActivateChannel(CHAN_A2);
+    hDev hSensor = asensorActivateChannel(CHAN_A2, Type_GeneralV);
 
-    asensorUpdateAllSensors();
 
     while(1)
     {
-//        tempC = asensorReadTempC();
-//        raw1 = asensorReadSingleSensorV(hSensor);
-        tempC = asensorGetLastTempC();
-        raw1 = asensorGetLastValueV(hSensor);
+//        asensorUpdateAllSensors();
+//        tempC = asensorGetLastIntTempC();
+//        raw1 = asensorGetLastValueV(hSensor);
+        tempC = asensorReadIntTempC();
+        raw1 = asensorReadSingleSensorV(hSensor);
         debugPrintF("Temp:  %f C, Other voltage: %f V\r\n", tempC, raw1);
         __delay_cycles(0.5 * SEC);
     }
