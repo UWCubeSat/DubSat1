@@ -28,6 +28,14 @@
 #define OCP_THRESH_MED_DRAW_DEVICE  0.200f
 #define OCP_THRESH_HIGH_DRAW_DEVICE 0.500f
 
+#define BATTVDIVR1  100000
+#define BATTVDIVR2  53000
+#define BATTV_CONV_FACTOR    (((BATTVDIVR1 + BATTVDIVR2)/BATTVDIVR2) * 1.43137)
+
+#define BATT_THRESH   (6.60f)
+#define BATT_HYSTER   (0.25f)
+
+
 // Configure power domain control pins
 #define DOMAIN_ENABLE_COM2_DIR  P7DIR
 #define DOMAIN_ENABLE_COM2_OUT  P7OUT
@@ -89,7 +97,8 @@ typedef enum {
     PD_CMD_Enable,
     PD_CMD_Disable,
     PD_CMD_Toggle,
-    PD_CMD_OCLatch
+    PD_CMD_OCLatch,
+    PD_CMD_BattVLow,
 } PowerDomainCmd;
 
 typedef enum {
@@ -102,7 +111,6 @@ typedef struct _power_domain_info {
     PowerDomainID id;
     uint8_t i2caddr;
     hDev hpcvsensor;
-    float lastShuntCurrent;
 
     // eventually add other stuff, like handle to the averaging queues, etc.
 } PowerDomainInfo;
@@ -110,6 +118,8 @@ typedef struct _power_domain_info {
 // COSMOS telem and cmd packets
 COSMOS_TLM_PACKET {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
+
+    float battV;
 
     uint8_t powerdomainlastcmds[NUM_POWER_DOMAINS];
     uint8_t powerdomainswitchstate[NUM_POWER_DOMAINS];
@@ -124,6 +134,7 @@ COSMOS_TLM_PACKET {
 
     float currents[NUM_POWER_DOMAINS];
     uint8_t powerdomaincurrentlimited[NUM_POWER_DOMAINS];
+    float busV[NUM_POWER_DOMAINS];
 } sensordat_packet;
 
 COSMOS_CMD_PACKET {

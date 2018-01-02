@@ -48,6 +48,8 @@ FILE_STATIC general_packet gpkt;
 FILE_STATIC sensordat_packet spkt;
 FILE_STATIC health_packet hpkt;
 
+FILE_STATIC hDev hBattV;
+
 #define MAX_BUFF_SIZE   0x10
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 
@@ -136,8 +138,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
 {
     gpkt.powerdomainlastcmds[(uint8_t)domain] = (uint8_t)cmd;
 
-    // Overcurrent latching command only useful as a "special" disable for reporting purposes
-    if (cmd == PD_CMD_OCLatch)
+    // Overcurrent latching  or low batt commands only useful as a "special" disable for reporting purposes
+    if (cmd == PD_CMD_OCLatch || cmd == PD_CMD_BattVLow)
         cmd = PD_CMD_Disable;
 
     if (cmd == PD_CMD_NoChange)
@@ -225,7 +227,7 @@ FILE_STATIC void distMonitorDomains()
     PCVSensorData *pdata;
     for (i=0; i < NUM_POWER_DOMAINS; i++)
     {
-        pdata = pcvsensorRead(powerdomains[i].hpcvsensor, Read_CurrentOnly);
+        pdata = pcvsensorRead(powerdomains[i].hpcvsensor, Read_CurrentA | Read_BusV);
 
         if (pdata->calcdCurrentA >= gpkt.powerdomainocpthreshold[i])
         {
@@ -234,12 +236,31 @@ FILE_STATIC void distMonitorDomains()
             {
                 spkt.powerdomaincurrentlimited[i] = 1;
                 gpkt.powerdomaincurrentlimitedcount[i] += 1;
-
             }
         }
 
         // Save data for each sensor, regardless of threshold
         spkt.currents[i] = pdata->calcdCurrentA;
+        spkt.busV[i] = pdata->busVoltageV;
+    }
+}
+
+FILE_STATIC void distMonitorBattery()
+{
+    int i;
+    float predivV = asensorReadSingleSensorV(hBattV);
+    gpkt.battV = BATTV_CONV_FACTOR * predivV;
+
+    if (gpkt.battV <= BATT_THRESH)
+    {
+        for (i = 0; i < NUM_POWER_DOMAINS; i++)
+        {
+            distDomainSwitch((PowerDomainID)i, PD_CMD_BattVLow);
+        }
+    }
+    else
+    {
+        // TODO:  turn stuff back on?
     }
 }
 
@@ -253,8 +274,9 @@ FILE_STATIC void distBcSendGeneral()
         gpkt.powerdomainswitchstate[i] = (uint8_t)distQueryDomainSwitch((PowerDomainID)i);
 
     }
-    // TODO:  Determine call function to determine true general status
-    // For now, everythingis always marginal ...
+
+    // Other packet fields filled out in other locations
+
     bcbinSendPacket((uint8_t *) &gpkt, sizeof(gpkt));
 }
 
@@ -264,6 +286,7 @@ FILE_STATIC void distBcSendHealth()
     // TODO:  Determine overall health based on querying various entities for their health
     // For now, everythingis always marginal ...
     hpkt.oms = OMS_Unknown;
+    hpkt.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hpkt, sizeof(hpkt));
 }
 
@@ -344,6 +367,9 @@ int main(void)
     /* ----- INITIALIZATION -----*/
     bspInit(Module_EPS_Dist);  // <<DO NOT DELETE or MOVE>>
 
+    // Spin up the ADC, for the temp sensor and battery voltage
+    asensorInit(Ref_2p5V);
+    hBattV = asensorActivateChannel(CHAN_A0, Type_GeneralV);
     distDomainInit();
 
     LED_DIR |= LED_BIT;
@@ -394,6 +420,7 @@ int main(void)
                 {
                     distBcSendGeneral();
                     distBcSendHealth();
+                    distMonitorBattery();
                 }
                 if (counter % 64 == 0)
                     distBcSendMeta();

@@ -19,10 +19,12 @@ typedef struct _pcvSensorData {
     int16_t rawBusVoltage;
     int16_t rawShuntVoltage;
     int16_t rawCurrent;
+    int16_t rawPower;
 
     float busVoltageV;
     float shuntVoltageV;
     float calcdCurrentA;
+    float calcdPowerW;
 
 } PCVSensorData;
 
@@ -35,20 +37,21 @@ typedef struct _device_context_pcvsensor {
     float shuntResistance;
     float maxCurrent;
     float currentLSB;
+    float powerLSB;
     uint16_t calibFactor;
 
     PCVSensorData sensordata;
 } deviceContextPCVSensor;
 
 typedef enum {
-    Read_ShuntVOnly,
-    Read_BusAndShuntV,
-    Read_CurrentOnly,
-    Read_All,
-} pcv_read_type;
+    Read_ShuntV = 0x01,
+    Read_BusV = 0x02,
+    Read_CurrentA = 0x04,
+    Read_PowerW = 0x08,
+} pcv_read_type_flags;
 
 hDev pcvsensorInit(bus_instance_i2c bus, uint8_t i2cAddr, float shuntResistance, float maxCurrent);
-PCVSensorData *pcvsensorRead(hDev hSensor, pcv_read_type rtype);
+PCVSensorData *pcvsensorRead(hDev hSensor, pcv_read_type_flags rtype);
 
 hDev pcvsensorGetUnderlyingDevice(hDev hSensor);
 

@@ -10,10 +10,8 @@
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 FILE_STATIC hDev hSensor;
 
-FILE_STATIC numSensors;
+FILE_STATIC uint8_t numSensors;
 FILE_STATIC deviceContextPCVSensor sensors[MAX_NUM_PCVSENSORS];
-
-FILE_STATIC currentLSB = 0;
 
 /**
  * Initializes the current sensor. Will not do anything if this function
@@ -65,6 +63,7 @@ hDev pcvsensorInit(bus_instance_i2c bus, uint8_t i2cAddr, float shuntResistance,
 
     // Calculate calibration info based on request
     sensors[newIndex].currentLSB = (maxCurrent/(INA219_CURRENTLSB_FACTOR));
+    sensors[newIndex].powerLSB = 20.0f * sensors[newIndex].currentLSB;
     uint16_t cfactor = floor( (INA219_CALIBRATION_SET_CONSTANT / (sensors[newIndex].currentLSB * shuntResistance)) );
 
 
@@ -90,32 +89,43 @@ hDev pcvsensorInit(bus_instance_i2c bus, uint8_t i2cAddr, float shuntResistance,
     return (hDev)newIndex;
 }
 
-PCVSensorData *pcvsensorRead(hDev hSensor, pcv_read_type rtype)
+PCVSensorData *pcvsensorRead(hDev hSensor, pcv_read_type_flags rtype)
 {
     uint8_t devIndex = (uint8_t)hSensor;
     hDev i2cdevice = sensors[devIndex].hI2CDevice;
     uint16_t temp;
 
-    if (rtype != Read_CurrentOnly)
+    if ((rtype & Read_ShuntV) != 0)
     {
+        // Read shunt voltage
         i2cMasterRegisterRead(i2cdevice, CUR_INA219_REG_ADDR_SHUNT_V, i2cBuff, 2 );
         sensors[devIndex].sensordata.rawShuntVoltage = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
-        sensors[devIndex].sensordata.shuntVoltageV = INA219_SHUNT_VOLTAGE_CONVERSION_FACTOR * sensors[devIndex].sensordata.rawShuntVoltage;
+        sensors[devIndex].sensordata.shuntVoltageV = INA219_SHUNT_VOLTAGE_CONVERSION_FACTOR * (float)(sensors[devIndex].sensordata.rawShuntVoltage);
     }
 
-    if (rtype == Read_BusAndShuntV || rtype == Read_All)
+    if ((rtype & Read_BusV) != 0)
     {
+        // Read bus voltage
         i2cMasterRegisterRead(i2cdevice, CUR_INA219_REG_ADDR_BUS_V, i2cBuff, 2 );
-        temp = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
+        temp = (uint16_t)(i2cBuff[1] | ((uint16_t)i2cBuff[0] << 8));
         sensors[devIndex].sensordata.rawBusVoltage = temp >> 3;   // value is only top 13 bits of register, gah
-        sensors[devIndex].sensordata.busVoltageV = INA219_BUS_VOLTAGE_CONVERSION_FACTOR * sensors[devIndex].sensordata.rawBusVoltage;
+        sensors[devIndex].sensordata.busVoltageV = INA219_BUS_VOLTAGE_CONVERSION_FACTOR * (float)(sensors[devIndex].sensordata.rawBusVoltage);
     }
 
-    if (rtype == Read_CurrentOnly || rtype == Read_All)
+    if ((rtype & Read_CurrentA) != 0)
     {
+        // Read current
         i2cMasterRegisterRead(i2cdevice, CUR_INA219_REG_ADDR_CURRENT, i2cBuff, 2 );
         sensors[devIndex].sensordata.rawCurrent = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
-        sensors[devIndex].sensordata.calcdCurrentA = sensors[devIndex].sensordata.rawCurrent * sensors[devIndex].currentLSB;
+        sensors[devIndex].sensordata.calcdCurrentA = (float)sensors[devIndex].sensordata.rawCurrent * sensors[devIndex].currentLSB;
+    }
+
+    if ((rtype & Read_PowerW) != 0)
+    {
+        // Read power
+        i2cMasterRegisterRead(i2cdevice, CUR_INA219_REG_ADDR_POWER, i2cBuff, 2 );
+        sensors[devIndex].sensordata.rawPower = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
+        sensors[devIndex].sensordata.calcdPowerW = (float)sensors[devIndex].sensordata.rawPower * sensors[devIndex].powerLSB;
     }
 
     return &(sensors[devIndex].sensordata);

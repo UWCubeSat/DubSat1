@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 
+#include <msp430.h>
 #include "bsp/bsp.h"
 #include "core/utils.h"
 #include "config/config_sensor_analog.h"

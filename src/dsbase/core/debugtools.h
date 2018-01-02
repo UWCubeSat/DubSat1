@@ -14,6 +14,7 @@
 
 #include "utils.h"
 #include "../interfaces/systeminfo.h"
+#include "../sensors/analogsensor.h"
 
 #ifndef __DEBUG__
 #warning  Header debugtools.h included, but __DEBUG__ flag not set.
@@ -170,7 +171,9 @@ COSMOS_TLM_PACKET {
 COSMOS_TLM_PACKET {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
-    oms_status oms;
+    oms_status oms;  // Overall health
+
+    float inttemp;   // Internal MSP43x temperature, from built-in sensor
 } health_packet;
 
 #define OPCODE_COMMONCMD  0x00
