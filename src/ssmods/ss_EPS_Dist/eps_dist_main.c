@@ -42,20 +42,37 @@ FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_LOW_DRAW_DEVICE
 PCVSensorData *sensorData;
 hDev i2cdev, hSensor;
 
-// Packet instances
-FILE_STATIC meta_packet mpkt;
-FILE_STATIC general_packet gpkt;
-FILE_STATIC sensordat_packet spkt;
-FILE_STATIC health_packet hpkt;
+// Segment instances - used both to store information and as a structure for sending as telemetry/commands
+FILE_STATIC meta_segment mseg;
+FILE_STATIC general_segment gseg;
+FILE_STATIC sensordat_segment sseg;
+FILE_STATIC health_segment hseg;
 
 FILE_STATIC hDev hBattV;
 
 #define MAX_BUFF_SIZE   0x10
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 
+void distDeployInit()
+{
+    DEPLOY_ENABLE_DIR |= DEPLOY_ENABLE_BIT;
+
+    // Make sure output is low
+    DEPLOY_ENABLE_OUT = 0;
+}
+
+void distFireDeploy()
+{
+    DEPLOY_ENABLE_OUT |= DEPLOY_ENABLE_BIT;
+}
+
 // Sets up all the power domain switch GPIO pins to be ready to enable/disable
 void distDomainInit()
 {
+    // Set initial thresholds for undervoltage monitoring
+    gseg.undervoltagethresholds[PARTIAL_THRESHOLD_INDEX] = BATT_DEFAULT_PARTIAL_THRESH;
+    gseg.undervoltagethresholds[FULL_THRESHOLD_INDEX] = BATT_DEFAULT_FULL_THRESH;
+
     // Make sure all outputs are 0 before starting - this is MANDATORY
     DOMAIN_ENABLE_COM1_OUT = 0;
     DOMAIN_ENABLE_COM2_OUT = 0;
@@ -136,7 +153,7 @@ PowerDomainSwitchState distQueryDomainSwitch(PowerDomainID domain)
 // Turns on/off switches for indicated domain
 void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
 {
-    gpkt.powerdomainlastcmds[(uint8_t)domain] = (uint8_t)cmd;
+    gseg.powerdomainlastcmds[(uint8_t)domain] = (uint8_t)cmd;
 
     // Overcurrent latching  or low batt commands only useful as a "special" disable for reporting purposes
     if (cmd == PD_CMD_OCLatch || cmd == PD_CMD_BattVLow)
@@ -217,7 +234,7 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
 
     // Clear the current-limited flag if turning on
     if (distQueryDomainSwitch(domain) == Switch_Enabled)
-        spkt.powerdomaincurrentlimited[(uint8_t)domain] = 0;
+        sseg.powerdomaincurrentlimited[(uint8_t)domain] = 0;
 }
 
 // Make a pass through all the sensors
@@ -229,38 +246,50 @@ FILE_STATIC void distMonitorDomains()
     {
         pdata = pcvsensorRead(powerdomains[i].hpcvsensor, Read_CurrentA | Read_BusV);
 
-        if (pdata->calcdCurrentA >= gpkt.powerdomainocpthreshold[i])
+        if (pdata->calcdCurrentA >= gseg.powerdomainocpthreshold[i])
         {
             distDomainSwitch((PowerDomainID)i, PD_CMD_OCLatch);  // Yes, this means Disable is ALWAYS sent if current too high
-            if (spkt.powerdomaincurrentlimited[i] != 1)
+            if (sseg.powerdomaincurrentlimited[i] != 1)
             {
-                spkt.powerdomaincurrentlimited[i] = 1;
-                gpkt.powerdomaincurrentlimitedcount[i] += 1;
+                sseg.powerdomaincurrentlimited[i] = 1;
+                gseg.powerdomaincurrentlimitedcount[i] += 1;
             }
         }
 
         // Save data for each sensor, regardless of threshold
-        spkt.currents[i] = pdata->calcdCurrentA;
-        spkt.busV[i] = pdata->busVoltageV;
+        sseg.currents[i] = pdata->calcdCurrentA;
+        sseg.busV[i] = pdata->busVoltageV;
     }
 }
 
+// TODO:  Implement hysteresis, multiple tiers to PD power-off, and commands to change on the fly
 FILE_STATIC void distMonitorBattery()
 {
     int i;
     float predivV = asensorReadSingleSensorV(hBattV);
-    gpkt.battV = BATTV_CONV_FACTOR * predivV;
+    float newbattV = BATTV_CONV_FACTOR * predivV;
+    gseg.battV = newbattV;
 
-    if (gpkt.battV <= BATT_THRESH)
+    if (newbattV <= gseg.undervoltagethresholds[FULL_THRESHOLD_INDEX])
+        gseg.uvmode = (uint8_t)UV_FullShutdown;
+    else if (newbattV <= gseg.undervoltagethresholds[PARTIAL_THRESHOLD_INDEX])
+        gseg.uvmode = (uint8_t)UV_PartialShutdown;
+    else
+        gseg.uvmode = (uint8_t)UV_InRange;
+
+    if (gseg.uvmode != (uint8_t)UV_InRange)
     {
         for (i = 0; i < NUM_POWER_DOMAINS; i++)
         {
+            // TODO:  Implement the true, final logic for partial vs. full
+            if (i == (uint8_t)PD_COM1)
+                continue;
+            if (gseg.uvmode == (uint8_t)UV_PartialShutdown && i == (uint8_t)PD_WHEELS)
+                continue;
+
+            // Shutdown everything else
             distDomainSwitch((PowerDomainID)i, PD_CMD_BattVLow);
         }
-    }
-    else
-    {
-        // TODO:  turn stuff back on?
     }
 }
 
@@ -271,13 +300,13 @@ FILE_STATIC void distBcSendGeneral()
 
     for (i=0; i < NUM_POWER_DOMAINS; i++)
     {
-        gpkt.powerdomainswitchstate[i] = (uint8_t)distQueryDomainSwitch((PowerDomainID)i);
+        gseg.powerdomainswitchstate[i] = (uint8_t)distQueryDomainSwitch((PowerDomainID)i);
 
     }
 
     // Other packet fields filled out in other locations
 
-    bcbinSendPacket((uint8_t *) &gpkt, sizeof(gpkt));
+    bcbinSendPacket((uint8_t *) &gseg, sizeof(gseg));
 }
 
 // Packetizes and sends backchannel GENERAL packet
@@ -285,20 +314,20 @@ FILE_STATIC void distBcSendHealth()
 {
     // TODO:  Determine overall health based on querying various entities for their health
     // For now, everythingis always marginal ...
-    hpkt.oms = OMS_Unknown;
-    hpkt.inttemp = asensorReadIntTempC();
-    bcbinSendPacket((uint8_t *) &hpkt, sizeof(hpkt));
+    hseg.oms = OMS_Unknown;
+    hseg.inttemp = asensorReadIntTempC();
+    bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
 }
 
 // Packetizes and sends backchannel SENSORDAT packet
 FILE_STATIC void distBcSendSensorDat()
 {
-    bcbinSendPacket((uint8_t *) &spkt, sizeof(spkt));
+    bcbinSendPacket((uint8_t *) &sseg, sizeof(sseg));
 }
 
 FILE_STATIC void distBcSendMeta()
 {
-    bcbinSendPacket((uint8_t *) &mpkt, sizeof(mpkt));
+    bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
 void distSetOCPThreshold(PowerDomainID domain, float newval)
@@ -309,7 +338,7 @@ void distSetOCPThreshold(PowerDomainID domain, float newval)
     if (newval == 0.0f)
         return;
 
-    gpkt.powerdomainocpthreshold[(uint8_t)domain] = newval;
+    gseg.powerdomainocpthreshold[(uint8_t)domain] = newval;
 }
 
 void distInitializeOCPThresholds()
@@ -324,9 +353,11 @@ void distInitializeOCPThresholds()
 // Called when command routing infrastructure detects a command "addressed" to the subsystem
 uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
-    domaincmd_packet *dpacket;
-    commoncmd_packet *cpacket;
-    ocpthresh_packet *opacket;
+    domaincmd_segment *dsegment;
+    commoncmd_segment *csegment;
+    ocpthresh_segment *osegment;
+    firedeploy_segment *fsegment;
+
     int i;
     float newval;
 
@@ -336,22 +367,31 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
         switch (cmdstr[0])
         {
             case OPCODE_DOMAINSWITCH:
-                dpacket = (domaincmd_packet *) &cmdstr[1];
+                dsegment = (domaincmd_segment *) &cmdstr[1];
                 for (i = 0; i < NUM_POWER_DOMAINS; i++)
                 {
-                    distDomainSwitch((PowerDomainID)i, (PowerDomainCmd)(dpacket->pd_cmds[i]));
+                    distDomainSwitch((PowerDomainID)i, (PowerDomainCmd)(dsegment->pd_cmds[i]));
                 }
                 break;
             case OPCODE_COMMONCMD:
-                cpacket = (commoncmd_packet *) &cmdstr[1];
+                csegment = (commoncmd_segment *) &cmdstr[1];
                 LED_OUT ^= LED_BIT;
                 break;
             case OPCODE_OCPTHRESH:
-                opacket = (ocpthresh_packet *) &cmdstr[1];
+                osegment = (ocpthresh_segment *) &cmdstr[1];
+
+                gseg.undervoltagethresholds[PARTIAL_THRESHOLD_INDEX] = osegment->newBattVThresholds[PARTIAL_THRESHOLD_INDEX];
+                gseg.undervoltagethresholds[FULL_THRESHOLD_INDEX] = osegment->newBattVThresholds[FULL_THRESHOLD_INDEX];
+
                 for (i = 0; i < NUM_POWER_DOMAINS; i++)
                 {
-                    distSetOCPThreshold((PowerDomainID)i, opacket->newCurrentThreshold[i]);
+                    distSetOCPThreshold((PowerDomainID)i, osegment->newCurrentThreshold[i]);
                 }
+                break;
+            case OPCODE_FIREDEPLOY:
+                fsegment = (firedeploy_segment *) &cmdstr[1];
+                if (fsegment->key == DEPLOYMENT_SYSTEM_KEY)
+                    distFireDeploy();
                 break;
             default:
                 break;
@@ -371,14 +411,16 @@ int main(void)
     asensorInit(Ref_2p5V);
     hBattV = asensorActivateChannel(CHAN_A0, Type_GeneralV);
     distDomainInit();
+    distDeployInit();
+
 
     LED_DIR |= LED_BIT;
 
-    // Setup COSMOS telemetry packet structures
-    bcbinPopulateMeta(&mpkt, sizeof(mpkt));
-    bcbinPopulateHeader(&(hpkt.header), TLM_ID_SHARED_HEALTH, sizeof(hpkt));
-    bcbinPopulateHeader(&(gpkt.header), TLM_ID_EPS_DIST_GENERAL, sizeof(gpkt));
-    bcbinPopulateHeader(&(spkt.header), TLM_ID_EPS_DIST_SENSORDAT, sizeof(spkt));
+    // Setup segments to be able to serve as COSMOS telemetry packets
+    bcbinPopulateMeta(&mseg, sizeof(mseg));
+    bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
+    bcbinPopulateHeader(&(gseg.header), TLM_ID_EPS_DIST_GENERAL, sizeof(gseg));
+    bcbinPopulateHeader(&(sseg.header), TLM_ID_EPS_DIST_SENSORDAT, sizeof(sseg));
 
     //mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
 
@@ -387,8 +429,6 @@ int main(void)
     // Register to handle telecommands
     debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, distActionCallback);
     __delay_cycles(0.5 * SEC);
-
-
 
 #endif  //  __DEBUG__
 

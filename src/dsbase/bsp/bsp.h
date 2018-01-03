@@ -21,7 +21,7 @@ SubsystemModule bspGetModule();
 
 // Hard-wired assignments for a given board are stashed in these #if defined(...)
 // blocks
-#if defined(__BSP_Board_MSP430FR5994LaunchPad__)
+#if defined(__BSP_Board_MSP430FR5994LaunchPad__) || defined(__BSP_Board_SS__)
 #include <msp430.h>
 
 // LaunchPad-specific pins for built-in LEDs
@@ -41,10 +41,10 @@ SubsystemModule bspGetModule();
 
 // NOTE:  I2C1 (mapping to P5.0/5.1) is not accessible on LaunchPad
 // These map to eUSCI B1
-//#define LP5994_I2C1_PORTSEL0        P5SEL0
-//#define LP5994_I2C1_PORTSEL1        P5SEL1
-//#define LP5994_I2C1_SDA_BIT         BIT0
-//#define LP5994_I2C1_SCL_BIT         BIT1
+#define LP5994_I2C1_PORTSEL0        P5SEL0
+#define LP5994_I2C1_PORTSEL1        P5SEL1
+#define LP5994_I2C1_SDA_BIT         BIT0
+#define LP5994_I2C1_SCL_BIT         BIT1
 
 // These map to eUSCI B2
 #define LP5994_I2C2_PORTSEL0        P7SEL0
@@ -73,11 +73,13 @@ SubsystemModule bspGetModule();
 #define BACKCHANNEL_UART_SEL1   LP5994_BACKCHANNEL_UART_SEL1
 #define BACKCHANNEL_UART_BITS   LP5994_BACKCHANNEL_UART_BITS
 
+#if !defined(__BSP_Board_MSP430FR5994LaunchPad__)
 // NOTE:  I2C1 (mapping to P5.0/5.1) is not accessible on LaunchPad
-//#define I2C1_PORTSEL0        LP5994_I2C1_PORTSEL0
-//#define I2C1_PORTSEL1        LP5994_I2C1_PORTSEL1
-//#define I2C1_SDA_BIT         LP5994_I2C1_SDA_BIT
-//#define I2C1_SCL_BIT         LP5994_I2C1_SCL_BIT
+#define I2C1_PORTSEL0        LP5994_I2C1_PORTSEL0
+#define I2C1_PORTSEL1        LP5994_I2C1_PORTSEL1
+#define I2C1_SDA_BIT         LP5994_I2C1_SDA_BIT
+#define I2C1_SCL_BIT         LP5994_I2C1_SCL_BIT
+#endif
 
 #define I2C2_PORTSEL0        LP5994_I2C2_PORTSEL0
 #define I2C2_PORTSEL1        LP5994_I2C2_PORTSEL1

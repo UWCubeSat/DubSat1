@@ -36,7 +36,7 @@
 									<listOptionValue builtIn="false" value="__MSP430FR5994__"/>
 									<listOptionValue builtIn="false" value="__INITIAL_TRACE_LEVEL__=1"/>
 									<listOptionValue builtIn="false" value="__BSP_HW_MAGTOM_HMC5883L__"/>
-									<listOptionValue builtIn="false" value="__BSP_Board_MSP430FR5994LaunchPad__"/>
+									<listOptionValue builtIn="false" value="__BSP_Board_SS__"/>
 									<listOptionValue builtIn="false" value="__DEBUG__"/>
 									<listOptionValue builtIn="false" value="_MPU_ENABLE"/>
 								</option>

@@ -24,17 +24,9 @@
 #define SHUNT_HIGH_DRAW_DEVICE  0.01f
 #define SHUNT_LOW_DRAW_DEVICE   0.1f
 
-#define OCP_THRESH_LOW_DRAW_DEVICE  0.100f
-#define OCP_THRESH_MED_DRAW_DEVICE  0.200f
-#define OCP_THRESH_HIGH_DRAW_DEVICE 0.500f
-
-#define BATTVDIVR1  100000
-#define BATTVDIVR2  53000
-#define BATTV_CONV_FACTOR    (((BATTVDIVR1 + BATTVDIVR2)/BATTVDIVR2) * 1.43137)
-
-#define BATT_THRESH   (6.60f)
-#define BATT_HYSTER   (0.25f)
-
+#define OCP_THRESH_LOW_DRAW_DEVICE  0.300f
+#define OCP_THRESH_MED_DRAW_DEVICE  0.500f
+#define OCP_THRESH_HIGH_DRAW_DEVICE 0.700f
 
 // Configure power domain control pins
 #define DOMAIN_ENABLE_COM2_DIR  P7DIR
@@ -74,6 +66,10 @@
 #define DOMAIN_ENABLE_CURRENT_SENSORS_OUT   P3OUT
 #define DOMAIN_ENABLE_CURRENT_SENSORS_BIT   BIT4
 
+#define DEPLOY_ENABLE_DIR P1DIR
+#define DEPLOY_ENABLE_OUT P1OUT
+#define DEPLOY_ENABLE_BIT BIT7
+
 // Debug LED
 #define LED_DIR P3DIR
 #define LED_OUT P3OUT
@@ -106,6 +102,12 @@ typedef enum {
     Switch_Enabled,
 } PowerDomainSwitchState;
 
+typedef enum {
+    UV_InRange,
+    UV_PartialShutdown,
+    UV_FullShutdown,
+} UndervoltageHandlingMode;
+
 
 typedef struct _power_domain_info {
     PowerDomainID id;
@@ -116,37 +118,56 @@ typedef struct _power_domain_info {
 } PowerDomainInfo;
 
 // COSMOS telem and cmd packets
-COSMOS_TLM_PACKET {
+#define PARTIAL_THRESHOLD_INDEX  0
+#define FULL_THRESHOLD_INDEX  1
+#define NUM_BATTV_THRESHOLDS  2
+TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
     float battV;
+    uint8_t uvmode;   // Battery under voltage mode
+    float undervoltagethresholds[NUM_BATTV_THRESHOLDS];
 
     uint8_t powerdomainlastcmds[NUM_POWER_DOMAINS];
     uint8_t powerdomainswitchstate[NUM_POWER_DOMAINS];
 
     uint8_t powerdomaincurrentlimitedcount[NUM_POWER_DOMAINS];
     float powerdomainocpthreshold[NUM_POWER_DOMAINS];
-} general_packet;
+} general_segment;
 
 // SensorDat packet:  high-frequency sends that capture state of sensors (including overcurrent flags)
-COSMOS_TLM_PACKET {
+TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
     float currents[NUM_POWER_DOMAINS];
     uint8_t powerdomaincurrentlimited[NUM_POWER_DOMAINS];
     float busV[NUM_POWER_DOMAINS];
-} sensordat_packet;
+} sensordat_segment;
 
-COSMOS_CMD_PACKET {
+CMD_SEGMENT {
     uint8_t pd_cmds[NUM_POWER_DOMAINS];
-} domaincmd_packet;
+} domaincmd_segment;
 
-COSMOS_CMD_PACKET {
+#define BATTV_CONV_FACTOR    2.8867925f
+
+#define BATT_DEFAULT_PARTIAL_THRESH   (5.8f)
+#define BATT_DEFAULT_FULL_THRESH      (5.2f)
+#define BATT_HYSTER   (0.25f)
+
+
+CMD_SEGMENT {
     float newCurrentThreshold[NUM_POWER_DOMAINS];
-} ocpthresh_packet;
+    float newBattVThresholds[NUM_BATTV_THRESHOLDS];
+} ocpthresh_segment;
+
+#define DEPLOYMENT_SYSTEM_KEY  126
+CMD_SEGMENT {
+    uint8_t key;
+} firedeploy_segment;
 
 #define OPCODE_DOMAINSWITCH        0x64  // Dec '100', ASCII 'd'
 #define OPCODE_OCPTHRESH           0x74  // Dec '116', ASCII 't'
+#define OPCODE_FIREDEPLOY          0x66  // Dec '102', ASCII 'f'
 
 #define TLM_ID_EPS_DIST_GENERAL    TLM_ID_SHARED_SSGENERAL  // == 0x02  <--- standard message ID
 #define TLM_ID_EPS_DIST_SENSORDAT  0x03
@@ -184,5 +205,7 @@ void handleSyncPulse2();
 uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
+
+void distInitializeOCPThresholds();
 
 #endif /* EPS_DIST_H_ */

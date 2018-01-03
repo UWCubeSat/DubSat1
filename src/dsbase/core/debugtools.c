@@ -474,7 +474,7 @@ void bcbinSendPacket(uint8_t * buff, uint8_t szBuff)
     uartTransmit(handle, buff, szBuff);
 }
 
-void bcbinPopulateMeta(meta_packet *mpkt, size_t sz)
+void bcbinPopulateMeta(meta_segment *mpkt, size_t sz)
 {
     bcbinPopulateHeader(&(mpkt->header), TLM_ID_SHARED_META, sz);
 
