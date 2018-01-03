@@ -5,8 +5,8 @@
  *      Author: jeffc
  */
 
-#ifndef SUBSYSTEMNAME_MODULENAME_H_
-#define SUBSYSTEMNAME_MODULENAME_H_
+#ifndef EPS_BATT_H_
+#define EPS_BATT_H_
 
 #include <stdint.h>
 
@@ -49,4 +49,4 @@ uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 
-#endif /* SUBSYSTEMNAME_MODULENAME_H_ */
+#endif /* EPS_BATT_H_ */

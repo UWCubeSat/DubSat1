@@ -1,6 +1,6 @@
+#include <eps_gen.h>
 #include <msp430.h> 
 
-#include "SUBSYSTEMNAME_MODULENAME.h"
 #include "bsp/bsp.h"
 
 // Main status (a structure) and state and mode variables
@@ -18,6 +18,15 @@ FILE_STATIC flag_t triggerState3;
 /*
  * main.c
  */
+
+// TEMPORARY
+#define CANMSP_BLOCKV24_LED_PORT_DIR    PJDIR
+#define CANMSP_BLOCKV24_LED_PORT_OUT    PJOUT
+#define CANMSP_BLOCKV24_LED0_BIT        BIT0
+#define CANMSP_BLOCKV24_LED1_BIT        BIT1
+#define CANMSP_BLOCKV24_LED2_BIT        BIT2
+#define CANMSP_BLOCKV24_LED_BITS        (CANMSP_BLOCKV24_LED0_BIT | CANMSP_BLOCKV24_LED1_BIT | CANMSP_BLOCKV24_LED2_BIT)
+
 int main(void)
 {
 
@@ -55,37 +64,44 @@ int main(void)
     // and then control is returned to this main loop
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
+
+    // TEMPORARY
+    CANMSP_BLOCKV24_LED_PORT_DIR |= CANMSP_BLOCKV24_LED_BITS;
+
     while (1)
     {
+        // TEMPORARY
+        CANMSP_BLOCKV24_LED_PORT_OUT ^= CANMSP_BLOCKV24_LED_BITS;
+        __delay_cycles(0.2 * SEC);
         // This assumes that some interrupt code will change the value of the triggerStaten variables
-        switch (ss_state)
-        {
-        case State_FirstState:
-            if (triggerState2)
-            {
-                triggerState2 = 0;
-                ss_state = State_SecondState;
-            }
-            break;
-        case State_SecondState:
-            if (triggerState3)
-            {
-                triggerState3 = 0;
-                ss_state = State_ThirdState;
-            }
-            break;
-        case State_ThirdState:
-            if (triggerState1)
-            {
-                triggerState1 = 0;
-                ss_state = State_FirstState;
-            }
-            break;
-        default:
-            mod_status.state_transition_errors++;
-            mod_status.in_unknown_state++;
-            break;
-        }
+//        switch (ss_state)
+//        {
+//        case State_FirstState:
+//            if (triggerState2)
+//            {
+//                triggerState2 = 0;
+//                ss_state = State_SecondState;
+//            }
+//            break;
+//        case State_SecondState:
+//            if (triggerState3)
+//            {
+//                triggerState3 = 0;
+//                ss_state = State_ThirdState;
+//            }
+//            break;
+//        case State_ThirdState:
+//            if (triggerState1)
+//            {
+//                triggerState1 = 0;
+//                ss_state = State_FirstState;
+//            }
+//            break;
+//        default:
+//            mod_status.state_transition_errors++;
+//            mod_status.in_unknown_state++;
+//            break;
+//        }
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
