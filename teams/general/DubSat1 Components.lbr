@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.3">
+<eagle version="8.5.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.05" altunitdist="mm" altunit="mm"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -1797,6 +1797,12 @@ Board Template: V2.1</text>
 <wire x1="-3.5" y1="6.4" x2="-3.5" y2="8.4" width="0.127" layer="21"/>
 <wire x1="-3.5" y1="8.4" x2="7.7" y2="8.4" width="0.127" layer="21"/>
 <wire x1="7.7" y1="8.4" x2="7.7" y2="6.4" width="0.127" layer="21"/>
+<polygon width="0.127" layer="39">
+<vertex x="-3.5" y="8.4"/>
+<vertex x="7.7" y="8.4"/>
+<vertex x="7.7" y="-0.8"/>
+<vertex x="-3.5" y="-0.8"/>
+</polygon>
 </package>
 <package name="PICOLOCK_5">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1818,6 +1824,12 @@ Board Template: V2.1</text>
 <wire x1="-3.5" y1="8.4" x2="9.2" y2="8.4" width="0.127" layer="21"/>
 <wire x1="9.2" y1="8.4" x2="9.2" y2="6.4" width="0.127" layer="21"/>
 <text x="-1.2" y="4.6" size="0.8128" layer="25" font="vector">&gt;Name</text>
+<polygon width="0.127" layer="39">
+<vertex x="-3.5" y="8.4"/>
+<vertex x="9.2" y="8.4"/>
+<vertex x="9.2" y="-0.8"/>
+<vertex x="-3.5" y="-0.8"/>
+</polygon>
 </package>
 <package name="PICOLOCK_6">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1840,6 +1852,12 @@ Board Template: V2.1</text>
 <wire x1="-3.5" y1="8.4" x2="10.8" y2="8.4" width="0.127" layer="21"/>
 <wire x1="10.8" y1="8.4" x2="10.8" y2="6.4" width="0.127" layer="21"/>
 <text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
+<polygon width="0.127" layer="39">
+<vertex x="-3.5" y="8.4"/>
+<vertex x="10.8" y="8.4"/>
+<vertex x="10.8" y="-0.8"/>
+<vertex x="-3.5" y="-0.8"/>
+</polygon>
 </package>
 <package name="PICOLOCK_7">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1863,6 +1881,12 @@ Board Template: V2.1</text>
 <wire x1="-3.5" y1="8.3" x2="12.2" y2="8.3" width="0.127" layer="21"/>
 <wire x1="12.2" y1="8.3" x2="12.2" y2="6.4" width="0.127" layer="21"/>
 <text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
+<polygon width="0.127" layer="39">
+<vertex x="-3.5" y="8.3"/>
+<vertex x="12.2" y="8.3"/>
+<vertex x="12.2" y="-0.8"/>
+<vertex x="-3.5" y="-0.8"/>
+</polygon>
 </package>
 <package name="PICOLOCK_8">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1887,6 +1911,12 @@ Board Template: V2.1</text>
 <wire x1="-3.5" y1="8.4" x2="13.7" y2="8.4" width="0.127" layer="21"/>
 <wire x1="13.7" y1="8.4" x2="13.7" y2="6.4" width="0.127" layer="21"/>
 <text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
+<polygon width="0.127" layer="39">
+<vertex x="-3.5" y="8.4"/>
+<vertex x="13.7" y="8.4"/>
+<vertex x="13.7" y="-0.8"/>
+<vertex x="-3.5" y="-0.8"/>
+</polygon>
 </package>
 <package name="PICOLOCK_10">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1913,6 +1943,12 @@ Board Template: V2.1</text>
 <wire x1="-3.5" y1="8.4" x2="16.7" y2="8.4" width="0.127" layer="21"/>
 <wire x1="16.7" y1="8.4" x2="16.7" y2="6.4" width="0.127" layer="21"/>
 <text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
+<polygon width="0.127" layer="39">
+<vertex x="-3.5" y="8.4"/>
+<vertex x="16.7" y="8.4"/>
+<vertex x="16.7" y="-0.8"/>
+<vertex x="-3.5" y="-0.8"/>
+</polygon>
 </package>
 <package name="PICOLOCK_12">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1941,6 +1977,12 @@ Board Template: V2.1</text>
 <wire x1="-3.5" y1="8.4" x2="19.7" y2="8.4" width="0.127" layer="21"/>
 <wire x1="19.7" y1="8.4" x2="19.7" y2="6.4" width="0.127" layer="21"/>
 <text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
+<polygon width="0.127" layer="39">
+<vertex x="-3.5" y="8.4"/>
+<vertex x="19.7" y="8.4"/>
+<vertex x="19.7" y="-0.8"/>
+<vertex x="-3.5" y="-0.8"/>
+</polygon>
 </package>
 <package name="RESISTOR_RWM0622">
 <wire x1="-9" y1="3.25" x2="9" y2="3.25" width="0.127" layer="21"/>
