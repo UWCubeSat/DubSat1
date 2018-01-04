@@ -15,6 +15,27 @@
 #include "../interfaces/systeminfo.h"
 #include "../core/i2c.h"
 
+#if defined(__SS_EPS_DIST__)
+#define __SUBSYSTEM_MODULE__  Module_EPS_Dist
+
+#elif defined(__SS_EPS_GEN__)
+#define __SUBSYSTEM_MODULE__  Module_EPS_Gen
+
+#elif defined(__SS_EPS_BATT__)
+#define __SUBSYSTEM_MODULE__  Module_EPS_Batt
+
+#elif defined(__SS_PPT__)
+#define __SUBSYSTEM_MODULE__  Module_PPT
+
+#elif defined(__SS_TEST__)
+#define __SUBSYSTEM_MODULE__  Module_Test
+
+#else
+#warning No specific module specified via __SS_<subsystemmodule>__ macro at build time, defaulting to Module_Test.
+#define __SUBSYSTEM_MODULE__  Module_Test
+
+#endif
+
 // Various helper functions
 void bspInit(SubsystemModule mod);
 SubsystemModule bspGetModule();

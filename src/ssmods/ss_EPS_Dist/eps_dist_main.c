@@ -405,7 +405,7 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
-    bspInit(Module_EPS_Dist);  // <<DO NOT DELETE or MOVE>>
+    bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
 
     // Spin up the ADC, for the temp sensor and battery voltage
     asensorInit(Ref_2p5V);
