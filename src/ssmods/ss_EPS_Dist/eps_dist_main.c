@@ -445,7 +445,7 @@ int main(void)
     while (1)
     {
         // TODO:  eventually drive this with a timer
-        LED_OUT ^= LED_BIT;
+        //LED_OUT ^= LED_BIT;
         __delay_cycles(0.1 * SEC);
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
@@ -458,6 +458,7 @@ int main(void)
                 distBcSendSensorDat();
                 if (counter % 8 == 0)
                 {
+                    LED_OUT ^= LED_BIT;
                     distBcSendGeneral();
                     distBcSendHealth();
                     distMonitorBattery();
