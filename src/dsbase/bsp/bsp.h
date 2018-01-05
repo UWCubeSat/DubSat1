@@ -15,6 +15,9 @@
 #include "../interfaces/systeminfo.h"
 #include "../core/i2c.h"
 
+#define HWKEY_LP430_A  { 0x2BCB6749, 0x0018003A }
+#define HWKEY_LP430_B  { 0x2BCB6749, 0x00180038 }
+
 #if defined(__SS_EPS_DIST__)
 #define __SUBSYSTEM_MODULE__  Module_EPS_Dist
 
