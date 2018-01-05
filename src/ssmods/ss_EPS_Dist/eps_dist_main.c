@@ -312,6 +312,8 @@ FILE_STATIC void distBcSendGeneral()
 // Packetizes and sends backchannel GENERAL packet
 FILE_STATIC void distBcSendHealth()
 {
+    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
+
     // TODO:  Determine overall health based on querying various entities for their health
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
@@ -327,6 +329,7 @@ FILE_STATIC void distBcSendSensorDat()
 
 FILE_STATIC void distBcSendMeta()
 {
+    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 

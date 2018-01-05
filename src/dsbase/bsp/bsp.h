@@ -8,6 +8,7 @@
 #ifndef BSP_BSP_H_
 #define BSP_BSP_H_
 
+#include <stdint.h>
 
 #include "../core/debugtools.h"
 #include "../core/uart.h"
@@ -15,33 +16,50 @@
 #include "../interfaces/systeminfo.h"
 #include "../core/i2c.h"
 
-#define HWKEY_LP430_A  { 0x2BCB6749, 0x0018003A }
-#define HWKEY_LP430_B  { 0x2BCB6749, 0x00180038 }
+#define HWKEY_LP430_A   0x77BEBF44297C215E  // TODO:  get real one
+#define HWKEY_LP430_B   0x77BEBF44297C215E  // TODO:  get real one
+#define HWKEY_LP430_C   0x002C00432BCB6749
 
 #if defined(__SS_EPS_DIST__)
 #define __SUBSYSTEM_MODULE__  Module_EPS_Dist
+#define NUM_HWKEYS  1
+FILE_STATIC uint64_t hw_keys[] = { HWKEY_LP430_C };
 
 #elif defined(__SS_EPS_GEN__)
 #define __SUBSYSTEM_MODULE__  Module_EPS_Gen
+#define NUM_HWKEYS  0
 
 #elif defined(__SS_EPS_BATT__)
 #define __SUBSYSTEM_MODULE__  Module_EPS_Batt
+#define NUM_HWKEYS  0
 
 #elif defined(__SS_PPT__)
 #define __SUBSYSTEM_MODULE__  Module_PPT
+#define NUM_HWKEYS  0
 
 #elif defined(__SS_TEST__)
 #define __SUBSYSTEM_MODULE__  Module_Test
+#define NUM_HWKEYS  0
 
 #else
 #warning No specific module specified via __SS_<subsystemmodule>__ macro at build time, defaulting to Module_Test.
 #define __SUBSYSTEM_MODULE__  Module_Test
+#define NUM_HWKEYS  0
 
 #endif
+
+typedef enum {
+    HWSW_LockNotEnabled,
+    HWSW_NoKeysProvided,
+    HWSW_LockViolation,
+    HWSW_Matched,
+} hwsw_match_state;
 
 // Various helper functions
 void bspInit(SubsystemModule mod);
 SubsystemModule bspGetModule();
+hwsw_match_state bspGetMatchState();
+uint64_t bspGetChipID();
 
 // Hard-wired assignments for a given board are stashed in these #if defined(...)
 // blocks
