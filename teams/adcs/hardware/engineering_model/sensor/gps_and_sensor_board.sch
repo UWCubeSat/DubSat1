@@ -11112,6 +11112,33 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <label x="111.76" y="-111.76" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
+<net name="GPS_RXD1" class="0">
+<segment>
+<pinref part="U3" gate="G$1" pin="RXD1"/>
+<wire x1="195.58" y1="-60.96" x2="190.5" y2="-60.96" width="0.1524" layer="91"/>
+<label x="190.5" y="-60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="BLK1" gate="G$1" pin="P2.6_GPIO/PWM"/>
+<wire x1="76.2" y1="-96.52" x2="93.98" y2="-96.52" width="0.1524" layer="91"/>
+<label x="111.76" y="-116.84" size="1.778" layer="95" xref="yes"/>
+<wire x1="93.98" y1="-96.52" x2="93.98" y2="-116.84" width="0.1524" layer="91"/>
+<wire x1="93.98" y1="-116.84" x2="111.76" y2="-116.84" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="GPS_TXD1" class="0">
+<segment>
+<pinref part="U3" gate="G$1" pin="TXD1"/>
+<wire x1="195.58" y1="-66.04" x2="190.5" y2="-66.04" width="0.1524" layer="91"/>
+<label x="190.5" y="-66.04" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="BLK1" gate="G$1" pin="P2.5_GPIO"/>
+<wire x1="38.1" y1="-121.92" x2="38.1" y2="-134.62" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="-134.62" x2="58.42" y2="-134.62" width="0.1524" layer="91"/>
+<label x="58.42" y="-134.62" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>
