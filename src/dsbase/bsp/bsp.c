@@ -33,7 +33,11 @@ void bspExampleInit(SubsystemModule mod)
 }
 */
 
-
+FILE_STATIC hwsw_match_state mstate;
+hwsw_match_state bspGetMatchState()
+{
+    return mstate;
+}
 
 uint8_t infoReport(DebugMode mode)
 {
@@ -52,12 +56,58 @@ uint8_t infoReport(DebugMode mode)
     return 1;
 }
 
+FILE_STATIC uint64_t chipID;
+uint64_t bspGetChipID()
+{
+    return chipID;
+}
+
+FILE_STATIC hwsw_match_state enforceHWSWLock()
+{
+    chipID = *((uint64_t *)0x1A0A);
+
+#if defined(__ENABLE_HWSW_MATCH__)
+
+    if (NUM_HWKEYS == 0)
+    {
+        mstate = HWSW_NoKeysProvided;
+        return HWSW_NoKeysProvided;
+    }
+
+    // Keys are provided, so check them
+    int i;
+    for (i = 0; i < NUM_HWKEYS; i++)
+    {
+        if (chipID == hw_keys[i])
+        {
+            mstate = HWSW_Matched;
+            return HWSW_Matched;
+        }
+
+    }
+
+    // Fall-through - no match found
+    mstate = HWSW_LockViolation;
+    return HWSW_LockViolation;
+
+#else
+
+    mstate = HWSW_LockNotEnabled;
+    return HWSW_LockNotEnabled;
+
+#endif
+}
+
+FILE_STATIC meta_segment mseg;   // Used if something fails before init complete
 void bspInit(SubsystemModule mod)
 {
     ssModule = mod;
 
     // Stop watchdog timer
     WDTCTL = WDTPW | WDTHOLD;
+
+    // NOW, CHECK HARDWARE KEY - if it doesn't match, this never returns ...
+    enforceHWSWLock();
 
     // SAFE way of setting clock to 8Mhz, from
     // per-device errata:  must set divider to 4 before changing frequency to
@@ -79,12 +129,21 @@ void bspInit(SubsystemModule mod)
     // previously configured port settings
     PM5CTL0 &= ~LOCKLPM5;
 
-#if defined(__BSP_Board_MSP430FR5994LaunchPad__)
-    // Insert board-specific configuration here
-#endif
-
 #if defined(__DEBUG__)
+
     debugInit();
+
+    // Now lock up, since the serial port now works but not much else has happened
+    if (mstate == HWSW_LockViolation)
+    {
+        bcbinPopulateMeta(&mseg, sizeof(mseg));
+
+        while(1)
+        {
+            bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+            __delay_cycles(3 * SEC);
+        }
+    }
 
     // Register the system info report function
     // TODO:  Merge systeminfo and BSP, they aren't both needed

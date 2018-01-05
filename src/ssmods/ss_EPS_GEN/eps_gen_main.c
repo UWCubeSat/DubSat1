@@ -72,7 +72,7 @@ int main(void)
     {
         // TEMPORARY
         CANMSP_BLOCKV24_LED_PORT_OUT ^= CANMSP_BLOCKV24_LED_BITS;
-        __delay_cycles(0.2 * SEC);
+        __delay_cycles(0.05 * SEC);
         // This assumes that some interrupt code will change the value of the triggerStaten variables
 //        switch (ss_state)
 //        {

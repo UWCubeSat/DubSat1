@@ -33,14 +33,14 @@
 							<tool id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.exe.compilerDebug.318885800" name="MSP430 Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.exe.compilerDebug">
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DEFINE.1126727596" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DEFINE" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__MSP430FR5994__"/>
+									<listOptionValue builtIn="false" value="__DEBUG_UART_SPEED_9600__"/>
 									<listOptionValue builtIn="false" value="__SS_EPS_DIST__"/>
 									<listOptionValue builtIn="false" value="__ENABLE_HWSW_MATCH__"/>
-									<listOptionValue builtIn="false" value="__DEBUG_UART_SPEED_9600__"/>
-									<listOptionValue builtIn="false" value="__INITIAL_DEBUG_MODE__=2"/>
 									<listOptionValue builtIn="false" value="__INITIAL_TRACE_LEVEL__=1"/>
-									<listOptionValue builtIn="false" value="__BSP_HW_IMU_LSM6DSM__"/>
+									<listOptionValue builtIn="false" value="__INITIAL_DEBUG_MODE__=2"/>
+									<listOptionValue builtIn="false" value="__BSP_HW_IMU_BMI160__"/>
 									<listOptionValue builtIn="false" value="__BSP_HW_MAGTOM_HMC5883L__"/>
-									<listOptionValue builtIn="false" value="__BSP_Board_SS__"/>
+									<listOptionValue builtIn="false" value="__BSP_Board_MSP430FR5994LaunchPad__"/>
 									<listOptionValue builtIn="false" value="__DEBUG__"/>
 									<listOptionValue builtIn="false" value="_MPU_ENABLE"/>
 								</option>
@@ -51,7 +51,7 @@
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.SILICON_ERRATA.CPU22.2122476452" name="Workaround specified silicon errata (--silicon_errata) [CPU22]" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.SILICON_ERRATA.CPU22" value="true" valueType="boolean"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.SILICON_ERRATA.CPU40.1436028709" name="Workaround specified silicon errata (--silicon_errata) [CPU40]" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.SILICON_ERRATA.CPU40" value="true" valueType="boolean"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.SILICON_VERSION.1641507492" name="Silicon version (--silicon_version, -v)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.SILICON_VERSION" value="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.SILICON_VERSION.mspx" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.PRINTF_SUPPORT.1234050934" name="Level of printf/scanf support required (--printf_support)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.PRINTF_SUPPORT" value="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.PRINTF_SUPPORT.minimal" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.PRINTF_SUPPORT.1234050934" name="Level of printf/scanf support required (--printf_support)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.PRINTF_SUPPORT" value="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.PRINTF_SUPPORT.full" valueType="enumerated"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.INCLUDE_PATH.931670036" name="Add dir to #include search path (--include_path, -I)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.INCLUDE_PATH" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${CCS_BASE_ROOT}/msp430/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${DSBASE}&quot;"/>
@@ -103,8 +103,8 @@
 							<tool id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.1010345543" name="MSP430 Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex">
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.ROMWIDTH.177991832" name="Specify rom width (--romwidth, -romwidth=width)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.ROMWIDTH" value="8" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.MEMWIDTH.2106348471" name="Specify memory width (--memwidth, -memwidth=width)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.MEMWIDTH" value="8" valueType="string"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.TOOL_ENABLE.454799587" name="Enable tool" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.TOOL_ENABLE" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.OUTPUT_FORMAT.17870686" name="Output format" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.OUTPUT_FORMAT" value="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.OUTPUT_FORMAT.TI_TXT" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.TOOL_ENABLE.453515525" name="Enable tool" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.TOOL_ENABLE" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.OUTPUT_FORMAT.1696425281" name="Output format" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.OUTPUT_FORMAT" value="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.OUTPUT_FORMAT.TI_TXT" valueType="enumerated"/>
 							</tool>
 						</toolChain>
 					</folderInfo>

@@ -312,6 +312,8 @@ FILE_STATIC void distBcSendGeneral()
 // Packetizes and sends backchannel GENERAL packet
 FILE_STATIC void distBcSendHealth()
 {
+    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
+
     // TODO:  Determine overall health based on querying various entities for their health
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
@@ -327,6 +329,7 @@ FILE_STATIC void distBcSendSensorDat()
 
 FILE_STATIC void distBcSendMeta()
 {
+    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
@@ -405,7 +408,7 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
-    bspInit(Module_EPS_Dist);  // <<DO NOT DELETE or MOVE>>
+    bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
 
     // Spin up the ADC, for the temp sensor and battery voltage
     asensorInit(Ref_2p5V);
@@ -445,7 +448,7 @@ int main(void)
     while (1)
     {
         // TODO:  eventually drive this with a timer
-        LED_OUT ^= LED_BIT;
+        //LED_OUT ^= LED_BIT;
         __delay_cycles(0.1 * SEC);
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
@@ -458,6 +461,7 @@ int main(void)
                 distBcSendSensorDat();
                 if (counter % 8 == 0)
                 {
+                    LED_OUT ^= LED_BIT;
                     distBcSendGeneral();
                     distBcSendHealth();
                     distMonitorBattery();

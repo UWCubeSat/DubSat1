@@ -479,6 +479,7 @@ void bcbinPopulateMeta(meta_segment *mpkt, size_t sz)
     bcbinPopulateHeader(&(mpkt->header), TLM_ID_SHARED_META, sz);
 
     mpkt->module = bspGetModule();
+    mpkt->matchstate = (uint8_t)(bspGetMatchState());
     mpkt->compver = __TI_COMPILER_VERSION__;
     mpkt->stdcver = __STDC_VERSION__;
 

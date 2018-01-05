@@ -160,6 +160,7 @@ TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
     uint8_t module;
+    uint8_t matchstate;
     uint16_t compver;
     uint16_t stdcver;
 

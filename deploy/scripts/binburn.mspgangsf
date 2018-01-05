@@ -1,0 +1,38 @@
+>START
+MESSAGEBOX OKCANCEL
+"Deploy subsystem modules to MSP43x's?"
+"When ready press the button:"
+" "
+"OK - deploy all"
+"CANCEL - exit program"
+IF BUTTONCANCEL GOTO finish
+
+; Configurations (projects) store all the settings except code files ...
+
+F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\dep_eps_dist.mspgangproj
+F_GO
+
+F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\dep_eps_gen.mspgangproj
+F_GO
+
+F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\dep_eps_batt.mspgangproj
+F_GO
+
+; NOT YET CONNECTED!
+;F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\dep_ppt.mspgangproj
+;F_GO
+
+
+
+
+
+
+
+
+
+
+
+
+
+>finish
+END
