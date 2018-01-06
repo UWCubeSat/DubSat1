@@ -5,7 +5,7 @@
 #include "core/utils.h"
 
 #include "sun_sensor_test.h"
-#include "sun_sensor.h"
+#include "sensors/sun_sensor.h"
 
 int main(void)
 {

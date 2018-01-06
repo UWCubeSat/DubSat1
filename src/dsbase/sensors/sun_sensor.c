@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#include "sun_sensor.h"
+#include "sensors/sun_sensor.h"
 #include "core/utils.h"
 #include "core/i2c.h"
 #include "core/debugTools.h"
