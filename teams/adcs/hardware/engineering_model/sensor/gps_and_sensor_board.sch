@@ -602,16 +602,15 @@ Datsheet: http://cds.linear.com/docs/en/datasheet/2943fa.pdf</description>
 <wire x1="6.125" y1="18.125" x2="7.875" y2="18.125" width="0.2032" layer="1"/>
 <wire x1="7.875" y1="18.125" x2="8.625" y2="18.875" width="0.2032" layer="1"/>
 <wire x1="8.875" y1="16.875" x2="8.875" y2="18.875" width="0.2032" layer="1"/>
-<smd name="27" x="-3.375" y="25.205" dx="0.8" dy="1.2" layer="1" rot="R90"/>
-<smd name="28" x="-3.375" y="27.005" dx="0.8" dy="1.2" layer="1" rot="R90"/>
-<wire x1="-4.175" y1="24.605" x2="-4.175" y2="27.605" width="0.127" layer="21"/>
-<wire x1="-4.175" y1="27.605" x2="-2.575" y2="27.605" width="0.127" layer="21"/>
-<wire x1="-2.575" y1="27.605" x2="-2.575" y2="24.605" width="0.127" layer="21"/>
-<wire x1="-2.575" y1="24.605" x2="-4.175" y2="24.605" width="0.127" layer="21"/>
-<text x="-3.875" y="25.875" size="0.3" layer="27" font="vector">.1u</text>
-<pad name="GND@1" x="-3.375" y="27.875" drill="0.6096" rot="R270" thermals="no"/>
-<wire x1="-1.704459375" y1="23.95445625" x2="-2.875" y2="25.125" width="0.2032" layer="1"/>
-<smd name="3.3V@CAN1" x="-3.375" y="25.125" dx="1" dy="0.25" layer="1" rot="R180"/>
+<smd name="27" x="-3.975" y="22.105" dx="0.8" dy="1.2" layer="1" rot="R90"/>
+<smd name="28" x="-3.975" y="23.905" dx="0.8" dy="1.2" layer="1" rot="R90"/>
+<wire x1="-4.775" y1="21.505" x2="-4.775" y2="24.505" width="0.127" layer="21"/>
+<wire x1="-4.775" y1="24.505" x2="-3.175" y2="24.505" width="0.127" layer="21"/>
+<wire x1="-3.175" y1="24.505" x2="-3.175" y2="21.505" width="0.127" layer="21"/>
+<wire x1="-3.175" y1="21.505" x2="-4.775" y2="21.505" width="0.127" layer="21"/>
+<text x="-4.475" y="22.775" size="0.3" layer="27" font="vector">.1u</text>
+<pad name="GND@1" x="-3.975" y="24.775" drill="0.6096" rot="R270" thermals="no"/>
+<smd name="3.3V@CAN1" x="-3.975" y="22.025" dx="1" dy="0.25" layer="1" rot="R180"/>
 <wire x1="9.125" y1="18.875" x2="9.125" y2="18.75" width="0.2032" layer="1"/>
 <wire x1="5.1885" y1="16.0635" x2="3.5635" y2="16.0635" width="0.2032" layer="1"/>
 <wire x1="3.5635" y1="16.0635" x2="1.25" y2="13.75" width="0.2032" layer="1"/>
@@ -637,6 +636,11 @@ Datsheet: http://cds.linear.com/docs/en/datasheet/2943fa.pdf</description>
 <smd name="3.3V_ANALOG@MSP2" x="-8.4824" y="5.9042" dx="1" dy="0.25" layer="1" rot="R180"/>
 <smd name="3.3V@MSP2" x="-8.5332" y="-5.9624" dx="1" dy="0.25" layer="1" rot="R180"/>
 <wire x1="2.1336" y1="12.3444" x2="1.4986" y2="12.3444" width="0.6096" layer="1"/>
+<wire x1="-1.7" y1="24" x2="-2.5" y2="24" width="0.2032" layer="1"/>
+<wire x1="-2.5" y1="24" x2="-2.9" y2="23.6" width="0.2032" layer="1"/>
+<wire x1="-2.9" y1="23.6" x2="-2.9" y2="22.5" width="0.2032" layer="1"/>
+<wire x1="-2.9" y1="22.5" x2="-3.3" y2="22.1" width="0.2032" layer="1"/>
+<wire x1="-3.3" y1="22.1" x2="-4" y2="22.1" width="0.2032" layer="1"/>
 </package>
 <package name="OEM719">
 <pad name="P$1" x="69.22" y="13.84" drill="0.8" shape="square" rot="R90"/>
@@ -718,6 +722,12 @@ Datsheet: http://cds.linear.com/docs/en/datasheet/2943fa.pdf</description>
 <wire x1="-3.5" y1="6.4" x2="-3.5" y2="8.4" width="0.127" layer="21"/>
 <wire x1="-3.5" y1="8.4" x2="7.7" y2="8.4" width="0.127" layer="21"/>
 <wire x1="7.7" y1="8.4" x2="7.7" y2="6.4" width="0.127" layer="21"/>
+<polygon width="0.127" layer="39">
+<vertex x="-3.5" y="8.4"/>
+<vertex x="7.7" y="8.4"/>
+<vertex x="7.7" y="-0.8"/>
+<vertex x="-3.5" y="-0.8"/>
+</polygon>
 </package>
 <package name="LTC3624">
 <smd name="GND@PAD" x="0" y="0" dx="1.65" dy="2.38" layer="1"/>
@@ -2077,7 +2087,7 @@ P2.6 Rx and P2.5 Tx</text>
 <text x="-5.08" y="-45.72" size="3.556" layer="96" rot="R90">&gt;VALUE</text>
 <text x="-12.7" y="53.34" size="1.778" layer="95">&gt;NAME</text>
 </symbol>
-<symbol name="LT1761">
+<symbol name="TPS732XX">
 <pin name="IN" x="-12.7" y="5.08" visible="pin" length="middle"/>
 <pin name="GND" x="-12.7" y="0" visible="pin" length="middle"/>
 <pin name="EN" x="-12.7" y="-5.08" visible="pin" length="middle"/>
@@ -2087,7 +2097,7 @@ P2.6 Rx and P2.5 Tx</text>
 <wire x1="-7.62" y1="7.62" x2="5.08" y2="7.62" width="0.254" layer="94"/>
 <wire x1="5.08" y1="7.62" x2="5.08" y2="-7.62" width="0.254" layer="94"/>
 <wire x1="5.08" y1="-7.62" x2="-7.62" y2="-7.62" width="0.254" layer="94"/>
-<text x="-7.62" y="-10.16" size="1.27" layer="95">LT1761</text>
+<text x="-7.62" y="-10.16" size="1.27" layer="95">TPS732xx</text>
 </symbol>
 <symbol name="PICOLOCK_4">
 <pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
@@ -2431,9 +2441,9 @@ P2.6 Rx and P2.5 Tx</text>
 </device>
 </devices>
 </deviceset>
-<deviceset name="LINEAR_LDO_LT1761-X" prefix="U">
+<deviceset name="TPS732XX">
 <gates>
-<gate name="G$1" symbol="LT1761" x="2.54" y="0"/>
+<gate name="G$1" symbol="TPS732XX" x="0" y="0"/>
 </gates>
 <devices>
 <device name="" package="SOT-23-5">
@@ -10521,7 +10531,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="U1" library="DubSat1 Components" deviceset="LINEAR_LDO_LT1761-X" device=""/>
+<part name="U1" library="DubSat1 Components" deviceset="TPS732XX" device=""/>
 <part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="C5" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF"/>
@@ -10529,7 +10539,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="GND9" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C3" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF"/>
 <part name="GND11" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="U2" library="DubSat1 Components" deviceset="LINEAR_LDO_LT1761-X" device=""/>
+<part name="U2" library="DubSat1 Components" deviceset="TPS732XX" device=""/>
 <part name="GND8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="+3V36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF"/>
