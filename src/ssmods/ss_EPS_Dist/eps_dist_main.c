@@ -319,6 +319,7 @@ FILE_STATIC void distBcSendHealth()
     hseg.oms = OMS_Unknown;
     hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
+    debugInvokeStatusHandlers();
 }
 
 // Packetizes and sends backchannel SENSORDAT packet
@@ -330,6 +331,7 @@ FILE_STATIC void distBcSendSensorDat()
 FILE_STATIC void distBcSendMeta()
 {
     // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
+    bcbinPopulateMeta(&mseg, sizeof(mseg));
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
@@ -400,6 +402,7 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
                 break;
         }
     }
+    return 1;
 }
 
 /*
@@ -420,7 +423,6 @@ int main(void)
     LED_DIR |= LED_BIT;
 
     // Setup segments to be able to serve as COSMOS telemetry packets
-    bcbinPopulateMeta(&mseg, sizeof(mseg));
     bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
     bcbinPopulateHeader(&(gseg.header), TLM_ID_EPS_DIST_GENERAL, sizeof(gseg));
     bcbinPopulateHeader(&(sseg.header), TLM_ID_EPS_DIST_SENSORDAT, sizeof(sseg));

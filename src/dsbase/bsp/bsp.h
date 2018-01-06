@@ -16,35 +16,47 @@
 #include "../interfaces/systeminfo.h"
 #include "../core/i2c.h"
 
+// LaunchPad HW keys
 #define HWKEY_LP430_A   0x77BEBF44297C215E  // TODO:  get real one
 #define HWKEY_LP430_B   0x77BEBF44297C215E  // TODO:  get real one
 #define HWKEY_LP430_C   0x002C00432BCB6749
 
+// Engineering board HW keys
+#define HWKEY_EPS_DIST_ENG_V3  0x001500052BCB6748
+
+// Flight board HW keys
+// NONE YET
+
 #if defined(__SS_EPS_DIST__)
 #define __SUBSYSTEM_MODULE__  Module_EPS_Dist
 #define NUM_HWKEYS  1
-FILE_STATIC uint64_t hw_keys[] = { HWKEY_LP430_C };
+FILE_STATIC uint64_t hw_keys[] = { HWKEY_EPS_DIST_ENG_V3 };
 
 #elif defined(__SS_EPS_GEN__)
 #define __SUBSYSTEM_MODULE__  Module_EPS_Gen
 #define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
 
 #elif defined(__SS_EPS_BATT__)
 #define __SUBSYSTEM_MODULE__  Module_EPS_Batt
 #define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
 
 #elif defined(__SS_PPT__)
 #define __SUBSYSTEM_MODULE__  Module_PPT
 #define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
 
 #elif defined(__SS_TEST__)
 #define __SUBSYSTEM_MODULE__  Module_Test
 #define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
 
 #else
 #warning No specific module specified via __SS_<subsystemmodule>__ macro at build time, defaulting to Module_Test.
 #define __SUBSYSTEM_MODULE__  Module_Test
 #define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
 
 #endif
 
@@ -58,7 +70,7 @@ typedef enum {
 // Various helper functions
 void bspInit(SubsystemModule mod);
 SubsystemModule bspGetModule();
-hwsw_match_state bspGetMatchState();
+hwsw_match_state bspGetHWSWMatchState();
 uint64_t bspGetChipID();
 
 // Hard-wired assignments for a given board are stashed in these #if defined(...)

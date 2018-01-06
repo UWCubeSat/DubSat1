@@ -33,10 +33,10 @@ void bspExampleInit(SubsystemModule mod)
 }
 */
 
-FILE_STATIC hwsw_match_state mstate;
-hwsw_match_state bspGetMatchState()
+FILE_STATIC hwsw_match_state hwsw_mstate;
+hwsw_match_state bspGetHWSWMatchState()
 {
-    return mstate;
+    return hwsw_mstate;
 }
 
 uint8_t infoReport(DebugMode mode)
@@ -64,13 +64,12 @@ uint64_t bspGetChipID()
 
 FILE_STATIC hwsw_match_state enforceHWSWLock()
 {
-    chipID = *((uint64_t *)0x1A0A);
 
 #if defined(__ENABLE_HWSW_MATCH__)
 
     if (NUM_HWKEYS == 0)
     {
-        mstate = HWSW_NoKeysProvided;
+        hwsw_mstate = HWSW_NoKeysProvided;
         return HWSW_NoKeysProvided;
     }
 
@@ -80,19 +79,19 @@ FILE_STATIC hwsw_match_state enforceHWSWLock()
     {
         if (chipID == hw_keys[i])
         {
-            mstate = HWSW_Matched;
+            hwsw_mstate = HWSW_Matched;
             return HWSW_Matched;
         }
 
     }
 
     // Fall-through - no match found
-    mstate = HWSW_LockViolation;
+    hwsw_mstate = HWSW_LockViolation;
     return HWSW_LockViolation;
 
 #else
 
-    mstate = HWSW_LockNotEnabled;
+    hwsw_mstate = HWSW_LockNotEnabled;
     return HWSW_LockNotEnabled;
 
 #endif
@@ -107,6 +106,7 @@ void bspInit(SubsystemModule mod)
     WDTCTL = WDTPW | WDTHOLD;
 
     // NOW, CHECK HARDWARE KEY - if it doesn't match, this never returns ...
+    chipID = *((uint64_t *)0x1A0A);
     enforceHWSWLock();
 
     // SAFE way of setting clock to 8Mhz, from
@@ -134,7 +134,7 @@ void bspInit(SubsystemModule mod)
     debugInit();
 
     // Now lock up, since the serial port now works but not much else has happened
-    if (mstate == HWSW_LockViolation)
+    if (hwsw_mstate == HWSW_LockViolation)
     {
         bcbinPopulateMeta(&mseg, sizeof(mseg));
 

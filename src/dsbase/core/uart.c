@@ -18,6 +18,7 @@ uint8_t uartReportStatus(DebugMode mode)
 {
     int i;
     bus_context_UART *bus_ctx;
+    bus_status_UART_packet bpacket;
 
     // Run through report for each initialized UART
     for (i=0; i<2; i++)
@@ -36,9 +37,18 @@ uint8_t uartReportStatus(DebugMode mode)
                 debugPrintF("*RX:\r\nBytes rcvd: %d\r\nErrors: %d\r\nMissing handlers: %d\r\n\r\n", bus_ctx->rx_bytes_rcvd,
                             bus_ctx->rx_error_count, bus_ctx->rx_error_missinghandler_count);
             }
-            else
+            else if (mode == Mode_BinaryStreaming)
             {
-                // Output just CSV fields, for telemetry consumption
+                bpacket.busnum = i;
+                bpacket.initialized = bus_ctx->initialized;
+                bpacket.bushealth = bus_ctx->health;
+                bpacket.tx_bytes_sent = bus_ctx->tx_bytes_sent;
+                bpacket.rx_bytes_rcvd = bus_ctx->rx_bytes_rcvd;
+                bpacket.tx_error_count = bus_ctx->tx_error_count;
+                bpacket.rx_error_count = bus_ctx->rx_error_count;
+
+                bcbinPopulateHeader(&(bpacket.header), TLM_ID_SHARED_BUS_UART, sizeof(bpacket));
+                bcbinSendPacket((uint8_t *) &bpacket, sizeof(bpacket));
             }
         }
     }
@@ -131,6 +141,7 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable, UARTSpeed speed)
         UCA1IE |= UCRXIE | UCTXIE;
     }
 
+    bus_ctx->health = Bus_Healthy;
     return handle;
 }
 
@@ -203,6 +214,8 @@ void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
     	{
     	    bus_ctx->tx_error_count++;
     	    bus_ctx->tx_error_overrun_count++;
+
+    	    bus_ctx->health = Bus_BuffOverrunHandled;
 
     	    enableUARTInterrupts(handle);
     	    return;
@@ -295,6 +308,7 @@ void handleUCTXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
     {
         bus_ctx->tx_error_count++;
         bus_ctx->tx_error_underrun_count++;
+        bus_ctx->health = Bus_Underrun;
     }
 
     if (bus_ctx->currentTxIndex < bus_ctx->currentTxNumBytes)
