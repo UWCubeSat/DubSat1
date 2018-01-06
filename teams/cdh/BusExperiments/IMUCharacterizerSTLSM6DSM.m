@@ -14,7 +14,7 @@ slave_addr = '6Ah';      % ST LSM6DSM
 % Figure out number of samples
 % Raw number of samples method
 % num_samps = 50000;
-targetlens = 1800;  % target length in seconds
+targetlens = 43200;  % target length in seconds
 
 % Connect to device
 dut = i2c('aardvark', 0, slave_addr);
@@ -33,8 +33,9 @@ PAUSE_AFTER_SETTINGS_CHANGE = 5.0;  % seconds
 
 % Handy constants
 ODR_12p5_FS125  = hex2dec('12');
+ODR_26_FS125    = hex2dec('22');
 ODR_52_FS125    = hex2dec('32');
-ODR_104_FS125    = hex2dec('42');
+ODR_104_FS125   = hex2dec('42');
 HIGH_PERF_OFF   = hex2dec('80');
 HIGH_PERF_ON    = hex2dec('00'); 
 
@@ -53,6 +54,18 @@ config_12p5_high = { '12.5 Hz (High Perf)',
                     floor(targetlens * 12.5),
                     [CTRL2_G ODR_12p5_FS125],
                     [CTRL7_G HIGH_PERF_ON] };
+config_26_low = { '26 Hz (Low Power)',
+                  'AVAR26Hz_LowPower',
+                  0.0385, % Assuming this delay should be ~1/26, the period
+                  floor(targetlens * 26),
+                  [CTRL2_G ODR_26_FS125],
+                  [CTRL7_G HIGH_PERF_OFF] };
+config_26_high = { '26 Hz (High Perf)',
+                  'AVAR26Hz_HighPerf',
+                  0.0385,
+                  floor(targetlens * 26),
+                  [CTRL2_G ODR_26_FS125],
+                  [CTRL7_G HIGH_PERF_ON] };
 config_52_low = { '52 Hz (Low Power)', 
                     'AVAR52Hz_LowPower',
                     0.02,
@@ -84,9 +97,10 @@ config_104_high = { '104 Hz (High Perf)',
 %                   config_52_high,
 %                   config_104_low,
 %                   config_104_high];
-configurations = [ config_104_high  ];
+configurations = [ config_26_high  ];
 
-resultsfolder = 'LSM6DSMResults';              
+resultsfolder = 'LSM6DSMResults';
+% resultsfolder = [pwd '\test3'];              
               
 numconfigs = length(configurations)/NUM_TEST_CONFIG_FIELDS;
 allresults = zeros(numconfigs, 10);
@@ -139,7 +153,7 @@ for i = 1:numconfigs
     samprate = (num_samps)/totaltime;
     disp(['Test:  ' testtitle]);
     disp(['Samples taken: ' num2str(num_samps)]);
-    disp(['Elapsed time: ' num2str(totaltime) ' s']);
+    disp(['Elapsed time: ' num2str(totaltime) ' s']);   
     disp(['Avg. sample rate: ' num2str(samprate) ' Hz']);
 
     %t = (1:num_samps) * period;
@@ -201,11 +215,10 @@ for i = 1:numconfigs
     disp(['Bias instability Z = ' num2str(binstZdps) ' dps (' num2str(binstZdph) ' dph)']);
     
     allresults(i,:) = [samprate arwX arwY arwZ binstXdps binstYdps binstZdps binstXdph binstYdph binstZdph];
-   
+
+    save([resultsfolder '\' testbasefilename '_SUMMARY_RESULTS.mat'], 'allresults');
 
 end
-
-save([resultsfolder '\' testbasefilename '_SUMMARY_RESULTS.mat'], 'allresults');
 
 fclose(dut);
 delete(dut);

@@ -16,6 +16,7 @@
 
 // Relevant settings for command registers
 #define IMU_LSM6DSM_ODR_12p5_FS125          0x12
+#define IMU_LSM6DSM_ODR_26_FS125            0x22
 #define IMU_LSM6DSM_ODR_52_FS125            0x32
 #define IMU_LSM6DSM_ODR_104_FS125           0x42
 #define IMU_LSM6DSM_HIGH_PERF_OFF           0x80
