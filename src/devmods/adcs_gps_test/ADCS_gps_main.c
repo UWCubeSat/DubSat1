@@ -4,7 +4,7 @@
 #include "core/debugtools.h"
 
 #include "ADCS_GPS.h"
-#include "gps.h"
+#include "sensors/gps/gps.h"
 
 int main(void)
 {
