@@ -37,7 +37,7 @@ void rwsShowUsage()
     debugPrintF("\t!rsd  --  switch direction of motor\r\n");
 }
 
-void bcbinSendTlm()
+void rwSendTlm()
 {
     bcbinSendPacket((uint8_t *) &pid, sizeof(pid));
 }
@@ -45,7 +45,7 @@ void bcbinSendTlm()
 uint8_t rwsStatusCallback(DebugMode mode)
 {
     if (mode == Mode_BinaryStreaming)
-        bcbinSendTlm();
+        rwSendTlm();
     return 1;
 }
 
