@@ -6,6 +6,13 @@
 #ifndef GPSPACKAGE_H_
 #define GPSPACKAGE_H_
 
+// use OEM719 if no hardware is specified
+#ifndef __BSP_HW_GPS_OEM719__
+#ifndef __BSP_HW_GPS_OEM615__
+#define __BSP_HW_GPS_OEM719__
+#endif
+#endif
+
 #include <stdint.h>
 
 #include "core/utils.h"
