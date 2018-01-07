@@ -1,5 +1,5 @@
 Compute Module,Type,Board Stack #,General ID #, FlatSat #, Predefined Symbol , CAN Node ID,Notes
-Test Module, MSP430, 0, 0, 0,\__SS_TEST__, Module_Test, A placeholder/sample compute node
+Test Module, MSP430, 0, 0, 0,__SS_TEST__, Module_Test, A placeholder/sample compute node
 COM2,Pi3,1,14,0,\__SS_COM2__,Module_COM2,
 COM1,STM32,2,13,0,\__SS_COM1__,Module_COM1,
 ADCS: BDot Controller,MSP430,3,1,0,\__SS_ADCS_BDOT__,Module_ADCS_BDot,
