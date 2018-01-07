@@ -1,20 +1,65 @@
 #ifndef GPS_H_
 #define GPS_H_
 
-#define OPCODE_SEND_ASCII 1
-
 #include <stdbool.h>
 
 #include "core/utils.h"
 #include "GPSPackage.h"
 
+#ifdef __DEBUG__
+
+#if defined(__BSP_HW_GPS_OEM615__)
+
+FILE_STATIC const char *GPS_STATUS_DESC[] =
+{
+    "Error (use RXSTATUS for details)", "Temperature warning",
+    "Voltage supply warning", "Antenna not powered", "LNA Failure",
+    "Antenna open", "Antenna shorted", "CPU overload",
+    "COM1 buffer overrun", "COM2 buffer overrun", "COM3 buffer overrun",
+    "Link overrun", "", "Aux transmit overrun", "AGC out of range", "",
+    "INS reset", "", "GPS Almanac/UTC invalid", "Position invalid",
+    "Position fixed", "Clock steering disabled", "Clock model invalid",
+    "External oscillator locked", "Software resource warning", "", "", "",
+    "", "Aux 3 status event", "Aux 2 status event", "Aux 1 status event" };
+
+#elif defined(__BSP_HW_GPS_OEM719__)
+
+FILE_STATIC const char *GPS_STATUS_DESC[] =
+{
+    "Error (use RXSTATUS for details)", "Temperature warning",
+    "Voltage supply warning", "Antenna not powered", "LNA Failure",
+    "Antenna open", "Antenna shorted", "CPU overload",
+    "COM1 buffer overrun", "", "", "Link overrun", "Input overrun",
+    "Aux transmit overrun", "AGC out of range", "Jammer detected",
+    "INS reset", "IMU communication failure", "GPS Almanac/UTC invalid",
+    "Position invalid", "Position fixed", "Clock steering disabled",
+    "Clock model invalid", "External oscillator locked",
+    "Software resource warning", "Version bit 0", "Version bit 1",
+    "HDR tracking", "Digital filtering enabled", "Aux 3 status event",
+    "Aux 2 status event", "Aux 1 status event" };
+
+#else
+
+#error GPS hardware unspecified
+
+#endif /* __BPS_HW_GPS_*__ */
+
+#else
+
+FILE_STATIC const char *GPS_STATUS_DESC[];
+
+#endif /* __DEBUG__ */
+
 typedef void (*gps_message_handler)(const GPSPackage *package);
 typedef void (*gps_event_handler)(const GPSRXStatusEvent *event);
+typedef void (*gps_header_handler)(const GPSHeader *header);
 
 /**
  * Initializes MSP for IO with GPS. Should be called before powering on.
+ *
+ * genericMsgHandler: called every time a message is received
  */
-void gpsInit();
+void gpsInit(gps_header_handler messageHandler);
 
 /**
  * Powers on and configures the GPS
@@ -63,50 +108,5 @@ bool gpsRegisterMessageHandler(gps_message_id messageId,
 bool gpsRegisterEventHandler(gps_event_id eventId,
                              gps_event_handler handler,
                              gps_enum eventType);
-
-// the following structs are for telemetry. The raw data is in GPSPackage.h
-
-typedef struct PACKED_STRUCT _rxstatus_info {
-    BcTlmHeader header;
-    uint32_t error;
-    uint32_t status;
-    uint32_t aux1;
-    uint32_t aux2;
-    uint32_t aux3;
-} RXStatusInfo;
-
-typedef struct PACKED_STRUCT _bestxyz_info {
-    BcTlmHeader header;
-    gps_enum posStatus;
-    GPSVectorD pos;
-    GPSVectorF posStdDev;
-    gps_enum velStatus;
-    GPSVectorD vel;
-    GPSVectorF velStdDev;
-    uint16_t week;
-    int32_t ms;
-} BestXYZInfo;
-
-typedef struct PACKED_STRUCT _time_info {
-    BcTlmHeader header;
-    double offset;
-    int32_t ms;
-    uint16_t week;
-    gps_enum clockStatus;
-    gps_enum utcStatus;
-} TimeInfo;
-
-typedef struct PACKED_STRUCT _hwmonitor_info {
-    BcTlmHeader header;
-    float temp;
-    uint8_t tempStatus;
-} HWMonitorInfo;
-
-typedef struct PACKED_STRUCT _satvis2_info {
-    BcTlmHeader header;
-    uint32_t numGPS;
-    uint32_t numGLONASS;
-    uint32_t numSBAS;
-} Satvis2Info;
 
 #endif /* GPS_H_ */
