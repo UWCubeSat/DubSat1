@@ -85,7 +85,7 @@ int main(void)
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
     // Also hooks up sync pulse handlers.  Note that actual pulse interrupt handlers will update the
     // firing state structures before calling the provided handler function pointers.
-//    mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
+    mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
 
     // Setup segments to be able to serve as COSMOS telemetry packets
     bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
@@ -104,7 +104,6 @@ int main(void)
     debugRegisterEntity(Entity_SUBSYSTEM, handleDebugInfoCallback,
                                      handleDebugStatusCallback,
                                      handleDebugActionCallback);
-
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
@@ -132,6 +131,11 @@ int main(void)
                                     EVTTYPE_CLEAR);
     gpsRegisterEventHandler(EVTID_UTC, handleClockStatusEvent, EVTTYPE_CLEAR);
     gpsRegisterEventHandler(EVTID_CLOCK, handleClockStatusEvent, EVTTYPE_CLEAR);
+
+    // the GPS is always on since we don't have a working switch yet
+    // TODO remove these when we start working with a switch
+    ss_state = State_GPSOn;
+    gpsConfigure();
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
