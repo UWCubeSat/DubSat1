@@ -17,10 +17,10 @@ int main(void) {
     // Setup RTC Timer
     RTCCTL0_H = RTCKEY_H;                   // Unlock RTC with magic value
 
-    //RTCCTL0_L = RTCTEVIE_L;                 // RTC event interrupt enable
-    //RTCCTL13 = RTCSSEL_2 | RTCTEV_0 | RTCHOLD; // Counter Mode, RTC1PS, 8-bit ovf
-    //RTCPS0CTL = RT0PSDIV1;                  // ACLK, /8
-    //RTCPS1CTL = RT1SSEL1 | RT1PSDIV0 | RT1PSDIV1; // out from RT0PS, /16
+    RTCCTL0_L = RTCTEVIE_L;                 // RTC event interrupt enable
+    RTCCTL13 = RTCSSEL_2 | RTCTEV_0 | RTCHOLD; // Counter Mode, RTC1PS, 8-bit ovf
+    RTCPS0CTL = RT0PSDIV1;                  // ACLK, /8
+    RTCPS1CTL = RT1SSEL1 | RT1PSDIV0 | RT1PSDIV1; // out from RT0PS, /16
     RTCCTL13 = RTCSSEL_2 | RTCTEV_3 | RTCHOLD;  // Counter mode implied
 
 
@@ -32,6 +32,10 @@ int main(void) {
     // TODO:  Insert debug-specific stuff here, including registering info/status/action handlers, etc.
 
 #endif  //  __DEBUG__
+
+    __bis_SR_register(LPM3_bits | GIE);     // Enter LPM3 mode w/ interrupts enabled
+    __no_operation();
+
 
     return 0;
 }
