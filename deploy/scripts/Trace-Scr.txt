@@ -1,0 +1,28 @@
+============== Script contents ===============
+[000]   TRACEON
+[001] >START
+[002]   SLEEP 2000
+[003]   F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\tests\multigang_dist.mspgangproj
+[004]   SLEEP 10000
+[005]   F_GO
+[006]   SLEEP 2000
+[007] >finish
+[008]   END
+[009]   END
+============ End of script contents ==========
+
+==============================================
+         Sun, Jan 07,2018, 09:10
+==============================================
+---------------- TRACE ON --------------------
+
+[001] >START
+[002]   SLEEP 2000
+[003]   F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\tests\multigang_dist.mspgangproj
+[004]   SLEEP 10000
+[005]   F_GO
+[006]   SLEEP 2000
+[007] >finish
+[008]   END
+
+=================== END ======================
