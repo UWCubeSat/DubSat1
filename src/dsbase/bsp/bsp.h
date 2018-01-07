@@ -22,15 +22,16 @@
 #define HWKEY_LP430_C   0x002C00432BCB6749
 
 // Engineering board HW keys
-#define HWKEY_EPS_DIST_ENG_V3  0x001500052BCB6748
+#define HWKEY_EPS_DIST_ENG_V3_A  0x001500052BCB6748
+#define HWKEY_EPS_DIST_ENG_V3_B  0x0014000F2BCB6748
 
 // Flight board HW keys
 // NONE YET
 
 #if defined(__SS_EPS_DIST__)
 #define __SUBSYSTEM_MODULE__  Module_EPS_Dist
-#define NUM_HWKEYS  1
-FILE_STATIC uint64_t hw_keys[] = { HWKEY_EPS_DIST_ENG_V3 };
+#define NUM_HWKEYS  2
+FILE_STATIC uint64_t hw_keys[] = { HWKEY_EPS_DIST_ENG_V3_A, HWKEY_EPS_DIST_ENG_V3_B };
 
 #elif defined(__SS_EPS_GEN__)
 #define __SUBSYSTEM_MODULE__  Module_EPS_Gen
@@ -44,6 +45,11 @@ FILE_STATIC uint64_t hw_keys[] = { };
 
 #elif defined(__SS_PPT__)
 #define __SUBSYSTEM_MODULE__  Module_PPT
+#define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
+
+#elif defined(__SS_ADCS_SENSORPROC__)
+#define __SUBSYSTEM_MODULE__  Module_ADCS_SensorProc
 #define NUM_HWKEYS  0
 FILE_STATIC uint64_t hw_keys[] = { };
 

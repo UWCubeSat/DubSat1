@@ -57,6 +57,7 @@ typedef enum {
     Bus_BuffOverrunFatal,
     Bus_Underrun,
     Bus_BadAddr,
+    Bus_Uninitialized,
 } bus_health;
 
 

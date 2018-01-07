@@ -24,7 +24,7 @@ typedef enum _subsystemModule {
     Module_EPS_Batt = 8,
     Module_ADCS_Estim = 9,
     Module_ADCS_MPC = 10,
-    Module_ADCS_SenseProc = 11,
+    Module_ADCS_SensorProc = 11,
     Module_ADCS_MTQ = 12,
 
     // Last three unlikely to be used, as not compiled from MSP source
