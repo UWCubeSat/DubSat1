@@ -15,6 +15,7 @@
 #include "GPSPackage.h"
 #include "GPSReader.h"
 #include "GPSIDs.h"
+#include "crc.h"
 
 typedef struct message_handler_entity
 {
@@ -142,12 +143,10 @@ void gpsPowerOn()
      */
 
     // configure default status event handlers
-    // TODO use event handlers again
     gpsRegisterEventHandler(EVTID_POSITION, handlePositionStatusEvent,
                             EVTTYPE_CLEAR);
     gpsRegisterEventHandler(EVTID_UTC, handleClockStatusEvent, EVTTYPE_CLEAR);
     gpsRegisterEventHandler(EVTID_CLOCK, handleClockStatusEvent, EVTTYPE_CLEAR);
-    gpsSendCommand("statusconfig clear status 004c0000\r\n"); // TODO remove
 
     // configure to reply in binary only
     gpsSendCommand("interfacemode thisport novatel novatelbinary on\r\n");
@@ -237,6 +236,44 @@ void gpsSendCommand(uint8_t *command)
     uartTransmit(uartHandle, command, strlen((char*) command));
 }
 
+void gpsSendBinaryCommand(gps_message_id messageId,
+                          uint8_t *message,
+                          uint16_t messageLength)
+{
+    // populate header
+    GPSHeader header;
+    header.sync[0] = 0xAA;
+    header.sync[1] = 0x44;
+    header.sync[2] = 0x12;
+    header.headerLength = sizeof(header);
+    header.messageId = messageId;
+    header.messageType = 0; // ???
+    header.portAddress = 0xc0; // 0xc0: THISPORT
+    header.messageLength = messageLength;
+    // all other header fields are either ignored or recommended 0 on input
+    header.sequence = 0;
+    header.idleTime = 0;
+    header.timeStatus = 0;
+    header.week = 0;
+    header.ms = 0;
+    header.rxStatus = 0;
+    header.reserved = 0;
+    header.rxVersion = 0;
+
+    // calculate crc
+    uint32_t crc = calculateBlockCrc32(sizeof(header), (uint8_t *) &header);
+    uint16_t i;
+    for (i = 0; i < messageLength; i++)
+    {
+        crc = continueCrc32(crc, message[i]);
+    }
+
+    // transmit command
+    uartTransmit(uartHandle, (uint8_t *) &header, sizeof(header));
+    uartTransmit(uartHandle, message, messageLength);
+    uartTransmit(uartHandle, (uint8_t *) &crc, sizeof(crc));
+}
+
 bool gpsRegisterMessageHandler(gps_message_id messageId,
                                gps_message_handler handler)
 {
@@ -262,13 +299,11 @@ bool gpsRegisterEventHandler(gps_event_id eventId,
 
     // configure the GPS to send a status event message
     // TODO send the statusconfig command again without using sprintf
-//    uint32_t mask = (((uint32_t) 1) << eventId);
-//    char cmd[40];
-//    sprintf(cmd,
-//            "statusconfig %s status %08lx\r\n",
-//            eventType == EVTTYPE_CLEAR ? "clear" : "set",
-//            mask);
-//    gpsSendCommand((uint8_t *) cmd);
+    StatusConfig cmd;
+    cmd.type = eventType;
+    cmd.word = 1; // for status
+    cmd.mask = ((uint32_t) 1) << eventId;
+    gpsSendBinaryCommand(CMDID_STATUSCONFIG, (uint8_t *) &cmd, sizeof(cmd));
 
     eventHandlers[numEventHandlers++]
                   = (event_handler_entity){ handler, eventId, eventType };

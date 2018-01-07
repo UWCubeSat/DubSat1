@@ -179,4 +179,13 @@ typedef struct GPSPackage
     GPSMessage message;
 } GPSPackage;
 
+// commands below
+
+typedef struct PACKED_STRUCT StatusConfig
+{
+    gps_enum type;
+    gps_enum word;
+    uint32_t mask;
+} StatusConfig;
+
 #endif /* GPSPACKAGE_H_ */

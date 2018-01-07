@@ -27,4 +27,6 @@
 #define SATSYSTEM_GLONASS 1
 #define SATSYSTEM_SBAS 2
 
+#define CMDID_STATUSCONFIG 95
+
 #endif /* GPSIDS_H_ */

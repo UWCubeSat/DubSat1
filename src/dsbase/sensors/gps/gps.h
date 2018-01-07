@@ -42,6 +42,13 @@ bool gpsFlush();
 void gpsSendCommand(uint8_t *command);
 
 /**
+ * Send a binary command directly to the GPS
+ */
+void gpsSendBinaryCommand(gps_message_id messageId,
+                          uint8_t *message,
+                          uint16_t messageLength);
+
+/**
  * Register a callback associated with a message ID. Callbacks are called during
  * calls to gpsUpdate(). Returns true iff success.
  */
