@@ -142,10 +142,12 @@ void gpsPowerOn()
      */
 
     // configure default status event handlers
+    // TODO use event handlers again
     gpsRegisterEventHandler(EVTID_POSITION, handlePositionStatusEvent,
                             EVTTYPE_CLEAR);
     gpsRegisterEventHandler(EVTID_UTC, handleClockStatusEvent, EVTTYPE_CLEAR);
     gpsRegisterEventHandler(EVTID_CLOCK, handleClockStatusEvent, EVTTYPE_CLEAR);
+    gpsSendCommand("statusconfig clear status 004c0000\r\n"); // TODO remove
 
     // configure to reply in binary only
     gpsSendCommand("interfacemode thisport novatel novatelbinary on\r\n");
@@ -259,13 +261,14 @@ bool gpsRegisterEventHandler(gps_event_id eventId,
     }
 
     // configure the GPS to send a status event message
-    uint32_t mask = (((uint32_t) 1) << eventId);
-    char cmd[40];
-    sprintf(cmd,
-            "statusconfig %s status %08lx\r\n",
-            eventType == EVTTYPE_CLEAR ? "clear" : "set",
-            mask);
-    gpsSendCommand((uint8_t *) cmd);
+    // TODO send the statusconfig command again without using sprintf
+//    uint32_t mask = (((uint32_t) 1) << eventId);
+//    char cmd[40];
+//    sprintf(cmd,
+//            "statusconfig %s status %08lx\r\n",
+//            eventType == EVTTYPE_CLEAR ? "clear" : "set",
+//            mask);
+//    gpsSendCommand((uint8_t *) cmd);
 
     eventHandlers[numEventHandlers++]
                   = (event_handler_entity){ handler, eventId, eventType };
