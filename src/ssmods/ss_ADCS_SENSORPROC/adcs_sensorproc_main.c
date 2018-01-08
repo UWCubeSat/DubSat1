@@ -11,6 +11,7 @@
 
 #include "sensors/gps/gps.h"
 #include "sensors/gps/GPSIDs.h"
+#include "sensors/sun_sensor.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -32,6 +33,7 @@ FILE_STATIC bestxyz_segment bestxyzSeg;
 FILE_STATIC time_segment timeSeg;
 FILE_STATIC hwmonitor_segment hwmonitorSeg;
 FILE_STATIC satvis2_segment satvis2Seg;
+FILE_STATIC sunsensor_segment sunsensorSeg;
 
 // called on every gps message
 FILE_STATIC void handleGPSMessage(const GPSHeader *header);
@@ -73,6 +75,22 @@ FILE_STATIC void gpsSendStatus()
     bcbinSendPacket((uint8_t *) &timeSeg, sizeof(timeSeg));
 }
 
+// read the sun sensor and update its segments
+FILE_STATIC void sunSensorUpdate()
+{
+    SunSensorAngle *angle = sunSensorReadAngle();
+    if (angle != NULLP)
+    {
+        sunsensorSeg.alpha = angle->alpha;
+        sunsensorSeg.beta = angle->beta;
+        sunsensorSeg.error = angle->error;
+    }
+    else
+    {
+        // TODO log read error
+    }
+}
+
 /*
  * main.c
  */
@@ -90,7 +108,6 @@ int main(void)
     // Setup segments to be able to serve as COSMOS telemetry packets
     bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
     // TODO meta segment?
-    // TODO what should the opcodes be?
     bcbinPopulateHeader(&rxstatusSeg.header, 123, sizeof(rxstatusSeg));
     bcbinPopulateHeader(&bestxyzSeg.header, 124, sizeof(bestxyzSeg));
     bcbinPopulateHeader(&timeSeg.header, 125, sizeof(timeSeg));
@@ -132,14 +149,21 @@ int main(void)
     gpsRegisterEventHandler(EVTID_UTC, handleClockStatusEvent, EVTTYPE_CLEAR);
     gpsRegisterEventHandler(EVTID_CLOCK, handleClockStatusEvent, EVTTYPE_CLEAR);
 
+    // initialize sun sensor
+    sunSensorInit();
+
     // the GPS is always on since we don't have a working switch yet
-    // TODO remove these when we start working with a switch
+    // TODO remove these when we start working with a power switch
     ss_state = State_GPSOn;
     gpsConfigure();
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
     {
+        // TODO put these in a "nominal" state and create a second state machine
+        // for the GPS only?
+        sunSensorUpdate();
+
         // This assumes that some interrupt code will change the value of the triggerStaten variables
         switch (ss_state)
         {
@@ -153,7 +177,21 @@ int main(void)
                 ss_state = State_GPSPoweringOn;
             }
             break;
-        case State_GPSPoweringOn:
+        case State_GPSPoweringOn: {
+            // periodically poll the GPS until it responds
+            // TODO replace this with timers?
+            static i = 0;
+            if (gpsUpdate())
+            {
+                triggerGPSOn = 1;
+                i = 0;
+            }
+            else
+            {
+                i++;
+                gpsSendCommand("log rxstatusb\r\n");
+            }
+
             if (triggerGPSOn)
             {
                 // now that the GPS is confirmed to be on, send commands to configure it
@@ -163,6 +201,7 @@ int main(void)
                 ss_state = State_GPSOn;
             }
             break;
+        }
         case State_GPSOn:
             // read from the GPS and trigger message handlers
             if (gpsUpdate())
@@ -279,6 +318,8 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
     }
     else if (mode == Mode_BinaryStreaming)
     {
+        enable_segment *enableSegment;
+
         // handle actions, any output should be ground-segment friendly
         // "packet" format
         switch(cmdstr[0])
@@ -288,6 +329,20 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
                 gpsSendCommand(cmdstr + 1);
                 gpsSendCommand("\r\n");
                 break;
+            case OPCODE_ENABLE:
+                enableSegment = (enable_segment *) (cmdstr + 1);
+                if (enableSegment->enable && ss_state == State_GPSOff)
+                {
+                    triggerGPSPoweringOn = 1;
+                }
+                else if (enableSegment->enable == 0 && ss_state == State_GPSOn)
+                {
+                    triggerGPSOff = 1;
+                }
+                else
+                {
+                    // TODO log error
+                }
             case OPCODE_COMMONCMD:
                 break;
             default:

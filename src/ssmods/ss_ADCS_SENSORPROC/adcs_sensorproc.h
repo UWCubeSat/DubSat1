@@ -64,11 +64,20 @@ TLM_SEGMENT {
     uint32_t numSBAS;
 } satvis2_segment;
 
+TLM_SEGMENT {
+    BcTlmHeader header; // All COSMOS TLM packets must have this
+
+    float alpha;
+    float beta;
+    uint8_t error;
+} sunsensor_segment;
+
 CMD_SEGMENT {
+    uint8_t enable;
+} enable_segment;
 
-} sendascii_segment;
-
-#define OPCODE_SENDASCII 1
+#define OPCODE_SENDASCII 0x01
+#define OPCODE_ENABLE 0x02
 
 // Most subsystem modules should be implemented at least in part
 // as a state machine (specifically, a FSM).  Here the available states are

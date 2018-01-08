@@ -50,21 +50,21 @@ void gpsInit(gps_header_handler messageHandler)
     gpsRegisterMessageHandler(MSGID_RXSTATUSEVENT, handleRxStatusEvent);
 
     genericMsgHandler = messageHandler;
+
+    // configure power GPIO to be output
+    // the order here is important
+    GPS_POWER_OUT = 0;
+    GPS_POWER_DIR |= GPS_POWER_BIT;
 }
 
 void gpsPowerOn()
 {
-    // TODO switch on the power
-    /*
-     * Using timers, periodically poll the GPS with a log to see if its on.
-     * Consider doing this asynchronously with some powered on callback that
-     * configures the GPS.
-     */
+    GPS_POWER_OUT |= GPS_POWER_BIT;
 }
 
 void gpsPowerOff()
 {
-    // TODO switch off the power
+    GPS_POWER_OUT &= ~GPS_POWER_BIT;
     gpsFlush();
 }
 
