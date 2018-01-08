@@ -12,8 +12,8 @@ IF BUTTONCANCEL GOTO finish
 F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\dep_eps_dist.mspgangproj
 F_GO
 
-;F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\dep_eps_gen.mspgangproj
-;F_GO
+F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\dep_eps_gen.mspgangproj
+F_GO
 
 ;F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\dep_eps_batt.mspgangproj
 ;F_GO

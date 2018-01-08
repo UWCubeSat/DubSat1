@@ -33,7 +33,6 @@
 							<tool id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.exe.compilerDebug.318885800" name="MSP430 Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.exe.compilerDebug">
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DEFINE.1126727596" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DEFINE" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__MSP430FR5994__"/>
-									<listOptionValue builtIn="false" value="__ENABLE_HWSW_MATCH__"/>
 									<listOptionValue builtIn="false" value="__SS_TEST__"/>
 									<listOptionValue builtIn="false" value="__DEBUG_UART_SPEED_9600__"/>
 									<listOptionValue builtIn="false" value="__INITIAL_DEBUG_MODE__=2"/>
