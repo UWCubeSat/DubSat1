@@ -26,7 +26,7 @@ int main(void)
     // it sets up critical hardware settings for board specified by the __BSP_Board... defintion used.
     // If module not yet available in enum, add to SubsystemModule enumeration AND
     // SubsystemModulePaths (a string name) in systeminfo.c/.h
-    bspInit(Module_Test);  // <<DO NOT DELETE or MOVE>>
+    bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
 
     // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
