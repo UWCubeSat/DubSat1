@@ -35,28 +35,12 @@ int main(void)
 
     const uint8_t handle0 = photodiodeInit(LTC2481_I2C_ADDR1);
     const uint8_t handle1 = photodiodeInit(LTC2481_I2C_ADDR2);
-
     for (;;)
     {
         volatile double adcVoltage0, adcVoltage1;
-        volatile unsigned int i;
-
+        //need to have a debug breakpoint here
         adcVoltage0 = photodiodeVoltage(handle0);
-
-        i = 50000;
-        while (i > 0)
-        {
-            i--;
-        }
-
         adcVoltage1 = photodiodeVoltage(handle1);
-        i = 50000;
-        while (i > 0)
-        {
-                i--;
-        }
-
-
         P1OUT ^= BIT0;
 
     }
