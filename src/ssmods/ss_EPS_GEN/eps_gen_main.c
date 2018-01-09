@@ -40,7 +40,7 @@ void genPCVSensorsInit()
     {
         panels[i].panelnum = i;
         panels[i].shuntresistance = panelShuntResistances[i];
-        panels[i].hpcvsensor = pcvsensorInit(I2CBus2, panelPCVSensorAddresses[i], panelShuntResistances[i], PANEL_CURRENT_LIMIT);
+        //panels[i].hpcvsensor = pcvsensorInit(I2CBus2, panelPCVSensorAddresses[i], panelShuntResistances[i], PANEL_CURRENT_LIMIT);
     }
 }
 
@@ -94,7 +94,8 @@ int main(void)
             // TODO:  For now, assume we stay in FirstState all the time; to be changed when we
             // add full state machine for the subsystem.
             case State_FirstState:
-                // TODO:  do stuff
+                LED_OUT ^= LED_BIT;
+                __delay_cycles(.5 * SEC);
                 break;
             case State_SecondState:
                 // TODO:  Implement full state machine
