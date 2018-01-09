@@ -125,6 +125,17 @@ void bspInit(SubsystemModule mod)
     CSCTL3 = DIVA__1 | DIVS__1 | DIVM__1;   // Set all dividers to 1 for 8MHz operation
     CSCTL0_H = 0;                           // Lock CS Registers
 
+    // Force all outputs to be 0, so we don't get spurious signals when we unlock
+    P1OUT = 0;
+    P2OUT = 0;
+    P3OUT = 0;
+    P4OUT = 0;
+    P5OUT = 0;
+    P6OUT = 0;
+    P7OUT = 0;
+    P8OUT = 0;
+    PJOUT = 0;
+
     // Disable the GPIO power-on default high-impedance mode to activate
     // previously configured port settings
     PM5CTL0 &= ~LOCKLPM5;

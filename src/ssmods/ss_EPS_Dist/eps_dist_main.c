@@ -73,16 +73,6 @@ void distDomainInit()
     gseg.undervoltagethresholds[PARTIAL_THRESHOLD_INDEX] = BATT_DEFAULT_PARTIAL_THRESH;
     gseg.undervoltagethresholds[FULL_THRESHOLD_INDEX] = BATT_DEFAULT_FULL_THRESH;
 
-    // Make sure all outputs are 0 before starting - this is MANDATORY
-    DOMAIN_ENABLE_COM1_OUT = 0;
-    DOMAIN_ENABLE_COM2_OUT = 0;
-    DOMAIN_ENABLE_RAHS_OUT = 0;
-    DOMAIN_ENABLE_BDOT_OUT = 0;
-    DOMAIN_ENABLE_ESTIM_OUT = 0;
-    DOMAIN_ENABLE_WHEELS_OUT = 0;
-    DOMAIN_ENABLE_EPS_OUT = 0;
-    DOMAIN_ENABLE_PPT_OUT = 0;
-
     // Setup GPIO pin used to turn on all INA219's and turn them on
     DOMAIN_ENABLE_CURRENT_SENSORS_DIR |= DOMAIN_ENABLE_CURRENT_SENSORS_BIT;
 
