@@ -2598,7 +2598,7 @@ design rules under a new name.</description>
 <wire x1="-23.2118" y1="-19.5748" x2="-22.80375" y2="-19.5748" width="0.2032" layer="1"/>
 <wire x1="-22.80375" y1="-19.5748" x2="-22.6252" y2="-19.39625" width="0.2032" layer="1"/>
 </signal>
-<signal name="ENABLE_PT1">
+<signal name="DISABLE_PT1">
 <contactref element="R23" pad="2"/>
 <contactref element="LT3652_DISABLE1" pad="1"/>
 <wire x1="-22.027" y1="-23.317" x2="-21.96" y2="-23.25" width="0.1524" layer="1"/>
@@ -3444,7 +3444,6 @@ design rules under a new name.</description>
 <contactref element="LT3652_DISABLE3" pad="1"/>
 <wire x1="1.973" y1="-23.317" x2="2.04" y2="-23.25" width="0.1524" layer="1"/>
 <wire x1="1.973" y1="-23.317" x2="-0.104" y2="-23.017" width="0.1524" layer="1"/>
-<contactref element="BLK1" pad="P3.6_GPIO/PWM"/>
 <wire x1="2.04" y1="-23.25" x2="3.6902" y2="-21.5998" width="0.2032" layer="1"/>
 <wire x1="3.6902" y1="-21.5998" x2="3.6902" y2="-20.85875" width="0.2032" layer="1"/>
 <wire x1="3.6902" y1="-20.85875" x2="5.11415" y2="-19.4348" width="0.2032" layer="1"/>
@@ -3460,7 +3459,6 @@ design rules under a new name.</description>
 <wire x1="30" y1="7.5340875" x2="30" y2="16" width="0.2032" layer="3"/>
 <via x="30" y="16" extent="1-16" drill="0.35"/>
 <wire x1="30" y1="16" x2="30.75" y2="16.75" width="0.2032" layer="1"/>
-<wire x1="30.75" y1="16.75" x2="30.75" y2="23.6" width="0.2032" layer="1"/>
 </signal>
 <signal name="N$23">
 <contactref element="R70" pad="2"/>
@@ -3933,7 +3931,6 @@ design rules under a new name.</description>
 <contactref element="LT3652_DISABLE4" pad="1"/>
 <wire x1="25.973" y1="-23.317" x2="26.04" y2="-23.25" width="0.1524" layer="1"/>
 <wire x1="25.973" y1="-23.317" x2="23.896" y2="-23.017" width="0.1524" layer="1"/>
-<contactref element="BLK1" pad="P2.6_GPIO/PWM"/>
 <wire x1="26.04" y1="-23.25" x2="27.6902" y2="-21.5998" width="0.2032" layer="1"/>
 <wire x1="27.6902" y1="-21.5998" x2="27.6902" y2="-20.85875" width="0.2032" layer="1"/>
 <wire x1="33.7748" y1="-15.99375" x2="33.688425" y2="-15.907375" width="0.2032" layer="1"/>
@@ -3951,7 +3948,6 @@ design rules under a new name.</description>
 <via x="38" y="2.5" extent="1-16" drill="0.35"/>
 <wire x1="38" y1="2.5" x2="38" y2="6.8340875" width="0.2032" layer="1"/>
 <wire x1="35.50125" y1="20.2398" x2="34.6702" y2="20.2398" width="0.2032" layer="1"/>
-<wire x1="34.6702" y1="20.2398" x2="34.6" y2="20.25" width="0.2032" layer="1"/>
 <wire x1="38" y1="6.8340875" x2="38.4064" y2="7.2404875" width="0.2032" layer="1"/>
 <wire x1="38.4064" y1="7.2404875" x2="38.4064" y2="17.27465" width="0.2032" layer="1"/>
 <wire x1="38.4064" y1="17.27465" x2="35.50125" y2="20.2398" width="0.2032" layer="1"/>
@@ -4428,6 +4424,12 @@ design rules under a new name.</description>
 </signal>
 <signal name="N$39">
 <via x="10.47" y="28.03" extent="1-16" drill="0.35"/>
+</signal>
+<signal name="DISABLE_PT2">
+<contactref element="BLK1" pad="P3.6_GPIO/PWM"/>
+</signal>
+<signal name="DISABLE_PT3">
+<contactref element="BLK1" pad="P2.6_GPIO/PWM"/>
 </signal>
 </signals>
 </board>

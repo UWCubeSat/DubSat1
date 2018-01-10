@@ -6165,7 +6165,7 @@ Rshunt=0.11, giving 0.91A current limit</text>
 <junction x="195.58" y="104.14"/>
 </segment>
 </net>
-<net name="ENABLE_PT1" class="0">
+<net name="DISABLE_PT1" class="0">
 <segment>
 <pinref part="R23" gate="G$1" pin="2"/>
 <pinref part="LT3652_DISABLE1" gate="G$1" pin="G"/>
@@ -6830,11 +6830,6 @@ Rshunt=0.11, giving 0.91A current limit</text>
 <wire x1="185.42" y1="223.52" x2="154.94" y2="223.52" width="0.1524" layer="91"/>
 <junction x="185.42" y="223.52"/>
 </segment>
-<segment>
-<pinref part="BLK1" gate="G$1" pin="P3.6_GPIO/PWM"/>
-<wire x1="-86.36" y1="289.56" x2="-83.82" y2="289.56" width="0.1524" layer="91"/>
-<label x="-83.82" y="289.56" size="1.778" layer="95" xref="yes"/>
-</segment>
 </net>
 <net name="N$23" class="0">
 <segment>
@@ -7219,11 +7214,6 @@ Rshunt=0.11, giving 0.91A current limit</text>
 <label x="187.96" y="358.14" size="1.778" layer="95" rot="R180" xref="yes"/>
 <wire x1="190.5" y1="358.14" x2="160.02" y2="358.14" width="0.1524" layer="91"/>
 <junction x="190.5" y="358.14"/>
-</segment>
-<segment>
-<pinref part="BLK1" gate="G$1" pin="P2.6_GPIO/PWM"/>
-<wire x1="-86.36" y1="284.48" x2="-83.82" y2="284.48" width="0.1524" layer="91"/>
-<label x="-83.82" y="284.48" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$32" class="0">
@@ -7700,6 +7690,20 @@ Rshunt=0.11, giving 0.91A current limit</text>
 <pinref part="BLK1" gate="G$1" pin="P1.1_A1"/>
 <wire x1="-190.5" y1="302.26" x2="-172.72" y2="302.26" width="0.1524" layer="91"/>
 <junction x="-213.36" y="304.8"/>
+</segment>
+</net>
+<net name="DISABLE_PT2" class="0">
+<segment>
+<pinref part="BLK1" gate="G$1" pin="P3.6_GPIO/PWM"/>
+<wire x1="-86.36" y1="289.56" x2="-83.82" y2="289.56" width="0.1524" layer="91"/>
+<label x="-83.82" y="289.56" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="DISABLE_PT3" class="0">
+<segment>
+<pinref part="BLK1" gate="G$1" pin="P2.6_GPIO/PWM"/>
+<wire x1="-86.36" y1="284.48" x2="-83.82" y2="284.48" width="0.1524" layer="91"/>
+<label x="-83.82" y="284.48" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 </nets>
