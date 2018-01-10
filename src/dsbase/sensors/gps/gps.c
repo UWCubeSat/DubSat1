@@ -52,8 +52,6 @@ void gpsInit(gps_header_handler messageHandler)
     genericMsgHandler = messageHandler;
 
     // configure power GPIO to be output
-    // the order here is important
-    GPS_POWER_OUT = 0;
     GPS_POWER_DIR |= GPS_POWER_BIT;
 }
 
