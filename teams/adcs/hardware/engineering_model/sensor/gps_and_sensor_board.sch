@@ -13125,6 +13125,8 @@ No silk outline, but tDocu layer shows pin location.
 <part name="GND22" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND23" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND24" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C16" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 uF"/>
+<part name="GND25" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -13155,14 +13157,14 @@ No silk outline, but tDocu layer shows pin location.
 <instance part="GND10" gate="1" x="152.4" y="22.86" rot="R180"/>
 <instance part="C4" gate="G$1" x="180.34" y="15.24"/>
 <instance part="GND12" gate="1" x="180.34" y="22.86" rot="R180"/>
-<instance part="PHOTODIODE" gate="G$1" x="190.5" y="-55.88" rot="R270"/>
+<instance part="PHOTODIODE" gate="G$1" x="190.5" y="-48.26" rot="R270"/>
 <instance part="SUNSENSOR" gate="G$1" x="190.5" y="-81.28" rot="R270"/>
 <instance part="P+1" gate="1" x="-35.56" y="-40.64" rot="R90"/>
 <instance part="+3V31" gate="G$1" x="-35.56" y="-60.96" rot="R90"/>
 <instance part="GND1" gate="1" x="-22.86" y="-66.04" rot="R270"/>
-<instance part="GND4" gate="1" x="180.34" y="-53.34" rot="R270"/>
+<instance part="GND4" gate="1" x="180.34" y="-45.72" rot="R270"/>
 <instance part="GND5" gate="1" x="180.34" y="-78.74" rot="R270"/>
-<instance part="+3V34" gate="G$1" x="177.8" y="-58.42" rot="R90"/>
+<instance part="+3V34" gate="G$1" x="167.64" y="-50.8" rot="R90"/>
 <instance part="+3V35" gate="G$1" x="177.8" y="-83.82" rot="R90"/>
 <instance part="R1" gate="G$1" x="96.52" y="-38.1" rot="R270"/>
 <instance part="R2" gate="G$1" x="106.68" y="-38.1" rot="R270"/>
@@ -13205,6 +13207,8 @@ No silk outline, but tDocu layer shows pin location.
 <instance part="GND22" gate="1" x="157.48" y="-83.82"/>
 <instance part="GND23" gate="1" x="137.16" y="-58.42"/>
 <instance part="GND24" gate="1" x="157.48" y="-58.42"/>
+<instance part="C16" gate="G$1" x="175.26" y="-58.42"/>
+<instance part="GND25" gate="1" x="180.34" y="-63.5" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -13362,7 +13366,7 @@ No silk outline, but tDocu layer shows pin location.
 <segment>
 <pinref part="GND4" gate="1" pin="GND"/>
 <pinref part="PHOTODIODE" gate="G$1" pin="P$3"/>
-<wire x1="182.88" y1="-53.34" x2="185.42" y2="-53.34" width="0.1524" layer="91"/>
+<wire x1="182.88" y1="-45.72" x2="185.42" y2="-45.72" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND5" gate="1" pin="GND"/>
@@ -13489,6 +13493,12 @@ No silk outline, but tDocu layer shows pin location.
 <wire x1="154.94" y1="-76.2" x2="157.48" y2="-76.2" width="0.1524" layer="91"/>
 <wire x1="157.48" y1="-76.2" x2="157.48" y2="-81.28" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="C16" gate="G$1" pin="2"/>
+<pinref part="GND25" gate="1" pin="GND"/>
+<wire x1="175.26" y1="-60.96" x2="175.26" y2="-63.5" width="0.1524" layer="91"/>
+<wire x1="175.26" y1="-63.5" x2="177.8" y2="-63.5" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="VBAT" class="0">
 <segment>
@@ -13603,7 +13613,11 @@ No silk outline, but tDocu layer shows pin location.
 <segment>
 <pinref part="PHOTODIODE" gate="G$1" pin="P$4"/>
 <pinref part="+3V34" gate="G$1" pin="+3V3"/>
-<wire x1="185.42" y1="-58.42" x2="180.34" y2="-58.42" width="0.1524" layer="91"/>
+<wire x1="185.42" y1="-50.8" x2="175.26" y2="-50.8" width="0.1524" layer="91"/>
+<pinref part="C16" gate="G$1" pin="1"/>
+<wire x1="175.26" y1="-50.8" x2="170.18" y2="-50.8" width="0.1524" layer="91"/>
+<wire x1="175.26" y1="-53.34" x2="175.26" y2="-50.8" width="0.1524" layer="91"/>
+<junction x="175.26" y="-50.8"/>
 </segment>
 <segment>
 <pinref part="SUNSENSOR" gate="G$1" pin="P$4"/>
@@ -14007,16 +14021,19 @@ No silk outline, but tDocu layer shows pin location.
 <segment>
 <pinref part="J4" gate="G$1" pin="4"/>
 <pinref part="PHOTODIODE" gate="G$1" pin="P$2"/>
-<wire x1="154.94" y1="-48.26" x2="185.42" y2="-48.26" width="0.1524" layer="91"/>
+<wire x1="154.94" y1="-48.26" x2="165.1" y2="-48.26" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="-48.26" x2="165.1" y2="-40.64" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="-40.64" x2="185.42" y2="-40.64" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PHOTODIODE_SDA" class="0">
 <segment>
 <pinref part="J4" gate="G$1" pin="2"/>
-<wire x1="154.94" y1="-45.72" x2="170.18" y2="-45.72" width="0.1524" layer="91"/>
-<wire x1="170.18" y1="-45.72" x2="170.18" y2="-43.18" width="0.1524" layer="91"/>
 <pinref part="PHOTODIODE" gate="G$1" pin="P$1"/>
-<wire x1="170.18" y1="-43.18" x2="185.42" y2="-43.18" width="0.1524" layer="91"/>
+<wire x1="170.18" y1="-35.56" x2="185.42" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="154.94" y1="-45.72" x2="162.56" y2="-45.72" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="-45.72" x2="162.56" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="-35.56" x2="185.42" y2="-35.56" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
