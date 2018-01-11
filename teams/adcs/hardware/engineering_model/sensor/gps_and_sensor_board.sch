@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.5.2">
+<eagle version="8.5.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -13129,6 +13129,7 @@ No silk outline, but tDocu layer shows pin location.
 <part name="GND25" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C17" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10 uF"/>
 <part name="C18" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 uF"/>
+<part name="GND26" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -13213,6 +13214,7 @@ No silk outline, but tDocu layer shows pin location.
 <instance part="GND25" gate="1" x="180.34" y="-63.5" rot="R90"/>
 <instance part="C17" gate="G$1" x="231.14" y="38.1" rot="R180"/>
 <instance part="C18" gate="G$1" x="241.3" y="38.1" rot="R180"/>
+<instance part="GND26" gate="1" x="218.44" y="43.18" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -13502,6 +13504,16 @@ No silk outline, but tDocu layer shows pin location.
 <pinref part="GND25" gate="1" pin="GND"/>
 <wire x1="175.26" y1="-60.96" x2="175.26" y2="-63.5" width="0.1524" layer="91"/>
 <wire x1="175.26" y1="-63.5" x2="177.8" y2="-63.5" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="GND26" gate="1" pin="GND"/>
+<pinref part="C17" gate="G$1" pin="2"/>
+<wire x1="220.98" y1="43.18" x2="231.14" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="231.14" y1="43.18" x2="231.14" y2="40.64" width="0.1524" layer="91"/>
+<pinref part="C18" gate="G$1" pin="2"/>
+<wire x1="231.14" y1="43.18" x2="241.3" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="43.18" x2="241.3" y2="40.64" width="0.1524" layer="91"/>
+<junction x="231.14" y="43.18"/>
 </segment>
 </net>
 <net name="VBAT" class="0">
