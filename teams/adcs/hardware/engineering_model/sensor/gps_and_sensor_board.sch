@@ -13138,6 +13138,8 @@ No silk outline, but tDocu layer shows pin location.
 <part name="GND29" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C22" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 uF"/>
 <part name="GND30" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="R_PULLDOWN" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
+<part name="GND31" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -13231,6 +13233,8 @@ No silk outline, but tDocu layer shows pin location.
 <instance part="GND29" gate="1" x="350.52" y="-121.92" rot="R180"/>
 <instance part="C22" gate="G$1" x="360.68" y="-132.08" rot="R180"/>
 <instance part="GND30" gate="1" x="360.68" y="-121.92" rot="R180"/>
+<instance part="R_PULLDOWN" gate="G$1" x="284.48" y="-157.48" rot="R90"/>
+<instance part="GND31" gate="G$1" x="284.48" y="-167.64" smashed="yes"/>
 </instances>
 <busses>
 </busses>
@@ -13550,6 +13554,11 @@ No silk outline, but tDocu layer shows pin location.
 <pinref part="GND30" gate="1" pin="GND"/>
 <pinref part="C22" gate="G$1" pin="2"/>
 <wire x1="360.68" y1="-124.46" x2="360.68" y2="-129.54" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="GND31" gate="G$1" pin="GND"/>
+<pinref part="R_PULLDOWN" gate="G$1" pin="1"/>
+<wire x1="284.48" y1="-165.1" x2="284.48" y2="-162.56" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VBAT" class="0">
@@ -13957,8 +13966,12 @@ No silk outline, but tDocu layer shows pin location.
 <net name="GPS_ENABLE" class="0">
 <segment>
 <pinref part="U$3" gate="G$1" pin="EN"/>
-<wire x1="307.34" y1="-147.32" x2="294.64" y2="-147.32" width="0.1524" layer="91"/>
-<label x="294.64" y="-147.32" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="307.34" y1="-147.32" x2="284.48" y2="-147.32" width="0.1524" layer="91"/>
+<label x="276.86" y="-147.32" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="R_PULLDOWN" gate="G$1" pin="2"/>
+<wire x1="284.48" y1="-147.32" x2="276.86" y2="-147.32" width="0.1524" layer="91"/>
+<wire x1="284.48" y1="-152.4" x2="284.48" y2="-147.32" width="0.1524" layer="91"/>
+<junction x="284.48" y="-147.32"/>
 </segment>
 <segment>
 <pinref part="BLK1" gate="G$1" pin="P2.2_GPIO/PWM"/>

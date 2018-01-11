@@ -3294,6 +3294,7 @@ design rules under a new name.</description>
 <element name="C20" library="DubSat1 Components" package="0805" value="1 uF" x="75.438" y="55.118" rot="R270"/>
 <element name="C21" library="DubSat1 Components" package="0805" value="10 uF" x="67.564" y="60.452" rot="R90"/>
 <element name="C22" library="DubSat1 Components" package="0805" value="1 uF" x="71.12" y="53.34" rot="R315"/>
+<element name="R_PULLDOWN" library="DubSat1 Components" package="0805" value="100k" x="78.486" y="54.356" rot="R90"/>
 </elements>
 <signals>
 <signal name="CANH">
@@ -3630,6 +3631,12 @@ design rules under a new name.</description>
 <wire x1="69.955" y1="61.352" x2="67.564" y2="61.352" width="0.762" layer="1"/>
 <wire x1="69.723" y1="61.214" x2="69.723" y2="60.706" width="0.762" layer="1"/>
 <wire x1="69.723" y1="60.706" x2="70.093" y2="60.706" width="0.762" layer="1"/>
+<contactref element="R_PULLDOWN" pad="1"/>
+<via x="78.105" y="52.832" extent="1-16" drill="0.35" shape="square"/>
+<via x="78.867" y="52.832" extent="1-16" drill="0.35" shape="square"/>
+<wire x1="78.105" y1="52.832" x2="78.867" y2="52.832" width="0.762" layer="1"/>
+<wire x1="78.867" y1="52.832" x2="78.486" y2="53.213" width="0.762" layer="1"/>
+<wire x1="78.486" y1="53.213" x2="78.486" y2="53.456" width="0.762" layer="1"/>
 </signal>
 <signal name="VBAT">
 <contactref element="U1" pad="P$1"/>
@@ -4206,7 +4213,8 @@ design rules under a new name.</description>
 <via x="76.962" y="58.928" extent="1-16" drill="0.35"/>
 <wire x1="76.962" y1="58.928" x2="76.962" y2="56.388" width="0.254" layer="16"/>
 <via x="76.962" y="56.388" extent="1-16" drill="0.35"/>
-<wire x1="76.962" y1="56.388" x2="82.55" y2="56.388" width="0.254" layer="1"/>
+<wire x1="76.962" y1="56.388" x2="78.486" y2="56.388" width="0.254" layer="1"/>
+<wire x1="78.486" y1="56.388" x2="82.55" y2="56.388" width="0.254" layer="1"/>
 <wire x1="82.55" y1="56.388" x2="86.36" y2="52.578" width="0.254" layer="1"/>
 <via x="86.36" y="52.578" extent="1-16" drill="0.35"/>
 <wire x1="86.36" y1="52.578" x2="86.36" y2="50.546" width="0.254" layer="16"/>
@@ -4221,6 +4229,8 @@ design rules under a new name.</description>
 <wire x1="75.946" y1="25.4" x2="77.47" y2="26.924" width="0.254" layer="16"/>
 <wire x1="77.47" y1="26.924" x2="80.518" y2="26.924" width="0.254" layer="16"/>
 <wire x1="80.518" y1="26.924" x2="81.28" y2="26.162" width="0.254" layer="16"/>
+<contactref element="R_PULLDOWN" pad="2"/>
+<wire x1="78.486" y1="55.256" x2="78.486" y2="56.388" width="0.254" layer="1"/>
 </signal>
 <signal name="GPS_RXD1">
 <contactref element="U3" pad="P$12"/>
