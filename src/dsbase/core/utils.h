@@ -31,5 +31,34 @@ typedef uint8_t telemid_t;
 #define FALSE 0
 
 #define PACKED_STRUCT __attribute__((__packed__))
+#define TLM_SEGMENT typedef struct __attribute__((__packed__))
+#define CMD_SEGMENT typedef struct __attribute__((__packed__))
+
+// THIS HEADER MUST BE THE FIRST FIELD IN OUTGOING BINARY TELEMETRY STRUCTS
+TLM_SEGMENT _bctlm_header {
+    uint8_t syncpattern;
+    uint8_t length;
+    uint8_t id;
+} BcTlmHeader;
+
+CMD_SEGMENT _bccmd_header {
+    uint8_t syncpattern;
+    uint8_t length;
+    uint8_t entityid;
+    uint8_t opcode;
+} BcCmdHeader;
+
+typedef enum {
+    Bus_HealthUnknown,
+    Bus_MinorFault,
+    Bus_FatalError,
+    Bus_Healthy,
+    Bus_BuffOverrunHandled,
+    Bus_BuffOverrunFatal,
+    Bus_Underrun,
+    Bus_BadAddr,
+    Bus_Uninitialized,
+} bus_health;
+
 
 #endif /* CORE_UTILS_H_ */

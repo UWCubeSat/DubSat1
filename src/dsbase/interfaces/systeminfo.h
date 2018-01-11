@@ -4,11 +4,10 @@
  *  Created on: Jun 29, 2017
  *      Author: jeffc
  */
-#include "../core/debugtools.h"
-#include "../core/timers.h"
-
 #ifndef INTERFACES_SYSTEMINFO_H_
 #define INTERFACES_SYSTEMINFO_H_
+
+#include "../core/timers.h"
 
 typedef volatile uint8_t flag_t;
 
@@ -20,6 +19,18 @@ typedef enum _subsystemModule {
     Module_ADCS_RWY = 3,
     Module_ADCS_RWZ = 4,
     Module_PPT = 5,
+    Module_EPS_Dist = 6,
+    Module_EPS_Gen = 7,
+    Module_EPS_Batt = 8,
+    Module_ADCS_Estim = 9,
+    Module_ADCS_MPC = 10,
+    Module_ADCS_SensorProc = 11,
+    Module_ADCS_MTQ = 12,
+
+    // Last three unlikely to be used, as not compiled from MSP source
+    Module_COM1 = 13,
+    Module_COM2 = 14,
+    Module_RAHS = 15,
 } SubsystemModule;
 
 // REMOTE INFO STRUCTURES
@@ -70,7 +81,7 @@ typedef struct _spacecraft_info {
     PPTFiringInfo pptactionstatus;
 } SpacecraftInfo;
 
-typedef void (*sync_pulse_handler)();
+typedef void (*special_handler)();
 
 typedef enum _activity_type {
     Activity_I2C,
@@ -81,10 +92,8 @@ typedef enum _activity_type {
     Activity_IMU,
 } ActivityType;
 
-uint8_t infoReport(DebugMode mode);
 uint8_t *getSubsystemModulePath();
-
-StartupType coreStartup(sync_pulse_handler sync1, sync_pulse_handler sync2);
+StartupType coreStartup(special_handler sync1, special_handler sync2);
 uint8_t coreGetPrecautionLevel();
 
 #endif /* INTERFACES_SYSTEMINFO_H_ */

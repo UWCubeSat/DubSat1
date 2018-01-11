@@ -54,6 +54,8 @@ double rwsPIDStep(double setpoint);
 void rwsRunAuto();
 void rwsRunManual();
 
+// COSMOS Stuff
+
 #define OPCODE_DIRCHANGE            0x64
 #define OPCODE_SETPOINTCHANGE       0x73
 typedef struct PACKED_STRUCT _cmd_pidctrl {
@@ -77,5 +79,6 @@ typedef struct PACKED_STRUCT _pid_step_info {
 } PidStepInfo;
 
 
+#define TLM_ID_RWS_PIDMOT     0x07
 
 #endif /* DSBASE_ACTUATORS_RW_H_ */

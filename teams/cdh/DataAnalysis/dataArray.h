@@ -10,27 +10,35 @@
 struct buffer;
 
 // initialize buffer struct
-int init(uint16_t *userBuffer, uint16_t size);
+uint16_t init(uint16_t *userBuffer, uint16_t size);
 
 // Print out given buffer
-void printArray(int handle);
+void printArray(uint16_t handle);
 
 // Add new data to given buffer
-void addData(int handle, uint16_t data);
+void addData(uint16_t handle, uint16_t data);
 
-// reset all data in the given buffer
-void resetData(int handle);
+// reset all data in the given buffer including min, max, and average
+void resetAll(uint16_t handle);
+
+// reset only average
+void resetAvg(uint16_t handle);
+
+// reset only min and max
+void resetMinMax(uint16_t handle);  
 
 // return uint16_t sum of data in the given buffer
-uint16_t getSum(int handle);
+uint16_t getSum(uint16_t handle);
 
 // return uint16_t average of data in the given buffer
-uint16_t getAvg(int handle);
+uint16_t getAvg(uint16_t handle);
 
 // return uint16_t min of data in the given buffer
-uint16_t getMin(int handle);
+// No matter how many values are loaded into the array, min value stays until user call reset function
+uint16_t getMin(uint16_t handle);
 
 // return uint16_t max of data in the given buffer
-uint16_t getMax(int handle);
+// No matter how many values are loaded into the array, max value stays until user call reset function
+uint16_t getMax(uint16_t handle);
 
 #endif //DATAARRAY_H

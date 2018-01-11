@@ -13,6 +13,8 @@
 #include <stdarg.h>
 
 #include "utils.h"
+#include "../interfaces/systeminfo.h"
+#include "../sensors/analogsensor.h"
 
 #ifndef __DEBUG__
 #warning  Header debugtools.h included, but __DEBUG__ flag not set.
@@ -52,6 +54,12 @@ typedef struct _svc_status_debug {
 
 } svc_status_debug;
 
+typedef enum {
+    CommMatch_Unknown,
+    CommMatch_Matched,
+    CommMatch_Violation,
+} comm_match_state;
+
 void debugInit();
 
 void debugPrint(uint8_t * buff, uint8_t szBuff);
@@ -65,6 +73,7 @@ uint8_t normalizeTraceLevel(uint8_t lvl);
 void displayPrompt();
 void debugSetMode(DebugMode newmode);
 DebugMode debugGetMode();
+comm_match_state debugGetCommMatchState();
 
 // KEEP THESE ENUMS IN SYNC WITH SRC FILE
 typedef enum _entityID {
@@ -77,6 +86,7 @@ typedef enum _entityID {
     Entity_BSP,
     Entity_UART,
     Entity_RWS,
+    Entity_AnalogSensors,
     Entity_SUBSYSTEM,
 } entityID;
 
@@ -97,6 +107,7 @@ typedef struct _debug_context {
     param_debug_handler action_handler;
 } debug_context;
 
+
 void debugRegisterEntity(entityID id,
                          simple_debug_handler infohandler, simple_debug_handler statushandler,
                          param_debug_handler actionhandler);
@@ -109,28 +120,9 @@ void debugInvokeInfoHandlers();
 void debugInvokeStatusHandlers();
 void debugInvokeActionHandlers(uint8_t * cmdstr);
 
-// Backchannel binary telemetery/command stuff
+// COSMOS-specific backchannel binary telemetery/command stuff
 
 #define BCBIN_SYNCPATTERN           0xFC
-
-// THIS HEADER MUST BE THE FIRST FIELD IN OUTGOING BINARY TELEMETRY STRUCTS
-typedef struct PACKED_STRUCT _bctlm_header {
-    uint8_t syncpattern;
-    uint8_t length;
-    uint8_t id;
-} BcTlmHeader;
-
-typedef struct PACKED_STRUCT _bccmd_header {
-    uint8_t syncpattern;
-    uint8_t length;
-    uint8_t entityid;
-    uint8_t opcode;
-} BcCmdHeader;
-
-void bcbinPopulateHeader( BcTlmHeader *header, uint8_t opcode, uint8_t fulllen);
-void bcbinSendPacket(uint8_t * buff, uint8_t szBuff);
-
-#define BINTLM_OPCODE_RWS_PIDMOT     0x07
 
 typedef enum _bccmd_state {
     STATE_START,
@@ -140,5 +132,67 @@ typedef enum _bccmd_state {
     STATE_GATHERING_PARAMS,
 
 } BcCmdState;
+
+typedef uint8_t oms_status;
+
+#define OMS_Nominal        0x00
+#define OMS_MinorFaults    0x01
+#define OMS_MajorFaults    0x02
+#define OMS_Failures       0x03
+#define OMS_FatalErrors    0x04
+#define OMS_Unknown        0x05
+
+// Standard packet definitions
+#define TLM_ID_SHARED_META       0x00
+#define TLM_ID_SHARED_HEALTH     0x01   // All MSP's will implement - fixed structure defined here
+
+// Standard bus identifiers (centralized so we don't collide) - start at decimal 128/hex 0x80
+#define TLM_ID_SHARED_BUS_UART   0x80
+
+#define MAX_META_FIELD_LEN   16
+TLM_SEGMENT {
+    BcTlmHeader header;  // All COSMOS TLM packets must have this
+
+    uint8_t module;
+
+    uint64_t chipid;
+    uint8_t hwswmatchstate;
+    uint8_t commmatchstate;
+
+    uint16_t compver;
+    uint16_t stdcver;
+
+    uint8_t compdate[MAX_META_FIELD_LEN];
+    uint8_t comptime[MAX_META_FIELD_LEN];
+
+} meta_segment;
+
+TLM_SEGMENT {
+    BcTlmHeader header;  // All COSMOS TLM packets must have this
+
+    oms_status oms;  // Overall health
+
+    float inttemp;   // Internal MSP43x temperature, from built-in sensor
+} health_segment;
+
+typedef enum {
+    Clear_All,
+    Clear_OnlyErrorFlags,
+    Clear_OnlyErrorCounts,
+    Clear_OnlyCounts,
+} clear_state_commands;
+
+#define OPCODE_COMMONCMD  0x00
+CMD_SEGMENT {
+    uint8_t expectedmodule;
+    // TODO:  Add other common commands for all subsystems (like restart and reset/set counters and timers)
+} commoncmd_segment;
+
+#define TLM_ID_SHARED_SSGENERAL  0x02   // Most MSP's will implement - SS-specific stuff, so defined with SS module
+
+void bcbinPopulateHeader( BcTlmHeader *header, uint8_t opcode, uint8_t fulllen);
+void bcbinSendPacket(uint8_t * buff, uint8_t szBuff);
+void bcbinPopulateMeta(meta_segment *mpkt, size_t sz);
+
 
 #endif /* DEBUGTOOLS_H_ */

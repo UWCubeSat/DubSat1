@@ -39,7 +39,7 @@ void imuInit()
 #elif defined(__BSP_HW_IMU_LSM6DSM__)
 
     i2cBuff[0] = IMU_LSM6DSM_CTRL2_G;
-    i2cBuff[1] = IMU_LSM6DSM_ODR_12p5_FS125;
+    i2cBuff[1] = IMU_LSM6DSM_ODR_26_FS125;
     i2cBuff[2] = IMU_LSM6DSM_CTRL7_G;
     i2cBuff[3] = IMU_LSM6DSM_HIGH_PERF_ON;
     i2cMasterWrite(hSensor, i2cBuff, 4);

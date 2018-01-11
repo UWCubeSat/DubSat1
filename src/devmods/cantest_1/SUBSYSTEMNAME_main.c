@@ -16,44 +16,26 @@
  */
 // Send back the same reply
 
-void SendbackSameMessage(uint8_t length, uint8_t* data, uint32_t id){
-    PJDIR |= 0x02;
-    PJOUT ^= 0x02;
-    CANPacket *p;
-//    if(data[0] == BOARD_NUM){
-//        p->data[0] = 0xF0 | BOARD_NUM;
-//        uint8_t i;
-//        for(i = 1; i < 8; i++) {
-//            p->data[i] = i;
-//        }
-//        canSendPacket(p);
-//    }
-    BatteryStatus pst = {0};
+void newCB(CANPacket *packet){
+
+    Message4OddSizes pst = {0};
     CANPacket ppst = {0};
     CANPacket *pps = &ppst;
-    pst.batteryFullChargeCount = 0xffff;
-    pst.batteryTemperature = 0;
-    pst.batteryVoltage = 0;
-    pst.LowestBatteryVoltage = 0;
-    pst.underVoltageEvents = 4;
-    encodeBatteryStatus(&pst,pps);
+    pst.OddSize3 = 69;
+    encodeMessage4OddSizes(&pst,pps);
     canSendPacket(pps);
-
-
-
 }
+
 int main(void) {
 
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
     bspInit(Module_Test);
 
-    canInit();
+    canWrapInit();
+    setCANPacketRxCallback(newCB);
 
-    setReceiveCallback0(SendbackSameMessage);
-    setReceiveCallback1(SendbackSameMessage);
-
-    PJDIR |= 0x04;
-    PJOUT |= 0x04;
+    P3DIR |= 0x20;
+    P3OUT |= 0x20;
 
 
 

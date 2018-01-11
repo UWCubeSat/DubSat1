@@ -16,13 +16,25 @@ FILE_STATIC uint8_t *SubsystemModulePaths[] =
                                              "ADCS/BDot",
                                              "ADCS/RWheelX",
                                              "ADCS/RWheelY",
-                                             "ADCS/RWheelZ"};
+                                             "ADCS/RWheelZ",
+                                             "PPT",
+                                             "EPS/Dist",
+                                             "EPS/Gen",
+                                             "EPS/Batt",
+                                             "ADCS/Estim",
+                                             "ADCS/MPC",
+                                             "ADCS/SensorProc",
+                                             "ADCS/MTQ",
+                                             "COM1",
+                                             "COM2",
+                                             "RAHS"};
 
 FILE_STATIC SpacecraftInfo sc_info;
 
+
 // Performs logic to "figure out" current state (1st boot? reboot? MET?)
 // Hooks up sync pulse handlers
-StartupType coreStartup(sync_pulse_handler sync1, sync_pulse_handler sync2)
+StartupType coreStartup(special_handler pptfiringhandler, special_handler rollcallhandler)
 {
 
     // TODO:  populates sc_info as well?
@@ -36,22 +48,7 @@ uint8_t *getSubsystemModulePath()
     return SubsystemModulePaths[(uint8_t)bspGetModule()];
 }
 
-uint8_t infoReport(DebugMode mode)
-{
-    if (mode == Mode_ASCIIInteractive)
-    {
-        debugPrintF("**Subsystem Module: \t%s\r\n", getSubsystemModulePath());
-        debugPrintF("Compiler Version:\t%d\r\n", __TI_COMPILER_VERSION__);
-        debugPrintF("Standard C Version:\t%d\r\n", __STDC_VERSION__);
-        debugPrintF("Date Compiled:\t\t%s\r\n", __DATE__);
-        debugPrintF("Time Compiled:\t\t%s\r\n", __TIME__);
-    }
-    else
-    {
-        // Output raw data in CSV form, without field names
-    }
-    return 1;
-}
+
 
 uint8_t coreGetPrecautionLevel()
 {

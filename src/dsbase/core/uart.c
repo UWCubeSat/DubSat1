@@ -18,16 +18,21 @@ uint8_t uartReportStatus(DebugMode mode)
 {
     int i;
     bus_context_UART *bus_ctx;
+    bus_status_UART_packet bpacket;
+
+    static BOOL statusSent[2];
+
+    bcbinPopulateHeader(&(bpacket.header), TLM_ID_SHARED_BUS_UART, sizeof(bpacket));
 
     // Run through report for each initialized UART
     for (i=0; i<2; i++)
     {
         bus_ctx = &buses[i];
+
         if (bus_ctx->initialized == 1)
         {
             if (mode == Mode_ASCIIInteractive)
             {
-
                 debugPrintF("**UART %d Status:\r\n", i);
                 debugPrintF("*TX:\r\nBytes sent: %d\r\nErrors: %d\r\nBuffer OF: %d\r\nBuff UF: %d\r\nBuff overlapped: %d\r\n",
                         bus_ctx->tx_bytes_sent, bus_ctx->tx_error_count, bus_ctx->tx_error_overrun_count,
@@ -36,11 +41,36 @@ uint8_t uartReportStatus(DebugMode mode)
                 debugPrintF("*RX:\r\nBytes rcvd: %d\r\nErrors: %d\r\nMissing handlers: %d\r\n\r\n", bus_ctx->rx_bytes_rcvd,
                             bus_ctx->rx_error_count, bus_ctx->rx_error_missinghandler_count);
             }
-            else
+            else if (mode == Mode_BinaryStreaming)
             {
-                // Output just CSV fields, for telemetry consumption
+                bpacket.busnum = i;
+                bpacket.initialized = bus_ctx->initialized;
+                bpacket.bushealth = bus_ctx->health;
+                bpacket.tx_bytes_sent = bus_ctx->tx_bytes_sent;
+                bpacket.rx_bytes_rcvd = bus_ctx->rx_bytes_rcvd;
+                bpacket.tx_error_count = bus_ctx->tx_error_count;
+                bpacket.rx_error_count = bus_ctx->rx_error_count;
+
+                bcbinSendPacket((uint8_t *) &bpacket, sizeof(bpacket));
             }
         }
+        else
+        {
+            // Make sure un-initialized UART buses are marked as such
+            if (statusSent[i] == FALSE && mode == Mode_BinaryStreaming)
+            {
+                bpacket.busnum = i;
+                bpacket.initialized = bus_ctx->initialized;
+                bpacket.bushealth = Bus_Uninitialized;
+                bpacket.tx_bytes_sent = 0;
+                bpacket.rx_bytes_rcvd = 0;
+                bpacket.tx_error_count = 0;
+                bpacket.rx_error_count = 0;
+                bcbinSendPacket((uint8_t *) &bpacket, sizeof(bpacket));
+            }
+        }
+
+        statusSent[i] = TRUE;
     }
     return 1;
 }
@@ -131,6 +161,7 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable, UARTSpeed speed)
         UCA1IE |= UCRXIE | UCTXIE;
     }
 
+    bus_ctx->health = Bus_Healthy;
     return handle;
 }
 
@@ -203,6 +234,8 @@ void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
     	{
     	    bus_ctx->tx_error_count++;
     	    bus_ctx->tx_error_overrun_count++;
+
+    	    bus_ctx->health = Bus_BuffOverrunHandled;
 
     	    enableUARTInterrupts(handle);
     	    return;
@@ -295,6 +328,7 @@ void handleUCTXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
     {
         bus_ctx->tx_error_count++;
         bus_ctx->tx_error_underrun_count++;
+        bus_ctx->health = Bus_Underrun;
     }
 
     if (bus_ctx->currentTxIndex < bus_ctx->currentTxNumBytes)

@@ -33,10 +33,13 @@
 							<tool id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.exe.compilerDebug.318885800" name="MSP430 Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.exe.compilerDebug">
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DEFINE.1126727596" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DEFINE" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__MSP430FR5994__"/>
+									<listOptionValue builtIn="false" value="__SS_TEST__"/>
+									<listOptionValue builtIn="false" value="__DEBUG_UART_SPEED_9600__"/>
+									<listOptionValue builtIn="false" value="__INITIAL_DEBUG_MODE__=2"/>
 									<listOptionValue builtIn="false" value="__INITIAL_TRACE_LEVEL__=1"/>
-									<listOptionValue builtIn="false" value="__BSP_HW_IMU_BMI160__"/>
+									<listOptionValue builtIn="false" value="__BSP_HW_IMU_LSM6DSM__"/>
 									<listOptionValue builtIn="false" value="__BSP_HW_MAGTOM_HMC5883L__"/>
-									<listOptionValue builtIn="false" value="__BSP_Board_MSP430FR5994LaunchPad__"/>
+									<listOptionValue builtIn="false" value="__BSP_Board_SS__"/>
 									<listOptionValue builtIn="false" value="__DEBUG__"/>
 									<listOptionValue builtIn="false" value="_MPU_ENABLE"/>
 								</option>
@@ -69,9 +72,8 @@
 							<tool id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.exe.linkerDebug.1783106285" name="MSP430 Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.exe.linkerDebug">
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.LIBRARY.414956132" name="Include library file or command file as input (--library, -l)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.LIBRARY" valueType="libs">
 									<listOptionValue builtIn="false" value="libmpu_init.a"/>
-									<listOptionValue builtIn="false" value="&quot;libmath.a&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;libmpu_init.a&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;libc.a&quot;"/>
+									<listOptionValue builtIn="false" value="libmath.a"/>
+									<listOptionValue builtIn="false" value="libc.a"/>
 								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.SEARCH_PATH.870753333" name="Add &lt;dir&gt; to library search path (--search_path, -i)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.SEARCH_PATH" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${CCS_BASE_ROOT}/msp430/include&quot;"/>
@@ -86,7 +88,7 @@
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.HEAP_SIZE.91692371" name="Heap size for C/C++ dynamic memory allocation (--heap_size, -heap)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.HEAP_SIZE" value="160" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.STACK_SIZE.52062143" name="Set C system stack size (--stack_size, -stack)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.STACK_SIZE" value="160" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.MAP_FILE.1455542589" name="Link information (map) listed into &lt;file&gt; (--map_file, -m)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.MAP_FILE" value="&quot;${ProjName}.map&quot;" valueType="string"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.OUTPUT_FILE.1585660476" name="Specify output file name (--output_file, -o)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.OUTPUT_FILE" value="&quot;${ProjName}.out&quot;" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.OUTPUT_FILE.1585660476" name="Specify output file name (--output_file, -o)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.OUTPUT_FILE" useByScannerDiscovery="false" value="${ProjName}.out" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.DEFINE.1339165073" name="Pre-define preprocessor macro _name_ to _value_ (--define)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.linkerID.DEFINE" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="_MPU_ENABLE"/>
 								</option>
@@ -100,8 +102,8 @@
 							<tool id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.1010345543" name="MSP430 Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex">
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.ROMWIDTH.177991832" name="Specify rom width (--romwidth, -romwidth=width)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.ROMWIDTH" value="8" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.MEMWIDTH.2106348471" name="Specify memory width (--memwidth, -memwidth=width)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.MEMWIDTH" value="8" valueType="string"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.TOOL_ENABLE.454799587" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.TOOL_ENABLE" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.OUTPUT_FORMAT.17870686" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.OUTPUT_FORMAT" value="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.OUTPUT_FORMAT.TI_TXT" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.TOOL_ENABLE.454799587" name="Enable tool" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.TOOL_ENABLE" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.OUTPUT_FORMAT.17870686" name="Output format" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.OUTPUT_FORMAT" value="com.ti.ccstudio.buildDefinitions.MSP430_17.6.hex.OUTPUT_FORMAT.TI_TXT" valueType="enumerated"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
@@ -181,7 +183,7 @@
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.PRIORITY.1086975238" name="Search libraries in priority order (--priority, -priority)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.PRIORITY" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.HEAP_SIZE.29735455" name="Heap size for C/C++ dynamic memory allocation (--heap_size, -heap)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.HEAP_SIZE" useByScannerDiscovery="false" value="160" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.STACK_SIZE.1370376292" name="Set C system stack size (--stack_size, -stack)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.STACK_SIZE" useByScannerDiscovery="false" value="160" valueType="string"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.OUTPUT_FILE.929282527" name="Specify output file name (--output_file, -o)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.OUTPUT_FILE" useByScannerDiscovery="false" value="&quot;${ProjName}.out&quot;" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.OUTPUT_FILE.929282527" name="Specify output file name (--output_file, -o)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.OUTPUT_FILE" useByScannerDiscovery="false" value="${ProjName}.out" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.MAP_FILE.593776075" name="Link information (map) listed into &lt;file&gt; (--map_file, -m)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.MAP_FILE" useByScannerDiscovery="false" value="&quot;${ProjName}.map&quot;" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.XML_LINK_INFO.379989240" name="Detailed link information data-base into &lt;file&gt; (--xml_link_info, -xml_link_info)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.XML_LINK_INFO" useByScannerDiscovery="false" value="&quot;${ProjName}_linkInfo.xml&quot;" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.DISPLAY_ERROR_NUMBER.702506413" name="Emit diagnostic identifier numbers (--display_error_number)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_16.9.linkerID.DISPLAY_ERROR_NUMBER" useByScannerDiscovery="false" value="true" valueType="boolean"/>

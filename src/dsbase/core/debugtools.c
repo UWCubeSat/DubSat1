@@ -44,6 +44,7 @@ FILE_STATIC uint8_t *DebugEntityFriendlyNames[] =  {
                                                     "Core/BSP",
                                                     "UART Bus",
                                                     "RWheels",
+                                                    "Analog Sensors",
                                                     "SUBSYSTEM",  // For the "main" entity in each subsystem module
                                                     };
 
@@ -60,26 +61,35 @@ FILE_STATIC uint8_t DebugEntityPathChars[] = {
                                               'b',
                                               'u',
                                               'R',
+                                              'a',
                                               '%',
                                             };
 
 uint8_t reportStatusCallback(DebugMode mode)
 {
     if (mode == Mode_ASCIIInteractive)
-        {
-            debugPrintF("**Debug Service Status:\r\n");
-            debugPrintF("Trace level: %d\r\n\r\n", debug_status.trace_level);
-            debugPrintF("*Registered Entities: %d\r\n", entityCount);
-        }
-        else
-        {
-            debugPrintF("Stuff without as many words (e.g. just CSV)");
-        }
-        return 1;
+    {
+        debugPrintF("**Debug Service Status:\r\n");
+        debugPrintF("Trace level: %d\r\n\r\n", debug_status.trace_level);
+        debugPrintF("*Registered Entities: %d\r\n", entityCount);
+    }
+    else
+    {
+        debugPrintF("Stuff without as many words (e.g. just CSV)");
+    }
+    return 1;
+}
+
+FILE_STATIC comm_match_state comm_mstate;
+comm_match_state debugGetCommMatchState()
+{
+    return comm_mstate;
 }
 
 uint8_t actionCallback(DebugMode mode, uint8_t * cmdstr)
 {
+    commoncmd_segment *csegment;
+
     if (mode == Mode_ASCIIInteractive)
     {
         if (strlen((const char *)cmdstr) == 0)
@@ -89,6 +99,22 @@ uint8_t actionCallback(DebugMode mode, uint8_t * cmdstr)
         else
         {
             debugPrintF("Here you would act on the specific action string '%s' passed into the command.\r\n", cmdstr);
+        }
+    }
+    else if (mode == Mode_BinaryStreaming)
+    {
+        // Handle the cmdstr as binary values
+        switch (cmdstr[0])
+        {
+            case OPCODE_COMMONCMD:
+                csegment = (commoncmd_segment *) &cmdstr[1];
+                if (csegment->expectedmodule == (uint8_t)bspGetModule())
+                    comm_mstate = CommMatch_Matched;
+                else
+                    comm_mstate = CommMatch_Violation;
+                break;
+            default:
+                break;
         }
     }
     return 1;
@@ -434,7 +460,6 @@ void processCommand(uint8_t * cmdbuff, uint8_t cmdlength)
             break;
     }
 
-
     displayPrompt();
 }
 
@@ -470,6 +495,32 @@ void bcbinPopulateHeader( BcTlmHeader *header, uint8_t opcode, uint8_t fulllen)
 void bcbinSendPacket(uint8_t * buff, uint8_t szBuff)
 {
     uartTransmit(handle, buff, szBuff);
+}
+
+FILE_STATIC BOOL meta_populated;
+void bcbinPopulateMeta(meta_segment *mpkt, size_t sz)
+{
+    // Most things here don't need to ever be checked again ... but some do
+    if (meta_populated == FALSE)
+    {
+        meta_populated = TRUE;
+
+        bcbinPopulateHeader(&(mpkt->header), TLM_ID_SHARED_META, sz);
+
+        mpkt->module = bspGetModule();
+        mpkt->chipid = bspGetChipID();
+        mpkt->hwswmatchstate = (uint8_t)(bspGetHWSWMatchState());
+        mpkt->compver = __TI_COMPILER_VERSION__;
+        mpkt->stdcver = __STDC_VERSION__;
+
+        strncpy( mpkt->compdate, __DATE__, MAX_META_FIELD_LEN);
+        strncpy( mpkt->comptime, __TIME__, MAX_META_FIELD_LEN);
+    }
+
+    mpkt->commmatchstate = (uint8_t)(debugGetCommMatchState());
+
+    return;
+
 }
 
 #else  /* __DEBUG__ not specified, therefore nop debug operations */

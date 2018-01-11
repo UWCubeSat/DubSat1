@@ -1,0 +1,25 @@
+EPS - Distribution Board Notes:
+
+Power domain ID numbers (expressed in PowerDomain typedef enum and used to index into other information):
+0:  COM2
+1:  PPT
+2:  BDOT
+3:  COM1
+4:  RAHS
+5:  ESTIM(ator)
+6:  EPS
+7:  WHEELS (all three share one domain)
+
+INA219 I2C addresses (7-bit), and enable GPIO line for power switch, per power domain:
+Domain	I2C Addr		GPIO Enable Line
+------	--------		----------------
+COM 2 	0x40			P7.4
+PPT		0x41			P2.5
+BDOT	0x42			P4.1
+COM1	0x43			P7.3
+RAHS	0x44			P4.0
+ESTIM	0x45			P4.2
+EPS		0x46			P1.6
+WHEELS	0x4E  			P4.3
+
+(Though note, "cosmetic" order (right to left) on dist board is COM1, COM2, RAHS, BDOT, ESTIM, WHEELS, EPS, PPT)

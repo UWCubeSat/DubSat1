@@ -1,5 +1,5 @@
 /*
- * ltc2481.h
+ * photodiode.h
  *
  *  Created on: Oct 8, 2017
  *      Author: jerrolde
@@ -11,7 +11,16 @@
 #define defaultWrite    0x00
 #define temperature     0x08
 
-void ltc2481Init(uint8_t addr);
-double ltc2481Read(uint8_t write);
-double ltc2481Voltage();
-double ltc2481Temperature();
+uint8_t photodiodeInit(uint8_t addr);
+double photodiodeRead(uint8_t write, uint8_t handle);
+double photodiodeVoltage(uint8_t handle);
+double photodiodeTemperature(uint8_t handle);
+
+typedef struct
+{
+	uint8_t addr;
+    uint8_t i2cInitialized;
+	hDev handle;
+	double lastVoltage;
+	double lastTemperature;
+} PhotodiodeData;

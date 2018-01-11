@@ -37,7 +37,7 @@ void rwsShowUsage()
     debugPrintF("\t!rsd  --  switch direction of motor\r\n");
 }
 
-void bcbinSendTlm()
+void rwSendTlm()
 {
     bcbinSendPacket((uint8_t *) &pid, sizeof(pid));
 }
@@ -45,7 +45,7 @@ void bcbinSendTlm()
 uint8_t rwsStatusCallback(DebugMode mode)
 {
     if (mode == Mode_BinaryStreaming)
-        bcbinSendTlm();
+        rwSendTlm();
     return 1;
 }
 
@@ -164,7 +164,7 @@ void rwsInit()
     RW_PWM_SEL0 |= RW_PWM_PIN;
 
     // Setup binary telemetry header
-    bcbinPopulateHeader(&(pid.header), BINTLM_OPCODE_RWS_PIDMOT, sizeof(pid));
+    bcbinPopulateHeader(&(pid.header), TLM_ID_RWS_PIDMOT, sizeof(pid));
     debugRegisterEntity(Entity_RWS, NULL, rwsStatusCallback, rwsActionCallback);
 }
 

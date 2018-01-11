@@ -12,7 +12,7 @@ clear all; close all; clc;
 % 7-bit address for 5883/5983 = 0x1E
 slave_addr = '1Eh';
 magtom = i2c('aardvark', 0, slave_addr);
-total_time = 120;   % Seconds
+total_time = 60;   % Seconds
 period = 0.1;     % Seconds
 num_samps = floor(total_time/period);
 

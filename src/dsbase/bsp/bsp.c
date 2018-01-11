@@ -33,13 +33,81 @@ void bspExampleInit(SubsystemModule mod)
 }
 */
 
+FILE_STATIC hwsw_match_state hwsw_mstate;
+hwsw_match_state bspGetHWSWMatchState()
+{
+    return hwsw_mstate;
+}
 
+uint8_t infoReport(DebugMode mode)
+{
+    if (mode == Mode_ASCIIInteractive)
+    {
+        debugPrintF("**Subsystem Module: \t%s\r\n", getSubsystemModulePath());
+        debugPrintF("Compiler Version:\t%d\r\n", __TI_COMPILER_VERSION__);
+        debugPrintF("Standard C Version:\t%d\r\n", __STDC_VERSION__);
+        debugPrintF("Date Compiled:\t\t%s\r\n", __DATE__);
+        debugPrintF("Time Compiled:\t\t%s\r\n", __TIME__);
+    }
+    else
+    {
+        // Output raw data in CSV form, without field names
+    }
+    return 1;
+}
+
+FILE_STATIC uint64_t chipID;
+uint64_t bspGetChipID()
+{
+    return chipID;
+}
+
+FILE_STATIC hwsw_match_state enforceHWSWLock()
+{
+
+#if defined(__ENABLE_HWSW_MATCH__)
+
+    if (NUM_HWKEYS == 0)
+    {
+        hwsw_mstate = HWSW_NoKeysProvided;
+        return HWSW_NoKeysProvided;
+    }
+
+    // Keys are provided, so check them
+    int i;
+    for (i = 0; i < NUM_HWKEYS; i++)
+    {
+        if (chipID == hw_keys[i])
+        {
+            hwsw_mstate = HWSW_Matched;
+            return HWSW_Matched;
+        }
+
+    }
+
+    // Fall-through - no match found
+    hwsw_mstate = HWSW_LockViolation;
+    return HWSW_LockViolation;
+
+#else
+
+    hwsw_mstate = HWSW_LockNotEnabled;
+    return HWSW_LockNotEnabled;
+
+#endif
+}
+
+FILE_STATIC meta_segment mseg;   // Used if something fails before init complete
 void bspInit(SubsystemModule mod)
 {
     ssModule = mod;
 
     // Stop watchdog timer
     WDTCTL = WDTPW | WDTHOLD;
+
+    // NOW, CHECK HARDWARE KEY - if it doesn't match, this never returns ...
+    chipID = *((uint64_t *)0x1A0A);
+    enforceHWSWLock();
 
     // SAFE way of setting clock to 8Mhz, from
     // per-device errata:  must set divider to 4 before changing frequency to
@@ -57,16 +125,36 @@ void bspInit(SubsystemModule mod)
     CSCTL3 = DIVA__1 | DIVS__1 | DIVM__1;   // Set all dividers to 1 for 8MHz operation
     CSCTL0_H = 0;                           // Lock CS Registers
 
+    // Force all outputs to be 0, so we don't get spurious signals when we unlock
+    P1OUT = 0;
+    P2OUT = 0;
+    P3OUT = 0;
+    P4OUT = 0;
+    P5OUT = 0;
+    P6OUT = 0;
+    P7OUT = 0;
+    P8OUT = 0;
+    PJOUT = 0;
+
     // Disable the GPIO power-on default high-impedance mode to activate
     // previously configured port settings
     PM5CTL0 &= ~LOCKLPM5;
 
-#if defined(__BSP_Board_MSP430FR5994LaunchPad__)
-    // Insert board-specific configuration here
-#endif
-
 #if defined(__DEBUG__)
+
     debugInit();
+
+    // Now lock up, since the serial port now works but not much else has happened
+    if (hwsw_mstate == HWSW_LockViolation)
+    {
+        bcbinPopulateMeta(&mseg, sizeof(mseg));
+
+        while(1)
+        {
+            bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+            __delay_cycles(3 * SEC);
+        }
+    }
 
     // Register the system info report function
     // TODO:  Merge systeminfo and BSP, they aren't both needed

@@ -22,4 +22,8 @@ uint32_t timerCycleDiff16(uint16_t earlierTime, uint16_t laterTime);
 // can only take a constant (determinable at compile time)
 void spinWait_ms(uint16_t ms);
 
+// Mission Elapse Timer (MET) management and usage functions
+
+
+
 #endif /* DSBASE_CORE_TIMERS_H_ */
