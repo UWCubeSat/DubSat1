@@ -18,11 +18,11 @@
 
 void newCB(CANPacket *packet){
 
-    Message5ValueTableSigs pst = {0};
+    Message4OddSizes pst = {0};
     CANPacket ppst = {0};
     CANPacket *pps = &ppst;
-    pst.ValueTableSignal1 = CAN_ENUM_VALUETABLESIGNAL1_INVALIDGARBAGE;
-    encodeMessage5ValueTableSigs(&pst,pps);
+    pst.OddSize3 = 69;
+    encodeMessage4OddSizes(&pst,pps);
     canSendPacket(pps);
 }
 
@@ -34,8 +34,8 @@ int main(void) {
     canWrapInit();
     setCANPacketRxCallback(newCB);
 
-    PJDIR |= 0x04;
-    PJOUT |= 0x04;
+    P3DIR |= 0x20;
+    P3OUT |= 0x20;
 
 
 

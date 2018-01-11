@@ -96,6 +96,56 @@ def getSignalSize(sig, frame, floatList):
 
 def createCHeader(candb, cFileName, floatList):
     cFile = open(cFileName, "w")
+    cFile.write('''/*
+ * canwrap.h
+ *
+ *  Created on: Aug 14, 2017
+ *      Author: emoryeng
+ */
+
+#include <inttypes.h>
+
+#ifndef DSBASE_INTERFACES_CANWRAP_H_
+#define DSBASE_INTERFACES_CANWRAP_H_
+
+#define PARAM_ADCS_STATUS_VELOCITY_RPM 0x4201;
+
+
+// BEGIN GENERATOR MACROS
+
+''')
+    # Add macros for packet IDs for filter purposes.
+    for frame in candb.frames:
+        cFile.write("#define CAN_ID_" + frame.name.upper() + " " + (str(frame.id) if frame.id != 2147483648 else "0") + "\n")
+    # Add macros for ENUMS defined at the signal level.
+    cFile.write("\n")
+    for frame in candb.frames:
+        for sig in frame:
+            for a in sig.values.keys():
+                cFile.write ("#define CAN_ENUM_" + sig.name.upper() + "_" + sig.values[a].upper().replace(" ", "") + " " + str(a) + "\n")
+    # Add macros for ENUMS defined at the global level.
+    cFile.write("\n")
+    for vt in candb.valueTables:
+        for a in candb.valueTables[vt].keys():
+            cFile.write ("#define CAN_ENUM_" + vt.upper() + "_" + candb.valueTables[vt][a].upper().replace(" ", "") + " " + str(a) + "\n")
+    cFile.write('''
+typedef struct CANPacket {
+   uint32_t id; // Actual physical ID of the packet
+   uint8_t data[8]; // Data
+   uint8_t bufferNum; // Only applicable for Rx, which buffer it landed in
+   uint8_t length; // Only applies to sending packets. We don't know how long incoming packets are.
+} CANPacket;
+
+void canWrapInit();
+
+// Global function pointer to point to the function
+// when a packet is received through CAN
+void (*CANPacketReceived)(CANPacket *);
+
+void canSendPacket(CANPacket *packet);
+
+void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+''')
     for frame in candb.frames:
         cFile.write("typedef struct " + frame.name + " {\n")
         for sig in frame:
@@ -112,6 +162,7 @@ def createCHeader(candb, cFileName, floatList):
             + frame.name + "(" + frame.name + " *input, CANPacket* output);\n")
         cFile.write("void decode" + frame.name + "(CANPacket *input, "
             + frame.name + " *output);\n\n")
+    cFile.write('''#endif /* DSBASE_INTERFACES_CANWRAP_H_ */\n''')
     cFile.close()
 def cMainDecodeInteger(frame, sig, sigType):
     return ("    output -> "
@@ -197,6 +248,90 @@ def cMainEncodeFloat(frame, sig, sigType):
             + ";\n")
 def createCMain(candb, cFileName, floatList):
     cFile = open(cFileName, "w")
+    cFile.write('''/*
+ * canwrap.c
+ *
+ *  Created on: Aug 14, 2017
+ *      Author: emoryeng
+ */
+
+#include "canwrap.h"
+#include "../core/can.h"
+
+//void canPacketInit(uint8_t boardNum){
+//    canInit();
+//    setTheFilter(CAN_MASK_0, 0x01 << boardNum);
+//    setTheFilter(CAN_FILTER_0, 0x01 << boardNum);
+//    setTheFilter(CAN_FILTER_1, 0x01 << boardNum);
+//    setTheFilter(CAN_MASK_1, 0x01 << boardNum);
+//    setTheFilter(CAN_FILTER_2, 0x01 << boardNum);
+//    setTheFilter(CAN_FILTER_3, 0x01 << boardNum);
+//    setTheFilter(CAN_FILTER_4, 0x01 << boardNum);
+//    setTheFilter(CAN_FILTER_5, 0x01 << boardNum);
+//}
+void setMaskOrFilter(uint8_t addr, uint32_t filter){
+    setTheFilter(addr, filter);
+}
+
+void wrapCB0(uint8_t length, uint8_t* data, uint32_t id){
+    CANPacket packet = {0};
+    CANPacket *p = &packet;
+    p -> id = id;
+    uint8_t i;
+    for(i = 0 ; i < length; i++){
+        p -> data[i] = data[i];
+    }
+    p -> bufferNum = 0;
+    CANPacketReceived(p);
+}
+
+void wrapCB1(uint8_t length, uint8_t* data, uint32_t id){
+    CANPacket packet = {0};
+    CANPacket *p = &packet;
+    p -> id = id;
+    uint8_t i;
+    for(i = 0 ; i < length; i++){
+        p -> data[i] = data[i];
+    }
+    p -> bufferNum = 1;
+    CANPacketReceived(p);
+}
+
+void canWrapInit(){
+    canInit();
+    setReceiveCallback0(wrapCB0);
+    setReceiveCallback1(wrapCB1);
+}
+
+void reverseArray(uint8_t arr[], uint8_t start, uint8_t end)
+{
+    uint8_t temp;
+    if (start >= end)
+        return;
+    temp = arr[start];
+    arr[start] = arr[end];
+    arr[end] = temp;
+    reverseArray(arr, start+1, end-1);
+}
+
+void canSendPacket(CANPacket *packet){
+    uint8_t tech[5] = {
+       (uint8_t) (packet->id >> 21),
+       (uint8_t) (packet->id >> 16) & 0x03 | (uint8_t) (packet->id >> 13) & 0xE0 | 0x08,
+       (uint8_t) (packet->id >> 8),
+       (uint8_t) packet->id,
+       packet->length
+    };
+    canSend(0,tech, packet->data);
+}
+
+void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
+    CANPacketReceived = ReceiveCallbackArg;
+}
+
+// AUTOGEN STUFF HERE
+
+''')
     for frame in candb.frames:
         # Decode Function Implementation
         cFile.write("void decode"
@@ -232,23 +367,6 @@ def createCMain(candb, cFileName, floatList):
         cFile.write("}\n\n")
     cFile.close()
 
-def createCMacros(candb, cFileName):
-    cFile = open(cFileName, "w")
-    # Add macros for packet IDs for filter purposes.
-    for frame in candb.frames:
-        cFile.write("#define CAN_ID_" + frame.name.upper() + " " + (str(frame.id) if frame.id != 2147483648 else "0") + "\n")
-    # Add macros for ENUMS defined at the signal level.
-    cFile.write("\n")
-    for frame in candb.frames:
-        for sig in frame:
-            for a in sig.values.keys():
-                cFile.write ("#define CAN_ENUM_" + sig.name.upper() + "_" + sig.values[a].upper().replace(" ", "") + " " + str(a) + "\n")
-    # Add macros for ENUMS defined at the global level.
-    cFile.write("\n")
-    for vt in candb.valueTables:
-        for a in candb.valueTables[vt].keys():
-            cFile.write ("#define CAN_ENUM_" + vt.upper() + "_" + candb.valueTables[vt][a].upper().replace(" ", "") + " " + str(a) + "\n")
-    cFile.close()
 def handleFloats(infile):
     file = open(infile, "r")
     out = []
@@ -276,9 +394,8 @@ def main():
     if not os.path.exists("codeGenOutput"):
         os.makedirs("codeGenOutput")
     floatList = handleFloats(infile)
-    createCHeader(CANObj, "codeGenOutput/headerCode.c", floatList)
-    createCMain(CANObj, "codeGenOutput/mainCode.c", floatList)
-    createCMacros(CANObj, "codeGenOutput/macros.c")
+    createCHeader(CANObj, "codeGenOutput/canwrap.h", floatList)
+    createCMain(CANObj, "codeGenOutput/canwrap.c", floatList)
 
 if __name__ == '__main__':
     sys.exit(main())
