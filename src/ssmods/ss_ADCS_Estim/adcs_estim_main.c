@@ -1,6 +1,6 @@
+#include <adcs_estim.h>
 #include <msp430.h> 
 
-#include "SUBSYSTEMNAME_MODULENAME.h"
 #include "bsp/bsp.h"
 
 // Main status (a structure) and state and mode variables

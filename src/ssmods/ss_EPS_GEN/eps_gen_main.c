@@ -15,20 +15,21 @@ FILE_STATIC flag_t triggerState1;
 FILE_STATIC flag_t triggerState2;
 FILE_STATIC flag_t triggerState3;
 
-FILE_STATIC hDev hTemp1;
-FILE_STATIC hDev hTemp2;
-FILE_STATIC hDev hTemp3;
-
+FILE_STATIC hDev hTempSensors[NUM_PANELS];
 FILE_STATIC panel_info panels[NUM_PANELS];
+
 FILE_STATIC uint8_t panelPCVSensorAddresses[] =  { PCVI2C_PANEL1, PCVI2C_PANEL2, PCVI2C_PANEL3 };
 FILE_STATIC float panelShuntResistances[] =      { SHUNT_SIDE_PANELS, SHUNT_CENTER_PANEL, SHUNT_SIDE_PANELS };
+FILE_STATIC ACHANNEL tempChannels[] = { CHAN_TEMP1, CHAN_TEMP2, CHAN_TEMP3 };
 
 void genTempSensorsInit()
 {
     asensorInit(Ref_2p5V);
-    hTemp1 = asensorActivateChannel(CHAN_TEMP1, Type_ExtTempC);
-    hTemp2 = asensorActivateChannel(CHAN_TEMP2, Type_ExtTempC);
-    hTemp3 = asensorActivateChannel(CHAN_TEMP3, Type_ExtTempC);
+    int i;
+    for (i = 0; i < NUM_PANELS; ++i)
+    {
+        hTempSensors[i] = asensorActivateChannel(tempChannels[i], Type_ExtTempC);
+    }
 
     return;
 }
@@ -40,7 +41,7 @@ void genPCVSensorsInit()
     {
         panels[i].panelnum = i;
         panels[i].shuntresistance = panelShuntResistances[i];
-        //panels[i].hpcvsensor = pcvsensorInit(I2CBus2, panelPCVSensorAddresses[i], panelShuntResistances[i], PANEL_CURRENT_LIMIT);
+        panels[i].hpcvsensor = pcvsensorInit(I2CBus1, panelPCVSensorAddresses[i], panelShuntResistances[i], PANEL_CURRENT_LIMIT);
     }
 }
 

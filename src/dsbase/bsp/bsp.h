@@ -53,6 +53,41 @@ FILE_STATIC uint64_t hw_keys[] = { };
 #define NUM_HWKEYS  0
 FILE_STATIC uint64_t hw_keys[] = { };
 
+#elif defined(__SS_ADCS_BDOT__)
+#define __SUBSYSTEM_MODULE__  Module_ADCS_BDot
+#define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
+
+#elif defined(__SS_ADCS_ESTIM__)
+#define __SUBSYSTEM_MODULE__  Module_ADCS_Estim
+#define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
+
+#elif defined(__SS_ADCS_MPC__)
+#define __SUBSYSTEM_MODULE__  Module_ADCS_MPC
+#define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
+
+#elif defined(__SS_ADCS_MTQ__)
+#define __SUBSYSTEM_MODULE__  Module_ADCS_MTQ
+#define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
+
+#elif defined(__SS_ADCS_RWX__)
+#define __SUBSYSTEM_MODULE__  Module_ADCS_RWX
+#define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
+
+#elif defined(__SS_ADCS_RWY__)
+#define __SUBSYSTEM_MODULE__  Module_ADCS_RWY
+#define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
+
+#elif defined(__SS_ADCS_RWZ__)
+#define __SUBSYSTEM_MODULE__  Module_ADCS_RWZ
+#define NUM_HWKEYS  0
+FILE_STATIC uint64_t hw_keys[] = { };
+
 #elif defined(__SS_TEST__)
 #define __SUBSYSTEM_MODULE__  Module_Test
 #define NUM_HWKEYS  0

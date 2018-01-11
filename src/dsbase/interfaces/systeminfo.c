@@ -18,14 +18,23 @@ FILE_STATIC uint8_t *SubsystemModulePaths[] =
                                              "ADCS/RWheelY",
                                              "ADCS/RWheelZ",
                                              "PPT",
-                                             "EPS/Dist"};
+                                             "EPS/Dist",
+                                             "EPS/Gen",
+                                             "EPS/Batt",
+                                             "ADCS/Estim",
+                                             "ADCS/MPC",
+                                             "ADCS/SensorProc",
+                                             "ADCS/MTQ",
+                                             "COM1",
+                                             "COM2",
+                                             "RAHS"};
 
 FILE_STATIC SpacecraftInfo sc_info;
 
 
 // Performs logic to "figure out" current state (1st boot? reboot? MET?)
 // Hooks up sync pulse handlers
-StartupType coreStartup(sync_pulse_handler sync1, sync_pulse_handler sync2)
+StartupType coreStartup(special_handler pptfiringhandler, special_handler rollcallhandler)
 {
 
     // TODO:  populates sc_info as well?

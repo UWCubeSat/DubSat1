@@ -81,7 +81,7 @@ typedef struct _spacecraft_info {
     PPTFiringInfo pptactionstatus;
 } SpacecraftInfo;
 
-typedef void (*sync_pulse_handler)();
+typedef void (*special_handler)();
 
 typedef enum _activity_type {
     Activity_I2C,
@@ -93,7 +93,7 @@ typedef enum _activity_type {
 } ActivityType;
 
 uint8_t *getSubsystemModulePath();
-StartupType coreStartup(sync_pulse_handler sync1, sync_pulse_handler sync2);
+StartupType coreStartup(special_handler sync1, special_handler sync2);
 uint8_t coreGetPrecautionLevel();
 
 #endif /* INTERFACES_SYSTEMINFO_H_ */

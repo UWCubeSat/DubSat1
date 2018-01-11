@@ -80,6 +80,9 @@ TLM_SEGMENT {
 TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
+    float paneltempsC[NUM_PANELS];
+
+
 } sensordat_segment;
 
 CMD_SEGMENT {

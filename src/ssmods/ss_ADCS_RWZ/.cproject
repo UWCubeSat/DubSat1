@@ -107,6 +107,26 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="com.ti.ccstudio.buildDefinitions.MSP430.Debug.196225567.712999553" name="can.c" rcbsApplicability="disable" resourcePath="dsbase/core/can.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.MSP430_17.6.exe.compilerDebug.318885800.863504261">
+						<tool id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.exe.compilerDebug.318885800.863504261" name="MSP430 Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.exe.compilerDebug.318885800">
+							<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DEFINE.1808530141" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DEFINE" valueType="definedSymbols">
+								<listOptionValue builtIn="false" value="__MSP430FR5994__"/>
+								<listOptionValue builtIn="false" value="__SS_ADCS_RWZ__"/>
+								<listOptionValue builtIn="false" value="__DEBUG_UART_SPEED_9600__"/>
+								<listOptionValue builtIn="false" value="__INITIAL_DEBUG_MODE__=2"/>
+								<listOptionValue builtIn="false" value="__INITIAL_TRACE_LEVEL__=1"/>
+								<listOptionValue builtIn="false" value="__BSP_HW_IMU_LSM6DSM__"/>
+								<listOptionValue builtIn="false" value="__BSP_HW_MAGTOM_HMC5883L__"/>
+								<listOptionValue builtIn="false" value="__BSP_Board_SS__"/>
+								<listOptionValue builtIn="false" value="__DEBUG__"/>
+								<listOptionValue builtIn="false" value="_MPU_ENABLE"/>
+							</option>
+							<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compiler.inputType__C_SRCS.2117593706" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compiler.inputType__C_SRCS"/>
+							<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compiler.inputType__CPP_SRCS.1360810089" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compiler.inputType__CPP_SRCS"/>
+							<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compiler.inputType__ASM_SRCS.646189520" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compiler.inputType__ASM_SRCS"/>
+							<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compiler.inputType__ASM2_SRCS.46037772" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compiler.inputType__ASM2_SRCS"/>
+						</tool>
+					</fileInfo>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
