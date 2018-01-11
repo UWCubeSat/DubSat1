@@ -409,7 +409,6 @@ int main(void)
     distDomainInit();
     distDeployInit();
 
-
     LED_DIR |= LED_BIT;
 
     // Setup segments to be able to serve as COSMOS telemetry packets

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.5.0">
+<eagle version="8.5.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.05" altunitdist="mm" altunit="mm"/>
+<grid distance="2" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -3014,10 +3014,10 @@ Board Template: V2.1</text>
 <smd name="POS" x="0" y="-2.4" dx="2.6" dy="0.8" layer="1" rot="R90" thermals="no"/>
 </package>
 <package name="OEM719">
-<pad name="P$1" x="69.22" y="13.84" drill="0.8" shape="square" rot="R90"/>
-<pad name="P$2" x="67.22" y="13.84" drill="0.8" rot="R90"/>
-<pad name="P$3" x="69.22" y="15.84" drill="0.8" rot="R90"/>
-<pad name="P$4" x="67.22" y="15.84" drill="0.8" rot="R90"/>
+<pad name="P$1" x="69.22" y="31.84" drill="0.8" shape="square" rot="R90"/>
+<pad name="P$2" x="67.22" y="31.84" drill="0.8" rot="R90"/>
+<pad name="P$3" x="69.22" y="29.84" drill="0.8" rot="R90"/>
+<pad name="P$4" x="67.22" y="29.84" drill="0.8" rot="R90"/>
 <wire x1="0" y1="0" x2="0" y2="9.78" width="0.1524" layer="21"/>
 <wire x1="0" y1="9.78" x2="0" y2="35.94" width="0.1524" layer="21"/>
 <wire x1="0" y1="35.94" x2="0" y2="45.7" width="0.1524" layer="21"/>
@@ -3028,22 +3028,22 @@ Board Template: V2.1</text>
 <hole x="3.18" y="40.01" drill="3.45"/>
 <hole x="67.95" y="5.72" drill="3.45"/>
 <hole x="67.95" y="40.01" drill="3.45"/>
-<pad name="P$5" x="69.22" y="17.84" drill="0.8" rot="R90"/>
-<pad name="P$6" x="67.22" y="17.84" drill="0.8" rot="R90"/>
-<pad name="P$7" x="69.22" y="19.84" drill="0.8" rot="R90"/>
-<pad name="P$8" x="67.22" y="19.84" drill="0.8" rot="R90"/>
-<pad name="P$9" x="69.22" y="21.84" drill="0.8" rot="R90"/>
-<pad name="P$10" x="67.22" y="21.84" drill="0.8" rot="R90"/>
-<pad name="P$11" x="69.22" y="23.84" drill="0.8" rot="R90"/>
-<pad name="P$12" x="67.22" y="23.84" drill="0.8" rot="R90"/>
-<pad name="P$13" x="69.22" y="25.84" drill="0.8" rot="R90"/>
-<pad name="P$14" x="67.22" y="25.84" drill="0.8" rot="R90"/>
-<pad name="P$15" x="69.22" y="27.84" drill="0.8" rot="R90"/>
-<pad name="P$16" x="67.22" y="27.84" drill="0.8" rot="R90"/>
-<pad name="P$17" x="69.22" y="29.84" drill="0.8" rot="R90"/>
-<pad name="P$18" x="67.22" y="29.84" drill="0.8" rot="R90"/>
-<pad name="P$19" x="69.22" y="31.84" drill="0.8" rot="R90"/>
-<pad name="P$20" x="67.22" y="31.84" drill="0.8" rot="R90"/>
+<pad name="P$5" x="69.22" y="27.84" drill="0.8" rot="R90"/>
+<pad name="P$6" x="67.22" y="27.84" drill="0.8" rot="R90"/>
+<pad name="P$7" x="69.22" y="25.84" drill="0.8" rot="R90"/>
+<pad name="P$8" x="67.22" y="25.84" drill="0.8" rot="R90"/>
+<pad name="P$9" x="69.22" y="23.84" drill="0.8" rot="R90"/>
+<pad name="P$10" x="67.22" y="23.84" drill="0.8" rot="R90"/>
+<pad name="P$11" x="69.22" y="21.84" drill="0.8" rot="R90"/>
+<pad name="P$12" x="67.22" y="21.84" drill="0.8" rot="R90"/>
+<pad name="P$13" x="69.22" y="19.84" drill="0.8" rot="R90"/>
+<pad name="P$14" x="67.22" y="19.84" drill="0.8" rot="R90"/>
+<pad name="P$15" x="69.22" y="17.84" drill="0.8" rot="R90"/>
+<pad name="P$16" x="67.22" y="17.84" drill="0.8" rot="R90"/>
+<pad name="P$17" x="69.22" y="15.84" drill="0.8" rot="R90"/>
+<pad name="P$18" x="67.22" y="15.84" drill="0.8" rot="R90"/>
+<pad name="P$19" x="69.22" y="13.84" drill="0.8" rot="R90"/>
+<pad name="P$20" x="67.22" y="13.84" drill="0.8" rot="R90"/>
 <text x="64" y="12" size="2" layer="27" font="vector" rot="R90">&gt;VALUE</text>
 <text x="61" y="12" size="1" layer="25" font="vector" rot="R90">&gt;NAME</text>
 <wire x1="-0.3" y1="25.86" x2="9.2" y2="25.86" width="0.1" layer="39"/>

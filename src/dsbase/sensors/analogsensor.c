@@ -320,7 +320,7 @@ hDev asensorActivateChannel(ACHANNEL newchan, sensor_type stype)
 
 float convertRawToFloat(hDev hSensor)
 {
-    float convtval;
+    float convtval = 0.0f;
     sensor_type stype = asensors[(uint8_t)hSensor].stype;
     uint16_t rawval = asensors[(uint8_t)hSensor].lastrawvalue;
 
@@ -334,8 +334,9 @@ float convertRawToFloat(hDev hSensor)
         convtval = tempIntConvertRawtoCelsius(rawval);
         asensors[(uint8_t)hSensor].lastvalueC = convtval;
     }
-    else
+    else if (stype == Type_ExtTempC)
     {
+        // TODO:  implement this!!!
         convtval = tempExtConvertRawtoCelsius(rawval);
         asensors[(uint8_t)hSensor].lastvalueC = convtval;
     }
@@ -373,6 +374,12 @@ float asensorGetLastIntTempC()
     return convertRawToFloat(TEMPSENSOR_DEV);
 }
 
+float asensorGetLastExtTempC(hDev hSensor)
+{
+    // TODO:  implement this!
+    return 0.0f;
+}
+
 // Read a single channel
 float asensorReadSingleSensorV(hDev hSensor)
 {
@@ -385,6 +392,12 @@ float asensorReadIntTempC()
 {
     asensorReadSingleSensorRaw(TEMPSENSOR_DEV);
     return convertRawToFloat(TEMPSENSOR_DEV);
+}
+
+float asensorReadExtTempC(hDev hSensor)
+{
+    // TODO:  implement this!
+    return 0.0f;
 }
 
 void asensorUpdateAllSensors()

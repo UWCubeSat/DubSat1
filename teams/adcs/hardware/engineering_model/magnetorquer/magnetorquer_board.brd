@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.2">
+<eagle version="8.5.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -1977,6 +1977,22 @@ Datsheet: http://cds.linear.com/docs/en/datasheet/2943fa.pdf</description>
 <wire x1="1.5" y1="-0.8" x2="-1.5" y2="-0.8" width="0.0508" layer="21"/>
 <wire x1="-1.5" y1="-0.8" x2="-1.5" y2="0.8" width="0.0508" layer="21"/>
 </package>
+<package name="LED-1206">
+<wire x1="-1" y1="1" x2="-2.4" y2="1" width="0.2032" layer="21"/>
+<wire x1="-2.4" y1="1" x2="-2.4" y2="-1" width="0.2032" layer="21"/>
+<wire x1="-2.4" y1="-1" x2="-1" y2="-1" width="0.2032" layer="21"/>
+<wire x1="1" y1="1" x2="2.4" y2="1" width="0.2032" layer="21"/>
+<wire x1="2.4" y1="1" x2="2.4" y2="-1" width="0.2032" layer="21"/>
+<wire x1="2.4" y1="-1" x2="1" y2="-1" width="0.2032" layer="21"/>
+<wire x1="0.3" y1="0.7" x2="0.3" y2="0" width="0.2032" layer="21"/>
+<wire x1="0.3" y1="0" x2="0.3" y2="-0.7" width="0.2032" layer="21"/>
+<wire x1="0.3" y1="0" x2="-0.3" y2="0.6" width="0.2032" layer="21"/>
+<wire x1="-0.3" y1="0.6" x2="-0.3" y2="-0.6" width="0.2032" layer="21"/>
+<wire x1="-0.3" y1="-0.6" x2="0.3" y2="0" width="0.2032" layer="21"/>
+<smd name="A" x="-1.5" y="0" dx="1.2" dy="1.4" layer="1"/>
+<smd name="C" x="1.5" y="0" dx="1.2" dy="1.4" layer="1"/>
+<text x="-1.524" y="1.397" size="1.016" layer="25" font="vector">&gt;NAME</text>
+</package>
 </packages>
 </library>
 </libraries>
@@ -2069,6 +2085,7 @@ design rules under a new name.</description>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
 <param name="checkStop" value="0"/>
+<param name="checkValues" value="0"/>
 <param name="useDiameter" value="13"/>
 <param name="maxErrors" value="50"/>
 </designrules>
@@ -2207,6 +2224,8 @@ design rules under a new name.</description>
 <element name="R6" library="DubSat1 Components" package="0805" value="120 kΩ" x="85.471" y="35.8775" rot="R135"/>
 <element name="C15" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10 uF" x="82.931" y="48.5775" rot="R90"/>
 <element name="C16" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="47 uF" x="87.376" y="48.895" rot="R90"/>
+<element name="D2" library="DubSat1 Components" package="LED-1206" value="" x="53.086" y="36.83" rot="R180"/>
+<element name="R7" library="DubSat1 Components" package="0805" value="" x="48.768" y="36.83" rot="R180"/>
 </elements>
 <signals>
 <signal name="GND">
@@ -2455,6 +2474,13 @@ design rules under a new name.</description>
 <wire x1="86.4235" y1="34.924996875" x2="86.423496875" y2="34.925" width="0.9144" layer="1"/>
 <wire x1="87.0585" y1="34.925" x2="86.423496875" y2="34.925" width="0.9144" layer="1"/>
 <wire x1="86.4235" y1="34.29" x2="87.0585" y2="34.925" width="0.9144" layer="1"/>
+<contactref element="R7" pad="2"/>
+<via x="47.2014" y="36.567" extent="1-16" drill="0.3" shape="square"/>
+<via x="47.2014" y="37.075" extent="1-16" drill="0.3" shape="square"/>
+<wire x1="47.2014" y1="37.075" x2="47.623" y2="37.075" width="0.254" layer="1"/>
+<wire x1="47.623" y1="37.075" x2="47.868" y2="36.83" width="0.254" layer="1"/>
+<wire x1="47.2014" y1="36.567" x2="47.605" y2="36.567" width="0.254" layer="1"/>
+<wire x1="47.605" y1="36.567" x2="47.868" y2="36.83" width="0.254" layer="1"/>
 </signal>
 <signal name="N$18">
 </signal>
@@ -2931,6 +2957,9 @@ design rules under a new name.</description>
 <wire x1="51.2064" y1="41.6814" x2="53.4924" y2="41.6814" width="0.2032" layer="1"/>
 <wire x1="53.4924" y1="41.6814" x2="54.483" y2="40.6908" width="0.2032" layer="1"/>
 <wire x1="54.483" y1="40.6908" x2="54.483" y2="40.0304" width="0.2032" layer="1"/>
+<contactref element="D2" pad="A"/>
+<wire x1="54.483" y1="40.0304" x2="54.483" y2="36.933" width="0.254" layer="1"/>
+<wire x1="54.483" y1="36.933" x2="54.586" y2="36.83" width="0.254" layer="1"/>
 </signal>
 <signal name="CANH">
 <contactref element="U$1" pad="P$53"/>
@@ -3131,6 +3160,11 @@ design rules under a new name.</description>
 <wire x1="84.834603125" y1="36.51389375" x2="86.104603125" y2="37.78389375" width="0.254" layer="1"/>
 <wire x1="86.104603125" y1="37.78389375" x2="87.3785" y2="39.057790625" width="0.254" layer="1"/>
 <wire x1="87.3785" y1="39.057790625" x2="87.6935" y2="39.1185" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="N$3">
+<contactref element="D2" pad="C"/>
+<contactref element="R7" pad="1"/>
+<wire x1="51.586" y1="36.83" x2="49.668" y2="36.83" width="0.254" layer="1"/>
 </signal>
 </signals>
 <errors>

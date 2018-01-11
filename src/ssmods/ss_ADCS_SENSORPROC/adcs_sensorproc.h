@@ -72,6 +72,17 @@ TLM_SEGMENT {
     uint8_t error;
 } sunsensor_segment;
 
+// for gpspower status
+#define GPSPOWER_ON  2
+#define GPSPOWER_BOOTING  1
+#define GPSPOWER_OFF 0
+
+TLM_SEGMENT {
+    BcTlmHeader header; // All COSMOS TLM packets must have this
+
+    uint8_t status;
+} gpspower_segment;
+
 CMD_SEGMENT {
     uint8_t enable;
 } enable_segment;

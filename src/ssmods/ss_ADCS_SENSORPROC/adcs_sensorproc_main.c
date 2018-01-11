@@ -34,6 +34,7 @@ FILE_STATIC time_segment timeSeg;
 FILE_STATIC hwmonitor_segment hwmonitorSeg;
 FILE_STATIC satvis2_segment satvis2Seg;
 FILE_STATIC sunsensor_segment sunsensorSeg;
+FILE_STATIC gpspower_segment gpspowerSeg;
 
 // called on every gps message
 FILE_STATIC void handleGPSMessage(const GPSHeader *header);
@@ -58,26 +59,23 @@ FILE_STATIC void gpsConfigure()
     // configure to reply in binary only
     gpsSendCommand("interfacemode thisport novatel novatelbinary on\r\n");
 
+    gpsSendCommand("statusconfig clear status 004c0000\r\n");
+
     // log the status once. Status word will be updated at every message.
     gpsSendCommand("log rxstatusb\r\n");
     gpsSendCommand("log timeb\r\n");
 
     // monitor hardware
-    gpsSendCommand("log hwmonitorb ontime 10\r\n");
+    gpsSendCommand("log hwmonitorb ontime 3\r\n");
 
     // monitor position
     gpsSendCommand("log bestxyzb ontime 1\r\n");
 }
 
-FILE_STATIC void gpsSendStatus()
-{
-    bcbinSendPacket((uint8_t *) &rxstatusSeg, sizeof(rxstatusSeg));
-    bcbinSendPacket((uint8_t *) &timeSeg, sizeof(timeSeg));
-}
-
 // read the sun sensor and update its segments
 FILE_STATIC void sunSensorUpdate()
 {
+    // TODO this is a blocking call. We should have some sort of timeout
     SunSensorAngle *angle = sunSensorReadAngle();
     if (angle != NULLP)
     {
@@ -89,6 +87,37 @@ FILE_STATIC void sunSensorUpdate()
     {
         // TODO log read error
     }
+}
+
+FILE_STATIC void sendSunSensorData()
+{
+    bcbinSendPacket((uint8_t *) &sunsensorSeg, sizeof(sunsensorSeg));
+}
+
+FILE_STATIC void sendGPSPowerStatus()
+{
+    switch (ss_state)
+    {
+    case State_GPSOn:
+        gpspowerSeg.status = GPSPOWER_ON;
+        break;
+    case State_GPSPoweringOn:
+        gpspowerSeg.status = GPSPOWER_BOOTING;
+        break;
+    case State_GPSOff:
+        gpspowerSeg.status = GPSPOWER_OFF;
+        break;
+    default:
+        // TODO unknown state?
+        break;
+    }
+    bcbinSendPacket((uint8_t *) &gpspowerSeg, sizeof(gpspowerSeg));
+}
+
+FILE_STATIC void sendGPSStatus()
+{
+    bcbinSendPacket((uint8_t *) &rxstatusSeg, sizeof(rxstatusSeg));
+    bcbinSendPacket((uint8_t *) &timeSeg, sizeof(timeSeg));
 }
 
 /*
@@ -108,6 +137,8 @@ int main(void)
     // Setup segments to be able to serve as COSMOS telemetry packets
     bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
     // TODO meta segment?
+    bcbinPopulateHeader(&sunsensorSeg.header, 121, sizeof(sunsensorSeg));
+    bcbinPopulateHeader(&gpspowerSeg.header, 122, sizeof(gpspowerSeg));
     bcbinPopulateHeader(&rxstatusSeg.header, 123, sizeof(rxstatusSeg));
     bcbinPopulateHeader(&bestxyzSeg.header, 124, sizeof(bestxyzSeg));
     bcbinPopulateHeader(&timeSeg.header, 125, sizeof(timeSeg));
@@ -119,8 +150,8 @@ int main(void)
     // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
     // debugtools.h.  Also, be sure to change the "path char"
     debugRegisterEntity(Entity_SUBSYSTEM, handleDebugInfoCallback,
-                                     handleDebugStatusCallback,
-                                     handleDebugActionCallback);
+                                          handleDebugStatusCallback,
+                                          handleDebugActionCallback);
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
@@ -152,17 +183,22 @@ int main(void)
     // initialize sun sensor
     sunSensorInit();
 
-    // the GPS is always on since we don't have a working switch yet
-    // TODO remove these when we start working with a power switch
-    ss_state = State_GPSOn;
-    gpsConfigure();
-
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
     {
         // TODO put these in a "nominal" state and create a second state machine
         // for the GPS only?
-        sunSensorUpdate();
+//        sunSensorUpdate();
+        sendSunSensorData();
+
+        static uint8_t i = 0;
+        i++;
+
+        if (i % 32 == 0)
+        {
+            sendGPSPowerStatus();
+            // TODO also send other health segments etc.
+        }
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
         switch (ss_state)
@@ -180,15 +216,12 @@ int main(void)
         case State_GPSPoweringOn: {
             // periodically poll the GPS until it responds
             // TODO replace this with timers?
-            static i = 0;
             if (gpsUpdate())
             {
                 triggerGPSOn = 1;
-                i = 0;
             }
-            else
+            else if (i % 256 == 0)
             {
-                i++;
                 gpsSendCommand("log rxstatusb\r\n");
             }
 
@@ -208,7 +241,7 @@ int main(void)
             {
                 // send status telemetry on update
                 // TODO send meta and health segments
-                gpsSendStatus();
+                sendGPSStatus();
             }
 
             if (triggerGPSOff)
