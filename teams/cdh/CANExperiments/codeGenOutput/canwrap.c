@@ -81,102 +81,99 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
-void decodeMessage5ValueTableSigs(CANPacket *input, Message5ValueTableSigs *output){
+void decodeVECTOR__INDEPENDENT_SIG_MSG(CANPacket *input, VECTOR__INDEPENDENT_SIG_MSG *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> ValueTableSignal1 = (uint8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> CDH_GroupingID = (uint8_t) (((fullData & ((uint64_t) 0xf << -4)) >> -4));
 }
 
-void encodeMessage5ValueTableSigs(Message5ValueTableSigs *input, CANPacket *output){
-    output -> id = 4;
-    output -> length = 1;
+void encodeVECTOR__INDEPENDENT_SIG_MSG(VECTOR__INDEPENDENT_SIG_MSG *input, CANPacket *output){
+    output -> id = 1073741824;
+    output -> length = 0;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> ValueTableSignal1))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> CDH_GroupingID))) & 0xf) << 60;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
 }
 
-void decodeMessage4OddSizes(CANPacket *input, Message4OddSizes *output){
+void decodeADCS_MTQ_BDOT_CMD(CANPacket *input, ADCS_MTQ_BDOT_CMD *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> OddSize3 = (uint64_t) (((fullData & ((uint64_t) 0x1fffffffff << 3)) >> 3));
-    output -> OddSize2 = (int16_t) (((fullData & ((uint64_t) 0x1ff << 43)) >> 43));
-    output -> OddSize1 = (uint8_t) (((fullData & ((uint64_t) 0x7 << 58)) >> 58));
+    output -> MTQ_Command_Z = (uint8_t) (((fullData & ((uint64_t) 0x3 << 2)) >> 2));
+    output -> MTQ_Command_Y = (uint8_t) (((fullData & ((uint64_t) 0x3 << 4)) >> 4));
+    output -> MTQ_Command_X = (uint8_t) (((fullData & ((uint64_t) 0x3 << 6)) >> 6));
+    output -> MTQ_Strength_Z = (int16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
+    output -> MTQ_Strength_Y = (int16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+    output -> MTQ_Strength_X = (int16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
 }
 
-void encodeMessage4OddSizes(Message4OddSizes *input, CANPacket *output){
-    output -> id = 3;
+void encodeADCS_MTQ_BDOT_CMD(ADCS_MTQ_BDOT_CMD *input, CANPacket *output){
+    output -> id = 514;
+    output -> length = 7;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> MTQ_Command_Z))) & 0x3) << 10;
+    fullPacketData |= (((uint64_t)((input -> MTQ_Command_Y))) & 0x3) << 12;
+    fullPacketData |= (((uint64_t)((input -> MTQ_Command_X))) & 0x3) << 14;
+    fullPacketData |= (((uint64_t)((input -> MTQ_Strength_Z))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> MTQ_Strength_Y))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> MTQ_Strength_X))) & 0xffff) << 48;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodeADCS_MTQ_STATEST_CMD(CANPacket *input, ADCS_MTQ_STATEST_CMD *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> MTQ_Command_Z = (uint8_t) (((fullData & ((uint64_t) 0x3 << 2)) >> 2));
+    output -> MTQ_Command_Y = (uint8_t) (((fullData & ((uint64_t) 0x3 << 4)) >> 4));
+    output -> MTQ_Command_X = (uint8_t) (((fullData & ((uint64_t) 0x3 << 6)) >> 6));
+    output -> MTQ_Strength_Z = (int16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
+    output -> MTQ_Strength_Y = (int16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+    output -> MTQ_Strength_X = (int16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
+}
+
+void encodeADCS_MTQ_STATEST_CMD(ADCS_MTQ_STATEST_CMD *input, CANPacket *output){
+    output -> id = 513;
+    output -> length = 7;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> MTQ_Command_Z))) & 0x3) << 10;
+    fullPacketData |= (((uint64_t)((input -> MTQ_Command_Y))) & 0x3) << 12;
+    fullPacketData |= (((uint64_t)((input -> MTQ_Command_X))) & 0x3) << 14;
+    fullPacketData |= (((uint64_t)((input -> MTQ_Strength_Z))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> MTQ_Strength_Y))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> MTQ_Strength_X))) & 0xffff) << 48;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodeADCS_RW_CMD(CANPacket *input, ADCS_RW_CMD *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> RW_Command_Z = (uint8_t) (((fullData & ((uint64_t) 0xf << 52)) >> 52));
+    output -> RW_Command_Y = (uint8_t) (((fullData & ((uint64_t) 0xf << 56)) >> 56));
+    output -> RW_Command_X = (uint8_t) (((fullData & ((uint64_t) 0xf << 60)) >> 60));
+    output -> RW_SetPoint_Z = (int16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> RW_SetPoint_Y = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> RW_SetPoint_X = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+}
+
+void encodeADCS_RW_CMD(ADCS_RW_CMD *input, CANPacket *output){
+    output -> id = 512;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> OddSize3))) & 0x1fffffffff) << 3;
-    fullPacketData |= (((uint64_t)((input -> OddSize2))) & 0x1ff) << 43;
-    fullPacketData |= (((uint64_t)((input -> OddSize1))) & 0x7) << 58;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
-void decodeMessage3(CANPacket *input, Message3 *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    uint64_t tempNormalDouble = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
-output -> NormalDouble = (*((double *)(&(tempNormalDouble))));
-}
-
-void encodeMessage3(Message3 *input, CANPacket *output){
-    output -> id = 2;
-    output -> length = 8;
-    uint64_t fullPacketData = 0x0000000000000000;
-    const double tempNormalDouble = ((input -> NormalDouble));
-    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(tempNormalDouble)))));
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
-void decodeMessage2Smaller(CANPacket *input, Message2Smaller *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    uint32_t tempNormalFloat = (uint32_t) ((fullData & ((uint64_t) 0xffffffff)));
-    output -> NormalFloat = (*((float *)(&(tempNormalFloat))));
-}
-
-void encodeMessage2Smaller(Message2Smaller *input, CANPacket *output){
-    output -> id = 1;
-    output -> length = 4;
-    uint64_t fullPacketData = 0x0000000000000000;
-    const float tempNormalFloat = ((input -> NormalFloat));
-    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempNormalFloat))))) << 32;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
-void decodeMessage1(CANPacket *input, Message1 *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    output -> NormalSignedInt = (int8_t) (((fullData & ((uint64_t) 0xff))));
-    output -> IntFactorOffset = (int32_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8) * 3 + 357);
-    uint32_t tempFloatFactor = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 24)) >> 24);
-    output -> FloatFactor = (*((float *)(&(tempFloatFactor)))) * 2.75;
-    output -> NormalUint = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-}
-
-void encodeMessage1(Message1 *input, CANPacket *output){
-    output -> id = 0;
-    output -> length = 8;
-    uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> NormalSignedInt))) & 0xff);
-    fullPacketData |= (((uint64_t)((input -> IntFactorOffset - 357) / 3)) & 0xffff) << 8;
-    const float tempFloatFactor = ((input -> FloatFactor)) / 2.75;
-    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempFloatFactor))))) << 24;
-    fullPacketData |= (((uint64_t)((input -> NormalUint))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> RW_Command_Z))) & 0xf) << 52;
+    fullPacketData |= (((uint64_t)((input -> RW_Command_Y))) & 0xf) << 56;
+    fullPacketData |= (((uint64_t)((input -> RW_Command_X))) & 0xf) << 60;
+    fullPacketData |= (((uint64_t)((input -> RW_SetPoint_Z))) & 0xffff);
+    fullPacketData |= (((uint64_t)((input -> RW_SetPoint_Y))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> RW_SetPoint_X))) & 0xffff) << 32;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
