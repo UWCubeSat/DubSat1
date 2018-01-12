@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.5.2">
+<eagle version="8.4.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -13140,6 +13140,8 @@ No silk outline, but tDocu layer shows pin location.
 <part name="GND30" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R_PULLDOWN" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="GND31" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
+<part name="R6" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="100kΩ"/>
+<part name="+3V1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -13235,6 +13237,8 @@ No silk outline, but tDocu layer shows pin location.
 <instance part="GND30" gate="1" x="360.68" y="-121.92" rot="R180"/>
 <instance part="R_PULLDOWN" gate="G$1" x="284.48" y="-157.48" rot="R90"/>
 <instance part="GND31" gate="G$1" x="284.48" y="-167.64" smashed="yes"/>
+<instance part="R6" gate="G$1" x="251.46" y="15.24" rot="R90"/>
+<instance part="+3V1" gate="G$1" x="243.84" y="5.08" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -13890,8 +13894,11 @@ No silk outline, but tDocu layer shows pin location.
 <net name="3V3_BUCK_PGOOD" class="0">
 <segment>
 <pinref part="U4" gate="G$1" pin="PGOOD"/>
-<wire x1="254" y1="20.32" x2="248.92" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="254" y1="20.32" x2="251.46" y2="20.32" width="0.1524" layer="91"/>
 <label x="248.92" y="20.32" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="R6" gate="G$1" pin="2"/>
+<wire x1="251.46" y1="20.32" x2="248.92" y2="20.32" width="0.1524" layer="91"/>
+<junction x="251.46" y="20.32"/>
 </segment>
 <segment>
 <pinref part="BLK1" gate="G$1" pin="P3.6_GPIO/PWM"/>
@@ -14124,6 +14131,15 @@ No silk outline, but tDocu layer shows pin location.
 <wire x1="154.94" y1="-45.72" x2="162.56" y2="-45.72" width="0.1524" layer="91"/>
 <wire x1="162.56" y1="-45.72" x2="162.56" y2="-35.56" width="0.1524" layer="91"/>
 <wire x1="162.56" y1="-35.56" x2="185.42" y2="-35.56" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="+3V3" class="0">
+<segment>
+<pinref part="+3V1" gate="G$1" pin="+3V3"/>
+<pinref part="R6" gate="G$1" pin="1"/>
+<wire x1="246.38" y1="5.08" x2="251.46" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="251.46" y1="5.08" x2="251.46" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="246.38" y1="5.08" x2="251.46" y2="5.08" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
