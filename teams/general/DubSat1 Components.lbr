@@ -7,7 +7,7 @@
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="2" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
+<grid distance="50" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -3046,10 +3046,10 @@ Board Template: V2.1</text>
 <pad name="P$20" x="67.22" y="13.84" drill="0.8" rot="R90"/>
 <text x="64" y="12" size="2" layer="27" font="vector" rot="R90">&gt;VALUE</text>
 <text x="61" y="12" size="1" layer="25" font="vector" rot="R90">&gt;NAME</text>
-<wire x1="-0.3" y1="25.86" x2="9.2" y2="25.86" width="0.1" layer="39"/>
-<wire x1="9.2" y1="25.86" x2="9.2" y2="35.36" width="0.1" layer="39"/>
-<wire x1="9.2" y1="35.36" x2="-0.3" y2="35.36" width="0.1" layer="39"/>
-<wire x1="-0.3" y1="35.36" x2="-0.3" y2="25.86" width="0.1" layer="39"/>
+<wire x1="-0.3" y1="10.366" x2="9.2" y2="10.366" width="0.1" layer="39"/>
+<wire x1="9.2" y1="10.366" x2="9.2" y2="19.866" width="0.1" layer="39"/>
+<wire x1="9.2" y1="19.866" x2="-0.3" y2="19.866" width="0.1" layer="39"/>
+<wire x1="-0.3" y1="19.866" x2="-0.3" y2="10.366" width="0.1" layer="39"/>
 <wire x1="7.24" y1="1.75" x2="63.88" y2="1.75" width="0.1" layer="21"/>
 <wire x1="63.88" y1="1.75" x2="63.88" y2="9.78" width="0.1" layer="21"/>
 <wire x1="63.88" y1="9.78" x2="70.6" y2="9.78" width="0.1" layer="21"/>
