@@ -677,10 +677,10 @@ Datsheet: http://cds.linear.com/docs/en/datasheet/2943fa.pdf</description>
 <pad name="P$20" x="67.22" y="13.84" drill="0.8" rot="R90"/>
 <text x="64" y="12" size="2" layer="27" font="vector" rot="R90">&gt;VALUE</text>
 <text x="61" y="12" size="1" layer="25" font="vector" rot="R90">&gt;NAME</text>
-<wire x1="-0.3" y1="25.86" x2="9.2" y2="25.86" width="0.1" layer="39"/>
-<wire x1="9.2" y1="25.86" x2="9.2" y2="35.36" width="0.1" layer="39"/>
-<wire x1="9.2" y1="35.36" x2="-0.3" y2="35.36" width="0.1" layer="39"/>
-<wire x1="-0.3" y1="35.36" x2="-0.3" y2="25.86" width="0.1" layer="39"/>
+<wire x1="-0.3" y1="10.366" x2="9.2" y2="10.366" width="0.1" layer="39"/>
+<wire x1="9.2" y1="10.366" x2="9.2" y2="19.866" width="0.1" layer="39"/>
+<wire x1="9.2" y1="19.866" x2="-0.3" y2="19.866" width="0.1" layer="39"/>
+<wire x1="-0.3" y1="19.866" x2="-0.3" y2="10.366" width="0.1" layer="39"/>
 <wire x1="7.24" y1="1.75" x2="63.88" y2="1.75" width="0.1" layer="21"/>
 <wire x1="63.88" y1="1.75" x2="63.88" y2="9.78" width="0.1" layer="21"/>
 <wire x1="63.88" y1="9.78" x2="70.6" y2="9.78" width="0.1" layer="21"/>
@@ -3243,23 +3243,47 @@ design rules under a new name.</description>
 <element name="BLK1" library="DubSat1 Components" package="MSP-CAN_BLOCK" value="MSP-CAN_BLOCK" x="72.644" y="23.876"/>
 <element name="U3" library="DubSat1 Components" package="OEM719" value="OEM719" x="62.484" y="5.842" rot="R90"/>
 <element name="U1" library="DubSat1 Components" package="SOT-23-5" value="TPS732XX" x="86.995" y="80.9625" rot="R270"/>
-<element name="C5" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF" x="90.17" y="80.9625" rot="R270"/>
-<element name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF" x="85.4075" y="84.455" rot="R270"/>
-<element name="C3" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF" x="92.3925" y="80.9625" rot="R90"/>
+<element name="C5" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF" x="90.17" y="80.9625" rot="R270">
+<attribute name="SPICEPREFIX" value="C" x="90.17" y="80.9625" size="1.778" layer="27" rot="R270" display="off"/>
+</element>
+<element name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF" x="85.4075" y="84.455" rot="R270">
+<attribute name="SPICEPREFIX" value="C" x="85.4075" y="84.455" size="1.778" layer="27" rot="R270" display="off"/>
+</element>
+<element name="C3" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF" x="92.3925" y="80.9625" rot="R90">
+<attribute name="SPICEPREFIX" value="C" x="92.3925" y="80.9625" size="1.778" layer="27" rot="R90" display="off"/>
+</element>
 <element name="U2" library="DubSat1 Components" package="SOT-23-5" value="TPS732XX" x="14.605" y="80.9625" rot="R90"/>
-<element name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF" x="11.1125" y="80.9625" rot="R90"/>
-<element name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF" x="16.1925" y="84.455" rot="R270"/>
-<element name="C4" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF" x="8.89" y="80.9625" rot="R270"/>
+<element name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.01 μF" x="11.1125" y="80.9625" rot="R90">
+<attribute name="SPICEPREFIX" value="C" x="11.1125" y="80.9625" size="1.778" layer="27" rot="R90" display="off"/>
+</element>
+<element name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1 μF" x="16.1925" y="84.455" rot="R270">
+<attribute name="SPICEPREFIX" value="C" x="16.1925" y="84.455" size="1.778" layer="27" rot="R270" display="off"/>
+</element>
+<element name="C4" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="4.7 μF" x="8.89" y="80.9625" rot="R270">
+<attribute name="SPICEPREFIX" value="C" x="8.89" y="80.9625" size="1.778" layer="27" rot="R270" display="off"/>
+</element>
 <element name="PHOTODIODE" library="DubSat1 Components" package="PICOLOCK_4" value="PICOLOCK_4" x="76.708" y="14.986" rot="R180"/>
 <element name="SUNSENSOR" library="DubSat1 Components" package="PICOLOCK_4" value="PICOLOCK_4" x="85.852" y="73.406" rot="R270"/>
-<element name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="2.2KΩ" x="67.31" y="12.954" rot="R270"/>
-<element name="R2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="2.2KΩ" x="67.31" y="8.89" rot="R270"/>
+<element name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="2.2KΩ" x="67.31" y="12.954" rot="R270">
+<attribute name="SPICEPREFIX" value="R" x="67.31" y="12.954" size="1.778" layer="27" rot="R270" display="off"/>
+</element>
+<element name="R2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="2.2KΩ" x="67.31" y="8.89" rot="R270">
+<attribute name="SPICEPREFIX" value="R" x="67.31" y="8.89" size="1.778" layer="27" rot="R270" display="off"/>
+</element>
 <element name="U4" library="DubSat1 Components" package="LTC3624" value="LTC3624" x="69.596" y="70.612" rot="R270"/>
-<element name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="2.2μF" x="70.358" y="66.294" rot="R270"/>
+<element name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="2.2μF" x="70.358" y="66.294" rot="R270">
+<attribute name="SPICEPREFIX" value="C" x="70.358" y="66.294" size="1.778" layer="27" rot="R270" display="off"/>
+</element>
 <element name="L1" library="DubSat1 Components" package="COILCRAFT_XAL4020" value="COILCRAFT_XAL4020-222ME" x="71.882" y="74.93"/>
-<element name="R3" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="450kΩ" x="72.898" y="67.818" rot="R90"/>
-<element name="R4" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="100kΩ" x="68.072" y="66.294" rot="R90"/>
-<element name="C10" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="22pF" x="73.914" y="64.516"/>
+<element name="R3" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="450kΩ" x="72.898" y="67.818" rot="R90">
+<attribute name="SPICEPREFIX" value="R" x="72.898" y="67.818" size="1.778" layer="27" rot="R90" display="off"/>
+</element>
+<element name="R4" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="100kΩ" x="68.072" y="66.294" rot="R90">
+<attribute name="SPICEPREFIX" value="R" x="68.072" y="66.294" size="1.778" layer="27" rot="R90" display="off"/>
+</element>
+<element name="C10" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="22pF" x="73.914" y="64.516">
+<attribute name="SPICEPREFIX" value="C" x="73.914" y="64.516" size="1.778" layer="27" display="off"/>
+</element>
 <element name="C8" library="DubSat1 Components" package="0805" value="0.1 uF" x="76.2" y="69.977"/>
 <element name="C9" library="DubSat1 Components" package="0805" value="1 uF" x="76.2" y="71.755"/>
 <element name="C11" library="DubSat1 Components" package="0805" value="10 uF" x="76.2" y="68.199"/>
