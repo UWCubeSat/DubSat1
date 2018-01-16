@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.5.2">
+<eagle version="8.4.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -32,7 +32,7 @@
 <layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="yes"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="no" active="yes"/>
 <layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="27" name="tValues" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="28" name="bValues" color="7" fill="1" visible="yes" active="yes"/>
@@ -3137,7 +3137,6 @@ design rules under a new name.</description>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
 <param name="checkStop" value="0"/>
-<param name="checkValues" value="0"/>
 <param name="useDiameter" value="13"/>
 <param name="maxErrors" value="50"/>
 </designrules>
@@ -3319,6 +3318,7 @@ design rules under a new name.</description>
 <element name="C21" library="DubSat1 Components" package="0805" value="10 uF" x="67.564" y="60.452" rot="R90"/>
 <element name="C22" library="DubSat1 Components" package="0805" value="1 uF" x="71.12" y="53.34" rot="R315"/>
 <element name="R_PULLDOWN" library="DubSat1 Components" package="0805" value="100k" x="78.486" y="54.356" rot="R90"/>
+<element name="R6" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="100kΩ" x="61.468" y="16.764" rot="R270"/>
 </elements>
 <signals>
 <signal name="CANH">
@@ -4062,7 +4062,8 @@ design rules under a new name.</description>
 <via x="65.278" y="22.098" extent="1-16" drill="0.35"/>
 <wire x1="78.244" y1="22.126" x2="71.91" y2="22.126" width="0.254" layer="1"/>
 <wire x1="65.278" y1="22.098" x2="65.278" y2="22.11216875" width="0.254" layer="1"/>
-<wire x1="65.278" y1="22.11216875" x2="60.3532" y2="27.03696875" width="0.254" layer="1"/>
+<wire x1="65.278" y1="22.11216875" x2="62.237084375" y2="25.153084375" width="0.254" layer="1"/>
+<wire x1="62.237084375" y1="25.153084375" x2="60.3532" y2="27.03696875" width="0.254" layer="1"/>
 <wire x1="67.0024" y1="71.3204" x2="67.056" y2="71.374" width="0.254" layer="16"/>
 <via x="67.056" y="71.374" extent="1-16" drill="0.35"/>
 <wire x1="67.056" y1="71.374" x2="67.694" y2="72.012" width="0.254" layer="1"/>
@@ -4081,6 +4082,19 @@ design rules under a new name.</description>
 <wire x1="62.23" y1="68.072" x2="62.23" y2="70.612" width="0.254" layer="16"/>
 <wire x1="62.23" y1="70.612" x2="63.246" y2="71.628" width="0.254" layer="16"/>
 <wire x1="63.246" y1="71.628" x2="63.246" y2="71.64605625" width="0.254" layer="16"/>
+<contactref element="R6" pad="2"/>
+<wire x1="62.237084375" y1="25.153084375" x2="62.237084375" y2="23.121084375" width="0.254" layer="1"/>
+<wire x1="62.237084375" y1="23.121084375" x2="62.23" y2="23.114" width="0.254" layer="1"/>
+<wire x1="62.23" y1="23.114" x2="62.23" y2="22.86" width="0.254" layer="1"/>
+<via x="62.23" y="22.86" extent="1-16" drill="0.35"/>
+<wire x1="62.23" y1="22.86" x2="60.198" y2="20.828" width="0.254" layer="16"/>
+<wire x1="60.198" y1="20.828" x2="60.198" y2="20.574" width="0.254" layer="16"/>
+<wire x1="60.198" y1="20.574" x2="60.198" y2="20.32" width="0.254" layer="16"/>
+<wire x1="60.198" y1="20.32" x2="60.198" y2="20.574" width="0.254" layer="16"/>
+<via x="60.198" y="20.574" extent="1-16" drill="0.35"/>
+<wire x1="60.198" y1="20.574" x2="60.198" y2="15.494" width="0.254" layer="1"/>
+<wire x1="60.198" y1="15.494" x2="61.148" y2="15.494" width="0.254" layer="1"/>
+<wire x1="61.148" y1="15.494" x2="61.468" y2="15.814" width="0.254" layer="1"/>
 </signal>
 <signal name="GPS_RESET_IN">
 <contactref element="U3" pad="P$5"/>
@@ -4435,6 +4449,12 @@ design rules under a new name.</description>
 <wire x1="74.5778" y1="13.92961875" x2="74.5778" y2="15.622775" width="0.254" layer="1"/>
 <wire x1="75.644775" y1="15.8162" x2="76.474975" y2="14.986" width="0.254" layer="1"/>
 <wire x1="76.474975" y1="14.986" x2="76.708" y2="14.986" width="0.254" layer="1"/>
+</signal>
+<signal name="+3V3">
+<contactref element="R6" pad="1"/>
+</signal>
+<signal name="N$10">
+<wire x1="64.008" y1="17.78" x2="61.468" y2="17.78" width="0.254" layer="1"/>
 </signal>
 </signals>
 </board>
