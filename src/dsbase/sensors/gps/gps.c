@@ -37,18 +37,23 @@ FILE_STATIC hBus uartHandle;
 
 FILE_STATIC gps_header_handler genericMsgHandler;
 
+FILE_STATIC gps_health health;
+
 FILE_STATIC void handleRxStatusEvent(const GPSPackage *package);
 
 void gpsInit(gps_header_handler messageHandler)
 {
-    uartHandle = uartInit(ApplicationUART, 0, Speed_9600);
+    // zero out health struct
+    health.registration_errors = 0;
+    health.unknown_event_ids = 0;
+    health.unknown_msg_ids = 0;
 
     // initialize the reader
+    uartHandle = uartInit(ApplicationUART, 0, Speed_9600);
     GPSReaderInit(uartHandle, packageBuffer, PACKAGE_BUFFER_LENGTH);
 
     // register default message handlers
     gpsRegisterMessageHandler(MSGID_RXSTATUSEVENT, handleRxStatusEvent);
-
     genericMsgHandler = messageHandler;
 
     // configure power GPIO to be output
@@ -107,9 +112,9 @@ bool gpsUpdate()
         }
         if (numRegistered == 0)
         {
-            // TODO log this in a telemetry segment
             debugPrintF("unregistered message ID: %u\r\n",
                         package->header.messageId);
+            health.unknown_msg_ids++;
         }
     }
 
@@ -177,6 +182,7 @@ bool gpsRegisterMessageHandler(gps_message_id messageId,
     if (numMessageHandlers >= HANDLER_BUFFER_LENGTH)
     {
         debugPrintF("too many message handlers\r\n");
+        health.registration_errors++;
         return false;
     }
     messageHandlers[numMessageHandlers++]
@@ -191,11 +197,20 @@ bool gpsRegisterEventHandler(gps_event_id eventId,
     if (numEventHandlers >= HANDLER_BUFFER_LENGTH)
     {
         debugPrintF("too many event handlers\r\n");
+        health.registration_errors++;
         return false;
     }
     eventHandlers[numEventHandlers++]
                   = (event_handler_entity){ handler, eventId, eventType };
     return true;
+}
+
+void gpsGetHealth(gps_health *h)
+{
+    GPSReaderGetHealth(&h->reader_health);
+    h->registration_errors = health.registration_errors;
+    h->unknown_event_ids = health.unknown_event_ids;
+    h->unknown_msg_ids = health.unknown_msg_ids;
 }
 
 FILE_STATIC void handleRxStatusEvent(const GPSPackage *package)
@@ -222,7 +237,7 @@ FILE_STATIC void handleRxStatusEvent(const GPSPackage *package)
     }
     if (!foundAtLeastOne)
     {
-        // TODO log this in a telemetry segment
+        health.unknown_event_ids++;
         debugPrintF("unregistered event ID: %u\r\n", package->header.messageId);
     }
 }

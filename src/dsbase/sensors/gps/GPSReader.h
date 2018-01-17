@@ -6,6 +6,12 @@
 
 #include "GPSPackage.h"
 
+typedef struct PACKED_STRUCT {
+    uint8_t skipped;
+    uint8_t bad_crc;
+    uint8_t registration_errors;
+} gpsreader_health;
+
 /**
  * A function to override the default parsing behavior of placing the received
  * byte directly into the message struct.
@@ -38,5 +44,7 @@ void PopGPSPackage();
  * Register a callback to parse a message. Returns true iff success.
  */
 bool gpsRegisterParser(gps_message_id messageId, gps_parser handler);
+
+void GPSReaderGetHealth(gpsreader_health *health);
 
 #endif /* GPSREADER_H_ */

@@ -9,6 +9,7 @@
 
 #include "core/utils.h"
 #include "GPSPackage.h"
+#include "GPSReader.h"
 
 #ifdef __DEBUG__
 
@@ -57,6 +58,13 @@ FILE_STATIC const char *GPS_STATUS_DESC[];
 typedef void (*gps_message_handler)(const GPSPackage *package);
 typedef void (*gps_event_handler)(const GPSRXStatusEvent *event);
 typedef void (*gps_header_handler)(const GPSHeader *header);
+
+typedef struct PACKED_STRUCT {
+    uint8_t unknown_msg_ids;
+    uint8_t unknown_event_ids;
+    uint8_t registration_errors;
+    gpsreader_health reader_health;
+} gps_health;
 
 /**
  * Initializes MSP for IO with GPS. Should be called before powering on.
@@ -112,5 +120,10 @@ bool gpsRegisterMessageHandler(gps_message_id messageId,
 bool gpsRegisterEventHandler(gps_event_id eventId,
                              gps_event_handler handler,
                              gps_enum eventType);
+
+/**
+ * Populate health struct
+ */
+void gpsGetHealth(gps_health *health);
 
 #endif /* GPS_H_ */

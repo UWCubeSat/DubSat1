@@ -27,6 +27,8 @@ typedef struct parser_entity
 FILE_STATIC parser_entity parsers[PARSER_BUFFER_LENGTH];
 FILE_STATIC uint8_t numParsers = 0;
 
+FILE_STATIC gpsreader_health health;
+
 // message queue
 FILE_STATIC Queue queue;
 
@@ -40,6 +42,10 @@ FILE_STATIC void parseSatvis2(GPSMessage *message,
 
 void GPSReaderInit(hBus uartHandle, GPSPackage *buffer, uint32_t bufferLength)
 {
+    health.bad_crc = 0;
+    health.registration_errors = 0;
+    health.skipped = 0;
+
     queue = CreateQueue((uint8_t *) buffer, sizeof(GPSPackage), bufferLength);
     uartRegisterRxCallback(uartHandle, readCallback);
 
@@ -58,11 +64,11 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
     if (p == NULL)
     {
         debugPrintF("GPS buffer out of memory\r\n");
+        health.skipped++;
 
         // skipping a single byte this way will (probably) skip the whole
         // message. If some space is freed up in the queue, this should be able
         // to pick up the next message's sync bytes and carry on.
-        // TODO log skipped message errors
         bytesRead = 0;
         state = State_Sync;
         return;
@@ -147,6 +153,7 @@ FILE_STATIC void readCallback(uint8_t rcvdbyte)
             if (readCrc != crc)
             {
                 debugPrintF("invalid crc\r\n");
+                health.bad_crc++;
             }
             else
             {
@@ -178,10 +185,16 @@ bool gpsRegisterParser(gps_message_id messageId,
     if (numParsers >= PARSER_BUFFER_LENGTH)
     {
         debugPrintF("too many parsers\r\n");
+        health.registration_errors++;
         return false;
     }
     parsers[numParsers++] = (parser_entity){ parser, messageId };
     return true;
+}
+
+void GPSReaderGetHealth(gpsreader_health *h)
+{
+    *h = health;
 }
 
 FILE_STATIC void parseSatvis2(GPSMessage *message,

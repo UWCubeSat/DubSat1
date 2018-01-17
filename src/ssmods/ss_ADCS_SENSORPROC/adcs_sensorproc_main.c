@@ -28,13 +28,14 @@ FILE_STATIC flag_t triggerGPSOff;
 // Segment instances - used both to store information and as a structure for sending as telemetry/commands
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
+FILE_STATIC sunsensor_segment sunsensorSeg;
+FILE_STATIC gpshealth_segment gpshealthSeg;
+FILE_STATIC gpspower_segment gpspowerSeg;
 FILE_STATIC rxstatus_segment rxstatusSeg;
 FILE_STATIC bestxyz_segment bestxyzSeg;
 FILE_STATIC time_segment timeSeg;
 FILE_STATIC hwmonitor_segment hwmonitorSeg;
 FILE_STATIC satvis2_segment satvis2Seg;
-FILE_STATIC sunsensor_segment sunsensorSeg;
-FILE_STATIC gpspower_segment gpspowerSeg;
 
 // called on every gps message
 FILE_STATIC void handleGPSMessage(const GPSHeader *header);
@@ -126,12 +127,40 @@ FILE_STATIC void sendHealthSegment()
 {
     // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
 
-    // TODO:  Determine overall health based on querying various entities for their health
-    // For now, everything is always marginal ...
-    hseg.oms = OMS_Unknown;
-    hseg.inttemp = asensorReadIntTempC(); // TODO this sometimes hangs
+    // send gps-specific health segment
+    gpsGetHealth(&gpshealthSeg.health);
+    bcbinSendPacket((uint8_t *) &gpshealthSeg, sizeof(gpshealthSeg));
+
+    // determine overall health based on querying sensors for their health
+    // TODO query sun sensor and photodiodes' health
+    // TODO check if this is being used correctly
+    hseg.oms = OMS_Nominal;
+    if (gpshealthSeg.health.unknown_event_ids
+            || gpshealthSeg.health.unknown_msg_ids)
+    {
+        hseg.oms = OMS_MinorFaults;
+    }
+    if (gpshealthSeg.health.reader_health.bad_crc
+            || gpshealthSeg.health.reader_health.skipped)
+    {
+        hseg.oms = OMS_MajorFaults;
+    }
+    if (gpshealthSeg.health.registration_errors
+            || gpshealthSeg.health.reader_health.registration_errors)
+    {
+        hseg.oms = OMS_Failures;
+    }
+
+    hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
+}
+
+FILE_STATIC void sendMetaSegment()
+{
+    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
+    bcbinPopulateMeta(&mseg, sizeof(mseg));
+    bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
 /*
@@ -146,22 +175,22 @@ int main(void)
 
     // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
-    // Also hooks up sync pulse handlers.  Note that actual pulse interrupt handlers will update the
+    // Also hooks up special notification handlers.  Note that actual pulse interrupt handlers will update the
     // firing state structures before calling the provided handler function pointers.
-    mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
+    mod_status.startup_type = coreStartup(handlePPTFiringNotification, handleRollCall);  // <<DO NOT DELETE or MOVE>>
 
     LED_DIR |= LED_BIT;
 
     // Setup segments to be able to serve as COSMOS telemetry packets
     bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
-    // TODO meta segment?
-    bcbinPopulateHeader(&sunsensorSeg.header, 121, sizeof(sunsensorSeg));
-    bcbinPopulateHeader(&gpspowerSeg.header, 122, sizeof(gpspowerSeg));
-    bcbinPopulateHeader(&rxstatusSeg.header, 123, sizeof(rxstatusSeg));
-    bcbinPopulateHeader(&bestxyzSeg.header, 124, sizeof(bestxyzSeg));
-    bcbinPopulateHeader(&timeSeg.header, 125, sizeof(timeSeg));
-    bcbinPopulateHeader(&hwmonitorSeg.header, 126, sizeof(hwmonitorSeg));
-    bcbinPopulateHeader(&satvis2Seg.header, 127, sizeof(satvis2Seg));
+    bcbinPopulateHeader(&sunsensorSeg.header, TLM_ID_SUNSENSOR, sizeof(sunsensorSeg));
+    bcbinPopulateHeader(&gpshealthSeg.header, TLM_ID_GPSHEALTH, sizeof(gpshealthSeg));
+    bcbinPopulateHeader(&gpspowerSeg.header, TLM_ID_GPSPOWER, sizeof(gpspowerSeg));
+    bcbinPopulateHeader(&rxstatusSeg.header, TLM_ID_RXSTATUS, sizeof(rxstatusSeg));
+    bcbinPopulateHeader(&bestxyzSeg.header, TLM_ID_BESTXYZ, sizeof(bestxyzSeg));
+    bcbinPopulateHeader(&timeSeg.header, TLM_ID_TIME, sizeof(timeSeg));
+    bcbinPopulateHeader(&hwmonitorSeg.header, TLM_ID_HWMONITOR, sizeof(hwmonitorSeg));
+    bcbinPopulateHeader(&satvis2Seg.header, TLM_ID_SATVIS2, sizeof(satvis2Seg));
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
@@ -212,12 +241,14 @@ int main(void)
             LED_OUT ^= LED_BIT;
             sendGPSPowerStatus();
             sendHealthSegment();
-            // TODO also send general and meta segments
         }
 
-        // TODO put these in a "nominal" state and create a second state machine
-        // for the GPS only?
-        // sunSensorUpdate();
+        if (i % 524288 == 0)
+        {
+            sendMetaSegment();
+        }
+
+        // sunSensorUpdate(); // TODO don't let this block
         if (i % 16384 == 0)
         {
             sendSunSensorData();
@@ -288,27 +319,16 @@ int main(void)
 	return 0;
 }
 
-/* ----- SYNC PULSE INTERRUPT HANDLERS ----- */
-// Both of these handlers are INTERRUPT HANDLERS, and run as such, which means that all OTHER
-// interrupts are blocked while they are running.  This can cause all sorts of issues, so
-// MAKE SURE TO MINIMIZE THE CODE RUNNING IN THESE FUNCTIONS.
-// Sync pulse 1:  typically raised every 2 seconds while PPT firing, to help each subsystem module
-// do the "correct thing" around the firing sequence.  This timing might
-// not be exact, and may even change - don't rely on it being 2 seconds every time, and it may
-// be shut off entirely during early or late stages of mission, so also do NOT use as a "heartbeat"
-// for other, unrelated functionality.
-void handleSyncPulse1()
+// Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
+void handlePPTFiringNotification()
 {
     __no_operation();
 }
 
-// Sync pulse 2:  typically every 1-2 minutes, but again, don't count on any length.
-// General semanatics are that this pulse means all subsystems should share accumulated
-// status data on the CAN bus.  It is also the cue for the PPT to ascertain whether it
-// will use the following period as an active or suspended firing period.  All subsystems
-// will assume active until they are notified that firing has been suspended, but
-// this determination will be reset (back to active) at each sync pulse 2.
-void handleSyncPulse2()
+// Will be called when the subsystem gets the distribution board's CAN message that asks for check-in
+// Likely calling frequency is probably once every couple of minutes, but the code shouldn't work with
+// any period (in particular for testing, where we might spam the CAN bus with roll call queries)
+void handleRollCall()
 {
     __no_operation();
 }
