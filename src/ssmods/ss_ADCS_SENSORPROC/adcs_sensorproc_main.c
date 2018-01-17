@@ -120,6 +120,20 @@ FILE_STATIC void sendGPSStatus()
     bcbinSendPacket((uint8_t *) &timeSeg, sizeof(timeSeg));
 }
 
+// Packetizes and sends backchannel health packet
+// also invokes uart status handler
+FILE_STATIC void sendHealthSegment()
+{
+    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
+
+    // TODO:  Determine overall health based on querying various entities for their health
+    // For now, everything is always marginal ...
+    hseg.oms = OMS_Unknown;
+    hseg.inttemp = asensorReadIntTempC(); // TODO this sometimes hangs
+    bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
+    debugInvokeStatusHandler(Entity_UART);
+}
+
 /*
  * main.c
  */
@@ -128,11 +142,15 @@ int main(void)
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
 
+    asensorInit(Ref_2p5V);
+
     // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
     // Also hooks up sync pulse handlers.  Note that actual pulse interrupt handlers will update the
     // firing state structures before calling the provided handler function pointers.
     mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
+
+    LED_DIR |= LED_BIT;
 
     // Setup segments to be able to serve as COSMOS telemetry packets
     bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
@@ -186,18 +204,23 @@ int main(void)
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
     {
-        // TODO put these in a "nominal" state and create a second state machine
-        // for the GPS only?
-//        sunSensorUpdate();
-        sendSunSensorData();
-
-        static uint8_t i = 0;
+        static uint32_t i = 0;
         i++;
 
-        if (i % 32 == 0)
+        if (i % 65536 == 0)
         {
+            LED_OUT ^= LED_BIT;
             sendGPSPowerStatus();
-            // TODO also send other health segments etc.
+            sendHealthSegment();
+            // TODO also send general and meta segments
+        }
+
+        // TODO put these in a "nominal" state and create a second state machine
+        // for the GPS only?
+        // sunSensorUpdate();
+        if (i % 16384 == 0)
+        {
+            sendSunSensorData();
         }
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
@@ -220,7 +243,7 @@ int main(void)
             {
                 triggerGPSOn = 1;
             }
-            else if (i % 256 == 0)
+            else if (i % 65536 == 0)
             {
                 gpsSendCommand("log rxstatusb\r\n");
             }
@@ -237,10 +260,10 @@ int main(void)
         }
         case State_GPSOn:
             // read from the GPS and trigger message handlers
-            if (gpsUpdate())
+            gpsUpdate();
+
+            if (i % 65536 == 0)
             {
-                // send status telemetry on update
-                // TODO send meta and health segments
                 sendGPSStatus();
             }
 

@@ -14,6 +14,11 @@
 
 #include "sensors/gps/GPSPackage.h"
 
+// Debug LED
+#define LED_DIR P3DIR
+#define LED_OUT P3OUT
+#define LED_BIT BIT5
+
 // COSMOS telem and cmd packets
 
 TLM_SEGMENT {
