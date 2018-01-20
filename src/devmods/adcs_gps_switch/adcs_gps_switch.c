@@ -23,15 +23,16 @@ int main(void)
     flagOff = 0;
 
     // configure GPIO pins
-    LED_DIR |= LED_BIT;                // output
-    GPS_POWER_DIR |= GPS_POWER_BIT;    // output
-    INPUT_GPIO_DIR &= ~INPUT_GPIO_BIT; // input
-    INPUT_GPIO_IE |= INPUT_GPIO_BIT;   // enable interrupt
-    INPUT_GPIO_IFG &= ~INPUT_GPIO_BIT; // clear interrupt flag
+    LED_DIR |= LED_BIT;                 // output
+    GPS_ENABLE_DIR |= GPS_ENABLE_BIT;   // output
+    BUCK_ENABLE_DIR |= BUCK_ENABLE_BIT; // output
+    BUCK_GOOD_DIR &= ~BUCK_GOOD_BIT; // input
+    BUCK_GOOD_IE |= BUCK_GOOD_BIT;   // enable interrupt
+    BUCK_GOOD_IFG &= ~BUCK_GOOD_BIT; // clear interrupt flag
 
     // print initial state
     debugPrintF("initial input ");
-    if (INPUT_GPIO_IN & INPUT_GPIO_BIT)
+    if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
     {
         debugPrintF("high\r\n");
     }
@@ -40,8 +41,15 @@ int main(void)
         debugPrintF("low\r\n");
     }
 
-    // turn the GPS on
-    GPS_POWER_OUT |= GPS_POWER_BIT;
+    // enable buck converter
+    debugPrintF("enabling buck converter\r\n");
+    BUCK_ENABLE_OUT |= BUCK_ENABLE_BIT;
+
+    __delay_cycles(1 * SEC);
+
+    // enable GPS
+    debugPrintF("enabling GPS\r\n");
+    GPS_ENABLE_OUT |= GPS_ENABLE_BIT;
 
     while (1)
     {
@@ -67,14 +75,14 @@ int main(void)
 }
 
 // Port 1 interrupt service routine
-#pragma vector=PORT1_VECTOR
-__interrupt void Port_1(void)
+#pragma vector=PORT3_VECTOR
+__interrupt void Port_3(void)
 {
-    INPUT_GPIO_IFG &= ~INPUT_GPIO_BIT; // clear interrupt
-    INPUT_GPIO_IES ^= INPUT_GPIO_BIT;  // toggle interrupt edge
+    BUCK_GOOD_IFG &= ~BUCK_GOOD_BIT; // clear interrupt
+    BUCK_GOOD_IES ^= BUCK_GOOD_BIT;  // toggle interrupt edge
 
     // trigger a flag depending current input
-    if (INPUT_GPIO_IN & INPUT_GPIO_BIT)
+    if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
     {
         flagOn = 1;
     }
