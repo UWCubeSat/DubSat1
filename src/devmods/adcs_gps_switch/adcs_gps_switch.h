@@ -1,0 +1,20 @@
+#ifndef ADCS_GPS_SWITCH_H_
+#define ADCS_GPS_SWITCH_H_
+
+#define GPS_POWER_DIR P2DIR
+#define GPS_POWER_OUT P2OUT
+#define GPS_POWER_BIT BIT2
+
+// TODO placeholder values
+#define INPUT_GPIO_DIR P1DIR
+#define INPUT_GPIO_IN  P1IN
+#define INPUT_GPIO_IE  P1IE
+#define INPUT_GPIO_IES P1IES
+#define INPUT_GPIO_IFG P1IFG
+#define INPUT_GPIO_BIT BIT7
+
+#define LED_DIR P3DIR
+#define LED_OUT P3OUT
+#define LED_BIT BIT5
+
+#endif /* ADCS_GPS_SWITCH_H_ */
