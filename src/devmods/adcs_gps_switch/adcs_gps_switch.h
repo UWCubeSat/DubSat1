@@ -20,4 +20,6 @@
 #define LED_OUT P3OUT
 #define LED_BIT BIT5
 
+#define DELAY_TIME 1.5 // seconds
+
 #endif /* ADCS_GPS_SWITCH_H_ */

@@ -26,50 +26,61 @@ int main(void)
     LED_DIR |= LED_BIT;                 // output
     GPS_ENABLE_DIR |= GPS_ENABLE_BIT;   // output
     BUCK_ENABLE_DIR |= BUCK_ENABLE_BIT; // output
-    BUCK_GOOD_DIR &= ~BUCK_GOOD_BIT; // input
-    BUCK_GOOD_IE |= BUCK_GOOD_BIT;   // enable interrupt
-    BUCK_GOOD_IFG &= ~BUCK_GOOD_BIT; // clear interrupt flag
+//    BUCK_GOOD_DIR &= ~BUCK_GOOD_BIT; // input
+//    BUCK_GOOD_IE |= BUCK_GOOD_BIT;   // enable interrupt
+//    BUCK_GOOD_IFG &= ~BUCK_GOOD_BIT; // clear interrupt flag
 
-    // print initial state
-    debugPrintF("initial input ");
-    if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
-    {
-        debugPrintF("high\r\n");
-    }
-    else
-    {
-        debugPrintF("low\r\n");
-    }
-
-    // enable buck converter
-    debugPrintF("enabling buck converter\r\n");
-    BUCK_ENABLE_OUT |= BUCK_ENABLE_BIT;
-
-    __delay_cycles(1 * SEC);
-
-    // enable GPS
-    debugPrintF("enabling GPS\r\n");
-    GPS_ENABLE_OUT |= GPS_ENABLE_BIT;
+//    // print initial state
+//    debugPrintF("initial input ");
+//    if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
+//    {
+//        debugPrintF("high\r\n");
+//    }
+//    else
+//    {
+//        debugPrintF("low\r\n");
+//    }
+//
+//    // enable buck converter
+//    debugPrintF("enabling buck converter\r\n");
+//    BUCK_ENABLE_OUT |= BUCK_ENABLE_BIT;
+//
+//    __delay_cycles(1 * SEC);
+//
+//    // enable GPS
+//    debugPrintF("enabling GPS\r\n");
+//    GPS_ENABLE_OUT |= GPS_ENABLE_BIT;
 
     while (1)
     {
-        __delay_cycles(0.1 * SEC);
+        __delay_cycles(DELAY_TIME * SEC);
 
-        // blink LED
-        LED_OUT ^= LED_BIT;
+        BUCK_ENABLE_OUT ^= BUCK_ENABLE_BIT;
 
-        // print changes based on interrupt
-        if (flagOn)
-        {
-            debugPrintF("input high\r\n");
-            flagOn = 0;
-        }
-        if (flagOff)
-        {
-            debugPrintF("input low\r\n");
-            flagOff = 0;
-        }
+        __delay_cycles(DELAY_TIME * SEC);
+
+        GPS_ENABLE_OUT ^= GPS_ENABLE_BIT;
     }
+
+//    while (1)
+//    {
+//        __delay_cycles(0.1 * SEC);
+//
+//        // blink LED
+//        LED_OUT ^= LED_BIT;
+//
+//        // print changes based on interrupt
+//        if (flagOn)
+//        {
+//            debugPrintF("input high\r\n");
+//            flagOn = 0;
+//        }
+//        if (flagOff)
+//        {
+//            debugPrintF("input low\r\n");
+//            flagOff = 0;
+//        }
+//    }
 	
 	return 0;
 }
