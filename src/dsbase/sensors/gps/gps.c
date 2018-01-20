@@ -57,17 +57,17 @@ void gpsInit(gps_header_handler messageHandler)
     genericMsgHandler = messageHandler;
 
     // configure power GPIO to be output
-    GPS_POWER_DIR |= GPS_POWER_BIT;
+    GPS_ENABLE_DIR |= GPS_ENABLE_BIT;
 }
 
 void gpsPowerOn()
 {
-    GPS_POWER_OUT |= GPS_POWER_BIT;
+    GPS_ENABLE_OUT |= GPS_ENABLE_BIT;
 }
 
 void gpsPowerOff()
 {
-    GPS_POWER_OUT &= ~GPS_POWER_BIT;
+    GPS_ENABLE_OUT &= ~GPS_ENABLE_BIT;
     gpsFlush();
 }
 

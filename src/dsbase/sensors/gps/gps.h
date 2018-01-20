@@ -1,9 +1,9 @@
 #ifndef GPS_H_
 #define GPS_H_
 
-#define GPS_POWER_DIR P2DIR
-#define GPS_POWER_OUT P2OUT
-#define GPS_POWER_BIT BIT2
+#define GPS_ENABLE_DIR P2DIR
+#define GPS_ENABLE_OUT P2OUT
+#define GPS_ENABLE_BIT BIT2
 
 #include <stdbool.h>
 
