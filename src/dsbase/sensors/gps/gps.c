@@ -1,4 +1,3 @@
-#define PACKAGE_BUFFER_LENGTH 3
 #define HANDLER_BUFFER_LENGTH 10
 
 #include <stdbool.h>
@@ -13,8 +12,6 @@
 #include "GPSReader.h"
 #include "GPSIDs.h"
 #include "crc.h"
-
-FILE_STATIC GPSPackage packageBuffer[PACKAGE_BUFFER_LENGTH];
 
 typedef struct message_handler_entity
 {
@@ -50,30 +47,30 @@ void gpsInit(gps_header_handler messageHandler)
 
     // initialize the reader
     uartHandle = uartInit(ApplicationUART, 0, Speed_9600);
-    GPSReaderInit(uartHandle, packageBuffer, PACKAGE_BUFFER_LENGTH);
+    GPSReaderInit(uartHandle);
 
     // register default message handlers
     gpsRegisterMessageHandler(MSGID_RXSTATUSEVENT, handleRxStatusEvent);
     genericMsgHandler = messageHandler;
 
     // configure power GPIO to be output
-    GPS_POWER_DIR |= GPS_POWER_BIT;
+    GPS_ENABLE_DIR |= GPS_ENABLE_BIT;
 }
 
 void gpsPowerOn()
 {
-    GPS_POWER_OUT |= GPS_POWER_BIT;
+    GPS_ENABLE_OUT |= GPS_ENABLE_BIT;
 }
 
 void gpsPowerOff()
 {
-    GPS_POWER_OUT &= ~GPS_POWER_BIT;
+    GPS_ENABLE_OUT &= ~GPS_ENABLE_BIT;
     gpsFlush();
 }
 
 bool gpsUpdate()
 {
-    GPSPackage *package = ReadGPSPackage();
+    GPSPackage *package = GPSReaderUpdate();
     if (package == NULL)
     {
         return false;
@@ -117,8 +114,6 @@ bool gpsUpdate()
             health.unknown_msg_ids++;
         }
     }
-
-    PopGPSPackage();
 
     return true;
 }
@@ -164,11 +159,7 @@ void gpsSendBinaryCommand(gps_message_id messageId,
 
     // calculate crc
     uint32_t crc = calculateBlockCrc32(sizeof(header), (uint8_t *) &header);
-    uint16_t i;
-    for (i = 0; i < messageLength; i++)
-    {
-        crc = continueCrc32(crc, message[i]);
-    }
+    crc = continueCrc32(crc, messageLength, message);
 
     // transmit command
     uartTransmit(uartHandle, (uint8_t *) &header, sizeof(header));

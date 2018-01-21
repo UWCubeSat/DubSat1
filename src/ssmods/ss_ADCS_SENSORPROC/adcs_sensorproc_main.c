@@ -145,8 +145,7 @@ FILE_STATIC void sendHealthSegment()
     {
         hseg.oms = OMS_MajorFaults;
     }
-    if (gpshealthSeg.health.registration_errors
-            || gpshealthSeg.health.reader_health.registration_errors)
+    if (gpshealthSeg.health.registration_errors)
     {
         hseg.oms = OMS_Failures;
     }
