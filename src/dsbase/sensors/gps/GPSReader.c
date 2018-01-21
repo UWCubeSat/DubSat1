@@ -1,4 +1,4 @@
-#define RX_BUFFER_LENGTH 300
+#define RX_BUFFER_LENGTH 100
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -10,8 +10,8 @@
 #include "GPSReader.h"
 #include "GPSPackage.h"
 #include "GPSIDs.h"
-#include "queue.h"
 #include "crc.h"
+#include "BufferedReader.h"
 
 typedef enum reader_state
 {
@@ -22,6 +22,8 @@ FILE_STATIC uint8_t buffer[RX_BUFFER_LENGTH];
 
 FILE_STATIC gpsreader_health health;
 
+FILE_STATIC GPSPackage package;
+
 void GPSReaderInit(hBus uartHandle)
 {
     health.bad_crc = 0;
@@ -30,26 +32,27 @@ void GPSReaderInit(hBus uartHandle)
     BufferedReaderInit(uartHandle, buffer, RX_BUFFER_LENGTH);
 }
 
-void GPSReaderUpdate()
+GPSPackage *GPSReaderUpdate()
 {
     static uint8_t bytesRead = 0;
     static reader_state state = State_Sync;
     static uint32_t crc = 0;
     static uint32_t readCrc = 0;
 
-    static GPSHeader header;
+    static uint8_t readMessage;
 
     switch (state)
     {
     case State_Sync:
     {
         // sync using magic sync bytes 170, 68, 18
-        uint8_t *buf = header.sync;
-        if(BufferedReaderRead(header.sync, 1, 0))
+        uint8_t *buf = package.header.sync;
+        uint8_t byte[1];
+        if(BufferedReaderRead(byte, 1, 0))
         {
             buf[0] = buf[1];
             buf[1] = buf[2];
-            buf[2] = rcvdbyte;
+            buf[2] = byte[0];
             if (buf[0] == 170 && buf[1] == 68 && buf[2] == 18)
             {
                 bytesRead = 3;
@@ -61,11 +64,16 @@ void GPSReaderUpdate()
     }
     case State_Header:
     {
-        // write directly into header
-        uint8_t *buf = (uint8_t *) &header;
-        buf[bytesRead] = rcvdbyte;
-        crc = continueCrc32(crc, rcvdbyte);
-        bytesRead++;
+        // get next header bytes
+        uint8_t *buf = (uint8_t *) &(package.header);
+        reader_index numRead = BufferedReaderRead(buf,
+                                                  sizeof(GPSHeader) - bytesRead,
+                                                  bytesRead);
+
+        // continue crc on read bytes
+        crc = continueCrc32(crc, numRead, buf + bytesRead);
+
+        bytesRead += numRead;
 
         // once the header is read, move on to the message
         if (bytesRead >= sizeof(GPSHeader))
@@ -77,31 +85,19 @@ void GPSReaderUpdate()
     }
     case State_Message:
     {
-        // check if there is some custom parser for this message id
-        uint8_t i = numParsers;
-        bool usedParser = false;
-        while (i-- != 0)
-        {
-            if (parsers[i].id == p->header.messageId)
-            {
-                (parsers[i].handler)(&p->message, rcvdbyte, bytesRead);
-                usedParser = true;
-                break;
-            }
-        }
+        // get next message bytes
+        uint8_t *buf = (uint8_t *) &(package.message);
+        reader_index numRead = BufferedReaderRead(buf,
+                                                  package.header.messageLength - bytesRead,
+                                                  bytesRead);
 
-        // otherwise write directly into the message struct
-        if (!usedParser)
-        {
-            uint8_t *buf = (uint8_t *) &p->message;
-            buf[bytesRead] = rcvdbyte;
-        }
+        // continue crc on read bytes
+        crc = continueCrc32(crc, numRead, buf + bytesRead);
 
-        crc = continueCrc32(crc, rcvdbyte);
-        bytesRead++;
+        bytesRead += numRead;
 
         // once the message is read, move on to the crc
-        if (bytesRead >= p->header.messageLength)
+        if (bytesRead >= package.header.messageLength)
         {
             bytesRead = 0;
             state = State_CRC;
@@ -112,8 +108,7 @@ void GPSReaderUpdate()
     {
         // write directly into the crc
         uint8_t *buf = (uint8_t *) &readCrc;
-        buf[bytesRead] = rcvdbyte;
-        bytesRead++;
+        bytesRead += BufferedReaderRead(buf, sizeof(readCrc) - bytesRead, bytesRead);
 
         // once the crc is read, restart the process
         if (bytesRead >= sizeof(readCrc))
@@ -125,7 +120,7 @@ void GPSReaderUpdate()
             }
             else
             {
-                PushQueue(&queue);
+                readMessage = 1;
             }
             crc = 0;
             readCrc = 0;
@@ -135,6 +130,14 @@ void GPSReaderUpdate()
         break;
     }
     }
+
+    if (readMessage)
+    {
+        readMessage = 0;
+        return &package;
+    }
+
+    return NULL;
 }
 
 void GPSReaderGetHealth(gpsreader_health *h)

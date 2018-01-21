@@ -12,12 +12,12 @@
 
 #include "core/utils.h"
 
-typedef uint8_t reader_index;
+typedef uint16_t reader_index;
 
 /**
  * Registers a callback on the uartHandle.
  */
-void BufferedReaderInit(hbus uartHandle,
+void BufferedReaderInit(hBus uartHandle,
                         uint8_t *buffer,
                         reader_index bufferSize);
 

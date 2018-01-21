@@ -13,7 +13,6 @@
 #include "core/utils.h"
 #include "core/uart.h"
 
-FILE_STATIC hbus handle;
 FILE_STATIC uint8_t *buf;
 FILE_STATIC reader_index bufSize;
 
@@ -22,12 +21,11 @@ FILE_STATIC reader_index num;
 
 FILE_STATIC void readCallback(uint8_t byte);
 
-void BufferedReaderInit(hbus uartHandle,
+void BufferedReaderInit(hBus uartHandle,
                         uint8_t *buffer,
                         reader_index bufferSize)
 {
-    uartRegisterRxCallback(readCallback);
-    handle = uartHandle;
+    uartRegisterRxCallback(uartHandle, readCallback);
     buf = buffer;
     bufSize = bufferSize;
     head = 0;
@@ -38,10 +36,10 @@ reader_index BufferedReaderRead(uint8_t *buffer,
                                 reader_index numToRead,
                                 reader_index offset)
 {
-    reader_index numRead;
-    while (numToRead-- && num)
+    reader_index numRead = 0;
+    while (numRead < numToRead && num)
     {
-        buffer[offset + numToRead] = buf[(head + num) % bufSize];
+        buffer[offset + numRead] = buf[(head + num) % bufSize];
         num--;
         head++;
         numRead++;
