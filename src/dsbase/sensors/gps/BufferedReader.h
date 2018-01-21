@@ -35,4 +35,11 @@ void BufferedReaderReadFully(uint8_t *buffer,
                              reader_index numToRead,
                              reader_index offset);
 
+/**
+ * Returns 1 iff incoming bytes were lost
+ */
+uint8_t BufferedReaderOverrun();
+
+void BufferedReaderFlush();
+
 #endif /* DSBASE_SENSORS_GPS_BUFFEREDREADER_H_ */

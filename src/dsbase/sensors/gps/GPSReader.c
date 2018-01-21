@@ -1,4 +1,4 @@
-#define RX_BUFFER_LENGTH 100
+#define RX_BUFFER_LENGTH 20
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -38,8 +38,16 @@ GPSPackage *GPSReaderUpdate()
     static reader_state state = State_Sync;
     static uint32_t crc = 0;
     static uint32_t readCrc = 0;
+    static uint8_t readMessageFlag = 0;
 
-    static uint8_t readMessage;
+    // if we missed some bytes, revert back to sync state
+    if (BufferedReaderOverrun())
+    {
+        health.skipped++;
+        state = State_Sync;
+        bytesRead = 0;
+        BufferedReaderFlush();
+    }
 
     switch (state)
     {
@@ -120,7 +128,7 @@ GPSPackage *GPSReaderUpdate()
             }
             else
             {
-                readMessage = 1;
+                readMessageFlag = 1;
             }
             crc = 0;
             readCrc = 0;
@@ -131,9 +139,9 @@ GPSPackage *GPSReaderUpdate()
     }
     }
 
-    if (readMessage)
+    if (readMessageFlag)
     {
-        readMessage = 0;
+        readMessageFlag = 0;
         return &package;
     }
 
