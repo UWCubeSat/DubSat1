@@ -22,7 +22,7 @@ typedef uint32_t gps_enum;
 typedef uint16_t gps_message_id;
 typedef uint32_t gps_event_id;
 
-typedef struct PACKED_STRUCT GPSHeader
+typedef struct PACKED_STRUCT
 {
     uint8_t sync[3];
     uint8_t headerLength;
@@ -40,21 +40,21 @@ typedef struct PACKED_STRUCT GPSHeader
     uint16_t rxVersion; // receiver S/W version
 } GPSHeader;
 
-typedef struct PACKED_STRUCT GPSVectorD
+typedef struct PACKED_STRUCT
 {
     double x;
     double y;
     double z;
 } GPSVectorD;
 
-typedef struct PACKED_STRUCT GPSVectorF
+typedef struct PACKED_STRUCT
 {
     float x;
     float y;
     float z;
 } GPSVectorF;
 
-typedef struct PACKED_STRUCT GPSBestXYZ
+typedef struct PACKED_STRUCT
 {
     gps_enum pSolStatus; // position solution status
     gps_enum posType;
@@ -78,7 +78,7 @@ typedef struct PACKED_STRUCT GPSBestXYZ
     uint8_t sigMaskGPSGLO;
 } GPSBestXYZ;
 
-typedef struct PACKED_STRUCT GPSTime
+typedef struct PACKED_STRUCT
 {
     gps_enum clockStatus;
     double offset;
@@ -94,7 +94,7 @@ typedef struct PACKED_STRUCT GPSTime
 } GPSTime;
 
 // a status code for use in RXStatus
-typedef struct PACKED_STRUCT GPSStatusCode
+typedef struct PACKED_STRUCT
 {
     uint32_t word;
     uint32_t pri;  // priority mask
@@ -102,7 +102,7 @@ typedef struct PACKED_STRUCT GPSStatusCode
     uint32_t clear;  // clear mask
 } GPSStatusCode;
 
-typedef struct PACKED_STRUCT GPSRXStatus
+typedef struct PACKED_STRUCT
 {
     uint32_t error;
     uint32_t numStats;
@@ -113,7 +113,7 @@ typedef struct PACKED_STRUCT GPSRXStatus
 } GPSRXStatus;
 
 // for use in GPSHWMonitor
-typedef struct PACKED_STRUCT GPSMeasurement
+typedef struct PACKED_STRUCT
 {
     float reading;
 
@@ -124,7 +124,7 @@ typedef struct PACKED_STRUCT GPSMeasurement
     uint8_t pad[2];
 } GPSMeasurement;
 
-typedef struct PACKED_STRUCT GPSHWMonitor
+typedef struct PACKED_STRUCT
 {
     uint32_t numMeasurements;
 #if defined(__BSP_HW_GPS_OEM615__)
@@ -147,7 +147,7 @@ typedef struct PACKED_STRUCT GPSHWMonitor
 #endif
 } GPSHWMonitor;
 
-typedef struct PACKED_STRUCT GPSRXStatusEvent
+typedef struct PACKED_STRUCT
 {
     gps_enum word;
     gps_event_id bitPosition;
@@ -155,7 +155,7 @@ typedef struct PACKED_STRUCT GPSRXStatusEvent
     uint8_t description[32];
 } GPSRXStatusEvent;
 
-typedef struct PACKED_STRUCT GPSSatvis2
+typedef struct PACKED_STRUCT
 {
     gps_enum system;
     gps_enum isValid;
@@ -163,7 +163,17 @@ typedef struct PACKED_STRUCT GPSSatvis2
     uint32_t numSats;
 } GPSSatvis2;
 
-typedef union GPSMessage
+typedef struct PACKED_STRUCT
+{
+    uint32_t satId;
+    uint32_t health;
+    double elev;
+    double az;
+    double trueDop;
+    double appDop;
+} GPSSatvis2Member;
+
+typedef union
 {
     GPSBestXYZ bestXYZ;
     GPSTime time;
@@ -171,11 +181,16 @@ typedef union GPSMessage
     GPSRXStatusEvent rxstatusEvent;
     GPSHWMonitor hwMonitor;
     GPSSatvis2 satvis2;
+    GPSSatvis2Member satvis2Member;
 } GPSMessage;
 
-typedef struct GPSPackage
+typedef struct
 {
     GPSHeader header;
+
+    // sequence is the index of the message if it is part of an array.
+    // The pre-array part of the message is at index 0.
+    uint8_t sequence;
     GPSMessage message;
 } GPSPackage;
 

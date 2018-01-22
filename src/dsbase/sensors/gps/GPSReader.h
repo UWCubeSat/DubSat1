@@ -6,6 +6,12 @@
 
 #include "GPSPackage.h"
 
+typedef struct {
+    gps_message_id msgId; // message ID of the log
+    uint8_t arrayIndex;   // index of the start of the array
+    uint8_t size;         // size of each element
+} array_parser;
+
 typedef struct PACKED_STRUCT {
     uint8_t skipped;
     uint8_t bad_crc;

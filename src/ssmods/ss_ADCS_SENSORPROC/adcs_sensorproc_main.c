@@ -502,6 +502,12 @@ FILE_STATIC void handleHwMonitor(const GPSPackage *package)
 
 FILE_STATIC void handleSatvis2(const GPSPackage *package)
 {
+    // ignore the array part
+    if (package->sequence != 0)
+    {
+        return;
+    }
+
     const GPSSatvis2 satvis2 = package->message.satvis2;
     debugTraceF(GPS_TRACE_LEVEL, "Satvis2:\r\n");
     debugTraceF(GPS_TRACE_LEVEL, "\tsystem: %u\r\n", satvis2.system);
