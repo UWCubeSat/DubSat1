@@ -16,7 +16,10 @@
 #define GPS_ENABLE_DIR P2DIR
 #define GPS_ENABLE_OUT P2OUT
 #define GPS_ENABLE_BIT BIT2
-// TODO add buck enable and buck good
+
+#define BUCK_ENABLE_DIR P3DIR
+#define BUCK_ENABLE_OUT P3OUT
+#define BUCK_ENABLE_BIT BIT7
 
 // --- NovAtel IDs and enums ---
 
@@ -26,6 +29,7 @@
 #define MSGID_BESTXYZ 241
 #define MSGID_HWMONITOR 963
 #define MSGID_SATVIS2 1043
+#define MSGID_RANGE 43
 
 #define EVTID_POSITION 19
 #define EVTID_UTC 18
@@ -211,6 +215,27 @@ typedef struct PACKED_STRUCT
     GPSSatvis2Member sats[];  // flexible array member
 } GPSSatvis2;
 
+// array element of a RANGE message
+typedef struct PACKED_STRUCT
+{
+    uint16_t prn;
+    uint16_t gloFreq;
+    double psr; // pseudorange measurement (m)
+    float psrStdDev;
+    double adr; // carier phase, in cycles
+    float adrStdDev;
+    float dopp; // instantaneous carrier Doppler frequency (Hz)
+    float cToNo; // carrier to noise density ratio
+    float locktime; // number of seconds of continuous tracking
+    uint32_t status; // tracking status
+} GPSRangeMember;
+
+typedef struct PACKED_STRUCT
+{
+    uint32_t numObs;
+    GPSRangeMember obs[];
+} GPSRange;
+
 typedef union
 {
     GPSBestXYZ bestXYZ;
@@ -219,6 +244,7 @@ typedef union
     GPSRXStatusEvent rxstatusEvent;
     GPSHWMonitor hwMonitor;
     GPSSatvis2 satvis2;
+    GPSRange range;
 } GPSMessage;
 
 typedef struct

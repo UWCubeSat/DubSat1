@@ -43,6 +43,7 @@ FILE_STATIC void handleTime(const GPSPackage *package);
 FILE_STATIC void handleBestXYZ(const GPSPackage *package);
 FILE_STATIC void handleHwMonitor(const GPSPackage *package);
 FILE_STATIC void handleSatvis2(const GPSPackage *package);
+FILE_STATIC void handleRange(const GPSPackage *package);
 FILE_STATIC void handleRxStatusEvent(const GPSPackage *package);
 
 // gps status event handlers
@@ -426,6 +427,9 @@ FILE_STATIC bool handleGPSPackage(GPSPackage *p)
     case MSGID_SATVIS2:
         handleSatvis2(p);
         break;
+    case MSGID_RANGE:
+        handleRange(p);
+        break;
     case MSGID_RXSTATUSEVENT:
         handleRxStatusEvent(p);
         break;
@@ -528,6 +532,24 @@ FILE_STATIC void handleSatvis2(const GPSPackage *package)
 
     bcbinPopulateHeader(&sharedSeg.satvis2.header, TLM_ID_SATVIS2, sizeof(satvis2_segment));
     bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(satvis2_segment));
+}
+
+FILE_STATIC void handleRange(const GPSPackage *package)
+{
+    const GPSRange range = package->message.range;
+
+    range_segment *rangeSeg = &sharedSeg.range;
+    uint32_t i;
+    uint32_t numObs = range.numObs < NUM_RANGE_SEGMENT_MEMBERS ? range.numObs : NUM_RANGE_SEGMENT_MEMBERS;
+    for (i = 0; i < numObs; i++)
+    {
+        rangeSeg->obs[i].prn = range.obs[i].prn;
+        rangeSeg->obs[i].cToNo = range.obs[i].cToNo;
+        rangeSeg->obs[i].locktime = range.obs[i].locktime;
+    }
+
+    bcbinPopulateHeader(&sharedSeg.range.header, TLM_ID_RANGE, sizeof(range_segment));
+    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(range_segment));
 }
 
 FILE_STATIC void handleRxStatusEvent(const GPSPackage *package)

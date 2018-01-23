@@ -27,6 +27,7 @@
 #define TLM_ID_TIME      125
 #define TLM_ID_HWMONITOR 126
 #define TLM_ID_SATVIS2   127
+#define TLM_ID_RANGE     119
 
 // --- COSMOS telem and cmd packets ---
 
@@ -105,6 +106,21 @@ TLM_SEGMENT {
     uint32_t numSBAS;
 } satvis2_segment;
 
+typedef struct PACKED_STRUCT
+{
+    uint16_t prn;
+    float cToNo;
+    float locktime;
+} range_segMember;
+
+#define NUM_RANGE_SEGMENT_MEMBERS 6
+
+TLM_SEGMENT {
+    BcTlmHeader header; // All COSMOS TLM packets must have this
+
+    range_segMember obs[NUM_RANGE_SEGMENT_MEMBERS];
+} range_segment;
+
 /*
  * Union of telemetry segments that may share memory
  */
@@ -112,6 +128,7 @@ typedef union {
     bestxyz_segment bestxyz;
     hwmonitor_segment hwmonitor;
     satvis2_segment satvis2;
+    range_segment range;
 } shared_segment;
 
 CMD_SEGMENT {

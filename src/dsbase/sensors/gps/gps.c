@@ -35,17 +35,21 @@ void gpsInit()
 
     // configure power GPIO to be output
     GPS_ENABLE_DIR |= GPS_ENABLE_BIT;
+    BUCK_ENABLE_DIR |= BUCK_ENABLE_BIT;
 }
 
 void gpsPowerOn()
 {
     BufferedReaderFlush();
+    // TODO delay between buck enable and gps enable?
+    BUCK_ENABLE_OUT |= BUCK_ENABLE_BIT;
     GPS_ENABLE_OUT |= GPS_ENABLE_BIT;
 }
 
 void gpsPowerOff()
 {
     GPS_ENABLE_OUT &= ~GPS_ENABLE_BIT;
+    BUCK_ENABLE_OUT &= ~BUCK_ENABLE_BIT;
     BufferedReaderFlush();
 }
 
