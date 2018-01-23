@@ -11,8 +11,6 @@
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
-
-#include "sensors/gps/GPSPackage.h"
 #include "sensors/gps/gps.h"
 
 // Debug LED
@@ -43,6 +41,8 @@ TLM_SEGMENT {
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
+    uint8_t unknownMsg;
+    uint8_t unknownEvt;
     gps_health health;
 } gpshealth_segment;
 
@@ -104,6 +104,15 @@ TLM_SEGMENT {
     uint32_t numGLONASS;
     uint32_t numSBAS;
 } satvis2_segment;
+
+/*
+ * Union of telemetry segments that may share memory
+ */
+typedef union {
+    bestxyz_segment bestxyz;
+    hwmonitor_segment hwmonitor;
+    satvis2_segment satvis2;
+} shared_segment;
 
 CMD_SEGMENT {
     uint8_t enable;
