@@ -22,14 +22,11 @@ FILE_STATIC uint8_t buffer[RX_BUFFER_LENGTH];
 FILE_STATIC gpsreader_health health;
 FILE_STATIC GPSPackage package;
 
-FILE_STATIC array_parser parsers[] = {
-    { MSGID_SATVIS2, 16, 40 }
-};
-
 void GPSReaderInit(hBus uartHandle)
 {
     health.bad_crc = 0;
     health.skipped = 0;
+    health.oversized = 0;
 
     BufferedReaderInit(uartHandle, buffer, RX_BUFFER_LENGTH);
 }
@@ -50,8 +47,6 @@ GPSPackage *GPSReaderUpdate()
     static uint8_t bytesRead = 0;
     static reader_state state = State_Sync;
     static uint32_t crc = 0;
-    static uint32_t numOfElements = 1;
-    static array_parser *parser = NULL;
 
     // if we missed some bytes, revert back to sync state
     if (BufferedReaderOverrun())
@@ -92,94 +87,35 @@ GPSPackage *GPSReaderUpdate()
         if (bytesRead >= sizeof(GPSHeader))
         {
             bytesRead = 0;
-            package.sequence = 0;
-            state = State_Message;
 
-            // assign a parser if applicable
-            size_t i = sizeof(parsers)/sizeof(array_parser);
-            while (i--)
+            /*
+             * Check if the message fits in the length limit. Messages with a
+             * flexible array member don't always fit.
+             */
+            if (package.header.messageLength > sizeof(GPSMessage) + FLEX_ARRAY_BUFFER_LENGTH)
             {
-                if (parsers[i].msgId == package.header.messageId)
-                {
-                    parser = &parsers[i];
-                    break;
-                }
+                debugPrintF("message too big: %u\r\n", package.header.messageLength);
+                health.oversized++;
+                state = State_Sync;
+            }
+            else
+            {
+                state = State_Message;
             }
         }
         break;
     }
     case State_Message:
     {
-        // if the message is an array, read up to the array. Otherwise read the entire message.
-        uint16_t lengthLimit = parser == NULL ? package.header.messageLength : parser->arrayIndex;
-
         // write incoming bytes into the message
-        bytesRead = readAndCrc((uint8_t *) &package.message, bytesRead, lengthLimit, &crc);
+        bytesRead = readAndCrc((uint8_t *) &package.message, bytesRead,
+                               package.header.messageLength, &crc);
 
         // once the message is read, move on to the crc
-        if (bytesRead >= lengthLimit)
+        if (bytesRead >= package.header.messageLength)
         {
             bytesRead = 0;
-            if (parser == NULL)
-            {
-                state = State_CRC;
-            }
-            else
-            {
-                package.sequence = 0;
-
-                // assume the last 4 bytes before the array are the array length
-                uint8_t *buf = (uint8_t *) &package.message;
-                numOfElements = *((uint32_t *) buf + bytesRead - sizeof(uint32_t));
-                bytesRead = 0;
-
-                // may skip to CRC state if the array is empty
-                if (numOfElements != 0)
-                {
-                    state = State_ArrayMessage;
-
-                    // returns non-array part first, without checking CRC
-                    return &package;
-                }
-                else
-                {
-                    state = State_CRC;
-                }
-            }
-
-        }
-        break;
-    }
-    case State_ArrayMessage:
-    {
-        /*
-         * Array parsing makes several assumptions:
-         *   - arrays are always at the end of a message (this is false for at
-         *     least 3 messages, none of which seem important).
-         *   - the number of elements in an array is represented as a uint32_t.
-         *   - the number of elements in an array always comes just before the
-         *     array itself.
-         *   - the message is never corrupted (CRC checking is unimplemented for
-         *     array messages).
-         */
-
-        // write incoming bytes into the array element
-        bytesRead = readAndCrc((uint8_t *) &package.message, bytesRead, parser->size, &crc);
-
-        if (bytesRead >= parser->size)
-        {
-            package.sequence++;
-            // check if array is read
-            // using > instead of >= because sequence is 1-based
-            if (package.sequence > numOfElements)
-            {
-                // TODO do CRC check and possibly reject previous messages
-                state = State_Sync;
-                crc = 0;
-                bytesRead = 0;
-                parser = NULL;
-            }
-            return &package;
+            state = State_CRC;
         }
         break;
     }
@@ -190,13 +126,11 @@ GPSPackage *GPSReaderUpdate()
         uint8_t *buf = (uint8_t *) &readCrc;
         bytesRead += BufferedReaderRead(buf, sizeof(readCrc) - bytesRead, bytesRead);
 
-        // once the crc is read, restart the process
+        // once the crc is read, restart the process and return the package
         if (bytesRead >= sizeof(readCrc))
         {
-            crc = 0;
             bytesRead = 0;
             state = State_Sync;
-            parser = NULL;
 
             if (readCrc == crc)
             {

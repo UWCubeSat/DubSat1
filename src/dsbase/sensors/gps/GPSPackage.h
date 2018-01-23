@@ -13,6 +13,9 @@
 #endif
 #endif
 
+// number of bytes allocated to array members of GPS messages
+#define FLEX_ARRAY_BUFFER_LENGTH 400
+
 #include <stdint.h>
 
 #include "core/utils.h"
@@ -155,14 +158,7 @@ typedef struct PACKED_STRUCT
     uint8_t description[32];
 } GPSRXStatusEvent;
 
-typedef struct PACKED_STRUCT
-{
-    gps_enum system;
-    gps_enum isValid;
-    gps_enum usedGNSSAlmanac;
-    uint32_t numSats;
-} GPSSatvis2;
-
+// array element of a SATVIS2 message
 typedef struct PACKED_STRUCT
 {
     uint32_t satId;
@@ -173,6 +169,15 @@ typedef struct PACKED_STRUCT
     double appDop;
 } GPSSatvis2Member;
 
+typedef struct PACKED_STRUCT
+{
+    gps_enum system;
+    gps_enum isValid;
+    gps_enum usedGNSSAlmanac;
+    uint32_t numSats;
+    GPSSatvis2Member sats[];  // flexible array member
+} GPSSatvis2;
+
 typedef union
 {
     GPSBestXYZ bestXYZ;
@@ -181,17 +186,19 @@ typedef union
     GPSRXStatusEvent rxstatusEvent;
     GPSHWMonitor hwMonitor;
     GPSSatvis2 satvis2;
-    GPSSatvis2Member satvis2Member;
 } GPSMessage;
 
 typedef struct
 {
     GPSHeader header;
-
-    // sequence is the index of the message if it is part of an array.
-    // The pre-array part of the message is at index 0.
-    uint8_t sequence;
     GPSMessage message;
+
+    /*
+     * "_array" is a buffer for array parts of GPS messages.
+     * It must be directly after "message" so that array parts from the message
+     * naturally overflow into _array.
+     */
+    uint8_t _array[FLEX_ARRAY_BUFFER_LENGTH];
 } GPSPackage;
 
 #endif /* GPSPACKAGE_H_ */
