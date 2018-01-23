@@ -538,6 +538,8 @@ FILE_STATIC void handleRange(const GPSPackage *package)
 {
     const GPSRange range = package->message.range;
 
+    sharedSeg.range = (const range_segment){ 0 };
+
     range_segment *rangeSeg = &sharedSeg.range;
     uint32_t i;
     uint32_t numObs = range.numObs < NUM_RANGE_SEGMENT_MEMBERS ? range.numObs : NUM_RANGE_SEGMENT_MEMBERS;
