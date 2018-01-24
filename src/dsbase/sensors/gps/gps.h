@@ -43,6 +43,17 @@
 #define SATSYSTEM_GLONASS 1
 #define SATSYSTEM_SBAS 2
 
+// HWMONITOR codes, see table 98 of firmware reference
+#define HW_TEMP    1
+#define HW_ANTCUR  2
+#define HW_SUPVOLT 6
+#define HW_ANTVOLT 7
+#define HW_DIGCORE 8
+#define HW_REGVOLT 15 // called Supply Voltage
+#define HW_ONEV8   17
+#define HW_TEMP2   22
+#define HW_PCORE   23
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -167,24 +178,7 @@ typedef struct PACKED_STRUCT
 typedef struct PACKED_STRUCT
 {
     uint32_t numMeasurements;
-#if defined(__BSP_HW_GPS_OEM615__)
-    GPSMeasurement temp;
-#elif defined(__BSP_HW_GPS_OEM719__)
-    GPSMeasurement temp;
-    GPSMeasurement antCurrent;
-    GPSMeasurement supVolt; // firmware guide claims this measurement isn't
-                            // supported but it is
-    GPSMeasurement antVolt;
-    GPSMeasurement digCoreVolt;
-    GPSMeasurement regVolt;
-    GPSMeasurement oneVEight;
-    GPSMeasurement secTemp;
-    GPSMeasurement periphCoreVolt;
-#else
-
-#error GPS HW unspecified
-
-#endif
+    GPSMeasurement mes[];
 } GPSHWMonitor;
 
 typedef struct PACKED_STRUCT

@@ -445,48 +445,44 @@ FILE_STATIC bool handleGPSPackage(GPSPackage *p)
 
 FILE_STATIC void handleRxStatus(const GPSPackage *package)
 {
-    const GPSRXStatus m = package->message.rxstatus;
+    const GPSRXStatus *m = &(package->message.rxstatus);
 
-    debugTraceF(GPS_TRACE_LEVEL, "RXSTATUS error word: %X \r\n", m.error);
+    debugTraceF(GPS_TRACE_LEVEL, "RXSTATUS error word: %X \r\n", m->error);
 
-    rxstatusSeg.error = m.error;
-    rxstatusSeg.aux1 = m.aux1stat.word;
-    rxstatusSeg.aux2 = m.aux2stat.word;
-    rxstatusSeg.aux3 = m.aux3stat.word;
+    rxstatusSeg.error = m->error;
+    rxstatusSeg.aux1 = m->aux1stat.word;
+    rxstatusSeg.aux2 = m->aux2stat.word;
+    rxstatusSeg.aux3 = m->aux3stat.word;
 }
 
 FILE_STATIC void handleTime(const GPSPackage *package)
 {
-    const GPSTime m = package->message.time;
-
-    debugTraceF(GPS_TRACE_LEVEL, "TIME offset: %f\r\n", timeSeg.offset);
+    const GPSTime *m = &(package->message.time);
 
     // update the time offset
     // used in pos/vel messages and updating MET
-    timeSeg.offset = m.offset + m.utcOffset;
-    timeSeg.clockStatus = m.clockStatus;
-    timeSeg.utcStatus = m.utcStatus;
+    timeSeg.offset = m->offset + m->utcOffset;
+    timeSeg.clockStatus = m->clockStatus;
+    timeSeg.utcStatus = m->utcStatus;
+
+    debugTraceF(GPS_TRACE_LEVEL, "TIME offset: %f\r\n", timeSeg.offset);
 }
 
 FILE_STATIC void handleBestXYZ(const GPSPackage *package)
 {
-    const GPSBestXYZ m = package->message.bestXYZ;
+    const GPSBestXYZ *m = &(package->message.bestXYZ);
 
     uint16_t week = package->header.week;
     gps_ec ms = package->header.ms;
-    toUtc(&week, &ms, timeSeg.offset - m.velLatency);
-
-    debugTraceF(GPS_TRACE_LEVEL,
-                "BESTXYZ (%u)\r\n\tx: %f\r\n\ty: %f\r\n\tz: %f\r\n",
-                m.pSolStatus, m.pos.x, m.pos.y, m.pos.z);
+    toUtc(&week, &ms, timeSeg.offset - m->velLatency);
 
     bestxyz_segment *bestxyzSeg = &sharedSeg.bestxyz;
-    bestxyzSeg->posStatus = m.pSolStatus;
-    bestxyzSeg->pos = m.pos;
-    bestxyzSeg->posStdDev = m.posStdDev;
-    bestxyzSeg->velStatus = m.vSolStatus;
-    bestxyzSeg->vel = m.vel;
-    bestxyzSeg->velStdDev = m.velStdDev;
+    bestxyzSeg->posStatus = m->pSolStatus;
+    bestxyzSeg->pos = m->pos;
+    bestxyzSeg->posStdDev = m->posStdDev;
+    bestxyzSeg->velStatus = m->vSolStatus;
+    bestxyzSeg->vel = m->vel;
+    bestxyzSeg->velStdDev = m->velStdDev;
     bestxyzSeg->week = week;
     bestxyzSeg->ms = ms;
 
@@ -496,18 +492,38 @@ FILE_STATIC void handleBestXYZ(const GPSPackage *package)
 
 FILE_STATIC void handleHwMonitor(const GPSPackage *package)
 {
-    const GPSHWMonitor monLog = package->message.hwMonitor;
-    debugTraceF(GPS_TRACE_LEVEL, "HWMonitor:\r\n");
-    debugTraceF(GPS_TRACE_LEVEL, "\ttemp: %f C\r\n", monLog.temp.reading);
-
+    const GPSHWMonitor *monLog = &(package->message.hwMonitor);
     hwmonitor_segment *hwmonitorSeg = &sharedSeg.hwmonitor;
-    hwmonitorSeg->temp = monLog.temp.reading;
-    hwmonitorSeg->antCurrent = monLog.antCurrent.reading;
-    hwmonitorSeg->antVolt = monLog.antVolt.reading;
-    hwmonitorSeg->digCoreVolt = monLog.digCoreVolt.reading;
-    hwmonitorSeg->periphCoreVolt = monLog.periphCoreVolt.reading;
-    hwmonitorSeg->secTemp = monLog.secTemp.reading;
-    hwmonitorSeg->supVolt = monLog.supVolt.reading;
+
+    uint32_t i = monLog->numMeasurements;
+    while (i-- != 0)
+    {
+        float reading = monLog->mes[i].reading;
+        uint8_t type = monLog->mes[i].type;
+        switch (type)
+        {
+        case HW_TEMP:
+            hwmonitorSeg->temp = reading;
+            break;
+        case HW_ANTCUR:
+            hwmonitorSeg->antCurrent = reading;
+            break;
+        case HW_SUPVOLT:
+            hwmonitorSeg->supVolt = reading;
+            break;
+        case HW_ANTVOLT:
+            hwmonitorSeg->antVolt = reading;
+            break;
+        case HW_DIGCORE:
+            hwmonitorSeg->digCoreVolt = reading;
+            break;
+        case HW_TEMP2:
+            hwmonitorSeg->secTemp = reading;
+            break;
+        default:
+            break;
+        }
+    }
 
     bcbinPopulateHeader(&sharedSeg.hwmonitor.header, TLM_ID_HWMONITOR, sizeof(hwmonitor_segment));
     bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(hwmonitor_segment));
@@ -515,22 +531,22 @@ FILE_STATIC void handleHwMonitor(const GPSPackage *package)
 
 FILE_STATIC void handleSatvis2(const GPSPackage *package)
 {
-    const GPSSatvis2 satvis2 = package->message.satvis2;
+    const GPSSatvis2 *satvis2 = &(package->message.satvis2);
     debugTraceF(GPS_TRACE_LEVEL, "Satvis2:\r\n");
-    debugTraceF(GPS_TRACE_LEVEL, "\tsystem: %u\r\n", satvis2.system);
-    debugTraceF(GPS_TRACE_LEVEL, "\tnum:    %u\r\n", satvis2.numSats);
+    debugTraceF(GPS_TRACE_LEVEL, "\tsystem: %u\r\n", satvis2->system);
+    debugTraceF(GPS_TRACE_LEVEL, "\tnum:    %u\r\n", satvis2->numSats);
 
     satvis2_segment *satvis2Seg = &sharedSeg.satvis2;
-    switch (satvis2.system)
+    switch (satvis2->system)
     {
         case SATSYSTEM_GPS:
-            satvis2Seg->numGPS = satvis2.numSats;
+            satvis2Seg->numGPS = satvis2->numSats;
             break;
         case SATSYSTEM_GLONASS:
-            satvis2Seg->numGLONASS = satvis2.numSats;
+            satvis2Seg->numGLONASS = satvis2->numSats;
             break;
         case SATSYSTEM_SBAS:
-            satvis2Seg->numSBAS = satvis2.numSats;
+            satvis2Seg->numSBAS = satvis2->numSats;
             break;
     }
 
@@ -540,18 +556,18 @@ FILE_STATIC void handleSatvis2(const GPSPackage *package)
 
 FILE_STATIC void handleRange(const GPSPackage *package)
 {
-    const GPSRange range = package->message.range;
+    const GPSRange *range = &(package->message.range);
 
     sharedSeg.range = (const range_segment){ 0 };
 
     range_segment *rangeSeg = &sharedSeg.range;
     uint32_t i;
-    uint32_t numObs = range.numObs < NUM_RANGE_SEGMENT_MEMBERS ? range.numObs : NUM_RANGE_SEGMENT_MEMBERS;
+    uint32_t numObs = range->numObs < NUM_RANGE_SEGMENT_MEMBERS ? range->numObs : NUM_RANGE_SEGMENT_MEMBERS;
     for (i = 0; i < numObs; i++)
     {
-        rangeSeg->obs[i].prn = range.obs[i].prn;
-        rangeSeg->obs[i].cToNo = range.obs[i].cToNo;
-        rangeSeg->obs[i].locktime = range.obs[i].locktime;
+        rangeSeg->obs[i].prn = range->obs[i].prn;
+        rangeSeg->obs[i].cToNo = range->obs[i].cToNo;
+        rangeSeg->obs[i].locktime = range->obs[i].locktime;
     }
 
     bcbinPopulateHeader(&sharedSeg.range.header, TLM_ID_RANGE, sizeof(range_segment));
@@ -560,27 +576,27 @@ FILE_STATIC void handleRange(const GPSPackage *package)
 
 FILE_STATIC void handleRxStatusEvent(const GPSPackage *package)
 {
-    const GPSRXStatusEvent e = package->message.rxstatusEvent;
+    const GPSRXStatusEvent *e = &(package->message.rxstatusEvent);
 
     // only read the status events
     // TODO read and deal with error/aux events too
-    if (e.word != 1)
+    if (e->word != 1)
     {
         return;
     }
 
-    if (e.event == EVTTYPE_CLEAR)
+    if (e->event == EVTTYPE_CLEAR)
     {
-        switch (e.bitPosition)
+        switch (e->bitPosition)
         {
         case EVTID_POSITION:
-            handlePositionStatusEvent(&e);
+            handlePositionStatusEvent(e);
             break;
         case EVTID_UTC:
-            handleClockStatusEvent(&e);
+            handleClockStatusEvent(e);
             break;
         case EVTID_CLOCK:
-            handleClockStatusEvent(&e);
+            handleClockStatusEvent(e);
             break;
         default:
             gpshealthSeg.unknownEvt++;

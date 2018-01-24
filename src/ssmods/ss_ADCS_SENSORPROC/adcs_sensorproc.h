@@ -100,7 +100,6 @@ TLM_SEGMENT {
     float antVolt;
     float digCoreVolt;
     float secTemp;
-    float periphCoreVolt;
 } hwmonitor_segment;
 
 TLM_SEGMENT {
