@@ -176,7 +176,7 @@ typedef struct PACKED_STRUCT
                             // supported but it is
     GPSMeasurement antVolt;
     GPSMeasurement digCoreVolt;
-    GPSMeasurement supplyVolt;
+    GPSMeasurement regVolt;
     GPSMeasurement oneVEight;
     GPSMeasurement secTemp;
     GPSMeasurement periphCoreVolt;

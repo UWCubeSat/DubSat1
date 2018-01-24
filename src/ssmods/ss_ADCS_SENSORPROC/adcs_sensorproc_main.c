@@ -500,10 +500,14 @@ FILE_STATIC void handleHwMonitor(const GPSPackage *package)
     debugTraceF(GPS_TRACE_LEVEL, "HWMonitor:\r\n");
     debugTraceF(GPS_TRACE_LEVEL, "\ttemp: %f C\r\n", monLog.temp.reading);
 
-    // TODO add other measurements to COSMOS
     hwmonitor_segment *hwmonitorSeg = &sharedSeg.hwmonitor;
     hwmonitorSeg->temp = monLog.temp.reading;
-    hwmonitorSeg->tempStatus = monLog.temp.status;
+    hwmonitorSeg->antCurrent = monLog.antCurrent.reading;
+    hwmonitorSeg->antVolt = monLog.antVolt.reading;
+    hwmonitorSeg->digCoreVolt = monLog.digCoreVolt.reading;
+    hwmonitorSeg->periphCoreVolt = monLog.periphCoreVolt.reading;
+    hwmonitorSeg->secTemp = monLog.secTemp.reading;
+    hwmonitorSeg->supVolt = monLog.supVolt.reading;
 
     bcbinPopulateHeader(&sharedSeg.hwmonitor.header, TLM_ID_HWMONITOR, sizeof(hwmonitor_segment));
     bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(hwmonitor_segment));

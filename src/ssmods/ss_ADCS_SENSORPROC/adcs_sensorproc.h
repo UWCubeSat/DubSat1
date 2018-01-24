@@ -95,7 +95,12 @@ TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
     float temp;
-    uint8_t tempStatus;
+    float antCurrent;
+    float supVolt;
+    float antVolt;
+    float digCoreVolt;
+    float secTemp;
+    float periphCoreVolt;
 } hwmonitor_segment;
 
 TLM_SEGMENT {
