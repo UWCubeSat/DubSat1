@@ -11,10 +11,52 @@
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
+#include "sensors/gps/gps.h"
 
-#include "sensors/gps/GPSPackage.h"
+// Debug LED
+#define LED_DIR P3DIR
+#define LED_OUT P3OUT
+#define LED_BIT BIT5
 
-// COSMOS telem and cmd packets
+// COSMOS telemetry IDs
+#define TLM_ID_SUNSENSOR 121
+#define TLM_ID_GPSHEALTH 120
+#define TLM_ID_GPSPOWER  122
+#define TLM_ID_RXSTATUS  123
+#define TLM_ID_BESTXYZ   124
+#define TLM_ID_TIME      125
+#define TLM_ID_HWMONITOR 126
+#define TLM_ID_SATVIS2   127
+#define TLM_ID_RANGE     119
+
+// --- COSMOS telem and cmd packets ---
+
+TLM_SEGMENT {
+    BcTlmHeader header; // All COSMOS TLM packets must have this
+
+    float alpha;
+    float beta;
+    uint8_t error;
+} sunsensor_segment;
+
+TLM_SEGMENT {
+    BcTlmHeader header; // All COSMOS TLM packets must have this
+
+    uint8_t unknownMsg;
+    uint8_t unknownEvt;
+    gps_health health;
+} gpshealth_segment;
+
+// for gpspower status
+#define GPSPOWER_ON  2
+#define GPSPOWER_BOOTING  1
+#define GPSPOWER_OFF 0
+
+TLM_SEGMENT {
+    BcTlmHeader header; // All COSMOS TLM packets must have this
+
+    uint8_t status;
+} gpspower_segment;
 
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
@@ -53,7 +95,11 @@ TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
     float temp;
-    uint8_t tempStatus;
+    float antCurrent;
+    float supVolt;
+    float antVolt;
+    float digCoreVolt;
+    float secTemp;
 } hwmonitor_segment;
 
 TLM_SEGMENT {
@@ -64,24 +110,30 @@ TLM_SEGMENT {
     uint32_t numSBAS;
 } satvis2_segment;
 
-TLM_SEGMENT {
-    BcTlmHeader header; // All COSMOS TLM packets must have this
+typedef struct PACKED_STRUCT
+{
+    uint16_t prn;
+    float cToNo;
+    float locktime;
+} range_segMember;
 
-    float alpha;
-    float beta;
-    uint8_t error;
-} sunsensor_segment;
-
-// for gpspower status
-#define GPSPOWER_ON  2
-#define GPSPOWER_BOOTING  1
-#define GPSPOWER_OFF 0
+#define NUM_RANGE_SEGMENT_MEMBERS 6
 
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
-    uint8_t status;
-} gpspower_segment;
+    range_segMember obs[NUM_RANGE_SEGMENT_MEMBERS];
+} range_segment;
+
+/*
+ * Union of telemetry segments that may share memory
+ */
+typedef union {
+    bestxyz_segment bestxyz;
+    hwmonitor_segment hwmonitor;
+    satvis2_segment satvis2;
+    range_segment range;
+} shared_segment;
 
 CMD_SEGMENT {
     uint8_t enable;
@@ -117,8 +169,8 @@ typedef struct _module_status {
     uint16_t in_unknown_state;
 } ModuleStatus;
 
-void handleSyncPulse1();
-void handleSyncPulse2();
+void handlePPTFiringNotification();
+void handleRollCall();
 
 uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);

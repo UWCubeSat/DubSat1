@@ -10,7 +10,6 @@
 #include "core/debugtools.h"
 
 #include "sensors/gps/gps.h"
-#include "sensors/gps/GPSIDs.h"
 #include "sensors/sun_sensor.h"
 
 // Main status (a structure) and state and mode variables
@@ -28,16 +27,15 @@ FILE_STATIC flag_t triggerGPSOff;
 // Segment instances - used both to store information and as a structure for sending as telemetry/commands
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
-FILE_STATIC rxstatus_segment rxstatusSeg;
-FILE_STATIC bestxyz_segment bestxyzSeg;
-FILE_STATIC time_segment timeSeg;
-FILE_STATIC hwmonitor_segment hwmonitorSeg;
-FILE_STATIC satvis2_segment satvis2Seg;
 FILE_STATIC sunsensor_segment sunsensorSeg;
+FILE_STATIC gpshealth_segment gpshealthSeg;
 FILE_STATIC gpspower_segment gpspowerSeg;
+FILE_STATIC rxstatus_segment rxstatusSeg;
+FILE_STATIC time_segment timeSeg;
+FILE_STATIC shared_segment sharedSeg;
 
-// called on every gps message
-FILE_STATIC void handleGPSMessage(const GPSHeader *header);
+// called on every gps package
+FILE_STATIC bool handleGPSPackage(GPSPackage *p);
 
 // gps message handlers
 FILE_STATIC void handleRxStatus(const GPSPackage *package);
@@ -45,6 +43,8 @@ FILE_STATIC void handleTime(const GPSPackage *package);
 FILE_STATIC void handleBestXYZ(const GPSPackage *package);
 FILE_STATIC void handleHwMonitor(const GPSPackage *package);
 FILE_STATIC void handleSatvis2(const GPSPackage *package);
+FILE_STATIC void handleRange(const GPSPackage *package);
+FILE_STATIC void handleRxStatusEvent(const GPSPackage *package);
 
 // gps status event handlers
 FILE_STATIC void handlePositionStatusEvent(const GPSRXStatusEvent *e);
@@ -120,6 +120,41 @@ FILE_STATIC void sendGPSStatus()
     bcbinSendPacket((uint8_t *) &timeSeg, sizeof(timeSeg));
 }
 
+// Packetizes and sends backchannel health packet
+// also invokes uart status handler
+FILE_STATIC void sendHealthSegment()
+{
+    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
+
+    // send gps-specific health segment
+    gpsGetHealth(&gpshealthSeg.health);
+    bcbinSendPacket((uint8_t *) &gpshealthSeg, sizeof(gpshealthSeg));
+
+    // determine overall health based on querying sensors for their health
+    // TODO query sun sensor and photodiodes' health
+    // TODO check if this is being used correctly
+    hseg.oms = OMS_Nominal;
+    if (gpshealthSeg.unknownEvt || gpshealthSeg.unknownMsg)
+    {
+        hseg.oms = OMS_MinorFaults;
+    }
+    if (gpshealthSeg.health.bad_crc || gpshealthSeg.health.skipped)
+    {
+        hseg.oms = OMS_MajorFaults;
+    }
+
+    hseg.inttemp = asensorReadIntTempC();
+    bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
+    debugInvokeStatusHandler(Entity_UART);
+}
+
+FILE_STATIC void sendMetaSegment()
+{
+    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
+    bcbinPopulateMeta(&mseg, sizeof(mseg));
+    bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+}
+
 /*
  * main.c
  */
@@ -128,22 +163,23 @@ int main(void)
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
 
+    asensorInit(Ref_2p5V);
+
     // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
-    // Also hooks up sync pulse handlers.  Note that actual pulse interrupt handlers will update the
+    // Also hooks up special notification handlers.  Note that actual pulse interrupt handlers will update the
     // firing state structures before calling the provided handler function pointers.
-    mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
+    mod_status.startup_type = coreStartup(handlePPTFiringNotification, handleRollCall);  // <<DO NOT DELETE or MOVE>>
+
+    LED_DIR |= LED_BIT;
 
     // Setup segments to be able to serve as COSMOS telemetry packets
     bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
-    // TODO meta segment?
-    bcbinPopulateHeader(&sunsensorSeg.header, 121, sizeof(sunsensorSeg));
-    bcbinPopulateHeader(&gpspowerSeg.header, 122, sizeof(gpspowerSeg));
-    bcbinPopulateHeader(&rxstatusSeg.header, 123, sizeof(rxstatusSeg));
-    bcbinPopulateHeader(&bestxyzSeg.header, 124, sizeof(bestxyzSeg));
-    bcbinPopulateHeader(&timeSeg.header, 125, sizeof(timeSeg));
-    bcbinPopulateHeader(&hwmonitorSeg.header, 126, sizeof(hwmonitorSeg));
-    bcbinPopulateHeader(&satvis2Seg.header, 127, sizeof(satvis2Seg));
+    bcbinPopulateHeader(&sunsensorSeg.header, TLM_ID_SUNSENSOR, sizeof(sunsensorSeg));
+    bcbinPopulateHeader(&gpshealthSeg.header, TLM_ID_GPSHEALTH, sizeof(gpshealthSeg));
+    bcbinPopulateHeader(&gpspowerSeg.header, TLM_ID_GPSPOWER, sizeof(gpspowerSeg));
+    bcbinPopulateHeader(&rxstatusSeg.header, TLM_ID_RXSTATUS, sizeof(rxstatusSeg));
+    bcbinPopulateHeader(&timeSeg.header, TLM_ID_TIME, sizeof(timeSeg));
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
@@ -165,20 +201,7 @@ int main(void)
     // and then control is returned to this main loop
 
     // initialize GPS data structures and UART read callback
-    gpsInit(handleGPSMessage);
-
-    // register GPS message handlers
-    gpsRegisterMessageHandler(MSGID_RXSTATUS, handleRxStatus);
-    gpsRegisterMessageHandler(MSGID_TIME, handleTime);
-    gpsRegisterMessageHandler(MSGID_BESTXYZ, handleBestXYZ);
-    gpsRegisterMessageHandler(MSGID_HWMONITOR, handleHwMonitor);
-    gpsRegisterMessageHandler(MSGID_SATVIS2, handleSatvis2);
-
-    // register GPS event handlers
-    gpsRegisterEventHandler(EVTID_POSITION, handlePositionStatusEvent,
-                                    EVTTYPE_CLEAR);
-    gpsRegisterEventHandler(EVTID_UTC, handleClockStatusEvent, EVTTYPE_CLEAR);
-    gpsRegisterEventHandler(EVTID_CLOCK, handleClockStatusEvent, EVTTYPE_CLEAR);
+    gpsInit();
 
     // initialize sun sensor
     sunSensorInit();
@@ -186,18 +209,25 @@ int main(void)
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
     {
-        // TODO put these in a "nominal" state and create a second state machine
-        // for the GPS only?
-//        sunSensorUpdate();
-        sendSunSensorData();
-
-        static uint8_t i = 0;
+        static uint32_t i = 0;
         i++;
 
-        if (i % 32 == 0)
+        if (i % 65536 == 0)
         {
+            LED_OUT ^= LED_BIT;
             sendGPSPowerStatus();
-            // TODO also send other health segments etc.
+            sendHealthSegment();
+        }
+
+        if (i % 524288 == 0)
+        {
+            sendMetaSegment();
+        }
+
+        // sunSensorUpdate(); // TODO don't let this block
+        if (i % 16384 == 0)
+        {
+            sendSunSensorData();
         }
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
@@ -216,11 +246,11 @@ int main(void)
         case State_GPSPoweringOn: {
             // periodically poll the GPS until it responds
             // TODO replace this with timers?
-            if (gpsUpdate())
+            if (handleGPSPackage(gpsRead()))
             {
                 triggerGPSOn = 1;
             }
-            else if (i % 256 == 0)
+            else if (i % 65536 == 0)
             {
                 gpsSendCommand("log rxstatusb\r\n");
             }
@@ -237,10 +267,10 @@ int main(void)
         }
         case State_GPSOn:
             // read from the GPS and trigger message handlers
-            if (gpsUpdate())
+            handleGPSPackage(gpsRead());
+
+            if (i % 65536 == 0)
             {
-                // send status telemetry on update
-                // TODO send meta and health segments
                 sendGPSStatus();
             }
 
@@ -265,27 +295,16 @@ int main(void)
 	return 0;
 }
 
-/* ----- SYNC PULSE INTERRUPT HANDLERS ----- */
-// Both of these handlers are INTERRUPT HANDLERS, and run as such, which means that all OTHER
-// interrupts are blocked while they are running.  This can cause all sorts of issues, so
-// MAKE SURE TO MINIMIZE THE CODE RUNNING IN THESE FUNCTIONS.
-// Sync pulse 1:  typically raised every 2 seconds while PPT firing, to help each subsystem module
-// do the "correct thing" around the firing sequence.  This timing might
-// not be exact, and may even change - don't rely on it being 2 seconds every time, and it may
-// be shut off entirely during early or late stages of mission, so also do NOT use as a "heartbeat"
-// for other, unrelated functionality.
-void handleSyncPulse1()
+// Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
+void handlePPTFiringNotification()
 {
     __no_operation();
 }
 
-// Sync pulse 2:  typically every 1-2 minutes, but again, don't count on any length.
-// General semanatics are that this pulse means all subsystems should share accumulated
-// status data on the CAN bus.  It is also the cue for the PPT to ascertain whether it
-// will use the following period as an active or suspended firing period.  All subsystems
-// will assume active until they are notified that firing has been suspended, but
-// this determination will be reset (back to active) at each sync pulse 2.
-void handleSyncPulse2()
+// Will be called when the subsystem gets the distribution board's CAN message that asks for check-in
+// Likely calling frequency is probably once every couple of minutes, but the code shouldn't work with
+// any period (in particular for testing, where we might spam the CAN bus with roll call queries)
+void handleRollCall()
 {
     __no_operation();
 }
@@ -319,14 +338,6 @@ uint8_t handleDebugStatusCallback(DebugMode mode)
     {
         // debugPrintF status in a user-friendly, formatted way
         debugPrintF("GPS Status: 0x%08lx\r\n", rxstatusSeg.status);
-        uint8_t i = 32;
-        while (i--)
-        {
-            if (rxstatusSeg.status & ((uint32_t) 1 << i))
-            {
-                debugPrintF("\terror #%u - %s\r\n", i, GPS_STATUS_DESC[i]);
-            }
-        }
     }
     else if (mode == Mode_ASCIIHeadless)
     {
@@ -385,100 +396,217 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
     return 1;
 }
 
-// --- gps message handlers ---
-
-FILE_STATIC void handleGPSMessage(const GPSHeader *header)
+FILE_STATIC bool handleGPSPackage(GPSPackage *p)
 {
-    rxstatusSeg.status = header->rxStatus;
+    if (p == NULL)
+    {
+        return false;
+    }
 
-    timeSeg.week = header->week;
-    timeSeg.ms = header->ms;
+    // process header
+    rxstatusSeg.status = p->header.rxStatus;
+    timeSeg.week = p->header.week;
+    timeSeg.ms = p->header.ms;
     toUtc(&timeSeg.week, &timeSeg.ms, timeSeg.offset);
+
+    // handle message-specific data
+    switch (p->header.messageId)
+    {
+    case MSGID_RXSTATUS:
+        handleRxStatus(p);
+        break;
+    case MSGID_TIME:
+        handleTime(p);
+        break;
+    case MSGID_BESTXYZ:
+        handleBestXYZ(p);
+        break;
+    case MSGID_HWMONITOR:
+        handleHwMonitor(p);
+        break;
+    case MSGID_SATVIS2:
+        handleSatvis2(p);
+        break;
+    case MSGID_RANGE:
+        handleRange(p);
+        break;
+    case MSGID_RXSTATUSEVENT:
+        handleRxStatusEvent(p);
+        break;
+    default:
+        gpshealthSeg.unknownMsg++;
+        break;
+    }
+
+    return true;
 }
+
+// --- gps message handlers ---
 
 FILE_STATIC void handleRxStatus(const GPSPackage *package)
 {
-    const GPSRXStatus m = package->message.rxstatus;
+    const GPSRXStatus *m = &(package->message.rxstatus);
 
-    debugTraceF(GPS_TRACE_LEVEL, "RXSTATUS error word: %X \r\n", m.error);
+    debugTraceF(GPS_TRACE_LEVEL, "RXSTATUS error word: %X \r\n", m->error);
 
-    rxstatusSeg.error = m.error;
-    rxstatusSeg.aux1 = m.aux1stat.word;
-    rxstatusSeg.aux2 = m.aux2stat.word;
-    rxstatusSeg.aux3 = m.aux3stat.word;
+    rxstatusSeg.error = m->error;
+    rxstatusSeg.aux1 = m->aux1stat.word;
+    rxstatusSeg.aux2 = m->aux2stat.word;
+    rxstatusSeg.aux3 = m->aux3stat.word;
 }
 
 FILE_STATIC void handleTime(const GPSPackage *package)
 {
-    const GPSTime m = package->message.time;
-
-    debugTraceF(GPS_TRACE_LEVEL, "TIME offset: %f\r\n", timeSeg.offset);
+    const GPSTime *m = &(package->message.time);
 
     // update the time offset
     // used in pos/vel messages and updating MET
-    timeSeg.offset = m.offset + m.utcOffset;
-    timeSeg.clockStatus = m.clockStatus;
-    timeSeg.utcStatus = m.utcStatus;
+    timeSeg.offset = m->offset + m->utcOffset;
+    timeSeg.clockStatus = m->clockStatus;
+    timeSeg.utcStatus = m->utcStatus;
+
+    debugTraceF(GPS_TRACE_LEVEL, "TIME offset: %f\r\n", timeSeg.offset);
 }
 
 FILE_STATIC void handleBestXYZ(const GPSPackage *package)
 {
-    const GPSBestXYZ m = package->message.bestXYZ;
+    const GPSBestXYZ *m = &(package->message.bestXYZ);
 
     uint16_t week = package->header.week;
     gps_ec ms = package->header.ms;
-    toUtc(&week, &ms, timeSeg.offset - m.velLatency);
+    toUtc(&week, &ms, timeSeg.offset - m->velLatency);
 
-    debugTraceF(GPS_TRACE_LEVEL,
-                "BESTXYZ (%u)\r\n\tx: %f\r\n\ty: %f\r\n\tz: %f\r\n",
-                m.pSolStatus, m.pos.x, m.pos.y, m.pos.z);
+    bestxyz_segment *bestxyzSeg = &sharedSeg.bestxyz;
+    bestxyzSeg->posStatus = m->pSolStatus;
+    bestxyzSeg->pos = m->pos;
+    bestxyzSeg->posStdDev = m->posStdDev;
+    bestxyzSeg->velStatus = m->vSolStatus;
+    bestxyzSeg->vel = m->vel;
+    bestxyzSeg->velStdDev = m->velStdDev;
+    bestxyzSeg->week = week;
+    bestxyzSeg->ms = ms;
 
-    bestxyzSeg.posStatus = m.pSolStatus;
-    bestxyzSeg.pos = m.pos;
-    bestxyzSeg.posStdDev = m.posStdDev;
-    bestxyzSeg.velStatus = m.vSolStatus;
-    bestxyzSeg.vel = m.vel;
-    bestxyzSeg.velStdDev = m.velStdDev;
-    bestxyzSeg.week = week;
-    bestxyzSeg.ms = ms;
-
-    bcbinSendPacket((uint8_t *) &bestxyzSeg, sizeof(bestxyzSeg));
+    bcbinPopulateHeader(&sharedSeg.bestxyz.header, TLM_ID_BESTXYZ, sizeof(bestxyz_segment));
+    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(bestxyz_segment));
 }
 
 FILE_STATIC void handleHwMonitor(const GPSPackage *package)
 {
-    const GPSHWMonitor monLog = package->message.hwMonitor;
-    debugTraceF(GPS_TRACE_LEVEL, "HWMonitor:\r\n");
-    debugTraceF(GPS_TRACE_LEVEL, "\ttemp: %f C\r\n", monLog.temp.reading);
+    const GPSHWMonitor *monLog = &(package->message.hwMonitor);
+    hwmonitor_segment *hwmonitorSeg = &sharedSeg.hwmonitor;
 
-    // TODO add other measurements to COSMOS
-    hwmonitorSeg.temp = monLog.temp.reading;
-    hwmonitorSeg.tempStatus = monLog.temp.status;
+    uint32_t i = monLog->numMeasurements;
+    while (i-- != 0)
+    {
+        float reading = monLog->mes[i].reading;
+        uint8_t type = monLog->mes[i].type;
+        switch (type)
+        {
+        case HW_TEMP:
+            hwmonitorSeg->temp = reading;
+            break;
+        case HW_ANTCUR:
+            hwmonitorSeg->antCurrent = reading;
+            break;
+        case HW_SUPVOLT:
+            hwmonitorSeg->supVolt = reading;
+            break;
+        case HW_ANTVOLT:
+            hwmonitorSeg->antVolt = reading;
+            break;
+        case HW_DIGCORE:
+            hwmonitorSeg->digCoreVolt = reading;
+            break;
+        case HW_TEMP2:
+            hwmonitorSeg->secTemp = reading;
+            break;
+        default:
+            break;
+        }
+    }
 
-    bcbinSendPacket((uint8_t *) &hwmonitorSeg, sizeof(hwmonitorSeg));
+    bcbinPopulateHeader(&sharedSeg.hwmonitor.header, TLM_ID_HWMONITOR, sizeof(hwmonitor_segment));
+    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(hwmonitor_segment));
 }
 
 FILE_STATIC void handleSatvis2(const GPSPackage *package)
 {
-    const GPSSatvis2 satvis2 = package->message.satvis2;
+    const GPSSatvis2 *satvis2 = &(package->message.satvis2);
     debugTraceF(GPS_TRACE_LEVEL, "Satvis2:\r\n");
-    debugTraceF(GPS_TRACE_LEVEL, "\tsystem: %u\r\n", satvis2.system);
-    debugTraceF(GPS_TRACE_LEVEL, "\tnum:    %u\r\n", satvis2.numSats);
+    debugTraceF(GPS_TRACE_LEVEL, "\tsystem: %u\r\n", satvis2->system);
+    debugTraceF(GPS_TRACE_LEVEL, "\tnum:    %u\r\n", satvis2->numSats);
 
-    switch (satvis2.system)
+    satvis2_segment *satvis2Seg = &sharedSeg.satvis2;
+    switch (satvis2->system)
     {
         case SATSYSTEM_GPS:
-            satvis2Seg.numGPS = satvis2.numSats;
+            satvis2Seg->numGPS = satvis2->numSats;
             break;
         case SATSYSTEM_GLONASS:
-            satvis2Seg.numGLONASS = satvis2.numSats;
+            satvis2Seg->numGLONASS = satvis2->numSats;
             break;
         case SATSYSTEM_SBAS:
-            satvis2Seg.numSBAS = satvis2.numSats;
+            satvis2Seg->numSBAS = satvis2->numSats;
             break;
     }
 
-    bcbinSendPacket((uint8_t *) &satvis2Seg, sizeof(satvis2Seg));
+    bcbinPopulateHeader(&sharedSeg.satvis2.header, TLM_ID_SATVIS2, sizeof(satvis2_segment));
+    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(satvis2_segment));
+}
+
+FILE_STATIC void handleRange(const GPSPackage *package)
+{
+    const GPSRange *range = &(package->message.range);
+
+    sharedSeg.range = (const range_segment){ 0 };
+
+    range_segment *rangeSeg = &sharedSeg.range;
+    uint32_t i;
+    uint32_t numObs = range->numObs < NUM_RANGE_SEGMENT_MEMBERS ? range->numObs : NUM_RANGE_SEGMENT_MEMBERS;
+    for (i = 0; i < numObs; i++)
+    {
+        rangeSeg->obs[i].prn = range->obs[i].prn;
+        rangeSeg->obs[i].cToNo = range->obs[i].cToNo;
+        rangeSeg->obs[i].locktime = range->obs[i].locktime;
+    }
+
+    bcbinPopulateHeader(&sharedSeg.range.header, TLM_ID_RANGE, sizeof(range_segment));
+    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(range_segment));
+}
+
+FILE_STATIC void handleRxStatusEvent(const GPSPackage *package)
+{
+    const GPSRXStatusEvent *e = &(package->message.rxstatusEvent);
+
+    // only read the status events
+    // TODO read and deal with error/aux events too
+    if (e->word != 1)
+    {
+        return;
+    }
+
+    if (e->event == EVTTYPE_CLEAR)
+    {
+        switch (e->bitPosition)
+        {
+        case EVTID_POSITION:
+            handlePositionStatusEvent(e);
+            break;
+        case EVTID_UTC:
+            handleClockStatusEvent(e);
+            break;
+        case EVTID_CLOCK:
+            handleClockStatusEvent(e);
+            break;
+        default:
+            gpshealthSeg.unknownEvt++;
+            break;
+        }
+    }
+    else
+    {
+        gpshealthSeg.unknownEvt++;
+    }
 }
 
 // --- gps status event handlers ---
