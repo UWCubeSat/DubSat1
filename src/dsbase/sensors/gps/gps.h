@@ -299,7 +299,27 @@ typedef struct
 void gpsInit();
 
 /**
- * Powers on and configures the GPS
+ * Switch on the buck converter
+ */
+void gpsBuckOn();
+
+/*
+ * Switch off the buck converter
+ */
+void gpsBuckOff();
+
+/**
+ * Returns 1 iff the buck converter is enabled. 0 otherwise
+ */
+uint8_t gpsBuckEnabled();
+
+/**
+ * Returns 1 iff the buck converter status is good
+ */
+uint8_t gpsBuckGood();
+
+/**
+ * Powers on the GPS. The buck converter must be enabled and good first.
  */
 void gpsPowerOn();
 
@@ -307,6 +327,11 @@ void gpsPowerOn();
  * Powers off the GPS and finishes processing any leftover logs
  */
 void gpsPowerOff();
+
+/**
+ * Returns 1 iff the gps switch is enabled. 0 otherwise
+ */
+uint8_t gpsPowerEnabled();
 
 /**
  * Returns a GPSPackage if one is available, otherwise NULL.

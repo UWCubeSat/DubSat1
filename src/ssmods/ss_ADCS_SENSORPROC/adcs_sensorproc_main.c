@@ -20,7 +20,6 @@ FILE_STATIC volatile SubsystemMode ss_mode      = Mode_FirstMode;
 
 // These are sample "trigger" flags, used to indicate to the main loop
 // that a transition should occur
-FILE_STATIC flag_t triggerGPSPoweringOn;
 FILE_STATIC flag_t triggerGPSOn;
 FILE_STATIC flag_t triggerGPSOff;
 
@@ -96,21 +95,9 @@ FILE_STATIC void sendSunSensorData()
 
 FILE_STATIC void sendGPSPowerStatus()
 {
-    switch (ss_state)
-    {
-    case State_GPSOn:
-        gpspowerSeg.status = GPSPOWER_ON;
-        break;
-    case State_GPSPoweringOn:
-        gpspowerSeg.status = GPSPOWER_BOOTING;
-        break;
-    case State_GPSOff:
-        gpspowerSeg.status = GPSPOWER_OFF;
-        break;
-    default:
-        // TODO unknown state?
-        break;
-    }
+    gpspowerSeg.buckEnabled = gpsBuckEnabled();
+    gpspowerSeg.gpsEnabled = gpsPowerEnabled();
+    gpspowerSeg.state = ss_state;
     bcbinSendPacket((uint8_t *) &gpspowerSeg, sizeof(gpspowerSeg));
 }
 
@@ -234,37 +221,37 @@ int main(void)
         switch (ss_state)
         {
         case State_GPSOff:
-            if (triggerGPSPoweringOn)
+            if (triggerGPSOn)
             {
-                // switch the GPS on
-                gpsPowerOn();
+                // enable the buck converter
+                gpsBuckOn();
 
-                triggerGPSPoweringOn = 0;
-                ss_state = State_GPSPoweringOn;
+                triggerGPSOn = 0;
+                ss_state = State_BuckWaitOn;
             }
             break;
-        case State_GPSPoweringOn: {
+        case State_BuckWaitOn:
+            if (gpsBuckGood())
+            {
+                // buck converter signal is good, enable the GPS
+                gpsPowerOn();
+                ss_state = State_GPSWait;
+            }
+            break;
+        case State_GPSWait:
             // periodically poll the GPS until it responds
             // TODO replace this with timers?
-            if (handleGPSPackage(gpsRead()))
-            {
-                triggerGPSOn = 1;
-            }
-            else if (i % 65536 == 0)
+            if (i % 65536 == 0)
             {
                 gpsSendCommand("log rxstatusb\r\n");
             }
-
-            if (triggerGPSOn)
+            if (handleGPSPackage(gpsRead()))
             {
                 // now that the GPS is confirmed to be on, send commands to configure it
                 gpsConfigure();
-
-                triggerGPSOn = 0;
                 ss_state = State_GPSOn;
             }
             break;
-        }
         case State_GPSOn:
             // read from the GPS and trigger message handlers
             handleGPSPackage(gpsRead());
@@ -280,9 +267,21 @@ int main(void)
                 gpsPowerOff();
 
                 triggerGPSOff = 0;
-                ss_state = State_GPSOff;
+                ss_state = State_BuckWaitOff;
             }
             break;
+        case State_BuckWaitOff:
+        {
+            // wait a while before disabling the buck converter
+            static uint16_t count = 0;
+            if (count++ > 50000)
+            {
+                gpsBuckOff();
+                ss_state = State_GPSOff;
+                count = 0;
+            }
+            break;
+        }
         default:
             mod_status.state_transition_errors++;
             mod_status.in_unknown_state++;
@@ -377,7 +376,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
                 enableSegment = (enable_segment *) (cmdstr + 1);
                 if (enableSegment->enable && ss_state == State_GPSOff)
                 {
-                    triggerGPSPoweringOn = 1;
+                    triggerGPSOn = 1;
                 }
                 else if (enableSegment->enable == 0 && ss_state == State_GPSOn)
                 {

@@ -38,36 +38,65 @@ void gpsInit()
     BUCK_GOOD_DIR &= ~BUCK_GOOD_BIT; // input
 }
 
-void gpsPowerOn()
+void gpsBuckOn()
 {
-    BufferedReaderFlush();
-    // TODO delay between buck enable and gps enable?
     BUCK_ENABLE_OUT |= BUCK_ENABLE_BIT; // enable buck converter
-
     BUCK_GOOD_IE |= BUCK_GOOD_BIT;      // enable interrupt
     BUCK_GOOD_IFG &= ~BUCK_GOOD_BIT;    // clear interrupt flag
 
     // read initial buck status
-    if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
-    {
-        health.buck_status = 1;
-    }
-    else
-    {
-        health.buck_status = 0;
-    }
+    health.buck_status = gpsBuckGood();
+}
 
-    GPS_ENABLE_OUT |= GPS_ENABLE_BIT;   // enable GPS
+void gpsBuckOff()
+{
+    BUCK_GOOD_IE &= ~BUCK_GOOD_BIT;      // disable interrupt
+    BUCK_ENABLE_OUT &= ~BUCK_ENABLE_BIT; // disable buck converter
+}
+
+uint8_t gpsBuckEnabled()
+{
+    if (BUCK_ENABLE_OUT & BUCK_ENABLE_BIT)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+uint8_t gpsBuckGood()
+{
+    return 1; // TODO remove
+//    if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
+//    {
+//        return 1;
+//    }
+//    return 0;
+}
+
+void gpsPowerOn()
+{
+    if (!(gpsBuckEnabled() && gpsBuckGood()))
+    {
+        // TODO log some error
+        return;
+    }
+    BufferedReaderFlush();
+    GPS_ENABLE_OUT |= GPS_ENABLE_BIT; // enable GPS
 }
 
 void gpsPowerOff()
 {
-    GPS_ENABLE_OUT &= ~GPS_ENABLE_BIT;   // disable GPS
-
-    BUCK_GOOD_IE &= ~BUCK_GOOD_BIT;      // disable interrupt
-
-    BUCK_ENABLE_OUT &= ~BUCK_ENABLE_BIT; // disable buck converter
+    GPS_ENABLE_OUT &= ~GPS_ENABLE_BIT; // disable GPS
     BufferedReaderFlush();
+}
+
+uint8_t gpsPowerEnabled()
+{
+    if (GPS_ENABLE_OUT & GPS_ENABLE_BIT)
+    {
+        return 1;
+    }
+    return 0;
 }
 
 // read from the BufferedReader into another buffer while also doing a crc
@@ -250,13 +279,6 @@ __interrupt void Port_3(void)
     BUCK_GOOD_IFG &= ~BUCK_GOOD_BIT; // clear interrupt
     BUCK_GOOD_IES ^= BUCK_GOOD_BIT;  // toggle interrupt edge
 
-    // trigger a flag depending current input
-    if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
-    {
-        health.buck_status = 1;
-    }
-    else
-    {
-        health.buck_status = 0;
-    }
+    // update buck status
+    health.buck_status = gpsBuckGood();
 }
