@@ -11,6 +11,9 @@
 // number of bytes allocated to array members of GPS messages
 #define FLEX_ARRAY_BUFFER_LENGTH 500
 
+// size of byte buffer for uart interrupt to fill while processing GPS messages
+#define GPS_RX_BUFFER_LENGTH 20
+
 // --- GPIO pins ---
 
 #define GPS_ENABLE_DIR P2DIR
@@ -20,6 +23,13 @@
 #define BUCK_ENABLE_DIR P3DIR
 #define BUCK_ENABLE_OUT P3OUT
 #define BUCK_ENABLE_BIT BIT7
+
+#define BUCK_GOOD_DIR P3DIR
+#define BUCK_GOOD_IN  P3IN
+#define BUCK_GOOD_IE  P3IE
+#define BUCK_GOOD_IES P3IES
+#define BUCK_GOOD_IFG P3IFG
+#define BUCK_GOOD_BIT BIT6
 
 // --- NovAtel IDs and enums ---
 
@@ -60,9 +70,10 @@
 #include "core/utils.h"
 
 typedef struct PACKED_STRUCT {
-    uint8_t skipped;   // # of skipped messages due to lack of RX buffer memory
-    uint8_t bad_crc;   // # of messages with incorrect CRCs
-    uint8_t oversized; // # of messages that are too big for memory
+    uint8_t skipped;     // # of skipped messages for lack of RX buffer memory
+    uint8_t bad_crc;     // # of messages with incorrect CRCs
+    uint8_t oversized;   // # of messages that are too big for memory
+    uint8_t buck_status; // status of buck converter, 1 = good, 0 = not good
 } gps_health;
 
 // --- NovAtel logs and commands ---
@@ -73,6 +84,9 @@ typedef uint32_t gps_enum;
 typedef uint16_t gps_message_id;
 typedef uint32_t gps_event_id;
 
+/**
+ * the header used in each command and log
+ */
 typedef struct PACKED_STRUCT
 {
     uint8_t sync[3];
@@ -91,6 +105,23 @@ typedef struct PACKED_STRUCT
     uint16_t rxVersion; // receiver S/W version
 } GPSHeader;
 
+/**
+ * LOG command
+ */
+typedef struct PACKED_STRUCT
+{
+    gps_enum port; // output port. Set to 0xc0 for THIS_PORT
+    uint16_t messageId;
+    uint8_t messageType; // 0 for binary, 64 for abbreviated ASCII
+    gps_enum trigger;
+    double period;
+    double offset;
+    gps_enum hold;
+} GPSCmdLog;
+
+/**
+ * Vector type used to represent position and velocity
+ */
 typedef struct PACKED_STRUCT
 {
     double x;
@@ -98,6 +129,9 @@ typedef struct PACKED_STRUCT
     double z;
 } GPSVectorD;
 
+/**
+ * Vector type used to represent standard deviation of position and velocity
+ */
 typedef struct PACKED_STRUCT
 {
     float x;
@@ -105,6 +139,9 @@ typedef struct PACKED_STRUCT
     float z;
 } GPSVectorF;
 
+/**
+ * BESTXYZ log
+ */
 typedef struct PACKED_STRUCT
 {
     gps_enum pSolStatus; // position solution status
@@ -262,7 +299,27 @@ typedef struct
 void gpsInit();
 
 /**
- * Powers on and configures the GPS
+ * Switch on the buck converter
+ */
+void gpsBuckOn();
+
+/*
+ * Switch off the buck converter
+ */
+void gpsBuckOff();
+
+/**
+ * Returns 1 iff the buck converter is enabled. 0 otherwise
+ */
+uint8_t gpsBuckEnabled();
+
+/**
+ * Returns 1 iff the buck converter status is good
+ */
+uint8_t gpsBuckGood();
+
+/**
+ * Powers on the GPS. The buck converter must be enabled and good first.
  */
 void gpsPowerOn();
 
@@ -270,6 +327,11 @@ void gpsPowerOn();
  * Powers off the GPS and finishes processing any leftover logs
  */
 void gpsPowerOff();
+
+/**
+ * Returns 1 iff the gps switch is enabled. 0 otherwise
+ */
+uint8_t gpsPowerEnabled();
 
 /**
  * Returns a GPSPackage if one is available, otherwise NULL.

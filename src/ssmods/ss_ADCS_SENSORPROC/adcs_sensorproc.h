@@ -47,15 +47,12 @@ TLM_SEGMENT {
     gps_health health;
 } gpshealth_segment;
 
-// for gpspower status
-#define GPSPOWER_ON  2
-#define GPSPOWER_BOOTING  1
-#define GPSPOWER_OFF 0
-
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
-    uint8_t status;
+    uint8_t gpsEnabled;
+    uint8_t buckEnabled;
+    uint8_t state;
 } gpspower_segment;
 
 TLM_SEGMENT {
@@ -146,9 +143,11 @@ CMD_SEGMENT {
 // as a state machine (specifically, a FSM).  Here the available states are
 // defined.
 typedef enum _subsystem_state {
-    State_GPSOff,
-    State_GPSPoweringOn,
-    State_GPSOn,
+    State_GPSOff = 0,
+    State_BuckWaitOn = 1,
+    State_GPSWait = 2,
+    State_GPSOn = 3,
+    State_BuckWaitOff = 4,
 } SubsystemState;
 
 // Additional, it can be helpful if states are grouped into higher level

@@ -1,5 +1,3 @@
-#define RX_BUFFER_LENGTH 20
-
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -18,7 +16,7 @@ typedef enum reader_state
 } reader_state;
 
 FILE_STATIC hBus uartHandle;
-FILE_STATIC uint8_t buffer[RX_BUFFER_LENGTH];
+FILE_STATIC uint8_t buffer[GPS_RX_BUFFER_LENGTH];
 FILE_STATIC gps_health health;
 FILE_STATIC GPSPackage package;
 
@@ -28,29 +26,77 @@ void gpsInit()
     health.bad_crc = 0;
     health.skipped = 0;
     health.oversized = 0;
+    health.buck_status = 0;
 
     // initialize the reader
     uartHandle = uartInit(ApplicationUART, 0, Speed_9600);
-    BufferedReaderInit(uartHandle, buffer, RX_BUFFER_LENGTH);
+    BufferedReaderInit(uartHandle, buffer, GPS_RX_BUFFER_LENGTH);
 
-    // configure power GPIO to be output
-    GPS_ENABLE_DIR |= GPS_ENABLE_BIT;
-    BUCK_ENABLE_DIR |= BUCK_ENABLE_BIT;
+    // configure GPIO pins
+    GPS_ENABLE_DIR |= GPS_ENABLE_BIT;   // output
+    BUCK_ENABLE_DIR |= BUCK_ENABLE_BIT; // output
+    BUCK_GOOD_DIR &= ~BUCK_GOOD_BIT; // input
+}
+
+void gpsBuckOn()
+{
+    BUCK_ENABLE_OUT |= BUCK_ENABLE_BIT; // enable buck converter
+    BUCK_GOOD_IE |= BUCK_GOOD_BIT;      // enable interrupt
+    BUCK_GOOD_IFG &= ~BUCK_GOOD_BIT;    // clear interrupt flag
+
+    // read initial buck status
+    health.buck_status = gpsBuckGood();
+}
+
+void gpsBuckOff()
+{
+    BUCK_GOOD_IE &= ~BUCK_GOOD_BIT;      // disable interrupt
+    BUCK_ENABLE_OUT &= ~BUCK_ENABLE_BIT; // disable buck converter
+}
+
+uint8_t gpsBuckEnabled()
+{
+    if (BUCK_ENABLE_OUT & BUCK_ENABLE_BIT)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+uint8_t gpsBuckGood()
+{
+    return 1; // TODO remove
+//    if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
+//    {
+//        return 1;
+//    }
+//    return 0;
 }
 
 void gpsPowerOn()
 {
+    if (!(gpsBuckEnabled() && gpsBuckGood()))
+    {
+        // TODO log some error
+        return;
+    }
     BufferedReaderFlush();
-    // TODO delay between buck enable and gps enable?
-    BUCK_ENABLE_OUT |= BUCK_ENABLE_BIT;
-    GPS_ENABLE_OUT |= GPS_ENABLE_BIT;
+    GPS_ENABLE_OUT |= GPS_ENABLE_BIT; // enable GPS
 }
 
 void gpsPowerOff()
 {
-    GPS_ENABLE_OUT &= ~GPS_ENABLE_BIT;
-    BUCK_ENABLE_OUT &= ~BUCK_ENABLE_BIT;
+    GPS_ENABLE_OUT &= ~GPS_ENABLE_BIT; // disable GPS
     BufferedReaderFlush();
+}
+
+uint8_t gpsPowerEnabled()
+{
+    if (GPS_ENABLE_OUT & GPS_ENABLE_BIT)
+    {
+        return 1;
+    }
+    return 0;
 }
 
 // read from the BufferedReader into another buffer while also doing a crc
@@ -156,17 +202,14 @@ GPSPackage *gpsRead()
 
             if (readCrc == crc)
             {
-                // filter out response messages
-                /*
-                 * TODO start checking these for confirmation (see LOG command).
-                 * Replies are in the same form as the command, so we need to switch to
-                 * sending binary commands if we want confirmation messages.
-                 */
+                // process response messages
                 if (package.header.messageType & 0b1000000)
                 {
-                    // the receiver responds to commands with a confirmation message,
-                    // which can be ignored
-                    debugPrintF("received command: %u\r\n", package.header.messageId);
+                    // check if the response is OK
+                    gps_enum responseId = *((gps_enum *) &package.message);
+                    if (responseId != 1) {
+                        // TODO use this to confirm a message came through
+                    }
                 }
                 else
                 {
@@ -226,4 +269,16 @@ void gpsSendBinaryCommand(gps_message_id messageId,
 void gpsGetHealth(gps_health *h)
 {
     *h = health;
+}
+
+// Port 3 interrupt service routine for buck converter input
+// TODO should a bad status trigger a power reset?
+#pragma vector=PORT3_VECTOR
+__interrupt void Port_3(void)
+{
+    BUCK_GOOD_IFG &= ~BUCK_GOOD_BIT; // clear interrupt
+    BUCK_GOOD_IES ^= BUCK_GOOD_BIT;  // toggle interrupt edge
+
+    // update buck status
+    health.buck_status = gpsBuckGood();
 }
