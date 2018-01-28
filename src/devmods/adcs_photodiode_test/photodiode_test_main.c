@@ -12,8 +12,12 @@
 #define LED_PIN             BIT0
 
 //both addr lines wired to vcc
-const uint8_t LTC2481_I2C_ADDR1 = 0x26;
-const uint8_t LTC2481_I2C_ADDR2 = 0x24;
+const uint8_t LH_addr = 0x14;
+const uint8_t LF_addr = 0x15;
+const uint8_t FH_addr = 0x17;
+const uint8_t FF_addr = 0x24;
+const uint8_t HH_addr = 0x26;
+const uint8_t HF_addr = 0x27;
 
 int main(void)
 {
@@ -33,14 +37,16 @@ int main(void)
     // previously configured port settings
     PM5CTL0 &= ~LOCKLPM5;
 
-    const uint8_t handle0 = photodiodeInit(LTC2481_I2C_ADDR1);
-    const uint8_t handle1 = photodiodeInit(LTC2481_I2C_ADDR2);
+    const uint8_t handleCenter = photodiodeInit(HH_addr);
+    const uint8_t handleRight = photodiodeInit(FF_addr);
+    const uint8_t handleLeft = photodiodeInit(HF_addr);
     for (;;)
     {
-        volatile double adcVoltage0, adcVoltage1;
+        volatile uint32_t adcVoltageCenter, adcVoltageRight, adcVoltageLeft;
         //need to have a debug breakpoint here
-        adcVoltage0 = photodiodeVoltage(handle0);
-        adcVoltage1 = photodiodeVoltage(handle1);
+        adcVoltageCenter = photodiodeVoltage(handleCenter, GAIN1);
+        adcVoltageRight = photodiodeVoltage(handleRight, GAIN1);
+        adcVoltageLeft = photodiodeVoltage(handleLeft, GAIN1);
         P1OUT ^= BIT0;
 
     }
