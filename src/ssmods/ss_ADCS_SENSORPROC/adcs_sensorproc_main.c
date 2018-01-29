@@ -11,6 +11,7 @@
 
 #include "sensors/gps/gps.h"
 #include "sensors/sun_sensor.h"
+#include "sensors/photodiode.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -27,11 +28,17 @@ FILE_STATIC flag_t triggerGPSOff;
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 FILE_STATIC sunsensor_segment sunsensorSeg;
+FILE_STATIC photodiode_segment photodiodeSeg;
 FILE_STATIC gpshealth_segment gpshealthSeg;
 FILE_STATIC gpspower_segment gpspowerSeg;
 FILE_STATIC rxstatus_segment rxstatusSeg;
 FILE_STATIC time_segment timeSeg;
 FILE_STATIC shared_segment sharedSeg;
+
+// photodiode handles
+FILE_STATIC uint8_t pdCenter;
+FILE_STATIC uint8_t pdRight;
+FILE_STATIC uint8_t pdLeft;
 
 // called on every gps package
 FILE_STATIC bool handleGPSPackage(GPSPackage *p);
@@ -74,7 +81,6 @@ FILE_STATIC void gpsConfigure()
 // read the sun sensor and update its segments
 FILE_STATIC void sunSensorUpdate()
 {
-    // TODO this is a blocking call. We should have some sort of timeout
     SunSensorAngle *angle = sunSensorReadAngle();
     if (angle != NULLP)
     {
@@ -121,11 +127,12 @@ FILE_STATIC void sendHealthSegment()
     // TODO query sun sensor and photodiodes' health
     // TODO check if this is being used correctly
     hseg.oms = OMS_Nominal;
-    if (gpshealthSeg.unknownEvt || gpshealthSeg.unknownMsg)
+    if (gpshealthSeg.unknownEvt || gpshealthSeg.unknownMsg
+            || gpshealthSeg.health.bad_crc || gpshealthSeg.health.skipped)
     {
         hseg.oms = OMS_MinorFaults;
     }
-    if (gpshealthSeg.health.bad_crc || gpshealthSeg.health.skipped)
+    if (rxstatusSeg.error)
     {
         hseg.oms = OMS_MajorFaults;
     }
@@ -140,6 +147,26 @@ FILE_STATIC void sendMetaSegment()
     // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
     bcbinPopulateMeta(&mseg, sizeof(mseg));
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+}
+
+FILE_STATIC void photodiodeInitAll()
+{
+    pdCenter = photodiodeInit(PD_ADDR_HH);
+    pdRight = photodiodeInit(PD_ADDR_FF);
+    pdLeft = photodiodeInit(PD_ADDR_HF);
+    // TODO init other photodiodes when we have them
+}
+
+FILE_STATIC void photodiodeUpdate()
+{
+    photodiodeSeg.center = photodiodeRead(defaultWrite, pdCenter);
+    photodiodeSeg.right = photodiodeRead(defaultWrite, pdRight);
+    photodiodeSeg.left = photodiodeRead(defaultWrite, pdLeft);
+}
+
+FILE_STATIC void sendPhotodiodeData()
+{
+    bcbinSendPacket((uint8_t *) &photodiodeSeg, sizeof(photodiodeSeg));
 }
 
 /*
@@ -163,6 +190,7 @@ int main(void)
     // Setup segments to be able to serve as COSMOS telemetry packets
     bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
     bcbinPopulateHeader(&sunsensorSeg.header, TLM_ID_SUNSENSOR, sizeof(sunsensorSeg));
+    bcbinPopulateHeader(&photodiodeSeg.header, TLM_ID_PHOTODIODE, sizeof(photodiodeSeg));
     bcbinPopulateHeader(&gpshealthSeg.header, TLM_ID_GPSHEALTH, sizeof(gpshealthSeg));
     bcbinPopulateHeader(&gpspowerSeg.header, TLM_ID_GPSPOWER, sizeof(gpspowerSeg));
     bcbinPopulateHeader(&rxstatusSeg.header, TLM_ID_RXSTATUS, sizeof(rxstatusSeg));
@@ -187,11 +215,10 @@ int main(void)
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
 
-    // initialize GPS data structures and UART read callback
+    // initialize sensors
     gpsInit();
-
-    // initialize sun sensor
     sunSensorInit();
+    photodiodeInitAll();
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
@@ -211,10 +238,12 @@ int main(void)
             sendMetaSegment();
         }
 
-        // sunSensorUpdate(); // TODO don't let this block
+//        sunSensorUpdate(); // TODO don't let these block
+//        photodiodeUpdate();
         if (i % 16384 == 0)
         {
             sendSunSensorData();
+            sendPhotodiodeData();
         }
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
