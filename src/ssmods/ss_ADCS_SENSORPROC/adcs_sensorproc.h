@@ -18,16 +18,26 @@
 #define LED_OUT P3OUT
 #define LED_BIT BIT5
 
+// photodiode addresses
+//both addr lines wired to vcc
+const uint8_t PD_ADDR_LH = 0x14;
+const uint8_t PD_ADDR_LF = 0x15;
+const uint8_t PD_ADDR_FH = 0x17;
+const uint8_t PD_ADDR_FF = 0x24;
+const uint8_t PD_ADDR_HH = 0x26;
+const uint8_t PD_ADDR_HF = 0x27;
+
 // COSMOS telemetry IDs
-#define TLM_ID_SUNSENSOR 121
-#define TLM_ID_GPSHEALTH 120
-#define TLM_ID_GPSPOWER  122
-#define TLM_ID_RXSTATUS  123
-#define TLM_ID_BESTXYZ   124
-#define TLM_ID_TIME      125
-#define TLM_ID_HWMONITOR 126
-#define TLM_ID_SATVIS2   127
-#define TLM_ID_RANGE     119
+#define TLM_ID_SUNSENSOR  121
+#define TLM_ID_PHOTODIODE 118
+#define TLM_ID_GPSHEALTH  120
+#define TLM_ID_GPSPOWER   122
+#define TLM_ID_RXSTATUS   123
+#define TLM_ID_BESTXYZ    124
+#define TLM_ID_TIME       125
+#define TLM_ID_HWMONITOR  126
+#define TLM_ID_SATVIS2    127
+#define TLM_ID_RANGE      119
 
 // --- COSMOS telem and cmd packets ---
 
@@ -121,6 +131,14 @@ TLM_SEGMENT {
 
     range_segMember obs[NUM_RANGE_SEGMENT_MEMBERS];
 } range_segment;
+
+TLM_SEGMENT {
+    BcTlmHeader header; // All COSMOS TLM packets must have this
+
+    uint32_t center;
+    uint32_t right;
+    uint32_t left;
+} photodiode_segment;
 
 /*
  * Union of telemetry segments that may share memory
