@@ -193,4 +193,39 @@ uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 
+// general telemetry functions
+void sendHealthSegment();
+void sendMetaSegment();
+
+// gps functions
+void gpsConfigure();
+void sendGPSPowerStatus();
+void sendGPSStatus();
+bool handleGPSPackage(GPSPackage *p);
+
+// gps message handlers
+void handleRxStatus(const GPSPackage *package);
+void handleTime(const GPSPackage *package);
+void handleBestXYZ(const GPSPackage *package);
+void handleHwMonitor(const GPSPackage *package);
+void handleSatvis2(const GPSPackage *package);
+void handleRange(const GPSPackage *package);
+void handleRxStatusEvent(const GPSPackage *package);
+
+// gps status event handlers
+void handlePositionStatusEvent(const GPSRXStatusEvent *e);
+void handleClockStatusEvent(const GPSRXStatusEvent *e);
+
+// gps util functions
+void toUtc(uint16_t *week, gps_ec *ms, double offset);
+
+// sun sensor functions
+void sunSensorUpdate();
+void sendSunSensorData();
+
+// photodiode functions
+void photodiodeInitAll();
+void photodiodeUpdate();
+void sendPhotodiodeData();
+
 #endif /* ADCS_SENSORPROC_H_ */
