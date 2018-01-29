@@ -8,6 +8,7 @@
 
 #include "bsp/bsp.h"
 #include "core/debugtools.h"
+#include "interfaces/canwrap.h"
 
 #include "sensors/gps/gps.h"
 #include "sensors/sun_sensor.h"
@@ -33,7 +34,6 @@ FILE_STATIC gpshealth_segment gpshealthSeg;
 FILE_STATIC gpspower_segment gpspowerSeg;
 FILE_STATIC rxstatus_segment rxstatusSeg;
 FILE_STATIC time_segment timeSeg;
-FILE_STATIC shared_segment sharedSeg;
 
 // photodiode handles
 FILE_STATIC uint8_t pdCenter;
@@ -64,6 +64,9 @@ int main(void)
     bcbinPopulateHeader(&rxstatusSeg.header, TLM_ID_RXSTATUS, sizeof(rxstatusSeg));
     bcbinPopulateHeader(&timeSeg.header, TLM_ID_TIME, sizeof(timeSeg));
 
+    // init CAN
+    canWrapInit();
+
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
     // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
@@ -86,7 +89,7 @@ int main(void)
     // initialize sensors
     gpsInit();
     sunSensorInit();
-    photodiodeInitAll();
+//    photodiodeInitAll(); // TODO prevent hanging here
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
@@ -319,6 +322,12 @@ void sendHealthSegment()
     hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
+
+    // send CAN packet of temperature
+    msp_temp temp = { (uint16_t) hseg.inttemp };
+    CANPacket packet;
+    encodemsp_temp(&temp, &packet);
+    canSendPacket(&packet);
 }
 
 void sendMetaSegment()
@@ -439,24 +448,24 @@ void handleBestXYZ(const GPSPackage *package)
     gps_ec ms = package->header.ms;
     toUtc(&week, &ms, timeSeg.offset - m->velLatency);
 
-    bestxyz_segment *bestxyzSeg = &sharedSeg.bestxyz;
-    bestxyzSeg->posStatus = m->pSolStatus;
-    bestxyzSeg->pos = m->pos;
-    bestxyzSeg->posStdDev = m->posStdDev;
-    bestxyzSeg->velStatus = m->vSolStatus;
-    bestxyzSeg->vel = m->vel;
-    bestxyzSeg->velStdDev = m->velStdDev;
-    bestxyzSeg->week = week;
-    bestxyzSeg->ms = ms;
+    bestxyz_segment bestxyzSeg;
+    bestxyzSeg.posStatus = m->pSolStatus;
+    bestxyzSeg.pos = m->pos;
+    bestxyzSeg.posStdDev = m->posStdDev;
+    bestxyzSeg.velStatus = m->vSolStatus;
+    bestxyzSeg.vel = m->vel;
+    bestxyzSeg.velStdDev = m->velStdDev;
+    bestxyzSeg.week = week;
+    bestxyzSeg.ms = ms;
 
-    bcbinPopulateHeader(&sharedSeg.bestxyz.header, TLM_ID_BESTXYZ, sizeof(bestxyz_segment));
-    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(bestxyz_segment));
+    bcbinPopulateHeader(&bestxyzSeg.header, TLM_ID_BESTXYZ, sizeof(bestxyzSeg));
+    bcbinSendPacket((uint8_t *) &bestxyzSeg, sizeof(bestxyz_segment));
 }
 
 void handleHwMonitor(const GPSPackage *package)
 {
     const GPSHWMonitor *monLog = &(package->message.hwMonitor);
-    hwmonitor_segment *hwmonitorSeg = &sharedSeg.hwmonitor;
+    hwmonitor_segment hwmonitorSeg;
 
     uint32_t i = monLog->numMeasurements;
     while (i-- != 0)
@@ -466,30 +475,30 @@ void handleHwMonitor(const GPSPackage *package)
         switch (type)
         {
         case HW_TEMP:
-            hwmonitorSeg->temp = reading;
+            hwmonitorSeg.temp = reading;
             break;
         case HW_ANTCUR:
-            hwmonitorSeg->antCurrent = reading;
+            hwmonitorSeg.antCurrent = reading;
             break;
         case HW_SUPVOLT:
-            hwmonitorSeg->supVolt = reading;
+            hwmonitorSeg.supVolt = reading;
             break;
         case HW_ANTVOLT:
-            hwmonitorSeg->antVolt = reading;
+            hwmonitorSeg.antVolt = reading;
             break;
         case HW_DIGCORE:
-            hwmonitorSeg->digCoreVolt = reading;
+            hwmonitorSeg.digCoreVolt = reading;
             break;
         case HW_TEMP2:
-            hwmonitorSeg->secTemp = reading;
+            hwmonitorSeg.secTemp = reading;
             break;
         default:
             break;
         }
     }
 
-    bcbinPopulateHeader(&sharedSeg.hwmonitor.header, TLM_ID_HWMONITOR, sizeof(hwmonitor_segment));
-    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(hwmonitor_segment));
+    bcbinPopulateHeader(&hwmonitorSeg.header, TLM_ID_HWMONITOR, sizeof(hwmonitorSeg));
+    bcbinSendPacket((uint8_t *) &hwmonitorSeg, sizeof(hwmonitor_segment));
 }
 
 void handleSatvis2(const GPSPackage *package)
@@ -499,42 +508,41 @@ void handleSatvis2(const GPSPackage *package)
     debugTraceF(GPS_TRACE_LEVEL, "\tsystem: %u\r\n", satvis2->system);
     debugTraceF(GPS_TRACE_LEVEL, "\tnum:    %u\r\n", satvis2->numSats);
 
-    satvis2_segment *satvis2Seg = &sharedSeg.satvis2;
+    satvis2_segment satvis2Seg;
     switch (satvis2->system)
     {
         case SATSYSTEM_GPS:
-            satvis2Seg->numGPS = satvis2->numSats;
+            satvis2Seg.numGPS = satvis2->numSats;
             break;
         case SATSYSTEM_GLONASS:
-            satvis2Seg->numGLONASS = satvis2->numSats;
+            satvis2Seg.numGLONASS = satvis2->numSats;
             break;
         case SATSYSTEM_SBAS:
-            satvis2Seg->numSBAS = satvis2->numSats;
+            satvis2Seg.numSBAS = satvis2->numSats;
             break;
     }
 
-    bcbinPopulateHeader(&sharedSeg.satvis2.header, TLM_ID_SATVIS2, sizeof(satvis2_segment));
-    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(satvis2_segment));
+    bcbinPopulateHeader(&satvis2Seg.header, TLM_ID_SATVIS2, sizeof(satvis2Seg));
+    bcbinSendPacket((uint8_t *) &satvis2Seg, sizeof(satvis2Seg));
 }
 
 void handleRange(const GPSPackage *package)
 {
     const GPSRange *range = &(package->message.range);
 
-    sharedSeg.range = (const range_segment){ 0 };
+    range_segment rangeSeg = (const range_segment){ 0 };
 
-    range_segment *rangeSeg = &sharedSeg.range;
     uint32_t i;
     uint32_t numObs = range->numObs < NUM_RANGE_SEGMENT_MEMBERS ? range->numObs : NUM_RANGE_SEGMENT_MEMBERS;
     for (i = 0; i < numObs; i++)
     {
-        rangeSeg->obs[i].prn = range->obs[i].prn;
-        rangeSeg->obs[i].cToNo = range->obs[i].cToNo;
-        rangeSeg->obs[i].locktime = range->obs[i].locktime;
+        rangeSeg.obs[i].prn = range->obs[i].prn;
+        rangeSeg.obs[i].cToNo = range->obs[i].cToNo;
+        rangeSeg.obs[i].locktime = range->obs[i].locktime;
     }
 
-    bcbinPopulateHeader(&sharedSeg.range.header, TLM_ID_RANGE, sizeof(range_segment));
-    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(range_segment));
+    bcbinPopulateHeader(&rangeSeg.header, TLM_ID_RANGE, sizeof(range_segment));
+    bcbinSendPacket((uint8_t *) &rangeSeg, sizeof(range_segment));
 }
 
 void handleRxStatusEvent(const GPSPackage *package)

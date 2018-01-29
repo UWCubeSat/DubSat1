@@ -140,16 +140,6 @@ TLM_SEGMENT {
     uint32_t left;
 } photodiode_segment;
 
-/*
- * Union of telemetry segments that may share memory
- */
-typedef union {
-    bestxyz_segment bestxyz;
-    hwmonitor_segment hwmonitor;
-    satvis2_segment satvis2;
-    range_segment range;
-} shared_segment;
-
 CMD_SEGMENT {
     uint8_t enable;
 } enable_segment;
