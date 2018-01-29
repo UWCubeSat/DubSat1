@@ -66,6 +66,7 @@ int main(void)
 
     // init CAN
     canWrapInit();
+    // setCANPacketRxCallback(canRxCallback); // TODO
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
@@ -366,8 +367,11 @@ void sendGPSPowerStatus()
 
 void sendGPSStatus()
 {
+    // send backchannel telemetry
     bcbinSendPacket((uint8_t *) &rxstatusSeg, sizeof(rxstatusSeg));
     bcbinSendPacket((uint8_t *) &timeSeg, sizeof(timeSeg));
+
+    // TODO send CAN packets
 }
 
 bool handleGPSPackage(GPSPackage *p)
@@ -458,8 +462,43 @@ void handleBestXYZ(const GPSPackage *package)
     bestxyzSeg.week = week;
     bestxyzSeg.ms = ms;
 
+    // send backchannel telemetry
     bcbinPopulateHeader(&bestxyzSeg.header, TLM_ID_BESTXYZ, sizeof(bestxyzSeg));
     bcbinSendPacket((uint8_t *) &bestxyzSeg, sizeof(bestxyz_segment));
+
+    // send CAN packets
+    // this is kind of a lot to do. Check if the RX buffer doesn't overflow here
+    sensorproc_gps_z_u z_u = { m->velStdDev.z, m->posStdDev.z };
+    sensorproc_gps_y_u y_u = { m->velStdDev.y, m->posStdDev.y };
+    sensorproc_gps_x_u x_u = { m->velStdDev.x, m->posStdDev.x };
+    sensorproc_gps_vel_z vel_z = { m->vel.z };
+    sensorproc_gps_vel_y vel_y = { m->vel.y };
+    sensorproc_gps_vel_x vel_x = { m->vel.x };
+    sensorproc_gps_pos_z pos_z = { m->pos.z };
+    sensorproc_gps_pos_y pos_y = { m->pos.y };
+    sensorproc_gps_pos_x pos_x = { m->pos.x };
+    sensorproc_gps_time time = { (uint32_t) ms, week }; // TODO this casting seems bad
+    CANPacket canPacket;
+    encodesensorproc_gps_z_u(&z_u, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_y_u(&y_u, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_x_u(&x_u, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_vel_z(&vel_z, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_vel_y(&vel_y, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_vel_x(&vel_x, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_pos_z(&pos_z, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_pos_y(&pos_y, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_pos_x(&pos_x, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_time(&time, &canPacket);
+    canSendPacket(&canPacket);
 }
 
 void handleHwMonitor(const GPSPackage *package)
@@ -625,7 +664,17 @@ void sunSensorUpdate()
 
 void sendSunSensorData()
 {
+    // send backchannel telemetry
     bcbinSendPacket((uint8_t *) &sunsensorSeg, sizeof(sunsensorSeg));
+
+    // send CAN packet
+    // TODO is this casting okay?
+    sensorproc_sun sun = { sunsensorSeg.error,
+                           (int32_t) sunsensorSeg.alpha,
+                           (int32_t) sunsensorSeg.beta };
+    CANPacket packet;
+    encodesensorproc_sun(&sun, &packet);
+    canSendPacket(&packet);
 }
 
 void photodiodeInitAll()
@@ -645,5 +694,15 @@ void photodiodeUpdate()
 
 void sendPhotodiodeData()
 {
+    // send backchannel telemetry
     bcbinSendPacket((uint8_t *) &photodiodeSeg, sizeof(photodiodeSeg));
+
+    // send CAN packet
+    // TODO verify the order on these is correct
+    sensorproc_photodiode pd = { (uint8_t) photodiodeSeg.center,
+                                 (uint8_t) photodiodeSeg.right,
+                                 (uint8_t) photodiodeSeg.left };
+    CANPacket packet;
+    encodesensorproc_photodiode(&pd, &packet);
+    canSendPacket(&packet);
 }
