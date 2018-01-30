@@ -64,10 +64,6 @@ int main(void)
     bcbinPopulateHeader(&rxstatusSeg.header, TLM_ID_RXSTATUS, sizeof(rxstatusSeg));
     bcbinPopulateHeader(&timeSeg.header, TLM_ID_TIME, sizeof(timeSeg));
 
-    // init CAN
-    canWrapInit();
-    // setCANPacketRxCallback(canRxCallback); // TODO
-
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
     // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
@@ -78,12 +74,13 @@ int main(void)
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
-    // TODO:  Add the correct bus filters and register CAN message receive handlers
+    // TODO:  Add the correct bus filters
+    canWrapInit();
+    setCANPacketRxCallback(canRxCallback);
 
     debugTraceF(1, "CAN message bus configured.\r\n");
 
     /* ----- SUBSYSTEM LOGIC -----*/
-    // TODO:  Finally ... NOW, implement the actual subsystem logic!
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
 
@@ -324,8 +321,8 @@ void sendHealthSegment()
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
-    // send CAN packet of temperature
-    msp_temp temp = { (uint16_t) hseg.inttemp };
+    // send CAN packet of temperature (in deci-Kelvin)
+    msp_temp temp = { (hseg.inttemp + 273.15f) * 10 };
     CANPacket packet;
     encodemsp_temp(&temp, &packet);
     canSendPacket(&packet);
@@ -336,6 +333,19 @@ void sendMetaSegment()
     // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
     bcbinPopulateMeta(&mseg, sizeof(mseg));
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+}
+
+void canRxCallback(CANPacket *packet)
+{
+    switch (packet->id)
+    {
+//    case CAN_ID_SENSORPROC_GPS_ENABLE:
+//        // TODO process GPS enable command once it is implemented
+//        break;
+    default:
+        // TODO log an error?
+        break;
+    }
 }
 
 // send commands to configure the GPS
@@ -448,10 +458,12 @@ void handleBestXYZ(const GPSPackage *package)
 {
     const GPSBestXYZ *m = &(package->message.bestXYZ);
 
+    // adjust reported time with UTC offset and velocity latency
     uint16_t week = package->header.week;
     gps_ec ms = package->header.ms;
     toUtc(&week, &ms, timeSeg.offset - m->velLatency);
 
+    // send backchannel telemetry
     bestxyz_segment bestxyzSeg;
     bestxyzSeg.posStatus = m->pSolStatus;
     bestxyzSeg.pos = m->pos;
@@ -461,8 +473,6 @@ void handleBestXYZ(const GPSPackage *package)
     bestxyzSeg.velStdDev = m->velStdDev;
     bestxyzSeg.week = week;
     bestxyzSeg.ms = ms;
-
-    // send backchannel telemetry
     bcbinPopulateHeader(&bestxyzSeg.header, TLM_ID_BESTXYZ, sizeof(bestxyzSeg));
     bcbinSendPacket((uint8_t *) &bestxyzSeg, sizeof(bestxyz_segment));
 
@@ -477,7 +487,7 @@ void handleBestXYZ(const GPSPackage *package)
     sensorproc_gps_pos_z pos_z = { m->pos.z };
     sensorproc_gps_pos_y pos_y = { m->pos.y };
     sensorproc_gps_pos_x pos_x = { m->pos.x };
-    sensorproc_gps_time time = { (uint32_t) ms, week }; // TODO this casting seems bad
+    sensorproc_gps_time time = { ms, week };
     CANPacket canPacket;
     encodesensorproc_gps_z_u(&z_u, &canPacket);
     canSendPacket(&canPacket);
@@ -668,10 +678,10 @@ void sendSunSensorData()
     bcbinSendPacket((uint8_t *) &sunsensorSeg, sizeof(sunsensorSeg));
 
     // send CAN packet
-    // TODO is this casting okay?
+    // converting degrees to arcminutes
     sensorproc_sun sun = { sunsensorSeg.error,
-                           (int32_t) sunsensorSeg.alpha,
-                           (int32_t) sunsensorSeg.beta };
+                           (int32_t) round(sunsensorSeg.alpha * 60),
+                           (int32_t) round(sunsensorSeg.beta * 60) };
     CANPacket packet;
     encodesensorproc_sun(&sun, &packet);
     canSendPacket(&packet);
@@ -699,6 +709,7 @@ void sendPhotodiodeData()
 
     // send CAN packet
     // TODO verify the order on these is correct
+    // TODO how are these supposed to fit in a uint8_t?
     sensorproc_photodiode pd = { (uint8_t) photodiodeSeg.center,
                                  (uint8_t) photodiodeSeg.right,
                                  (uint8_t) photodiodeSeg.left };

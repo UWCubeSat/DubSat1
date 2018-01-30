@@ -10,6 +10,7 @@
 #include "core/utils.h"
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
+#include "interfaces/canwrap.h"
 #include "core/debugtools.h"
 #include "sensors/gps/gps.h"
 
@@ -186,6 +187,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 // general telemetry functions
 void sendHealthSegment();
 void sendMetaSegment();
+void canRxCallback(CANPacket *packet);
 
 // gps functions
 void gpsConfigure();
