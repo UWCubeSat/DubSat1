@@ -272,7 +272,8 @@ FILE_STATIC void distMonitorBattery()
         for (i = 0; i < NUM_POWER_DOMAINS; i++)
         {
             // TODO:  Implement the true, final logic for partial vs. full
-            if (i == (uint8_t)PD_COM1)
+            // TODO:  For now, full shutdown takes out COm1 as well, to protect batteries
+            if (gseg.uvmode != (uint8_t)UV_FullShutdown && i == (uint8_t)PD_COM1)
                 continue;
             if (gseg.uvmode == (uint8_t)UV_PartialShutdown && i == (uint8_t)PD_WHEELS)
                 continue;
@@ -446,13 +447,14 @@ int main(void)
         switch (ss_state)
         {
             case State_FirstState:
+                LED_OUT ^= LED_BIT;
+
                 distMonitorDomains();
 
                 counter++;
                 distBcSendSensorDat();
                 if (counter % 8 == 0)
                 {
-                    LED_OUT ^= LED_BIT;
                     distBcSendGeneral();
                     distBcSendHealth();
                     distMonitorBattery();
