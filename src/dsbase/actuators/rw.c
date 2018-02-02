@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "actuators/rw.h"
 #include "core/utils.h"
@@ -136,6 +137,9 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
 
 void rwsInit()
 {
+    CSCTL0_H = CSKEY_H;                     // Unlock CS registers
+    CSCTL1 = DCOFSEL_6 | DCORSEL ;                     // Set DCO to 8MHz
+    CSCTL0_H = 0;                           // Lock CS Registers
     //  FR (direction):  P7.3 to control direction, P7.4 to read FG pin ('1 0 0')
     RW_MOTORDIR_DIR |= RW_MOTORDIR_PIN;
     RW_MOTORDIR_SEL1 &= ~RW_MOTORDIR_PIN;
@@ -157,23 +161,22 @@ void rwsInit()
     // SMCLK as clk source, continuous mode
     FREQ_TIMER(CCTL0) = CM__RISING | CCIS__CCIB | SCS | CAP | CCIE;
     FREQ_TIMER(CTL) = FREQ_ROOT_TIMER(SSEL__ACLK) | MC__CONTINUOUS | FREQ_ROOT_TIMER(CLR) | TAIE;
-
     // PWM output:  pin P1.7 ('1 0 1') - as TB0.4
     RW_PWM_DIR |= RW_PWM_PIN;
     RW_PWM_SEL1 &= ~RW_PWM_PIN;
     RW_PWM_SEL0 |= RW_PWM_PIN;
-
-    TB0CCR0 = 100;
-    TB0CCR4 = 10;
+//
+    TB0CCR0 = 1600;
+    TB0CCR4 = 1;
     TB0CCTL4 = OUTMOD_7;
     TB0CTL = TASSEL_2 + MC_1;
 
-    rwsSetMinMaxOutput(0,99);
 
 //    // Setup binary telemetry header
     bcbinPopulateHeader(&(pid.header), TLM_ID_RWS_PIDMOT, sizeof(pid));
     debugRegisterEntity(Entity_RWS, NULL, rwsStatusCallback, rwsActionCallback);
     rwSendTlm();
+    rwsSetMinMaxOutput(1.0,1600.0);
 }
 
 //takes a percentage between 0 and 100 to run motor speed
@@ -181,8 +184,8 @@ void rwsSetMotorSpeed(int percentage) {
     if(percentage < 0){
         percentage = 0;
     }
-    else if(percentage > 99) {
-        percentage = 99;
+    else if(percentage > 1599) {
+        percentage = 1599;
     }
     TB0CCR4 = percentage;
 }
@@ -245,7 +248,7 @@ double rwsPIDStep(double cmd)
     if (pid.errSum > pid.maxOutput )
         pid.errSum = pid.maxOutput;
     else if (pid.errSum < pid.minOutput )
-        pid.errSum = pid.minOuput;
+        pid.errSum = pid.minOutput;
 
     pid.dErr = (pid.error - lastErr) / pid.timeChange_s;
 
@@ -265,7 +268,6 @@ double rwsPIDStep(double cmd)
     // Store values for subsequent comparisons
     lastErr = pid.error;
     lastTime_cycles = now_cycles;
-
     if (debugGetMode() == Mode_ASCIIInteractive)
     {
         debugTraceF(2,"%f,%f,%f,%f,%f,%f\r\n", pid.timeChange_s, pid.setpoint, pid.input, pid.error, pid.errSum, pid.output);
@@ -277,7 +279,7 @@ double rwsPIDStep(double cmd)
     }
 
 
-    return pid.output;
+    return floor(pid.output);
 
 }
 
@@ -330,7 +332,7 @@ __interrupt void Timer4_A0_ISR(void)
     currentRPM = (CLK_RPM_PERIOD_CONVERSION_32KHZ)/avgPeriod;
 //    currentRPM = currentPeriod_cycles;
     int b = rwsPIDStep(2000);
-    rwsSetMotorSpeed(99);
+    rwsSetMotorSpeed(b);
 
     //currentRPM = (240000000.0)/currentPeriod;
 }

@@ -120,7 +120,7 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable, UARTSpeed speed)
         switch (speed)
         {
             case Speed_9600:
-                UCA0BRW = UCAxBRW_9600;
+                UCA0BRW = 156;
                 UCA0MCTLW |= UCAxMCTLW_9600;
                 break;
             case Speed_38400:
@@ -144,7 +144,7 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable, UARTSpeed speed)
         switch (speed)
         {
             case Speed_9600:
-                UCA1BRW = UCAxBRW_9600;
+                UCA1BRW = 156;
                 UCA1MCTLW |= UCAxMCTLW_9600;
                 break;
             case Speed_38400:
