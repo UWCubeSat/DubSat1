@@ -109,6 +109,9 @@ void bspInit(SubsystemModule mod)
     chipID = *((uint64_t *)0x1A0A);
     enforceHWSWLock();
 
+    //Selection bits for external crystal and ACLK
+    PJSEL0 = BIT4 | BIT5;
+
     // SAFE way of setting clock to 8Mhz, from
     // per-device errata:  must set divider to 4 before changing frequency to
     // prevent out of spec operation from overshoot transient

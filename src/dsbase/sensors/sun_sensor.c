@@ -3,7 +3,7 @@
 #include "sensors/sun_sensor.h"
 #include "core/utils.h"
 #include "core/i2c.h"
-#include "core/debugTools.h"
+#include "core/debugtools.h"
 
 #define MAX_BUFF_SIZE 17
 

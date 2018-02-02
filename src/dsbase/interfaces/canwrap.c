@@ -81,105 +81,332 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
-void decodeMessage5ValueTableSigs(CANPacket *input, Message5ValueTableSigs *output){
+void decodesensorproc_gps_time(CANPacket *input, sensorproc_gps_time *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> ValueTableSignal1 = (uint8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> sensorproc_gps_time_ms = (uint32_t) (((fullData & ((uint64_t) 0xffffffff << 16)) >> 16));
+    output -> sensorproc_gps_time_wk = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
 
-void encodeMessage5ValueTableSigs(Message5ValueTableSigs *input, CANPacket *output){
-    output -> id = 4;
+void encodesensorproc_gps_time(sensorproc_gps_time *input, CANPacket *output){
+    output -> id = 274277376;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_gps_time_ms))) & 0xffffffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_gps_time_wk))) & 0xffff) << 48;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodesensorproc_gps_z_u(CANPacket *input, sensorproc_gps_z_u *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint32_t tempsensorproc_gps_x_u_v = (uint32_t) ((fullData & ((uint64_t) 0xffffffff)));
+    output -> sensorproc_gps_x_u_v = (*((float *)(&(tempsensorproc_gps_x_u_v))));
+    uint32_t tempsensorproc_gps_z_u_p = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
+    output -> sensorproc_gps_z_u_p = (*((float *)(&(tempsensorproc_gps_z_u_p))));
+}
+
+void encodesensorproc_gps_z_u(sensorproc_gps_z_u *input, CANPacket *output){
+    output -> id = 274211840;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const float tempsensorproc_gps_x_u_v = ((input -> sensorproc_gps_x_u_v));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempsensorproc_gps_x_u_v)))));
+    const float tempsensorproc_gps_z_u_p = ((input -> sensorproc_gps_z_u_p));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempsensorproc_gps_z_u_p))))) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodesensorproc_gps_y_u(CANPacket *input, sensorproc_gps_y_u *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint32_t tempsensorproc_gps_y_u_v = (uint32_t) ((fullData & ((uint64_t) 0xffffffff)));
+    output -> sensorproc_gps_y_u_v = (*((float *)(&(tempsensorproc_gps_y_u_v))));
+    uint32_t tempsensorproc_gps_y_u_p = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
+    output -> sensorproc_gps_y_u_p = (*((float *)(&(tempsensorproc_gps_y_u_p))));
+}
+
+void encodesensorproc_gps_y_u(sensorproc_gps_y_u *input, CANPacket *output){
+    output -> id = 274146304;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const float tempsensorproc_gps_y_u_v = ((input -> sensorproc_gps_y_u_v));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempsensorproc_gps_y_u_v)))));
+    const float tempsensorproc_gps_y_u_p = ((input -> sensorproc_gps_y_u_p));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempsensorproc_gps_y_u_p))))) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodesensorproc_gps_x_u(CANPacket *input, sensorproc_gps_x_u *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint32_t tempsensorproc_gps_x_u_v = (uint32_t) ((fullData & ((uint64_t) 0xffffffff)));
+    output -> sensorproc_gps_x_u_v = (*((float *)(&(tempsensorproc_gps_x_u_v))));
+    uint32_t tempsensorproc_gps_x_u_p = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
+    output -> sensorproc_gps_x_u_p = (*((float *)(&(tempsensorproc_gps_x_u_p))));
+}
+
+void encodesensorproc_gps_x_u(sensorproc_gps_x_u *input, CANPacket *output){
+    output -> id = 274080768;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const float tempsensorproc_gps_x_u_v = ((input -> sensorproc_gps_x_u_v));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempsensorproc_gps_x_u_v)))));
+    const float tempsensorproc_gps_x_u_p = ((input -> sensorproc_gps_x_u_p));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempsensorproc_gps_x_u_p))))) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodesensorproc_gps_vel_z(CANPacket *input, sensorproc_gps_vel_z *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint64_t tempsensorproc_gps_vel_z_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> sensorproc_gps_vel_z_val = (*((double *)(&(tempsensorproc_gps_vel_z_val))));
+}
+
+void encodesensorproc_gps_vel_z(sensorproc_gps_vel_z *input, CANPacket *output){
+    output -> id = 274015232;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const double tempsensorproc_gps_vel_z_val = ((input -> sensorproc_gps_vel_z_val));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(tempsensorproc_gps_vel_z_val)))));
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodesensorproc_gps_vel_y(CANPacket *input, sensorproc_gps_vel_y *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint64_t tempsensorproc_gps_vel_y_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> sensorproc_gps_vel_y_val = (*((double *)(&(tempsensorproc_gps_vel_y_val))));
+}
+
+void encodesensorproc_gps_vel_y(sensorproc_gps_vel_y *input, CANPacket *output){
+    output -> id = 273949696;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const double tempsensorproc_gps_vel_y_val = ((input -> sensorproc_gps_vel_y_val));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(tempsensorproc_gps_vel_y_val)))));
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodesensorproc_gps_vel_x(CANPacket *input, sensorproc_gps_vel_x *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint64_t tempsensorproc_gps_vel_x_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> sensorproc_gps_vel_x_val = (*((double *)(&(tempsensorproc_gps_vel_x_val))));
+}
+
+void encodesensorproc_gps_vel_x(sensorproc_gps_vel_x *input, CANPacket *output){
+    output -> id = 273884160;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const double tempsensorproc_gps_vel_x_val = ((input -> sensorproc_gps_vel_x_val));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(tempsensorproc_gps_vel_x_val)))));
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodesensorproc_gps_pos_z(CANPacket *input, sensorproc_gps_pos_z *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint64_t tempsensorproc_gps_pos_z_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> sensorproc_gps_pos_z_val = (*((double *)(&(tempsensorproc_gps_pos_z_val))));
+}
+
+void encodesensorproc_gps_pos_z(sensorproc_gps_pos_z *input, CANPacket *output){
+    output -> id = 273818624;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const double tempsensorproc_gps_pos_z_val = ((input -> sensorproc_gps_pos_z_val));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(tempsensorproc_gps_pos_z_val)))));
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodesensorproc_gps_pos_y(CANPacket *input, sensorproc_gps_pos_y *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint64_t tempsensorproc_gps_pos_y_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> sensorproc_gps_pos_y_val = (*((double *)(&(tempsensorproc_gps_pos_y_val))));
+}
+
+void encodesensorproc_gps_pos_y(sensorproc_gps_pos_y *input, CANPacket *output){
+    output -> id = 273753088;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const double tempsensorproc_gps_pos_y_val = ((input -> sensorproc_gps_pos_y_val));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(tempsensorproc_gps_pos_y_val)))));
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodesensorproc_gps_pos_x(CANPacket *input, sensorproc_gps_pos_x *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint64_t tempsensorproc_gps_pos_x_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> sensorproc_gps_pos_x_val = (*((double *)(&(tempsensorproc_gps_pos_x_val))));
+}
+
+void encodesensorproc_gps_pos_x(sensorproc_gps_pos_x *input, CANPacket *output){
+    output -> id = 273687552;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const double tempsensorproc_gps_pos_x_val = ((input -> sensorproc_gps_pos_x_val));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(tempsensorproc_gps_pos_x_val)))));
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodesensorproc_sun(CANPacket *input, sensorproc_sun *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> sensorproc_sun_status = (uint8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> sensorproc_sun_reading_beta = (int16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
+    output -> sensorproc_sun_reading_alpha = (int16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+}
+
+void encodesensorproc_sun(sensorproc_sun *input, CANPacket *output){
+    output -> id = 272696320;
+    output -> length = 5;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_sun_status))) & 0xff) << 24;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_sun_reading_beta))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_sun_reading_alpha))) & 0xffff) << 48;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodesensorproc_photodiode(CANPacket *input, sensorproc_photodiode *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> sensorproc_photodiode_x_neg = (uint8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> sensorproc_photodiode_y_neg = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> sensorproc_photodiode_x_pos = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+}
+
+void encodesensorproc_photodiode(sensorproc_photodiode *input, CANPacket *output){
+    output -> id = 272630784;
+    output -> length = 3;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_photodiode_x_neg))) & 0xff) << 40;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_photodiode_y_neg))) & 0xff) << 48;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_photodiode_x_pos))) & 0xff) << 56;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodebdot_command_dipole(CANPacket *input, bdot_command_dipole *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> bdot_command_dipole_z = (uint8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> bdot_command_dipole_y = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> bdot_command_dipole_x = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+}
+
+void encodebdot_command_dipole(bdot_command_dipole *input, CANPacket *output){
+    output -> id = 270602240;
+    output -> length = 3;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> bdot_command_dipole_z))) & 0xff) << 40;
+    fullPacketData |= (((uint64_t)((input -> bdot_command_dipole_y))) & 0xff) << 48;
+    fullPacketData |= (((uint64_t)((input -> bdot_command_dipole_x))) & 0xff) << 56;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodebdot_tumble_status(CANPacket *input, bdot_tumble_status *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> bdot_tumble_status_status = (uint8_t) (((fullData & ((uint64_t) 0x1 << 7)) >> 7));
+}
+
+void encodebdot_tumble_status(bdot_tumble_status *input, CANPacket *output){
+    output -> id = 270558240;
     output -> length = 1;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> ValueTableSignal1))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> bdot_tumble_status_status))) & 0x1) << 63;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
 }
 
-void decodeMessage4OddSizes(CANPacket *input, Message4OddSizes *output){
+void decodesync_2(CANPacket *input, sync_2 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> OddSize3 = (uint64_t) (((fullData & ((uint64_t) 0x1fffffffff << 3)) >> 3));
-    output -> OddSize2 = (int16_t) (((fullData & ((uint64_t) 0x1ff << 43)) >> 43));
-    output -> OddSize1 = (uint8_t) (((fullData & ((uint64_t) 0x7 << 58)) >> 58));
 }
 
-void encodeMessage4OddSizes(Message4OddSizes *input, CANPacket *output){
-    output -> id = 3;
-    output -> length = 8;
+void encodesync_2(sync_2 *input, CANPacket *output){
+    output -> id = 1245183;
+    output -> length = 0;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> OddSize3))) & 0x1fffffffff) << 3;
-    fullPacketData |= (((uint64_t)((input -> OddSize2))) & 0x1ff) << 43;
-    fullPacketData |= (((uint64_t)((input -> OddSize1))) & 0x7) << 58;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
 }
 
-void decodeMessage3(CANPacket *input, Message3 *output){
+void decodesync_1(CANPacket *input, sync_1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t tempNormalDouble = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
-output -> NormalDouble = (*((double *)(&(tempNormalDouble))));
 }
 
-void encodeMessage3(Message3 *input, CANPacket *output){
-    output -> id = 2;
-    output -> length = 8;
+void encodesync_1(sync_1 *input, CANPacket *output){
+    output -> id = 1179647;
+    output -> length = 0;
     uint64_t fullPacketData = 0x0000000000000000;
-    const double tempNormalDouble = ((input -> NormalDouble));
-    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(tempNormalDouble)))));
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
 }
 
-void decodeMessage2Smaller(CANPacket *input, Message2Smaller *output){
+void decodemsp_temp(CANPacket *input, msp_temp *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint32_t tempNormalFloat = (uint32_t) ((fullData & ((uint64_t) 0xffffffff)));
-    output -> NormalFloat = (*((float *)(&(tempNormalFloat))));
+    output -> msp_temp_temp = (uint16_t) (((fullData & ((uint64_t) 0xffff))));
 }
 
-void encodeMessage2Smaller(Message2Smaller *input, CANPacket *output){
-    output -> id = 1;
-    output -> length = 4;
+void encodemsp_temp(msp_temp *input, CANPacket *output){
+    output -> id = 269705216;
+    output -> length = 2;
     uint64_t fullPacketData = 0x0000000000000000;
-    const float tempNormalFloat = ((input -> NormalFloat));
-    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempNormalFloat))))) << 32;
+    fullPacketData |= (((uint64_t)((input -> msp_temp_temp))) & 0xffff) << 48;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
 }
-
-void decodeMessage1(CANPacket *input, Message1 *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    output -> NormalSignedInt = (int8_t) (((fullData & ((uint64_t) 0xff))));
-    output -> IntFactorOffset = (int32_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8) * 3 + 357);
-    uint32_t tempFloatFactor = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 24)) >> 24);
-    output -> FloatFactor = (*((float *)(&(tempFloatFactor)))) * 2.75;
-    output -> NormalUint = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-}
-
-void encodeMessage1(Message1 *input, CANPacket *output){
-    output -> id = 0;
-    output -> length = 8;
-    uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> NormalSignedInt))) & 0xff);
-    fullPacketData |= (((uint64_t)((input -> IntFactorOffset - 357) / 3)) & 0xffff) << 8;
-    const float tempFloatFactor = ((input -> FloatFactor)) / 2.75;
-    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempFloatFactor))))) << 24;
-    fullPacketData |= (((uint64_t)((input -> NormalUint))) & 0xff) << 56;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
 

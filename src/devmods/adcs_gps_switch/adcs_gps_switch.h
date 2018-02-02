@@ -1,0 +1,25 @@
+#ifndef ADCS_GPS_SWITCH_H_
+#define ADCS_GPS_SWITCH_H_
+
+#define GPS_ENABLE_DIR P2DIR
+#define GPS_ENABLE_OUT P2OUT
+#define GPS_ENABLE_BIT BIT2
+
+#define BUCK_ENABLE_DIR P3DIR
+#define BUCK_ENABLE_OUT P3OUT
+#define BUCK_ENABLE_BIT BIT7
+
+#define BUCK_GOOD_DIR P3DIR
+#define BUCK_GOOD_IN  P3IN
+#define BUCK_GOOD_IE  P3IE
+#define BUCK_GOOD_IES P3IES
+#define BUCK_GOOD_IFG P3IFG
+#define BUCK_GOOD_BIT BIT6
+
+#define LED_DIR P3DIR
+#define LED_OUT P3OUT
+#define LED_BIT BIT5
+
+#define DELAY_TIME 1.5 // seconds
+
+#endif /* ADCS_GPS_SWITCH_H_ */
