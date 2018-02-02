@@ -17,9 +17,9 @@ FILE_STATIC unsigned long lastTime_cycles;
 FILE_STATIC double rawOutput, lastInput;
 FILE_STATIC double lastErr;
 FILE_STATIC double kp, ki, kd;
-
 FILE_STATIC uint16_t outputCounter = 0;
 FILE_STATIC float currentRPM = 0.0;
+FILE_STATIC float targetRPM = 0.0;
 FILE_STATIC uint32_t tempTime_cycles = 0;
 FILE_STATIC uint32_t currentPeriod_cycles = 0;
 FILE_STATIC uint32_t overflowCount = 0;
@@ -140,14 +140,14 @@ void rwsInit()
     RW_MOTORDIR_DIR |= RW_MOTORDIR_PIN;
     RW_MOTORDIR_SEL1 &= ~RW_MOTORDIR_PIN;
     RW_MOTORDIR_SEL0 &= ~RW_MOTORDIR_PIN;
-
-    // Configure free-running timer to generate timestamps
-    // TODO:  eventually move this to a clock library function
-    TIMESTAMP_TIMER(CTL) = TIMESTAMP_ROOT_TIMER(SSEL__ACLK) | MC__CONTINOUS | TIMESTAMP_ROOT_TIMER(CLR);
-
-    // All pins configured to work with RW/CANMSP block board circa September 2017
-    // FG:  Pin P7.4 for input, to monitor frequency (and thus RPM) of motor
-    // This is using TA4.CCI0B - set to '0 1 0'
+//
+//    // Configure free-running timer to generate timestamps
+//    // TODO:  eventually move this to a clock library function
+    TIMESTAMP_TIMER(CTL) = TIMESTAMP_ROOT_TIMER(SSEL__SMCLK) | MC__CONTINOUS | TIMESTAMP_ROOT_TIMER(CLR);
+//
+//    // All pins configured to work with RW/CANMSP block board circa September 2017
+//    // FG:  Pin P7.4 for input, to monitor frequency (and thus RPM) of motor
+//    // This is using TA4.CCI0B - set to '0 1 0'
     RW_FREQ_DIR &= ~RW_FREQ_PIN;
     RW_FREQ_SEL1 |= RW_FREQ_PIN;
     RW_FREQ_SEL0 &= ~RW_FREQ_PIN;
@@ -156,16 +156,46 @@ void rwsInit()
     // Rising edge, CCIA input, sync mode, capture mode and interrupts enabled
     // SMCLK as clk source, continuous mode
     FREQ_TIMER(CCTL0) = CM__RISING | CCIS__CCIB | SCS | CAP | CCIE;
-    FREQ_TIMER(CTL) = FREQ_ROOT_TIMER(SSEL__SMCLK) | MC__CONTINUOUS | FREQ_ROOT_TIMER(CLR) | TAIE;
+    FREQ_TIMER(CTL) = FREQ_ROOT_TIMER(SSEL__ACLK) | MC__CONTINUOUS | FREQ_ROOT_TIMER(CLR) | TAIE;
 
     // PWM output:  pin P1.7 ('1 0 1') - as TB0.4
     RW_PWM_DIR |= RW_PWM_PIN;
     RW_PWM_SEL1 &= ~RW_PWM_PIN;
     RW_PWM_SEL0 |= RW_PWM_PIN;
 
-    // Setup binary telemetry header
+    TB0CCR0 = 100;
+    TB0CCR4 = 10;
+    TB0CCTL4 = OUTMOD_7;
+    TB0CTL = TASSEL_2 + MC_1;
+
+    rwsSetMinMaxOutput(0,99);
+
+//    // Setup binary telemetry header
     bcbinPopulateHeader(&(pid.header), TLM_ID_RWS_PIDMOT, sizeof(pid));
     debugRegisterEntity(Entity_RWS, NULL, rwsStatusCallback, rwsActionCallback);
+    rwSendTlm();
+}
+
+//takes a percentage between 0 and 100 to run motor speed
+void rwsSetMotorSpeed(int percentage) {
+    if(percentage < 0){
+        percentage = 0;
+    }
+    else if(percentage > 99) {
+        percentage = 99;
+    }
+    TB0CCR4 = percentage;
+}
+
+//takes a percentage between 0 and 100 to run motor speed
+void rwsSetTargetRPM(double rpm) {
+    if(rpm < 0){
+        rpm=0;
+    }
+    if(rpm > 10000){
+        rpm=10000;
+    }
+    targetRPM = rpm;
 }
 
 void rwsRunAuto()
@@ -176,6 +206,12 @@ void rwsRunAuto()
 void rwsRunManual()
 {
     active = 0;
+}
+
+void rwsSetMinMaxOutput(double min, double max)
+{
+    pid.minOutput = min;
+    pid.maxOutput = max;
 }
 
 void rwsSetTuningParams(double Kp, double Ki, double Kd)
@@ -194,25 +230,35 @@ double rwsPIDStep(double cmd)
         pid.setpoint = overridden_setpoint;
     else
         pid.setpoint = cmd;
+    pid.setpoint = cmd;
     pid.input = currentRPM;
 
     // Calc time delta
     uint32_t now_cycles = TIMESTAMP_TIMER(R);
-    pid.timeChange_s  = (double)(CLK_PERIOD_8MHZ * timerCycleDiff16(lastTime_cycles, now_cycles));
+    pid.timeChange_s  = (double)(CLK_PERIOD_32KHZ * timerCycleDiff16(lastTime_cycles, now_cycles));
 
     // Compute vars
     pid.error = pid.setpoint - pid.input;
-    pid.errSum += (pid.error * pid.timeChange_s);
+    // Multiplying by Ki here to avoid change of curve when integral factor changed
+    pid.errSum += (ki * pid.error * pid.timeChange_s);
+
+    if (pid.errSum > pid.maxOutput )
+        pid.errSum = pid.maxOutput;
+    else if (pid.errSum < pid.minOutput )
+        pid.errSum = pid.minOuput;
+
     pid.dErr = (pid.error - lastErr) / pid.timeChange_s;
 
 
     // Compute PID output
-    rawOutput = (kp * pid.error) + (ki * pid.errSum) + (kd * pid.dErr);
+    //derivative on measurement in order to remove derivative kick
+    // NOT MULTIPLYING BY Ki not a mistake. done up above
+    rawOutput = (kp * pid.error) + (pid.errSum) - (kd * pid.dErr);
 
-    if (rawOutput < MIN_PWM_OUT)
-        pid.output = MIN_PWM_OUT;
-    else if (rawOutput > MAX_PWM_OUT)
-        pid.output = MAX_PWM_OUT;
+    if (rawOutput < pid.minOutput)
+        pid.output = pid.minOutput;
+    else if (rawOutput > pid.maxOutput)
+        pid.output = pid.maxOutput;
     else
         pid.output = rawOutput;
 
@@ -223,10 +269,11 @@ double rwsPIDStep(double cmd)
     if (debugGetMode() == Mode_ASCIIInteractive)
     {
         debugTraceF(2,"%f,%f,%f,%f,%f,%f\r\n", pid.timeChange_s, pid.setpoint, pid.input, pid.error, pid.errSum, pid.output);
+//        debugTraceF(1,"%f,%f,%f\r\n", kp, ki, kd);
     }
     else if (debugGetMode() == Mode_BinaryStreaming)
     {
-        //bcbinSendTlm();
+        rwSendTlm();
     }
 
 
@@ -238,18 +285,35 @@ double rwsPIDStep(double cmd)
 #define AVG_WINDOW_SIZE  3
 uint32_t avg_window[AVG_WINDOW_SIZE] = { 0, 0, 0 };
 uint8_t window_index = 0;
+int ignore = 0;
 
 // TODO:  Figure out why this is happening so I can remove this hack!
 uint8_t initialTAIFG = 1;
-
+//This interrupt reads the hall effect sensor of the motor and calculates rpm
+//averages over 3 readings
 #pragma vector = TIMER4_A0_VECTOR
 __interrupt void Timer4_A0_ISR(void)
 {
+    ignore=(ignore+1)%2;
+    if(ignore)
+        return;
     uint8_t i;
-    uint32_t sumPeriods_cycles, avgPeriod_cycles;
+    uint32_t sumPeriods_cycles, avgPeriod;
 
     tempTime_cycles = (overflowCount << 16);
     currentPeriod_cycles = tempTime_cycles + TA4CCR0;
+    FREQ_TIMER(CTL) = FREQ_ROOT_TIMER(SSEL__ACLK) | MC__CONTINUOUS | FREQ_ROOT_TIMER(CLR) | FREQ_ROOT_TIMER(IE);
+    if (outputCounter++ > OUTPUT_INCREMENT)
+    {
+        //currentRPM = (240000000.0)/currentPeriod;
+        outputCounter = 0;
+        //debugPrintF("%lu, %f\r\n", currentPeriod, currentRPM);
+        //debugPrintF("%f\r\n", currentRPM);
+    }
+
+    // Start time over, to simplify roll-over handling
+    overflowCount = 0;
+
 
     // Manage circular averaging buffer
     avg_window[window_index] = currentPeriod_cycles;
@@ -262,29 +326,20 @@ __interrupt void Timer4_A0_ISR(void)
     sumPeriods_cycles = 0;
     for (i=0; i<AVG_WINDOW_SIZE; i++)
         sumPeriods_cycles += avg_window[i];
-    avgPeriod_cycles = sumPeriods_cycles/(float)AVG_WINDOW_SIZE;
-    currentRPM = (CLK_RPM_PERIOD_CONVERSION_8MHZ)/avgPeriod_cycles;
+    avgPeriod= sumPeriods_cycles/(float)AVG_WINDOW_SIZE;
+    currentRPM = (CLK_RPM_PERIOD_CONVERSION_32KHZ)/avgPeriod;
+//    currentRPM = currentPeriod_cycles;
+    int b = rwsPIDStep(2000);
+    rwsSetMotorSpeed(99);
 
     //currentRPM = (240000000.0)/currentPeriod;
-
-    if (outputCounter++ > OUTPUT_INCREMENT)
-    {
-        //currentRPM = (240000000.0)/currentPeriod;
-        outputCounter = 0;
-        //debugPrintF("%lu, %f\r\n", currentPeriod, currentRPM);
-        //debugPrintF("%f\r\n", currentRPM);
-    }
-
-    // Start time over, to simplify roll-over handling
-    overflowCount = 0;
-    FREQ_TIMER(CTL) = FREQ_ROOT_TIMER(SSEL__SMCLK) | MC__CONTINUOUS | FREQ_ROOT_TIMER(CLR) | FREQ_ROOT_TIMER(IE);
-
 }
 
 double getCurrentRPM()
 {
     return currentRPM;
 }
+
 
 // Timer4_A1 (CCR=1..n) TA Interrupt Handler
 #pragma vector = TIMER4_A1_VECTOR
@@ -309,7 +364,4 @@ __interrupt void Timer4_A1_ISR(void)
             break;
     }
 }
-
-
-
 

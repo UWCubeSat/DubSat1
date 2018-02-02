@@ -7,7 +7,8 @@
 
 #ifndef DSBASE_ACTUATORS_RW_H_
 #define DSBASE_ACTUATORS_RW_H_
-
+#define DEBUG_UART_SPEED Speed_9600
+#define __DEBUG_UART_SPEED_9600__ 1
 #include <msp430.h>
 #include <stdint.h>
 
@@ -17,6 +18,8 @@
 #define OUTPUT_INCREMENT  5
 #define CLK_RPM_PERIOD_CONVERSION_8MHZ  240000000.0
 #define CLK_PERIOD_8MHZ  0.000000125
+#define CLK_RPM_PERIOD_CONVERSION_32KHZ  1966080.0
+#define CLK_PERIOD_32KHZ  0.000030517578125
 
 // Configuration for PID
 #define MAX_PWM_OUT     999    // Assume 1000 CCR counter on PWM out
@@ -36,6 +39,7 @@
 #define RW_MOTORDIR_PIN     BIT3
 
 #define RW_PWM_DIR      P1DIR
+#define RW_PWM_OUT      P1OUT
 #define RW_PWM_SEL1     P1SEL1
 #define RW_PWM_SEL0     P1SEL0
 #define RW_PWM_PIN      BIT7
@@ -53,7 +57,8 @@ void rwsSetTuningParams(double Kp, double Ki, double Kd);
 double rwsPIDStep(double setpoint);
 void rwsRunAuto();
 void rwsRunManual();
-
+void rwsSetTargetRPM();
+void rwsSetMotorSpeed();
 // COSMOS Stuff
 
 #define OPCODE_DIRCHANGE            0x64
@@ -72,6 +77,8 @@ typedef struct PACKED_STRUCT _pid_step_info {
     double errSum;
     double dErr;
     double output;
+    double maxOutput;
+    double minOutput;
 
     uint8_t resetwindupcnt;
     CmdPidCtrl lastcmd;

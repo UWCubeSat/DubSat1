@@ -26,6 +26,8 @@ int main(void)
     // __SUBSYSTEM_MODULE__ is set in bsp.h based on the __SS_<subsystemmodule>__ passed in
     // as a predefined symbol
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
+//    const DebugMode mode = Mode_ASCIIInteractive;
+//    debugSetMode(mode);
 
     // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
@@ -41,13 +43,17 @@ int main(void)
     // e.g. debugRegisterEntity(Entity_Test, handleDebugInfoCallback,
     //                               handleDebugStatusCallback,
     //                               handleDebugActionCallback);
-
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
     // TODO:  Add the correct bus filters and register CAN message receive handlers
 
     debugTraceF(1, "CAN message bus configured.\r\n");
+    rwsInit();
+    rwsSetTuningParams(0.1,0.5,0);
+    rwsSetTargetRPM(2000);
+    rwsRunAuto();
+
 
     /* ----- SUBSYSTEM LOGIC -----*/
     // TODO:  Finally ... NOW, implement the actual subsystem logic!

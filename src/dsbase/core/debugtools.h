@@ -125,6 +125,7 @@ void debugInvokeActionHandlers(uint8_t * cmdstr);
 #define BCBIN_SYNCPATTERN           0xFC
 
 typedef enum _bccmd_state {
+
     STATE_START,
     STATE_LEN_WAIT,
     STATE_ENTID_WAIT,
