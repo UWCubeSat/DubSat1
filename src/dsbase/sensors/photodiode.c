@@ -21,6 +21,7 @@ uint8_t photodiodeInit(uint8_t addr, bus_instance_i2c i2cbus)
     pdData[currIndex].addr = addr;
     pdData[currIndex].handle = hSensor;
     i2cMasterWrite(hSensor, defaultWrite, 1);
+    __delay_cycles(0.2 * SEC);
     return currIndex++;
 }
 uint32_t photodiodeVoltage(uint8_t handle, uint8_t gain)
