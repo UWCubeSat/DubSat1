@@ -6,17 +6,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <float.h>
 
 #define TYPE uint16_t
 
 struct buffer;
 
  /*initialize buffer struct*/
-uint16_t init(uint16_t *userBuffer, uint16_t size);
+uint16_t init(TYPE *userBuffer, uint16_t size);
 
 /* Print out given buffer
 */
 void printArray(uint16_t handle);
+
 
 void printAllStats(uint16_t handle);
 
