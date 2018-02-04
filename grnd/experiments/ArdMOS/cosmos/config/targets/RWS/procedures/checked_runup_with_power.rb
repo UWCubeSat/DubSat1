@@ -6,27 +6,19 @@ cmd_no_hazardous_check("RWS PIDCTRL with NEWSETPOINT 1500, RESETWINDUP TRUE")
 # Now start ...
 loop do 
   3.upto(12) do |i|
-    cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}")
-        cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}")
-    cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}")
-    cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}")
-
+    cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}, P 3000, I 50, D 0" )
+   
 #~    1.upto(20) do |i|
 #~      cmd("PS_DP832A GETSTATUS")
-    wait(4)
+    wait(6)
 #~    end
   end
   
   11.downto(3) do |i|
-    cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}")
-        cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}")
-    cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}")
-    cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}")
-    cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}")
-
+    cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}, P 3000, I 50, D 0" )
 #~    1.upto(20) do |i|
 #~      cmd("PS_DP832A GETSTATUS")
-    wait(4)
+    wait(6)
 #~    end
   end
 end

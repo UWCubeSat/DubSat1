@@ -50,12 +50,10 @@ int main(void)
 
     debugTraceF(1, "CAN message bus configured.\r\n");
     rwsInit();
-    rwsSetTuningParams(0.75,0.05,0.01);
+//    rwsSetTuningParams(0.75,0.05,0.01);
+    rwsSetTuningParams(0.6,0.01,0.0);
     rwsSetTargetRPM(2000);
     rwsRunAuto();
-    rwsPIDStep(2000);
-
-
     /* ----- SUBSYSTEM LOGIC -----*/
     // TODO:  Finally ... NOW, implement the actual subsystem logic!
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
@@ -70,6 +68,12 @@ int main(void)
         switch (ss_state)
         {
         case State_FirstState:
+            if(rwsRPMUpdated()){
+                rwsSetRPMUpdated(0);
+                int b = rwsPIDStep(0);
+                rwsSetMotorSpeed(b);
+
+            }
             if (triggerState2)
             {
                 triggerState2 = 0;

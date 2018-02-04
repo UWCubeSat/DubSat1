@@ -20,16 +20,24 @@ FILE_STATIC double lastErr;
 FILE_STATIC double kp, ki, kd;
 FILE_STATIC uint16_t outputCounter = 0;
 FILE_STATIC float currentRPM = 0.0;
-FILE_STATIC float targetRPM = 0.0;
 FILE_STATIC uint32_t tempTime_cycles = 0;
 FILE_STATIC uint32_t currentPeriod_cycles = 0;
 FILE_STATIC uint32_t overflowCount = 0;
+FILE_STATIC uint8_t rpmUpdated = 0;
 
 FILE_STATIC uint8_t active = 0;
 FILE_STATIC uint8_t setpoint_override = 0;
 FILE_STATIC double overridden_setpoint;
 
 FILE_STATIC PidStepInfo pid;
+int rwsRPMUpdated()
+{
+    return rpmUpdated;
+}
+void rwsSetRPMUpdated(uint8_t f)
+{
+    rpmUpdated = f;
+}
 
 void rwsShowUsage()
 {
@@ -124,6 +132,9 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
                 }
                 else
                 {
+                    kp = (((double)(cmdpidctrl->p))/5000.0);
+                    ki = (((double)(cmdpidctrl->i))/5000.0);
+                    kd = (((double)(cmdpidctrl->d))/5000.0);
                     setpoint_override = 1;
                     overridden_setpoint = cmdpidctrl->newsetpoint;
                     pid.lastcmd.newsetpoint = overridden_setpoint;
@@ -140,6 +151,7 @@ void rwsInit()
 {
     //  FR (direction):  P7.3 to control direction, P7.4 to read FG pin ('1 0 0')
     RW_MOTORDIR_DIR |= RW_MOTORDIR_PIN;
+    RW_MOTORDIR_OUT &= ~RW_MOTORDIR_PIN;
     RW_MOTORDIR_SEL1 &= ~RW_MOTORDIR_PIN;
     RW_MOTORDIR_SEL0 &= ~RW_MOTORDIR_PIN;
 //
@@ -227,11 +239,11 @@ double rwsPIDStep(double cmd)
     if (active != 1)
         return cmd;
 
-    if (setpoint_override == 1)
-        pid.setpoint = overridden_setpoint;
-    else
-        pid.setpoint = cmd;
-    pid.setpoint = cmd;
+//    if (setpoint_override == 1)
+//        pid.setpoint = overridden_setpoint;
+//    else
+//        pid.setpoint = cmd;
+
     pid.input = currentRPM;
 
     // Calc time delta
@@ -328,9 +340,7 @@ __interrupt void Timer4_A0_ISR(void)
         sumPeriods_cycles += avg_window[i];
     avgPeriod= sumPeriods_cycles/(float)AVG_WINDOW_SIZE;
     currentRPM = (CLK_RPM_PERIOD_CONVERSION_32KHZ)/avgPeriod;
-    int b = rwsPIDStep(pid.setpoint);
-    rwsSetMotorSpeed(b);
-
+    rwsSetRPMUpdated(1);
     //currentRPM = (240000000.0)/currentPeriod;
 }
 

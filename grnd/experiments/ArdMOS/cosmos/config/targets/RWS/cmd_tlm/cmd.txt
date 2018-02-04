@@ -10,6 +10,9 @@ COMMAND RWS PIDCTRL LITTLE_ENDIAN "Changes the PID setpoint, integral windup, an
   
   # Parameters after this point are what the entity command processing function actually sees ... 
   APPEND_PARAMETER NEWSETPOINT 16 UINT 0 12000 500 "Store new setpoint for the PID controller and motor." LITTLE_ENDIAN
+  APPEND_PARAMETER P 16 UINT 0 5000 0 "P value" LITTLE_ENDIAN
+  APPEND_PARAMETER I 16 UINT 0 5000 0 "I value" LITTLE_ENDIAN
+  APPEND_PARAMETER D 16 UINT 0 5000 0 "d value" LITTLE_ENDIAN
   APPEND_PARAMETER RESETWINDUP 8 UINT 0 1 0 "Indicates whether command should reset integral windup value to 0 - helpful when motor has stalled." LITTLE_ENDIAN
     STATE FALSE 0
     STATE TRUE 1 HAZARDOUS "Resetting integral windup can lead to unpredictable motor operation, use with care."

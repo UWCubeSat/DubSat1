@@ -52,6 +52,8 @@
 #define TIMESTAMP_TIMER(reg)    TA2##reg
 #define TIMESTAMP_ROOT_TIMER(bits)  TA##bits
 
+int rwsRPMUpdated();
+void rwsSetRPMUpdated(uint8_t f);
 void rwsInit();
 void rwsSetTuningParams(double Kp, double Ki, double Kd);
 double rwsPIDStep(double setpoint);
@@ -66,6 +68,9 @@ void rwsSetMinMaxOutput();
 #define OPCODE_SETPOINTCHANGE       0x73
 typedef struct PACKED_STRUCT _cmd_pidctrl {
     uint16_t newsetpoint;
+    uint16_t p;
+    uint16_t i;
+    uint16_t d;
     BOOL resetwindup;
 } CmdPidCtrl;
 
