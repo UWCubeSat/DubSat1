@@ -78,9 +78,8 @@ typedef struct PACKED_STRUCT _pid_step_info {
     double errSum;
     double dErr;
     double output;
-    double maxOutput;
-    double minOutput;
-
+    uint16_t maxOutput;
+    uint16_t minOutput;
     uint8_t resetwindupcnt;
     CmdPidCtrl lastcmd;
 

@@ -50,7 +50,7 @@ int main(void)
 
     debugTraceF(1, "CAN message bus configured.\r\n");
     rwsInit();
-    rwsSetTuningParams(0.0005,0.0005,0);
+    rwsSetTuningParams(0.75,0.05,0.01);
     rwsSetTargetRPM(2000);
     rwsRunAuto();
     rwsPIDStep(2000);

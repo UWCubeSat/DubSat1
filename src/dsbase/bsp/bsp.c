@@ -122,6 +122,7 @@ void bspInit(SubsystemModule mod)
     CSCTL2 = SELA__LFXTCLK | SELS__DCOCLK | SELM__DCOCLK;
 
     CSCTL3 = DIVA__4 | DIVS__4 | DIVM__4;   // Set all corresponding clk sources to divide by 4 for errata
+    CSCTL1 = DCOFSEL_6;
 
     // Delay by ~10us to let DCO settle. 60 cycles = 20 cycles buffer + (10us / (1/4MHz))
     __delay_cycles(60);

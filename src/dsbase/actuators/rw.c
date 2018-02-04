@@ -127,6 +127,7 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
                     setpoint_override = 1;
                     overridden_setpoint = cmdpidctrl->newsetpoint;
                     pid.lastcmd.newsetpoint = overridden_setpoint;
+                    pid.setpoint = overridden_setpoint;
                 }
                 break;
         }
@@ -137,9 +138,6 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
 
 void rwsInit()
 {
-    CSCTL0_H = CSKEY_H;                     // Unlock CS registers
-    CSCTL1 = DCOFSEL_6 | DCORSEL ;                     // Set DCO to 8MHz
-    CSCTL0_H = 0;                           // Lock CS Registers
     //  FR (direction):  P7.3 to control direction, P7.4 to read FG pin ('1 0 0')
     RW_MOTORDIR_DIR |= RW_MOTORDIR_PIN;
     RW_MOTORDIR_SEL1 &= ~RW_MOTORDIR_PIN;
@@ -166,7 +164,7 @@ void rwsInit()
     RW_PWM_SEL1 &= ~RW_PWM_PIN;
     RW_PWM_SEL0 |= RW_PWM_PIN;
 //
-    TB0CCR0 = 1600;
+    TB0CCR0 = 500;
     TB0CCR4 = 1;
     TB0CCTL4 = OUTMOD_7;
     TB0CTL = TASSEL_2 + MC_1;
@@ -176,16 +174,16 @@ void rwsInit()
     bcbinPopulateHeader(&(pid.header), TLM_ID_RWS_PIDMOT, sizeof(pid));
     debugRegisterEntity(Entity_RWS, NULL, rwsStatusCallback, rwsActionCallback);
     rwSendTlm();
-    rwsSetMinMaxOutput(1.0,1600.0);
+    rwsSetMinMaxOutput(1,500);
 }
 
 //takes a percentage between 0 and 100 to run motor speed
 void rwsSetMotorSpeed(int percentage) {
-    if(percentage < 0){
-        percentage = 0;
+    if(percentage < 1){
+        percentage = 1;
     }
-    else if(percentage > 1599) {
-        percentage = 1599;
+    else if(percentage > 500) {
+        percentage = 500;
     }
     TB0CCR4 = percentage;
 }
@@ -198,7 +196,7 @@ void rwsSetTargetRPM(double rpm) {
     if(rpm > 10000){
         rpm=10000;
     }
-    targetRPM = rpm;
+    pid.setpoint = rpm;
 }
 
 void rwsRunAuto()
@@ -211,7 +209,7 @@ void rwsRunManual()
     active = 0;
 }
 
-void rwsSetMinMaxOutput(double min, double max)
+void rwsSetMinMaxOutput(int min, int max)
 {
     pid.minOutput = min;
     pid.maxOutput = max;
@@ -330,8 +328,7 @@ __interrupt void Timer4_A0_ISR(void)
         sumPeriods_cycles += avg_window[i];
     avgPeriod= sumPeriods_cycles/(float)AVG_WINDOW_SIZE;
     currentRPM = (CLK_RPM_PERIOD_CONVERSION_32KHZ)/avgPeriod;
-//    currentRPM = currentPeriod_cycles;
-    int b = rwsPIDStep(2000);
+    int b = rwsPIDStep(pid.setpoint);
     rwsSetMotorSpeed(b);
 
     //currentRPM = (240000000.0)/currentPeriod;
