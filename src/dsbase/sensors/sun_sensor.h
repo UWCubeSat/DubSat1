@@ -5,6 +5,8 @@
 
 #include <stdint.h>
 
+#include "core/i2c.h"
+
 typedef struct SunSensorAngle {
     float alpha;
     float beta;
@@ -13,7 +15,7 @@ typedef struct SunSensorAngle {
 
 typedef float sun_sensor_voltage;
 
-void sunSensorInit();
+void sunSensorInit(bus_instance_i2c i2cbus);
 
 /*
  * return an array of unfiltered voltage values for the four photocells, or

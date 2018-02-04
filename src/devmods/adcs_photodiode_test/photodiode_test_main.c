@@ -37,9 +37,9 @@ int main(void)
     // previously configured port settings
     PM5CTL0 &= ~LOCKLPM5;
 
-    const uint8_t handleCenter = photodiodeInit(HH_addr);
-    const uint8_t handleRight = photodiodeInit(FF_addr);
-    const uint8_t handleLeft = photodiodeInit(HF_addr);
+    const uint8_t handleCenter = photodiodeInit(HH_addr, I2CBus2);
+    const uint8_t handleRight = photodiodeInit(FF_addr, I2CBus2);
+    const uint8_t handleLeft = photodiodeInit(HF_addr, I2CBus2);
     for (;;)
     {
         volatile uint32_t adcVoltageCenter, adcVoltageRight, adcVoltageLeft;

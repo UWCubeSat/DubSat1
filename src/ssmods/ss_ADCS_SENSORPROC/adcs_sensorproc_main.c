@@ -85,8 +85,8 @@ int main(void)
     // and then control is returned to this main loop
 
     // initialize sensors
-    gpsInit();
-    sunSensorInit();
+//    gpsInit();
+//    sunSensorInit(I2C_BUS_SUNSENSOR);
 //    photodiodeInitAll(); // TODO prevent hanging here
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
@@ -689,10 +689,9 @@ void sendSunSensorData()
 
 void photodiodeInitAll()
 {
-    pdCenter = photodiodeInit(PD_ADDR_HH);
-    pdRight = photodiodeInit(PD_ADDR_FF);
-    pdLeft = photodiodeInit(PD_ADDR_HF);
-    // TODO init other photodiodes when we have them
+    pdCenter = photodiodeInit(PD_ADDR_HH, I2C_BUS_PHOTODIODES);
+    pdRight = photodiodeInit(PD_ADDR_FF, I2C_BUS_PHOTODIODES);
+    pdLeft = photodiodeInit(PD_ADDR_HF, I2C_BUS_PHOTODIODES);
 }
 
 void photodiodeUpdate()

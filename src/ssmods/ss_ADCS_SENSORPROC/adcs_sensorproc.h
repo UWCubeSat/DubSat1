@@ -28,6 +28,12 @@ const uint8_t PD_ADDR_FF = 0x24;
 const uint8_t PD_ADDR_HH = 0x26;
 const uint8_t PD_ADDR_HF = 0x27;
 
+// photodiode i2c bus
+#define I2C_BUS_PHOTODIODES I2CBus1
+
+// sun sensor i2c bus
+#define I2C_BUS_SUNSENSOR I2CBus1
+
 // COSMOS telemetry IDs
 #define TLM_ID_SUNSENSOR  121
 #define TLM_ID_PHOTODIODE 118

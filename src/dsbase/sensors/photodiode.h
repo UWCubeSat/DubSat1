@@ -20,7 +20,7 @@
 #define GAIN8 0b11100000 // G = 256
 
 
-uint8_t photodiodeInit(uint8_t addr);
+uint8_t photodiodeInit(uint8_t addr, bus_instance_i2c i2cbus);
 uint32_t photodiodeVoltage(uint8_t handle, uint8_t gain);
 double photodiodeVoltageDouble(uint8_t handle, uint8_t gain);
 double photodiodeTemperature(uint8_t handle);

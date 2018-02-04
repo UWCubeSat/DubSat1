@@ -13,11 +13,11 @@ FILE_STATIC uint8_t read[3];
 FILE_STATIC PhotodiodeData pdData[8] = { 0 };
 FILE_STATIC uint8_t currIndex = 0;
 
-uint8_t photodiodeInit(uint8_t addr)
+uint8_t photodiodeInit(uint8_t addr, bus_instance_i2c i2cbus)
 {
 //Connect to the LTC2481 at addr and initialize default settings
-    i2cEnable(I2CBus2);
-    hDev hSensor = i2cInit(I2CBus2, addr);
+    i2cEnable(i2cbus);
+    hDev hSensor = i2cInit(i2cbus, addr);
     pdData[currIndex].addr = addr;
     pdData[currIndex].handle = hSensor;
     i2cMasterWrite(hSensor, defaultWrite, 1);
