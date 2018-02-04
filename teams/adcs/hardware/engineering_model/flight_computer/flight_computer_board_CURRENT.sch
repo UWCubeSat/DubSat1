@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.3">
+<eagle version="8.6.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -13982,7 +13982,7 @@ Debug/Programming</text>
 <wire x1="86.36" y1="-78.74" x2="88.9" y2="-78.74" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$5" class="0">
+<net name="BDOT_P3.5_GPIO_DEBUG" class="0">
 <segment>
 <pinref part="U$7" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
 <pinref part="U$14" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
@@ -13993,7 +13993,7 @@ Debug/Programming</text>
 <junction x="215.9" y="167.64"/>
 </segment>
 </net>
-<net name="N$6" class="0">
+<net name="BDOT_P3.4_GPIO_DEBUG" class="0">
 <segment>
 <pinref part="U$7" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
 <pinref part="U$14" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
@@ -14004,7 +14004,7 @@ Debug/Programming</text>
 <junction x="226.06" y="165.1"/>
 </segment>
 </net>
-<net name="N$12" class="0">
+<net name="BDOT_RXD" class="0">
 <segment>
 <pinref part="U$7" gate="G$1" pin="P2.1_RXD"/>
 <wire x1="170.18" y1="162.56" x2="185.42" y2="162.56" width="0.1524" layer="91"/>
@@ -14013,7 +14013,7 @@ Debug/Programming</text>
 <wire x1="185.42" y1="157.48" x2="236.22" y2="157.48" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$13" class="0">
+<net name="BDOT_TXD" class="0">
 <segment>
 <pinref part="U$14" gate="G$1" pin="P2.0_TXD"/>
 <wire x1="236.22" y1="154.94" x2="182.88" y2="154.94" width="0.1524" layer="91"/>
@@ -14022,7 +14022,7 @@ Debug/Programming</text>
 <wire x1="182.88" y1="160.02" x2="170.18" y2="160.02" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$14" class="0">
+<net name="SBWTDIO" class="0">
 <segment>
 <pinref part="U$7" gate="G$1" pin="SBWTDIO"/>
 <wire x1="170.18" y1="157.48" x2="180.34" y2="157.48" width="0.1524" layer="91"/>
@@ -14031,7 +14031,7 @@ Debug/Programming</text>
 <wire x1="180.34" y1="152.4" x2="236.22" y2="152.4" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$15" class="0">
+<net name="SBWTCK" class="0">
 <segment>
 <pinref part="U$14" gate="G$1" pin="SBWTCK"/>
 <wire x1="236.22" y1="149.86" x2="177.8" y2="149.86" width="0.1524" layer="91"/>
