@@ -42,12 +42,13 @@ int main(void)
     const uint8_t handleLeft = photodiodeInit(HF_addr, I2CBus2);
     for (;;)
     {
+        // wait for the conversion period to end
+        __delay_cycles(PHOTODIODE_DELAY_S * SEC);
+
         volatile uint32_t adcVoltageCenter, adcVoltageRight, adcVoltageLeft;
-        //need to have a debug breakpoint here
         adcVoltageCenter = photodiodeVoltage(handleCenter, GAIN1);
         adcVoltageRight = photodiodeVoltage(handleRight, GAIN1);
         adcVoltageLeft = photodiodeVoltage(handleLeft, GAIN1);
         P1OUT ^= BIT0;
-
     }
 }

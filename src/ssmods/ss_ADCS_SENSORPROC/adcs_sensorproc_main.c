@@ -86,8 +86,8 @@ int main(void)
 
     // initialize sensors
 //    gpsInit();
-//    sunSensorInit(I2C_BUS_SUNSENSOR);
-//    photodiodeInitAll(); // TODO prevent hanging here
+    sunSensorInit(I2C_BUS_SUNSENSOR); // TODO prevent hanging here
+//    photodiodeInitAll();
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
@@ -107,12 +107,17 @@ int main(void)
             sendMetaSegment();
         }
 
-//        sunSensorUpdate(); // TODO don't let these block
-//        photodiodeUpdate();
-        if (i % 16384 == 0)
+        if (i % 32768 == 0)
         {
-            sendSunSensorData();
+            /*
+             * TODO assert that the photodiodes are not being read multiple
+             * times in the space of PHOTODIODE_DELAY_S.
+             */
+//            photodiodeUpdate();
+            sunSensorUpdate(); // TODO don't let these block
+
             sendPhotodiodeData();
+            sendSunSensorData();
         }
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
