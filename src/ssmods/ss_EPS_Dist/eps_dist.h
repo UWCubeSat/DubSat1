@@ -95,6 +95,7 @@ typedef enum {
     PD_CMD_Toggle,
     PD_CMD_OCLatch,
     PD_CMD_BattVLow,
+    PD_CMD_AutoStart,
 } PowerDomainCmd;
 
 typedef enum {

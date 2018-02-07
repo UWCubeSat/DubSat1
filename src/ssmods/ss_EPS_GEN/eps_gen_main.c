@@ -60,7 +60,6 @@ int main(void)
 
     genTempSensorsInit();
     genPCVSensorsInit();
-
     genPanelsInit();
 
     LED_DIR |= LED_BIT;
@@ -96,7 +95,7 @@ int main(void)
             // add full state machine for the subsystem.
             case State_FirstState:
                 LED_OUT ^= LED_BIT;
-                __delay_cycles(.5 * SEC);
+                __delay_cycles(.1 * SEC);
                 break;
             case State_SecondState:
                 // TODO:  Implement full state machine
