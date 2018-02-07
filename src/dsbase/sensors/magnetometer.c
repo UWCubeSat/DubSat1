@@ -13,20 +13,14 @@
 // TODO:  Need some const decorations
 FILE_STATIC uint8_t szBuff;
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
-FILE_STATIC uint8_t i2cInitialized = 0;
 FILE_STATIC hDev hSensor;
 
 MagnetometerData mdata;
 
-void magInit()
+void magInit(bus_instance_i2c bus)
 {
-    // Initialize once and only once for this device
-    if (i2cInitialized != 0)
-        return;
-
-    i2cInitialized = 1;
-    i2cEnable(I2CBus2);
-    hSensor = i2cInit(I2CBus2, MAG_I2C_7BIT_ADDRESS);
+    i2cEnable(bus);
+    hSensor = i2cInit(bus, MAG_I2C_7BIT_ADDRESS);
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)  /* */
 
