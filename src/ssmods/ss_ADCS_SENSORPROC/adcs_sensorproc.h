@@ -10,6 +10,7 @@
 #include "core/utils.h"
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
+#include "interfaces/canwrap.h"
 #include "core/debugtools.h"
 #include "sensors/gps/gps.h"
 
@@ -26,6 +27,12 @@ const uint8_t PD_ADDR_FH = 0x17;
 const uint8_t PD_ADDR_FF = 0x24;
 const uint8_t PD_ADDR_HH = 0x26;
 const uint8_t PD_ADDR_HF = 0x27;
+
+// photodiode i2c bus
+#define I2C_BUS_PHOTODIODES I2CBus1
+
+// sun sensor i2c bus
+#define I2C_BUS_SUNSENSOR I2CBus1
 
 // COSMOS telemetry IDs
 #define TLM_ID_SUNSENSOR  121
@@ -140,16 +147,6 @@ TLM_SEGMENT {
     uint32_t left;
 } photodiode_segment;
 
-/*
- * Union of telemetry segments that may share memory
- */
-typedef union {
-    bestxyz_segment bestxyz;
-    hwmonitor_segment hwmonitor;
-    satvis2_segment satvis2;
-    range_segment range;
-} shared_segment;
-
 CMD_SEGMENT {
     uint8_t enable;
 } enable_segment;
@@ -192,5 +189,41 @@ void handleRollCall();
 uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
+
+// general telemetry functions
+void sendHealthSegment();
+void sendMetaSegment();
+void canRxCallback(CANPacket *packet);
+
+// gps functions
+void gpsConfigure();
+void sendGPSPowerStatus();
+void sendGPSStatus();
+bool handleGPSPackage(GPSPackage *p);
+
+// gps message handlers
+void handleRxStatus(const GPSPackage *package);
+void handleTime(const GPSPackage *package);
+void handleBestXYZ(const GPSPackage *package);
+void handleHwMonitor(const GPSPackage *package);
+void handleSatvis2(const GPSPackage *package);
+void handleRange(const GPSPackage *package);
+void handleRxStatusEvent(const GPSPackage *package);
+
+// gps status event handlers
+void handlePositionStatusEvent(const GPSRXStatusEvent *e);
+void handleClockStatusEvent(const GPSRXStatusEvent *e);
+
+// gps util functions
+void toUtc(uint16_t *week, gps_ec *ms, double offset);
+
+// sun sensor functions
+void sunSensorUpdate();
+void sendSunSensorData();
+
+// photodiode functions
+void photodiodeInitAll();
+void photodiodeUpdate();
+void sendPhotodiodeData();
 
 #endif /* ADCS_SENSORPROC_H_ */

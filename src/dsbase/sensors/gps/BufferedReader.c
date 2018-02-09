@@ -4,10 +4,10 @@
  *  Created on: Jan 20, 2018
  *      Author: djdup
  *
- * TODO handle race conditions
  */
 
 #include <stdint.h>
+#include <intrinsics.h>
 
 #include "BufferedReader.h"
 #include "core/utils.h"
@@ -38,6 +38,15 @@ reader_index BufferedReaderRead(uint8_t *buffer,
                                 reader_index numToRead,
                                 reader_index offset)
 {
+    /*
+     * Disable interrupts so the readCallback doesn't change head or num while
+     * this reads. UART has a small read buffer, so we shouldn't miss any bytes
+     * unless there is a lot to read (in which case this should be more fine-
+     * grained concurrency with locks/unlocks happening inside the while loop)
+     */
+    unsigned short interruptState = __get_interrupt_state();
+    __disable_interrupt();
+
     reader_index numRead = 0;
     while (numRead < numToRead && num)
     {
@@ -46,6 +55,9 @@ reader_index BufferedReaderRead(uint8_t *buffer,
         head++;
         numRead++;
     }
+
+    __set_interrupt_state(interruptState);
+
     return numRead;
 }
 
@@ -80,7 +92,12 @@ uint8_t BufferedReaderOverrun()
 
 void BufferedReaderFlush()
 {
+    unsigned short interruptState = __get_interrupt_state();
+    __disable_interrupt();
+
     head = 0;
     num = 0;
     overrun_flag = 0;
+
+    __set_interrupt_state(interruptState);
 }

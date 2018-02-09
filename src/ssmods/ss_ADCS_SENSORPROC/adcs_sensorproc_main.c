@@ -8,6 +8,7 @@
 
 #include "bsp/bsp.h"
 #include "core/debugtools.h"
+#include "interfaces/canwrap.h"
 
 #include "sensors/gps/gps.h"
 #include "sensors/sun_sensor.h"
@@ -33,145 +34,12 @@ FILE_STATIC gpshealth_segment gpshealthSeg;
 FILE_STATIC gpspower_segment gpspowerSeg;
 FILE_STATIC rxstatus_segment rxstatusSeg;
 FILE_STATIC time_segment timeSeg;
-FILE_STATIC shared_segment sharedSeg;
 
 // photodiode handles
 FILE_STATIC uint8_t pdCenter;
 FILE_STATIC uint8_t pdRight;
 FILE_STATIC uint8_t pdLeft;
 
-// called on every gps package
-FILE_STATIC bool handleGPSPackage(GPSPackage *p);
-
-// gps message handlers
-FILE_STATIC void handleRxStatus(const GPSPackage *package);
-FILE_STATIC void handleTime(const GPSPackage *package);
-FILE_STATIC void handleBestXYZ(const GPSPackage *package);
-FILE_STATIC void handleHwMonitor(const GPSPackage *package);
-FILE_STATIC void handleSatvis2(const GPSPackage *package);
-FILE_STATIC void handleRange(const GPSPackage *package);
-FILE_STATIC void handleRxStatusEvent(const GPSPackage *package);
-
-// gps status event handlers
-FILE_STATIC void handlePositionStatusEvent(const GPSRXStatusEvent *e);
-FILE_STATIC void handleClockStatusEvent(const GPSRXStatusEvent *e);
-
-// util functions
-FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset);
-
-// send commands to configure the GPS
-FILE_STATIC void gpsConfigure()
-{
-    // configure to reply in binary only
-    gpsSendCommand("interfacemode thisport novatel novatelbinary on\r\n");
-
-    gpsSendCommand("statusconfig clear status 004c0000\r\n");
-
-    // log the status once. Status word will be updated at every message.
-    gpsSendCommand("log rxstatusb\r\n");
-    gpsSendCommand("log timeb\r\n");
-
-    // monitor hardware
-    gpsSendCommand("log hwmonitorb ontime 3\r\n");
-
-    // monitor position
-    gpsSendCommand("log bestxyzb ontime 1\r\n");
-}
-
-// read the sun sensor and update its segments
-FILE_STATIC void sunSensorUpdate()
-{
-    SunSensorAngle *angle = sunSensorReadAngle();
-    if (angle != NULLP)
-    {
-        sunsensorSeg.alpha = angle->alpha;
-        sunsensorSeg.beta = angle->beta;
-        sunsensorSeg.error = angle->error;
-    }
-    else
-    {
-        // TODO log read error
-    }
-}
-
-FILE_STATIC void sendSunSensorData()
-{
-    bcbinSendPacket((uint8_t *) &sunsensorSeg, sizeof(sunsensorSeg));
-}
-
-FILE_STATIC void sendGPSPowerStatus()
-{
-    gpspowerSeg.buckEnabled = gpsBuckEnabled();
-    gpspowerSeg.gpsEnabled = gpsPowerEnabled();
-    gpspowerSeg.state = ss_state;
-    bcbinSendPacket((uint8_t *) &gpspowerSeg, sizeof(gpspowerSeg));
-}
-
-FILE_STATIC void sendGPSStatus()
-{
-    bcbinSendPacket((uint8_t *) &rxstatusSeg, sizeof(rxstatusSeg));
-    bcbinSendPacket((uint8_t *) &timeSeg, sizeof(timeSeg));
-}
-
-// Packetizes and sends backchannel health packet
-// also invokes uart status handler
-FILE_STATIC void sendHealthSegment()
-{
-    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
-
-    // send gps-specific health segment
-    gpsGetHealth(&gpshealthSeg.health);
-    bcbinSendPacket((uint8_t *) &gpshealthSeg, sizeof(gpshealthSeg));
-
-    // determine overall health based on querying sensors for their health
-    // TODO query sun sensor and photodiodes' health
-    // TODO check if this is being used correctly
-    hseg.oms = OMS_Nominal;
-    if (gpshealthSeg.unknownEvt || gpshealthSeg.unknownMsg
-            || gpshealthSeg.health.bad_crc || gpshealthSeg.health.skipped)
-    {
-        hseg.oms = OMS_MinorFaults;
-    }
-    if (rxstatusSeg.error)
-    {
-        hseg.oms = OMS_MajorFaults;
-    }
-
-    hseg.inttemp = asensorReadIntTempC();
-    bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
-    debugInvokeStatusHandler(Entity_UART);
-}
-
-FILE_STATIC void sendMetaSegment()
-{
-    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
-    bcbinPopulateMeta(&mseg, sizeof(mseg));
-    bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
-}
-
-FILE_STATIC void photodiodeInitAll()
-{
-    pdCenter = photodiodeInit(PD_ADDR_HH);
-    pdRight = photodiodeInit(PD_ADDR_FF);
-    pdLeft = photodiodeInit(PD_ADDR_HF);
-    // TODO init other photodiodes when we have them
-}
-
-FILE_STATIC void photodiodeUpdate()
-{
-    photodiodeSeg.center = photodiodeRead(defaultWrite, pdCenter);
-    photodiodeSeg.right = photodiodeRead(defaultWrite, pdRight);
-    photodiodeSeg.left = photodiodeRead(defaultWrite, pdLeft);
-}
-
-FILE_STATIC void sendPhotodiodeData()
-{
-    bcbinSendPacket((uint8_t *) &photodiodeSeg, sizeof(photodiodeSeg));
-}
-
-/*
- * main.c
- */
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
@@ -206,19 +74,20 @@ int main(void)
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
-    // TODO:  Add the correct bus filters and register CAN message receive handlers
+    // TODO:  Add the correct bus filters
+    canWrapInit();
+    setCANPacketRxCallback(canRxCallback);
 
     debugTraceF(1, "CAN message bus configured.\r\n");
 
     /* ----- SUBSYSTEM LOGIC -----*/
-    // TODO:  Finally ... NOW, implement the actual subsystem logic!
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
 
     // initialize sensors
-    gpsInit();
-    sunSensorInit();
-    photodiodeInitAll();
+//    gpsInit();
+    sunSensorInit(I2C_BUS_SUNSENSOR); // TODO prevent hanging here
+//    photodiodeInitAll();
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
@@ -238,12 +107,17 @@ int main(void)
             sendMetaSegment();
         }
 
-//        sunSensorUpdate(); // TODO don't let these block
-//        photodiodeUpdate();
-        if (i % 16384 == 0)
+        if (i % 32768 == 0)
         {
-            sendSunSensorData();
+            /*
+             * TODO assert that the photodiodes are not being read multiple
+             * times in the space of PHOTODIODE_DELAY_S.
+             */
+//            photodiodeUpdate();
+            sunSensorUpdate(); // TODO don't let these block
+
             sendPhotodiodeData();
+            sendSunSensorData();
         }
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
@@ -424,7 +298,98 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
     return 1;
 }
 
-FILE_STATIC bool handleGPSPackage(GPSPackage *p)
+// Packetizes and sends backchannel health packet
+// also invokes uart status handler
+void sendHealthSegment()
+{
+    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
+
+    // send gps-specific health segment
+    gpsGetHealth(&gpshealthSeg.health);
+    bcbinSendPacket((uint8_t *) &gpshealthSeg, sizeof(gpshealthSeg));
+
+    // determine overall health based on querying sensors for their health
+    // TODO query sun sensor and photodiodes' health
+    // TODO check if this is being used correctly
+    hseg.oms = OMS_Nominal;
+    if (gpshealthSeg.unknownEvt || gpshealthSeg.unknownMsg
+            || gpshealthSeg.health.bad_crc || gpshealthSeg.health.skipped)
+    {
+        hseg.oms = OMS_MinorFaults;
+    }
+    if (rxstatusSeg.error)
+    {
+        hseg.oms = OMS_MajorFaults;
+    }
+
+    hseg.inttemp = asensorReadIntTempC();
+    bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
+    debugInvokeStatusHandler(Entity_UART);
+
+    // send CAN packet of temperature (in deci-Kelvin)
+    msp_temp temp = { (hseg.inttemp + 273.15f) * 10 };
+    CANPacket packet;
+    encodemsp_temp(&temp, &packet);
+    canSendPacket(&packet);
+}
+
+void sendMetaSegment()
+{
+    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
+    bcbinPopulateMeta(&mseg, sizeof(mseg));
+    bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+}
+
+void canRxCallback(CANPacket *packet)
+{
+    switch (packet->id)
+    {
+//    case CAN_ID_SENSORPROC_GPS_ENABLE:
+//        // TODO process GPS enable command once it is implemented
+//        break;
+    default:
+        // TODO log an error?
+        break;
+    }
+}
+
+// send commands to configure the GPS
+void gpsConfigure()
+{
+    // configure to reply in binary only
+    gpsSendCommand("interfacemode thisport novatel novatelbinary on\r\n");
+
+    gpsSendCommand("statusconfig clear status 004c0000\r\n");
+
+    // log the status once. Status word will be updated at every message.
+    gpsSendCommand("log rxstatusb\r\n");
+    gpsSendCommand("log timeb\r\n");
+
+    // monitor hardware
+    gpsSendCommand("log hwmonitorb ontime 3\r\n");
+
+    // monitor position
+    gpsSendCommand("log bestxyzb ontime 1\r\n");
+}
+
+void sendGPSPowerStatus()
+{
+    gpspowerSeg.buckEnabled = gpsBuckEnabled();
+    gpspowerSeg.gpsEnabled = gpsPowerEnabled();
+    gpspowerSeg.state = ss_state;
+    bcbinSendPacket((uint8_t *) &gpspowerSeg, sizeof(gpspowerSeg));
+}
+
+void sendGPSStatus()
+{
+    // send backchannel telemetry
+    bcbinSendPacket((uint8_t *) &rxstatusSeg, sizeof(rxstatusSeg));
+    bcbinSendPacket((uint8_t *) &timeSeg, sizeof(timeSeg));
+
+    // TODO send CAN packets
+}
+
+bool handleGPSPackage(GPSPackage *p)
 {
     if (p == NULL)
     {
@@ -469,9 +434,7 @@ FILE_STATIC bool handleGPSPackage(GPSPackage *p)
     return true;
 }
 
-// --- gps message handlers ---
-
-FILE_STATIC void handleRxStatus(const GPSPackage *package)
+void handleRxStatus(const GPSPackage *package)
 {
     const GPSRXStatus *m = &(package->message.rxstatus);
 
@@ -483,7 +446,7 @@ FILE_STATIC void handleRxStatus(const GPSPackage *package)
     rxstatusSeg.aux3 = m->aux3stat.word;
 }
 
-FILE_STATIC void handleTime(const GPSPackage *package)
+void handleTime(const GPSPackage *package)
 {
     const GPSTime *m = &(package->message.time);
 
@@ -496,32 +459,67 @@ FILE_STATIC void handleTime(const GPSPackage *package)
     debugTraceF(GPS_TRACE_LEVEL, "TIME offset: %f\r\n", timeSeg.offset);
 }
 
-FILE_STATIC void handleBestXYZ(const GPSPackage *package)
+void handleBestXYZ(const GPSPackage *package)
 {
     const GPSBestXYZ *m = &(package->message.bestXYZ);
 
+    // adjust reported time with UTC offset and velocity latency
     uint16_t week = package->header.week;
     gps_ec ms = package->header.ms;
     toUtc(&week, &ms, timeSeg.offset - m->velLatency);
 
-    bestxyz_segment *bestxyzSeg = &sharedSeg.bestxyz;
-    bestxyzSeg->posStatus = m->pSolStatus;
-    bestxyzSeg->pos = m->pos;
-    bestxyzSeg->posStdDev = m->posStdDev;
-    bestxyzSeg->velStatus = m->vSolStatus;
-    bestxyzSeg->vel = m->vel;
-    bestxyzSeg->velStdDev = m->velStdDev;
-    bestxyzSeg->week = week;
-    bestxyzSeg->ms = ms;
+    // send backchannel telemetry
+    bestxyz_segment bestxyzSeg;
+    bestxyzSeg.posStatus = m->pSolStatus;
+    bestxyzSeg.pos = m->pos;
+    bestxyzSeg.posStdDev = m->posStdDev;
+    bestxyzSeg.velStatus = m->vSolStatus;
+    bestxyzSeg.vel = m->vel;
+    bestxyzSeg.velStdDev = m->velStdDev;
+    bestxyzSeg.week = week;
+    bestxyzSeg.ms = ms;
+    bcbinPopulateHeader(&bestxyzSeg.header, TLM_ID_BESTXYZ, sizeof(bestxyzSeg));
+    bcbinSendPacket((uint8_t *) &bestxyzSeg, sizeof(bestxyz_segment));
 
-    bcbinPopulateHeader(&sharedSeg.bestxyz.header, TLM_ID_BESTXYZ, sizeof(bestxyz_segment));
-    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(bestxyz_segment));
+    // send CAN packets
+    // this is kind of a lot to do. Check if the RX buffer doesn't overflow here
+    sensorproc_gps_z_u z_u = { m->velStdDev.z, m->posStdDev.z };
+    sensorproc_gps_y_u y_u = { m->velStdDev.y, m->posStdDev.y };
+    sensorproc_gps_x_u x_u = { m->velStdDev.x, m->posStdDev.x };
+    sensorproc_gps_vel_z vel_z = { m->vel.z };
+    sensorproc_gps_vel_y vel_y = { m->vel.y };
+    sensorproc_gps_vel_x vel_x = { m->vel.x };
+    sensorproc_gps_pos_z pos_z = { m->pos.z };
+    sensorproc_gps_pos_y pos_y = { m->pos.y };
+    sensorproc_gps_pos_x pos_x = { m->pos.x };
+    sensorproc_gps_time time = { ms, week };
+    CANPacket canPacket;
+    encodesensorproc_gps_z_u(&z_u, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_y_u(&y_u, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_x_u(&x_u, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_vel_z(&vel_z, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_vel_y(&vel_y, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_vel_x(&vel_x, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_pos_z(&pos_z, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_pos_y(&pos_y, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_pos_x(&pos_x, &canPacket);
+    canSendPacket(&canPacket);
+    encodesensorproc_gps_time(&time, &canPacket);
+    canSendPacket(&canPacket);
 }
 
-FILE_STATIC void handleHwMonitor(const GPSPackage *package)
+void handleHwMonitor(const GPSPackage *package)
 {
     const GPSHWMonitor *monLog = &(package->message.hwMonitor);
-    hwmonitor_segment *hwmonitorSeg = &sharedSeg.hwmonitor;
+    hwmonitor_segment hwmonitorSeg;
 
     uint32_t i = monLog->numMeasurements;
     while (i-- != 0)
@@ -531,78 +529,77 @@ FILE_STATIC void handleHwMonitor(const GPSPackage *package)
         switch (type)
         {
         case HW_TEMP:
-            hwmonitorSeg->temp = reading;
+            hwmonitorSeg.temp = reading;
             break;
         case HW_ANTCUR:
-            hwmonitorSeg->antCurrent = reading;
+            hwmonitorSeg.antCurrent = reading;
             break;
         case HW_SUPVOLT:
-            hwmonitorSeg->supVolt = reading;
+            hwmonitorSeg.supVolt = reading;
             break;
         case HW_ANTVOLT:
-            hwmonitorSeg->antVolt = reading;
+            hwmonitorSeg.antVolt = reading;
             break;
         case HW_DIGCORE:
-            hwmonitorSeg->digCoreVolt = reading;
+            hwmonitorSeg.digCoreVolt = reading;
             break;
         case HW_TEMP2:
-            hwmonitorSeg->secTemp = reading;
+            hwmonitorSeg.secTemp = reading;
             break;
         default:
             break;
         }
     }
 
-    bcbinPopulateHeader(&sharedSeg.hwmonitor.header, TLM_ID_HWMONITOR, sizeof(hwmonitor_segment));
-    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(hwmonitor_segment));
+    bcbinPopulateHeader(&hwmonitorSeg.header, TLM_ID_HWMONITOR, sizeof(hwmonitorSeg));
+    bcbinSendPacket((uint8_t *) &hwmonitorSeg, sizeof(hwmonitor_segment));
 }
 
-FILE_STATIC void handleSatvis2(const GPSPackage *package)
+void handleSatvis2(const GPSPackage *package)
 {
     const GPSSatvis2 *satvis2 = &(package->message.satvis2);
     debugTraceF(GPS_TRACE_LEVEL, "Satvis2:\r\n");
     debugTraceF(GPS_TRACE_LEVEL, "\tsystem: %u\r\n", satvis2->system);
     debugTraceF(GPS_TRACE_LEVEL, "\tnum:    %u\r\n", satvis2->numSats);
 
-    satvis2_segment *satvis2Seg = &sharedSeg.satvis2;
+    satvis2_segment satvis2Seg;
     switch (satvis2->system)
     {
         case SATSYSTEM_GPS:
-            satvis2Seg->numGPS = satvis2->numSats;
+            satvis2Seg.numGPS = satvis2->numSats;
             break;
         case SATSYSTEM_GLONASS:
-            satvis2Seg->numGLONASS = satvis2->numSats;
+            satvis2Seg.numGLONASS = satvis2->numSats;
             break;
         case SATSYSTEM_SBAS:
-            satvis2Seg->numSBAS = satvis2->numSats;
+            satvis2Seg.numSBAS = satvis2->numSats;
             break;
     }
 
-    bcbinPopulateHeader(&sharedSeg.satvis2.header, TLM_ID_SATVIS2, sizeof(satvis2_segment));
-    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(satvis2_segment));
+    bcbinPopulateHeader(&satvis2Seg.header, TLM_ID_SATVIS2, sizeof(satvis2Seg));
+    bcbinSendPacket((uint8_t *) &satvis2Seg, sizeof(satvis2Seg));
 }
 
-FILE_STATIC void handleRange(const GPSPackage *package)
+void handleRange(const GPSPackage *package)
 {
     const GPSRange *range = &(package->message.range);
 
-    sharedSeg.range = (const range_segment){ 0 };
+    range_segment rangeSeg = (const range_segment){ 0 };
 
-    range_segment *rangeSeg = &sharedSeg.range;
     uint32_t i;
     uint32_t numObs = range->numObs < NUM_RANGE_SEGMENT_MEMBERS ? range->numObs : NUM_RANGE_SEGMENT_MEMBERS;
     for (i = 0; i < numObs; i++)
     {
-        rangeSeg->obs[i].prn = range->obs[i].prn;
-        rangeSeg->obs[i].cToNo = range->obs[i].cToNo;
-        rangeSeg->obs[i].locktime = range->obs[i].locktime;
+        rangeSeg.obs[i].prn = range->obs[i].prn;
+        rangeSeg.obs[i].cToNo = range->obs[i].cToNo;
+        rangeSeg.obs[i].locktime = range->obs[i].locktime;
     }
 
-    bcbinPopulateHeader(&sharedSeg.range.header, TLM_ID_RANGE, sizeof(range_segment));
-    bcbinSendPacket((uint8_t *) &sharedSeg, sizeof(range_segment));
+    bcbinPopulateHeader(&rangeSeg.header, TLM_ID_RANGE, sizeof(range_segment));
+    bcbinSendPacket((uint8_t *) &rangeSeg, sizeof(range_segment));
 }
 
-FILE_STATIC void handleRxStatusEvent(const GPSPackage *package)
+void handleRxStatusEvent(const GPSPackage *package)
 {
     const GPSRXStatusEvent *e = &(package->message.rxstatusEvent);
 
@@ -637,21 +634,17 @@ FILE_STATIC void handleRxStatusEvent(const GPSPackage *package)
     }
 }
 
-// --- gps status event handlers ---
-
-FILE_STATIC void handlePositionStatusEvent(const GPSRXStatusEvent *e)
+void handlePositionStatusEvent(const GPSRXStatusEvent *e)
 {
     gpsSendCommand("log bestxyzb\r\n");
 }
 
-FILE_STATIC void handleClockStatusEvent(const GPSRXStatusEvent *e)
+void handleClockStatusEvent(const GPSRXStatusEvent *e)
 {
     gpsSendCommand("log timeb\r\n");
 }
 
-// --- util functions ---
-
-FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset)
+void toUtc(uint16_t *week, gps_ec *ms, double offset)
 {
     double tmp = *ms;
     tmp += offset * 1000;
@@ -666,4 +659,65 @@ FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset)
         tmp -= MS_IN_WEEK;
     }
     *ms = (gps_ec) round(tmp);
+}
+
+// read the sun sensor and update its segments
+void sunSensorUpdate()
+{
+    SunSensorAngle *angle = sunSensorReadAngle();
+    if (angle != NULLP)
+    {
+        sunsensorSeg.alpha = angle->alpha;
+        sunsensorSeg.beta = angle->beta;
+        sunsensorSeg.error = angle->error;
+    }
+    else
+    {
+        // TODO log read error
+    }
+}
+
+void sendSunSensorData()
+{
+    // send backchannel telemetry
+    bcbinSendPacket((uint8_t *) &sunsensorSeg, sizeof(sunsensorSeg));
+
+    // send CAN packet
+    // converting degrees to arcminutes
+    sensorproc_sun sun = { sunsensorSeg.error,
+                           (int32_t) round(sunsensorSeg.alpha * 60),
+                           (int32_t) round(sunsensorSeg.beta * 60) };
+    CANPacket packet;
+    encodesensorproc_sun(&sun, &packet);
+    canSendPacket(&packet);
+}
+
+void photodiodeInitAll()
+{
+    pdCenter = photodiodeInit(PD_ADDR_HH, I2C_BUS_PHOTODIODES);
+    pdRight = photodiodeInit(PD_ADDR_FF, I2C_BUS_PHOTODIODES);
+    pdLeft = photodiodeInit(PD_ADDR_HF, I2C_BUS_PHOTODIODES);
+}
+
+void photodiodeUpdate()
+{
+    photodiodeSeg.center = photodiodeRead(defaultWrite, pdCenter);
+    photodiodeSeg.right = photodiodeRead(defaultWrite, pdRight);
+    photodiodeSeg.left = photodiodeRead(defaultWrite, pdLeft);
+}
+
+void sendPhotodiodeData()
+{
+    // send backchannel telemetry
+    bcbinSendPacket((uint8_t *) &photodiodeSeg, sizeof(photodiodeSeg));
+
+    // send CAN packet
+    // TODO verify the order on these is correct
+    // TODO how are these supposed to fit in a uint8_t?
+    sensorproc_photodiode pd = { (uint8_t) photodiodeSeg.center,
+                                 (uint8_t) photodiodeSeg.right,
+                                 (uint8_t) photodiodeSeg.left };
+    CANPacket packet;
+    encodesensorproc_photodiode(&pd, &packet);
+    canSendPacket(&packet);
 }

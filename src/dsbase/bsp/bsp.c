@@ -109,6 +109,9 @@ void bspInit(SubsystemModule mod)
     chipID = *((uint64_t *)0x1A0A);
     enforceHWSWLock();
 
+    //Selection bits for external crystal and ACLK
+    PJSEL0 = BIT4 | BIT5;
+
     // SAFE way of setting clock to 8Mhz, from
     // per-device errata:  must set divider to 4 before changing frequency to
     // prevent out of spec operation from overshoot transient
@@ -123,6 +126,15 @@ void bspInit(SubsystemModule mod)
     // Delay by ~10us to let DCO settle. 60 cycles = 20 cycles buffer + (10us / (1/4MHz))
     __delay_cycles(60);
     CSCTL3 = DIVA__1 | DIVS__1 | DIVM__1;   // Set all dividers to 1 for 8MHz operation
+    
+    CSCTL4 &= ~LFXTOFF;                     // Enable LFXT
+    do
+    {
+      CSCTL5 &= ~LFXTOFFG;                  // Clear LFXT fault flag
+      SFRIFG1 &= ~OFIFG;
+    } while (SFRIFG1 & OFIFG);              // Test oscillator fault flag
+ 
+ 
     CSCTL0_H = 0;                           // Lock CS Registers
 
     // Force all outputs to be 0, so we don't get spurious signals when we unlock

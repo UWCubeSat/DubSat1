@@ -13,7 +13,7 @@ int main(void)
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
     bspInit(Module_Test);
 
-    sunSensorInit();
+    sunSensorInit(I2CBus2);
 
     while (TRUE)
     {

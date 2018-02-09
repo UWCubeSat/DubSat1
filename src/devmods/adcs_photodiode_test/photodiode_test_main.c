@@ -37,17 +37,18 @@ int main(void)
     // previously configured port settings
     PM5CTL0 &= ~LOCKLPM5;
 
-    const uint8_t handleCenter = photodiodeInit(HH_addr);
-    const uint8_t handleRight = photodiodeInit(FF_addr);
-    const uint8_t handleLeft = photodiodeInit(HF_addr);
+    const uint8_t handleCenter = photodiodeInit(HH_addr, I2CBus2);
+    const uint8_t handleRight = photodiodeInit(FF_addr, I2CBus2);
+    const uint8_t handleLeft = photodiodeInit(HF_addr, I2CBus2);
     for (;;)
     {
+        // wait for the conversion period to end
+        __delay_cycles(PHOTODIODE_DELAY_S * SEC);
+
         volatile uint32_t adcVoltageCenter, adcVoltageRight, adcVoltageLeft;
-        //need to have a debug breakpoint here
         adcVoltageCenter = photodiodeVoltage(handleCenter, GAIN1);
         adcVoltageRight = photodiodeVoltage(handleRight, GAIN1);
         adcVoltageLeft = photodiodeVoltage(handleLeft, GAIN1);
         P1OUT ^= BIT0;
-
     }
 }

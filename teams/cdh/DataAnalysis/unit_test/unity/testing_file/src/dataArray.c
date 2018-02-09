@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 #include "dataArray.h"
-#define TYPE uint16_t
 
 typedef struct buffer {
 	TYPE *bufferPt;
@@ -22,7 +21,7 @@ typedef struct buffer {
 uint16_t handleNumber = 0;
 buffer bufferContainer[10];
 
-uint16_t init(uint16_t *userBuffer, uint16_t size) {
+uint16_t init(TYPE *userBuffer, uint16_t size) {
 	buffer *myBuffer = &bufferContainer[handleNumber];
 	myBuffer->bufferPt = userBuffer;
 	myBuffer->maxSize = size;
@@ -56,12 +55,8 @@ void printAllStats(uint16_t handle) {
 	printf("Avg: %u\n", avg);
 }
 
-void addData(uint16_t handle, uint16_t data) {
+void addData(uint16_t handle, TYPE data) {
 	buffer *theirBuffer = &bufferContainer[handle];
-	printf("Adding %u\n", data);
-	printf("Start: %p\n", theirBuffer->startPt);
-	printf("current: %p\n", theirBuffer->currPt);
-	printf("End: %p\n", theirBuffer->endPt);
 	uint16_t maxSize = theirBuffer->maxSize;
 
 	/* it will store new min and max even the array overflows or overloads */
@@ -105,11 +100,6 @@ void addData(uint16_t handle, uint16_t data) {
 		theirBuffer->endPt++;
 		theirBuffer->currentSize++;
 	}
-
-	printf("Start: %p\n", theirBuffer->startPt);
-	printf("current: %p\n", theirBuffer->currPt);
-	printf("End: %p\n", theirBuffer->endPt);
-
 }
 
 void resetAll(uint16_t handle) {
@@ -145,12 +135,12 @@ void resetMinMax(uint16_t handle) {
     theirBuffer->resetAvgFlag = 0;
 }
 
-uint16_t getSum(uint16_t handle) {
+TYPE getSum(uint16_t handle) {
 	TYPE sum = (TYPE)0;
 	buffer *theirBuffer = &bufferContainer[handle];
-	uint16_t *curr = theirBuffer->startPt;
+	TYPE *curr = theirBuffer->startPt;
 	while (curr != theirBuffer->endPt) {
-		uint16_t number = *curr;
+		TYPE number = *curr;
 		sum += number;
 		curr++;
    }
@@ -168,7 +158,7 @@ TYPE getAvg(uint16_t handle) {
 		return 0;
 	}
 	TYPE sum = getSum(handle);
-	uint16_t avg = sum / theirBuffer->currentSize;
+	TYPE avg = sum / theirBuffer->currentSize;
 	return avg;
 }
 
