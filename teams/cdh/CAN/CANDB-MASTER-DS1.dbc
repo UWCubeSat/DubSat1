@@ -83,9 +83,9 @@ BO_ 2420114432 sensorproc_photodiode: 3 adcs_sensorproc
  SG_ sensorproc_photodiode_x_pos : 0|8@1+ (1,0) [0|100] "" Vector__XXX
 
 BO_ 2418085888 bdot_command_dipole: 3 adcs_bdot
- SG_ bdot_command_dipole_z : 16|8@1- (1,0) [0|0] "mA*m^2" Vector__XXX
- SG_ bdot_command_dipole_y : 8|8@1- (1,0) [0|0] "mA*m^2" Vector__XXX
- SG_ bdot_command_dipole_x : 0|8@1- (1,0) [0|0] "mA*m^2" Vector__XXX
+ SG_ bdot_command_dipole_z : 16|8@1- (1,0) [-100|100] "mA*m^2" Vector__XXX
+ SG_ bdot_command_dipole_y : 8|8@1- (1,0) [-100|100] "mA*m^2" Vector__XXX
+ SG_ bdot_command_dipole_x : 0|8@1- (1,0) [-100|100] "mA*m^2" Vector__XXX
 
 BO_ 2418041888 bdot_tumble_status: 1 adcs_bdot
  SG_ bdot_tumble_status_status : 0|1@1+ (1,0) [0|0] "bool" Vector__XXX
