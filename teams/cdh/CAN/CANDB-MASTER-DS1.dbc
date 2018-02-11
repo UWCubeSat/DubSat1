@@ -38,6 +38,9 @@ VAL_TABLE_ sunproc_sun_status_codes 18 "over_illumination" 17 "under_illuminatio
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2424309760 sensorproc_gps_enable: 1 adcs_mpc
+ SG_ sensorproc_gps_enable_cmd : 0|8@1+ (1,0) [0|1] "" Vector__XXX
+
 BO_ 2421761024 sensorproc_gps_time: 8 adcs_sensorproc
  SG_ sensorproc_gps_time_ms : 16|32@1+ (1,0) [0|604800000] "ms" Vector__XXX
  SG_ sensorproc_gps_time_wk : 0|16@1+ (1,0) [1983|4095] "week" Vector__XXX
@@ -102,6 +105,7 @@ BO_TX_BU_ 2417188864 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2424309760 sensorproc_gps_enable_cmd 1 "true" 0 "false" ;
 VAL_ 2420179968 sensorproc_sun_status 18 "over_illumination" 17 "under_illumination" 5 "light_from_outside_fov_5" 4 "light_from_outside_fov_4" 3 "no_light" 0 "good_data" ;
 VAL_ 2418041888 bdot_tumble_status_status 1 "true" 0 "false" ;
 SIG_VALTYPE_ 2421695488 sensorproc_gps_x_u_v : 1;
