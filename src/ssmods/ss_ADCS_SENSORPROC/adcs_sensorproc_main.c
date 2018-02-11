@@ -50,7 +50,7 @@ int main(void)
 
     // initialize sensors
     gpsioInit();
-    sunsensorioInit();
+//    sunsensorioInit();
     photodiodeioInit();
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
@@ -78,10 +78,10 @@ int main(void)
              * times in the space of PHOTODIODE_DELAY_S.
              */
             photodiodeioUpdate();
-            sunsensorioUpdate(); // TODO don't let these block
+//            sunsensorioUpdate(); // TODO don't let these block
 
             photodiodeioSendData();
-            sunsensorioUpdate();
+            sunsensorioSendData();
         }
 
         gpsioUpdate();

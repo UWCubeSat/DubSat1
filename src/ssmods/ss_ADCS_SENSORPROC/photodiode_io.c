@@ -27,11 +27,23 @@ void photodiodeioInit()
     pdLeft = photodiodeInit(PD_ADDR_HF, I2C_BUS_PHOTODIODES);
 }
 
+FILE_STATIC uint8_t compressReading(uint32_t reading)
+{
+    if (reading >= PD_MAX_VAL)
+    {
+        return 255;
+    }
+    return reading >> 7;
+}
+
 void photodiodeioUpdate()
 {
     photodiodeSeg.center = photodiodeRead(defaultWrite, pdCenter);
     photodiodeSeg.right = photodiodeRead(defaultWrite, pdRight);
     photodiodeSeg.left = photodiodeRead(defaultWrite, pdLeft);
+    photodiodeSeg.cCenter = compressReading(photodiodeSeg.center);
+    photodiodeSeg.cRight = compressReading(photodiodeSeg.right);
+    photodiodeSeg.cLeft = compressReading(photodiodeSeg.left);
 }
 
 void photodiodeioSendData()
@@ -41,10 +53,9 @@ void photodiodeioSendData()
 
     // send CAN packet
     // TODO verify the order on these is correct
-    // TODO how are these supposed to fit in a uint8_t?
-    sensorproc_photodiode pd = { (uint8_t) photodiodeSeg.center,
-                                 (uint8_t) photodiodeSeg.right,
-                                 (uint8_t) photodiodeSeg.left };
+    sensorproc_photodiode pd = { compressReading(photodiodeSeg.center),
+                                 compressReading(photodiodeSeg.right),
+                                 compressReading(photodiodeSeg.left) };
     CANPacket packet;
     encodesensorproc_photodiode(&pd, &packet);
     canSendPacket(&packet);

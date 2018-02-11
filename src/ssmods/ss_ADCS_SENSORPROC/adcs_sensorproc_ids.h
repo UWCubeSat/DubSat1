@@ -27,26 +27,4 @@
 #define OPCODE_SENDASCII 0x01
 #define OPCODE_ENABLE    0x02
 
-#include <stdint.h>
-
-#include "core/utils.h"
-
-// --- COSMOS telem and cmd packets ---
-
-TLM_SEGMENT {
-    BcTlmHeader header; // All COSMOS TLM packets must have this
-
-    float alpha;
-    float beta;
-    uint8_t error;
-} sunsensor_segment;
-
-TLM_SEGMENT {
-    BcTlmHeader header; // All COSMOS TLM packets must have this
-
-    uint32_t center;
-    uint32_t right;
-    uint32_t left;
-} photodiode_segment;
-
 #endif /* ADCS_SENSORPROC_IDS_H_ */
