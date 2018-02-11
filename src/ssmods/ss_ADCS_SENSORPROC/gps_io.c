@@ -19,13 +19,12 @@ FILE_STATIC gpspower_segment gpspowerSeg;
 FILE_STATIC rxstatus_segment rxstatusSeg;
 FILE_STATIC time_segment timeSeg;
 
-FILE_STATIC volatile gps_power_state ss_state = State_GPSOff;
+FILE_STATIC volatile gps_power_state gpsPowerState = State_GPSOff;
 
 FILE_STATIC flag_t triggerGPSOn;
 FILE_STATIC flag_t triggerGPSOff;
 
 // callbacks
-FILE_STATIC uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 FILE_STATIC void canRxCallback(CANPacket *packet);
 
 // message handlers
@@ -47,12 +46,6 @@ FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset);
 void gpsioInit()
 {
     setCANPacketRxCallback(canRxCallback);
-
-#if defined(__DEBUG__)
-    debugRegisterEntity(Entity_SUBSYSTEM, NULL,
-                                          NULL,
-                                          handleDebugActionCallback);
-#endif  //  __DEBUG__
 
     bcbinPopulateHeader(&gpshealthSeg.header, TLM_ID_GPSHEALTH, sizeof(gpshealthSeg));
     bcbinPopulateHeader(&gpspowerSeg.header, TLM_ID_GPSPOWER, sizeof(gpspowerSeg));
@@ -86,7 +79,7 @@ void gpsioUpdate()
     static uint32_t i = 0;
     i++;
 
-    switch (ss_state)
+    switch (gpsPowerState)
     {
     case State_GPSOff:
         if (triggerGPSOn)
@@ -95,7 +88,7 @@ void gpsioUpdate()
             gpsBuckOn();
 
             triggerGPSOn = 0;
-            ss_state = State_BuckWaitOn;
+            gpsPowerState = State_BuckWaitOn;
         }
         break;
     case State_BuckWaitOn:
@@ -103,7 +96,7 @@ void gpsioUpdate()
         {
             // buck converter signal is good, enable the GPS
             gpsPowerOn();
-            ss_state = State_GPSWait;
+            gpsPowerState = State_GPSWait;
         }
         break;
     case State_GPSWait:
@@ -117,7 +110,7 @@ void gpsioUpdate()
         {
             // now that the GPS is confirmed to be on, send commands to configure it
             gpsioConfigure();
-            ss_state = State_GPSOn;
+            gpsPowerState = State_GPSOn;
         }
         break;
     case State_GPSOn:
@@ -135,7 +128,7 @@ void gpsioUpdate()
             gpsPowerOff();
 
             triggerGPSOff = 0;
-            ss_state = State_BuckWaitOff;
+            gpsPowerState = State_BuckWaitOff;
         }
         break;
     case State_BuckWaitOff:
@@ -145,7 +138,7 @@ void gpsioUpdate()
         if (count++ > 50000)
         {
             gpsBuckOff();
-            ss_state = State_GPSOff;
+            gpsPowerState = State_GPSOff;
             count = 0;
         }
         break;
@@ -159,7 +152,7 @@ void gpsioSendPowerStatus()
 {
     gpspowerSeg.buckEnabled = gpsBuckEnabled();
     gpspowerSeg.gpsEnabled = gpsPowerEnabled();
-    gpspowerSeg.state = ss_state;
+    gpspowerSeg.state = gpsPowerState;
     bcbinSendPacket((uint8_t *) &gpspowerSeg, sizeof(gpspowerSeg));
 }
 
@@ -221,6 +214,38 @@ bool gpsioHandlePackage(GPSPackage *p)
     }
 
     return true;
+}
+
+bool gpsioHandleCommand(uint8_t *cmdstr)
+{
+    enable_segment *enableSegment;
+
+    switch(cmdstr[0])
+    {
+        case OPCODE_SENDASCII:
+            // send the part of the command that comes after the opcode
+            gpsSendCommand(cmdstr + 1);
+            gpsSendCommand("\r\n");
+            break;
+        case OPCODE_ENABLE:
+            enableSegment = (enable_segment *) (cmdstr + 1);
+            if (enableSegment->enable && gpsPowerState == State_GPSOff)
+            {
+                triggerGPSOn = 1;
+            }
+            else if (enableSegment->enable == 0 && gpsPowerState == State_GPSOn)
+            {
+                triggerGPSOff = 1;
+            }
+            else
+            {
+                // TODO log error
+            }
+            break;
+        default:
+            return 0;
+    }
+    return 1;
 }
 
 FILE_STATIC void handleRxStatus(const GPSPackage *package)
@@ -431,44 +456,6 @@ FILE_STATIC void handlePositionStatusEvent(const GPSRXStatusEvent *e)
 FILE_STATIC void handleClockStatusEvent(const GPSRXStatusEvent *e)
 {
     gpsSendCommand("log timeb\r\n");
-}
-
-FILE_STATIC uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
-{
-    if (mode == Mode_BinaryStreaming)
-    {
-        enable_segment *enableSegment;
-
-        // handle actions, any output should be ground-segment friendly
-        // "packet" format
-        switch(cmdstr[0])
-        {
-            case OPCODE_SENDASCII:
-                // send the part of the command that comes after the opcode
-                gpsSendCommand(cmdstr + 1);
-                gpsSendCommand("\r\n");
-                break;
-            case OPCODE_ENABLE:
-                enableSegment = (enable_segment *) (cmdstr + 1);
-                if (enableSegment->enable && ss_state == State_GPSOff)
-                {
-                    triggerGPSOn = 1;
-                }
-                else if (enableSegment->enable == 0 && ss_state == State_GPSOn)
-                {
-                    triggerGPSOff = 1;
-                }
-                else
-                {
-                    // TODO log error
-                }
-            case OPCODE_COMMONCMD:
-                break;
-            default:
-                break;
-        }
-    }
-    return 1;
 }
 
 FILE_STATIC void canRxCallback(CANPacket *packet)

@@ -106,6 +106,10 @@ TLM_SEGMENT {
     range_segMember obs[NUM_RANGE_SEGMENT_MEMBERS];
 } range_segment;
 
+CMD_SEGMENT {
+    uint8_t enable;
+} enable_segment;
+
 void gpsioInit();
 void gpsioConfigure();
 void gpsioUpdate();
@@ -115,5 +119,6 @@ void gpsioSendStatus();
 void gpsioSendHealth();
 
 bool gpsioHandlePackage(GPSPackage *p);
+bool gpsioHandleCommand(uint8_t * cmdstr);
 
 #endif /* GPS_IO_H_ */

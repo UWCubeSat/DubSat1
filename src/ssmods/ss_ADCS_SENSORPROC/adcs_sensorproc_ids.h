@@ -13,6 +13,7 @@
 // COSMOS telemetry IDs
 #define TLM_ID_SUNSENSOR  121
 #define TLM_ID_PHOTODIODE 118
+
 #define TLM_ID_GPSHEALTH  120
 #define TLM_ID_GPSPOWER   122
 #define TLM_ID_RXSTATUS   123
@@ -47,9 +48,5 @@ TLM_SEGMENT {
     uint32_t right;
     uint32_t left;
 } photodiode_segment;
-
-CMD_SEGMENT {
-    uint8_t enable;
-} enable_segment;
 
 #endif /* ADCS_SENSORPROC_IDS_H_ */

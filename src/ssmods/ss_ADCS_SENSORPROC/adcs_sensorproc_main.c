@@ -1,28 +1,18 @@
 #include <adcs_sensorproc.h>
 #include <msp430.h> 
 
-#include <math.h>
-
 #include "bsp/bsp.h"
 #include "core/debugtools.h"
 #include "interfaces/canwrap.h"
 
-#include "sensors/sun_sensor.h"
-#include "sensors/photodiode.h"
-
-#include "gps_io.h"
 #include "adcs_sensorproc_ids.h"
+#include "gps_io.h"
+#include "sunsensor_io.h"
+#include "photodiode_io.h"
 
 // Segment instances - used both to store information and as a structure for sending as telemetry/commands
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
-FILE_STATIC sunsensor_segment sunsensorSeg;
-FILE_STATIC photodiode_segment photodiodeSeg;
-
-// photodiode handles
-FILE_STATIC uint8_t pdCenter;
-FILE_STATIC uint8_t pdRight;
-FILE_STATIC uint8_t pdLeft;
 
 int main(void)
 {
@@ -35,14 +25,18 @@ int main(void)
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
     // Also hooks up special notification handlers.  Note that actual pulse interrupt handlers will update the
     // firing state structures before calling the provided handler function pointers.
-    coreStartup(handlePPTFiringNotification, handleRollCall);  // <<DO NOT DELETE or MOVE>>
+    StartupType starttype = coreStartup(handlePPTFiringNotification, handleRollCall);  // <<DO NOT DELETE or MOVE>>
+
+#if defined(__DEBUG__)
+    debugRegisterEntity(Entity_SUBSYSTEM, NULL,
+                                          NULL,
+                                          handleDebugActionCallback);
+#endif  //  __DEBUG__
 
     LED_DIR |= LED_BIT;
 
     // Setup segments to be able to serve as COSMOS telemetry packets
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
-    bcbinPopulateHeader(&sunsensorSeg.header, TLM_ID_SUNSENSOR, sizeof(sunsensorSeg));
-    bcbinPopulateHeader(&photodiodeSeg.header, TLM_ID_PHOTODIODE, sizeof(photodiodeSeg));
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
     // TODO:  Add the correct bus filters
@@ -56,8 +50,8 @@ int main(void)
 
     // initialize sensors
     gpsioInit();
-    sunSensorInit(I2C_BUS_SUNSENSOR); // TODO prevent hanging here
-//    photodiodeInitAll();
+    sunsensorioInit();
+    photodiodeioInit();
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
@@ -83,11 +77,11 @@ int main(void)
              * TODO assert that the photodiodes are not being read multiple
              * times in the space of PHOTODIODE_DELAY_S.
              */
-//            photodiodeUpdate();
-            sunSensorUpdate(); // TODO don't let these block
+            photodiodeioUpdate();
+            sunsensorioUpdate(); // TODO don't let these block
 
-            sendPhotodiodeData();
-            sendSunSensorData();
+            photodiodeioSendData();
+            sunsensorioUpdate();
         }
 
         gpsioUpdate();
@@ -142,63 +136,24 @@ void sendMetaSegment()
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
-// read the sun sensor and update its segments
-void sunSensorUpdate()
+uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
-    SunSensorAngle *angle = sunSensorReadAngle();
-    if (angle != NULLP)
+    if (mode == Mode_BinaryStreaming)
     {
-        sunsensorSeg.alpha = angle->alpha;
-        sunsensorSeg.beta = angle->beta;
-        sunsensorSeg.error = angle->error;
+        // if the command is handled by the GPS, return
+        if (gpsioHandleCommand(cmdstr))
+        {
+            return 1;
+        }
+
+        // handle non-gps commands
+        switch(cmdstr[0])
+        {
+            case OPCODE_COMMONCMD:
+                break;
+            default:
+                break;
+        }
     }
-    else
-    {
-        // TODO log read error
-    }
-}
-
-void sendSunSensorData()
-{
-    // send backchannel telemetry
-    bcbinSendPacket((uint8_t *) &sunsensorSeg, sizeof(sunsensorSeg));
-
-    // send CAN packet
-    // converting degrees to arcminutes
-    sensorproc_sun sun = { sunsensorSeg.error,
-                           (int32_t) round(sunsensorSeg.alpha * 60),
-                           (int32_t) round(sunsensorSeg.beta * 60) };
-    CANPacket packet;
-    encodesensorproc_sun(&sun, &packet);
-    canSendPacket(&packet);
-}
-
-void photodiodeInitAll()
-{
-    pdCenter = photodiodeInit(PD_ADDR_HH, I2C_BUS_PHOTODIODES);
-    pdRight = photodiodeInit(PD_ADDR_FF, I2C_BUS_PHOTODIODES);
-    pdLeft = photodiodeInit(PD_ADDR_HF, I2C_BUS_PHOTODIODES);
-}
-
-void photodiodeUpdate()
-{
-    photodiodeSeg.center = photodiodeRead(defaultWrite, pdCenter);
-    photodiodeSeg.right = photodiodeRead(defaultWrite, pdRight);
-    photodiodeSeg.left = photodiodeRead(defaultWrite, pdLeft);
-}
-
-void sendPhotodiodeData()
-{
-    // send backchannel telemetry
-    bcbinSendPacket((uint8_t *) &photodiodeSeg, sizeof(photodiodeSeg));
-
-    // send CAN packet
-    // TODO verify the order on these is correct
-    // TODO how are these supposed to fit in a uint8_t?
-    sensorproc_photodiode pd = { (uint8_t) photodiodeSeg.center,
-                                 (uint8_t) photodiodeSeg.right,
-                                 (uint8_t) photodiodeSeg.left };
-    CANPacket packet;
-    encodesensorproc_photodiode(&pd, &packet);
-    canSendPacket(&packet);
+    return 1;
 }
