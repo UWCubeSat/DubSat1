@@ -329,9 +329,9 @@ void decodebdot_command_dipole(CANPacket *input, bdot_command_dipole *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> bdot_command_dipole_z = (uint8_t) (((fullData & ((uint64_t) 0xff))));
-    output -> bdot_command_dipole_y = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
-    output -> bdot_command_dipole_x = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+    output -> bdot_command_dipole_z = (int8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> bdot_command_dipole_y = (int8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> bdot_command_dipole_x = (int8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
 }
 
 void encodebdot_command_dipole(bdot_command_dipole *input, CANPacket *output){

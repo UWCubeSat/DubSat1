@@ -1,0 +1,275 @@
+/*
+ * timer.c
+ *
+ *  Created on: Jan 13, 2018
+ *      Author: Thu Phan, Nathan Wacker
+ */
+#include <msp430.h>
+#include "timer.h"
+#include <stdint.h>
+
+static const int NUM_SUPPORTED_DURATIONS_POLLING = 8;
+static const int NUM_SUPPORTED_DURATIONS_CALLBACK = 2;
+//typedef enum
+//{
+//    Timer_Polling,
+//    Timer_Callback,
+//} duration_type;
+
+typedef struct
+{
+    uint16_t inUse;
+//    duration_type type;
+    uint16_t durationMS;   // Always indicate what the units are in struct names
+    uint16_t start_timer_counter;
+    uint16_t start_TAR;
+    uint16_t counter_dif;
+    uint16_t tar_dif;
+} polling_info;
+
+typedef struct
+{
+    uint16_t inUse;
+    uint16_t count;
+    uint16_t current_count;
+    uint16_t tar;
+    void (*fxPtr)();
+} callback_info;
+
+static polling_info polling[NUM_SUPPORTED_DURATIONS_POLLING];
+
+/* IMPORTANT: callback[1] == TA0CCTL2, callback[0] == TA0CCTL1 */
+static callback_info callback[NUM_SUPPORTED_DURATIONS_CALLBACK];
+static uint16_t timer_counter = 0;
+
+
+void initializeTimer()
+{
+//    PM5CTL0 &= ~LOCKLPM5;
+//    // ACLK has frequency of 32768 Hz, which means one "tick" is .00003051757 s = 30.51757 us
+    TA0CTL = TASSEL__ACLK | TAIE | MC__CONTINUOUS | ID__1;
+    __bis_SR_register(GIE);
+    uint16_t i;
+    for (i = 0; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
+    {
+        polling[i].inUse = 0;
+        polling[i].durationMS = 0;
+        polling[i].start_timer_counter = 0;
+        polling[i].start_TAR = 0;
+        polling[i].counter_dif = 0;
+        polling[i].tar_dif = 0;
+    }
+    for (i = 0; i < NUM_SUPPORTED_DURATIONS_CALLBACK; i++)
+    {
+        callback[i].inUse = 0;
+        callback[i].count = 0;
+        callback[i].current_count = 0;
+        callback[i].tar = 0;
+//        callback[i].fxPtr = 0; // TODO: Ask what to set to
+    }
+}
+
+int timerPollInitializer(uint16_t desired_counter_dif, uint16_t desired_TAR_dif)
+{
+    uint16_t start_counter = timer_counter;
+    uint16_t start_TAR_ = TA0R;
+    uint16_t i;
+    for (i = NUM_SUPPORTED_DURATIONS_POLLING - 1; i >= 0; i--)
+    {
+        if (!polling[i].inUse)
+        {
+            polling[i].inUse = 1;
+            polling[i].counter_dif = desired_counter_dif;
+            polling[i].tar_dif = desired_TAR_dif;
+            polling[i].start_timer_counter = start_counter;
+            polling[i].start_TAR = start_TAR_;
+            return i;
+        }
+    }
+    return -1;
+}
+
+int timerCallbackInitializer(void (*waitFunc)(), uint32_t us)
+{
+    uint32_t newTime = us / 30.517578125;           //(ms * 1.00150225338) - 40; //TODO: check this factor
+    uint16_t overflows = 0;
+    while (newTime > 65535)
+    {
+        newTime -= 65535;
+        overflows++;
+    }
+    uint16_t i;
+    for (i = 0; i < 2; i++)
+    {
+        if (!callback[i].inUse)
+        {
+            callback[i].inUse = 1;
+            callback[i].count = overflows;
+            callback[i].current_count = overflows;
+            callback[i].tar = newTime;
+            callback[i].fxPtr = waitFunc;
+            return i;
+        }
+    }
+    return -1;
+}
+
+/** \fn startCallback() starts callback for specified interrupt
+ * \param n the interrupt to start
+ * \return 1 if interrupt is used, otherwise 0; if interrupt is used, does not override previously set value
+ */
+void startCallback(unsigned int n)
+{
+    uint16_t tarDiff = 0;
+    if(65535 - callback[n].tar < TA0R)
+    {
+        tarDiff = callback[n].tar - 65535 + TA0R;
+        callback[n].current_count = callback[n].count + 1;
+    }
+    else
+    {
+        callback[n].current_count = callback[n].count;
+        tarDiff = callback[n].tar + TA0R;
+    }
+
+    if(n == 1)
+    {
+        TA0CCR2 = tarDiff;
+        TA0CCTL2 = CCIE;
+    } else if (n == 0)
+    {
+        TA0CCR1 = tarDiff;
+        TA0CCTL1 = CCIE;
+    }
+}
+
+/** \fn stopCallback() stops callback for specified interrupt
+ * \param n the interrupt to stop
+ * also clears the callback values set in setCallback
+ */
+void stopCallback(unsigned int n)
+{
+
+    //TODO: don't enable CCIE if it is already disabled
+    if(n == 0)
+    {
+        TA0CCTL1 &= ~CCIE;
+    }
+    else if(n == 2)
+    {
+        TA0CCTL2 &= ~CCIE;
+    }
+    callback[n].inUse = 0;
+    callback[n].count = 0;
+    callback[n].current_count = 0;
+    callback[n].tar = 0;
+    callback[n].fxPtr = 0;
+}
+
+
+int checkTimerOverflow(uint16_t timerNumber, uint16_t end_counter, uint16_t end_TAR)
+{
+    uint16_t calc_tar;
+    uint16_t calc_counter = 65535 - polling[timerNumber].start_timer_counter + end_counter;
+    if (end_TAR >= polling[timerNumber].start_TAR)
+    {
+        calc_tar = end_TAR - polling[timerNumber].start_TAR;
+    } else
+    {
+        if (calc_counter == 0)
+        {
+            return 0;
+        }
+        calc_counter--;
+        calc_tar = 65535 - polling[timerNumber].start_TAR + end_TAR;
+    }
+    if(calc_counter > polling[timerNumber].counter_dif)
+    {
+        polling[timerNumber].inUse = 0;
+        return 1;
+    }
+    if(calc_counter == polling[timerNumber].counter_dif && calc_tar >= polling[timerNumber].tar_dif)
+    {
+        polling[timerNumber].inUse = 0;
+        return 1;
+    }
+    return 0;
+}
+
+int checkTimer(uint16_t timerNumber)
+{
+    uint16_t end_counter = timer_counter;
+    uint16_t end_TAR = TA0R;
+
+    // timer overflow already happened, will deal with this case later
+    if(end_counter < polling[timerNumber].start_timer_counter) {
+        checkTimerOverflow(timerNumber, end_counter, end_TAR);
+    }
+
+    uint16_t calc_tar;
+    uint16_t calc_counter = end_counter - polling[timerNumber].start_timer_counter;
+    if (end_TAR >= polling[timerNumber].start_TAR)
+    {
+        calc_tar = end_TAR - polling[timerNumber].start_TAR;
+    } else
+    {
+        if (calc_counter == 0)
+        {
+            return 0;
+        }
+        calc_counter--;
+        calc_tar = 65535 - polling[timerNumber].start_TAR + end_TAR;
+    }
+    if(calc_counter > polling[timerNumber].counter_dif)
+    {
+        polling[timerNumber].inUse = 0;
+        return 1;
+    }
+    if(calc_counter == polling[timerNumber].counter_dif && calc_tar >= polling[timerNumber].tar_dif)
+    {
+        polling[timerNumber].inUse = 0;
+        return 1;
+    }
+    return 0;
+}
+
+#pragma vector = TIMER0_A1_VECTOR
+__interrupt void Timer0_A1_ISR(void)
+{
+    switch(__even_in_range(TA0IV, TAIV__TAIFG))
+    {
+        case TAIV__NONE:   break;           // No interrupt
+        case TAIV__TACCR1:
+            if(callback[0].current_count <= 0)
+            {
+                startCallback(0);
+                callback[0].fxPtr();
+
+            }
+            break;           // CCR1 not used
+        case TAIV__TACCR2:
+            if(callback[1].current_count <= 0)
+            {
+                startCallback(1);
+                callback[1].fxPtr();
+            }
+            break;           // CCR2 not used]
+        case TAIV__TACCR3: break;           // reserved
+        case TAIV__TACCR4: break;           // reserved
+        case TAIV__TACCR5: break;           // reserved
+        case TAIV__TACCR6: break;           // reserved
+        case TAIV__TAIFG:                   // overflow
+            timer_counter++;
+            uint16_t i;
+            for(i = 0; i < NUM_SUPPORTED_DURATIONS_CALLBACK; i++)
+            {
+                if(callback[i].current_count > 0)
+                    callback[i].current_count--;
+            }
+            break;
+        default: break;
+    }
+}
+
+
+
