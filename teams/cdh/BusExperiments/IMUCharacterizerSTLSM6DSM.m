@@ -101,7 +101,7 @@ config_104_high = { '104 Hz (High Perf)',
 configurations = [ config_26_high  ];
 
 % resultsfolder = 'LSM6DSMResults';
-resultsfolder = [pwd '\previbeB_2_14_18'];
+resultsfolder = [pwd '\previbeB_2_14_18__3'];
               
 numconfigs = length(configurations)/NUM_TEST_CONFIG_FIELDS;
 allresults = zeros(numconfigs, 10);
