@@ -24,30 +24,30 @@
 #define SHUNT_CENTER_PANEL      0.11f
 
 // Various control lines
-#define ENABLE_PANEL1_DIR       P1DIR
-#define ENABLE_PANEL1_OUT       P1OUT
-#define ENABLE_PANEL1_BIT       BIT6
+#define DISABLE_PTRACKER1_DIR       P1DIR
+#define DISABLE_PTRACKER1_OUT       P1OUT
+#define DISABLE_PTRACKER1_BIT       BIT6
 
-#define ENABLE_PANEL2_DIR       P3DIR
-#define ENABLE_PANEL2_OUT       P3OUT
-#define ENABLE_PANEL2_BIT       BIT6
+#define DISABLE_PTRACKER2_DIR       P3DIR
+#define DISABLE_PTRACKER2_OUT       P3OUT
+#define DISABLE_PTRACKER2_BIT       BIT6
 
-#define ENABLE_PANEL3_DIR       P2DIR
-#define ENABLE_PANEL3_OUT       P2OUT
-#define ENABLE_PANEL3_BIT       BIT6
+#define DISABLE_PTRACKER3_DIR       P2DIR
+#define DISABLE_PTRACKER3_OUT       P2OUT
+#define DISABLE_PTRACKER3_BIT       BIT6
 
 // Input lines indicating state of MPT
-#define CHARGING_PANEL1_DIR     P1DIR
-#define CHARGING_PANEL1_OUT     P1OUT
-#define CHARGING_PANEL1_BIT     BIT7
+#define CHARGING_PTRACKER1_DIR     P1DIR
+#define CHARGING_PTRACKER1_IN      P1IN
+#define CHARGING_PTRACKER1_BIT     BIT7
 
-#define CHARGING_PANEL2_DIR     P3DIR
-#define CHARGING_PANEL2_OUT     P3OUT
-#define CHARGING_PANEL2_BIT     BIT7
+#define CHARGING_PTRACKER2_DIR     P3DIR
+#define CHARGING_PTRACKER2_IN      P3IN
+#define CHARGING_PTRACKER2_BIT     BIT7
 
-#define CHARGING_PANEL3_DIR     P2DIR
-#define CHARGING_PANEL3_OUT     P2OUT
-#define CHARGING_PANEL3_BIT     BIT2
+#define CHARGING_PTRACKER3_DIR     P2DIR
+#define CHARGING_PTRACKER3_IN      P2IN
+#define CHARGING_PTRACKER3_BIT     BIT2
 
 // Analog temperature sensing definitions
 #define CHAN_TEMP1              CHAN_A0
@@ -66,14 +66,44 @@
 
 #define PANEL_CURRENT_LIMIT  1.50f   // in amps
 
+typedef enum
+{
+    Panel1,
+    Panel2,
+    Panel3,
+} PanelNum;
+
+typedef enum
+{
+    PowerTracker1,
+    PowerTracker2,
+    PowerTracker3,
+} PowTrackerNum;
+
+typedef enum
+{
+    InitialEnable,
+    ExplicitEnable,
+    ExplicitDisable,
+} PowerTrackerCmd;
+
 typedef struct {
     uint8_t panelnum;
     hDev hpcvsensor;
     float shuntresistance;
 } panel_info;
 
+// COSMOS telem and cmd packets
+#define TLM_ID_EPS_GEN_GENERAL    TLM_ID_SHARED_SSGENERAL  // == 0x02  <--- standard message ID
+#define TLM_ID_EPS_GEN_SENSORDAT  0x03
+
+#define OPCODE_CHARGECMD          0x64  // Dec '100', ASCII 'd'
+
 TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
+
+    uint8_t ptlastcmds[NUM_PANELS];
+    uint8_t ptcharging[NUM_PANELS];
 
 } general_segment;
 
@@ -82,12 +112,15 @@ TLM_SEGMENT {
 
     float paneltempsC[NUM_PANELS];
 
+    float panelpowers[NUM_PANELS];
+    float panelcurrents[NUM_PANELS];
+    float panelvoltages[NUM_PANELS];
 
 } sensordat_segment;
 
 CMD_SEGMENT {
 
-} gencmd_segment;
+} chargecmd_segment;
 
 // Most subsystem modules should be implemented at least in part
 // as a state machine (specifically, a FSM).  Here the available states are

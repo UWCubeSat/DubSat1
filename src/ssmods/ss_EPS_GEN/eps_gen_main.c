@@ -2,6 +2,7 @@
 #include <msp430.h> 
 
 #include "bsp/bsp.h"
+#include "sensors/pcvsensor.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -20,7 +21,12 @@ FILE_STATIC panel_info panels[NUM_PANELS];
 
 FILE_STATIC uint8_t panelPCVSensorAddresses[] =  { PCVI2C_PANEL1, PCVI2C_PANEL2, PCVI2C_PANEL3 };
 FILE_STATIC float panelShuntResistances[] =      { SHUNT_SIDE_PANELS, SHUNT_CENTER_PANEL, SHUNT_SIDE_PANELS };
-FILE_STATIC ACHANNEL tempChannels[] = { CHAN_TEMP1, CHAN_TEMP2, CHAN_TEMP3 };
+FILE_STATIC ACHANNEL tempChannels[] =            { CHAN_TEMP1, CHAN_TEMP2, CHAN_TEMP3 };
+
+FILE_STATIC meta_segment mseg;
+FILE_STATIC general_segment gseg;
+FILE_STATIC sensordat_segment sseg;
+FILE_STATIC health_segment hseg;
 
 void genTempSensorsInit()
 {
@@ -28,7 +34,7 @@ void genTempSensorsInit()
     int i;
     for (i = 0; i < NUM_PANELS; ++i)
     {
-        hTempSensors[i] = asensorActivateChannel(tempChannels[i], Type_ExtTempC);
+        hTempSensors[i] = asensorActivateChannel(tempChannels[i], Type_GeneralV);
     }
 
     return;
@@ -45,9 +51,94 @@ void genPCVSensorsInit()
     }
 }
 
-void genPanelsInit()
+void genPanelsTrackersInit()
 {
+    // Configure PT disable pins at outputs
+    DISABLE_PTRACKER1_DIR |= DISABLE_PTRACKER1_BIT;
+    DISABLE_PTRACKER2_DIR |= DISABLE_PTRACKER2_BIT;
+    DISABLE_PTRACKER3_DIR |= DISABLE_PTRACKER3_BIT;
 
+    // Configure charging pin monitors as inputs
+    CHARGING_PTRACKER1_DIR &= ~CHARGING_PTRACKER1_BIT;
+    CHARGING_PTRACKER2_DIR &= ~CHARGING_PTRACKER2_BIT;
+    CHARGING_PTRACKER3_DIR &= ~CHARGING_PTRACKER3_BIT;
+
+}
+
+void genSetPowerTracker(PowTrackerNum ptnum, BOOL enable)
+{
+    gseg.ptlastcmds[(uint8_t)ptnum] = (enable ? (uint8_t)ExplicitEnable : (uint8_t)ExplicitDisable);
+
+    switch (ptnum)
+    {
+        case PowerTracker1:
+            if (enable) DISABLE_PTRACKER1_OUT &= ~DISABLE_PTRACKER1_BIT;
+            else DISABLE_PTRACKER1_OUT |= DISABLE_PTRACKER1_BIT;
+            break;
+        case PowerTracker2:
+            if (enable) DISABLE_PTRACKER2_OUT &= ~DISABLE_PTRACKER2_BIT;
+            else DISABLE_PTRACKER2_OUT |= DISABLE_PTRACKER2_BIT;
+            break;
+        case PowerTracker3:
+            if (enable) DISABLE_PTRACKER3_OUT &= ~DISABLE_PTRACKER3_BIT;
+            else DISABLE_PTRACKER3_OUT |= DISABLE_PTRACKER3_BIT;
+            break;
+        default:
+            break;
+    }
+}
+
+void genMonitorPanels()
+{
+    int i;
+    PCVSensorData *pdata;
+    float temp;
+
+    asensorUpdateAllSensors();
+    for (i=0; i < NUM_PANELS; i++)
+    {
+        // Get power/current/bus voltage readings
+        pdata = pcvsensorRead(panels[i].hpcvsensor, Read_CurrentA | Read_BusV | Read_PowerW);
+        sseg.panelcurrents[i] = pdata->calcdCurrentA;
+        sseg.panelpowers[i] = pdata->calcdPowerW;
+        sseg.panelvoltages[i] = pdata->busVoltageV;
+
+        // Get temperature readings
+        sseg.paneltempsC[i] = asensorGetLastValueV(hTempSensors[i]);
+    }
+}
+
+void genMonitorPowerTrackers()
+{
+    int i;
+    BOOL result;
+    for (i=0; i < NUM_PANELS; i++)
+    {
+        switch (i)
+        {
+            case 0:
+                result = CHARGING_PTRACKER1_IN & CHARGING_PTRACKER1_BIT;
+                break;
+            case 1:
+                result = CHARGING_PTRACKER2_IN & CHARGING_PTRACKER2_BIT;
+                break;
+            case 2:
+                result = CHARGING_PTRACKER3_IN & CHARGING_PTRACKER3_BIT;
+                break;
+        }
+
+        gseg.ptcharging[i] = ( result != 0 ? TRUE : FALSE);
+    }
+}
+
+void genBcSendSensorDat()
+{
+    bcbinSendPacket((uint8_t *) &sseg, sizeof(sseg));
+}
+
+void genBcSendGeneral()
+{
+    bcbinSendPacket((uint8_t *) &gseg, sizeof(gseg));
 }
 
 /*
@@ -60,9 +151,14 @@ int main(void)
 
     genTempSensorsInit();
     genPCVSensorsInit();
-    genPanelsInit();
+    genPanelsTrackersInit();
 
     LED_DIR |= LED_BIT;
+
+    // Setup segments to be able to serve as COSMOS telemetry packets
+    bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
+    bcbinPopulateHeader(&(gseg.header), TLM_ID_EPS_GEN_GENERAL, sizeof(gseg));
+    bcbinPopulateHeader(&(sseg.header), TLM_ID_EPS_GEN_SENSORDAT, sizeof(sseg));
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
@@ -86,28 +182,24 @@ int main(void)
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
 
+//    genSetPowerTracker(PowerTracker1, FALSE);
+//    genSetPowerTracker(PowerTracker2, FALSE);
+//    genSetPowerTracker(PowerTracker3, FALSE);
+
+    uint16_t counter = 0;
     while (1)
     {
-        // This assumes that some interrupt code will change the value of the triggerStaten variables
-        switch (ss_state)
-        {
-            // TODO:  For now, assume we stay in FirstState all the time; to be changed when we
-            // add full state machine for the subsystem.
-            case State_FirstState:
-                LED_OUT ^= LED_BIT;
-                __delay_cycles(.1 * SEC);
-                break;
-            case State_SecondState:
-                // TODO:  Implement full state machine
-                break;
-            case State_ThirdState:
-                // TODO:  Implement full state machine
-                break;
-            default:
-                mod_status.state_transition_errors++;
-                mod_status.in_unknown_state++;
-                break;
-        }
+        __delay_cycles(0.125 * SEC);
+        counter++;
+        LED_OUT ^= LED_BIT;
+
+        // Monitor everything
+        genMonitorPanels();
+        genMonitorPowerTrackers();
+
+        // Report at correct rates
+        genBcSendSensorDat();
+        if (counter % 8 == 0) genBcSendGeneral();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
