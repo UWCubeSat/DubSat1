@@ -97,13 +97,14 @@ typedef struct {
 #define TLM_ID_EPS_GEN_GENERAL    TLM_ID_SHARED_SSGENERAL  // == 0x02  <--- standard message ID
 #define TLM_ID_EPS_GEN_SENSORDAT  0x03
 
-#define OPCODE_CHARGECMD          0x64  // Dec '100', ASCII 'd'
+
 
 TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
     uint8_t ptlastcmds[NUM_PANELS];
-    uint8_t ptcharging[NUM_PANELS];
+    uint8_t ptchargingactual[NUM_PANELS];   // Indicates the state of the power trackers actual charging pin
+    uint8_t ptchargingenablesw[NUM_PANELS]; // Indicates the state of the enable pin to the power trackers
 
 } general_segment;
 
@@ -111,15 +112,15 @@ TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
     float paneltempsC[NUM_PANELS];
-
     float panelpowers[NUM_PANELS];
     float panelcurrents[NUM_PANELS];
     float panelvoltages[NUM_PANELS];
 
 } sensordat_segment;
 
+#define OPCODE_CHARGECMD          0x64  // Dec '100', ASCII 'd'
 CMD_SEGMENT {
-
+    uint8_t enablecharge[NUM_PANELS];
 } chargecmd_segment;
 
 // Most subsystem modules should be implemented at least in part

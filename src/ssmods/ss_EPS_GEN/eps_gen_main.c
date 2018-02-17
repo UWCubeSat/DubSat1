@@ -111,23 +111,27 @@ void genMonitorPanels()
 void genMonitorPowerTrackers()
 {
     int i;
-    BOOL result;
+    BOOL chargingactual, chargingdisable;
     for (i=0; i < NUM_PANELS; i++)
     {
         switch (i)
         {
             case 0:
-                result = CHARGING_PTRACKER1_IN & CHARGING_PTRACKER1_BIT;
+                chargingactual = CHARGING_PTRACKER1_IN & CHARGING_PTRACKER1_BIT;
+                chargingdisable = DISABLE_PTRACKER1_OUT & DISABLE_PTRACKER1_BIT;
                 break;
             case 1:
-                result = CHARGING_PTRACKER2_IN & CHARGING_PTRACKER2_BIT;
+                chargingactual = CHARGING_PTRACKER2_IN & CHARGING_PTRACKER2_BIT;
+                chargingdisable = DISABLE_PTRACKER2_OUT & DISABLE_PTRACKER2_BIT;
                 break;
             case 2:
-                result = CHARGING_PTRACKER3_IN & CHARGING_PTRACKER3_BIT;
+                chargingactual = CHARGING_PTRACKER3_IN & CHARGING_PTRACKER3_BIT;
+                chargingdisable = DISABLE_PTRACKER3_OUT & DISABLE_PTRACKER3_BIT;
                 break;
         }
 
-        gseg.ptcharging[i] = ( result != 0 ? TRUE : FALSE);
+        gseg.ptchargingactual[i] = ( chargingactual != 0 ? TRUE : FALSE);
+        gseg.ptchargingenablesw[i] = ( chargingdisable != 0 ? FALSE : TRUE );
     }
 }
 
@@ -164,7 +168,7 @@ int main(void)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
     // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
     // debugtools.h.  Also, be sure to change the "path char"
-    debugRegisterEntity(Entity_Test, NULL,
+    debugRegisterEntity(Entity_SUBSYSTEM, NULL,
                                      NULL,
                                      genActionCallback);
 
@@ -209,9 +213,22 @@ int main(void)
 
 uint8_t genActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
+    int i;
+    chargecmd_segment *csegment;
+
     if (mode == Mode_BinaryStreaming)
     {
-        // TODO:  Handle COSMOS commands to do stuff
+        // Handle the cmdstr as binary values
+        switch (cmdstr[0])
+        {
+            case OPCODE_CHARGECMD:
+                csegment = (chargecmd_segment *) &cmdstr[1];
+                for (i = 0; i < NUM_PANELS; i++)
+                {
+                    genSetPowerTracker(i, csegment->enablecharge[i]);
+                }
+                break;
+        }
     }
     return 1;
 }
