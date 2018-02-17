@@ -164,7 +164,7 @@ void configChannel(uint8_t capmem, uint16_t mctlx)
             break;
         case 2:   // For the built-in temp sensor, as it is always the first sensor added
             ADC12MCTL2 = mctlx;
-            ADC12IER0 = BIT2;
+            ADC12IER0 |= BIT2;
             break;
         case 3:   // For the built-in temp sensor, as it is always the first sensor added
             ADC12MCTL3 = mctlx;
@@ -295,6 +295,7 @@ void asensorInit(VPositiveReference vref)
     // Only re-enable the ADC engine as the last step before returning to
     // the API user - earlier than that and it's easy to accidentally try setting some register
     // on the ADC12 that is locked when the engine is enabled
+    __enable_interrupt();
     enableADC();
 }
 
@@ -377,7 +378,7 @@ float asensorGetLastIntTempC()
 float asensorGetLastExtTempC(hDev hSensor)
 {
     // TODO:  implement this!
-    return 0.0f;
+    return convertRawToFloat(hSensor);
 }
 
 // Read a single channel
@@ -453,7 +454,6 @@ __interrupt void ADC12ISR (void)
             asensors[5].lastrawvalue = ADC12MEM5;               // Move results, IFG is cleared
             capture_complete += 1;
             break;
-        case ADC12IV__ADC12IFG6:
             asensors[6].lastrawvalue = ADC12MEM6;               // Move results, IFG is cleared
             capture_complete += 1;
             break;
