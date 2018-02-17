@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.6.0">
+<eagle version="8.6.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -159,33 +159,48 @@
 <library name="DubSat1 Components">
 <description>Shared Library (on github) for components used in Dubsat1</description>
 <packages>
-<package name="MMCX_JACK_FEMALE_SMD">
-<smd name="P$1" x="0" y="0" dx="0.9" dy="0.9" layer="1" roundness="100"/>
-<smd name="P$2" x="1.35" y="-1.35" dx="0.85" dy="0.85" layer="1"/>
-<smd name="P$3" x="-1.35" y="-1.35" dx="0.85" dy="0.85" layer="1"/>
-<smd name="P$4" x="1.35" y="1.35" dx="0.85" dy="0.85" layer="1"/>
-<smd name="P$5" x="-1.35" y="1.35" dx="0.85" dy="0.85" layer="1"/>
-<wire x1="-1.8" y1="1.8" x2="1.8" y2="1.8" width="0.127" layer="21"/>
-<wire x1="1.8" y1="1.8" x2="1.8" y2="-1.8" width="0.127" layer="21"/>
-<wire x1="1.8" y1="-1.8" x2="-1.8" y2="-1.8" width="0.127" layer="21"/>
-<wire x1="-1.8" y1="-1.8" x2="-1.8" y2="1.8" width="0.127" layer="21"/>
-<text x="-2.1" y="-1.8" size="0.6096" layer="25" font="vector" rot="R90">$NAME</text>
+<package name="MCX_JACK_FEMALE_SMD">
+<smd name="SIG" x="0" y="0" dx="1.6" dy="1.6" layer="1" roundness="100"/>
+<smd name="GND@4" x="2.25" y="-2.25" dx="1.9" dy="1.9" layer="1"/>
+<smd name="GND@3" x="-2.25" y="-2.25" dx="1.9" dy="1.9" layer="1"/>
+<smd name="GND@2" x="2.25" y="2.25" dx="1.9" dy="1.9" layer="1"/>
+<smd name="GND@1" x="-2.25" y="2.25" dx="1.9" dy="1.9" layer="1"/>
+<wire x1="-3.3" y1="3.3" x2="3.3" y2="3.3" width="0.127" layer="21"/>
+<wire x1="3.3" y1="3.3" x2="3.3" y2="-3.3" width="0.127" layer="21"/>
+<wire x1="3.3" y1="-3.3" x2="-3.3" y2="-3.3" width="0.127" layer="21"/>
+<wire x1="-3.3" y1="-3.3" x2="-3.3" y2="3.3" width="0.127" layer="21"/>
+<text x="-3.6" y="-3.3" size="0.6096" layer="25" font="vector" rot="R90">$NAME</text>
 </package>
-<package name="U.FL_JACK_MALE_SMD">
-<smd name="P$3" x="0" y="1.475" dx="2.2" dy="1.05" layer="1"/>
-<smd name="P$2" x="0" y="-1.475" dx="2.2" dy="1.05" layer="1"/>
-<smd name="P$1" x="1.525" y="0" dx="1.05" dy="1" layer="1"/>
+<package name="UMC_JACK_MALE_SMD">
+<smd name="GND@1" x="-1.475" y="0" dx="2.2" dy="1.05" layer="1" rot="R90"/>
+<smd name="GND@2" x="1.475" y="0" dx="2.2" dy="1.05" layer="1" rot="R90"/>
+<smd name="GND@3" x="0" y="1.5" dx="1" dy="1" layer="1" rot="R90"/>
+<wire x1="-1.5" y1="-1.5" x2="-1.5" y2="1.5" width="0.127" layer="21"/>
 <wire x1="-1.5" y1="1.5" x2="1.5" y2="1.5" width="0.127" layer="21"/>
 <wire x1="1.5" y1="1.5" x2="1.5" y2="-1.5" width="0.127" layer="21"/>
-<wire x1="1.5" y1="-1.5" x2="-1.5" y2="-1.5" width="0.127" layer="21"/>
-<wire x1="-1.5" y1="1.5" x2="-1.5" y2="-1.5" width="0.127" layer="21"/>
-<text x="-1.8" y="-1.4" size="0.6096" layer="25" font="vector" rot="R90">$NAME</text>
+<wire x1="-1.5" y1="-1.5" x2="1.5" y2="-1.5" width="0.127" layer="21"/>
+<text x="1.4" y="-1.8" size="0.6096" layer="25" font="vector" rot="R180">$NAME</text>
+<smd name="SIG" x="0" y="-1.5" dx="1" dy="1" layer="1" rot="R90"/>
+<polygon width="0.0508" layer="41">
+<vertex x="-0.95" y="1.1"/>
+<vertex x="-0.5" y="1.1"/>
+<vertex x="-0.5" y="1"/>
+<vertex x="0.5" y="1"/>
+<vertex x="0.5" y="1.1"/>
+<vertex x="0.95" y="1.1"/>
+<vertex x="0.95" y="-1.1"/>
+<vertex x="0.5" y="-1.1"/>
+<vertex x="0.5" y="-1"/>
+<vertex x="-0.5" y="-1"/>
+<vertex x="-0.5" y="-1.1"/>
+<vertex x="-0.95" y="-1.1"/>
+</polygon>
 </package>
 </packages>
 <symbols>
 <symbol name="CONN_COAX">
-<pin name="P$1" x="-10.16" y="2.54" visible="pin" length="middle"/>
-<pin name="P$2" x="-10.16" y="-2.54" visible="pin" length="middle"/>
+<pin name="SIG" x="-10.16" y="2.54" visible="pin" length="middle"/>
+<pin name="GND" x="-10.16" y="-2.54" visible="pin" length="middle"/>
 <wire x1="-5.08" y1="5.08" x2="-5.08" y2="-5.08" width="0.254" layer="94"/>
 <wire x1="-5.08" y1="-5.08" x2="5.08" y2="-5.08" width="0.254" layer="94"/>
 <wire x1="5.08" y1="-5.08" x2="5.08" y2="5.08" width="0.254" layer="94"/>
@@ -195,15 +210,15 @@
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="CONN_MMCX">
+<deviceset name="CONN_MCX" prefix="J">
 <gates>
 <gate name="G$1" symbol="CONN_COAX" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="MMCX_JACK_FEMALE_SMD">
+<device name="" package="MCX_JACK_FEMALE_SMD">
 <connects>
-<connect gate="G$1" pin="P$1" pad="P$1"/>
-<connect gate="G$1" pin="P$2" pad="P$2 P$3 P$4 P$5"/>
+<connect gate="G$1" pin="GND" pad="GND@1 GND@2 GND@3 GND@4"/>
+<connect gate="G$1" pin="SIG" pad="SIG"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -211,15 +226,15 @@
 </device>
 </devices>
 </deviceset>
-<deviceset name="CONN_U.FL">
+<deviceset name="CONN_UMC" prefix="J">
 <gates>
 <gate name="G$1" symbol="CONN_COAX" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="U.FL_JACK_MALE_SMD">
+<device name="" package="UMC_JACK_MALE_SMD">
 <connects>
-<connect gate="G$1" pin="P$1" pad="P$1"/>
-<connect gate="G$1" pin="P$2" pad="P$2 P$3"/>
+<connect gate="G$1" pin="GND" pad="GND@1 GND@2 GND@3"/>
+<connect gate="G$1" pin="SIG" pad="SIG"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -239,8 +254,8 @@
 </class>
 </classes>
 <parts>
-<part name="U$1" library="DubSat1 Components" deviceset="CONN_MMCX" device=""/>
-<part name="U$2" library="DubSat1 Components" deviceset="CONN_U.FL" device=""/>
+<part name="U$1" library="DubSat1 Components" deviceset="CONN_MCX" device=""/>
+<part name="U$2" library="DubSat1 Components" deviceset="CONN_UMC" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -255,17 +270,17 @@
 <nets>
 <net name="SIG" class="0">
 <segment>
-<pinref part="U$2" gate="G$1" pin="P$1"/>
+<pinref part="U$2" gate="G$1" pin="SIG"/>
 <wire x1="71.12" y1="40.64" x2="76.2" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="76.2" y1="40.64" x2="76.2" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="P$1"/>
+<pinref part="U$1" gate="G$1" pin="SIG"/>
 <wire x1="76.2" y1="45.72" x2="81.28" y2="45.72" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="GND" class="0">
 <segment>
-<pinref part="U$2" gate="G$1" pin="P$2"/>
-<pinref part="U$1" gate="G$1" pin="P$2"/>
+<pinref part="U$2" gate="G$1" pin="GND"/>
+<pinref part="U$1" gate="G$1" pin="GND"/>
 <wire x1="71.12" y1="45.72" x2="81.28" y2="40.64" width="0.1524" layer="91"/>
 </segment>
 </net>
