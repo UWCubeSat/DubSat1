@@ -28,7 +28,7 @@ FILE_STATIC general_segment gseg;
 FILE_STATIC sensordat_segment sseg;
 FILE_STATIC health_segment hseg;
 
-void genTempSensorsInit()
+FILE_STATIC void genTempSensorsInit()
 {
     asensorInit(Ref_2p5V);
     int i;
@@ -40,7 +40,7 @@ void genTempSensorsInit()
     return;
 }
 
-void genPCVSensorsInit()
+FILE_STATIC void genPCVSensorsInit()
 {
     int i;
     for (i = 0; i < NUM_PANELS; ++i)
@@ -51,7 +51,7 @@ void genPCVSensorsInit()
     }
 }
 
-void genPanelsTrackersInit()
+FILE_STATIC void genPanelsTrackersInit()
 {
     // Configure PT disable pins at outputs
     DISABLE_PTRACKER1_DIR |= DISABLE_PTRACKER1_BIT;
@@ -65,7 +65,7 @@ void genPanelsTrackersInit()
 
 }
 
-void genSetPowerTracker(PowTrackerNum ptnum, BOOL enable)
+FILE_STATIC void genSetPowerTracker(PowTrackerNum ptnum, BOOL enable)
 {
     gseg.ptlastcmds[(uint8_t)ptnum] = (enable ? (uint8_t)ExplicitEnable : (uint8_t)ExplicitDisable);
 
@@ -88,7 +88,7 @@ void genSetPowerTracker(PowTrackerNum ptnum, BOOL enable)
     }
 }
 
-void genMonitorPanels()
+FILE_STATIC void genMonitorPanels()
 {
     int i;
     PCVSensorData *pdata;
@@ -108,7 +108,7 @@ void genMonitorPanels()
     }
 }
 
-void genMonitorPowerTrackers()
+FILE_STATIC void genMonitorPowerTrackers()
 {
     int i;
     BOOL chargingactual, chargingdisable;
@@ -135,15 +135,23 @@ void genMonitorPowerTrackers()
     }
 }
 
-void genBcSendSensorDat()
+FILE_STATIC void genBcSendSensorDat()
 {
     bcbinSendPacket((uint8_t *) &sseg, sizeof(sseg));
 }
 
-void genBcSendGeneral()
+FILE_STATIC void genBcSendGeneral()
 {
     bcbinSendPacket((uint8_t *) &gseg, sizeof(gseg));
 }
+
+FILE_STATIC void genBcSendMeta()
+{
+    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
+    bcbinPopulateMeta(&mseg, sizeof(mseg));
+    bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+}
+
 
 /*
  * main.c
@@ -204,6 +212,7 @@ int main(void)
         // Report at correct rates
         genBcSendSensorDat();
         if (counter % 8 == 0) genBcSendGeneral();
+        if (counter % 16 == 0) genBcSendMeta();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
@@ -225,7 +234,8 @@ uint8_t genActionCallback(DebugMode mode, uint8_t * cmdstr)
                 csegment = (chargecmd_segment *) &cmdstr[1];
                 for (i = 0; i < NUM_PANELS; i++)
                 {
-                    genSetPowerTracker(i, csegment->enablecharge[i]);
+                    if (csegment->enablecharge[i] != CMD_NOCHANGE)
+                        genSetPowerTracker(i, csegment->enablecharge[i]);
                 }
                 break;
         }

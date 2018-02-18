@@ -119,6 +119,7 @@ TLM_SEGMENT {
 } sensordat_segment;
 
 #define OPCODE_CHARGECMD          0x64  // Dec '100', ASCII 'd'
+#define CMD_NOCHANGE  2
 CMD_SEGMENT {
     uint8_t enablecharge[NUM_PANELS];
 } chargecmd_segment;
