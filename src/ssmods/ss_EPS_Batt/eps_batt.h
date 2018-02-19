@@ -15,6 +15,23 @@
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
 
+// Configure battery balancer control pins
+#define BATT_BALANCER_ENABLE_DIR  P4DIR
+#define BATT_BALANCER_ENABLE_OUT  P4OUT
+#define BATT_BALANCER_ENABLE_BIT  BIT3
+
+#define LED_DIR  P2DIR
+#define LED_OUT  P2OUT
+#define LED_BIT  BIT2
+
+typedef enum {
+    BBCmd_InitialDisable,
+    BBCmd_AutoEnable,
+    BBCmd_ExplicitDisable,
+    BBCmd_ExplicitEnable,
+    BBCmd_NoChange,
+} BattBalancerCmd;
+
 // Most subsystem modules should be implemented at least in part
 // as a state machine (specifically, a FSM).  Here the available states are
 // defined.
@@ -42,8 +59,6 @@ typedef struct _module_status {
     uint16_t in_unknown_state;
 } ModuleStatus;
 
-void handleSyncPulse1();
-void handleSyncPulse2();
 
 uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);
