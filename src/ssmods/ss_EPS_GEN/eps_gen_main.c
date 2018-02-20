@@ -152,6 +152,19 @@ FILE_STATIC void genBcSendMeta()
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
+FILE_STATIC void genBcSendHealth()
+{
+    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
+
+    // TODO:  Determine overall health based on querying various entities for their health
+    // For now, everythingis always marginal ...
+    hseg.oms = OMS_Unknown;
+    hseg.inttemp = asensorReadIntTempC();
+    bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
+    debugInvokeStatusHandlers();
+}
+
+
 
 /*
  * main.c
@@ -211,13 +224,17 @@ int main(void)
 
         // Report at correct rates
         genBcSendSensorDat();
-        if (counter % 8 == 0) genBcSendGeneral();
+        if (counter % 8 == 0)
+        {
+            genBcSendGeneral();
+            genBcSendHealth();
+        }
         if (counter % 16 == 0) genBcSendMeta();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
-	return 0;
+    return 0;
 }
 
 uint8_t genActionCallback(DebugMode mode, uint8_t * cmdstr)

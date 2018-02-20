@@ -22,6 +22,8 @@ FILE_STATIC uint16_t RefV_ADC12MCTL_Set[] =    { ADC12VRSEL_0, ADC12VRSEL_1, ADC
 FILE_STATIC volatile BOOL capture_complete = 0;
 FILE_STATIC uint8_t num_asense_channels = 0;
 
+FILE_STATIC BOOL asensorinitialized = FALSE;
+
 FILE_STATIC float tempIntConvertRawtoCelsius(uint16_t raw)
 {
     return (float)(((float)raw - CALADC_30C) * (85 - 30)) / (CALADC_85C - CALADC_30C) + 30.0f;
@@ -274,6 +276,10 @@ FILE_STATIC initializeVoltageRef()
 
 void asensorInit(VPositiveReference vref)
 {
+    if (asensorinitialized == TRUE)
+        return;
+    asensorinitialized = TRUE;
+
     // All public APIs for the ADC must start with disabling the engine, and enabling it at the end
     // This is NOT done in the internal/FILE_STATIC "helper" functions
     disableADC();   // MUST do this before changing any other settings

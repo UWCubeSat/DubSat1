@@ -20,17 +20,49 @@
 #define BATT_BALANCER_ENABLE_OUT  P4OUT
 #define BATT_BALANCER_ENABLE_BIT  BIT3
 
+// Heater switch pins
+#define HEATER_ENABLE_DIR       P2DIR
+#define HEATER_ENABLE_OUT       P2OUT
+#define HEATER_ENABLE_BIT       BIT5
+
+// LED pins
 #define LED_DIR  P2DIR
 #define LED_OUT  P2OUT
 #define LED_BIT  BIT2
 
+// COSMOS telem and cmd packets
+#define TLM_ID_EPS_BATT_GENERAL    TLM_ID_SHARED_SSGENERAL  // == 0x02  <--- standard message ID
+#define TLM_ID_EPS_BATT_SENSORDAT  0x03
+
+TLM_SEGMENT {
+    BcTlmHeader header;  // All COSMOS TLM packets must have this
+
+    uint8_t lastbalancercmd;
+    uint8_t lastheatercmd;
+
+} general_segment;
+
+// SensorDat packet:  high-frequency sends that capture state of sensors
+TLM_SEGMENT {
+    BcTlmHeader header;  // All COSMOS TLM packets must have this
+
+} sensordat_segment;
+
+#define OPCODE_BATTMGMT          0x64  // Dec '100', ASCII 'd'
+#define NOCHANGE  2
+CMD_SEGMENT {
+    uint8_t enablebattbal;
+    uint8_t enablebattheater;
+} battmgmt_segment;
+
+
 typedef enum {
-    BBCmd_InitialDisable,
-    BBCmd_AutoEnable,
-    BBCmd_ExplicitDisable,
-    BBCmd_ExplicitEnable,
-    BBCmd_NoChange,
-} BattBalancerCmd;
+    Cmd_InitialDisable,
+    Cmd_AutoEnable,
+    Cmd_ExplicitDisable,
+    Cmd_ExplicitEnable,
+    Cmd_NoChange,
+} Cmds;
 
 // Most subsystem modules should be implemented at least in part
 // as a state machine (specifically, a FSM).  Here the available states are

@@ -15,6 +15,11 @@ FILE_STATIC flag_t triggerState1;
 FILE_STATIC flag_t triggerState2;
 FILE_STATIC flag_t triggerState3;
 
+// Telemetry and commands
+FILE_STATIC meta_segment mseg;
+FILE_STATIC general_segment gseg;
+FILE_STATIC sensordat_segment sseg;
+FILE_STATIC health_segment hseg;
 
 FILE_STATIC void battInit()
 {
@@ -24,28 +29,73 @@ FILE_STATIC void battInit()
     LED_OUT |= LED_BIT;
 }
 
-FILE_STATIC void battControlBalancer(BattBalancerCmd cmd)
+FILE_STATIC void battControlBalancer(Cmds cmd)
 {
-    if (cmd == BBCmd_ExplicitEnable || cmd == BBCmd_AutoEnable)
+    gseg.lastbalancercmd = (uint8_t)cmd;
+
+    if (cmd == Cmd_ExplicitEnable || cmd == Cmd_AutoEnable)
         BATT_BALANCER_ENABLE_OUT |= BATT_BALANCER_ENABLE_BIT;
+}
+
+FILE_STATIC void battControlHeater(Cmds cmd)
+{
+    gseg.lastheatercmd = (uint8_t)cmd;
+
+    if (cmd == Cmd_ExplicitEnable || cmd == Cmd_AutoEnable)
+        HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT;
 }
 
 FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
-    if (mode == Mode_ASCIIInteractive)
+    battmgmt_segment *bsegment;
+
+    if (mode == Mode_BinaryStreaming)
     {
-        // handle actions in a user-friendly way
-    }
-    else if (mode == Mode_ASCIIHeadless)
-    {
-        // handle actions in a low-output way
-    }
-    else if (mode == Mode_BinaryStreaming)
-    {
-        // handle actions, any output should be ground-segment friendly
-        // "packet" format
+        // Handle the cmdstr as binary values
+        switch (cmdstr[0])
+        {
+            case OPCODE_BATTMGMT:
+                bsegment = (battmgmt_segment *) &cmdstr[1];
+                if (bsegment->enablebattbal != NOCHANGE)
+                    battControlBalancer(bsegment->enablebattbal ? Cmd_ExplicitEnable : Cmd_ExplicitDisable);
+                if (bsegment->enablebattheater != NOCHANGE)
+                    battControlHeater(bsegment->enablebattheater ? Cmd_ExplicitEnable : Cmd_ExplicitDisable);
+                break;
+        }
     }
     return 1;
+}
+
+// Packetizes and sends backchannel GENERAL packet
+FILE_STATIC void battBcSendGeneral()
+{
+    bcbinSendPacket((uint8_t *) &gseg, sizeof(gseg));
+}
+
+// Packetizes and sends backchannel GENERAL packet
+FILE_STATIC void battBcSendHealth()
+{
+    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
+
+    // TODO:  Determine overall health based on querying various entities for their health
+    // For now, everythingis always marginal ...
+    hseg.oms = OMS_Unknown;
+    hseg.inttemp = asensorReadIntTempC();
+    bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
+    debugInvokeStatusHandlers();
+}
+
+// Packetizes and sends backchannel SENSORDAT packet
+FILE_STATIC void battBcSendSensorDat()
+{
+    bcbinSendPacket((uint8_t *) &sseg, sizeof(sseg));
+}
+
+FILE_STATIC void battBcSendMeta()
+{
+    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
+    bcbinPopulateMeta(&mseg, sizeof(mseg));
+    bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
 /*
@@ -56,8 +106,7 @@ int main(void)
 
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
-
-    // Other initialization
+    asensorInit(Ref_2p5V);
     battInit();
 
 
@@ -80,7 +129,11 @@ int main(void)
     /* ----- SUBSYSTEM LOGIC -----*/
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
 
-    battControlBalancer(BBCmd_AutoEnable);
+    bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
+    bcbinPopulateHeader(&(gseg.header), TLM_ID_EPS_BATT_GENERAL, sizeof(gseg));
+    bcbinPopulateHeader(&(sseg.header), TLM_ID_EPS_BATT_SENSORDAT, sizeof(sseg));
+
+    battControlBalancer(Cmd_AutoEnable);
 
     uint16_t counter;
     while (1)
@@ -89,13 +142,20 @@ int main(void)
         LED_OUT ^= LED_BIT;
         __delay_cycles(0.125 * SEC);
 
+        battBcSendSensorDat();
+
+        // Stuff running at 1Hz-ish
         if (counter % 8 == 0)
         {
-
+            battBcSendGeneral();
+            battBcSendHealth();
         }
 
-
-
+        // Stuff running 4Hz
+        if (counter % 32 ==0)
+        {
+            battBcSendMeta();
+        }
      }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
