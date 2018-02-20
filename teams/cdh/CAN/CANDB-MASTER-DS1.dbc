@@ -38,6 +38,8 @@ VAL_TABLE_ sunproc_sun_status_codes 18 "over_illumination" 17 "under_illuminatio
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2417229888 dist_solar_deploy: 0 Vector__XXX
+
 BO_ 2424309760 sensorproc_gps_enable: 1 adcs_mpc
  SG_ sensorproc_gps_enable_cmd : 0|8@1+ (1,0) [0|1] "" Vector__XXX
 
