@@ -38,7 +38,25 @@ VAL_TABLE_ sunproc_sun_status_codes 18 "over_illumination" 17 "under_illuminatio
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
-BO_ 2417229888 dist_solar_deploy: 0 Vector__XXX
+BO_ 2428641280 eps_batt_state: 3 Vector__XXX
+ SG_ eps_batt_state_bal : 17|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ eps_batt_state_heat : 16|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ eps_batt_state_soc : 8|8@1+ (1,0) [0|100] "pct" Vector__XXX
+ SG_ eps_batt_state_temp : 0|8@1- (1,0) [-128|127] "Deg C" Vector__XXX
+
+BO_ 2428575744 eps_batt_current: 8 eps_batt
+ SG_ eps_batt_current_node_c : 48|16@1- (1,0) [-1000|1000] "dcA (0.1mA)" Vector__XXX
+ SG_ eps_batt_current_min_c : 32|16@1- (1,0) [-700|1200] "cA" Vector__XXX
+ SG_ eps_batt_current_max_c : 16|16@1- (1,0) [-700|1200] "cA" Vector__XXX
+ SG_ eps_batt_current_c : 0|16@1- (1,0) [-700|1200] "cA" Vector__XXX
+
+BO_ 2428510208 eps_batt_voltage: 8 eps_batt
+ SG_ eps_batt_voltage_v_max_delta : 48|16@1+ (1,0) [0|10000] "mV" Vector__XXX
+ SG_ eps_batt_voltage_node_v : 32|16@1+ (1,0) [0|10000] "mV" Vector__XXX
+ SG_ eps_batt_voltage_min_v : 16|16@1+ (1,0) [0|10000] "mV" Vector__XXX
+ SG_ eps_batt_voltage_v : 0|16@1+ (1,0) [0|10000] "mV" Vector__XXX
+
+BO_ 2417229888 dist_solar_deploy: 0 com_1
 
 BO_ 2424309760 sensorproc_gps_enable: 1 adcs_mpc
  SG_ sensorproc_gps_enable_cmd : 0|8@1+ (1,0) [0|1] "" Vector__XXX
@@ -107,6 +125,8 @@ BO_TX_BU_ 2417188864 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2428641280 eps_batt_state_bal 1 "true" 0 "false" ;
+VAL_ 2428641280 eps_batt_state_heat 1 "true" 0 "false" ;
 VAL_ 2424309760 sensorproc_gps_enable_cmd 1 "true" 0 "false" ;
 VAL_ 2420179968 sensorproc_sun_status 18 "over_illumination" 17 "under_illumination" 5 "light_from_outside_fov_5" 4 "light_from_outside_fov_4" 3 "no_light" 0 "good_data" ;
 VAL_ 2418041888 bdot_tumble_status_status 1 "true" 0 "false" ;
