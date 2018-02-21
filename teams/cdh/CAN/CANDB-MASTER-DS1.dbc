@@ -38,6 +38,9 @@ VAL_TABLE_ sunproc_sun_status_codes 18 "over_illumination" 17 "under_illuminatio
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2418434080 mpc_vp: 1 Vector__XXX
+ SG_ mpc_vp_status : 0|1@1- (1,0) [0|1] "" Vector__XXX
+
 BO_ 2428641280 eps_batt_state: 3 Vector__XXX
  SG_ eps_batt_state_bal : 17|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ eps_batt_state_heat : 16|1@1+ (1,0) [0|1] "" Vector__XXX
