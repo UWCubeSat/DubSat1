@@ -176,6 +176,8 @@ void bspInit(SubsystemModule mod)
 
 #endif // __DEBUG__
 
+    __enable_interrupt();
+
 }
 
 void bspUARTInit(bus_instance_UART instance)

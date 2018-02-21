@@ -1,111 +1,304 @@
-#include <adcs_mtq.h>
+//------------------------------------------------------------------
+// includes
+//------------------------------------------------------------------
 #include <msp430.h> 
+#include "/Users/Eloise/Documents/COLLEGE/senior/huskySatellite/DubSat1/src/dsbase/interfaces/canwrap.h"
 
-#include "bsp/bsp.h"
+//------------------------------------------------------------------
+// defines 
+//------------------------------------------------------------------
+// Ports 
+#define LED1 BIT0 // P1.1 (red LED)
+#define LED2 BIT1 // P1.0 (green LED)
+#define S1 BIT6  // P5.6
+#define S2 BIT5   // P5.5
+#define S3 BIT2   // P5.2
+// Values 
+#define PWM_PERIOD (1000-1) // pwm period = 1000 us 
+#define PWM_0 (0-1) // 0 duty cycle  
+// for PWM pins 
+#define X1 1 // MTQ: P1_7 Launchpad: P3_5
+#define X2 2 // MTQ: P1_6 Launchpad: P3_4
+#define Y1 3 // MTQ: P3_7 Launchpad: P3_7
+#define Y2 4 // MTQ: P3_6 Launchpad: P3_6
+#define Z1 5 // MTQ: P2_2 Launchpad: P1_5
+#define Z2 6 // MTQ: P2_6 Launchpad: P2_6
 
-// Main status (a structure) and state and mode variables
-// Make sure state and mode variables are declared as volatile
-FILE_STATIC ModuleStatus mod_status;
-FILE_STATIC volatile SubsystemState ss_state    = State_FirstState;
-FILE_STATIC volatile SubsystemMode ss_mode      = Mode_FirstMode;
+//------------------------------------------------------------------
+// function prototypes
+//------------------------------------------------------------------
+void watchdog_disable(void);
+void mtq_gpio_init(void);
+void launchpad_gpio_init(void);
+void timer_b_init(void); 
+void toggle_red(void);
+void toggle_green(void);
+void interpret_command_dipole(int pwm_percent, int *duty_1, int *duty_2);
+void set_pwm(int which_pin, int duty_cycle);
+void receive_packet(CANPacket *packet);
 
-// These are sample "trigger" flags, used to indicate to the main loop
-// that a transition should occur
-FILE_STATIC flag_t triggerState1;
-FILE_STATIC flag_t triggerState2;
-FILE_STATIC flag_t triggerState3;
+//------------------------------------------------------------------
+// static variables 
+//------------------------------------------------------------------
+static int TUMBLE_STATUS;
 
-/*
- * main.c
- */
+//------------------------------------------------------------------
+// Main 
+//------------------------------------------------------------------
 int main(void)
-{
-
-    /* ----- INITIALIZATION -----*/
-    // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
-    // __SUBSYSTEM_MODULE__ is set in bsp.h based on the __SS_<subsystemmodule>__ passed in
-    // as a predefined symbol
-    bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
-
-    // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
-    // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
-    // Also hooks up special notification handlers.  Note that actual pulse interrupt handlers will update the
-    // firing state structures before calling the provided handler function pointers.
-    mod_status.startup_type = coreStartup(handlePPTFiringNotification, handleRollCall);  // <<DO NOT DELETE or MOVE>>
-
-#if defined(__DEBUG__)
-
-    // Insert debug-build-only things here, like status/info/command handlers for the debug
-    // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
-    // debugtools.h.  Also, be sure to change the "path char"
-    // e.g. debugRegisterEntity(Entity_Test, handleDebugInfoCallback,
-    //                               handleDebugStatusCallback,
-    //                               handleDebugActionCallback);
-
-#endif  //  __DEBUG__
-
-    /* ----- CAN BUS/MESSAGE CONFIG -----*/
-    // TODO:  Add the correct bus filters and register CAN message receive handlers
-
-    debugTraceF(1, "CAN message bus configured.\r\n");
-
-    /* ----- SUBSYSTEM LOGIC -----*/
-    // TODO:  Finally ... NOW, implement the actual subsystem logic!
-    // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
-    // and then control is returned to this main loop
-
-    // See ss_EPS_Dist for ideas on how to structure creating telemetry and command packets, etc.
-
-    debugTraceF(1, "Commencing subsystem module execution ...\r\n");
-    while (1)
-    {
-        // This assumes that some interrupt code will change the value of the triggerStaten variables
-        switch (ss_state)
-        {
-        case State_FirstState:
-            if (triggerState2)
-            {
-                triggerState2 = 0;
-                ss_state = State_SecondState;
-            }
-            break;
-        case State_SecondState:
-            if (triggerState3)
-            {
-                triggerState3 = 0;
-                ss_state = State_ThirdState;
-            }
-            break;
-        case State_ThirdState:
-            if (triggerState1)
-            {
-                triggerState1 = 0;
-                ss_state = State_FirstState;
-            }
-            break;
-        default:
-            mod_status.state_transition_errors++;
-            mod_status.in_unknown_state++;
-            break;
-        }
-    }
-
-    // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
-
+{	
+	// initialization 
+	watchdog_disable(); 
+	launchpad_gpio_init(); 
+	timer_b_init();
+	canWrapInit();
+	setCANPacketRxCallback(receive_packet);
+    while (1){}
 	return 0;
 }
+	
+//------------------------------------------------------------------
+// functions definitions 
+//------------------------------------------------------------------
 
-// Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
-void handlePPTFiringNotification()
+void watchdog_disable(void)
 {
-    __no_operation();
+	WDTCTL = WDTPW | WDTHOLD; // Stop watchdog timer
 }
 
-// Will be called when the subsystem gets the distribution board's CAN message that asks for check-in
-// Likely calling frequency is probably once every couple of minutes, but the code shouldn't work with
-// any period (in particular for testing, where we might spam the CAN bus with roll call queries)
-void handleRollCall()
+void launchpad_gpio_init(void)
 {
-    __no_operation();
+	// p1.0 - gpio - green LED
+	P1OUT &= ~LED1; // power on state 
+	P1DIR |= LED1;  
+    P1SEL0 &= ~LED1; 
+    P1SEL1 &= ~LED1;
+	// p1.1 - gpio - red LED
+	P1OUT &= ~LED2; 
+	P1DIR |= LED2;  
+    P1SEL0 &= ~LED2; 
+    P1SEL1 &= ~LED2;
+	// P5.5 - general purpose I/O (S2)
+	P5DIR &= ~S2; // input direction
+	P5REN |= S2; // enable pullup/down resistor
+	P5OUT |= S2; // pullup resistor mode
+	P5SEL1 &= ~S2;
+	P5SEL0 &= ~S2;
+	// P5.6 - general purpose I/O (S1)
+	P5DIR &= ~S1; 
+	P5REN |= S1; 
+	P5OUT |= S1; 
+	P5SEL1 &= ~S1;
+	P5SEL0 &= ~S1;
+	// P3.5 - TB0.4 - x1
+	P3DIR |= BIT5; 
+    P3SEL0 &= ~BIT5; 
+    P3SEL1 |= BIT5;
+	// P3.4 - TB0.3 - x2
+	P3DIR |= BIT4; 
+    P3SEL0 &= ~BIT4; 
+    P3SEL1 |= BIT4;
+	// P3.7 - TB0.6 - y1
+	P3DIR |= BIT7; 
+    P3SEL0 &= ~BIT7; 
+    P3SEL1 |= BIT7;
+	// P3.6 - TB0.5 - y2
+	P3DIR |= BIT6; 
+    P3SEL0 &= ~BIT6; 
+    P3SEL1 |= BIT6;
+	// P1.5 - TB0.2 - z1
+	P1DIR |= BIT5; 
+    P1SEL0 &= ~BIT5; 
+    P1SEL1 |= BIT5;
+	// P2.6 - TB0.1 - z2
+	P2DIR |= BIT6; 
+    P2SEL0 &= ~BIT6; 
+    P2SEL1 |= BIT6;
+	//---------------------------------
+	// Power mode control (page 73 datasheet)
+	//---------------------------------
+	// Disable the GPIO power-on default high-impedance mode to activate previously configured port settings 
+	PM5CTL0 &= ~LOCKLPM5;  
+	// note: the n in px.n refers to the CCRn register that corresponds to the capture compare timer (page 24)
 }
+
+void mtq_gpio_init(void)
+{	
+	// PJ.0,1,2 - gpio - board leds 
+	PJOUT &= ~(BIT0|BIT1|BIT2); // power on state
+	PJDIR |= BIT0|BIT1|BIT2;
+	PJSEL0 &= ~(BIT0|BIT1|BIT2);
+	PJSEL1 &= ~(BIT0|BIT1|BIT2);
+	// P1.7 - TB0.4 - x1
+	P1DIR |= BIT7; 
+    P1SEL0 &= ~BIT7; 
+    P1SEL1 |= BIT7;
+	// P1.6 - TB0.3 - x2
+	P1DIR |= BIT6; 
+    P1SEL0 &= ~BIT6; 
+    P1SEL1 |= BIT6;
+	// P3.7 - TB0.6 - y1
+	P3DIR |= BIT7; 
+    P3SEL0 &= ~BIT7; 
+    P3SEL1 |= BIT7;
+	// P3.6 - TB0.5 - y2
+	P3DIR |= BIT6; 
+    P3SEL0 &= ~BIT6; 
+    P3SEL1 |= BIT6;
+	// P2.2 - TB0.2 - z1
+	P2DIR |= BIT2; 
+    P2SEL0 &= ~BIT2; 
+    P2SEL1 |= BIT2;
+	// P2.6 - TB0.1 - z2
+	P2DIR |= BIT6; 
+    P2SEL0 &= ~BIT6; 
+    P2SEL1 |= BIT6;
+	//---------------------------------
+	// Power mode control (page 73 datasheet)
+	//---------------------------------
+	// Disable the GPIO power-on default high-impedance mode to activate previously configured port settings 
+	PM5CTL0 &= ~LOCKLPM5;  
+	// note: the n in px.n refers to the CCRn register that corresponds to the capture compare timer (page 24)
+}
+
+
+void timer_b_init(void) 
+{
+	//---------------------------------
+	// Timer B0 (page 661 userguide)
+	//---------------------------------
+	// capture control 0 (to define PWM period)
+    TB0CCR0 = PWM_PERIOD; 
+  	// capture control value (to define PWM duty cycles)
+	TB0CCR4 = PWM_0; // P1.7 - TB0.4 - x1
+	TB0CCR3 = PWM_0; // P1.6 - TB0.3 - x2
+	TB0CCR6 = PWM_0; // P3.7 - TB0.6 - y1
+	TB0CCR5 = PWM_0; // P3.6 - TB0.5 - y2 
+	TB0CCR2 = PWM_0; // P2.2 - TB0.2 - z1
+	TB0CCR1 = PWM_0; // P2.6 - TB0.1 - z2
+	// capture control mode 
+	TB0CCTL4 = OUTMOD_7;
+	TB0CCTL3 = OUTMOD_7;
+	TB0CCTL6 = OUTMOD_7;
+	TB0CCTL5 = OUTMOD_7;
+	TB0CCTL2 = OUTMOD_7;
+	TB0CCTL1 = OUTMOD_7;
+	// TB0 control 
+	TB0CTL = TBSSEL__SMCLK | MC__UP | TBCLR; 
+}
+
+void toggle_red(void)
+{
+	P1OUT ^= LED1; // Toggle red LED
+	__delay_cycles(100000); 
+}
+void toggle_green(void)
+{
+	P1OUT ^= LED2; // Toggle red LED
+	__delay_cycles(100000); 
+}
+
+void interpret_command_dipole(int pwm_percent, int* duty_1, int* duty_2)  
+{
+	if (pwm_percent > 0) 
+	{
+		*duty_1 = pwm_percent;
+		*duty_2 = 0;
+	}
+	else if (pwm_percent < 0)
+	{
+		*duty_1 = 0;
+		*duty_2 = -pwm_percent;
+	}
+	else // pwm_percent == 0
+	{
+		*duty_1 = 0;
+		*duty_2 = 0;
+	}	
+}
+
+void set_pwm(int which_pin, int duty_cycle)  
+{
+	// PWM duty cycle should always be between 0 100 TODO add range check
+	int ccr_value = ((duty_cycle*10) - 1); // Assigning |duty cycle| = (pwm_percent*10)-1 --> 100 = 1000-1 = 1000 us duty 
+	switch(which_pin)
+	{
+		case X1: // MTQ: P1_7 Launchpad: P3_5
+			TB0CCR4 = ccr_value;
+			break; 
+		case X2: // MTQ: P1_6 Launchpad: P3_4
+			TB0CCR3 = ccr_value;
+			break;
+		case Y1: // MTQ: P3_7 Launchpad: P3_7
+			TB0CCR6 = ccr_value;
+			break;
+		case Y2: // MTQ: P3_6 Launchpad: P3_6
+			TB0CCR5 = ccr_value;
+			break;	
+		case Z1: // MTQ: P2_2 Launchpad: P1_5
+			TB0CCR2 = ccr_value;
+			break;	
+		case Z2: // MTQ: P2_6 Launchpad: P2_6
+			TB0CCR1 = ccr_value;
+			break;
+		default: // unknown state 
+			break;
+	}
+}
+
+// interrupt hander for receiving CAN packet 
+void receive_packet(CANPacket *packet)
+{
+	// check if packet is tumble status 
+	if (packet->id = CAN_ID_BDOT_TUMBLE_STATUS)
+	{
+		// initialize packet
+		bdot_tumble_status tumble_status_packet = {0}; 
+		decodebdot_tumble_status(packet, &tumble_status_packet);
+		TUMBLE_STATUS = tumble_status_packet.bdot_tumble_status_status;	
+	}
+	
+	// check if packet is command dipole 
+	if (packet->id = CAN_ID_BDOT_COMMAND_DIPOLE)
+	{
+		
+		// initialize packet
+		bdot_command_dipole command_dipole_packet = {0};
+		decodebdot_command_dipole(packet, &command_dipole_packet);
+		
+		// used to set duty cycles for all outputs 
+		int duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2; 
+		
+		// control for turning on coils based on command dipole signals 
+		enum state {TUMBLING=1, IDLE=0};
+        switch (TUMBLE_STATUS) 
+		{
+			case TUMBLING: 
+				// debug lights 
+				PJOUT |= BIT0|BIT1|BIT2; // - MTQ board 
+				// control for turning on coils based on command dipole signals 
+				interpret_command_dipole(command_dipole_packet.bdot_command_dipole_x, &duty_x1, &duty_x2); // interpret dipole commands
+				interpret_command_dipole(command_dipole_packet.bdot_command_dipole_y, &duty_y1, &duty_y2); 
+				interpret_command_dipole(command_dipole_packet.bdot_command_dipole_z, &duty_z1, &duty_z2); 
+				set_pwm(X1, duty_x1); // set duty cycles 
+				set_pwm(X2, duty_x2); 
+				set_pwm(Y1, duty_y1); 
+				set_pwm(Y2, duty_y2);
+				set_pwm(Z1, duty_z1); 
+				set_pwm(Z2, duty_z2); 
+				break;
+			case IDLE: 
+				// debug lights 
+				PJOUT &= ~(BIT0|BIT1|BIT2); // - MTQ board 
+				break;
+        	default:
+				// unknown state 
+            	break;
+        }
+	}
+}
+
+
+
+
 
