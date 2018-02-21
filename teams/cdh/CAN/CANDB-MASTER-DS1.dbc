@@ -128,6 +128,7 @@ BO_TX_BU_ 2417188864 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2418434080 mpc_vp_status 1 "true" 0 "false" ;
 VAL_ 2428641280 eps_batt_state_bal 1 "true" 0 "false" ;
 VAL_ 2428641280 eps_batt_state_heat 1 "true" 0 "false" ;
 VAL_ 2424309760 sensorproc_gps_enable_cmd 1 "true" 0 "false" ;
