@@ -1,3 +1,10 @@
+/* how to send a CAN packet for debug:  
+CANPacket p = {0};
+p.id = 1234; 
+p.length = 0;
+canSendPacket(&p);
+*/
+
 //------------------------------------------------------------------
 // includes
 //------------------------------------------------------------------
@@ -35,20 +42,27 @@ int main(void)
 	timer_b_init();
 	canWrapInit();
 	setCANPacketRxCallback(receive_packet);
+	
+	P1OUT |= BIT7; // x1 on
+	P3OUT |= BIT7; // y1 on
+	P2OUT |= BIT2; // z1 on
+	
     while (1)
 	{
+		/*
 		if (command_x)
 			P1OUT |= BIT7; // x1 on
 		else 
 			P1OUT &= ~BIT7; // x1 off
 		if (command_y)
-			P3OUT &= ~BIT7; // y1 on
+			P3OUT |= BIT7; // y1 on
 		else 
 			P3OUT &= ~BIT7; // y1 off
 		if (command_z)
-			P2OUT &= ~BIT2; // z1 on 
+			P2OUT |= BIT2; // z1 on 
 		else 	
 			P2OUT &= ~BIT2;	// y1 off
+		*/
 	}
 	return 0;
 }
@@ -79,7 +93,7 @@ void receive_packet(CANPacket *packet)
 		// control for turning on coils based on command dipole signals 
         switch (tumble_status) 
 		{
-			case TUMBLING: 
+			case Tumbling: 
 				/*
 				// debug lights 
 				PJOUT |= BIT0|BIT1|BIT2; // - MTQ board 
@@ -98,7 +112,7 @@ void receive_packet(CANPacket *packet)
 				command_y = (command_dipole_packet.bdot_command_dipole_y != 0);
 				command_z = (command_dipole_packet.bdot_command_dipole_z != 0);
 				break;
-			case IDLE: 
+			case Idle: 
 				// debug lights 
 				PJOUT &= ~(BIT0|BIT1|BIT2); // - MTQ board 
 				command_x = 0;

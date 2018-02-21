@@ -54,9 +54,6 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 //---------------------
 typedef enum _tumble_state {Tumbling=1,Idle=0} TumbleState;
 
-//------------------------------------------------------------------
-// defines 
-//------------------------------------------------------------------
 // Ports 
 #define LED1 BIT0 // P1.1 (red LED)
 #define LED2 BIT1 // P1.0 (green LED)
