@@ -65,12 +65,11 @@ uint8_t gpsBuckEnabled()
 
 uint8_t gpsBuckGood()
 {
-    return 1; // TODO remove
-//    if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
-//    {
-//        return 1;
-//    }
-//    return 0;
+    if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
+    {
+        return 1;
+    }
+    return 0;
 }
 
 void gpsPowerOn()

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.6.1">
+<eagle version="8.6.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -7208,18 +7208,17 @@ No silk outline, but tDocu layer shows pin location.
 <label x="297.18" y="-60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="BLK1" gate="G$1" pin="P2.6_GPIO/PWM"/>
-<wire x1="76.2" y1="-96.52" x2="104.14" y2="-96.52" width="0.1524" layer="91"/>
-<label x="114.3" y="-116.84" size="1.778" layer="95" xref="yes"/>
-<wire x1="104.14" y1="-96.52" x2="104.14" y2="-116.84" width="0.1524" layer="91"/>
-<wire x1="104.14" y1="-116.84" x2="114.3" y2="-116.84" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="J1" gate="G$1" pin="4"/>
 <wire x1="248.92" y1="-71.12" x2="241.3" y2="-71.12" width="0.1524" layer="91"/>
 <wire x1="241.3" y1="-71.12" x2="241.3" y2="-73.66" width="0.1524" layer="91"/>
 <wire x1="241.3" y1="-73.66" x2="238.76" y2="-73.66" width="0.1524" layer="91"/>
 <label x="238.76" y="-73.66" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="BLK1" gate="G$1" pin="P2.5_GPIO"/>
+<wire x1="38.1" y1="-121.92" x2="38.1" y2="-134.62" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="-134.62" x2="58.42" y2="-134.62" width="0.1524" layer="91"/>
+<label x="58.42" y="-134.62" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="GPS_TXD1" class="0">
@@ -7229,17 +7228,18 @@ No silk outline, but tDocu layer shows pin location.
 <label x="297.18" y="-66.04" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="BLK1" gate="G$1" pin="P2.5_GPIO"/>
-<wire x1="38.1" y1="-121.92" x2="38.1" y2="-134.62" width="0.1524" layer="91"/>
-<wire x1="38.1" y1="-134.62" x2="58.42" y2="-134.62" width="0.1524" layer="91"/>
-<label x="58.42" y="-134.62" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
 <pinref part="J1" gate="G$1" pin="3"/>
 <wire x1="248.92" y1="-68.58" x2="241.3" y2="-68.58" width="0.1524" layer="91"/>
 <wire x1="241.3" y1="-68.58" x2="241.3" y2="-66.04" width="0.1524" layer="91"/>
 <wire x1="241.3" y1="-66.04" x2="238.76" y2="-66.04" width="0.1524" layer="91"/>
 <label x="238.76" y="-66.04" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="BLK1" gate="G$1" pin="P2.6_GPIO/PWM"/>
+<wire x1="76.2" y1="-96.52" x2="104.14" y2="-96.52" width="0.1524" layer="91"/>
+<label x="114.3" y="-116.84" size="1.778" layer="95" xref="yes"/>
+<wire x1="104.14" y1="-96.52" x2="104.14" y2="-116.84" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="-116.84" x2="114.3" y2="-116.84" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">

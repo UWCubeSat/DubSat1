@@ -82,17 +82,30 @@ void gpsioUpdate()
     switch (gpsPowerState)
     {
     case State_GPSOff:
-        if (triggerGPSOn)
+        if (triggerGPSOff)
+        {
+            triggerGPSOff = FALSE;
+        }
+        else if (triggerGPSOn)
         {
             // enable the buck converter
+            triggerGPSOn = FALSE;
             gpsBuckOn();
-
-            triggerGPSOn = 0;
             gpsPowerState = State_BuckWaitOn;
         }
         break;
     case State_BuckWaitOn:
-        if (gpsBuckGood())
+        if (triggerGPSOff)
+        {
+            // abort boot and wait for buck converter to turn off
+            triggerGPSOff = FALSE;
+            gpsPowerState = State_BuckWaitOff;
+        }
+        else if (triggerGPSOn)
+        {
+            triggerGPSOn = FALSE;
+        }
+        else if (gpsBuckGood())
         {
             // buck converter signal is good, enable the GPS
             gpsPowerOn();
@@ -100,43 +113,71 @@ void gpsioUpdate()
         }
         break;
     case State_GPSWait:
-        // periodically poll the GPS until it responds
-        // TODO replace this with timers?
-        if (i % 65536 == 0)
+        if (triggerGPSOff)
         {
-            gpsSendCommand("log rxstatusb\r\n");
+            // abort boot and turn GPS switch off
+            triggerGPSOff = FALSE;
+            gpsPowerOff();
+            gpsPowerState = State_BuckWaitOff;
         }
-        if (gpsioHandlePackage(gpsRead()))
+        else if (triggerGPSOn)
+        {
+            triggerGPSOn = FALSE;
+        }
+        else if (gpsioHandlePackage(gpsRead()))
         {
             // now that the GPS is confirmed to be on, send commands to configure it
             gpsioConfigure();
             gpsPowerState = State_GPSOn;
         }
+        else if (i % 65536 == 0)
+        {
+            // periodically poll the GPS until it responds
+            // TODO replace this with timers
+            gpsSendCommand("log rxstatusb\r\n");
+        }
         break;
     case State_GPSOn:
-        // read from the GPS and trigger message handlers
-        gpsioHandlePackage(gpsRead());
-
-        if (i % 65536 == 0)
-        {
-            gpsioSendStatus();
-        }
-
         if (triggerGPSOff)
         {
             // switch the GPS off
+            triggerGPSOff = FALSE;
             gpsPowerOff();
-
-            triggerGPSOff = 0;
             gpsPowerState = State_BuckWaitOff;
+        }
+        else if (triggerGPSOn)
+        {
+            triggerGPSOn = FALSE;
+        }
+        else if (i % 65536 == 0)
+        {
+            // periodically send status telemetry
+            gpsioSendStatus();
+        }
+        else
+        {
+            // read from the GPS and trigger message handlers
+            gpsioHandlePackage(gpsRead());
         }
         break;
     case State_BuckWaitOff:
     {
-        // wait a while before disabling the buck converter
         static uint16_t count = 0;
-        if (count++ > 50000)
+
+        if (triggerGPSOff)
         {
+            triggerGPSOff = FALSE;
+        }
+        else if (triggerGPSOn)
+        {
+            // abort shutdown and turn the GPS switch back on
+            triggerGPSOn = FALSE;
+            gpsPowerOn();
+            gpsPowerState = State_GPSWait;
+        }
+        else if (count++ > 50000)
+        {
+            // wait a while before disabling the buck converter
             gpsBuckOff();
             gpsPowerState = State_GPSOff;
             count = 0;
@@ -229,17 +270,17 @@ bool gpsioHandleCommand(uint8_t *cmdstr)
             break;
         case OPCODE_ENABLE:
             enableSegment = (enable_segment *) (cmdstr + 1);
-            if (enableSegment->enable && gpsPowerState == State_GPSOff)
+
+            // set enable/disable trigger and overwrite previous command
+            if (enableSegment->enable)
             {
-                triggerGPSOn = 1;
-            }
-            else if (enableSegment->enable == 0 && gpsPowerState == State_GPSOn)
-            {
-                triggerGPSOff = 1;
+                triggerGPSOn = TRUE;
+                triggerGPSOff = FALSE;
             }
             else
             {
-                // TODO log error
+                triggerGPSOn = FALSE;
+                triggerGPSOff = TRUE;
             }
             break;
         default:
