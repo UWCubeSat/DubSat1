@@ -52,22 +52,24 @@ void gpsioInit()
     bcbinPopulateHeader(&rxstatusSeg.header, TLM_ID_RXSTATUS, sizeof(rxstatusSeg));
     bcbinPopulateHeader(&timeSeg.header, TLM_ID_TIME, sizeof(timeSeg));
 
+    triggerGPSOn = FALSE;
+    triggerGPSOff = FALSE;
+
     gpsInit();
 }
 
-// send commands to configure the GPS
-void gpsioConfigure()
+void gpsioConfig()
 {
     // configure to reply in binary only
     gpsSendCommand("interfacemode thisport novatel novatelbinary on\r\n");
 
     gpsSendCommand("statusconfig clear status 004c0000\r\n");
 
-    // log the status once. Status word will be updated at every message.
     gpsSendCommand("log rxstatusb\r\n");
     gpsSendCommand("log timeb\r\n");
 
     // monitor hardware
+    // TODO this only logs once for some reason
     gpsSendCommand("log hwmonitorb ontime 3\r\n");
 
     // monitor position
@@ -126,8 +128,8 @@ void gpsioUpdate()
         }
         else if (gpsioHandlePackage(gpsRead()))
         {
-            // now that the GPS is confirmed to be on, send commands to configure it
-            gpsioConfigure();
+            // now that the GPS is confirmed to be on, configure it
+            gpsioConfig();
             gpsPowerState = State_GPSOn;
         }
         else if (i % 65536 == 0)
@@ -138,6 +140,7 @@ void gpsioUpdate()
         }
         break;
     case State_GPSOn:
+        // TODO add state transition for !gpsBuckGood()?
         if (triggerGPSOff)
         {
             // switch the GPS off
@@ -153,6 +156,13 @@ void gpsioUpdate()
         {
             // periodically send status telemetry
             gpsioSendStatus();
+
+            /*
+             * We should be able to use "log hwmonitorb ontime 3" to poll this
+             * automatically, but that isn't working for whatever reason.
+             * Manually calling logs here does work.
+             */
+            gpsSendCommand("log hwmonitorb\r\n");
         }
         else
         {
@@ -187,6 +197,18 @@ void gpsioUpdate()
     default:
         break;
     }
+}
+
+void gpsioPowerOn()
+{
+    triggerGPSOn = TRUE;
+    triggerGPSOff = FALSE;
+}
+
+void gpsioPowerOff()
+{
+    triggerGPSOn = FALSE;
+    triggerGPSOff = TRUE;
 }
 
 void gpsioSendPowerStatus()
