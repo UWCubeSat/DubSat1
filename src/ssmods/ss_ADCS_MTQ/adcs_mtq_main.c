@@ -1,10 +1,3 @@
-/* how to send a CAN packet for debug:  
-CANPacket p = {0};
-p.id = 1234; 
-p.length = 0;
-canSendPacket(&p);
-*/
-
 //------------------------------------------------------------------
 // includes
 //------------------------------------------------------------------
@@ -17,20 +10,17 @@ canSendPacket(&p);
 // function prototypes
 //------------------------------------------------------------------
 void mtq_gpio_init(void);
-void mtq_gpio_debug_init(void);
+void mtq_gpio_debug_init(void); // DEBUG
 void timer_b_init(void); 
 void interpret_command_dipole(int pwm_percent, int *duty_1, int *duty_2);
 void set_pwm(int which_pin, int duty_cycle);
 void receive_packet(CANPacket *packet);
+void send_ping_packet(void);
 
 //------------------------------------------------------------------
 // static variables 
 //------------------------------------------------------------------
 FILE_STATIC volatile TumbleState tumble_status = Idle; // static volatile enum _tumble_state {Tumbling=1,Idle=0} TumbleState tumble_status = Idle;
-
-FILE_STATIC volatile int command_x = 0;
-FILE_STATIC volatile int command_y = 0;
-FILE_STATIC volatile int command_z = 0;
 
 //------------------------------------------------------------------
 // Main 
@@ -38,39 +28,19 @@ FILE_STATIC volatile int command_z = 0;
 int main(void)
 {	
 	// initialization 
+	bspInit(__SS_ADCS_MTQ__);
 	mtq_gpio_debug_init();
 	timer_b_init();
 	canWrapInit();
 	setCANPacketRxCallback(receive_packet);
 	
-	P1OUT |= BIT7; // x1 on
-	P3OUT |= BIT7; // y1 on
-	P2OUT |= BIT2; // z1 on
-	
-    while (1)
-	{
-		/*
-		if (command_x)
-			P1OUT |= BIT7; // x1 on
-		else 
-			P1OUT &= ~BIT7; // x1 off
-		if (command_y)
-			P3OUT |= BIT7; // y1 on
-		else 
-			P3OUT &= ~BIT7; // y1 off
-		if (command_z)
-			P2OUT |= BIT2; // z1 on 
-		else 	
-			P2OUT &= ~BIT2;	// y1 off
-		*/
-	}
+    while (1){}
 	return 0;
 }
 
 //------------------------------------------------------------------
 // Interrupt handler definitions 
 //------------------------------------------------------------------
-
 void receive_packet(CANPacket *packet)
 {
 	// check if packet is tumble status 
@@ -79,7 +49,7 @@ void receive_packet(CANPacket *packet)
 		// initialize packet
 		bdot_tumble_status tumble_status_packet = {0}; 
 		decodebdot_tumble_status(packet, &tumble_status_packet);
-		tumble_status = tumble_status_packet.bdot_tumble_status_status;
+		tumble_status = (tumble_status_packet.bdot_tumble_status_status == 1);
 	}
 	
 	// check if packet is command dipole 
@@ -94,30 +64,28 @@ void receive_packet(CANPacket *packet)
         switch (tumble_status) 
 		{
 			case Tumbling: 
-				/*
-				// debug lights 
-				PJOUT |= BIT0|BIT1|BIT2; // - MTQ board 
+				PJOUT |= BIT0|BIT1|BIT2; // debug lights 
 				// control for turning on coils based on command dipole signals 
 				interpret_command_dipole(command_dipole_packet.bdot_command_dipole_x, &duty_x1, &duty_x2); // interpret dipole commands
 				interpret_command_dipole(command_dipole_packet.bdot_command_dipole_y, &duty_y1, &duty_y2); 
 				interpret_command_dipole(command_dipole_packet.bdot_command_dipole_z, &duty_z1, &duty_z2); 
-				set_pwm(X1, duty_x1); // set duty cycles 
+				// set duty cycles 
+				set_pwm(X1, duty_x1); 
 				set_pwm(X2, duty_x2); 
 				set_pwm(Y1, duty_y1); 
 				set_pwm(Y2, duty_y2);
 				set_pwm(Z1, duty_z1); 
-				set_pwm(Z2, duty_z2); 
-				*/
-				command_x = (command_dipole_packet.bdot_command_dipole_x != 0);
-				command_y = (command_dipole_packet.bdot_command_dipole_y != 0);
-				command_z = (command_dipole_packet.bdot_command_dipole_z != 0);
+				set_pwm(Z2, duty_z2); 		
 				break;
 			case Idle: 
-				// debug lights 
-				PJOUT &= ~(BIT0|BIT1|BIT2); // - MTQ board 
-				command_x = 0;
-				command_y = 0;
-				command_z = 0;
+				PJOUT &= ~(BIT0|BIT1|BIT2); // debug lights 
+				// set all duty cycles to 0 
+				TB0CCR4 = PWM_0; // x1
+				TB0CCR3 = PWM_0; // x2
+				TB0CCR6 = PWM_0; // y1
+				TB0CCR5 = PWM_0; // y2 
+				TB0CCR2 = PWM_0; // z1
+				TB0CCR1 = PWM_0; // z2
 				break;
         	default:
 				// unknown state 
@@ -126,10 +94,10 @@ void receive_packet(CANPacket *packet)
 	
 	}
 }	
+
 //------------------------------------------------------------------
 // functions definitions 
 //------------------------------------------------------------------
-
 void mtq_gpio_init(void)
 {	
 	// PJ.0,1,2 - gpio - board leds 
@@ -139,28 +107,28 @@ void mtq_gpio_init(void)
 	PJSEL1 &= ~(BIT0|BIT1|BIT2);
 	// P1.7 - TB0.4 - x1
 	P1DIR |= BIT7; 
-    P1SEL0 &= ~BIT7; 
-    P1SEL1 |= BIT7;
+    P1SEL0 |= BIT7; 
+    P1SEL1 &= ~BIT7;
 	// P1.6 - TB0.3 - x2
 	P1DIR |= BIT6; 
-    P1SEL0 &= ~BIT6; 
-    P1SEL1 |= BIT6;
+    P1SEL0 |= BIT6; 
+    P1SEL1 &= ~BIT6;
 	// P3.7 - TB0.6 - y1
 	P3DIR |= BIT7; 
-    P3SEL0 &= ~BIT7; 
-    P3SEL1 |= BIT7;
+    P3SEL0 |= BIT7; 
+    P3SEL1 &= ~BIT7;
 	// P3.6 - TB0.5 - y2
 	P3DIR |= BIT6; 
-    P3SEL0 &= ~BIT6; 
-    P3SEL1 |= BIT6;
+    P3SEL0 |= BIT6; 
+    P3SEL1 &= ~BIT6;
 	// P2.2 - TB0.2 - z1
 	P2DIR |= BIT2; 
-    P2SEL0 &= ~BIT2; 
-    P2SEL1 |= BIT2;
+    P2SEL0 |= BIT2; 
+    P2SEL1 &= ~BIT2;
 	// P2.6 - TB0.1 - z2
 	P2DIR |= BIT6; 
-    P2SEL0 &= ~BIT6; 
-    P2SEL1 |= BIT6;
+    P2SEL0 |= BIT6; 
+    P2SEL1 &= ~BIT6;
 	//---------------------------------
 	// Power mode control (page 73 datasheet)
 	//---------------------------------
@@ -211,7 +179,6 @@ void mtq_gpio_debug_init(void)
 	//---------------------------------
 	// Disable the GPIO power-on default high-impedance mode to activate previously configured port settings 
 	PM5CTL0 &= ~LOCKLPM5;  
-	// note: the n in px.n refers to the CCRn register that corresponds to the capture compare timer (page 24)
 }
 
 void timer_b_init(void) 
@@ -285,6 +252,14 @@ void set_pwm(int which_pin, int duty_cycle)
 		default: // unknown state 
 			break;
 	}
+}
+
+void send_ping_packet(void)
+{
+	CANPacket p = {0};
+	p.id = 1234;
+	p.length = 0;
+	canSendPacket(&p);
 }
 
 
