@@ -287,7 +287,7 @@ void decodesensorproc_sun(CANPacket *input, sensorproc_sun *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> sensorproc_sun_status = (uint8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> sensorproc_sun_status = (uint8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
     output -> sensorproc_sun_reading_beta = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> sensorproc_sun_reading_alpha = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
@@ -308,7 +308,7 @@ void decodesensorproc_photodiode(CANPacket *input, sensorproc_photodiode *output
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> sensorproc_photodiode_x_neg = (uint8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> sensorproc_photodiode_x_neg = (uint8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
     output -> sensorproc_photodiode_y_neg = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
     output -> sensorproc_photodiode_x_pos = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
@@ -329,7 +329,7 @@ void decodebdot_command_dipole(CANPacket *input, bdot_command_dipole *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> bdot_command_dipole_z = (int8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> bdot_command_dipole_z = (int8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
     output -> bdot_command_dipole_y = (int8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
     output -> bdot_command_dipole_x = (int8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
@@ -397,7 +397,7 @@ void decodemsp_temp(CANPacket *input, msp_temp *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> msp_temp_temp = (uint16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> msp_temp_temp = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
 
 void encodemsp_temp(msp_temp *input, CANPacket *output){
