@@ -1,5 +1,5 @@
 #include <adcs_mpc.h>
-#include <msp430.h> 
+#include <msp.h>
 
 #include "bsp/bsp.h"
 
