@@ -51,7 +51,8 @@ int main(void)
     debugTraceF(1, "CAN message bus configured.\r\n");
     rwsInit();
 //    rwsSetTuningParams(0.75,0.05,0.01);
-    rwsSetTuningParams(0.6,0.01,0.0);
+//    rwsSetTuningParams(0.6,0.01,0.0);
+    rwsSetTuningParams(0.4,0.04,0.0);
     rwsSetTargetRPM(2000);
     rwsRunAuto();
     /* ----- SUBSYSTEM LOGIC -----*/
@@ -70,8 +71,8 @@ int main(void)
         case State_FirstState:
             if(rwsRPMUpdated()){
                 rwsSetRPMUpdated(0);
-                int b = rwsPIDStep(0);
-                rwsSetMotorSpeed(b);
+                double b = rwsPIDStep(0);
+                rwsSetMotorSpeed(40000);
 
             }
             if (triggerState2)

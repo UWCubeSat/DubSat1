@@ -1,0 +1,81 @@
+2018/02/13 16:14:10.880  INFO: COSMOS Version: 4.1.0
+2018/02/13 16:14:10.961  INFO: Processing target definition in file 'C:/Users/garrett/Documents/CubeSat/DubSat1/grnd/COSMOS/Demo/config/targets/INST/target.txt'
+2018/02/13 16:14:10.972  INFO: Processing target definition in file 'C:/Users/garrett/Documents/CubeSat/DubSat1/grnd/COSMOS/Demo/config/targets/INST/target.txt'
+2018/02/13 16:14:11.000  INFO: Processing target definition in file 'C:/Users/garrett/Documents/CubeSat/DubSat1/grnd/COSMOS/Demo/config/targets/EXAMPLE/target.txt'
+2018/02/13 16:14:11.012  INFO: Processing target definition in file 'C:/Users/garrett/Documents/CubeSat/DubSat1/grnd/COSMOS/Demo/config/targets/TEMPLATED/target.txt'
+2018/02/13 16:14:11.020  INFO: Processing target definition in file 'C:/Users/garrett/Documents/CubeSat/DubSat1/grnd/COSMOS/Demo/config/targets/SYSTEM/target.txt'
+2018/02/13 16:14:11.031  INFO: Processing CmdTlmServer configuration in file: C:/Users/garrett/Documents/CubeSat/DubSat1/grnd/COSMOS/Demo/config/tools/cmd_tlm_server/cmd_tlm_server.txt
+2018/02/13 16:14:11.033  INFO: Processing CmdTlmServer configuration in file: C:/Users/garrett/Documents/CubeSat/DubSat1/grnd/COSMOS/Demo/config/targets/INST/cmd_tlm_server.txt
+2018/02/13 16:14:11.045  INFO: Processing CmdTlmServer configuration in file: C:/Users/garrett/Documents/CubeSat/DubSat1/grnd/COSMOS/Demo/config/targets/EXAMPLE/cmd_tlm_server.txt
+2018/02/13 16:14:11.049  INFO: Processing CmdTlmServer configuration in file: C:/Users/garrett/Documents/CubeSat/DubSat1/grnd/COSMOS/Demo/config/targets/TEMPLATED/cmd_tlm_server.txt
+2018/02/13 16:14:11.079  WARN: Marshal load failed with invalid marshal file: C:/Users/garrett/Documents/CubeSat/DubSat1/grnd/COSMOS/Demo/outputs/tmp/marshal_f36375994a55b127caa65b190a389682.bin
+2018/02/13 16:14:15.375  INFO: Creating thread for router INST_ROUTER
+2018/02/13 16:14:15.375  INFO: Creating thread for router PREIDENTIFIED_ROUTER
+2018/02/13 16:14:15.375  INFO: Creating thread for router PREIDENTIFIED_CMD_ROUTER
+2018/02/13 16:14:15.376  INFO: Creating thread for interface INST_INT
+2018/02/13 16:14:15.376  INFO: Creating thread for interface INST2_INT
+2018/02/13 16:14:15.376  INFO: Creating thread for interface SYSTEM_INT
+2018/02/13 16:14:15.377  INFO: Starting packet reading for INST_ROUTER
+2018/02/13 16:14:15.377  INFO: Connecting to INST_ROUTER...
+2018/02/13 16:14:15.377  INFO: INST_ROUTER Connection Success
+2018/02/13 16:14:15.377  INFO: Starting packet reading for PREIDENTIFIED_ROUTER
+2018/02/13 16:14:15.377  INFO: Connecting to PREIDENTIFIED_ROUTER...
+2018/02/13 16:14:15.379  INFO: Starting connection maintenance for PREIDENTIFIED_CMD_ROUTER
+2018/02/13 16:14:15.379  INFO: Connecting to PREIDENTIFIED_CMD_ROUTER...
+2018/02/13 16:14:15.381  INFO: PREIDENTIFIED_CMD_ROUTER Connection Success
+2018/02/13 16:14:15.381  INFO: Starting packet reading for INST_INT
+2018/02/13 16:14:15.381  INFO: Connecting to INST_INT...
+2018/02/13 16:14:15.387  INFO: Starting packet reading for INST2_INT
+2018/02/13 16:14:15.387  INFO: Connecting to INST2_INT...
+2018/02/13 16:14:15.387  INFO: Starting packet reading for SYSTEM_INT
+2018/02/13 16:14:15.387  INFO: Connecting to SYSTEM_INT...
+2018/02/13 16:14:15.387  INFO: SYSTEM_INT Connection Success
+2018/02/13 16:14:15.406  INFO: PREIDENTIFIED_ROUTER Connection Success
+2018/02/13 16:14:15.410  INFO: INST_INT Connection Success
+2018/02/13 16:14:15.411  INFO: INST2_INT Connection Success
+2018/02/13 16:14:15.431  INFO: INST2 HEALTH_STATUS TEMP1 = 54.888149999999996 is GREEN_HIGH
+2018/02/13 16:14:15.431  ERROR: INST2 HEALTH_STATUS TEMP2 = -Infinity is RED_LOW
+2018/02/13 16:14:15.431  ERROR: INST2 HEALTH_STATUS TEMP3 = 79.94390000000001 is RED_HIGH
+2018/02/13 16:14:15.431  INFO: INST2 HEALTH_STATUS TEMP4 = -0.057599999999993656 is GREEN
+2018/02/13 16:14:15.442  INFO: Log File Opened : C:/Users/garrett/Documents/CubeSat/DubSat1/grnd/COSMOS/Demo/outputs/logs/2018_02_13_16_14_15_tlm.bin
+2018/02/13 16:14:15.443  INFO: INST HEALTH_STATUS TEMP1 = 54.888149999999996 is GREEN_HIGH
+2018/02/13 16:14:15.443  ERROR: INST HEALTH_STATUS TEMP2 = -Infinity is RED_LOW
+2018/02/13 16:14:15.443  ERROR: INST HEALTH_STATUS TEMP3 = 79.94390000000001 is RED_HIGH
+2018/02/13 16:14:15.443  INFO: INST HEALTH_STATUS TEMP4 = -0.057599999999993656 is GREEN
+2018/02/13 16:14:16.392  INFO: INST HEALTH_STATUS TEMP2 = -22.164702929687493 is GREEN
+2018/02/13 16:14:16.398  INFO: INST2 HEALTH_STATUS TEMP2 = -22.164702929687493 is GREEN
+2018/02/13 16:14:17.394  WARN: INST HEALTH_STATUS TEMP1 = 64.77625 is YELLOW_HIGH
+2018/02/13 16:14:17.403  WARN: INST2 HEALTH_STATUS TEMP1 = 64.77625 is YELLOW_HIGH
+2018/02/13 16:14:18.392  ERROR: INST_INT - Unknown 10 byte packet starting: 00000000000000000000
+2018/02/13 16:14:18.397  ERROR: INST2_INT - Unknown 10 byte packet starting: 00000000000000000000
+2018/02/13 16:14:19.829  INFO: Log File Closed : C:/Users/garrett/Documents/CubeSat/DubSat1/grnd/COSMOS/Demo/outputs/logs/2018_02_13_16_14_15_tlm.bin
+2018/02/13 16:14:19.829  INFO: Clean disconnect from SYSTEM_INT (returned nil)
+2018/02/13 16:14:19.829  INFO: Connection Lost for SYSTEM_INT
+2018/02/13 16:14:19.929  INFO: Killing thread for router INST_ROUTER
+2018/02/13 16:14:19.930  INFO: Clean disconnect from INST_ROUTER (returned nil)
+2018/02/13 16:14:19.930  INFO: Connection Lost for INST_ROUTER
+2018/02/13 16:14:20.003  INFO: Stopped packet reading for INST_ROUTER
+2018/02/13 16:14:20.013  INFO: Disconnected from router INST_ROUTER
+2018/02/13 16:14:20.013  INFO: Killing thread for router PREIDENTIFIED_ROUTER
+2018/02/13 16:14:20.013  INFO: Clean disconnect from PREIDENTIFIED_ROUTER (returned nil)
+2018/02/13 16:14:20.013  INFO: Connection Lost for PREIDENTIFIED_ROUTER
+2018/02/13 16:14:20.094  INFO: Stopped packet reading for PREIDENTIFIED_ROUTER
+2018/02/13 16:14:20.104  INFO: Disconnected from router PREIDENTIFIED_ROUTER
+2018/02/13 16:14:20.104  INFO: Killing thread for router PREIDENTIFIED_CMD_ROUTER
+2018/02/13 16:14:20.105  INFO: Stopped packet reading for PREIDENTIFIED_CMD_ROUTER
+2018/02/13 16:14:20.135  INFO: Disconnected from router PREIDENTIFIED_CMD_ROUTER
+2018/02/13 16:14:20.155  INFO: Killing thread for interface INST_INT
+2018/02/13 16:14:20.160  INFO: Clean disconnect from INST_INT (returned nil)
+2018/02/13 16:14:20.160  INFO: Connection Lost for INST_INT
+2018/02/13 16:14:20.160  INFO: Stopped packet reading for INST_INT
+2018/02/13 16:14:20.166  INFO: Disconnected from interface INST_INT
+2018/02/13 16:14:20.166  INFO: Killing thread for interface INST2_INT
+2018/02/13 16:14:20.167  INFO: Clean disconnect from INST2_INT (returned nil)
+2018/02/13 16:14:20.167  INFO: Connection Lost for INST2_INT
+2018/02/13 16:14:20.167  INFO: Stopped packet reading for INST2_INT
+2018/02/13 16:14:20.176  INFO: Disconnected from interface INST2_INT
+2018/02/13 16:14:20.176  INFO: Disconnected from interface EXAMPLE_INT
+2018/02/13 16:14:20.176  INFO: Disconnected from interface TEMPLATED_INT
+2018/02/13 16:14:20.176  INFO: Killing thread for interface SYSTEM_INT
+2018/02/13 16:14:20.180  INFO: Stopped packet reading for SYSTEM_INT
+2018/02/13 16:14:20.187  INFO: Disconnected from interface SYSTEM_INT

@@ -3,6 +3,9 @@
  *
  *  Created on: Sep 18, 2017
  *      Author: jeffc
+ *      DRV HI
+ *      COM LO
+ *      BRK LO
  */
 
 #include <stdlib.h>
@@ -28,6 +31,7 @@ FILE_STATIC uint8_t rpmUpdated = 0;
 FILE_STATIC uint8_t active = 0;
 FILE_STATIC uint8_t setpoint_override = 0;
 FILE_STATIC double overridden_setpoint;
+FILE_STATIC uint8_t direction =0;
 
 FILE_STATIC PidStepInfo pid;
 int rwsRPMUpdated()
@@ -50,6 +54,10 @@ void rwSendTlm()
 {
     bcbinSendPacket((uint8_t *) &pid, sizeof(pid));
 }
+void rwsSwitchDirection(){
+    direction = (direction + 1)%2;
+    RW_MOTORDIR_OUT ^= RW_MOTORDIR_PIN;
+}
 
 uint8_t rwsStatusCallback(DebugMode mode)
 {
@@ -58,6 +66,7 @@ uint8_t rwsStatusCallback(DebugMode mode)
     return 1;
 }
 
+int speedPercentage = 150;
 uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     uint8_t len = strlen((const char *)cmdstr);
@@ -88,6 +97,7 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
                     debugPrintF("Overriding PID setpoint to %d rpm.", inputnum);
                     setpoint_override = 1;
                     overridden_setpoint = inputnum;
+                    speedPercentage = inputnum;
                 }
                 return 1;
             }
@@ -109,7 +119,7 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
         switch (cmdstr[0])
         {
             case OPCODE_DIRCHANGE:
-                RW_MOTORDIR_OUT ^= RW_MOTORDIR_PIN;
+                rwsSwitchDirection();
                 pid.lastcmd.newsetpoint = 666;
                 pid.lastcmd.resetwindup = 0;
                 break;
@@ -176,28 +186,32 @@ void rwsInit()
     RW_PWM_SEL1 &= ~RW_PWM_PIN;
     RW_PWM_SEL0 |= RW_PWM_PIN;
 //
-    TB0CCR0 = 500;
-    TB0CCR4 = 1;
-    TB0CCTL4 = OUTMOD_7;
-    TB0CTL = TASSEL_2 + MC_1;
+//    TB1CCR1 = 5;
 
+
+    TB0CCR0 = 60000;
+    TB0CCR4 = 50;
+    TB0CCTL4 = OUTMOD_7 ;
+    TB0CTL = TASSEL_2 + MC_1;
 
 //    // Setup binary telemetry header
     bcbinPopulateHeader(&(pid.header), TLM_ID_RWS_PIDMOT, sizeof(pid));
     debugRegisterEntity(Entity_RWS, NULL, rwsStatusCallback, rwsActionCallback);
     rwSendTlm();
-    rwsSetMinMaxOutput(1,500);
+    rwsSetMinMaxOutput(1,600);
 }
 
+
+
 //takes a percentage between 0 and 100 to run motor speed
-void rwsSetMotorSpeed(int percentage) {
+void rwsSetMotorSpeed(double percentage) {
     if(percentage < 1){
         percentage = 1;
     }
-    else if(percentage > 500) {
-        percentage = 500;
+    else if(percentage > 600) {
+        percentage = 600;
     }
-    TB0CCR4 = percentage;
+    TB0CCR4 = (uint16_t)(percentage*100);
 }
 
 //takes a percentage between 0 and 100 to run motor speed
@@ -274,7 +288,9 @@ double rwsPIDStep(double cmd)
         pid.output = pid.maxOutput;
     else
         pid.output = rawOutput;
-
+    if(direction){
+        pid.input = pid.input * -1;
+    }
     // Store values for subsequent comparisons
     lastErr = pid.error;
     lastTime_cycles = now_cycles;
@@ -289,7 +305,7 @@ double rwsPIDStep(double cmd)
     }
 
 
-    return floor(pid.output);
+    return pid.output;
 
 }
 
@@ -373,4 +389,3 @@ __interrupt void Timer4_A1_ISR(void)
             break;
     }
 }
-

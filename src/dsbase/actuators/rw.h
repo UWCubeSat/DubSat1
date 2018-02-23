@@ -62,6 +62,7 @@ void rwsRunManual();
 void rwsSetTargetRPM();
 void rwsSetMotorSpeed();
 void rwsSetMinMaxOutput();
+void rwsSwitchDirection();
 // COSMOS Stuff
 
 #define OPCODE_DIRCHANGE            0x64

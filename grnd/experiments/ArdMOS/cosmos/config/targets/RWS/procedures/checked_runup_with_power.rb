@@ -1,30 +1,29 @@
-# First make sure we are starting clean by double-resetting windup
-cmd_no_hazardous_check("RWS PIDCTRL with NEWSETPOINT 1500, RESETWINDUP TRUE")
-wait(30)
-cmd_no_hazardous_check("RWS PIDCTRL with NEWSETPOINT 1500, RESETWINDUP TRUE")
 
-# Now start ...
+cmd("RWS DIRCHANGE")
+cmd("RWS PIDCTRL with NEWSETPOINT 200, P 2000, I 200, D 0" )
 loop do 
-  3.upto(12) do |i|
-    cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}, P 3000, I 50, D 0" )
-   
-#~    1.upto(20) do |i|
-#~      cmd("PS_DP832A GETSTATUS")
-    wait(6)
-#~    end
+  10.downto(2) do |i|
+    cmd("RWS PIDCTRL with NEWSETPOINT #{i*100}, P 2000, I 200, D 0" )
+#~    cmd("PS_DP832A GETSTATUS")
+    wait(10);
   end
-  
-  11.downto(3) do |i|
-    cmd("RWS PIDCTRL with NEWSETPOINT #{i*500}, P 3000, I 50, D 0" )
-#~    1.upto(20) do |i|
+  cmd("RWS DIRCHANGE")
+  wait(10);
+  2.upto(10) do |i|
+    cmd("RWS PIDCTRL with NEWSETPOINT #{i*100}, P 2000, I 200, D 0" )
 #~      cmd("PS_DP832A GETSTATUS")
-    wait(6)
-#~    end
+    wait(10);
+  end
+  10.downto(2) do |i|
+    cmd("RWS PIDCTRL with NEWSETPOINT #{i*1000}, P 2000, I 200, D 0" )
+#~    cmd("PS_DP832A GETSTATUS")
+    wait(10);
+  end
+  cmd("RWS DIRCHANGE")
+  wait(10);
+  2.upto(10) do |i|
+    cmd("RWS PIDCTRL with NEWSETPOINT #{i*1000}, P 2000, I 200, D 0" )
+#~      cmd("PS_DP832A GETSTATUS")
+    wait(10);
   end
 end
-
-#~loop do 
-#~  cmd("PS_DP832A GETSTATUS")
-#~
-#~end
-  
