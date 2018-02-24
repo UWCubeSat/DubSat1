@@ -62,14 +62,16 @@ FILE_STATIC ppt_main_done mainDone;
 FILE_STATIC ppt_igniter_done igniterDone;
 const uint32_t ledFreq = 200000;
 
+uint16_t timerVal; //TODO: remove before flight
+
 FILE_STATIC void sendMainDone()
 {
-    mainDone.timeDone = TA0R;
+    mainDone.timeDone = TB0R;
     bcbinSendPacket((uint8_t *) &mainDone, sizeof(mainDone));
 }
 FILE_STATIC void sendIgniterDone()
 {
-    igniterDone.timeDone = TA0R;
+    igniterDone.timeDone = TB0R;
     bcbinSendPacket((uint8_t *) &igniterDone, sizeof(igniterDone));
 }
 
@@ -99,36 +101,28 @@ int main(void)
     mod_status.ss_state = State_Uncommissioned;
 
     P1DIR |= (BIT0 | BIT1);
+    P2DIR &= ~(BIT5 | BIT6);
     P4DIR |= (BIT1 | BIT2 | BIT3);
-    P8DIR = 0;
-    P6DIR = 0;
-
-    P6DIR = 0xFF & ~BIT3; //set 6.3 to in
-    P6IE = BIT1;
-    P6IES = BIT1;
-    P6IFG &= ~BIT1; //clear the interrupt flag
 
     P1OUT = 0;
+    P2OUT = 0;
     P4OUT = 0;
 
-    /*//begin gps code
-    P3DIR &= ~BIT6;
-    P3IE |= BIT6;
-    P3IFG &= ~BIT6;
-    //end gps code*/
-    P2DIR &= ~BIT5;
-    P2IE |= BIT5;
-    P2IES = 0xFF & BIT1;
-    P2IFG &= ~BIT5;
+    P2IFG = 0; //clear the interrupt
+    P2REN |= (BIT5 | BIT6);
+    P2IE |= (BIT5 | BIT6);
+    P2IES |= BIT1; //this represents capture mode (rising/falling/both)
 
     firing = 0;
 
-    TA0CCR1 = 39322;
-    TA0CCR2 = 42599;
-    TA0CCTL1 &= ~CCIE;
-    TA0CCTL2 &= ~CCIE;
+    TB0CCR1 = 39322;
+    TB0CCR2 = 39354;
+    TB0CCR3 = 42632; //was 42621
+    TB0CCTL1 &= ~CCIE; //TODO: move these disables to a separate method
+    TB0CCTL2 &= ~CCIE;
+    TB0CCTL3 &= ~CCIE;
 
-    TA0CTL = TASSEL__ACLK | MC__CONTINOUS | TACLR | TAIE;
+    TB0CTL = TBSSEL__ACLK | MC__CONTINOUS | TBCLR | TBIE;
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
@@ -178,16 +172,6 @@ int main(void)
             //same as main charging
             break;
         case State_Firing:
-            //fire high
-            P4OUT |= BIT1;
-            __delay_cycles(795); //was 7964 for 1 ms (target is 100 us)
-            //fire low
-            P4OUT &= ~BIT1;
-            if(currTimeout)
-                currTimeout--;
-            else
-                stopFiring();
-            mod_status.ss_state = State_Cooldown;
             break;
         case State_Cooldown:
             break;
@@ -357,32 +341,44 @@ __interrupt void Port_2(void)
         default:
             break;
     }
-    P2IFG = ~BIT5; //clear the interrupt flag
+    P2IFG = 0; //clear the interrupt flag
 }
 
-#pragma vector = TIMER0_A1_VECTOR
-__interrupt void Timer0_A1_ISR (void)
+
+#pragma vector = TIMER0_B1_VECTOR
+__interrupt void Timer0_B1_ISR (void)
 {
-    switch(TA0IV)
+    switch(TB0IV)
     {
-        case TAIV__NONE: break;
-            break;
-        case TAIV1:
-            //set main charge to low and igniter charge to high
+        case TBIV__NONE: break;
+        case TBIV1:
+            //set main charge to low
             P4OUT &= ~BIT3;
-            P4OUT |= BIT2;
             mod_status.ss_state = State_Igniter_Charging;
             break;
-        case TAIV2:
+        case TBIV2:
+            //set igniter charge to high
+            P4OUT |= BIT2;
+            break;
+        case TBIV__TBCCR3:
             //set igniter charge to low
             P4OUT &= ~BIT2;
             mod_status.ss_state = State_Firing;
+            //fire high
+            P4OUT |= BIT1;
+            __delay_cycles(795); //was 7964 for 1 ms (target is 100 us)
+            //fire low
+            P4OUT &= ~BIT1;
+            if(currTimeout)
+                currTimeout--;
+            else
+                stopFiring();
+            mod_status.ss_state = State_Cooldown;
             break;
-        case TAIV3: break;
-        case TAIV4: break;
-        case TAIV5: break;
-        case TAIV6: break;
-        case TAIV__TAIFG: //overflow case
+        case TBIV4: break;
+        case TBIV5: break;
+        case TBIV6: break;
+        case TBIV__TBIFG: //overflow case
             if(firing)
             {
                 if(currFireCount)
@@ -391,8 +387,9 @@ __interrupt void Timer0_A1_ISR (void)
                 }
                 else //currFireCount is zero
                 {
-                    TA0CCTL1 = CCIE;
-                    TA0CCTL2 = CCIE;
+                    TB0CCTL1 = CCIE;
+                    TB0CCTL2 = CCIE;
+                    TB0CCTL3 = CCIE;
                     currFireCount = fireRate;
                     //set main to high
                     P4OUT |= BIT3;
@@ -401,12 +398,12 @@ __interrupt void Timer0_A1_ISR (void)
             }
             else
             {
-                TA0CCTL1 &= ~CCIE;
-                TA0CCTL2 &= ~CCIE;
+                TB0CCTL1 &= ~CCIE;
+                TB0CCTL2 &= ~CCIE;
+                TB0CCTL3 &= ~CCIE;
             }
 
             break;
-        default:
-            break;
+        default: break;
     }
 }
