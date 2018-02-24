@@ -20,9 +20,11 @@
 // defined.
 typedef enum _subsystem_state {
     State_Undetermined,
-    State_FirstState,
-    State_SecondState,
-    State_ThirdState,
+    State_Uncommissioned,
+    State_Main_Charging,
+    State_Igniter_Charging,
+    State_Firing,
+    State_Cooldown,
 } SubsystemState;
 
 // Additional, it can be helpful if states are grouped into higher level

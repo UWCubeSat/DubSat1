@@ -1,17 +1,80 @@
 #include <msp430.h> 
-#include <PPT.h>
+#include "PPT.h"
 
 #include "bsp/bsp.h"
 
+/*
+ * Output Pins:
+ * 4.3 - Main
+ * 4.2 - Igniter
+ * 4.1 - Firing Pulse
+ *
+ * Input Pins:
+ * 2.5 - Igniter Done
+ * 2.6 - Main Done
+ */
+
+
+#define OPCODE_START_FIRE 2
+#define OPCODE_STOP_FIRE 3
+
+#define DEFAULT_FIRE_RATE 1
+#define DEFAULT_TIMEOUT 100 //TODO: change these values
+
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
-FILE_STATIC ModuleStatus mod_status;
+FILE_STATIC ModuleStatus mod_status; //TODO: make this volatile?
+
+FILE_STATIC uint8_t firing;
+FILE_STATIC uint8_t fireRate;
+FILE_STATIC uint8_t currFireCount;
+FILE_STATIC uint8_t currTimeout;
 
 // These are sample "trigger" flags, used to indicate to the main loop
 // that a transition should occur
 FILE_STATIC flag_t triggerState1;
 FILE_STATIC flag_t triggerState2;
 FILE_STATIC flag_t triggerState3;
+
+CMD_SEGMENT {
+    uint8_t rate;
+    uint8_t timeout;
+} start_firing;
+
+CMD_SEGMENT {
+} stop_firing;
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+} ppt_operating;
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint16_t timeDone;
+} ppt_main_done;
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint16_t timeDone;
+} ppt_igniter_done;
+
+FILE_STATIC ppt_main_done mainDone;
+FILE_STATIC ppt_igniter_done igniterDone;
+const uint32_t ledFreq = 200000;
+
+FILE_STATIC void sendMainDone()
+{
+    mainDone.timeDone = TA0R;
+    bcbinSendPacket((uint8_t *) &mainDone, sizeof(mainDone));
+}
+FILE_STATIC void sendIgniterDone()
+{
+    igniterDone.timeDone = TA0R;
+    bcbinSendPacket((uint8_t *) &igniterDone, sizeof(igniterDone));
+}
+
+void startFiring(start_firing *startPkt);
+void stopFiring();
 
 /*
  * main.c
@@ -24,7 +87,8 @@ int main(void)
     // it sets up critical hardware settings for board specified by the __BSP_Board... defintion used.
     // If module not yet available in enum, add to SubsystemModule enumeration AND
     // SubsystemModulePaths (a string name) in systeminfo.c/.h
-    bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
+    //bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
+    bspInit(Module_PPT);
 
     // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
@@ -32,15 +96,51 @@ int main(void)
     // firing state structures before calling the provided handler function pointers.
     mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
     mod_status.ss_mode = Mode_Undetermined;
-    mod_status.ss_state = State_Undetermined;
+    mod_status.ss_state = State_Uncommissioned;
+
+    P1DIR |= (BIT0 | BIT1);
+    P4DIR |= (BIT1 | BIT2 | BIT3);
+    P8DIR = 0;
+    P6DIR = 0;
+
+    P6DIR = 0xFF & ~BIT3; //set 6.3 to in
+    P6IE = BIT1;
+    P6IES = BIT1;
+    P6IFG &= ~BIT1; //clear the interrupt flag
+
+    P1OUT = 0;
+    P4OUT = 0;
+
+    /*//begin gps code
+    P3DIR &= ~BIT6;
+    P3IE |= BIT6;
+    P3IFG &= ~BIT6;
+    //end gps code*/
+    P2DIR &= ~BIT5;
+    P2IE |= BIT5;
+    P2IES = 0xFF & BIT1;
+    P2IFG &= ~BIT5;
+
+    firing = 0;
+
+    TA0CCR1 = 39322;
+    TA0CCR2 = 42599;
+    TA0CCTL1 &= ~CCIE;
+    TA0CCTL2 &= ~CCIE;
+
+    TA0CTL = TASSEL__ACLK | MC__CONTINOUS | TACLR | TAIE;
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
     // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
     // debugtools.h.  Also, be sure to change the "path char"
-    debugRegisterEntity(Entity_SUBSYSTEM, handleDebugInfoCallback,
+    debugRegisterEntity(Entity_SUBSYSTEM, handleDebugInfoCallback, //TODO: add PPT to entityID, then change Cosmos commands' eid
                                           handleDebugStatusCallback,
-                                          handleDebugActionCallback);
+                                          handleDebugActionCallback); //was Entity_SUBSYSTEM
+
+    //hBus handle = uartInit(BackchannelUART, 1, DEBUG_UART_SPEED);
+    //uartRegisterRxCallback(handle, handleDebugActionCallback); //debugReadCallback
+
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
@@ -48,56 +148,93 @@ int main(void)
 
     debugTraceF(1, "CAN message bus configured.\r\n");
 
-    /* ----- SUBSYSTEM LOGIC -----*/
+    /* ----- SUBSY\STEM LOGIC -----*/
     // TODO:  Finally ... NOW, implement the actual subsystem logic!
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
+
+    uint32_t ledCount = ledFreq;
+
+    ppt_operating pptOp;
+
+    bcbinPopulateHeader(&pptOp.header, 2, sizeof(pptOp)); // 2nd param is opcode
+    bcbinPopulateHeader(&mainDone.header, 3, sizeof(mainDone));
+    bcbinPopulateHeader(&igniterDone.header, 4, sizeof(igniterDone));
+
+    bcbinSendPacket((uint8_t *) &pptOp, sizeof(pptOp));
+
     while (1)
     {
-        // This assumes that some interrupt code will change the value of the triggerStaten variables
-        switch (mod_status.ss_state)
+        switch(mod_status.ss_state)
         {
-        case State_Undetermined:
-            // Perform actions to figure out what true state should be and set to that state, for example ...
-            mod_status.ss_state = State_FirstState;
+        case State_Uncommissioned:
             break;
-        case State_FirstState:
-            if (triggerState2)
-            {
-                triggerState2 = 0;
-                mod_status.ss_state = State_SecondState;
-            }
+        case State_Main_Charging:
+            //check if main is done charging, then send telem
             break;
-        case State_SecondState:
-            if (triggerState3)
-            {
-                triggerState3 = 0;
-                mod_status.ss_state = State_ThirdState;
-            }
+        case State_Igniter_Charging:
+            //same as main charging
             break;
-        case State_ThirdState:
-            if (triggerState1)
-            {
-                triggerState1 = 0;
-                mod_status.ss_state = State_FirstState;
-            }
+        case State_Firing:
+            //fire high
+            P4OUT |= BIT1;
+            __delay_cycles(795); //was 7964 for 1 ms (target is 100 us)
+            //fire low
+            P4OUT &= ~BIT1;
+            if(currTimeout)
+                currTimeout--;
+            else
+                stopFiring();
+            mod_status.ss_state = State_Cooldown;
+            break;
+        case State_Cooldown:
             break;
         default:
-            mod_status.state_transition_errors++;
-            mod_status.in_unknown_state++;
-
-            mod_status.ss_state = State_Undetermined;
-            mod_status.ss_mode = Mode_Undetermined;
-
+            mod_status.ss_state = State_Uncommissioned;
             break;
+        }
+        if(ledCount <= 0)
+        {
+            //this is the blinky light routine
+            if(firing)
+                P1OUT ^= BIT1;
+            else
+                P1OUT ^= BIT0;
+            ledCount = ledFreq;
+        }
+        else
+        {
+            ledCount--;
         }
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
 	return 0;
+}
+
+void startFiring(start_firing *startPkt)
+{
+    if(!firing)
+    {
+        P1OUT &= ~BIT0;
+        firing = 1;
+
+        currTimeout = startPkt->timeout - 1;
+        fireRate = startPkt->rate - 1;
+        currFireCount = fireRate;
+    }
+}
+
+void stopFiring()
+{
+    if(firing)
+    {
+        P1OUT &= ~BIT1;
+        firing = 0;
+    }
 }
 
 /* ----- SYNC PULSE INTERRUPT HANDLERS ----- */
@@ -168,7 +305,7 @@ uint8_t handleDebugStatusCallback(DebugMode mode)
     return 1;
 }
 
-uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
+uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr) //this should be the one that gets called when a cmd comes in
 {
     if (mode == Mode_ASCIIInteractive)
     {
@@ -180,6 +317,19 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
     }
     else if (mode == Mode_BinaryStreaming)
     {
+        //this is the one
+        switch(cmdstr[0])
+        {
+            case OPCODE_START_FIRE://OPCODE_MY_CMD:
+                startFiring((start_firing *) (cmdstr + 1));
+                break;
+            case OPCODE_STOP_FIRE:
+                stopFiring();
+                break;
+            default:
+                break;
+        }
+
         // handle actions, any output should be ground-segment friendly
         // "packet" format
     }
@@ -190,4 +340,73 @@ BOOL readyToFire()
 {
     // TODO:  Walk through all of the data items that are necessary to determine if it's
     // time to go into a firing sequence
+    return 0;
+}
+
+#pragma vector=PORT2_VECTOR
+__interrupt void Port_2(void)
+{
+    switch(P2IV)
+    {
+        case P2IV__P2IFG5:
+            sendIgniterDone();
+            break;
+        case P2IV__P2IFG6:
+            sendMainDone();
+            break;
+        default:
+            break;
+    }
+    P2IFG = ~BIT5; //clear the interrupt flag
+}
+
+#pragma vector = TIMER0_A1_VECTOR
+__interrupt void Timer0_A1_ISR (void)
+{
+    switch(TA0IV)
+    {
+        case TAIV__NONE: break;
+            break;
+        case TAIV1:
+            //set main charge to low and igniter charge to high
+            P4OUT &= ~BIT3;
+            P4OUT |= BIT2;
+            mod_status.ss_state = State_Igniter_Charging;
+            break;
+        case TAIV2:
+            //set igniter charge to low
+            P4OUT &= ~BIT2;
+            mod_status.ss_state = State_Firing;
+            break;
+        case TAIV3: break;
+        case TAIV4: break;
+        case TAIV5: break;
+        case TAIV6: break;
+        case TAIV__TAIFG: //overflow case
+            if(firing)
+            {
+                if(currFireCount)
+                {
+                    currFireCount--;
+                }
+                else //currFireCount is zero
+                {
+                    TA0CCTL1 = CCIE;
+                    TA0CCTL2 = CCIE;
+                    currFireCount = fireRate;
+                    //set main to high
+                    P4OUT |= BIT3;
+                    mod_status.ss_state = State_Main_Charging;
+                }
+            }
+            else
+            {
+                TA0CCTL1 &= ~CCIE;
+                TA0CCTL2 &= ~CCIE;
+            }
+
+            break;
+        default:
+            break;
+    }
 }
