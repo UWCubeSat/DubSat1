@@ -14,14 +14,13 @@ loop do
 #~      cmd("PS_DP832A GETSTATUS")
     wait(10);
   end
-  10.downto(2) do |i|
+  1.upto(10) do |i|
     cmd("RWS PIDCTRL with NEWSETPOINT #{i*1000}, P 2000, I 200, D 0" )
 #~    cmd("PS_DP832A GETSTATUS")
     wait(10);
   end
-  cmd("RWS DIRCHANGE")
   wait(10);
-  2.upto(10) do |i|
+  9.downto(1) do |i|
     cmd("RWS PIDCTRL with NEWSETPOINT #{i*1000}, P 2000, I 200, D 0" )
 #~      cmd("PS_DP832A GETSTATUS")
     wait(10);
