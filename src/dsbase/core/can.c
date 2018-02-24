@@ -38,11 +38,11 @@ uint8_t canInit() {
     //step 2: initialize buffers, masks, and filters
     // a: CNF1, synchronization jump width length, baud rate prescaler
     //    ref: pg 45
-    setRegister(MCP_CNF1, 0x03);
+    setRegister(MCP_CNF1, 0x83);
     // b: CNF2, bittime length bit, sample point config bit
-    setRegister(MCP_CNF2, 0xac);
+    setRegister(MCP_CNF2, 0xbf);
     // c: CNF3, start of frame signal bit, wake up filter bit,
-    setRegister(MCP_CNF3, 0x07);
+    setRegister(MCP_CNF3, 0x02);
 
     // Set the interrupt pin low when the following occurs
     // Interrupts for receive
