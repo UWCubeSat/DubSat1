@@ -74,6 +74,10 @@ void gpsioConfig()
 
     // monitor position
     gpsSendCommand("log bestxyzb ontime 1\r\n");
+
+    // TODO remove before flight
+    gpsSendCommand("log satvis2b ontime 3\r\n");
+    gpsSendCommand("log rangeb ontime 3\r\n");
 }
 
 void gpsioUpdate()
@@ -439,7 +443,7 @@ FILE_STATIC void handleSatvis2(const GPSPackage *package)
     debugTraceF(GPS_TRACE_LEVEL, "\tsystem: %u\r\n", satvis2->system);
     debugTraceF(GPS_TRACE_LEVEL, "\tnum:    %u\r\n", satvis2->numSats);
 
-    satvis2_segment satvis2Seg;
+    satvis2_segment satvis2Seg = { 0 };
     switch (satvis2->system)
     {
         case SATSYSTEM_GPS:
@@ -450,6 +454,8 @@ FILE_STATIC void handleSatvis2(const GPSPackage *package)
             break;
         case SATSYSTEM_SBAS:
             satvis2Seg.numSBAS = satvis2->numSats;
+            break;
+        default:
             break;
     }
 
