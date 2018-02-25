@@ -1,7 +1,10 @@
 #include <eps_batt.h>
-#include <msp430.h> 
-
+#include <msp430.h>
 #include "bsp/bsp.h"
+
+#include "pcvsensor.h"       //INA219
+#include "coulomb_counter.h" //Coulomb counter
+#include "core/i2c.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -21,12 +24,13 @@ FILE_STATIC general_segment gseg;
 FILE_STATIC sensordat_segment sseg;
 FILE_STATIC health_segment hseg;
 
+
+/* ------BATTERY BALANCER------ */
 FILE_STATIC void battInit()
-{
-    //Initialize battery balancer enable register pin
-    BATT_BALANCER_ENABLE_DIR |= BATT_BALANCER_ENABLE_BIT;
-    LED_DIR |= LED_BIT;
-    LED_OUT |= LED_BIT;
+{       BATTERY_BALANCER_ENABLE_DIR |= BATTERY_BALANCER_ENABLE_BIT; //Initialize battery balancer enable register pin
+        HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT;                    //Initialize heater enable pin to off
+        LED_DIR |= LED_BIT;
+        LED_OUT |= LED_BIT;
 }
 
 FILE_STATIC void battControlBalancer(Cmds cmd)
@@ -34,9 +38,11 @@ FILE_STATIC void battControlBalancer(Cmds cmd)
     gseg.lastbalancercmd = (uint8_t)cmd;
 
     if (cmd == Cmd_ExplicitEnable || cmd == Cmd_AutoEnable)
-        BATT_BALANCER_ENABLE_OUT |= BATT_BALANCER_ENABLE_BIT;
+        BATTERY_BALANCER_ENABLE_OUT |= BATTERY_BALANCER_ENABLE_BIT;
 }
 
+
+/* ------BATTERY HEATERS------ */
 FILE_STATIC void battControlHeater(Cmds cmd)
 {
     gseg.lastheatercmd = (uint8_t)cmd;
@@ -98,27 +104,54 @@ FILE_STATIC void battBcSendMeta()
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
+
 /*
  * main.c
  */
+
+
+void readCC (){
+    //Reading Coulomb counter
+    CoulombCounterData deviceCC;
+    deviceCC = readCoulombCounter(); //reading the Coulomb counter (busVoltageV, calcdCurrentA, rawAccumCharge, (SOC?))
+    sseg.battVolt = deviceCC.busVoltageV;
+    sseg.SOC = deviceCC.SOC;
+    sseg.battCurr = deviceCC.calcdCurrentA;
+    //sseg.accumulatedCharge = deviceCC.accumulatedCharge;
+}
+
+void readINA(hDev hSensor){
+    //Reading INA219
+    PCVSensorData *device;
+    device = pcvsensorRead(hSensor, Read_BusV | Read_CurrentA);
+    sseg.battNodeVolt = device->busVoltageV;
+    sseg.battNodeCurr = device->calcdCurrentA;
+}
+
+
 int main(void)
 {
-
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     asensorInit(Ref_2p5V);
     battInit();
 
+    /* ------INA219/PVC SENSOR------ */
+    hDev hSensor;
+    hSensor = pcvsensorInit(I2CBus2, 0x40, 1.0, 100); //ground ground, 1 ohm???, 100 mA
+    PCVSensorData *device;
+
+    /* ------COULOMB COUNTER---- */
+      LTC2943Init(I2CBus2, 6.0);
+      CoulombCounterData deviceCC;
 
 #if defined(__DEBUG__)
-
     // Insert debug-build-only things here, like status/info/command handlers for the debug
     // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
     // debugtools.h.  Also, be sure to change the "path char"
     debugRegisterEntity(Entity_SUBSYSTEM, NULL,
                                           NULL,
                                           handleActionCallback);
-
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
@@ -142,6 +175,11 @@ int main(void)
         LED_OUT ^= LED_BIT;
         __delay_cycles(0.125 * SEC);
 
+        // Reading data
+        readCC(); // Read all of the I2C sensor data
+        readINA(hSensor);
+       // heaterState = HEATER_ENABLE_OUT;
+
         battBcSendSensorDat();
 
         // Stuff running at 1Hz-ish
@@ -160,5 +198,5 @@ int main(void)
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
-	return 0;
+    return 0;
 }
