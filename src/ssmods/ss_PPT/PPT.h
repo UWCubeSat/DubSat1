@@ -25,6 +25,7 @@ typedef enum _subsystem_state {
     State_Igniter_Charging,
     State_Firing,
     State_Cooldown,
+    State_InitializingFire,
 } SubsystemState;
 
 // Additional, it can be helpful if states are grouped into higher level
