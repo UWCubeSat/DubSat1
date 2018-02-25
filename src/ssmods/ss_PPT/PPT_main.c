@@ -62,6 +62,8 @@ FILE_STATIC ppt_main_done mainDone;
 FILE_STATIC ppt_igniter_done igniterDone;
 const uint32_t ledFreq = 200000;
 
+uint16_t timerVal; //TODO: remove this
+
 FILE_STATIC void sendMainDone()
 {
     mainDone.timeDone = TB0R;
@@ -69,6 +71,7 @@ FILE_STATIC void sendMainDone()
 }
 FILE_STATIC void sendIgniterDone()
 {
+    timerVal = TB0R;
     igniterDone.timeDone = TB0R;
     bcbinSendPacket((uint8_t *) &igniterDone, sizeof(igniterDone));
 }
@@ -111,6 +114,7 @@ int main(void)
     P2IFG = 0; //clear the interrupt
     P2REN |= (BIT5 | BIT6);
     P2IES |= BIT1; //this represents capture mode (rising/falling/both)
+    P2IE |= (BIT5 | BIT6);
 
     firing = 0;
 
@@ -211,6 +215,7 @@ void startFiring(start_firing *startPkt)
         mod_status.ss_state = State_InitializingFire;
 
         TB0CCTL3 |= CCIE;
+
         //enableInterrupts();
     }
 }
@@ -222,6 +227,7 @@ void stopFiring()
         P1OUT &= ~BIT1;
         firing = 0;
         disableInterrupts();
+        //P2IE &= ~(BIT5 | BIT6);
         P4OUT &= ~(BIT1 | BIT2 | BIT3);
     }
 }
@@ -337,7 +343,6 @@ void enableInterrupts()
     TB0CCTL1 = CCIE;
     TB0CCTL2 = CCIE;
     TB0CCTL3 = CCIE;
-    P2IE = (BIT5 | BIT6);
 }
 
 void disableInterrupts()
@@ -345,7 +350,6 @@ void disableInterrupts()
     TB0CCTL1 &= ~CCIE;
     TB0CCTL2 &= ~CCIE;
     TB0CCTL3 &= ~CCIE;
-    P2IE &= ~(BIT5 | BIT6);
 }
 
 #pragma vector=PORT2_VECTOR
@@ -397,6 +401,7 @@ __interrupt void Timer0_B1_ISR (void)
                     currTimeout--;
                 else
                     stopFiring();
+
                 disableInterrupts();
             }
             mod_status.ss_state = State_Cooldown;
