@@ -8,6 +8,7 @@
 
 void sendDipolePacket(int8_t x, int8_t y, int8_t z);
 void sendTumblePacket(uint8_t status);
+void receive_packet(CANPacket *packet);
 void changeX();
 void changeY();
 void changeZ();
