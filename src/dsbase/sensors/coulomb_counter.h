@@ -44,6 +44,7 @@ typedef struct _coulombCounterData {
     float calcdCurrentA;
     float SOC;
     float accumulatedCharge;
+    float battCharge;
 
 } CoulombCounterData;
 

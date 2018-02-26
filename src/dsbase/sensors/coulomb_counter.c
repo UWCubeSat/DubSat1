@@ -35,6 +35,24 @@ float rawCurrentToFloat(int16_t raw) {
     return ((60.0/sensor.shuntResistance)*((raw-0x7FFF)/0x7FFF));
 }
 
+BOOL checkForFullState(float voltage, float current) {
+    //full state is defined as 7.2 volts with the LTC2943 limiting the current into the batteries to .1A
+    // +- .02 volt margin with +-.1A margin
+    if(voltage >= 7.18 || voltage <= 7.22 && current <= 0.11 || current >= 0.09) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+void calibrate(hDev hSensor) {
+    //reset the accumulated charge register to the full state
+    i2cBuff[0] = LTC2943_ADDR_ACCUMULATED_CHARGE_MSB;
+    i2cBuff[1] = sensor.accumChargeFull >> 8;
+    i2cBuff[2] = sensor.accumChargeFull & 0x00FF;
+    i2cMasterWrite(hSensor, i2cBuff, 3);
+}
+
 CoulombCounterData readCoulombCounter() {
     //read voltage registers with repeated start condition.
     i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_VOLTAGE_MSB, i2cBuff, 2);
@@ -50,11 +68,20 @@ CoulombCounterData readCoulombCounter() {
     i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_ACCUMULATED_CHARGE_MSB, i2cBuff, 2);
     sensor.sensorData.rawAccumCharge = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0]<<8));
 
+    //if the batteries are full, then calibrate the mAh measurement.
+    if(checkForFullState(sensor.sensorData.busVoltageV, sensor.sensorData.calcdCurrentA)){
+        calibrate(sensor.hI2CDevice);
+    }
+
     //State of charge calculation
     sensor.sensorData.SOC = sensor.chargeLSB*((sensor.sensorData.rawAccumCharge - sensor.accumChargeEmpty)/(sensor.accumChargeFull - sensor.accumChargeEmpty));
 
     //Accumulated charge calculation. Relative to the entire register I.E it is calculating the [mAh worth of 1 bit change] times the [integer value of the register].
     sensor.sensorData.accumulatedCharge = sensor.chargeLSB*sensor.sensorData.rawAccumCharge;
+
+
+    //Accumulated charge in batteries, assuming 2200mAh batteries.
+        sensor.sensorData.battCharge = sensor.chargeLSB*(sensor.sensorData.rawAccumCharge-sensor.accumChargeEmpty);
 
     return sensor.sensorData;
 }
