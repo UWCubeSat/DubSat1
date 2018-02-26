@@ -143,11 +143,16 @@ PowerDomainSwitchState distQueryDomainSwitch(PowerDomainID domain)
 // Turns on/off switches for indicated domain
 void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
 {
+    // Record last command for each domain
     gseg.powerdomainlastcmds[(uint8_t)domain] = (uint8_t)cmd;
 
     // Overcurrent latching  or low batt commands only useful as a "special" disable for reporting purposes
     if (cmd == PD_CMD_OCLatch || cmd == PD_CMD_BattVLow)
         cmd = PD_CMD_Disable;
+
+    // Similarly, autostart is a just a "special" enable
+    if (cmd == PD_CMD_AutoStart)
+        cmd = PD_CMD_Enable;
 
     if (cmd == PD_CMD_NoChange)
         return;
@@ -435,6 +440,10 @@ int main(void)
     // TODO:  Finally ... NOW, implement the actual subsystem logic!
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
+
+    // Autostart the EPS power domain for now
+    __delay_cycles(2 * SEC);
+    distDomainSwitch(PD_EPS, PD_CMD_AutoStart);
 
     uint16_t counter = 0;
     while (1)

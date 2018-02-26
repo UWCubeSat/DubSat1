@@ -44,6 +44,16 @@ typedef struct _module_status {
 
 void handlePPTFiringNotification();
 void handleRollCall();
+void sendDipolePacket(int8_t x, int8_t y, int8_t z);
+void sendTumblePacket(uint8_t status);
+void changeX();
+void changeY();
+void changeZ();
+void changeXY();
+void changeXZ();
+void changeYZ();
+void toggleTumbleStatus(uint8_t status);
+
 
 uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);

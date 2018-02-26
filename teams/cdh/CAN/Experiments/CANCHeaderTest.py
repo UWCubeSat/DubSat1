@@ -171,8 +171,8 @@ def cMainDecodeInteger(frame, sig, sigType):
         + sigType
         + ") (((fullData & ((uint64_t) "
         + str(hex(int(str(int((-1 + 10 ** sig.signalsize)//9)), 2)))
-        + (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
-        + (")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
+        + (" << " + str(int(64 - int(sig.getStartbit()) - sig.signalsize)) if int(64 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
+        + (")) >> " + str(int(64 - int(sig.getStartbit()) - sig.signalsize)) if int(64 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
         + (") * " + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor)) if sig.factor != 1.0 else ")")
         + (" + " + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset)) if sig.offset != 0.0 else "")
         + ");\n")
@@ -182,8 +182,8 @@ def cMainDecodeFloat(frame, sig, sigType):
         out = "    uint32_t temp" + sig.name
         out += " = (uint32_t) ((fullData & ((uint64_t) "
         out += str(hex(int(str(int((-1 + 10 ** sig.signalsize)//9)), 2)))
-        out += (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
-        out +=(")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
+        out += (" << " + str(int(64 - int(sig.getStartbit()) - sig.signalsize)) if int(64 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
+        out +=(")) >> " + str(int(64 - int(sig.getStartbit()) - sig.signalsize)) if int(64 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
         out += (");\n")
         out += "    output -> "
         out += sig.name
@@ -197,8 +197,8 @@ def cMainDecodeFloat(frame, sig, sigType):
         out = "    uint64_t temp" + sig.name
         out += " = (uint64_t) ((fullData & ((uint64_t) "
         out += str(hex(int(str(int((-1 + 10 ** sig.signalsize)//9)), 2)))
-        out += (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
-        out +=(")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
+        out += (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(64 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
+        out +=(")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(64 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
         out += (");\n")
         out += "output -> "
         out += sig.name

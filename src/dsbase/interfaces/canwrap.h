@@ -124,9 +124,9 @@ typedef struct sensorproc_photodiode {
 } sensorproc_photodiode;
 
 typedef struct bdot_command_dipole {
-    uint8_t bdot_command_dipole_z; // mA*m^2
-    uint8_t bdot_command_dipole_y; // mA*m^2
-    uint8_t bdot_command_dipole_x; // mA*m^2
+    int8_t bdot_command_dipole_z; // mA*m^2
+    int8_t bdot_command_dipole_y; // mA*m^2
+    int8_t bdot_command_dipole_x; // mA*m^2
 } bdot_command_dipole;
 
 typedef struct bdot_tumble_status {
