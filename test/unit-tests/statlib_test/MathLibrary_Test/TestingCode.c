@@ -1,10 +1,11 @@
-#include "dataArray.h"
+#include "TestingCode.h"
 /*#include "unity.h"*/
 
-#include "assert.h"
+
 
 /*
-	This file contains that will test the dataArray library.
+	This file contains tests that will test the dataArray library.
+
 */
 
 /*
@@ -29,27 +30,31 @@ void tearDown(void)
 	TODO: Write methods that will test
 	The following methods will define tests
 */
+/**
+ * Function: test_initialization
+ * Initializes a buffer and tests if the library initializes it properly.
+ * This means that statistics should all be zero since no values have been added.
+ *
+ */
 void test_initialization(void)
 {
 	TYPE myArray[10];
-   uint16_t array1 = init(myArray, 10);
+	uint16_t array1 = init(myArray, 10);
 	assert(0 == getAvg(array1));
 	assert(0 == getSum(array1));
 	assert(0 == getMin(array1));
 	assert(0 == getMax(array1));
 }
 
-/*
+/**
  * Function: test_adding_one_value
  * Initializes a buffer and adds one value to buffer.
- * Tests if buffer reports the right statistics.
- *
  *
  */
 void test_adding_one_value(void)
 {
 	TYPE myArray[10];
-   uint16_t array1 = init(myArray, 10);
+	uint16_t array1 = init(myArray, 10);
 	addData(array1, (TYPE)5);
 	assert(5 == getAvg(array1));
 	assert(5 == getSum(array1));
@@ -57,6 +62,13 @@ void test_adding_one_value(void)
 	assert(5 == getMax(array1));
 }
 
+/**
+ * Function: test_fill_array
+ * Initializes a buffer and fills the buffer with as many numbers as it can handle.
+ * Tests to verify whether or not the buffer can accurately record statistics and manages the
+ * numbers in an expected manner.
+ *
+ */
 void test_fill_array(void)
 {
 	TYPE myArray[10];
@@ -77,6 +89,11 @@ void test_fill_array(void)
 	assert(544 == getMax(array1));
 }
 
+/**
+ * Function: test_reset
+ * Initializes a buffer and fills it with values, then performs resets.
+ *
+ */
 void test_reset(void) {
 	TYPE myArray[10];
 	uint16_t array1 = init(myArray, 10);
@@ -134,6 +151,13 @@ void test_reset(void) {
 
 }
 
+/**
+ * Function: test_overloading_array
+ * Initializes a buffer and fills the buffer with as many numbers as it can handle.
+ * Tests to verify whether or not the buffer can accurately record statistics and manages the
+ * numbers in an expected manner.
+ *
+ */
 void test_overloading_array(void)
 {
 	/*Initializing array to be tested */
@@ -157,6 +181,13 @@ void test_overloading_array(void)
 	assert(102 == getAvg(array1));
 }
 
+/**
+ * Function: test_not_full_array_with_same_numbers
+ * Initializes a buffer and fills the buffer with as many numbers as it can handle.
+ * Tests to verify whether or not the buffer can accurately record statistics and manages the
+ * numbers in an expected manner.
+ *
+ */
 void test_not_full_array_with_same_numbers(void)
 {
 	/* Initializing array to be tested */
@@ -167,11 +198,19 @@ void test_not_full_array_with_same_numbers(void)
 	addData(array1, (TYPE)2);
 	addData(array1, (TYPE)2);
 	addData(array1, (TYPE)2);
+	assert(10 == getSum(array1));
 	assert(2 == getMin(array1));
 	assert(2 == getMax(array1));
 	assert(2 == getAvg(array1));
 }
 
+/**
+ * Function: test_not_full_array_with_same_numbers
+ * Initializes a buffer and fills the buffer with as many numbers as it can handle.
+ * Tests to verify whether or not the buffer can accurately record statistics and manages the
+ * numbers in an expected manner.
+ *
+ */
 void test_not_full_array_with_diff_numbers(void)
 {
 	/* Initializing array to be tested */
@@ -183,10 +222,19 @@ void test_not_full_array_with_diff_numbers(void)
 	addData(array1, (TYPE)3423);
 	addData(array1, (TYPE)2);
 	assert(2 == getMin(array1));
+	assert((22 + 1000 + 513 + 3423 + 2) == getSum(array1));
 	assert(3423 == getMax(array1));
 	assert(992 == getAvg(array1));
 }
 
+
+/**
+ * Function: test_not_full_array_with_diff_numbers_with_reset
+ * Initializes a buffer and fills the buffer with as many numbers as it can handle.
+ * Tests to verify whether or not the buffer can accurately record statistics and manages the
+ * numbers in an expected manner.
+ *
+ */
 void test_not_full_array_with_diff_numbers_with_reset(void)
 {
 	/* Initializing array to be tested */
@@ -214,6 +262,13 @@ void test_not_full_array_with_diff_numbers_with_reset(void)
 	assert(1993 == getAvg(array1));
 }
 
+/**
+ * Function: test_overloading_array_with_reset
+ * Initializes a buffer and fills the buffer with as many numbers as it can handle.
+ * Tests to verify whether or not the buffer can accurately record statistics and manages the
+ * numbers in an expected manner.
+ *
+ */
 void test_overloading_array_with_reset(void)
 {
 	/* Initializing array to be tested */
@@ -319,19 +374,19 @@ void test_overflow_uint16(void)
 	assert(0 == getAvg(array1));
 }
 
-void test_overflow_float(void)
-{
-	/*Initializing array to be tested */
-	/* Tests overflow of float */
-	// TODO: Finish up test
-	TYPE myArray[10026];
-	uint16_t array1 = init(myArray, 10026);
-	addData(array1, (TYPE)FLT_MIN);
-	addData(array1, (TYPE)1.0);
-	assert(1.0 == getMin(array1));
-	assert_FLOAT(FLT_MIN == getMax(array1));
-	assert(0.0 == getAvg(array1));
-}
+//void test_overflow_float(void)
+//{
+//	/*Initializing array to be tested */
+//	/* Tests overflow of float */
+//	// TODO: Finish up test
+//	TYPE myArray[10026];
+//	uint16_t array1 = init(myArray, 10026);
+//	addData(array1, (TYPE)FLT_MIN);
+//	addData(array1, (TYPE)1.0);
+//	assert(1.0 == getMin(array1));
+//	assert_FLOAT(FLT_MIN == getMax(array1));
+//	assert(0.0 == getAvg(array1));
+//}
 
 void test_resetAvg_and_resetMinMax(void)
 {
