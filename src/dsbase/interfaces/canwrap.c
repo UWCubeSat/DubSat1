@@ -53,6 +53,13 @@ void canWrapInit(){
     setReceiveCallback1(wrapCB1);
 }
 
+void canWrapInitWithFilter(){
+    canInit();
+    setReceiveCallback0(wrapCB0);
+    setReceiveCallback1(wrapCB1);
+}
+
+
 void reverseArray(uint8_t arr[], uint8_t start, uint8_t end)
 {
     uint8_t temp;
