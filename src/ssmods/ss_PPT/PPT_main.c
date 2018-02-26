@@ -62,7 +62,7 @@ FILE_STATIC ppt_main_done mainDone;
 FILE_STATIC ppt_igniter_done igniterDone;
 const uint32_t ledFreq = 200000;
 
-uint16_t timerVal; //TODO: remove before flight
+uint16_t timerVal; //TODO: remove this
 
 FILE_STATIC void sendMainDone()
 {
@@ -71,12 +71,15 @@ FILE_STATIC void sendMainDone()
 }
 FILE_STATIC void sendIgniterDone()
 {
+    timerVal = TB0R;
     igniterDone.timeDone = TB0R;
     bcbinSendPacket((uint8_t *) &igniterDone, sizeof(igniterDone));
 }
 
 void startFiring(start_firing *startPkt);
 void stopFiring();
+void enableInterrupts();
+void disableInterrupts();
 
 /*
  * main.c
@@ -110,17 +113,15 @@ int main(void)
 
     P2IFG = 0; //clear the interrupt
     P2REN |= (BIT5 | BIT6);
-    P2IE |= (BIT5 | BIT6);
     P2IES |= BIT1; //this represents capture mode (rising/falling/both)
+    P2IE |= (BIT5 | BIT6);
 
     firing = 0;
 
     TB0CCR1 = 39322;
     TB0CCR2 = 39354;
     TB0CCR3 = 42632; //was 42621
-    TB0CCTL1 &= ~CCIE; //TODO: move these disables to a separate method
-    TB0CCTL2 &= ~CCIE;
-    TB0CCTL3 &= ~CCIE;
+    disableInterrupts();
 
     TB0CTL = TBSSEL__ACLK | MC__CONTINOUS | TBCLR | TBIE;
 
@@ -128,9 +129,9 @@ int main(void)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
     // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
     // debugtools.h.  Also, be sure to change the "path char"
-    debugRegisterEntity(Entity_SUBSYSTEM, handleDebugInfoCallback, //TODO: add PPT to entityID, then change Cosmos commands' eid
+    debugRegisterEntity(Entity_SUBSYSTEM, handleDebugInfoCallback,
                                           handleDebugStatusCallback,
-                                          handleDebugActionCallback); //was Entity_SUBSYSTEM
+                                          handleDebugActionCallback);
 
     //hBus handle = uartInit(BackchannelUART, 1, DEBUG_UART_SPEED);
     //uartRegisterRxCallback(handle, handleDebugActionCallback); //debugReadCallback
@@ -175,6 +176,8 @@ int main(void)
             break;
         case State_Cooldown:
             break;
+        case State_InitializingFire:
+            break;
         default:
             mod_status.ss_state = State_Uncommissioned;
             break;
@@ -206,9 +209,14 @@ void startFiring(start_firing *startPkt)
         P1OUT &= ~BIT0;
         firing = 1;
 
-        currTimeout = startPkt->timeout - 1;
+        currTimeout = startPkt->timeout;// - 1;
         fireRate = startPkt->rate - 1;
-        currFireCount = fireRate;
+        currFireCount = 0; //fireRate;
+        mod_status.ss_state = State_InitializingFire;
+
+        TB0CCTL3 |= CCIE;
+
+        //enableInterrupts();
     }
 }
 
@@ -218,6 +226,9 @@ void stopFiring()
     {
         P1OUT &= ~BIT1;
         firing = 0;
+        disableInterrupts();
+        //P2IE &= ~(BIT5 | BIT6);
+        P4OUT &= ~(BIT1 | BIT2 | BIT3);
     }
 }
 
@@ -327,6 +338,20 @@ BOOL readyToFire()
     return 0;
 }
 
+void enableInterrupts()
+{
+    TB0CCTL1 = CCIE;
+    TB0CCTL2 = CCIE;
+    TB0CCTL3 = CCIE;
+}
+
+void disableInterrupts()
+{
+    TB0CCTL1 &= ~CCIE;
+    TB0CCTL2 &= ~CCIE;
+    TB0CCTL3 &= ~CCIE;
+}
+
 #pragma vector=PORT2_VECTOR
 __interrupt void Port_2(void)
 {
@@ -360,20 +385,27 @@ __interrupt void Timer0_B1_ISR (void)
             //set igniter charge to high
             P4OUT |= BIT2;
             break;
+        case TBIV3:
         case TBIV__TBCCR3:
-            //set igniter charge to low
-            P4OUT &= ~BIT2;
-            mod_status.ss_state = State_Firing;
-            //fire high
-            P4OUT |= BIT1;
-            __delay_cycles(795); //was 7964 for 1 ms (target is 100 us)
-            //fire low
-            P4OUT &= ~BIT1;
-            if(currTimeout)
-                currTimeout--;
-            else
-                stopFiring();
+            if(mod_status.ss_state != State_InitializingFire)
+            {
+                //set igniter charge to low
+                P4OUT &= ~BIT2;
+                mod_status.ss_state = State_Firing;
+                //fire high
+                P4OUT |= BIT1;
+                __delay_cycles(795); //was 7964 for 1 ms (target is 100 us)
+                //fire low
+                P4OUT &= ~BIT1;
+                if(currTimeout)
+                    currTimeout--;
+                else
+                    stopFiring();
+
+                disableInterrupts();
+            }
             mod_status.ss_state = State_Cooldown;
+            //TODO: send sync pulse here
             break;
         case TBIV4: break;
         case TBIV5: break;
@@ -384,25 +416,18 @@ __interrupt void Timer0_B1_ISR (void)
                 if(currFireCount)
                 {
                     currFireCount--;
+                    //disableInterrupts();
+
                 }
-                else //currFireCount is zero
+                else if(mod_status.ss_state != State_InitializingFire)//currFireCount is zero && not the fake fire
                 {
-                    TB0CCTL1 = CCIE;
-                    TB0CCTL2 = CCIE;
-                    TB0CCTL3 = CCIE;
+                    enableInterrupts();
                     currFireCount = fireRate;
                     //set main to high
                     P4OUT |= BIT3;
                     mod_status.ss_state = State_Main_Charging;
                 }
             }
-            else
-            {
-                TB0CCTL1 &= ~CCIE;
-                TB0CCTL2 &= ~CCIE;
-                TB0CCTL3 &= ~CCIE;
-            }
-
             break;
         default: break;
     }
