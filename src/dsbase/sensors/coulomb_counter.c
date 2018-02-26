@@ -53,6 +53,9 @@ CoulombCounterData readCoulombCounter() {
     //State of charge calculation
     sensor.sensorData.SOC = sensor.chargeLSB*((sensor.sensorData.rawAccumCharge - sensor.accumChargeEmpty)/(sensor.accumChargeFull - sensor.accumChargeEmpty));
 
+    //Accumulated charge calculation. Relative to the entire register I.E it is calculating the [mAh worth of 1 bit change] times the [integer value of the register].
+    sensor.sensorData.accumulatedCharge = sensor.chargeLSB*sensor.sensorData.rawAccumCharge;
+
     return sensor.sensorData;
 }
 
