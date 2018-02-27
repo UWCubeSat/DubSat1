@@ -2,8 +2,8 @@
 #include <msp430.h>
 #include "bsp/bsp.h"
 
-#include "pcvsensor.h"       //INA219
-#include "coulomb_counter.h" //Coulomb counter
+#include "sensors/pcvsensor.h"       //INA219
+#include "sensors/coulomb_counter.h" //Coulomb counter
 #include "core/i2c.h"
 
 // Main status (a structure) and state and mode variables

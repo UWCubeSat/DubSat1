@@ -1,4 +1,0 @@
-
-|x| get blinking light to work on launchpad 
-|| fix MTQ ccs project directory - copied from template it doesn't open 
-|| start pwm testing 

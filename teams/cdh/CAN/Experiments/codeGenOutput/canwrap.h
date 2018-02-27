@@ -59,6 +59,7 @@ typedef struct CANPacket {
 } CANPacket;
 
 void canWrapInit();
+void canWrapInitWithFilter();
 
 // Global function pointer to point to the function
 // when a packet is received through CAN
