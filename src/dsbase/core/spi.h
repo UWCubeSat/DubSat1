@@ -3,7 +3,13 @@
 #define SPI_H
 
 #include <stdio.h>
+
+#ifdef __MSP432P401R__
+#include <msp.h>
+#elif defined __MSP430FR5994__
 #include <msp430.h>
+#endif
+
 #include <stdint.h>
 
 #define UCMODE_THREE_WIRE_SPI 				 0x0000

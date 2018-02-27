@@ -7,7 +7,10 @@
  */
 
 #include <stdint.h>
+
+#ifdef __MSP430FR5994__
 #include <intrinsics.h>
+#endif
 
 #include "BufferedReader.h"
 #include "core/utils.h"

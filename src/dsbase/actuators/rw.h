@@ -9,7 +9,13 @@
 #define DSBASE_ACTUATORS_RW_H_
 #define DEBUG_UART_SPEED Speed_9600
 #define __DEBUG_UART_SPEED_9600__ 1
+
+#ifdef __MSP432P401R__
+#include <msp.h>
+#elif defined __MSP430FR5994__
 #include <msp430.h>
+#endif
+
 #include <stdint.h>
 
 #include "core/utils.h"

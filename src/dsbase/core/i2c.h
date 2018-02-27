@@ -7,7 +7,12 @@
 #ifndef I2C_SUPPORT_H_
 #define I2C_SUPPORT_H_
 
+#ifdef __MSP432P401R__
+#include <msp.h>
+#elif defined __MSP430FR5994__
 #include <msp430.h>
+#endif
+
 #include <stdint.h>
 
 #include "bsp/bsp.h"

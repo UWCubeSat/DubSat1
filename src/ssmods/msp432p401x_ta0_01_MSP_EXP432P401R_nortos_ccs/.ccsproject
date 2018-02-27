@@ -8,9 +8,10 @@
 	<codegenToolVersion value="16.9.6.LTS"/>
 	<isElfFormat value="true"/>
 	<connection value="common/targetdb/connections/TIXDS110_Connection.xml"/>
-	<linkerCommandFile value="msp432p401r.cmd"/>
 	<rts value="libc.a"/>
 	<createSlaveProjects value=""/>
+	<ignoreDefaultDeviceSettings value="true"/>
+	<templateProperties value="id=msp432p401x_ta0_01_MSP_EXP432P401R_nortos_ccs.projectspec.msp432p401x_ta0_01_MSP_EXP432P401R_nortos_ccs,buildProfile=release,isHybrid=true,"/>
+	<origin value="C:\ti\simplelink_msp432p4_sdk_1_60_00_12\examples\nortos\MSP_EXP432P401R\registerLevel\msp432p401x_ta0_01\ccs\msp432p401x_ta0_01_MSP_EXP432P401R_nortos_ccs.projectspec"/>
 	<filesToOpen value=""/>
-	<isTargetManual value="false"/>
 </projectOptions>

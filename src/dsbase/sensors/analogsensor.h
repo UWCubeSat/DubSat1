@@ -10,7 +10,12 @@
 
 #include <stdint.h>
 
+#ifdef __MSP432P401R__
+#include <msp.h>
+#elif defined __MSP430FR5994__
 #include <msp430.h>
+#endif
+
 #include "bsp/bsp.h"
 #include "core/utils.h"
 #include "config/config_sensor_analog.h"

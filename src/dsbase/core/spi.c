@@ -1,5 +1,11 @@
 #include <stdio.h>
+
+#ifdef __MSP432P401R__
+#include <msp.h>
+#elif defined __MSP430FR5994__
 #include <msp430.h>
+#endif
+
 #include <stdint.h>
 #include "spi.h"
 
