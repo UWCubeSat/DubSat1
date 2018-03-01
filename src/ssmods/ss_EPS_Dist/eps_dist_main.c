@@ -50,6 +50,9 @@ FILE_STATIC health_segment hseg;
 
 FILE_STATIC hDev hBattV;
 
+#pragma PERSISTENT(local_reset_count)
+uint32_t local_reset_count = 0;
+
 #define MAX_BUFF_SIZE   0x10
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 
@@ -314,6 +317,7 @@ FILE_STATIC void distBcSendHealth()
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
     hseg.inttemp = asensorReadIntTempC();
+    hseg.reset_count = local_reset_count;
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandlers();
 }
@@ -408,6 +412,9 @@ int main(void)
 {
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
+
+    // Keep track of local reset count here for now (should move into ... timers?)
+    local_reset_count++;
 
     // Spin up the ADC, for the temp sensor and battery voltage
     asensorInit(Ref_2p5V);
