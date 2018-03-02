@@ -117,7 +117,8 @@ void readCC (){
     sseg.battVolt = deviceCC.busVoltageV;
     sseg.SOC = deviceCC.SOC;
     sseg.battCurr = deviceCC.calcdCurrentA;
-    //sseg.accumulatedCharge = deviceCC.accumulatedCharge;
+    sseg.battCharge = deviceCC.battCharge;
+    sseg.accumulatedCharge = deviceCC.accumulatedCharge;
 }
 
 void readINA(hDev hSensor){
@@ -130,7 +131,7 @@ void readINA(hDev hSensor){
 
 
 int main(void)
-{
+ {
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     asensorInit(Ref_2p5V);
@@ -178,8 +179,8 @@ int main(void)
         // Reading data
         readCC(); // Read all of the I2C sensor data
         readINA(hSensor);
-       // heaterState = HEATER_ENABLE_OUT;
-
+        sseg.heaterState = (HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) != 0;
+        sseg.balancerState = (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) != 0;
         battBcSendSensorDat();
 
         // Stuff running at 1Hz-ish

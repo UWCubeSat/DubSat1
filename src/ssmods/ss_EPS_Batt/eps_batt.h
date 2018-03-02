@@ -56,7 +56,7 @@ TLM_SEGMENT {            //Add sensor data here
     float battTemp; //Not sure yet
     uint8_t heaterState;
     uint8_t balancerState; //enable state
-    uint8_t isBalancing;   //whether or not battery balancer is balancing
+    float battCharge;
 
 } sensordat_segment;
 
