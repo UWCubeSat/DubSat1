@@ -343,8 +343,8 @@ void test_multiple_handles(void)
 void test_1_before_overflow(void)
 {
 	/*Initializing array to be tested */
-	TYPE myArray[10026];
-	uint16_t array1 = init(myArray, 10026);
+	TYPE myArray[2000];
+	uint16_t array1 = init(myArray, 2000);
 	addData(array1, (TYPE)60000);
 	addData(array1, (TYPE)5000);
 	addData(array1, (TYPE)500);
@@ -360,8 +360,8 @@ void test_overflow_uint16(void)
 {
 	/*Initializing array to be tested */
 	/* Tests overflow of uint16_t */
-	TYPE myArray[10026];
-	uint16_t array1 = init(myArray, 10026);
+    TYPE myArray[2000];
+    uint16_t array1 = init(myArray, 2000);
 	/* 2^16 = 65536 is the max overflow value */
 	addData(array1, (TYPE)60000);
 	addData(array1, (TYPE)5000);
@@ -454,9 +454,7 @@ void test_resetAvg_and_resetMinMax(void)
 	addData(array1, (TYPE)5);
 	addData(array1, (TYPE)500);
 	addData(array1, (TYPE)5);
-	/*
-		Abort trap: 6 occurs here
-	*/
+
 	addData(array1, (TYPE)500);
 	addData(array1, (TYPE)5);
 	addData(array1, (TYPE)500);

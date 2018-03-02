@@ -63,7 +63,7 @@ int main(void)
 
     // turn the GPS on right away for debugging
     // TODO remove before flight
-    gpsioPowerOn();
+    // gpsioPowerOn();
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)

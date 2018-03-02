@@ -173,6 +173,9 @@ TLM_SEGMENT {
     oms_status oms;  // Overall health
 
     float inttemp;   // Internal MSP43x temperature, from built-in sensor
+
+    uint32_t reset_count;
+
 } health_segment;
 
 typedef enum {

@@ -18,6 +18,5 @@ void test_1_before_overflow(void);
 void test_overflow_uint16(void);
 void test_resetAvg_and_resetMinMax(void);
 //void test_overflow_float(void);
-void test_resetAvg_and_resetMinMax(void);
 
 #endif /*TESTINGCODE_H*/

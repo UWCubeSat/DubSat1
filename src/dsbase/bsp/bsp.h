@@ -16,6 +16,8 @@
 #include "../interfaces/systeminfo.h"
 #include "../core/i2c.h"
 
+extern uint32_t local_reset_count;
+
 // LaunchPad HW keys
 #define HWKEY_LP430_A   0x77BEBF44297C215E  // TODO:  get real one
 #define HWKEY_LP430_B   0x77BEBF44297C215E  // TODO:  get real one
@@ -113,6 +115,7 @@ void bspInit(SubsystemModule mod);
 SubsystemModule bspGetModule();
 hwsw_match_state bspGetHWSWMatchState();
 uint64_t bspGetChipID();
+uint32_t bspGetResetCount();
 
 // Hard-wired assignments for a given board are stashed in these #if defined(...)
 // blocks

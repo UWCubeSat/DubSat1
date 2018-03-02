@@ -137,6 +137,7 @@ typedef struct CANPacket {
 } CANPacket;
 
 void canWrapInit();
+void canWrapInitWithFilter();
 
 // Global function pointer to point to the function
 // when a packet is received through CAN
@@ -302,6 +303,13 @@ void canWrapInit(){
     setReceiveCallback0(wrapCB0);
     setReceiveCallback1(wrapCB1);
 }
+
+void canWrapInitWithFilter(){
+    canInit();
+    setReceiveCallback0(wrapCB0);
+    setReceiveCallback1(wrapCB1);
+}
+
 
 void reverseArray(uint8_t arr[], uint8_t start, uint8_t end)
 {

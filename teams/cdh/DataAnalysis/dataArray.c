@@ -1,10 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-
+#include <assert.h>
 #include "dataArray.h"
-#define TYPE uint16_t
 
 typedef struct buffer {
 	TYPE *bufferPt;
@@ -22,7 +17,19 @@ typedef struct buffer {
 uint16_t handleNumber = 0;
 buffer bufferContainer[10];
 
-uint16_t init(uint16_t *userBuffer, uint16_t size) {
+/**
+ * Function: init
+ * Initializes a buffer and fills the buffer with as many numbers as it can handle.
+ * Tests to verify whether or not the buffer can accurately record statistics and manages the
+ * numbers in an expected manner.
+ * @param userBuffer is a pointer to the array where the buffer will manage.
+ * @param size is the capacity of the buffer. This MUST match the size of the userBuffer array.
+ *        otherwise it will cause an abort trap when running the library. Max value is 2000.
+ * @return {@code uint16_t} A 16-bit int that gives an identifier as to which buffer it has initialized.
+ */
+uint16_t init(TYPE *userBuffer, uint16_t size) {
+    assert(size <= 2000); /* Largest capacity that the buffer can be without causing problems with
+                          /* MSP430 */
 	buffer *myBuffer = &bufferContainer[handleNumber];
 	myBuffer->bufferPt = userBuffer;
 	myBuffer->maxSize = size;
@@ -37,31 +44,36 @@ uint16_t init(uint16_t *userBuffer, uint16_t size) {
 	return handleNumber++;
 }
 
-void printArray(uint16_t handle) {
-	buffer *theirBuffer = &bufferContainer[handle];
-	for (int i = 0; i < theirBuffer->maxSize; i++) {
-		TYPE number = theirBuffer->bufferPt[i];
-		printf("Position %d: %u\n", i, number);
-	}
-}
+//void printArray(uint16_t handle) {
+//	buffer *theirBuffer = &bufferContainer[handle];
+//	for (int i = 0; i < theirBuffer->maxSize; i++) {
+//		TYPE number = theirBuffer->bufferPt[i];
+//		printf("Position %d: %u\n", i, number);
+//	}
+//}
+//
+//void printAllStats(uint16_t handle) {
+//	buffer *theirBuffer = &bufferContainer[handle];
+//	uint16_t sum = getSum(handle);
+//	printf("Sum: %u\n", sum);
+//	uint16_t min = theirBuffer->min;
+//	uint16_t max = theirBuffer->max;
+//	printf("Min: %hu, Max: %hu\n", min, max);
+//	uint16_t avg = getAvg(handle);
+//	printf("Avg: %u\n", avg);
+//}
 
-void printAllStats(uint16_t handle) {
+/**
+ * Function: addData
+ * Adds a data value to the buffer. If the buffer is full, data will be added at the beginning of the buffer and
+ * overwrite that data. Any subsequent data will be added in the next spot, meaning that it has wrapped to the
+ * beginning of the buffer.
+ * @param handle the identifier for the buffer that will be manipulated
+ * @param data value being added into the buffer
+ *
+ */
+void addData(uint16_t handle, TYPE data) {
 	buffer *theirBuffer = &bufferContainer[handle];
-	uint16_t sum = getSum(handle);
-	printf("Sum: %u\n", sum);
-	uint16_t min = theirBuffer->min;
-	uint16_t max = theirBuffer->max;
-	printf("Min: %hu, Max: %hu\n", min, max);
-	uint16_t avg = getAvg(handle);
-	printf("Avg: %u\n", avg);
-}
-
-void addData(uint16_t handle, uint16_t data) {
-	buffer *theirBuffer = &bufferContainer[handle];
-	printf("Adding %u\n", data);
-	printf("Start: %p\n", theirBuffer->startPt);
-	printf("current: %p\n", theirBuffer->currPt);
-	printf("End: %p\n", theirBuffer->endPt);
 	uint16_t maxSize = theirBuffer->maxSize;
 
 	/* it will store new min and max even the array overflows or overloads */
@@ -84,7 +96,8 @@ void addData(uint16_t handle, uint16_t data) {
 	  }
 	}
 
-	/* check if the array is full */
+	/* check if the array is full. If the array is full, will add
+	 * value to the beginning of the buffer and overwrite that value.  */
 	if (theirBuffer->currPt == theirBuffer->startPt) {
 		*theirBuffer->currPt = data;
 	}
@@ -105,13 +118,14 @@ void addData(uint16_t handle, uint16_t data) {
 		theirBuffer->endPt++;
 		theirBuffer->currentSize++;
 	}
-
-	printf("Start: %p\n", theirBuffer->startPt);
-	printf("current: %p\n", theirBuffer->currPt);
-	printf("End: %p\n", theirBuffer->endPt);
-
 }
 
+/**
+ * Function: resetAll
+ * Resets all statistics of the buffer.
+ * @param handle the identifier for the buffer that will be manipulated the identifier for the buffer that will be manipulated
+ *
+ */
 void resetAll(uint16_t handle) {
 	/* Resets*/
 	buffer *theirBuffer = &bufferContainer[handle];
@@ -123,6 +137,13 @@ void resetAll(uint16_t handle) {
 	theirBuffer->resetMinMaxFlag = 0;
 }
 
+/**
+ * Function: resetAvg
+ * Resets the average of the buffer by having the pointers point to the beginning of the buffer,
+ * representing that the buffer is "flushed" of old values
+ * @param handle the identifier for the buffer that will be manipulated
+ *
+ */
 void resetAvg(uint16_t handle) {
     buffer *theirBuffer = &bufferContainer[handle];
     theirBuffer->currPt = theirBuffer->startPt;
@@ -137,6 +158,12 @@ void resetAvg(uint16_t handle) {
     }
 }
 
+/**
+ * Function: resetMinMax
+ * Resets statistics of the min and max.
+ * @param handle the identifier for the buffer that will be manipulated
+ *
+ */
 void resetMinMax(uint16_t handle) {
     buffer *theirBuffer = &bufferContainer[handle];
     theirBuffer->min = (TYPE)0;
@@ -145,12 +172,19 @@ void resetMinMax(uint16_t handle) {
     theirBuffer->resetAvgFlag = 0;
 }
 
-uint16_t getSum(uint16_t handle) {
+/**
+ * Function: getSum
+ * Returns the sum of all numbers stored in the array. If an overflow occurred during calculation,
+ * returns zero.
+ * @param handle the identifier for the buffer that will be manipulated.
+ * @return TYPE sum of the values within
+ */
+TYPE getSum(uint16_t handle) {
 	TYPE sum = (TYPE)0;
 	buffer *theirBuffer = &bufferContainer[handle];
-	uint16_t *curr = theirBuffer->startPt;
+	TYPE *curr = theirBuffer->startPt;
 	while (curr != theirBuffer->endPt) {
-		uint16_t number = *curr;
+		TYPE number = *curr;
 		sum += number;
 		curr++;
    }
@@ -162,22 +196,39 @@ uint16_t getSum(uint16_t handle) {
 	return sum;
 }
 
+/**
+ * Function: getAvg
+ * Returns the average of value within the current buffer
+ *
+ * @return TYPE average of values stored within the buffer.
+ */
 TYPE getAvg(uint16_t handle) {
-	buffer *theirBuffer = &bufferContainer[handle];
-	if (theirBuffer->currentSize == 0) {
-		return 0;
-	}
-	TYPE sum = getSum(handle);
-	uint16_t avg = sum / theirBuffer->currentSize;
-	return avg;
+    buffer *theirBuffer = &bufferContainer[handle];
+    if (theirBuffer->currentSize == 0) {
+        return 0;
+    }
+    TYPE sum = getSum(handle);
+    TYPE avg = sum / theirBuffer->currentSize;
+    return avg;
 }
 
+/**
+ * Function: getMin
+ * Returns the smallest value stored in the buffer
+ *  the number that is associated with a buffer
+ * @return TYPE maximum number that is stored within the buffer
+ */
 TYPE getMin(uint16_t handle) {
-	buffer *theirBuffer = &bufferContainer[handle];
-	return theirBuffer->min;
+    buffer *theirBuffer = &bufferContainer[handle];
+    return theirBuffer->min;
 }
 
+/**
+ * Function: getMax
+ * Retrieves the largest value that has been added to the buffer.
+ * @return TYPE maximum number that is stored within the buffer
+ */
 TYPE getMax(uint16_t handle) {
-	buffer *theirBuffer = &bufferContainer[handle];
-	return theirBuffer->max;
+    buffer *theirBuffer = &bufferContainer[handle];
+    return theirBuffer->max;
 }
