@@ -24,7 +24,6 @@ FILE_STATIC general_segment gseg;
 FILE_STATIC sensordat_segment sseg;
 FILE_STATIC health_segment hseg;
 
-
 /* ------BATTERY BALANCER------ */
 FILE_STATIC void battInit()
 {       BATTERY_BALANCER_ENABLE_DIR |= BATTERY_BALANCER_ENABLE_BIT; //Initialize battery balancer enable register pin
@@ -87,6 +86,7 @@ FILE_STATIC void battBcSendHealth()
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
     hseg.inttemp = asensorReadIntTempC();
+    hseg.reset_count = bspGetResetCount();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandlers();
 }
