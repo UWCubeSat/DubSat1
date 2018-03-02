@@ -63,23 +63,34 @@ int main(void)
 	bspInit(__SUBSYSTEM_MODULE__);
 	//mod_status.startup_type = coreStartup(handlePPTFiringNotification, handleRollCall);
 	// port initialization 
-	mtq_gpio_init();
+	mtq_gpio_init(); // pins are timer b function
+	//mtq_gpio_debug_init(); // pins are gpio function
 	timer_b_init();
 	// CAN initialization 
 	canWrapInit();
 	setCANPacketRxCallback(can_packet_rx_handler);
-	
+
     while (1)
 	{
+		// hardcoded PWM for DEBUG
+		/*
+        set_pwm(X1, 20);
+        set_pwm(X2, 80);
+        set_pwm(Y1, 20);
+        set_pwm(Y2, 80);
+        set_pwm(Z1, 20);
+        set_pwm(Z2, 80);
+		*/ 
+		
 		// control for turning on coils based on command dipole signals 
         switch (tumble_status) 
 		{
 			case Tumbling: 
-				send_ping_packet();
 				PJOUT |= BIT0|BIT1|BIT2; // debug lights 
 				// set duty cycles 
 				if (received_command_packet)
 				{
+				    //send_ping_packet();
 				    received_command_packet = 0; // reset received_command_packet flag
 					set_pwm(X1, duty_X1); 
 					set_pwm(X2, duty_X2); 
@@ -92,11 +103,11 @@ int main(void)
 			case Idle: 
 				PJOUT &= ~(BIT0|BIT1|BIT2); // debug lights 
 				// set all duty cycles to 0 
-				set_pwm(X1, 0); 
-				set_pwm(X2, 0); 
-				set_pwm(Y1, 0); 
+				set_pwm(X1, 0);
+				set_pwm(X2, 0);
+				set_pwm(Y1, 0);
 				set_pwm(Y2, 0);
-				set_pwm(Z1, 0); 
+				set_pwm(Z1, 0);
 				set_pwm(Z2, 0);
 				break;
         	default:
@@ -106,11 +117,12 @@ int main(void)
             	break;
         }
 	}
+
 	return 0;
 }
 
 //------------------------------------------------------------------
-// Interrupt handler definitions 
+// CAN interrupt handler function 
 //------------------------------------------------------------------
 
 void can_packet_rx_handler(CANPacket *packet)
@@ -141,8 +153,67 @@ void can_packet_rx_handler(CANPacket *packet)
 }	
 
 //------------------------------------------------------------------
-// functions definitions 
+// software functions 
 //------------------------------------------------------------------
+
+void interpret_command_dipole(int x_command, int y_command, int z_command)  
+{
+	// valid command range : (-100 - 100)
+	if (x_command > 100 | x_command < -100 | y_command > 100 | y_command < -100 | z_command > 100 | z_command < -100)
+		; // TODO add error condition  
+	duty_X1 = (x_command >= 0) ? (x_command) : 100;
+	duty_X2 = (x_command >= 0) ? 100: -(x_command);
+	duty_Y1 = (y_command >= 0) ? (y_command) : 100;
+	duty_Y2 = (y_command >= 0) ? 100: -(y_command);
+	duty_Z1 = (z_command >= 0) ? (z_command) : 100;
+	duty_Z2 = (z_command >= 0) ? 100: -(z_command);
+}
+
+void set_pwm(int which_pin, int pwm_percent)  
+{
+    int ccr_value;
+    if (pwm_percent == 0)
+        ccr_value = 0;
+    else
+        ccr_value = pwm_percent*10-1;
+	switch(which_pin)
+	{
+		case X1: // MTQ: P1_7 Launchpad: P3_5
+			TB0CCR4 = ccr_value;
+			break; 
+		case X2: // MTQ: P1_6 Launchpad: P3_4
+			TB0CCR3 = ccr_value;
+			break;
+		case Y1: // MTQ: P3_7 Launchpad: P3_7
+			TB0CCR6 = ccr_value;
+			break;
+		case Y2: // MTQ: P3_6 Launchpad: P3_6
+			TB0CCR5 = ccr_value;
+			break;	
+		case Z1: // MTQ: P2_2 Launchpad: P1_5
+			TB0CCR2 = ccr_value;
+			break;	
+		case Z2: // MTQ: P2_6 Launchpad: P2_6
+			TB0CCR1 = ccr_value;
+			break;
+		default: // unknown state 
+			break;
+	}
+}
+
+// TODO do not use. Halts Bdot when sent 
+void send_ping_packet(void)
+{
+	CANPacket p = {0};
+	p.id = 1234;
+	p.length = 0;
+	canSendPacket(&p);
+}
+
+//------------------------------------------------------------------
+// register initialization functions  
+//------------------------------------------------------------------
+
 void mtq_gpio_init(void)
 {	
 	// PJ.0,1,2 - gpio - board leds 
@@ -251,54 +322,6 @@ void timer_b_init(void)
 	TB0CTL = TBSSEL__SMCLK | MC__UP | TBCLR; 
 }
 
-void interpret_command_dipole(int x_command, int y_command, int z_command)  
-{
-	// valid command range : (-100 - 100)
-	if (x_command > 100 | x_command < -100 | y_command > 100 | y_command < -100 | z_command > 100 | z_command < -100)
-		; // TODO add error condition  
-	duty_X1 = (x_command >= 0) ? (x_command) : 0;
-	duty_X2 = (x_command >= 0) ? 0: -(x_command);
-	duty_Y1 = (y_command >= 0) ? (y_command) : 0;
-	duty_Y2 = (y_command >= 0) ? 0: -(y_command);	
-	duty_Z1 = (z_command >= 0) ? (z_command) : 0;
-	duty_Z2 = (z_command >= 0) ? 0: -(z_command);
-}
-
-void set_pwm(int which_pin, int pwm_percent)  
-{
-	const int ccr_value = pwm_percent*10;
-	switch(which_pin)
-	{
-		case X1: // MTQ: P1_7 Launchpad: P3_5
-			TB0CCR4 = 0xccr_value;
-			break; 
-		case X2: // MTQ: P1_6 Launchpad: P3_4
-			TB0CCR3 = 0xccr_value;
-			break;
-		case Y1: // MTQ: P3_7 Launchpad: P3_7
-			TB0CCR6 = 0xccr_value;
-			break;
-		case Y2: // MTQ: P3_6 Launchpad: P3_6
-			TB0CCR5 = 0xccr_value;
-			break;	
-		case Z1: // MTQ: P2_2 Launchpad: P1_5
-			TB0CCR2 = 0xccr_value;
-			break;	
-		case Z2: // MTQ: P2_6 Launchpad: P2_6
-			TB0CCR1 = 0xccr_value;
-			break;
-		default: // unknown state 
-			break;
-	}
-}
-
-void send_ping_packet(void)
-{
-	CANPacket p = {0};
-	p.id = 1234;
-	p.length = 0;
-	canSendPacket(&p);
-}
 
 
 
