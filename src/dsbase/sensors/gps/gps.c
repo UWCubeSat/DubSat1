@@ -32,6 +32,10 @@ void gpsInit()
     uartHandle = uartInit(ApplicationUART, 0, Speed_9600);
     BufferedReaderInit(uartHandle, buffer, GPS_RX_BUFFER_LENGTH);
 
+    // set GPS switch and buck converter to be off initially
+    GPS_ENABLE_OUT &= ~GPS_ENABLE_BIT;
+    gpsBuckOff();
+
     // configure GPIO pins
     GPS_ENABLE_DIR |= GPS_ENABLE_BIT;   // output
     BUCK_ENABLE_DIR |= BUCK_ENABLE_BIT; // output
@@ -65,12 +69,11 @@ uint8_t gpsBuckEnabled()
 
 uint8_t gpsBuckGood()
 {
-    return 1; // TODO remove
-//    if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
-//    {
-//        return 1;
-//    }
-//    return 0;
+    if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
+    {
+        return 1;
+    }
+    return 0;
 }
 
 void gpsPowerOn()

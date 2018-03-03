@@ -1,3 +1,7 @@
+// using theses macros b/c i2c blocks when they aren't plugged in
+#define ENABLE_PHOTODIODES 0
+#define ENABLE_SUNSENSOR   0
+
 #include <adcs_sensorproc.h>
 #include <msp430.h> 
 
@@ -50,8 +54,16 @@ int main(void)
 
     // initialize sensors
     gpsioInit();
-//    sunsensorioInit();
+#if ENABLE_SUNSENSOR
+    sunsensorioInit();
+#endif // ENABLE_SUNSENSOR
+#if ENABLE_PHOTODIODES
     photodiodeioInit();
+#endif // ENABLE_PHOTODIODES
+
+    // turn the GPS on right away for debugging
+    // TODO remove before flight
+    // gpsioPowerOn();
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
@@ -77,11 +89,14 @@ int main(void)
              * TODO assert that the photodiodes are not being read multiple
              * times in the space of PHOTODIODE_DELAY_S.
              */
+#if ENABLE_PHOTODIODES
             photodiodeioUpdate();
-//            sunsensorioUpdate(); // TODO don't let these block
-
             photodiodeioSendData();
+#endif // ENABLE_PHOTODIODES
+#if ENABLE_SUNSENSOR
+            sunsensorioUpdate(); // TODO don't let these block
             sunsensorioSendData();
+#endif // ENABLE_SUNSENSOR
         }
 
         gpsioUpdate();

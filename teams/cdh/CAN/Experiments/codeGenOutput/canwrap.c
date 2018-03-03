@@ -53,6 +53,13 @@ void canWrapInit(){
     setReceiveCallback1(wrapCB1);
 }
 
+void canWrapInitWithFilter(){
+    canInit();
+    setReceiveCallback0(wrapCB0);
+    setReceiveCallback1(wrapCB1);
+}
+
+
 void reverseArray(uint8_t arr[], uint8_t start, uint8_t end)
 {
     uint8_t temp;
@@ -287,9 +294,9 @@ void decodesensorproc_sun(CANPacket *input, sensorproc_sun *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> sensorproc_sun_status = (uint8_t) (((fullData & ((uint64_t) 0xff))));
-    output -> sensorproc_sun_reading_beta = (int16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
-    output -> sensorproc_sun_reading_alpha = (int16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+    output -> sensorproc_sun_status = (uint8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
+    output -> sensorproc_sun_reading_beta = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> sensorproc_sun_reading_alpha = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
 
 void encodesensorproc_sun(sensorproc_sun *input, CANPacket *output){
@@ -308,9 +315,9 @@ void decodesensorproc_photodiode(CANPacket *input, sensorproc_photodiode *output
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> sensorproc_photodiode_x_neg = (uint8_t) (((fullData & ((uint64_t) 0xff))));
-    output -> sensorproc_photodiode_y_neg = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
-    output -> sensorproc_photodiode_x_pos = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+    output -> sensorproc_photodiode_x_neg = (uint8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
+    output -> sensorproc_photodiode_y_neg = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> sensorproc_photodiode_x_pos = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
 void encodesensorproc_photodiode(sensorproc_photodiode *input, CANPacket *output){
@@ -329,9 +336,9 @@ void decodebdot_command_dipole(CANPacket *input, bdot_command_dipole *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> bdot_command_dipole_z = (int8_t) (((fullData & ((uint64_t) 0xff))));
-    output -> bdot_command_dipole_y = (int8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
-    output -> bdot_command_dipole_x = (int8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+    output -> bdot_command_dipole_z = (int8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
+    output -> bdot_command_dipole_y = (int8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> bdot_command_dipole_x = (int8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
 void encodebdot_command_dipole(bdot_command_dipole *input, CANPacket *output){
@@ -350,7 +357,7 @@ void decodebdot_tumble_status(CANPacket *input, bdot_tumble_status *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> bdot_tumble_status_status = (uint8_t) (((fullData & ((uint64_t) 0x1 << 7)) >> 7));
+    output -> bdot_tumble_status_status = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
 }
 
 void encodebdot_tumble_status(bdot_tumble_status *input, CANPacket *output){
@@ -397,7 +404,7 @@ void decodemsp_temp(CANPacket *input, msp_temp *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> msp_temp_temp = (uint16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> msp_temp_temp = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
 
 void encodemsp_temp(msp_temp *input, CANPacket *output){

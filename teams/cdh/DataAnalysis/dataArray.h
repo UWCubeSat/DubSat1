@@ -6,19 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <float.h>
 
 #define TYPE uint16_t
 
 struct buffer;
 
  /*initialize buffer struct*/
-uint16_t init(uint16_t *userBuffer, uint16_t size);
-
-/* Print out given buffer
-*/
-void printArray(uint16_t handle);
-
-void printAllStats(uint16_t handle);
+uint16_t init(TYPE *userBuffer, uint16_t size);
 
 /* Add new data to given buffer
 */
@@ -52,5 +47,15 @@ TYPE getMin(uint16_t handle);
 /* return uint16_t max of data in the given buffer
 No matter how many values are loaded into the array, max value stays until user call reset function */
 TYPE getMax(uint16_t handle);
+
+/* Prints out given buffer
+*/
+void printArray(uint16_t handle);
+
+
+/**
+ * Prints out statistics of the buffer.
+ */
+void printAllStats(uint16_t handle);
 
 #endif /*DATAARRAY_H*/

@@ -14,13 +14,14 @@
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
+//#include "sensors/analogsensor.h"
 
 // Configure battery balancer control pins
-#define BATT_BALANCER_ENABLE_DIR  P4DIR
-#define BATT_BALANCER_ENABLE_OUT  P4OUT
-#define BATT_BALANCER_ENABLE_BIT  BIT3
+#define BATTERY_BALANCER_ENABLE_DIR  P4DIR
+#define BATTERY_BALANCER_ENABLE_OUT  P4OUT
+#define BATTERY_BALANCER_ENABLE_BIT  BIT3
 
-// Heater switch pins
+//Heater switch pins
 #define HEATER_ENABLE_DIR       P2DIR
 #define HEATER_ENABLE_OUT       P2OUT
 #define HEATER_ENABLE_BIT       BIT5
@@ -43,14 +44,25 @@ TLM_SEGMENT {
 } general_segment;
 
 // SensorDat packet:  high-frequency sends that capture state of sensors
-TLM_SEGMENT {
+TLM_SEGMENT {            //Add sensor data here
     BcTlmHeader header;  // All COSMOS TLM packets must have this
+
+    float battVolt;
+    float SOC;
+    float battCurr;
+    float accumulatedCharge;
+    float battNodeVolt;
+    float battNodeCurr;
+    float battTemp; //Not sure yet
+    uint8_t heaterState;
+    uint8_t balancerState; //enable state
+    float battCharge;
 
 } sensordat_segment;
 
 #define OPCODE_BATTMGMT          0x64  // Dec '100', ASCII 'd'
 #define NOCHANGE  2
-CMD_SEGMENT {
+CMD_SEGMENT {                          //no need to add anything unless change to CC (e.g. reset)
     uint8_t enablebattbal;
     uint8_t enablebattheater;
 } battmgmt_segment;
@@ -97,3 +109,4 @@ uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 
 #endif /* EPS_BATT_H_ */
+

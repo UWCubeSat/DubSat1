@@ -32,6 +32,8 @@ void bspExampleInit(SubsystemModule mod)
 
 }
 */
+#pragma PERSISTENT(local_reset_count)
+uint32_t local_reset_count = 0;
 
 FILE_STATIC hwsw_match_state hwsw_mstate;
 hwsw_match_state bspGetHWSWMatchState()
@@ -97,6 +99,12 @@ FILE_STATIC hwsw_match_state enforceHWSWLock()
 #endif
 }
 
+
+uint32_t bspGetResetCount()
+{
+    return local_reset_count;
+}
+
 FILE_STATIC meta_segment mseg;   // Used if something fails before init complete
 void bspInit(SubsystemModule mod)
 {
@@ -104,6 +112,9 @@ void bspInit(SubsystemModule mod)
 
     // Stop watchdog timer
     WDTCTL = WDTPW | WDTHOLD;
+
+    // Keep track of local reset count here for now (should move into ... timers?)
+    local_reset_count++;
 
     // NOW, CHECK HARDWARE KEY - if it doesn't match, this never returns ...
     chipID = *((uint64_t *)0x1A0A);

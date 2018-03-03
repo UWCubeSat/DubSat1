@@ -28,10 +28,6 @@
 #endif
 #include <stdio.h>
 #include "dataArray.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdint.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void setUp(void);
@@ -84,19 +80,20 @@ int main(void)
 {
   suite_setup();
   UnityBegin("test/TestingCode.c");
-  RUN_TEST(test_initialization, 35);
-  RUN_TEST(test_adding_one_value, 52);
-  RUN_TEST(test_fill_array, 63);
-  RUN_TEST(test_reset, 83);
-  RUN_TEST(test_overloading_array, 140);
-  RUN_TEST(test_not_full_array_with_same_numbers, 163);
-  RUN_TEST(test_not_full_array_with_diff_numbers, 178);
-  RUN_TEST(test_not_full_array_with_diff_numbers_with_reset, 193);
-  RUN_TEST(test_overloading_array_with_reset, 220);
-  RUN_TEST(test_multiple_handles, 256);
-  RUN_TEST(test_1_before_overflow, 291);
-  RUN_TEST(test_overflow_float, 325);
-  RUN_TEST(test_resetAvg_and_resetMinMax, 339);
+  RUN_TEST(test_initialization, 30);
+  RUN_TEST(test_adding_one_value, 47);
+  RUN_TEST(test_fill_array, 58);
+  RUN_TEST(test_reset, 78);
+  RUN_TEST(test_overloading_array, 135);
+  RUN_TEST(test_not_full_array_with_same_numbers, 158);
+  RUN_TEST(test_not_full_array_with_diff_numbers, 173);
+  RUN_TEST(test_not_full_array_with_diff_numbers_with_reset, 188);
+  RUN_TEST(test_overloading_array_with_reset, 215);
+  RUN_TEST(test_multiple_handles, 251);
+  RUN_TEST(test_1_before_overflow, 286);
+  RUN_TEST(test_overflow_uint16, 302);
+  RUN_TEST(test_overflow_float, 320);
+  RUN_TEST(test_resetAvg_and_resetMinMax, 334);
 
   return suite_teardown(UnityEnd());
 }

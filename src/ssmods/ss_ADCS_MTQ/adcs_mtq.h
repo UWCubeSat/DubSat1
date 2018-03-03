@@ -49,4 +49,9 @@ uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 
+//---------------------
+// MTQ specific 
+//---------------------
+typedef enum _tumble_state {Tumbling=1,Idle=0} TumbleState;
+
 #endif /* ADCS_MTQ_H_ */

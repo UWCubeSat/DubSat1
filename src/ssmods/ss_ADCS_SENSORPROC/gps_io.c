@@ -52,26 +52,32 @@ void gpsioInit()
     bcbinPopulateHeader(&rxstatusSeg.header, TLM_ID_RXSTATUS, sizeof(rxstatusSeg));
     bcbinPopulateHeader(&timeSeg.header, TLM_ID_TIME, sizeof(timeSeg));
 
+    triggerGPSOn = FALSE;
+    triggerGPSOff = FALSE;
+
     gpsInit();
 }
 
-// send commands to configure the GPS
-void gpsioConfigure()
+void gpsioConfig()
 {
     // configure to reply in binary only
     gpsSendCommand("interfacemode thisport novatel novatelbinary on\r\n");
 
     gpsSendCommand("statusconfig clear status 004c0000\r\n");
 
-    // log the status once. Status word will be updated at every message.
     gpsSendCommand("log rxstatusb\r\n");
     gpsSendCommand("log timeb\r\n");
 
     // monitor hardware
+    // TODO this only logs once for some reason
     gpsSendCommand("log hwmonitorb ontime 3\r\n");
 
     // monitor position
     gpsSendCommand("log bestxyzb ontime 1\r\n");
+
+    // TODO remove before flight
+    gpsSendCommand("log satvis2b ontime 3\r\n");
+    gpsSendCommand("log rangeb ontime 3\r\n");
 }
 
 void gpsioUpdate()
@@ -82,17 +88,30 @@ void gpsioUpdate()
     switch (gpsPowerState)
     {
     case State_GPSOff:
-        if (triggerGPSOn)
+        if (triggerGPSOff)
+        {
+            triggerGPSOff = FALSE;
+        }
+        else if (triggerGPSOn)
         {
             // enable the buck converter
+            triggerGPSOn = FALSE;
             gpsBuckOn();
-
-            triggerGPSOn = 0;
             gpsPowerState = State_BuckWaitOn;
         }
         break;
     case State_BuckWaitOn:
-        if (gpsBuckGood())
+        if (triggerGPSOff)
+        {
+            // abort boot and wait for buck converter to turn off
+            triggerGPSOff = FALSE;
+            gpsPowerState = State_BuckWaitOff;
+        }
+        else if (triggerGPSOn)
+        {
+            triggerGPSOn = FALSE;
+        }
+        else if (gpsBuckGood())
         {
             // buck converter signal is good, enable the GPS
             gpsPowerOn();
@@ -100,43 +119,79 @@ void gpsioUpdate()
         }
         break;
     case State_GPSWait:
-        // periodically poll the GPS until it responds
-        // TODO replace this with timers?
-        if (i % 65536 == 0)
+        if (triggerGPSOff)
         {
-            gpsSendCommand("log rxstatusb\r\n");
+            // abort boot and turn GPS switch off
+            triggerGPSOff = FALSE;
+            gpsPowerOff();
+            gpsPowerState = State_BuckWaitOff;
         }
-        if (gpsioHandlePackage(gpsRead()))
+        else if (triggerGPSOn)
         {
-            // now that the GPS is confirmed to be on, send commands to configure it
-            gpsioConfigure();
+            triggerGPSOn = FALSE;
+        }
+        else if (gpsioHandlePackage(gpsRead()))
+        {
+            // now that the GPS is confirmed to be on, configure it
+            gpsioConfig();
             gpsPowerState = State_GPSOn;
+        }
+        else if (i % 65536 == 0)
+        {
+            // periodically poll the GPS until it responds
+            // TODO replace this with timers
+            gpsSendCommand("log rxstatusb\r\n");
         }
         break;
     case State_GPSOn:
-        // read from the GPS and trigger message handlers
-        gpsioHandlePackage(gpsRead());
-
-        if (i % 65536 == 0)
-        {
-            gpsioSendStatus();
-        }
-
+        // TODO add state transition for !gpsBuckGood()?
         if (triggerGPSOff)
         {
             // switch the GPS off
+            triggerGPSOff = FALSE;
             gpsPowerOff();
-
-            triggerGPSOff = 0;
             gpsPowerState = State_BuckWaitOff;
+        }
+        else if (triggerGPSOn)
+        {
+            triggerGPSOn = FALSE;
+        }
+        else if (i % 65536 == 0)
+        {
+            // periodically send status telemetry
+            gpsioSendStatus();
+
+            /*
+             * We should be able to use "log hwmonitorb ontime 3" to poll this
+             * automatically, but that isn't working for whatever reason.
+             * Manually calling logs here does work.
+             */
+            gpsSendCommand("log hwmonitorb\r\n");
+        }
+        else
+        {
+            // read from the GPS and trigger message handlers
+            gpsioHandlePackage(gpsRead());
         }
         break;
     case State_BuckWaitOff:
     {
-        // wait a while before disabling the buck converter
         static uint16_t count = 0;
-        if (count++ > 50000)
+
+        if (triggerGPSOff)
         {
+            triggerGPSOff = FALSE;
+        }
+        else if (triggerGPSOn)
+        {
+            // abort shutdown and turn the GPS switch back on
+            triggerGPSOn = FALSE;
+            gpsPowerOn();
+            gpsPowerState = State_GPSWait;
+        }
+        else if (count++ > 50000)
+        {
+            // wait a while before disabling the buck converter
             gpsBuckOff();
             gpsPowerState = State_GPSOff;
             count = 0;
@@ -146,6 +201,18 @@ void gpsioUpdate()
     default:
         break;
     }
+}
+
+void gpsioPowerOn()
+{
+    triggerGPSOn = TRUE;
+    triggerGPSOff = FALSE;
+}
+
+void gpsioPowerOff()
+{
+    triggerGPSOn = FALSE;
+    triggerGPSOff = TRUE;
 }
 
 void gpsioSendPowerStatus()
@@ -229,17 +296,17 @@ bool gpsioHandleCommand(uint8_t *cmdstr)
             break;
         case OPCODE_ENABLE:
             enableSegment = (enable_segment *) (cmdstr + 1);
-            if (enableSegment->enable && gpsPowerState == State_GPSOff)
+
+            // set enable/disable trigger and overwrite previous command
+            if (enableSegment->enable)
             {
-                triggerGPSOn = 1;
-            }
-            else if (enableSegment->enable == 0 && gpsPowerState == State_GPSOn)
-            {
-                triggerGPSOff = 1;
+                triggerGPSOn = TRUE;
+                triggerGPSOff = FALSE;
             }
             else
             {
-                // TODO log error
+                triggerGPSOn = FALSE;
+                triggerGPSOff = TRUE;
             }
             break;
         default:
@@ -376,7 +443,7 @@ FILE_STATIC void handleSatvis2(const GPSPackage *package)
     debugTraceF(GPS_TRACE_LEVEL, "\tsystem: %u\r\n", satvis2->system);
     debugTraceF(GPS_TRACE_LEVEL, "\tnum:    %u\r\n", satvis2->numSats);
 
-    satvis2_segment satvis2Seg;
+    satvis2_segment satvis2Seg = { 0 };
     switch (satvis2->system)
     {
         case SATSYSTEM_GPS:
@@ -387,6 +454,8 @@ FILE_STATIC void handleSatvis2(const GPSPackage *package)
             break;
         case SATSYSTEM_SBAS:
             satvis2Seg.numSBAS = satvis2->numSats;
+            break;
+        default:
             break;
     }
 

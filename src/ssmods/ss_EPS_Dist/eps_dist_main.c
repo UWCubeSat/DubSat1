@@ -314,6 +314,7 @@ FILE_STATIC void distBcSendHealth()
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
     hseg.inttemp = asensorReadIntTempC();
+    hseg.reset_count = bspGetResetCount();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandlers();
 }

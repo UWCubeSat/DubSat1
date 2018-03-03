@@ -6,11 +6,30 @@
 #include "sensors/magnetometer.h"
 #include "core/timer.h"
 
+void sendDipolePacket(int8_t x, int8_t y, int8_t z);
+void sendTumblePacket(uint8_t status);
+void receive_packet(CANPacket *packet);
+void changeX();
+void changeY();
+void changeZ();
+void changeXY();
+void changeXZ();
+void changeYZ();
+void toggleTumbleStatus(uint8_t status);
+
+
+
+
+
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
 FILE_STATIC ModuleStatus mod_status;
 FILE_STATIC volatile SubsystemState ss_state    = State_FirstState;
 FILE_STATIC volatile SubsystemMode ss_mode      = Mode_FirstMode;
+
+
+
+
 
 // These are sample "trigger" flags, used to indicate to the main loop
 // that a transition should occur
@@ -18,26 +37,32 @@ FILE_STATIC flag_t triggerState1;
 FILE_STATIC flag_t triggerState2;
 FILE_STATIC flag_t triggerState3;
 
+FILE_STATIC int timer;
+FILE_STATIC int count = 0;
+FILE_STATIC int TARval = 10000; // Timer goes off every seconds
+
+
+
+
 /*
  * main.c
  */
 int main(void)
 {
-    initializeTimer();
-    timerPollInitializer(1, 0); // goes off every 2 sec
-    canWrapInit();
-    magInit(I2CBus1);
+//    PJDIR |= 0x07;
+//    PJOUT |= 0x07;
+//    magInit(I2CBus1);
     /* ----- INITIALIZATION -----*/
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
     // __SUBSYSTEM_MODULE__ is set in bsp.h based on the __SS_<subsystemmodule>__ passed in
     // as a predefined symbol
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
-
     // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
     // Also hooks up special notification handlers.  Note that actual pulse interrupt handlers will update the
     // firing state structures before calling the provided handler function pointers.
     mod_status.startup_type = coreStartup(handlePPTFiringNotification, handleRollCall);  // <<DO NOT DELETE or MOVE>>
+
 
 #if defined(__DEBUG__)
 
@@ -63,89 +88,404 @@ int main(void)
     // See ss_EPS_Dist for ideas on how to structure creating telemetry and command packets, etc.
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
-//    MagnetometerData* data;
-//    data = magReadXYZData(ConvertToNanoTeslas); // TODO: what conversion mode?
+
+
+
+
+    magInit(1); // I2C bus 1
+    MagnetometerData* data;
+    double x;
+    double y;
+    double z;
+
+    PJDIR |= 0x07;
+    PJOUT |= 0x07;
+
+    canWrapInit();
+    setCANPacketRxCallback(receive_packet);
+
+    initializeTimer();
+
     // TODO: function returns data in int16_t while the CANpacket has uint8_t. Which one?
-    P1DIR |= (BIT0 | BIT2);
-    P1OUT |= (BIT0 | BIT2);
-    int i;
-    uint8_t x_ = 0;
-    uint8_t y_ = 0;
-    uint8_t z_ = 0;
-    int timer;
     while (1)
     {
-        timer = timerPollInitializer(1, 0);
-        for (i = 0; i < 200; i++)
+        timer = timerPollInitializer(count, TARval);
+        while(!checkTimer(timer))
         {
-           if(checkTimer(timer))
-           {
-               sendCanPacket(x_, y_, z_, 1);
-               x_++;
-               P1OUT ^= (BIT0 | BIT2);
-               timer = timerPollInitializer(2, 0);
-
-           }
-
         }
-
-        x_ = 0;
-
-
-        for(i = 0; i < 200; i++)
-        {
-            if(checkTimer(timer))
-            {
-                sendCanPacket(x_, y_, z_, 1);
-                y_++;
-                P1OUT ^= (BIT0 | BIT2);
-                timer = timerPollInitializer(2, 0);
-            }
-        }
-
-        y_ = 0;
+        data = getMagnetometerData();
+        x = data->convertedX;
+        y = data->convertedY;
+        z = data->convertedZ;
 
 
-        for(i = 0; i < 200; i++)
-        {
-            sendCanPacket(x_, y_, z_, 1);
-            z_++;
-            P1OUT ^= (BIT0 | BIT2);
-            timer = timerPollInitializer(2, 0);
-        }
-        z_ = 0;
-
+        /*
+         *  AUTO GENERATED CODE
+        */
+        // SEND PACKETS
     }
 
-    // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
+}
 
-    return 0;
+
+MagnetometerData* getMagnetometerData()
+{
+    return magReadXYZData(ConvertToNanoTeslas); // TODO: what conversion mode?
 }
 
 
 
-// Standards:
-// 0 - 100 = negative
-// 100 - 200 = postive
-void sendCanPacket(uint8_t x, uint8_t y, uint8_t z, uint8_t tumble_status)
+void sendDipolePacket(int8_t x, int8_t y, int8_t z)
 {
     CANPacket dipole_packet = {0};
-    CANPacket tumble_packet = {0};
-
     bdot_command_dipole dipole_info = {0};
-    bdot_tumble_status tumble_info = {0};
 
-    tumble_info.bdot_tumble_status_status = tumble_status;
     dipole_info.bdot_command_dipole_x = x;
     dipole_info.bdot_command_dipole_y = y;
     dipole_info.bdot_command_dipole_z = z;
 
     encodebdot_command_dipole(&dipole_info, &dipole_packet);
-    encodebdot_tumble_status(&tumble_info, &tumble_packet);
-    canSendPacket(&tumble_packet);
     canSendPacket(&dipole_packet);
 }
 
+void sendTumblePacket(uint8_t status)
+{
+        CANPacket tumble_packet = {0};
+        bdot_tumble_status tumble_info = {0};
+
+        tumble_info.bdot_tumble_status_status = status;
+
+        encodebdot_tumble_status(&tumble_info, &tumble_packet);
+        canSendPacket(&tumble_packet);
+}
+
+
+/*No op function */
+void receive_packet(CANPacket *packet)
+{
+}
+
+
+
+
+
+void toggleTumbleStatus(uint8_t status)
+{
+    int i = 0;
+    timer = timerPollInitializer(count, TARval);
+    while(i < 1)
+    {
+        if(checkTimer(timer))
+        {
+            sendTumblePacket(status);
+            i++;
+        }
+    }
+}
+
+void changeX()
+{
+    int i = 0;
+    for(i = 0; i < 1; i++)
+    {
+        toggleTumbleStatus(1);
+        int k = 0;
+        timer = timerPollInitializer(count, TARval);
+        while(k < 10)
+        {
+            if(checkTimer(timer))
+            {
+                sendDipolePacket(k + i * 10, 0, 0);
+                k++;
+                if(k < 10)
+                {
+                    timer = timerPollInitializer(count, TARval);
+                }
+            }
+        }
+        toggleTumbleStatus(1);
+        k = 0;
+        timer = timerPollInitializer(count, TARval);
+        while(k < 10)
+        {
+            if(checkTimer(timer))
+            {
+                sendDipolePacket(k + i * 10, 0, 0);
+                k++;
+                if(k < 10)
+                {
+                    timer = timerPollInitializer(count, TARval);
+                }
+            }
+        }
+    }
+}
+
+
+void changeY()
+{
+    int i = 0;
+    for(i = 0; i < 1; i++)
+    {
+        toggleTumbleStatus(1);
+        int k = 0;
+        timer = timerPollInitializer(count, TARval);
+        while(k < 10)
+        {
+            if(checkTimer(timer))
+            {
+                sendDipolePacket(0, k + i * 10, 0);
+                k++;
+                if(k < 10)
+                {
+                    timer = timerPollInitializer(count, TARval);
+                }
+            }
+        }
+        toggleTumbleStatus(1);
+        k = 0;
+        timer = timerPollInitializer(count, TARval);
+        while(k < 10)
+        {
+            if(checkTimer(timer))
+            {
+                sendDipolePacket(0, k + i * 10, 0);
+                k++;
+                if(k < 10)
+                {
+                    timer = timerPollInitializer(count, TARval);
+                }
+            }
+        }
+    }
+}
+
+void changeZ()
+{
+    int i = 0;
+    for(i = 0; i < 1; i++)
+    {
+        toggleTumbleStatus(1);
+        int k = 0;
+        timer = timerPollInitializer(count, TARval);
+        while(k < 10)
+        {
+            if(checkTimer(timer))
+            {
+                sendDipolePacket(0, 0, k + i * 10);
+                k++;
+                if(k < 10)
+                {
+                    timer = timerPollInitializer(count, TARval);
+                }
+            }
+        }
+        toggleTumbleStatus(1);
+        k = 0;
+        timer = timerPollInitializer(count, TARval);
+        while(k < 10)
+        {
+            if(checkTimer(timer))
+            {
+                sendDipolePacket(0, 0, k + i * 10);
+                k++;
+                if(k < 10)
+                {
+                    timer = timerPollInitializer(count, TARval);
+                }
+            }
+        }
+    }
+}
+
+void changeXY()
+{
+    int i = 0;
+       for(i = -10; i < 10; i++)
+       {
+           toggleTumbleStatus(0);
+           int k = 0;
+           timer = timerPollInitializer(count, TARval);
+           while(k < 10)
+           {
+               if(checkTimer(timer))
+               {
+                   sendDipolePacket(k + i * 10, k + i * 10, 0);
+                   k++;
+                   if(k < 10)
+                   {
+                       timer = timerPollInitializer(count, TARval);
+                   }
+               }
+           }
+           toggleTumbleStatus(1);
+           k = 0;
+           timer = timerPollInitializer(count, TARval);
+           while(k < 10)
+           {
+               if(checkTimer(timer))
+               {
+                   sendDipolePacket(k + i * 10, k + i * 10, 0);
+                   k++;
+                   if(k < 10)
+                   {
+                       timer = timerPollInitializer(count, TARval);
+                   }
+               }
+           }
+       }
+}
+
+void changeXZ()
+{
+    int i = 0;
+       for(i = -10; i < 10; i++)
+       {
+           toggleTumbleStatus(0);
+           int k = 0;
+           timer = timerPollInitializer(count, TARval);
+           while(k < 10)
+           {
+               if(checkTimer(timer))
+               {
+                   sendDipolePacket(k + i * 10, 0, k + i * 10);
+                   k++;
+                   if(k < 10)
+                   {
+                       timer = timerPollInitializer(count, TARval);
+                   }
+               }
+           }
+           toggleTumbleStatus(1);
+           k = 0;
+           timer = timerPollInitializer(count, TARval);
+           while(k < 10)
+           {
+               if(checkTimer(timer))
+               {
+                   sendDipolePacket(k + i * 10, 0, k + i * 10);
+                   k++;
+                   if(k < 10)
+                   {
+                       timer = timerPollInitializer(count, TARval);
+                   }
+               }
+           }
+       }
+}
+
+void changeYZ()
+{
+    int i = 0;
+       for(i = -10; i < 10; i++)
+       {
+           toggleTumbleStatus(0);
+           int k = 0;
+           timer = timerPollInitializer(count, TARval);
+           while(k < 10)
+           {
+               if(checkTimer(timer))
+               {
+                   sendDipolePacket(0, k + i * 10, k + i * 10);
+                   k++;
+                   if(k < 10)
+                   {
+                       timer = timerPollInitializer(count, TARval);
+                   }
+               }
+           }
+           toggleTumbleStatus(1);
+           k = 0;
+           timer = timerPollInitializer(count, TARval);
+           while(k < 10)
+           {
+               if(checkTimer(timer))
+               {
+                   sendDipolePacket(0, k + i * 10, k + i * 10);
+                   k++;
+                   if(k < 10)
+                   {
+                       timer = timerPollInitializer(count, TARval);
+                   }
+               }
+           }
+       }
+}
+
+
+
+
+
+//i = 0;
+//while(i < 1)
+//{
+//    if(checkTimer(timer))
+//    {
+//        sendTumblePacket(status);
+//        if(status == 0)
+//        {
+//            status = 1;
+//        } else
+//        {
+//            status = 0;
+//        }
+//        i++;
+//        timer = timerPollInitializer(count, TARval);
+//    }
+//}
+//i = 0;
+//while(i < 5)
+//{
+//   if(checkTimer(timer))
+//   {
+//       sendDipolePacket(x_, y_, z_);
+//       x_++;
+//       i++;
+//       P1OUT ^= (BIT0 | BIT2);
+//       timer = timerPollInitializer(count, TARval);
+//   }
+//
+//}
+//
+//x_ = 0;
+//y_ = -100;
+//i = 0;
+//while(i < 5)
+//{
+//    if(checkTimer(timer))
+//    {
+//        sendDipolePacket(x_, y_, z_);
+//        y_++;
+//        i++;
+//        P1OUT ^= (BIT0 | BIT2);
+//        timer = timerPollInitializer(count, TARval);
+//    }
+//}
+//
+//y_ = 0;
+//z_ = -100;
+//i = 0;
+//while(i < 5)
+//{
+//    if(checkTimer(timer))
+//    {
+//        sendDipolePacket(x_, y_, z_);
+//        z_++;
+//        i++;
+//        P1OUT ^= (BIT0 | BIT2);
+//        timer = timerPollInitializer(count, TARval);
+//    }
+//}
+//z_ = 0;
+
+
+
+//if(checkTimer(timer))
+//{
+////            sendDipolePacket(100, 1, -100);
+//    sendTumbleStatus(1);
+//    timer = timerPollInitializer(2, 0);
+//}
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
 void handlePPTFiringNotification()
@@ -160,6 +500,7 @@ void handleRollCall()
 {
     __no_operation();
 }
+
 
 
 //#include <adcs_bdot.h>

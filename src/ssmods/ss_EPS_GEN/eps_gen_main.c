@@ -229,7 +229,7 @@ int main(void)
             genBcSendGeneral();
             genBcSendHealth();
         }
-        if (counter % 16 == 0) genBcSendMeta();
+        if (counter % 32 == 0) genBcSendMeta();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!

@@ -43,6 +43,8 @@ typedef struct _coulombCounterData {
     float shuntVoltageV;
     float calcdCurrentA;
     float SOC;
+    float accumulatedCharge;
+    float battCharge;
 
 } CoulombCounterData;
 

@@ -1,10 +1,7 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdint.h>
-
 #include "dataArray.h"
-#include "unity.h"
+/*#include "unity.h"*/
+
+#include "assert.h"
 
 /*
 	This file contains that will test the dataArray library.
@@ -36,10 +33,10 @@ void test_initialization(void)
 {
 	TYPE myArray[10];
    uint16_t array1 = init(myArray, 10);
-	TEST_ASSERT_EQUAL(0, getAvg(array1));
-	TEST_ASSERT_EQUAL(0, getSum(array1));
-	TEST_ASSERT_EQUAL(0, getMin(array1));
-	TEST_ASSERT_EQUAL(0, getMax(array1));
+	assert(0 == getAvg(array1));
+	assert(0 == getSum(array1));
+	assert(0 == getMin(array1));
+	assert(0 == getMax(array1));
 }
 
 /*
@@ -54,10 +51,10 @@ void test_adding_one_value(void)
 	TYPE myArray[10];
    uint16_t array1 = init(myArray, 10);
 	addData(array1, (TYPE)5);
-	TEST_ASSERT_EQUAL(5, getAvg(array1));
-	TEST_ASSERT_EQUAL(5, getSum(array1));
-	TEST_ASSERT_EQUAL(5, getMin(array1));
-	TEST_ASSERT_EQUAL(5, getMax(array1));
+	assert(5 == getAvg(array1));
+	assert(5 == getSum(array1));
+	assert(5 == getMin(array1));
+	assert(5 == getMax(array1));
 }
 
 void test_fill_array(void)
@@ -74,10 +71,10 @@ void test_fill_array(void)
 	addData(array1, (TYPE)89);
 	addData(array1, (TYPE)53);
 	addData(array1, (TYPE)20);
-	TEST_ASSERT_EQUAL(141, getAvg(array1));
-	TEST_ASSERT_EQUAL(1417, getSum(array1));
-	TEST_ASSERT_EQUAL(3, getMin(array1));
-	TEST_ASSERT_EQUAL(544, getMax(array1));
+	assert(141 == getAvg(array1));
+	assert(1417 == getSum(array1));
+	assert(3 == getMin(array1));
+	assert(544 == getMax(array1));
 }
 
 void test_reset(void) {
@@ -85,16 +82,16 @@ void test_reset(void) {
 	uint16_t array1 = init(myArray, 10);
 	/* Reset with no added values */
 	resetAll(array1);
-	TEST_ASSERT_EQUAL(0, getAvg(array1));
-	TEST_ASSERT_EQUAL(0, getSum(array1));
-	TEST_ASSERT_EQUAL(0, getMin(array1));
-	TEST_ASSERT_EQUAL(0, getMax(array1));
+	assert(0 == getAvg(array1));
+	assert(0 == getSum(array1));
+	assert(0 == getMin(array1));
+	assert(0 == getMax(array1));
 	/* Reset with one added value */
 	addData(array1, (TYPE)5);
-	TEST_ASSERT_EQUAL(5, getAvg(array1));
-	TEST_ASSERT_EQUAL(5, getSum(array1));
-	TEST_ASSERT_EQUAL(5, getMin(array1));
-	TEST_ASSERT_EQUAL(5, getMax(array1));
+	assert(5 == getAvg(array1));
+	assert(5 == getSum(array1));
+	assert(5 == getMin(array1));
+	assert(5 == getMax(array1));
 	/* Reset and then fill buffer */
 	resetAll(array1);
 	addData(array1, (TYPE)5);
@@ -107,10 +104,10 @@ void test_reset(void) {
 	addData(array1, (TYPE)89);
 	addData(array1, (TYPE)53);
 	addData(array1, (TYPE)20);
-	TEST_ASSERT_EQUAL(141, getAvg(array1));
-	TEST_ASSERT_EQUAL(1417, getSum(array1));
-	TEST_ASSERT_EQUAL(3, getMin(array1));
-	TEST_ASSERT_EQUAL(544, getMax(array1));
+	assert(141 == getAvg(array1));
+	assert(1417 == getSum(array1));
+	assert(3 == getMin(array1));
+	assert(544 == getMax(array1));
 	/* Reset then overflow buffer capacity */
 	resetAll(array1);
 	addData(array1, (TYPE)1);
@@ -126,14 +123,14 @@ void test_reset(void) {
 	addData(array1, (TYPE)100);
 	addData(array1, (TYPE)3);
 	addData(array1, (TYPE)58);
-	TEST_ASSERT_EQUAL(1, getMin(array1));
-	TEST_ASSERT_EQUAL(544, getMax(array1));
-	TEST_ASSERT_EQUAL(102, getAvg(array1));
+	assert(1 == getMin(array1));
+	assert(544 == getMax(array1));
+	assert(102 == getAvg(array1));
 	resetAll(array1);
-	TEST_ASSERT_EQUAL(0, getAvg(array1));
-	TEST_ASSERT_EQUAL(0, getSum(array1));
-	TEST_ASSERT_EQUAL(0, getMin(array1));
-	TEST_ASSERT_EQUAL(0, getMax(array1));
+	assert(0 == getAvg(array1));
+	assert(0 == getSum(array1));
+	assert(0 == getMin(array1));
+	assert(0 == getMax(array1));
 
 }
 
@@ -155,9 +152,9 @@ void test_overloading_array(void)
 	addData(array1, (TYPE)100);
 	addData(array1, (TYPE)3);
 	addData(array1, (TYPE)58);
-	TEST_ASSERT_EQUAL(1, getMin(array1));
-	TEST_ASSERT_EQUAL(544, getMax(array1));
-	TEST_ASSERT_EQUAL(102, getAvg(array1));
+	assert(1 == getMin(array1));
+	assert(544 == getMax(array1));
+	assert(102 == getAvg(array1));
 }
 
 void test_not_full_array_with_same_numbers(void)
@@ -170,9 +167,9 @@ void test_not_full_array_with_same_numbers(void)
 	addData(array1, (TYPE)2);
 	addData(array1, (TYPE)2);
 	addData(array1, (TYPE)2);
-	TEST_ASSERT_EQUAL(2, getMin(array1));
-	TEST_ASSERT_EQUAL(2, getMax(array1));
-	TEST_ASSERT_EQUAL(2, getAvg(array1));
+	assert(2 == getMin(array1));
+	assert(2 == getMax(array1));
+	assert(2 == getAvg(array1));
 }
 
 void test_not_full_array_with_diff_numbers(void)
@@ -185,9 +182,9 @@ void test_not_full_array_with_diff_numbers(void)
 	addData(array1, (TYPE)513);
 	addData(array1, (TYPE)3423);
 	addData(array1, (TYPE)2);
-	TEST_ASSERT_EQUAL(2, getMin(array1));
-	TEST_ASSERT_EQUAL(3423, getMax(array1));
-	TEST_ASSERT_EQUAL(992, getAvg(array1));
+	assert(2 == getMin(array1));
+	assert(3423 == getMax(array1));
+	assert(992 == getAvg(array1));
 }
 
 void test_not_full_array_with_diff_numbers_with_reset(void)
@@ -200,9 +197,9 @@ void test_not_full_array_with_diff_numbers_with_reset(void)
 	addData(array1, (TYPE)513);
 	addData(array1, (TYPE)3423);
 	addData(array1, (TYPE)2);
-	TEST_ASSERT_EQUAL(2, getMin(array1));
-	TEST_ASSERT_EQUAL(3423, getMax(array1));
-	TEST_ASSERT_EQUAL(992, getAvg(array1));
+	assert(2 == getMin(array1));
+	assert(3423 == getMax(array1));
+	assert(992 == getAvg(array1));
 	resetAll(array1);
 	addData(array1, (TYPE)444);
 	addData(array1, (TYPE)100);
@@ -212,9 +209,9 @@ void test_not_full_array_with_diff_numbers_with_reset(void)
 	addData(array1, (TYPE)76);
 	addData(array1, (TYPE)90);
 	addData(array1, (TYPE)51);
-	TEST_ASSERT_EQUAL(50, getMin(array1));
-	TEST_ASSERT_EQUAL(10000, getMax(array1));
-	TEST_ASSERT_EQUAL(1993, getAvg(array1));
+	assert(50 == getMin(array1));
+	assert(10000 == getMax(array1));
+	assert(1993 == getAvg(array1));
 }
 
 void test_overloading_array_with_reset(void)
@@ -236,9 +233,9 @@ void test_overloading_array_with_reset(void)
 	addData(array1, (TYPE)3);
 	addData(array1, (TYPE)58);
 
-	TEST_ASSERT_EQUAL(1, getMin(array1));
-	TEST_ASSERT_EQUAL(544, getMax(array1));
-	TEST_ASSERT_EQUAL(102, getAvg(array1));
+	assert(1 == getMin(array1));
+	assert(544 == getMax(array1));
+	assert(102 == getAvg(array1));
 
 	resetAll(array1);
 	addData(array1, (TYPE)1);
@@ -248,9 +245,9 @@ void test_overloading_array_with_reset(void)
 	addData(array1, (TYPE)5);
 	addData(array1, (TYPE)6);
 
-	TEST_ASSERT_EQUAL(1, getMin(array1));
-	TEST_ASSERT_EQUAL(6, getMax(array1));
-	TEST_ASSERT_EQUAL(3, getAvg(array1));
+	assert(1 == getMin(array1));
+	assert(6 == getMax(array1));
+	assert(3 == getAvg(array1));
 }
 
 void test_multiple_handles(void)
@@ -279,13 +276,13 @@ void test_multiple_handles(void)
 	addData(array2, (TYPE)99);
 	addData(array2, (TYPE)99);
 
-	TEST_ASSERT_EQUAL(1, getMin(array1));
-	TEST_ASSERT_EQUAL(544, getMax(array1));
-	TEST_ASSERT_EQUAL(102, getAvg(array1));
+	assert(1 == getMin(array1));
+	assert(544 == getMax(array1));
+	assert(102 == getAvg(array1));
 
-	TEST_ASSERT_EQUAL(99, getMin(array2));
-	TEST_ASSERT_EQUAL(99, getMax(array2));
-	TEST_ASSERT_EQUAL(99, getAvg(array2));
+	assert(99 == getMin(array2));
+	assert(99 == getMax(array2));
+	assert(99 == getAvg(array2));
 }
 
 void test_1_before_overflow(void)
@@ -299,9 +296,9 @@ void test_1_before_overflow(void)
 	addData(array1, (TYPE)30);
 	addData(array1, (TYPE)5);
 
-	TEST_ASSERT_EQUAL(5, getMin(array1));
-	TEST_ASSERT_EQUAL(60000, getMax(array1));
-	TEST_ASSERT_EQUAL(13107, getAvg(array1));
+	assert(5 == getMin(array1));
+	assert(60000 == getMax(array1));
+	assert(13107 == getAvg(array1));
 }
 
 void test_overflow_uint16(void)
@@ -317,9 +314,9 @@ void test_overflow_uint16(void)
 	addData(array1, (TYPE)30);
 	addData(array1, (TYPE)6);
 	addData(array1, (TYPE)5000);
-	TEST_ASSERT_EQUAL(6, getMin(array1));
-	TEST_ASSERT_EQUAL(60000, getMax(array1));
-	TEST_ASSERT_EQUAL(0, getAvg(array1));
+	assert(6 == getMin(array1));
+	assert(60000 == getMax(array1));
+	assert(0 == getAvg(array1));
 }
 
 void test_overflow_float(void)
@@ -331,9 +328,9 @@ void test_overflow_float(void)
 	uint16_t array1 = init(myArray, 10026);
 	addData(array1, (TYPE)FLT_MIN);
 	addData(array1, (TYPE)1.0);
-	TEST_ASSERT_EQUAL(1.0, getMin(array1));
-	TEST_ASSERT_EQUAL_FLOAT(FLT_MIN, getMax(array1));
-	TEST_ASSERT_EQUAL(0.0, getAvg(array1));
+	assert(1.0 == getMin(array1));
+	assert_FLOAT(FLT_MIN == getMax(array1));
+	assert(0.0 == getAvg(array1));
 }
 
 void test_resetAvg_and_resetMinMax(void)
@@ -343,9 +340,9 @@ void test_resetAvg_and_resetMinMax(void)
 	uint16_t array1 = init(myArray, 123);
 
 	/* test no data inserted */
-	TEST_ASSERT_EQUAL(0, getMin(array1));
-	TEST_ASSERT_EQUAL(0, getMax(array1));
-	TEST_ASSERT_EQUAL(0, getAvg(array1));
+	assert(0 == getMin(array1));
+	assert(0 == getMax(array1));
+	assert(0 == getAvg(array1));
 
 	addData(array1, (TYPE)11);
 	addData(array1, (TYPE)13);
@@ -355,15 +352,15 @@ void test_resetAvg_and_resetMinMax(void)
 	addData(array1, (TYPE)712);
 
 	/* test normal functionalities */
-	TEST_ASSERT_EQUAL(11, getMin(array1));
-	TEST_ASSERT_EQUAL(712, getMax(array1));
-	TEST_ASSERT_EQUAL(195, getAvg(array1));
+	assert(11 == getMin(array1));
+	assert(712 == getMax(array1));
+	assert(195 == getAvg(array1));
 
 	/* test resetAvg */
 	resetAvg(array1);
-	TEST_ASSERT_EQUAL(11, getMin(array1));
-	TEST_ASSERT_EQUAL(712, getMax(array1));
-	TEST_ASSERT_EQUAL(0, getAvg(array1));
+	assert(11 == getMin(array1));
+	assert(712 == getMax(array1));
+	assert(0 == getAvg(array1));
 
 	addData(array1, (TYPE)222);
 	addData(array1, (TYPE)3456);
@@ -372,31 +369,31 @@ void test_resetAvg_and_resetMinMax(void)
 	addData(array1, (TYPE)70);
 
 	/* test with new data after calling resetAvg */
-	TEST_ASSERT_EQUAL(11, getMin(array1));
-	TEST_ASSERT_EQUAL(4459, getMax(array1));
-	TEST_ASSERT_EQUAL(1649, getAvg(array1));
+	assert(11 == getMin(array1));
+	assert(4459 == getMax(array1));
+	assert(1649 == getAvg(array1));
 
 	/* test resetMinMax */
 	resetMinMax(array1);
-	TEST_ASSERT_EQUAL(0, getMin(array1));
-	TEST_ASSERT_EQUAL(0, getMax(array1));
-	TEST_ASSERT_EQUAL(1649, getAvg(array1));
+	assert(0 == getMin(array1));
+	assert(0 == getMax(array1));
+	assert(1649 == getAvg(array1));
 
 	addData(array1, (TYPE)5);
 	addData(array1, (TYPE)500);
 
 	/* test add 1 min and 1 max value and check min max */
-	TEST_ASSERT_EQUAL(5, getMin(array1));
-	TEST_ASSERT_EQUAL(500, getMax(array1));
-	TEST_ASSERT_EQUAL(1250, getAvg(array1));
+	assert(5 == getMin(array1));
+	assert(500 == getMax(array1));
+	assert(1250 == getAvg(array1));
 
 	addData(array1, (TYPE)3);
 	addData(array1, (TYPE)999);
 
 	/* test update new min and max */
-	TEST_ASSERT_EQUAL(3, getMin(array1));
-	TEST_ASSERT_EQUAL(999, getMax(array1));
-	TEST_ASSERT_EQUAL(1084, getAvg(array1));
+	assert(3 == getMin(array1));
+	assert(999 == getMax(array1));
+	assert(1084 == getAvg(array1));
 
 
 	addData(array1, (TYPE)5);
@@ -413,9 +410,9 @@ void test_resetAvg_and_resetMinMax(void)
 	resetMinMax(array1);
 
 	/* test calling resetAvg() and resetMinMax() right after each other */
-	TEST_ASSERT_EQUAL(0, getMin(array1));
-	TEST_ASSERT_EQUAL(0, getMax(array1));
-	TEST_ASSERT_EQUAL(0, getAvg(array1));
+	assert(0 == getMin(array1));
+	assert(0 == getMax(array1));
+	assert(0 == getAvg(array1));
 
 	addData(array1, (TYPE)123);
 	addData(array1, (TYPE)23);
@@ -425,17 +422,17 @@ void test_resetAvg_and_resetMinMax(void)
 	addData(array1, (TYPE)96);
 
 	/* find min/max/avg after calling resetAvg() and resetMinMax() */
-	TEST_ASSERT_EQUAL(23, getMin(array1));
-	TEST_ASSERT_EQUAL(556, getMax(array1));
-	TEST_ASSERT_EQUAL(301, getAvg(array1));
+	assert(23 == getMin(array1));
+	assert(556 == getMax(array1));
+	assert(301 == getAvg(array1));
 
 	resetMinMax(array1);
 	resetAvg(array1);
 
 	/* test calling resetMinMax() and resetAvg() right after each other */
-	TEST_ASSERT_EQUAL(0, getMin(array1));
-	TEST_ASSERT_EQUAL(0, getMax(array1));
-	TEST_ASSERT_EQUAL(0, getAvg(array1));
+	assert(0 == getMin(array1));
+	assert(0 == getMax(array1));
+	assert(0 == getAvg(array1));
 
 	addData(array1, (TYPE)1);
 	addData(array1, (TYPE)2);
@@ -445,7 +442,7 @@ void test_resetAvg_and_resetMinMax(void)
 	addData(array1, (TYPE)1);
 
 	/* find min/max/avg after calling resetMinMax() and resetAvg() */
-	TEST_ASSERT_EQUAL(1, getMin(array1));
-	TEST_ASSERT_EQUAL(3, getMax(array1));
-	TEST_ASSERT_EQUAL(2, getAvg(array1));
+	assert(1 == getMin(array1));
+	assert(3 == getMax(array1));
+	assert(2 == getAvg(array1));
 }

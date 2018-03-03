@@ -111,8 +111,11 @@ CMD_SEGMENT {
 } enable_segment;
 
 void gpsioInit();
-void gpsioConfigure();
+void gpsioConfig();
 void gpsioUpdate();
+
+void gpsioPowerOn();
+void gpsioPowerOff();
 
 void gpsioSendPowerStatus();
 void gpsioSendStatus();
