@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.6.2">
+<eagle version="8.6.3">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -6305,8 +6305,8 @@ No silk outline, but tDocu layer shows pin location.
 <part name="C7" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="2.2u"/>
 <part name="L1" library="DubSat1 Components" deviceset="COILCRAFT_XAL4020-222ME" device=""/>
 <part name="GND14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R3" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
-<part name="R4" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
+<part name="R3" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
+<part name="R4" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="C10" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="22p"/>
 <part name="C8" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.1u"/>
 <part name="C9" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
