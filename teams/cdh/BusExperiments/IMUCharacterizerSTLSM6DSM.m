@@ -15,7 +15,10 @@ slave_addr = '6Ah'; % ST LSM6DSM for when SDO/SA1 is low
 % Figure out number of samples
 % Raw number of samples method
 % num_samps = 50000;
-targetlens = 3600;  % target length in seconds
+targetlens = 3600;  % target length in seconds (3600 = 1 hour)
+
+% resultsfolder = 'LSM6DSMResults';
+resultsfolder = [pwd '\previbeA_3_6_18__3'];
 
 % Connect to device
 dut = i2c('aardvark', 0, slave_addr);
@@ -99,9 +102,6 @@ config_104_high = { '104 Hz (High Perf)',
 %                   config_104_low,
 %                   config_104_high];
 configurations = [ config_26_high  ];
-
-% resultsfolder = 'LSM6DSMResults';
-resultsfolder = [pwd '\previbeB_2_14_18__3'];
               
 numconfigs = length(configurations)/NUM_TEST_CONFIG_FIELDS;
 allresults = zeros(numconfigs, 10);
