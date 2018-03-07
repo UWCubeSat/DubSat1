@@ -1,6 +1,6 @@
 /*
  * canwrap.c
- *1111`1q1
+ *
  *  Created on: Aug 14, 2017
  *      Author: emoryeng
  */
@@ -61,52 +61,52 @@ void canWrapInitWithFilter(){
     uint32_t filter_one = 0x0;
     switch(ss) {
       case Module_Test :
-        filter_one = 0x5;
+        filter_one = 0x1;
         break;
       case Module_ADCS_BDot :
         filter_one = 0x2;
         break;
       case Module_ADCS_RWX :
-        filter_one = 0x0;
+        filter_one = 0x4;
         break;
       case Module_ADCS_RWY :
-        filter_one = 0x0;
+        filter_one = 0x8;
         break;
       case Module_ADCS_RWZ :
-        filter_one = 0x0;
+        filter_one = 0x10;
         break;
       case Module_PPT :
-        filter_one = 0x0;
+        filter_one = 0x20;
         break;
       case Module_EPS_Dist :
-        filter_one = 0x0;
+        filter_one = 0x40;
         break;
       case Module_EPS_Gen :
-        filter_one = 0x0;
+        filter_one = 0x80;
         break;
       case Module_EPS_Batt :
-        filter_one = 0x0;
+        filter_one = 0x100;
         break;
       case Module_ADCS_Estim :
-        filter_one = 0x0;
+        filter_one = 0x200;
         break;
       case Module_ADCS_MPC :
-        filter_one = 0x0;
+        filter_one = 0x400;
         break;
       case Module_ADCS_SensorProc :
-        filter_one = 0x0;
+        filter_one = 0x800;
         break;
       case Module_ADCS_MTQ :
         filter_one = 0x1000;
         break;
       case Module_COM1 :
-        filter_one = 0x0;
+        filter_one = 0x2000;
         break;
       case Module_COM2 :
-        filter_one = 0x0;
+        filter_one = 0x4000;
         break;
       case Module_RAHS :
-        filter_one = 0x0;
+        filter_one = 0x8000;
         break;
       default :
         filter_one = 0x0;
