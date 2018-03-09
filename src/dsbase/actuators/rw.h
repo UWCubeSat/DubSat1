@@ -59,6 +59,7 @@ void rwsSetTuningParams(double Kp, double Ki, double Kd);
 double rwsPIDStep(double setpoint);
 void rwsRunAuto();
 void rwsRunManual();
+int rwsMode();
 void rwsSetTargetRPM();
 void rwsSetMotorSpeed();
 void rwsSetMinMaxOutput();
