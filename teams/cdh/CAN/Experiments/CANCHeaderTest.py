@@ -258,6 +258,8 @@ def createCMain(candb, cFileName, floatList):
 
 #include "canwrap.h"
 #include "../core/can.h"
+#include "../bsp/bsp.h"
+
 
 //void canPacketInit(uint8_t boardNum){
 //    canInit();
@@ -305,9 +307,98 @@ void canWrapInit(){
 }
 
 void canWrapInitWithFilter(){
-    canInit();
-    setReceiveCallback0(wrapCB0);
-    setReceiveCallback1(wrapCB1);
+    canWrapInit();
+    SubsystemModule ss = bspGetModule();
+    uint32_t filter_one = 0x0;
+    switch(ss) {
+      case Module_Test :
+        filter_one = 0x1;
+        break;
+      case Module_ADCS_BDot :
+        filter_one = 0x2;
+        break;
+      case Module_ADCS_RWX :
+        filter_one = 0x4;
+        break;
+      case Module_ADCS_RWY :
+        filter_one = 0x8;
+        break;
+      case Module_ADCS_RWZ :
+        filter_one = 0x10;
+        break;
+      case Module_PPT :
+        filter_one = 0x20;
+        break;
+      case Module_EPS_Dist :
+        filter_one = 0x40;
+        break;
+      case Module_EPS_Gen :
+        filter_one = 0x80;
+        break;
+      case Module_EPS_Batt :
+        filter_one = 0x100;
+        break;
+      case Module_ADCS_Estim :
+        filter_one = 0x200;
+        break;
+      case Module_ADCS_MPC :
+        filter_one = 0x400;
+        break;
+      case Module_ADCS_SensorProc :
+        filter_one = 0x800;
+        break;
+      case Module_ADCS_MTQ :
+        filter_one = 0x1000;
+        break;
+      case Module_COM1 :
+        filter_one = 0x2000;
+        break;
+      case Module_COM2 :
+        filter_one = 0x4000;
+        break;
+      case Module_RAHS :
+        filter_one = 0x8000;
+        break;
+      default :
+        filter_one = 0x0;
+  	}
+  	setTheFilter(CAN_MASK_0, (uint32_t) 0x10000000);
+   	setTheFilter(CAN_FILTER_0, (uint32_t) 0x00);
+   	setTheFilter(CAN_FILTER_1, (uint32_t) 0x00);
+
+   	setTheFilter(CAN_MASK_1, filter_one);
+   	setTheFilter(CAN_FILTER_2, (uint32_t) filter_one);
+    setTheFilter(CAN_FILTER_3, (uint32_t) filter_one);
+    setTheFilter(CAN_FILTER_4, (uint32_t) filter_one);
+    setTheFilter(CAN_FILTER_5, (uint32_t) filter_one);
+
+    int8_t floop;
+    uint8_t filterNum = 0;
+    for(floop = 28;floop >= 0; floop--){
+        if((filter_one >> floop) & 0x01){
+            PJDIR |= 0x04;
+            PJOUT |= 0x04;
+            setTheFilter((filterNum*4+12)-(!filterNum * 4), 0x1 << floop);
+            filterNum++;
+        }
+    }
+
+
+//    uint8_t debugPollReg = CAN_FILTER_5;
+//
+//    CANPacket p = {0};
+//    p.length = 5;
+//    bitModify(MCP_CANCTRL, 0xE0, 0x80);
+//    readRegister(debugPollReg + 1, &(p.data[2]));
+//    // This line has to be duplicated for it to work.
+//    // Because of some weird delay between moving to config mode from normal mode.
+//    readRegister(debugPollReg + 1, &(p.data[2]));
+//    readRegister(debugPollReg + 2, &(p.data[3]));
+//    readRegister(debugPollReg + 3, &(p.data[4]));
+//    readRegister(debugPollReg, &(p.data[1]));
+//    bitModify(MCP_CANCTRL, 0xE0, 0x00);
+//    canSendPacket(&p);
+//
 }
 
 
