@@ -30,9 +30,6 @@
 
 #define BUCK_GOOD_DIR P3DIR
 #define BUCK_GOOD_IN  P3IN
-#define BUCK_GOOD_IE  P3IE
-#define BUCK_GOOD_IES P3IES
-#define BUCK_GOOD_IFG P3IFG
 #define BUCK_GOOD_BIT BIT6
 
 // --- NovAtel IDs and enums ---
@@ -303,46 +300,46 @@ typedef struct
 void gpsInit();
 
 /**
- * Switch on the buck converter
+ * Switch the buck converter on or off
  */
-void gpsBuckOn();
-
-/*
- * Switch off the buck converter
- */
-void gpsBuckOff();
+void gpsSetBuck(uint8_t enable);
 
 /**
  * Returns 1 iff the buck converter is enabled. 0 otherwise
  */
-uint8_t gpsBuckEnabled();
+uint8_t gpsIsBuckEnabled();
 
 /**
  * Returns 1 iff the buck converter status is good
  */
-uint8_t gpsBuckGood();
+uint8_t gpsIsBuckGood();
 
 /**
- * Powers on the GPS. The buck converter must be enabled and good first. Set
- * reset off > 150 ms after powering on the GPS.
+ * Powers the GPS on or off.
+ *
+ * Set reset off > 150 ms after powering on the GPS.
+ *
+ * Powering off the GPS will flush any leftover logs.
  */
-void gpsPowerOn();
-
-/**
- * Set the reset pin to inactive (high). Reset is activated whenever the buck
- * converter is turned on.
- */
-void gpsSetResetOff();
-
-/**
- * Powers off the GPS and finishes processing any leftover logs
- */
-void gpsPowerOff();
+void gpsSetPower(uint8_t on);
 
 /**
  * Returns 1 iff the gps switch is enabled. 0 otherwise
  */
-uint8_t gpsPowerEnabled();
+uint8_t gpsIsPowerEnabled();
+
+/**
+ * Set the RESET pin active or inactive (active low). An active RESET signal
+ * will reboot the receiver without use of the power switch or buck converter.
+ * RESET should be active for > 150 ms while the receiver is booting up, then
+ * set inactive for normal operation.
+ */
+void gpsSetReset(uint8_t active);
+
+/**
+ * Returns 1 iff the RESET pin is active (low). 0 otherwise.
+ */
+uint8_t gpsIsResetActive();
 
 /**
  * Returns a GPSPackage if one is available, otherwise NULL.
