@@ -39,6 +39,7 @@ void gpsInit()
     // configure GPIO pins
     GPS_ENABLE_DIR |= GPS_ENABLE_BIT;   // output
     BUCK_ENABLE_DIR |= BUCK_ENABLE_BIT; // output
+    RESET_DIR |= RESET_BIT;             // output
     BUCK_GOOD_DIR &= ~BUCK_GOOD_BIT; // input
 }
 
@@ -47,6 +48,9 @@ void gpsBuckOn()
     BUCK_ENABLE_OUT |= BUCK_ENABLE_BIT; // enable buck converter
     BUCK_GOOD_IE |= BUCK_GOOD_BIT;      // enable interrupt
     BUCK_GOOD_IFG &= ~BUCK_GOOD_BIT;    // clear interrupt flag
+
+    // also activate the reset pin
+    RESET_OUT &= ~RESET_BIT;
 
     // read initial buck status
     health.buck_status = gpsBuckGood();
@@ -85,6 +89,12 @@ void gpsPowerOn()
     }
     BufferedReaderFlush();
     GPS_ENABLE_OUT |= GPS_ENABLE_BIT; // enable GPS
+}
+
+void gpsSetResetOff()
+{
+    // active low
+    RESET_OUT |= RESET_BIT;
 }
 
 void gpsPowerOff()

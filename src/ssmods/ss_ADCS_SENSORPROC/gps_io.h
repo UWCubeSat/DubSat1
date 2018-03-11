@@ -16,12 +16,13 @@
 #include "sensors/gps/gps.h"
 
 typedef enum {
-    State_GPSOff = 0,
-    State_BuckWaitOn = 1,
-    State_GPSWait = 2,
-    State_GPSOn = 3,
-    State_BuckWaitOff = 4,
-} gps_power_state;
+    State_Off = 0,
+    State_EnablingBuck = 1,
+    State_EnablingGPS = 2,
+    State_AwaitingGPSOn = 3,
+    State_On = 4,
+    State_ShuttingDown = 5
+} gps_power_state_code;
 
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
@@ -31,6 +32,7 @@ TLM_SEGMENT {
     gps_health health;
 } gpshealth_segment;
 
+// TODO add reset status entry
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 

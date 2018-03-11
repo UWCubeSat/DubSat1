@@ -24,6 +24,10 @@
 #define BUCK_ENABLE_OUT P3OUT
 #define BUCK_ENABLE_BIT BIT7
 
+#define RESET_DIR P1DIR
+#define RESET_OUT P1OUT
+#define RESET_BIT BIT6
+
 #define BUCK_GOOD_DIR P3DIR
 #define BUCK_GOOD_IN  P3IN
 #define BUCK_GOOD_IE  P3IE
@@ -319,9 +323,16 @@ uint8_t gpsBuckEnabled();
 uint8_t gpsBuckGood();
 
 /**
- * Powers on the GPS. The buck converter must be enabled and good first.
+ * Powers on the GPS. The buck converter must be enabled and good first. Set
+ * reset off > 150 ms after powering on the GPS.
  */
 void gpsPowerOn();
+
+/**
+ * Set the reset pin to inactive (high). Reset is activated whenever the buck
+ * converter is turned on.
+ */
+void gpsSetResetOff();
 
 /**
  * Powers off the GPS and finishes processing any leftover logs

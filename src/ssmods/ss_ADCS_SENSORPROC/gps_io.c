@@ -19,10 +19,31 @@ FILE_STATIC gpspower_segment gpspowerSeg;
 FILE_STATIC rxstatus_segment rxstatusSeg;
 FILE_STATIC time_segment timeSeg;
 
-FILE_STATIC volatile gps_power_state gpsPowerState = State_GPSOff;
+// state management stuff
+FILE_STATIC volatile gps_power_state_code gpsPowerState = State_Off;
+typedef void (* gps_power_state)(void);
+
+FILE_STATIC void stateOff();
+FILE_STATIC void stateEnablingBuck();
+FILE_STATIC void stateEnablingGPS();
+FILE_STATIC void stateAwaitingGPSOn();
+FILE_STATIC void stateOn();
+FILE_STATIC void stateShuttingDown();
+
+// keep in sync with codes in header file!
+static gps_power_state states[] = {
+        stateOff,
+        stateEnablingBuck,
+        stateEnablingGPS,
+        stateAwaitingGPSOn,
+        stateOn,
+        stateShuttingDown
+};
 
 FILE_STATIC flag_t triggerGPSOn;
 FILE_STATIC flag_t triggerGPSOff;
+FILE_STATIC uint8_t gotOnCommand();
+FILE_STATIC uint8_t gotOffCommand();
 
 // callbacks
 FILE_STATIC void canRxCallback(CANPacket *packet);
@@ -82,124 +103,141 @@ void gpsioConfig()
 
 void gpsioUpdate()
 {
-    static uint32_t i = 0;
-    i++;
+    states[gpsPowerState]();
+}
 
-    switch (gpsPowerState)
-    {
-    case State_GPSOff:
-        if (triggerGPSOff)
-        {
-            triggerGPSOff = FALSE;
-        }
-        else if (triggerGPSOn)
-        {
-            // enable the buck converter
-            triggerGPSOn = FALSE;
-            gpsBuckOn();
-            gpsPowerState = State_BuckWaitOn;
-        }
-        break;
-    case State_BuckWaitOn:
-        if (triggerGPSOff)
-        {
-            // abort boot and wait for buck converter to turn off
-            triggerGPSOff = FALSE;
-            gpsPowerState = State_BuckWaitOff;
-        }
-        else if (triggerGPSOn)
-        {
-            triggerGPSOn = FALSE;
-        }
-        else if (gpsBuckGood())
-        {
-            // buck converter signal is good, enable the GPS
-            gpsPowerOn();
-            gpsPowerState = State_GPSWait;
-        }
-        break;
-    case State_GPSWait:
-        if (triggerGPSOff)
-        {
-            // abort boot and turn GPS switch off
-            triggerGPSOff = FALSE;
-            gpsPowerOff();
-            gpsPowerState = State_BuckWaitOff;
-        }
-        else if (triggerGPSOn)
-        {
-            triggerGPSOn = FALSE;
-        }
-        else if (gpsioHandlePackage(gpsRead()))
-        {
-            // now that the GPS is confirmed to be on, configure it
-            gpsioConfig();
-            gpsPowerState = State_GPSOn;
-        }
-        else if (i % 65536 == 0)
-        {
-            // periodically poll the GPS until it responds
-            // TODO replace this with timers
-            gpsSendCommand("log rxstatusb\r\n");
-        }
-        break;
-    case State_GPSOn:
-        // TODO add state transition for !gpsBuckGood()?
-        if (triggerGPSOff)
-        {
-            // switch the GPS off
-            triggerGPSOff = FALSE;
-            gpsPowerOff();
-            gpsPowerState = State_BuckWaitOff;
-        }
-        else if (triggerGPSOn)
-        {
-            triggerGPSOn = FALSE;
-        }
-        else if (i % 65536 == 0)
-        {
-            // periodically send status telemetry
-            gpsioSendStatus();
-
-            /*
-             * We should be able to use "log hwmonitorb ontime 3" to poll this
-             * automatically, but that isn't working for whatever reason.
-             * Manually calling logs here does work.
-             */
-            gpsSendCommand("log hwmonitorb\r\n");
-        }
-        else
-        {
-            // read from the GPS and trigger message handlers
-            gpsioHandlePackage(gpsRead());
-        }
-        break;
-    case State_BuckWaitOff:
-    {
-        static uint16_t count = 0;
-
-        if (triggerGPSOff)
-        {
-            triggerGPSOff = FALSE;
-        }
-        else if (triggerGPSOn)
-        {
-            // abort shutdown and turn the GPS switch back on
-            triggerGPSOn = FALSE;
-            gpsPowerOn();
-            gpsPowerState = State_GPSWait;
-        }
-        else if (count++ > 50000)
-        {
-            // wait a while before disabling the buck converter
-            gpsBuckOff();
-            gpsPowerState = State_GPSOff;
-            count = 0;
-        }
-        break;
+void stateOff() {
+    if (gotOnCommand()) {
+        gpsBuckOn();
+        gpsPowerState = State_EnablingBuck;
+        return;
     }
-    default:
-        break;
+
+    if (gotOffCommand()) {
+        return;
+    }
+}
+
+void stateEnablingBuck() {
+    if (gotOnCommand()) {
+        return;
+    }
+
+    if (gotOffCommand()) {
+        gpsBuckOff();
+        gpsPowerState = State_Off;
+        return;
+    }
+
+    if (gpsBuckGood()) {
+        gpsPowerOn();
+        gpsPowerState = State_EnablingGPS;
+        return;
+    }
+}
+
+void stateEnablingGPS() {
+    static uint16_t i = 0;
+
+    if (gotOnCommand()) {
+        i = 0;
+        return;
+    }
+
+    if (gotOffCommand()) {
+        i = 0;
+        gpsPowerOff();
+        gpsPowerState = State_ShuttingDown;
+        return;
+    }
+
+    if (!gpsBuckGood()) {
+        i = 0;
+        gpsPowerOff();
+        gpsPowerState = State_EnablingBuck;
+        return;
+    }
+
+    // TODO replace with 150 ms timer
+    if (i++ > 3) {
+        i = 0;
+        gpsSetResetOff();
+        gpsPowerState = State_AwaitingGPSOn;
+        return;
+    }
+}
+
+void stateAwaitingGPSOn() {
+    if (gotOnCommand()) {
+        return;
+    }
+
+    if (gotOffCommand()) {
+        gpsPowerOff();
+        gpsPowerState = State_ShuttingDown;
+        return;
+    }
+
+    if (!gpsBuckGood()) {
+        gpsPowerOff();
+        gpsPowerState = State_EnablingBuck;
+        return;
+    }
+
+    if (gpsioHandlePackage(gpsRead())) {
+        gpsioConfig();
+        gpsPowerState = State_On;
+        return;
+    }
+
+    // periodically poll the GPS until it responds
+    // TODO replace this with timers
+    static uint16_t i = 0;
+    if (i++ == 0) {
+        gpsSendCommand("log rxstatusb\r\n");
+    }
+}
+
+void stateOn() {
+    if (gotOnCommand()) {
+        return;
+    }
+
+    if (gotOffCommand()) {
+        gpsPowerOff();
+        gpsPowerState = State_ShuttingDown;
+        return;
+    }
+
+    if (!gpsBuckGood()) {
+        gpsPowerOff();
+        gpsPowerState = State_EnablingBuck;
+        return;
+    }
+
+    gpsioHandlePackage(gpsRead());
+}
+
+void stateShuttingDown() {
+    static uint16_t i = 0;
+
+    if (gotOnCommand()) {
+        i = 0;
+        gpsPowerState = State_EnablingBuck;
+        return;
+    }
+
+    if (gotOffCommand()) {
+        i = 0;
+        return;
+    }
+
+    // TODO replace with timer
+    if (i++ > 3) {
+        i = 0;
+        gpsBuckOff();
+        gpsPowerState = State_Off;
+        return;
     }
 }
 
@@ -313,6 +351,18 @@ bool gpsioHandleCommand(uint8_t *cmdstr)
             return 0;
     }
     return 1;
+}
+
+FILE_STATIC uint8_t gotOnCommand() {
+    uint8_t res = triggerGPSOn;
+    triggerGPSOn = 0;
+    return res;
+}
+
+FILE_STATIC uint8_t gotOffCommand() {
+    uint8_t res = triggerGPSOff;
+    triggerGPSOff = 0;
+    return res;
 }
 
 FILE_STATIC void handleRxStatus(const GPSPackage *package)
