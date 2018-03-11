@@ -72,6 +72,11 @@ void gpsioInit()
 {
     setCANPacketRxCallback(canRxCallback);
 
+    gpshealthSeg = (gpshealth_segment) { 0 };
+    gpspowerSeg = (gpspower_segment) { 0 };
+    rxstatusSeg = (rxstatus_segment) { 0 };
+    timeSeg = (time_segment) { 0 };
+
     bcbinPopulateHeader(&gpshealthSeg.header, TLM_ID_GPSHEALTH, sizeof(gpshealthSeg));
     bcbinPopulateHeader(&gpspowerSeg.header, TLM_ID_GPSPOWER, sizeof(gpspowerSeg));
     bcbinPopulateHeader(&rxstatusSeg.header, TLM_ID_RXSTATUS, sizeof(rxstatusSeg));
@@ -126,7 +131,7 @@ void gpsioUpdate()
     gpsPowerState = states[gpsPowerState](cmd);
 }
 
-gps_power_state_code stateOff(gps_power_cmd cmd)
+FILE_STATIC gps_power_state_code stateOff(gps_power_cmd cmd)
 {
     if (cmd == PowerCmd_Enable)
     {
@@ -138,7 +143,7 @@ gps_power_state_code stateOff(gps_power_cmd cmd)
     return State_Off;
 }
 
-gps_power_state_code stateEnablingBuck(gps_power_cmd cmd)
+FILE_STATIC gps_power_state_code stateEnablingBuck(gps_power_cmd cmd)
 {
     if (cmd == PowerCmd_Disable)
     {
@@ -146,7 +151,7 @@ gps_power_state_code stateEnablingBuck(gps_power_cmd cmd)
         return State_Off;
     }
 
-    if (gpsIsBuckGood())
+    if (gpsIsBuckGood() || gpsioIsBuckOverride())
     {
         gpsSetPower(TRUE);
         gpsSetReset(TRUE);
@@ -156,7 +161,7 @@ gps_power_state_code stateEnablingBuck(gps_power_cmd cmd)
     return State_EnablingBuck;
 }
 
-gps_power_state_code stateEnablingGPS(gps_power_cmd cmd)
+FILE_STATIC gps_power_state_code stateEnablingGPS(gps_power_cmd cmd)
 {
     static uint16_t i = 0;
 
@@ -167,7 +172,7 @@ gps_power_state_code stateEnablingGPS(gps_power_cmd cmd)
         return State_ShuttingDown;
     }
 
-    if (!gpsIsBuckGood())
+    if (!gpsIsBuckGood() && !gpsioIsBuckOverride())
     {
         i = 0;
         gpsSetPower(FALSE);
@@ -185,7 +190,7 @@ gps_power_state_code stateEnablingGPS(gps_power_cmd cmd)
     return State_EnablingGPS;
 }
 
-gps_power_state_code stateAwaitingGPSOn(gps_power_cmd cmd)
+FILE_STATIC gps_power_state_code stateAwaitingGPSOn(gps_power_cmd cmd)
 {
     if (cmd == PowerCmd_Disable)
     {
@@ -193,7 +198,7 @@ gps_power_state_code stateAwaitingGPSOn(gps_power_cmd cmd)
         return State_ShuttingDown;
     }
 
-    if (!gpsIsBuckGood())
+    if (!gpsIsBuckGood() && !gpsioIsBuckOverride())
     {
         gpsSetReset(TRUE);
         gpsSetPower(FALSE);
@@ -217,7 +222,7 @@ gps_power_state_code stateAwaitingGPSOn(gps_power_cmd cmd)
     return State_AwaitingGPSOn;
 }
 
-gps_power_state_code stateOn(gps_power_cmd cmd)
+FILE_STATIC gps_power_state_code stateOn(gps_power_cmd cmd)
 {
     if (cmd == PowerCmd_Disable)
     {
@@ -225,7 +230,7 @@ gps_power_state_code stateOn(gps_power_cmd cmd)
         return State_ShuttingDown;
     }
 
-    if (!gpsIsBuckGood())
+    if (!gpsIsBuckGood() && !gpsioIsBuckOverride())
     {
         gpsSetReset(TRUE);
         gpsSetPower(FALSE);
@@ -236,7 +241,7 @@ gps_power_state_code stateOn(gps_power_cmd cmd)
     return State_On;
 }
 
-gps_power_state_code stateShuttingDown(gps_power_cmd cmd)
+FILE_STATIC gps_power_state_code stateShuttingDown(gps_power_cmd cmd)
 {
     static uint16_t i = 0;
 
@@ -270,6 +275,16 @@ void gpsioPowerOff()
     triggerGPSOff = TRUE;
 }
 
+void gpsioSetBuckOverride(uint8_t override)
+{
+    gpspowerSeg.buckOverride = override ? TRUE : FALSE;
+}
+
+uint8_t gpsioIsBuckOverride()
+{
+    return gpspowerSeg.buckOverride;
+}
+
 void gpsioSendPowerStatus()
 {
     gpspowerSeg.buckEnabled = gpsIsBuckEnabled();
@@ -295,9 +310,9 @@ void gpsioSendHealth()
 
 bool gpsioHandlePackage(GPSPackage *p)
 {
-#ifdef SKIP_GPS_TRAFFIC
+#ifdef __SKIP_GPS_TRAFFIC__
     return TRUE;
-#endif // SKIP_GPS_TRAFFIC
+#endif // __SKIP_GPS_TRAFFIC__
 
     if (p == NULL)
     {

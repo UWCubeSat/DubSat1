@@ -38,6 +38,7 @@ TLM_SEGMENT {
 
     uint8_t gpsEnabled;
     uint8_t buckEnabled;
+    uint8_t buckOverride;
     uint8_t state;
 } gpspower_segment;
 
@@ -118,6 +119,15 @@ void gpsioUpdate();
 
 void gpsioPowerOn();
 void gpsioPowerOff();
+
+/**
+ * Enable/disable the buck converter signal override. If enabled, the GPS will
+ * be switched on after a delay instead of waiting for a PGOOD buck converter
+ * status, and a !PGOOD buck converter status will never cause the GPS to switch
+ * off.
+ */
+void gpsioSetBuckOverride(uint8_t enable);
+uint8_t gpsioIsBuckOverride();
 
 void gpsioSendPowerStatus();
 void gpsioSendStatus();
