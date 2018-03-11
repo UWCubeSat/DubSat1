@@ -131,6 +131,10 @@ FILE_STATIC uint8_t readAndCrc(uint8_t *buf, uint8_t bytesRead, uint8_t numToRea
 
 GPSPackage *gpsRead()
 {
+#ifdef __SKIP_GPS_TRAFFIC__
+    return NULL;
+#endif // __SKIP_GPS_TRAFFIC__
+
     static uint8_t bytesRead = 0;
     static reader_state state = State_Sync;
     static uint32_t crc = 0;
@@ -248,6 +252,10 @@ GPSPackage *gpsRead()
 
 void gpsSendCommand(uint8_t *command)
 {
+#ifdef __SKIP_GPS_TRAFFIC__
+    return;
+#endif // __SKIP_GPS_TRAFFIC__
+
     uartTransmit(uartHandle, command, strlen((char*) command));
 }
 
@@ -255,6 +263,10 @@ void gpsSendBinaryCommand(gps_message_id messageId,
                           uint8_t *message,
                           uint16_t messageLength)
 {
+#ifdef __SKIP_GPS_TRAFFIC__
+    return;
+#endif // __SKIP_GPS_TRAFFIC__
+
     // populate header
     GPSHeader header;
     header.sync[0] = 0xAA;

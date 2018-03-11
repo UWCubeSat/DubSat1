@@ -295,6 +295,10 @@ void gpsioSendHealth()
 
 bool gpsioHandlePackage(GPSPackage *p)
 {
+#ifdef SKIP_GPS_TRAFFIC
+    return TRUE;
+#endif // SKIP_GPS_TRAFFIC
+
     if (p == NULL)
     {
         return false;
