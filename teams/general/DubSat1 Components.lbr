@@ -1778,7 +1778,7 @@ Board Template: V2.1</text>
 <hole x="67.945" y="40.005" drill="3.556"/>
 <text x="64.77" y="16.51" size="1.27" layer="21" font="vector" rot="R90">Novatel OEM 615</text>
 </package>
-<package name="PICOLOCK_4" urn="urn:adsk.eagle:footprint:2129079/1">
+<package name="PICOLOCK_4" urn="urn:adsk.eagle:footprint:2229834/1">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1831,7 +1831,7 @@ Board Template: V2.1</text>
 <vertex x="-3.5" y="-0.8"/>
 </polygon>
 </package>
-<package name="PICOLOCK_6">
+<package name="PICOLOCK_6" urn="urn:adsk.eagle:footprint:2229836/1">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1859,7 +1859,7 @@ Board Template: V2.1</text>
 <vertex x="-3.5" y="-0.8"/>
 </polygon>
 </package>
-<package name="PICOLOCK_7">
+<package name="PICOLOCK_7" urn="urn:adsk.eagle:footprint:2229837/1">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1888,7 +1888,7 @@ Board Template: V2.1</text>
 <vertex x="-3.5" y="-0.8"/>
 </polygon>
 </package>
-<package name="PICOLOCK_8">
+<package name="PICOLOCK_8" urn="urn:adsk.eagle:footprint:2229838/1">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1918,7 +1918,7 @@ Board Template: V2.1</text>
 <vertex x="-3.5" y="-0.8"/>
 </polygon>
 </package>
-<package name="PICOLOCK_10">
+<package name="PICOLOCK_10" urn="urn:adsk.eagle:footprint:2229839/1">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1950,7 +1950,7 @@ Board Template: V2.1</text>
 <vertex x="-3.5" y="-0.8"/>
 </polygon>
 </package>
-<package name="PICOLOCK_12">
+<package name="PICOLOCK_12" urn="urn:adsk.eagle:footprint:2229840/1">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -3800,7 +3800,37 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 </package>
 </packages>
 <packages3d>
-<package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2129163/2" type="model">
+<package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2129163/2" locally_modified="yes" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_4"/>
+</packageinstances>
+</package3d>
+<package3d name="PICOLOCK_12" urn="urn:adsk.eagle:package:2229923/2" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_12"/>
+</packageinstances>
+</package3d>
+<package3d name="PICOLOCK_10" urn="urn:adsk.eagle:package:2229922/2" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_10"/>
+</packageinstances>
+</package3d>
+<package3d name="PICOLOCK_8" urn="urn:adsk.eagle:package:2229921/2" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_8"/>
+</packageinstances>
+</package3d>
+<package3d name="PICOLOCK_7" urn="urn:adsk.eagle:package:2229920/2" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_7"/>
+</packageinstances>
+</package3d>
+<package3d name="PICOLOCK_6" urn="urn:adsk.eagle:package:2229919/2" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_6"/>
+</packageinstances>
+</package3d>
+<package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2229882/2" type="model">
 <packageinstances>
 <packageinstance name="PICOLOCK_4"/>
 </packageinstances>
@@ -7341,7 +7371,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="PICOLOCK_4" x="15.24" y="0"/>
 </gates>
 <devices>
-<device name="" package="PICOLOCK_4">
+<device name="PICOLOCK_4" package="PICOLOCK_4">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$2" pad="P$2"/>
@@ -7349,7 +7379,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="P$4" pad="P$4"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:2129163/2"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229882/2"/>
 </package3dinstances>
 <technologies>
 <technology name=""/>
@@ -7381,7 +7411,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="PICOLOCK_6" x="12.7" y="0"/>
 </gates>
 <devices>
-<device name="" package="PICOLOCK_6">
+<device name="PICOLOCK_6" package="PICOLOCK_6">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$2" pad="P$2"/>
@@ -7390,6 +7420,9 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="P$5" pad="P$5"/>
 <connect gate="G$1" pin="P$6" pad="P$6"/>
 </connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229919/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -7401,7 +7434,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="PICOLOCK_7" x="12.7" y="0"/>
 </gates>
 <devices>
-<device name="" package="PICOLOCK_7">
+<device name="PICOLOCK_7" package="PICOLOCK_7">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$2" pad="P$2"/>
@@ -7411,6 +7444,9 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="P$6" pad="P$6"/>
 <connect gate="G$1" pin="P$7" pad="P$7"/>
 </connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229920/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -7422,7 +7458,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="PICOLOCK_8" x="12.7" y="0"/>
 </gates>
 <devices>
-<device name="" package="PICOLOCK_8">
+<device name="PICOLOCK_8" package="PICOLOCK_8">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$2" pad="P$2"/>
@@ -7433,6 +7469,9 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="P$7" pad="P$7"/>
 <connect gate="G$1" pin="P$8" pad="P$8"/>
 </connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229921/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -7444,7 +7483,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="PICOLOCK_10" x="12.7" y="0"/>
 </gates>
 <devices>
-<device name="" package="PICOLOCK_10">
+<device name="PICOLOCK_10" package="PICOLOCK_10">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$10" pad="P$10"/>
@@ -7457,6 +7496,9 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="P$8" pad="P$8"/>
 <connect gate="G$1" pin="P$9" pad="P$9"/>
 </connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229922/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -7468,7 +7510,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="PICOLOCK_12" x="12.7" y="0"/>
 </gates>
 <devices>
-<device name="" package="PICOLOCK_12">
+<device name="PICOLOCK_12" package="PICOLOCK_12">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$10" pad="P$10"/>
@@ -7483,6 +7525,9 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="P$8" pad="P$8"/>
 <connect gate="G$1" pin="P$9" pad="P$9"/>
 </connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229923/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
