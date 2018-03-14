@@ -203,7 +203,7 @@
 <text x="-2.54" y="3.048" size="1.27" layer="25" ratio="10">&gt;NAME</text>
 <text x="-2.54" y="-3.302" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
 </package>
-<package name="DFN8(3X3)LT">
+<package name="DFN8(3X3)LT" urn="urn:adsk.eagle:footprint:2229795/1">
 <wire x1="-2.67" y1="-0.13" x2="-2.67" y2="2.67" width="0.2032" layer="21"/>
 <wire x1="-2.67" y1="2.67" x2="0.13" y2="2.67" width="0.2032" layer="51"/>
 <wire x1="0.13" y1="2.67" x2="0.13" y2="-0.13" width="0.2032" layer="21"/>
@@ -3721,14 +3721,12 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <text x="-1.651" y="0" size="0.6096" layer="25" font="vector" ratio="20" rot="R90" align="bottom-center">&gt;NAME</text>
 <text x="1.651" y="0" size="0.6096" layer="27" font="vector" ratio="20" rot="R90" align="top-center">&gt;VALUE</text>
 </package>
-<package name="BATTERY_HOLDERS">
+<package name="BATTERY_HOLDERS" urn="urn:adsk.eagle:footprint:2229869/1">
 <wire x1="24.5" y1="-35.75" x2="24.5" y2="35.75" width="0.127" layer="21"/>
 <wire x1="24.5" y1="35.75" x2="32.5" y2="35.75" width="0.127" layer="21"/>
 <wire x1="32.5" y1="35.75" x2="32.5" y2="-0.53" width="0.127" layer="21"/>
 <wire x1="32.5" y1="-0.53" x2="32.5" y2="-35.75" width="0.127" layer="21"/>
 <wire x1="32.5" y1="-35.75" x2="24.5" y2="-35.75" width="0.127" layer="21"/>
-<hole x="28.5" y="-25.75" drill="3.5"/>
-<hole x="28.5" y="8.75" drill="3.5"/>
 <wire x1="32.5" y1="-35.75" x2="34.5" y2="-35.75" width="0.127" layer="21"/>
 <wire x1="34.5" y1="-35.75" x2="34.5" y2="-0.53" width="0.127" layer="21"/>
 <wire x1="34.5" y1="-0.53" x2="32.5" y2="-0.53" width="0.127" layer="21"/>
@@ -3737,11 +3735,13 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="-32.5" y1="35.75" x2="-24.5" y2="35.75" width="0.127" layer="21"/>
 <wire x1="-24.5" y1="35.75" x2="-24.5" y2="-35.75" width="0.127" layer="21"/>
 <wire x1="-24.5" y1="-35.75" x2="-32.5" y2="-35.75" width="0.127" layer="21"/>
-<hole x="-28.5" y="-25.75" drill="3.5"/>
-<hole x="-28.5" y="8.75" drill="3.5"/>
 <wire x1="-32.5" y1="-35.75" x2="-34.5" y2="-35.75" width="0.127" layer="21"/>
 <wire x1="-34.5" y1="-35.75" x2="-34.5" y2="-0.53" width="0.127" layer="21"/>
 <wire x1="-32.5" y1="-0.53" x2="-34.5" y2="-0.53" width="0.127" layer="21"/>
+<hole x="28.5" y="-25.75" drill="3.5"/>
+<hole x="28.5" y="8.75" drill="3.5"/>
+<hole x="-28.5" y="-25.75" drill="3.5"/>
+<hole x="-28.5" y="8.75" drill="3.5"/>
 </package>
 <package name="BOARD_TEMPLATE_SILKONLY">
 <wire x1="-40" y1="-45" x2="-45" y2="-40" width="0.2032" layer="21"/>
@@ -3838,6 +3838,16 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <package3d name="BOARD_TEMPLATE" urn="urn:adsk.eagle:package:2229884/2" type="box">
 <packageinstances>
 <packageinstance name="BOARD_TEMPLATE"/>
+</packageinstances>
+</package3d>
+<package3d name="DFN8(3X3)LT" urn="urn:adsk.eagle:package:2229875/2" type="model">
+<packageinstances>
+<packageinstance name="DFN8(3X3)LT"/>
+</packageinstances>
+</package3d>
+<package3d name="BATTERY_HOLDERS" urn="urn:adsk.eagle:package:2229952/2" type="model">
+<packageinstances>
+<packageinstance name="BATTERY_HOLDERS"/>
 </packageinstances>
 </package3d>
 </packages3d>
@@ -6384,6 +6394,25 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <connect gate="G$1" pin="SENSE+" pad="1"/>
 <connect gate="G$1" pin="SENSE-" pad="8"/>
 </connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="3D" package="DFN8(3X3)LT">
+<connects>
+<connect gate="G$1" pin="ALCC" pad="6"/>
+<connect gate="G$1" pin="GND1" pad="2"/>
+<connect gate="G$1" pin="GND2" pad="3"/>
+<connect gate="G$1" pin="GND3" pad="7"/>
+<connect gate="G$1" pin="GNDPAD" pad="EXP"/>
+<connect gate="G$1" pin="SCL" pad="4"/>
+<connect gate="G$1" pin="SDA" pad="5"/>
+<connect gate="G$1" pin="SENSE+" pad="1"/>
+<connect gate="G$1" pin="SENSE-" pad="8"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229875/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
