@@ -151,7 +151,11 @@ FILE_STATIC gps_power_state_code stateEnablingBuck(gps_power_cmd cmd)
         return State_Off;
     }
 
-    if (gpsIsBuckGood() || gpsioIsBuckOverride())
+    // if there is a buck status override, use a delay instead
+    // TODO replace with a timer
+    static uint16_t i = 0;
+    i++;
+    if (gpsIsBuckGood() || (gpsioIsBuckOverride() && i == 0))
     {
         gpsSetPower(TRUE);
         gpsSetReset(TRUE);
