@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.6.2">
+<eagle version="8.7.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="50" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -203,7 +203,7 @@
 <text x="-2.54" y="3.048" size="1.27" layer="25" ratio="10">&gt;NAME</text>
 <text x="-2.54" y="-3.302" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
 </package>
-<package name="DFN8(3X3)LT">
+<package name="DFN8(3X3)LT" urn="urn:adsk.eagle:footprint:2229795/1">
 <wire x1="-2.67" y1="-0.13" x2="-2.67" y2="2.67" width="0.2032" layer="21"/>
 <wire x1="-2.67" y1="2.67" x2="0.13" y2="2.67" width="0.2032" layer="51"/>
 <wire x1="0.13" y1="2.67" x2="0.13" y2="-0.13" width="0.2032" layer="21"/>
@@ -479,7 +479,7 @@
 <wire x1="33.02" y1="30.61" x2="-33.02" y2="30.61" width="0.2032" layer="21"/>
 <wire x1="0" y1="38.23" x2="0" y2="33.15" width="0" layer="21"/>
 </package>
-<package name="BOARD_TEMPLATE">
+<package name="BOARD_TEMPLATE" urn="urn:adsk.eagle:footprint:2229800/1">
 <wire x1="-40" y1="-45" x2="-45" y2="-40" width="0" layer="20"/>
 <wire x1="-45" y1="-40" x2="-45" y2="40" width="0" layer="20"/>
 <wire x1="-45" y1="40" x2="-40" y2="45" width="0" layer="20"/>
@@ -488,14 +488,14 @@
 <wire x1="45" y1="40" x2="45" y2="-40" width="0" layer="20"/>
 <wire x1="45" y1="-40" x2="40" y2="-45" width="0" layer="20"/>
 <wire x1="40" y1="-45" x2="-40" y2="-45" width="0" layer="20"/>
-<pad name="P$1" x="-39.5" y="39.5" drill="2.9" diameter="7.5"/>
-<pad name="P$2" x="-39.5" y="-39.5" drill="2.9" diameter="7.5"/>
-<pad name="P$3" x="39.5" y="-39.5" drill="2.9" diameter="7.5"/>
-<pad name="P$4" x="39.5" y="39.5" drill="2.9" diameter="7.5"/>
 <wire x1="-33.02" y1="30.61" x2="-33.02" y2="40.77" width="0" layer="21"/>
 <wire x1="-33.02" y1="40.77" x2="33.02" y2="40.77" width="0" layer="21"/>
 <wire x1="33.02" y1="40.77" x2="33.02" y2="30.61" width="0" layer="21"/>
 <wire x1="33.02" y1="30.61" x2="-33.02" y2="30.61" width="0" layer="21"/>
+<pad name="P$1" x="-39.5" y="39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$2" x="-39.5" y="-39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$3" x="39.5" y="-39.5" drill="2.9" diameter="7.5"/>
+<pad name="P$4" x="39.5" y="39.5" drill="2.9" diameter="7.5"/>
 </package>
 <package name="1X08_CONNECTOR">
 <wire x1="14.605" y1="1.27" x2="15.875" y2="1.27" width="0.2032" layer="21"/>
@@ -1389,7 +1389,7 @@ chip</description>
 <rectangle x1="-2.4892" y1="-1.3208" x2="-1.6393" y2="1.3292" layer="51"/>
 <rectangle x1="1.651" y1="-1.3208" x2="2.5009" y2="1.3292" layer="51"/>
 </package>
-<package name="0805">
+<package name="0805" urn="urn:adsk.eagle:footprint:2229819/1">
 <smd name="1" x="-0.9" y="0" dx="0.8" dy="1.2" layer="1"/>
 <smd name="2" x="0.9" y="0" dx="0.8" dy="1.2" layer="1"/>
 <text x="0.185675" y="-0.58369375" size="0.4064" layer="25" font="vector" rot="R90">&gt;NAME</text>
@@ -1778,7 +1778,7 @@ Board Template: V2.1</text>
 <hole x="67.945" y="40.005" drill="3.556"/>
 <text x="64.77" y="16.51" size="1.27" layer="21" font="vector" rot="R90">Novatel OEM 615</text>
 </package>
-<package name="PICOLOCK_4">
+<package name="PICOLOCK_4" urn="urn:adsk.eagle:footprint:2229834/1">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1793,10 +1793,10 @@ Board Template: V2.1</text>
 <wire x1="5.9" y1="4.3" x2="-1.7" y2="4.3" width="0.127" layer="21"/>
 <wire x1="-1.7" y1="4.3" x2="-1.7" y2="6.4" width="0.127" layer="21"/>
 <wire x1="-1.7" y1="6.4" x2="-3.5" y2="6.4" width="0.127" layer="21"/>
-<text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
 <wire x1="-3.5" y1="6.4" x2="-3.5" y2="8.4" width="0.127" layer="21"/>
 <wire x1="-3.5" y1="8.4" x2="7.7" y2="8.4" width="0.127" layer="21"/>
 <wire x1="7.7" y1="8.4" x2="7.7" y2="6.4" width="0.127" layer="21"/>
+<text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
 <polygon width="0.127" layer="39">
 <vertex x="-3.5" y="8.4"/>
 <vertex x="7.7" y="8.4"/>
@@ -1831,7 +1831,7 @@ Board Template: V2.1</text>
 <vertex x="-3.5" y="-0.8"/>
 </polygon>
 </package>
-<package name="PICOLOCK_6">
+<package name="PICOLOCK_6" urn="urn:adsk.eagle:footprint:2229836/1">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1859,7 +1859,7 @@ Board Template: V2.1</text>
 <vertex x="-3.5" y="-0.8"/>
 </polygon>
 </package>
-<package name="PICOLOCK_7">
+<package name="PICOLOCK_7" urn="urn:adsk.eagle:footprint:2229837/1">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1888,7 +1888,7 @@ Board Template: V2.1</text>
 <vertex x="-3.5" y="-0.8"/>
 </polygon>
 </package>
-<package name="PICOLOCK_8">
+<package name="PICOLOCK_8" urn="urn:adsk.eagle:footprint:2229838/1">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1918,7 +1918,7 @@ Board Template: V2.1</text>
 <vertex x="-3.5" y="-0.8"/>
 </polygon>
 </package>
-<package name="PICOLOCK_10">
+<package name="PICOLOCK_10" urn="urn:adsk.eagle:footprint:2229839/1">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1950,7 +1950,7 @@ Board Template: V2.1</text>
 <vertex x="-3.5" y="-0.8"/>
 </polygon>
 </package>
-<package name="PICOLOCK_12">
+<package name="PICOLOCK_12" urn="urn:adsk.eagle:footprint:2229840/1">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -2811,7 +2811,7 @@ Board Template: V2.1</text>
 <text x="-1.651" y="0" size="0.6096" layer="25" font="vector" ratio="20" rot="R90" align="bottom-center">&gt;NAME</text>
 <text x="1.651" y="0" size="0.6096" layer="27" font="vector" ratio="20" rot="R90" align="top-center">&gt;VALUE</text>
 </package>
-<package name="REACTION_WHEEL_BRACKET">
+<package name="REACTION_WHEEL_BRACKET" urn="urn:adsk.eagle:footprint:2229851/1">
 <wire x1="22.14045" y1="1.29575" x2="14.14045" y2="1.29575" width="0.001" layer="39"/>
 <wire x1="22.14045" y1="1.29575" x2="22.14045" y2="-12.05425" width="0.001" layer="39"/>
 <wire x1="34.14045" y1="1.29575" x2="34.14045" y2="-12.05425" width="0.001" layer="39"/>
@@ -2838,18 +2838,6 @@ Board Template: V2.1</text>
 <wire x1="11.42313125" y1="-9.99926875" x2="12.195434375" y2="-10.771571875" width="0.001" layer="39" curve="299.999903"/>
 <wire x1="-10.57686875" y1="12.00073125" x2="-9.804565625" y2="11.228428125" width="0.001" layer="39" curve="299.999903"/>
 <wire x1="-10.57686875" y1="-9.99926875" x2="-9.804565625" y2="-10.771571875" width="0.001" layer="39" curve="299.999903"/>
-<hole x="-21.21" y="-17.06" drill="2.71"/>
-<hole x="30.14" y="-17.05" drill="2.71"/>
-<hole x="-10.86" y="10.94" drill="2.3"/>
-<hole x="11.14" y="10.94" drill="2.3"/>
-<hole x="11.14" y="-11.06" drill="2.3"/>
-<hole x="-10.86" y="-11.06" drill="2.3"/>
-<circle x="11.16" y="10.93" radius="2" width="0.001" layer="40"/>
-<circle x="-10.84" y="10.93" radius="2" width="0.001" layer="40"/>
-<circle x="-10.84" y="-11.07" radius="2" width="0.001" layer="40"/>
-<circle x="11.16" y="-11.07" radius="2" width="0.001" layer="40"/>
-<circle x="-21.22" y="-17.04" radius="2" width="0.001" layer="40"/>
-<circle x="30.14" y="-17.04" radius="2" width="0.001" layer="40"/>
 <wire x1="-31.324790625" y1="9.16286875" x2="-31.21556875" y2="9.272090625" width="0.001" layer="21"/>
 <wire x1="-31.21556875" y1="12.60965" x2="-31.324790625" y2="12.71886875" width="0.001" layer="21"/>
 <wire x1="-31.324790625" y1="12.71886875" x2="-33.18153125" y2="12.71886875" width="0.001" layer="21"/>
@@ -3031,16 +3019,12 @@ Board Template: V2.1</text>
 <wire x1="29.152640625" y1="-17.63196875" x2="30.14483125" y2="-18.204809375" width="0.001" layer="21" curve="60.000039"/>
 <wire x1="29.152640625" y1="-16.486290625" x2="29.152640625" y2="-17.63196875" width="0.001" layer="21" curve="59.999787"/>
 <wire x1="31.13701875" y1="-17.63196875" x2="31.13701875" y2="-16.486290625" width="0.001" layer="21" curve="59.999943"/>
-<circle x="30.14483125" y="-17.05913125" radius="1.559559375" width="0.001" layer="21"/>
-<circle x="30.14483125" y="-17.05913125" radius="1.778" width="0.001" layer="21"/>
 <wire x1="-22.197359375" y1="-17.63196875" x2="-21.20516875" y2="-18.204809375" width="0.001" layer="21" curve="60.000039"/>
 <wire x1="-20.21298125" y1="-16.486290625" x2="-21.20516875" y2="-15.91345" width="0.001" layer="21" curve="60.000096"/>
 <wire x1="-21.20516875" y1="-18.204809375" x2="-20.21298125" y2="-17.63196875" width="0.001" layer="21" curve="59.999961"/>
 <wire x1="-21.20516875" y1="-15.91345" x2="-22.19735625" y2="-16.486290625" width="0.001" layer="21" curve="60.000096"/>
 <wire x1="-22.197359375" y1="-16.486290625" x2="-22.197359375" y2="-17.63196875" width="0.001" layer="21" curve="59.999787"/>
 <wire x1="-20.21298125" y1="-17.63196875" x2="-20.21298125" y2="-16.486290625" width="0.001" layer="21" curve="59.999943"/>
-<circle x="-21.20516875" y="-17.05913125" radius="1.559559375" width="0.001" layer="21"/>
-<circle x="-21.20516875" y="-17.05913125" radius="1.778" width="0.001" layer="21"/>
 <wire x1="-24.03806875" y1="-18.492759375" x2="-21.380059375" y2="-20.22930625" width="0.001" layer="21" curve="59.999968"/>
 <wire x1="-24.29521875" y1="-16.329609375" x2="-24.038065625" y2="-18.492759375" width="0.001" layer="21" curve="40.125883"/>
 <wire x1="-21.380059375" y1="-20.229309375" x2="-18.547159375" y2="-18.79568125" width="0.001" layer="21" curve="59.99993"/>
@@ -3059,16 +3043,12 @@ Board Template: V2.1</text>
 <wire x1="-9.86298125" y1="-10.486290625" x2="-10.85516875" y2="-9.91345" width="0.001" layer="21" curve="60.000096"/>
 <wire x1="-11.847359375" y1="-10.486290625" x2="-11.847359375" y2="-11.63196875" width="0.001" layer="21" curve="59.999787"/>
 <wire x1="-9.86298125" y1="-11.63196875" x2="-9.86298125" y2="-10.486290625" width="0.001" layer="21" curve="59.999943"/>
-<circle x="-10.85516875" y="-11.05913125" radius="1.559559375" width="0.001" layer="21"/>
-<circle x="-10.85516875" y="-11.05913125" radius="1.778" width="0.001" layer="21"/>
 <wire x1="11.14483125" y1="-9.91345" x2="10.15264375" y2="-10.486290625" width="0.001" layer="21" curve="60.000096"/>
 <wire x1="10.152640625" y1="-11.63196875" x2="11.14483125" y2="-12.204809375" width="0.001" layer="21" curve="60.000039"/>
 <wire x1="11.14483125" y1="-12.204809375" x2="12.13701875" y2="-11.63196875" width="0.001" layer="21" curve="59.999961"/>
 <wire x1="12.13701875" y1="-10.486290625" x2="11.14483125" y2="-9.91345" width="0.001" layer="21" curve="60.000096"/>
 <wire x1="10.152640625" y1="-10.486290625" x2="10.152640625" y2="-11.63196875" width="0.001" layer="21" curve="59.999787"/>
 <wire x1="12.13701875" y1="-11.63196875" x2="12.13701875" y2="-10.486290625" width="0.001" layer="21" curve="59.999943"/>
-<circle x="11.14483125" y="-11.05913125" radius="1.559559375" width="0.001" layer="21"/>
-<circle x="11.14483125" y="-11.05913125" radius="1.778" width="0.001" layer="21"/>
 <wire x1="-31.324790625" y1="9.16286875" x2="-31.324790625" y2="12.71886875" width="0.001" layer="21"/>
 <wire x1="-33.18153125" y1="12.71886875" x2="-33.18153125" y2="9.16286875" width="0.001" layer="21"/>
 <wire x1="-33.39996875" y1="9.381309375" x2="-33.39996875" y2="12.50043125" width="0.001" layer="21"/>
@@ -3089,19 +3069,14 @@ Board Template: V2.1</text>
 <wire x1="12.13701875" y1="11.513709375" x2="11.14483125" y2="12.08655" width="0.001" layer="21" curve="60.000096"/>
 <wire x1="10.152640625" y1="11.513709375" x2="10.152640625" y2="10.36803125" width="0.001" layer="21" curve="59.999787"/>
 <wire x1="12.13701875" y1="10.36803125" x2="12.13701875" y2="11.513709375" width="0.001" layer="21" curve="59.999943"/>
-<circle x="11.14483125" y="10.94086875" radius="1.559559375" width="0.001" layer="21"/>
-<circle x="11.14483125" y="10.94086875" radius="1.778" width="0.001" layer="21"/>
 <wire x1="-9.86298125" y1="11.513709375" x2="-10.85516875" y2="12.08655" width="0.001" layer="21" curve="60.000096"/>
 <wire x1="-10.85516875" y1="9.795190625" x2="-9.86298125" y2="10.36803125" width="0.001" layer="21" curve="59.999961"/>
 <wire x1="-11.847359375" y1="10.36803125" x2="-10.85516875" y2="9.795190625" width="0.001" layer="21" curve="60.000039"/>
 <wire x1="-10.85516875" y1="12.08655" x2="-11.84735625" y2="11.513709375" width="0.001" layer="21" curve="60.000096"/>
 <wire x1="-11.847359375" y1="11.513709375" x2="-11.847359375" y2="10.36803125" width="0.001" layer="21" curve="59.999787"/>
 <wire x1="-9.86298125" y1="10.36803125" x2="-9.86298125" y2="11.513709375" width="0.001" layer="21" curve="59.999943"/>
-<circle x="-10.85516875" y="10.94086875" radius="1.559559375" width="0.001" layer="21"/>
-<circle x="-10.85516875" y="10.94086875" radius="1.778" width="0.001" layer="21"/>
 <wire x1="-5.87506875" y1="6.41096875" x2="-5.905796875" y2="6.979540625" width="0.001" layer="21" curve="45.241618"/>
 <wire x1="-6.290709375" y1="5.698959375" x2="-5.69055" y2="6.18738125" width="0.001" layer="21" curve="45.522778"/>
-<circle x="-6.572690625" y="6.65838125" radius="0.7" width="0.001" layer="21"/>
 <wire x1="-28.62056875" y1="4.90838125" x2="-28.62056875" y2="5.94086875" width="0.001" layer="21"/>
 <wire x1="-32.77538125" y1="6.41096875" x2="-32.77538125" y2="6.979540625" width="0.001" layer="21"/>
 <wire x1="-32.51556875" y1="5.698959375" x2="-32.51556875" y2="6.18738125" width="0.001" layer="21"/>
@@ -3114,7 +3089,6 @@ Board Template: V2.1</text>
 <wire x1="-32.51556875" y1="-7.73606875" x2="-32.496859375" y2="-7.76925" width="0.001" layer="21"/>
 <wire x1="7.559959375" y1="-7.024059375" x2="7.529228125" y2="-6.455490625" width="0.001" layer="21" curve="45.241495"/>
 <wire x1="7.14431875" y1="-7.73606875" x2="7.744475" y2="-7.247646875" width="0.001" layer="21" curve="45.522519"/>
-<circle x="6.862340625" y="-6.77665" radius="0.7" width="0.001" layer="21"/>
 <wire x1="33.112340625" y1="0.70626875" x2="34.14483125" y2="0.70626875" width="0.001" layer="21"/>
 <wire x1="35.559959375" y1="4.86108125" x2="35.602540625" y2="4.86108125" width="0.001" layer="21"/>
 <wire x1="34.008690625" y1="4.74623125" x2="34.02391875" y2="4.742" width="0.001" layer="21"/>
@@ -3129,10 +3103,8 @@ Board Template: V2.1</text>
 <wire x1="22.12731875" y1="4.90126875" x2="20.727309375" y2="4.90126875" width="0.001" layer="21"/>
 <wire x1="-5.87506875" y1="-7.024059375" x2="-5.9058" y2="-6.455490625" width="0.001" layer="21" curve="45.241495"/>
 <wire x1="-6.290709375" y1="-7.73606875" x2="-5.690553125" y2="-7.247646875" width="0.001" layer="21" curve="45.522714"/>
-<circle x="-6.572690625" y="-6.77665" radius="0.7" width="0.001" layer="21"/>
 <wire x1="7.559959375" y1="6.41096875" x2="7.52923125" y2="6.979540625" width="0.001" layer="21" curve="45.241618"/>
 <wire x1="7.14431875" y1="5.698959375" x2="7.744475" y2="6.187384375" width="0.001" layer="21" curve="45.522764"/>
-<circle x="6.862340625" y="6.65838125" radius="0.7" width="0.001" layer="21"/>
 <wire x1="-7.92401875" y1="-8.251059375" x2="-5.97146875" y2="-8.684140625" width="0.001" layer="21" curve="60.000046"/>
 <wire x1="-8.52523125" y1="-6.343559375" x2="-7.92401875" y2="-8.251059375" width="0.001" layer="21" curve="60.000048"/>
 <wire x1="-7.1739" y1="-4.86915" x2="-8.525228125" y2="-6.343559375" width="0.001" layer="21" curve="59.999767"/>
@@ -3377,6 +3349,34 @@ Board Template: V2.1</text>
 <wire x1="6.125140625" y1="7.33405" x2="6.15576875" y2="7.30598125" width="0.001" layer="21"/>
 <wire x1="6.125140625" y1="-6.10098125" x2="6.15576875" y2="-6.12905" width="0.001" layer="21"/>
 <wire x1="-7.309890625" y1="7.33405" x2="-7.279259375" y2="7.30598125" width="0.001" layer="21"/>
+<hole x="-21.21" y="-17.06" drill="2.71"/>
+<hole x="30.14" y="-17.05" drill="2.71"/>
+<hole x="-10.86" y="10.94" drill="2.3"/>
+<hole x="11.14" y="10.94" drill="2.3"/>
+<hole x="11.14" y="-11.06" drill="2.3"/>
+<hole x="-10.86" y="-11.06" drill="2.3"/>
+<circle x="11.16" y="10.93" radius="2" width="0.001" layer="40"/>
+<circle x="-10.84" y="10.93" radius="2" width="0.001" layer="40"/>
+<circle x="-10.84" y="-11.07" radius="2" width="0.001" layer="40"/>
+<circle x="11.16" y="-11.07" radius="2" width="0.001" layer="40"/>
+<circle x="-21.22" y="-17.04" radius="2" width="0.001" layer="40"/>
+<circle x="30.14" y="-17.04" radius="2" width="0.001" layer="40"/>
+<circle x="30.14483125" y="-17.05913125" radius="1.559559375" width="0.001" layer="21"/>
+<circle x="30.14483125" y="-17.05913125" radius="1.778" width="0.001" layer="21"/>
+<circle x="-21.20516875" y="-17.05913125" radius="1.559559375" width="0.001" layer="21"/>
+<circle x="-21.20516875" y="-17.05913125" radius="1.778" width="0.001" layer="21"/>
+<circle x="-10.85516875" y="-11.05913125" radius="1.559559375" width="0.001" layer="21"/>
+<circle x="-10.85516875" y="-11.05913125" radius="1.778" width="0.001" layer="21"/>
+<circle x="11.14483125" y="-11.05913125" radius="1.559559375" width="0.001" layer="21"/>
+<circle x="11.14483125" y="-11.05913125" radius="1.778" width="0.001" layer="21"/>
+<circle x="11.14483125" y="10.94086875" radius="1.559559375" width="0.001" layer="21"/>
+<circle x="11.14483125" y="10.94086875" radius="1.778" width="0.001" layer="21"/>
+<circle x="-10.85516875" y="10.94086875" radius="1.559559375" width="0.001" layer="21"/>
+<circle x="-10.85516875" y="10.94086875" radius="1.778" width="0.001" layer="21"/>
+<circle x="-6.572690625" y="6.65838125" radius="0.7" width="0.001" layer="21"/>
+<circle x="6.862340625" y="-6.77665" radius="0.7" width="0.001" layer="21"/>
+<circle x="-6.572690625" y="-6.77665" radius="0.7" width="0.001" layer="21"/>
+<circle x="6.862340625" y="6.65838125" radius="0.7" width="0.001" layer="21"/>
 </package>
 <package name="SOLAR_CELL_STENCIL">
 <wire x1="0" y1="0" x2="16" y2="0" width="0.127" layer="21"/>
@@ -3721,14 +3721,12 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <text x="-1.651" y="0" size="0.6096" layer="25" font="vector" ratio="20" rot="R90" align="bottom-center">&gt;NAME</text>
 <text x="1.651" y="0" size="0.6096" layer="27" font="vector" ratio="20" rot="R90" align="top-center">&gt;VALUE</text>
 </package>
-<package name="BATTERY_HOLDERS">
+<package name="BATTERY_HOLDERS" urn="urn:adsk.eagle:footprint:2229869/1">
 <wire x1="24.5" y1="-35.75" x2="24.5" y2="35.75" width="0.127" layer="21"/>
 <wire x1="24.5" y1="35.75" x2="32.5" y2="35.75" width="0.127" layer="21"/>
 <wire x1="32.5" y1="35.75" x2="32.5" y2="-0.53" width="0.127" layer="21"/>
 <wire x1="32.5" y1="-0.53" x2="32.5" y2="-35.75" width="0.127" layer="21"/>
 <wire x1="32.5" y1="-35.75" x2="24.5" y2="-35.75" width="0.127" layer="21"/>
-<hole x="28.5" y="-25.75" drill="3.5"/>
-<hole x="28.5" y="8.75" drill="3.5"/>
 <wire x1="32.5" y1="-35.75" x2="34.5" y2="-35.75" width="0.127" layer="21"/>
 <wire x1="34.5" y1="-35.75" x2="34.5" y2="-0.53" width="0.127" layer="21"/>
 <wire x1="34.5" y1="-0.53" x2="32.5" y2="-0.53" width="0.127" layer="21"/>
@@ -3737,11 +3735,13 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="-32.5" y1="35.75" x2="-24.5" y2="35.75" width="0.127" layer="21"/>
 <wire x1="-24.5" y1="35.75" x2="-24.5" y2="-35.75" width="0.127" layer="21"/>
 <wire x1="-24.5" y1="-35.75" x2="-32.5" y2="-35.75" width="0.127" layer="21"/>
-<hole x="-28.5" y="-25.75" drill="3.5"/>
-<hole x="-28.5" y="8.75" drill="3.5"/>
 <wire x1="-32.5" y1="-35.75" x2="-34.5" y2="-35.75" width="0.127" layer="21"/>
 <wire x1="-34.5" y1="-35.75" x2="-34.5" y2="-0.53" width="0.127" layer="21"/>
 <wire x1="-32.5" y1="-0.53" x2="-34.5" y2="-0.53" width="0.127" layer="21"/>
+<hole x="28.5" y="-25.75" drill="3.5"/>
+<hole x="28.5" y="8.75" drill="3.5"/>
+<hole x="-28.5" y="-25.75" drill="3.5"/>
+<hole x="-28.5" y="8.75" drill="3.5"/>
 </package>
 <package name="BOARD_TEMPLATE_SILKONLY">
 <wire x1="-40" y1="-45" x2="-45" y2="-40" width="0.2032" layer="21"/>
@@ -3799,6 +3799,48 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 </polygon>
 </package>
 </packages>
+<packages3d>
+<package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2129163/2" locally_modified="yes" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_4"/>
+</packageinstances>
+</package3d>
+<package3d name="PICOLOCK_12" urn="urn:adsk.eagle:package:2229923/2" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_12"/>
+</packageinstances>
+</package3d>
+<package3d name="PICOLOCK_10" urn="urn:adsk.eagle:package:2229922/2" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_10"/>
+</packageinstances>
+</package3d>
+<package3d name="PICOLOCK_8" urn="urn:adsk.eagle:package:2229921/2" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_8"/>
+</packageinstances>
+</package3d>
+<package3d name="PICOLOCK_7" urn="urn:adsk.eagle:package:2229920/2" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_7"/>
+</packageinstances>
+</package3d>
+<package3d name="PICOLOCK_6" urn="urn:adsk.eagle:package:2229919/2" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_6"/>
+</packageinstances>
+</package3d>
+<package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2229882/2" type="model">
+<packageinstances>
+<packageinstance name="PICOLOCK_4"/>
+</packageinstances>
+</package3d>
+<package3d name="REACTION_WHEEL_BRACKET" urn="urn:adsk.eagle:package:2229934/2" type="model">
+<packageinstances>
+<packageinstance name="REACTION_WHEEL_BRACKET"/>
+</packageinstances>
+</package3d>
+</packages3d>
 <symbols>
 <symbol name="LM57">
 <pin name="GND" x="-5.08" y="17.78" length="middle"/>
@@ -6346,6 +6388,25 @@ Unique linear output of Voltage vs temperature. 10mv per degree kelvin E.g: 3v =
 <technology name=""/>
 </technologies>
 </device>
+<device name="3D" package="DFN8(3X3)LT">
+<connects>
+<connect gate="G$1" pin="ALCC" pad="6"/>
+<connect gate="G$1" pin="GND1" pad="2"/>
+<connect gate="G$1" pin="GND2" pad="3"/>
+<connect gate="G$1" pin="GND3" pad="7"/>
+<connect gate="G$1" pin="GNDPAD" pad="EXP"/>
+<connect gate="G$1" pin="SCL" pad="4"/>
+<connect gate="G$1" pin="SDA" pad="5"/>
+<connect gate="G$1" pin="SENSE+" pad="1"/>
+<connect gate="G$1" pin="SENSE-" pad="8"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229875/2"/>
+</package3dinstances>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
 </devices>
 </deviceset>
 <deviceset name="BQ29209">
@@ -7202,6 +7263,18 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <technology name=""/>
 </technologies>
 </device>
+<device name="0805_3D" package="0805">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229903/2"/>
+</package3dinstances>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
 </devices>
 </deviceset>
 <deviceset name="SOALAR_CELL_OUTLINE">
@@ -7334,13 +7407,16 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="PICOLOCK_4" x="15.24" y="0"/>
 </gates>
 <devices>
-<device name="" package="PICOLOCK_4">
+<device name="PICOLOCK_4" package="PICOLOCK_4">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$2" pad="P$2"/>
 <connect gate="G$1" pin="P$3" pad="P$3"/>
 <connect gate="G$1" pin="P$4" pad="P$4"/>
 </connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229882/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -7371,7 +7447,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="PICOLOCK_6" x="12.7" y="0"/>
 </gates>
 <devices>
-<device name="" package="PICOLOCK_6">
+<device name="PICOLOCK_6" package="PICOLOCK_6">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$2" pad="P$2"/>
@@ -7380,6 +7456,9 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="P$5" pad="P$5"/>
 <connect gate="G$1" pin="P$6" pad="P$6"/>
 </connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229919/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -7391,7 +7470,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="PICOLOCK_7" x="12.7" y="0"/>
 </gates>
 <devices>
-<device name="" package="PICOLOCK_7">
+<device name="PICOLOCK_7" package="PICOLOCK_7">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$2" pad="P$2"/>
@@ -7401,6 +7480,9 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="P$6" pad="P$6"/>
 <connect gate="G$1" pin="P$7" pad="P$7"/>
 </connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229920/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -7412,7 +7494,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="PICOLOCK_8" x="12.7" y="0"/>
 </gates>
 <devices>
-<device name="" package="PICOLOCK_8">
+<device name="PICOLOCK_8" package="PICOLOCK_8">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$2" pad="P$2"/>
@@ -7423,6 +7505,9 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="P$7" pad="P$7"/>
 <connect gate="G$1" pin="P$8" pad="P$8"/>
 </connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229921/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -7434,7 +7519,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="PICOLOCK_10" x="12.7" y="0"/>
 </gates>
 <devices>
-<device name="" package="PICOLOCK_10">
+<device name="PICOLOCK_10" package="PICOLOCK_10">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$10" pad="P$10"/>
@@ -7447,6 +7532,9 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="P$8" pad="P$8"/>
 <connect gate="G$1" pin="P$9" pad="P$9"/>
 </connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229922/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -7458,7 +7546,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="PICOLOCK_12" x="12.7" y="0"/>
 </gates>
 <devices>
-<device name="" package="PICOLOCK_12">
+<device name="PICOLOCK_12" package="PICOLOCK_12">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 <connect gate="G$1" pin="P$10" pad="P$10"/>
@@ -7473,6 +7561,9 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="P$8" pad="P$8"/>
 <connect gate="G$1" pin="P$9" pad="P$9"/>
 </connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229923/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -7713,7 +7804,10 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <gate name="G$1" symbol="REACTION_WHEEL_BRACKET" x="2.54" y="0"/>
 </gates>
 <devices>
-<device name="" package="REACTION_WHEEL_BRACKET">
+<device name="REACTION_WHEEL_BRACKET" package="REACTION_WHEEL_BRACKET">
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229934/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -7913,6 +8007,14 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 </technologies>
 </device>
 <device name="SILKONLY" package="BOARD_TEMPLATE_SILKONLY">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="3D" package="BOARD_TEMPLATE">
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:2229884/2"/>
+</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -8219,6 +8321,16 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <note version="6.3" minversion="6.2.2" severity="warning">
 Since Version 6.2.2 text objects can contain more than one line,
 which will not be processed correctly with this version.
+</note>
+<note version="8.3" severity="warning">
+Since Version 8.3, EAGLE supports URNs for individual library
+assets (packages, symbols, and devices). The URNs of those assets
+will not be understood (or retained) with this version.
+</note>
+<note version="8.3" severity="warning">
+Since Version 8.3, EAGLE supports the association of 3D packages
+with devices in libraries, schematics, and board files. Those 3D
+packages will not be understood (or retained) with this version.
 </note>
 </compatibility>
 </eagle>
