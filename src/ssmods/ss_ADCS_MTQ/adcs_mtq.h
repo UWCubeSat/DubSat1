@@ -53,5 +53,15 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 // MTQ specific 
 //---------------------
 typedef enum _tumble_state {Tumbling=1,Idle=0} TumbleState;
+// PWM pins 
+#define PWM_PERIOD 10000-1 //(10000-1) // pwm period = 1000 us
+#define CCR_PERIOD 100
+#define X1 1 // for set_pwm function which_pin 
+#define X2 2 
+#define Y1 3  
+#define Y2 4  
+#define Z1 5 
+#define Z2 6 
+
 
 #endif /* ADCS_MTQ_H_ */
