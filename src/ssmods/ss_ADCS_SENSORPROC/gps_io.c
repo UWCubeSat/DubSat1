@@ -293,6 +293,7 @@ void gpsioSendPowerStatus()
 {
     gpspowerSeg.buckEnabled = gpsIsBuckEnabled();
     gpspowerSeg.gpsEnabled = gpsIsPowerEnabled();
+    gpspowerSeg.resetStatus = gpsIsResetActive();
     gpspowerSeg.state = gpsPowerState;
     bcbinSendPacket((uint8_t *) &gpspowerSeg, sizeof(gpspowerSeg));
 }
@@ -364,6 +365,7 @@ bool gpsioHandlePackage(GPSPackage *p)
 bool gpsioHandleCommand(uint8_t *cmdstr)
 {
     enable_segment *enableSegment;
+    buck_override_segment *overrideSegment;
 
     switch(cmdstr[0])
     {
@@ -386,6 +388,10 @@ bool gpsioHandleCommand(uint8_t *cmdstr)
                 triggerGPSOn = FALSE;
                 triggerGPSOff = TRUE;
             }
+            break;
+        case OPCODE_OVERRIDE_BUCK:
+            overrideSegment = (buck_override_segment *) (cmdstr + 1);
+            gpsioSetBuckOverride(overrideSegment->enable);
             break;
         default:
             return 0;

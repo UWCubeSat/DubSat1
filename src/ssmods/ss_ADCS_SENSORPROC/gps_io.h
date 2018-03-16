@@ -32,13 +32,13 @@ TLM_SEGMENT {
     gps_health health;
 } gpshealth_segment;
 
-// TODO add reset status entry
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
     uint8_t gpsEnabled;
     uint8_t buckEnabled;
     uint8_t buckOverride;
+    uint8_t resetStatus;
     uint8_t state;
 } gpspower_segment;
 
@@ -112,6 +112,10 @@ TLM_SEGMENT {
 CMD_SEGMENT {
     uint8_t enable;
 } enable_segment;
+
+CMD_SEGMENT {
+    uint8_t enable;
+} buck_override_segment;
 
 void gpsioInit();
 void gpsioConfig();
