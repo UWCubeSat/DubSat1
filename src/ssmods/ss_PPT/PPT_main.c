@@ -2,6 +2,7 @@
 #include "PPT.h"
 
 #include "bsp/bsp.h"
+#include <core/timers.h>
 
 /*
  * Output Pins:
@@ -15,8 +16,11 @@
  */
 
 
+#define OPCODE_COMMON_CMD 0
 #define OPCODE_START_FIRE 2
 #define OPCODE_STOP_FIRE 3
+#define OPCODE_GET_TIMING 4
+#define OPCODE_SET_TIMING 5
 
 #define DEFAULT_FIRE_RATE 1
 #define DEFAULT_TIMEOUT 100 //TODO: change these values
@@ -26,8 +30,6 @@
 FILE_STATIC ModuleStatus mod_status; //TODO: make this volatile?
 
 FILE_STATIC uint8_t firing;
-FILE_STATIC uint8_t fireRate;
-FILE_STATIC uint8_t currFireCount;
 FILE_STATIC uint8_t currTimeout;
 
 // These are sample "trigger" flags, used to indicate to the main loop
@@ -36,33 +38,31 @@ FILE_STATIC flag_t triggerState1;
 FILE_STATIC flag_t triggerState2;
 FILE_STATIC flag_t triggerState3;
 
-CMD_SEGMENT {
-    uint8_t rate;
-    uint8_t timeout;
-} start_firing;
+#pragma PERSISTENT(mainChargeTime)
+#pragma PERSISTENT(mainIgniterDelay)
+#pragma PERSISTENT(igniterChargeTime)
+#pragma PERSISTENT(cooldownTime)
 
-CMD_SEGMENT {
-} stop_firing;
-
-TLM_SEGMENT {
-    BcTlmHeader header;
-} ppt_operating;
-
-TLM_SEGMENT {
-    BcTlmHeader header;
-    uint16_t timeDone;
-} ppt_main_done;
-
-TLM_SEGMENT {
-    BcTlmHeader header;
-    uint16_t timeDone;
-} ppt_igniter_done;
+FILE_STATIC uint16_t mainChargeTime = 39322;
+FILE_STATIC uint16_t mainIgniterDelay = 32;
+FILE_STATIC uint16_t igniterChargeTime = 3278;
+FILE_STATIC uint16_t cooldownTime = 22906;
 
 FILE_STATIC ppt_main_done mainDone;
 FILE_STATIC ppt_igniter_done igniterDone;
+FILE_STATIC ppt_operating pptOp;
+FILE_STATIC meta_segment mseg;
+FILE_STATIC timing currTiming;
 const uint32_t ledFreq = 200000;
 
-uint16_t timerVal; //TODO: remove this
+FILE_STATIC void sendIsOp() //TODO: remove before flight, or don't (maybe replace w/ meta packet)
+{
+    bcbinPopulateHeader(&pptOp.header, 2, sizeof(pptOp)); // 2nd param is opcode
+    bcbinPopulateHeader(&mainDone.header, 3, sizeof(mainDone));
+    bcbinPopulateHeader(&igniterDone.header, 4, sizeof(igniterDone));
+
+    bcbinSendPacket((uint8_t *) &pptOp, sizeof(pptOp));
+}
 
 FILE_STATIC void sendMainDone()
 {
@@ -71,15 +71,31 @@ FILE_STATIC void sendMainDone()
 }
 FILE_STATIC void sendIgniterDone()
 {
-    timerVal = TB0R;
     igniterDone.timeDone = TB0R;
     bcbinSendPacket((uint8_t *) &igniterDone, sizeof(igniterDone));
 }
 
+FILE_STATIC void sendMeta()
+{
+    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
+    bcbinPopulateMeta(&mseg, sizeof(mseg));
+    bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+}
+
+FILE_STATIC void sendTiming()
+{
+    currTiming.mainChargeTime = mainChargeTime;
+    currTiming.mainIgniterDelay = mainIgniterDelay;
+    currTiming.igniterChargeTime = igniterChargeTime;
+    currTiming.cooldownTime = cooldownTime;
+    bcbinSendPacket((uint8_t *)&currTiming, sizeof(currTiming));
+}
+
 void startFiring(start_firing *startPkt);
 void stopFiring();
-void enableInterrupts();
-void disableInterrupts();
+void mainLow();
+void igniterHigh();
+void fire();
 
 /*
  * main.c
@@ -118,10 +134,15 @@ int main(void)
 
     firing = 0;
 
-    TB0CCR1 = 39322;
-    TB0CCR2 = 39354;
-    TB0CCR3 = 42632; //was 42621
-    disableInterrupts();
+    TB0CCR1 = mainChargeTime;
+    mod_status.ss_state = State_Main_Charging;
+    firing = 1;
+    P4OUT |= BIT3; //main high
+    //TODO: ^this code block is just for testing
+
+    //TB0CCR2 = 39354;
+    //TB0CCR3 = 42632; //was 42621
+    TB0CCTL1 = CCIE;
 
     TB0CTL = TBSSEL__ACLK | MC__CONTINOUS | TBCLR | TBIE;
 
@@ -152,36 +173,11 @@ int main(void)
 
     uint32_t ledCount = ledFreq;
 
-    ppt_operating pptOp;
-
-    bcbinPopulateHeader(&pptOp.header, 2, sizeof(pptOp)); // 2nd param is opcode
-    bcbinPopulateHeader(&mainDone.header, 3, sizeof(mainDone));
-    bcbinPopulateHeader(&igniterDone.header, 4, sizeof(igniterDone));
-
-    bcbinSendPacket((uint8_t *) &pptOp, sizeof(pptOp));
+    sendIsOp();
+    bcbinPopulateHeader(&currTiming.header, 5, sizeof(currTiming));
 
     while (1)
     {
-        switch(mod_status.ss_state)
-        {
-        case State_Uncommissioned:
-            break;
-        case State_Main_Charging:
-            //check if main is done charging, then send telem
-            break;
-        case State_Igniter_Charging:
-            //same as main charging
-            break;
-        case State_Firing:
-            break;
-        case State_Cooldown:
-            break;
-        case State_InitializingFire:
-            break;
-        default:
-            mod_status.ss_state = State_Uncommissioned;
-            break;
-        }
         if(ledCount <= 0)
         {
             //this is the blinky light routine
@@ -190,6 +186,7 @@ int main(void)
             else
                 P1OUT ^= BIT0;
             ledCount = ledFreq;
+            sendMeta();
         }
         else
         {
@@ -204,19 +201,16 @@ int main(void)
 
 void startFiring(start_firing *startPkt)
 {
-    if(!firing)
+    if(!firing && startPkt->timeout)
     {
         P1OUT &= ~BIT0;
         firing = 1;
 
-        currTimeout = startPkt->timeout;// - 1;
-        fireRate = startPkt->rate - 1;
-        currFireCount = 0; //fireRate;
-        mod_status.ss_state = State_InitializingFire;
-
-        TB0CCTL3 |= CCIE;
-
-        //enableInterrupts();
+        currTimeout = startPkt->timeout - 1;
+        //TODO: send a sync pulse here
+        mod_status.ss_state = State_Cooldown;
+        TB0CCR1 = TB0R + cooldownTime;
+        TB0CCTL1 = CCIE;
     }
 }
 
@@ -224,9 +218,10 @@ void stopFiring()
 {
     if(firing)
     {
+        TB0CCTL1 &= ~CCIE;
         P1OUT &= ~BIT1;
+        mod_status.ss_state = State_Uncommissioned;
         firing = 0;
-        disableInterrupts();
         //P2IE &= ~(BIT5 | BIT6);
         P4OUT &= ~(BIT1 | BIT2 | BIT3);
     }
@@ -315,12 +310,31 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr) //this shoul
         //this is the one
         switch(cmdstr[0])
         {
+            case OPCODE_COMMON_CMD:
+                break;
             case OPCODE_START_FIRE://OPCODE_MY_CMD:
                 startFiring((start_firing *) (cmdstr + 1));
                 break;
             case OPCODE_STOP_FIRE:
                 stopFiring();
                 break;
+            case OPCODE_GET_TIMING:
+                sendTiming();
+                break;
+            case OPCODE_SET_TIMING:
+            {
+                set_timing *fireTiming = (set_timing *)(cmdstr + 1);
+                if(fireTiming->mainChargeTime)
+                    mainChargeTime = fireTiming->mainChargeTime;
+                if(fireTiming->mainIgniterDelay)
+                    mainIgniterDelay = fireTiming->mainIgniterDelay;
+                if(fireTiming->igniterChargeTime)
+                    igniterChargeTime = fireTiming->igniterChargeTime;
+                if(fireTiming->cooldownTime)
+                    cooldownTime = fireTiming->cooldownTime;
+                sendTiming();
+                break;
+            }
             default:
                 break;
         }
@@ -336,20 +350,6 @@ BOOL readyToFire()
     // TODO:  Walk through all of the data items that are necessary to determine if it's
     // time to go into a firing sequence
     return 0;
-}
-
-void enableInterrupts()
-{
-    TB0CCTL1 = CCIE;
-    TB0CCTL2 = CCIE;
-    TB0CCTL3 = CCIE;
-}
-
-void disableInterrupts()
-{
-    TB0CCTL1 &= ~CCIE;
-    TB0CCTL2 &= ~CCIE;
-    TB0CCTL3 &= ~CCIE;
 }
 
 #pragma vector=PORT2_VECTOR
@@ -369,6 +369,33 @@ __interrupt void Port_2(void)
     P2IFG = 0; //clear the interrupt flag
 }
 
+void mainLow()
+{
+    P4OUT &= ~BIT3;
+}
+
+void igniterHigh()
+{
+    P4OUT |= BIT2;
+}
+
+void fire()
+{
+    P4OUT &= ~BIT2;
+    mod_status.ss_state = State_Firing;
+    //fire high
+    P4OUT |= BIT1;
+    __delay_cycles(795); //was 7964 for 1 ms (target is 100 us)
+    //fire low
+    P4OUT &= ~BIT1;
+
+    //repeat if not counter
+}
+
+void toggleMain()
+{
+    P4OUT ^= BIT3;
+}
 
 #pragma vector = TIMER0_B1_VECTOR
 __interrupt void Timer0_B1_ISR (void)
@@ -377,56 +404,38 @@ __interrupt void Timer0_B1_ISR (void)
     {
         case TBIV__NONE: break;
         case TBIV1:
-            //set main charge to low
-            P4OUT &= ~BIT3;
-            mod_status.ss_state = State_Igniter_Charging;
-            break;
-        case TBIV2:
-            //set igniter charge to high
-            P4OUT |= BIT2;
-            break;
-        case TBIV3:
-        case TBIV__TBCCR3:
-            if(mod_status.ss_state != State_InitializingFire)
+            switch(mod_status.ss_state)
             {
-                //set igniter charge to low
-                P4OUT &= ~BIT2;
-                mod_status.ss_state = State_Firing;
-                //fire high
-                P4OUT |= BIT1;
-                __delay_cycles(795); //was 7964 for 1 ms (target is 100 us)
-                //fire low
-                P4OUT &= ~BIT1;
-                if(currTimeout)
-                    currTimeout--;
-                else
-                    stopFiring();
-
-                disableInterrupts();
-            }
-            mod_status.ss_state = State_Cooldown;
-            //TODO: send sync pulse here
-            break;
-        case TBIV4: break;
-        case TBIV5: break;
-        case TBIV6: break;
-        case TBIV__TBIFG: //overflow case
-            if(firing)
-            {
-                if(currFireCount)
-                {
-                    currFireCount--;
-                    //disableInterrupts();
-
-                }
-                else if(mod_status.ss_state != State_InitializingFire)//currFireCount is zero && not the fake fire
-                {
-                    enableInterrupts();
-                    currFireCount = fireRate;
-                    //set main to high
+                case State_Main_Charging:
+                    P4OUT &= ~BIT3;
+                    //mainLow();
+                    TB0CCR1 += mainIgniterDelay;
+                    mod_status.ss_state = State_Main_Igniter_Cooldown;
+                    break;
+                case State_Main_Igniter_Cooldown:
+                    P4OUT |= BIT2;
+                    //igniterHigh();
+                    mod_status.ss_state = State_Igniter_Charging;
+                    TB0CCR1 += igniterChargeTime;
+                    break;
+                case State_Igniter_Charging:
+                    fire();
+                    if(currTimeout)
+                    {
+                        //TODO: send sync pulse here
+                        currTimeout--;
+                        mod_status.ss_state = State_Cooldown;
+                        TB0CCR1 += cooldownTime;
+                    }
+                    else
+                        stopFiring();
+                    break;
+                case State_Cooldown:
                     P4OUT |= BIT3;
                     mod_status.ss_state = State_Main_Charging;
-                }
+                    TB0CCR1 += mainChargeTime;
+                default:
+                    break;
             }
             break;
         default: break;

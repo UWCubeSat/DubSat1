@@ -25,25 +25,25 @@
 #define LTC2943_ADDR_CURRENT_MSB 0x0E
 
 //constant settings
-#define LTC2943_PRESCALEFACTOR 64
+#define LTC2943_PRESCALEFACTOR 64.0
 
 //Preset shortcuts
-#define ALERTDISABLED_PRESCALER256_ADCAUTOMATICMODE 0xE0
+#define ALERTDISABLED_PRESCALER256_ADCAUTOMATICMODE 0xD8
 
-#define MAX_BUFF_SIZE 0x10
+#define MAX_BUFF_SIZE 10
 
 typedef struct _coulombCounterData {
 
-    int16_t rawBusVoltage;
-    int16_t rawShuntVoltage;
-    int16_t rawCurrent;
-    int16_t rawAccumCharge;
+    uint16_t rawBusVoltage;
+    uint16_t rawShuntVoltage;
+    uint16_t rawCurrent;
+    uint16_t rawAccumCharge;
 
     float busVoltageV;
     float shuntVoltageV;
     float calcdCurrentA;
     float SOC;
-    float accumulatedCharge;
+    float totalAccumulatedCharge;
     float battCharge;
 
 } CoulombCounterData;
@@ -57,6 +57,7 @@ typedef struct _device_context_coulombCounter {
     float chargeLSB; //mAh
     uint16_t accumChargeFull;
     uint16_t accumChargeEmpty;
+    uint8_t controlReg;
 
     CoulombCounterData sensorData;
 } deviceContextCoulombCounter;
