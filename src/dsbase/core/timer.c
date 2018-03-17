@@ -1,8 +1,46 @@
-/*
+/**
  * timer.c
  *
  *  Created on: Jan 13, 2018
  *      Author: Thu Phan, Nathan Wacker
+ *
+ *  Description: This source file contains two ways to implement the timer.
+ *  1. Interrupt based / Callback timer
+ *  2. Non-interrupt based / Polling-based timer
+ *  This timer uses Timer A0.
+ *
+ *  Procedure to use non-interrupt (polling) based timer:
+ *      1. Initialize timer with the function initalizeTimer()
+ *      2. When user wants to start timer, call the function timerPollbackInitializer(). It has two parameters,
+ *         desired_counter_dif, and desired_TAR_dif. 1 desired_counter_dif = 2 seconds; 1 desired_TAR_dif = 1/32768 = 30.5us.
+ *         Function will return a timer identification number. // NOTE: I WILL MAKE A FUNCTION TO DO THE MATH
+ *      3. Call on checkTimer(identification number). Will return 1 when timer goes off, 0 otherwise.
+ *      4. To start timer again, repeat step 2-4.
+ *      Ex:
+ *          initializeTimer();
+ *          int timerID = timerPollbackInitializer(2, 0); // 4 seconds timer
+ *          while(!checkTimer(timerID)) {}  // stays in loop till checkTimer returns 1
+ *          LED1 ^= 1; // Do whatever
+ *
+ *  Procedure to use interrupt (callback) based timer:
+ *      1. Initialize timer with the function initializeTimer()     // NOTE: initializeTimer should only be called ONCE in main loop
+ *      2. Call on timerCallbackInitializer(). Function has two parameters: A pointer to desired function, and "us", the number of
+ *         desired microseconds. Function will return a timer identification number.
+ *      3. To start timer, call on startCallback(timer ID). When timer goes off, interrupt will automatically execute function that the function pointer
+ *         points to. Function will continuously be called every desired "us".
+ *      4. To stop calling timer from resetting and calling the function, call on stopCallback(timer ID).
+ *      Ex:
+ *          initializeTimer();
+ *          int timerID = timerCallbackInitializer(&blinkLED, 2000); // timer will call on blinkLED every 2000 us.
+ *          startCallback(timerID);
+ *          ...// Do whatever you want
+ *          // When you want to stop blinkLED;
+ *          stopCallback(timerID);
+ *
+ *          void blinkLED()
+ *          {
+ *              blink the LED;
+ *          }
  */
 #include <msp430.h>
 #include "timer.h"
@@ -10,16 +48,11 @@
 
 static const int NUM_SUPPORTED_DURATIONS_POLLING = 8;
 static const int NUM_SUPPORTED_DURATIONS_CALLBACK = 2;
-//typedef enum
-//{
-//    Timer_Polling,
-//    Timer_Callback,
-//} duration_type;
+
 
 typedef struct
 {
     uint16_t inUse;
-//    duration_type type;
     uint16_t durationMS;   // Always indicate what the units are in struct names
     uint16_t start_timer_counter;
     uint16_t start_TAR;
@@ -45,7 +78,6 @@ static uint16_t timer_counter = 0;
 
 void initializeTimer()
 {
-//    PM5CTL0 &= ~LOCKLPM5;
 //    // ACLK has frequency of 32768 Hz, which means one "tick" is .00003051757 s = 30.51757 us
     TA0CTL = TASSEL__ACLK | TAIE | MC__CONTINUOUS | ID__1;
     __bis_SR_register(GIE);
