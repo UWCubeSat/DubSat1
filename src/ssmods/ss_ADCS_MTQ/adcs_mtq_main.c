@@ -1,9 +1,6 @@
 /*
-
 file: adcs_mtq_main.c 
-
 author: Eloise Perrochet
-
 description: software for magnetorquer subsystem 
 
 coil  pin   timer 
@@ -14,7 +11,6 @@ Y1 - P3_7 - TB0.6
 Y2 - P3_6 - TB0.5
 Z1 - P2_2 - TB0.2
 Z2 - P2_6 - TB0.1
-
 */
 
 //------------------------------------------------------------------
@@ -26,62 +22,62 @@ Z2 - P2_6 - TB0.1
 #include "interfaces/canwrap.h" 
 
 //------------------------------------------------------------------
-// defines 
-//------------------------------------------------------------------
-#define PWM_PERIOD (1000-1) // pwm period = 1000 us  
-#define X1 1 // for set_pwm function which_pin 
-#define X2 2 
-#define Y1 3  
-#define Y2 4  
-#define Z1 5 
-#define Z2 6 
-
-//------------------------------------------------------------------
 // global variables 
 //------------------------------------------------------------------
 FILE_STATIC ModuleStatus mod_status;
 FILE_STATIC volatile TumbleState tumble_status = Idle; // static volatile enum _tumble_state {Tumbling=1,Idle=0} TumbleState tumble_status = Idle;
-FILE_STATIC volatile int duty_X1, duty_X2, duty_Y1, duty_Y2, duty_Z1, duty_Z2; 
+FILE_STATIC volatile int duty_X1, duty_X2, duty_Y1, duty_Y2, duty_Z1, duty_Z2; // for assigning pwm to output 
 FILE_STATIC volatile int received_command_packet; // flag to protect against weird behavior if in tumbling state but no command packet has been received
 
 //------------------------------------------------------------------
-// function prototypes
+// function declarations
 //------------------------------------------------------------------
 void mtq_gpio_init(void);
-void mtq_gpio_debug_init(void); // DEBUG
+void mtq_gpio_debug_init(void); // DEBUG pins with gpio function 
 void timer_b_init(void); 
 void interpret_command_dipole(int x_command, int y_command, int z_command);
 void set_pwm(int which_pin, int ccr_value); 
-void can_packet_rx_handler(CANPacket *packet);
+void can_packet_rx_callback(CANPacket *packet);
 void send_ping_packet(void);
+//void backchannel_send_health(void); 
 
 //------------------------------------------------------------------
 // Main 
+
+// TODO 
+// add de-gaussing 
+// add backchannel UART 
+// fix CAN ping packet function 
 //------------------------------------------------------------------
 int main(void)
 {	
+	// bsp initialization 
 	bspInit(__SUBSYSTEM_MODULE__);
-	//mod_status.startup_type = coreStartup(handlePPTFiringNotification, handleRollCall);
 	// port initialization 
 	mtq_gpio_init(); // pins are timer b function
-	//mtq_gpio_debug_init(); // pins are gpio function
+	// timer initialization 
 	timer_b_init();
 	// CAN initialization 
 	canWrapInit();
-	setCANPacketRxCallback(can_packet_rx_handler);
-
+	setCANPacketRxCallback(can_packet_rx_callback);
+	// temperature sensor initialization 
+	//asensorInit(Ref_2p5V);
+	
     while (1)
-	{
+    {
+        /*
 		// hardcoded PWM for DEBUG
-		/*
-        set_pwm(X1, 20);
-        set_pwm(X2, 80);
-        set_pwm(Y1, 20);
-        set_pwm(Y2, 80);
-        set_pwm(Z1, 20);
-        set_pwm(Z2, 80);
-		*/ 
-		
+        cycle = ~cycle;
+        interpret_command_dipole(0, 0, cyle*100); // x y z
+        set_pwm(X1, duty_X1);
+        set_pwm(X2, duty_X2);
+        set_pwm(Y1, duty_Y1);
+        set_pwm(Y2, duty_Y2);
+        set_pwm(Z1, duty_Z1);
+        set_pwm(Z2, duty_Z2);
+        __delay_cycles(500000);
+        */
+
 		// control for turning on coils based on command dipole signals 
         switch (tumble_status) 
 		{
@@ -90,7 +86,6 @@ int main(void)
 				// set duty cycles 
 				if (received_command_packet)
 				{
-				    //send_ping_packet();
 				    received_command_packet = 0; // reset received_command_packet flag
 					set_pwm(X1, duty_X1); 
 					set_pwm(X2, duty_X2); 
@@ -122,16 +117,15 @@ int main(void)
 }
 
 //------------------------------------------------------------------
-// CAN interrupt handler function 
+// CAN interrupt handler 
 //------------------------------------------------------------------
 
-void can_packet_rx_handler(CANPacket *packet)
-{
+void can_packet_rx_callback(CANPacket *packet)
+{  
 	// check if packet is tumble status 
 	if (packet->id == CAN_ID_BDOT_TUMBLE_STATUS)
-	{
-		// initialize tumble status packet
-		bdot_tumble_status tumble_status_packet = {0}; 
+	{ 
+		bdot_tumble_status tumble_status_packet = {0}; // initialize tumble status packet
 		// use tumble status to set tumble state 
 		decodebdot_tumble_status(packet, &tumble_status_packet);
 		if (tumble_status_packet.bdot_tumble_status_status) //tumbling
@@ -142,8 +136,7 @@ void can_packet_rx_handler(CANPacket *packet)
 	if (packet->id == CAN_ID_BDOT_COMMAND_DIPOLE)
 	{
 		received_command_packet = 1; // set received_command_packet
-		// initialize command dipole packet
-		bdot_command_dipole command_dipole_packet = {0};
+		bdot_command_dipole command_dipole_packet = {0}; // initialize command dipole packet
 		decodebdot_command_dipole(packet, &command_dipole_packet);
 		// use dipole commands to update values for commands 
 		interpret_command_dipole(command_dipole_packet.bdot_command_dipole_x,
@@ -156,26 +149,31 @@ void can_packet_rx_handler(CANPacket *packet)
 // software functions 
 //------------------------------------------------------------------
 
+// this function sets the PWM duty cycles for each of the outputs based 
+// on the A3903 driver chip data sheet description for chopping mode 
 void interpret_command_dipole(int x_command, int y_command, int z_command)  
 {
 	// valid command range : (-100 - 100)
 	if (x_command > 100 | x_command < -100 | y_command > 100 | y_command < -100 | z_command > 100 | z_command < -100)
 		; // TODO add error condition  
-	duty_X1 = (x_command >= 0) ? (x_command) : 100;
-	duty_X2 = (x_command >= 0) ? 100: -(x_command);
-	duty_Y1 = (y_command >= 0) ? (y_command) : 100;
-	duty_Y2 = (y_command >= 0) ? 100: -(y_command);
-	duty_Z1 = (z_command >= 0) ? (z_command) : 100;
-	duty_Z2 = (z_command >= 0) ? 100: -(z_command);
+	duty_X1 = (x_command >= 0) ? (100-x_command) : 100;
+	duty_X2 = (x_command >= 0) ? 100: 100-(-x_command);
+	duty_Y1 = (y_command >= 0) ? (100-y_command) : 100;
+	duty_Y2 = (y_command >= 0) ? 100: 100-(-y_command);
+	duty_Z1 = (z_command >= 0) ? (100-z_command) : 100;
+	duty_Z2 = (z_command >= 0) ? 100: 100-(-z_command);
 }
 
+// this function sets the CCRn register values to adjust PWM for output
 void set_pwm(int which_pin, int pwm_percent)  
 {
     int ccr_value;
+
     if (pwm_percent == 0)
         ccr_value = 0;
     else
-        ccr_value = pwm_percent*10-1;
+        ccr_value = pwm_percent*CCR_PERIOD;
+
 	switch(which_pin)
 	{
 		case X1: // MTQ: P1_7 Launchpad: P3_5
@@ -204,11 +202,21 @@ void set_pwm(int which_pin, int pwm_percent)
 // TODO do not use. Halts Bdot when sent 
 void send_ping_packet(void)
 {
+	static int ping_packet_tx_count;
+	ping_packet_tx_count ++; // increment ping packet count 
 	CANPacket p = {0};
 	p.id = 1234;
 	p.length = 0;
 	canSendPacket(&p);
 }
+
+/*
+void backchannel_send_health(void); 
+{
+	int temp;
+	temp = asensorReadIntTempC();
+}
+*/
 
 //------------------------------------------------------------------
 // register initialization functions  

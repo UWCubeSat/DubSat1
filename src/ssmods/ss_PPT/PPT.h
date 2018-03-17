@@ -22,6 +22,7 @@ typedef enum _subsystem_state {
     State_Undetermined,
     State_Uncommissioned,
     State_Main_Charging,
+    State_Main_Igniter_Cooldown,
     State_Igniter_Charging,
     State_Firing,
     State_Cooldown,
@@ -59,5 +60,38 @@ uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 
 BOOL readyToFire();
+
+CMD_SEGMENT {
+    uint8_t timeout;
+} start_firing;
+
+CMD_SEGMENT {
+    uint16_t mainChargeTime;
+    uint16_t mainIgniterDelay;
+    uint16_t igniterChargeTime;
+    uint16_t cooldownTime;
+} set_timing;
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+} ppt_operating;
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint16_t timeDone;
+} ppt_main_done;
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint16_t timeDone;
+} ppt_igniter_done;
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint16_t mainChargeTime;
+    uint16_t mainIgniterDelay;
+    uint16_t igniterChargeTime;
+    uint16_t cooldownTime;
+} timing;
 
 #endif /* PPT_H_ */
