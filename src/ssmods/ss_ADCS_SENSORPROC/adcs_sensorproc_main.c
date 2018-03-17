@@ -7,6 +7,7 @@
 
 #include "bsp/bsp.h"
 #include "core/debugtools.h"
+#include "core/timer.h"
 #include "interfaces/canwrap.h"
 
 #include "adcs_sensorproc_ids.h"
@@ -52,6 +53,11 @@ int main(void)
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
 
+    // initialize timers
+    // TODO replace magic numbers
+    initializeTimer();
+    int timerHandle = timerPollInitializer(0, 6554); // 5 Hz timer
+
     // initialize sensors
     gpsioInit();
 #if ENABLE_SUNSENSOR
@@ -61,30 +67,26 @@ int main(void)
     photodiodeioInit();
 #endif // ENABLE_PHOTODIODES
 
-    // turn the GPS on right away for debugging
-    // TODO remove before flight
-    // gpsioPowerOn();
-
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
     {
-        static uint32_t i = 0;
-        i++;
+        static uint8_t i = 0;
 
-        if (i % 65536 == 0)
+        if (i % 4 == 0) // 1.25 Hz
         {
             LED_OUT ^= LED_BIT;
             gpsioSendPowerStatus();
             sendHealthSegment();
         }
 
-        if (i % 524288 == 0)
+        if (i % 64 == 0) // every 12.8 seconds
         {
             sendMetaSegment();
         }
 
-        if (i % 32768 == 0)
+        if (checkTimer(timerHandle)) // 5 Hz
         {
+            i++;
             /*
              * TODO assert that the photodiodes are not being read multiple
              * times in the space of PHOTODIODE_DELAY_S.

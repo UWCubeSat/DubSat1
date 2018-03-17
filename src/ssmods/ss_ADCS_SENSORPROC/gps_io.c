@@ -11,6 +11,7 @@
 #include "adcs_sensorproc_ids.h"
 #include "core/debugtools.h"
 #include "core/utils.h"
+#include "core/timer.h"
 #include "interfaces/canwrap.h"
 
 // Segment instances - used both to store information and as a structure for sending as telemetry/commands
@@ -49,7 +50,7 @@ FILE_STATIC gps_power_state states[] = {
 FILE_STATIC flag_t triggerGPSOn;
 FILE_STATIC flag_t triggerGPSOff;
 
-// callbacks
+// CAN
 FILE_STATIC void canRxCallback(CANPacket *packet);
 
 // message handlers
@@ -68,6 +69,9 @@ FILE_STATIC void handleClockStatusEvent(const GPSRXStatusEvent *e);
 // util functions
 FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset);
 
+// timer handlers
+FILE_STATIC int timerHandleResponse;
+
 void gpsioInit()
 {
     setCANPacketRxCallback(canRxCallback);
@@ -84,6 +88,10 @@ void gpsioInit()
 
     triggerGPSOn = FALSE;
     triggerGPSOff = FALSE;
+
+    // initialize timer to check if GPS is responsive
+    // TODO replace magic numbers
+    timerHandleResponse = timerPollInitializer(1, 0); // every 2 seconds
 
     gpsInit();
 }
@@ -216,9 +224,7 @@ FILE_STATIC gps_power_state_code stateAwaitingGPSOn(gps_power_cmd cmd)
     }
 
     // periodically poll the GPS until it responds
-    // TODO replace this with timers
-    static uint16_t i = 0;
-    if (i++ == 0)
+    if (checkTimer(timerHandleResponse))
     {
         gpsSendCommand("log rxstatusb\r\n");
     }
