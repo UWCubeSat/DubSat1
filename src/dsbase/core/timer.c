@@ -105,7 +105,7 @@ int timerPollInitializer(uint16_t desired_counter_dif, uint16_t desired_TAR_dif)
 {
     uint16_t start_counter = timer_counter;
     uint16_t start_TAR_ = TA0R;
-    uint16_t i;
+    int i;
     for (i = NUM_SUPPORTED_DURATIONS_POLLING - 1; i >= 0; i--)
     {
         if (!polling[i].inUse)
