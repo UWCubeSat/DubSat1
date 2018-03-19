@@ -78,7 +78,7 @@ typedef struct
 //} desired_time;
 
 static polling_info polling[NUM_SUPPORTED_DURATIONS_POLLING];
-FILE_STATIC int initialized = 0;
+static int initialized = 0;
 
 /* IMPORTANT: callback[1] == TA0CCTL2, callback[0] == TA0CCTL1 */
 static callback_info callback[NUM_SUPPORTED_DURATIONS_CALLBACK];
