@@ -21,6 +21,8 @@
  *          int timerID = timerPollbackInitializer(2, 0); // 4 seconds timer
  *          while(!checkTimer(timerID)) {}  // stays in loop till checkTimer returns 1
  *          LED1 ^= 1; // Do whatever
+ *      5. To end timer before checkTimer() returns 1, call on endPollingTimer(uint16_t timerNumber).
+ *
  *
  *  Procedure to use interrupt (callback) based timer:
  *      1. Initialize timer with the function initializeTimer()     // NOTE: initializeTimer should only be called ONCE in main loop
@@ -69,7 +71,14 @@ typedef struct
     void (*fxPtr)();
 } callback_info;
 
+//typedef struct
+//{
+//    uint16_t counter;
+//    uint16_t TARval;
+//} desired_time;
+
 static polling_info polling[NUM_SUPPORTED_DURATIONS_POLLING];
+static int initialized = 0;
 
 /* IMPORTANT: callback[1] == TA0CCTL2, callback[0] == TA0CCTL1 */
 static callback_info callback[NUM_SUPPORTED_DURATIONS_CALLBACK];
@@ -78,6 +87,10 @@ static uint16_t timer_counter = 0;
 
 void initializeTimer()
 {
+    if(initialized)
+    {
+        return;
+    }
 //    // ACLK has frequency of 32768 Hz, which means one "tick" is .00003051757 s = 30.51757 us
     TA0CTL = TASSEL__ACLK | TAIE | MC__CONTINUOUS | ID__1;
     __bis_SR_register(GIE);
@@ -99,7 +112,13 @@ void initializeTimer()
         callback[i].tar = 0;
 //        callback[i].fxPtr = 0; // TODO: Ask what to set to
     }
+    initialized = 1;
 }
+
+//desired_time convertTime(uint16_t ms)
+//{
+//
+//}
 
 int timerPollInitializer(uint16_t desired_counter_dif, uint16_t desired_TAR_dif)
 {
@@ -263,6 +282,11 @@ int checkTimer(uint16_t timerNumber)
         return 1;
     }
     return 0;
+}
+
+void endPollingTimer(uint16_t timerNumber)
+{
+    polling[timerNumber].inUse = 0;
 }
 
 #pragma vector = TIMER0_A1_VECTOR
