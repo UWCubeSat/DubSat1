@@ -23,6 +23,7 @@ FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 
 FILE_STATIC int timerHandle;
+FILE_STATIC void startSensorprocTimer();
 
 int main(void)
 {

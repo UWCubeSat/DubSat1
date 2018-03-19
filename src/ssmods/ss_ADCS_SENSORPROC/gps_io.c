@@ -148,8 +148,7 @@ void gpsioInit()
 
     gpsPowerState = State_Off;
 
-    // TODO add timer initializer...
-    timerHandle = -1;
+    initializeTimer();
 
     gpsInit();
 }
@@ -206,6 +205,14 @@ void gpsioUpdate()
     }
 }
 
+FILE_STATIC void freeTimer()
+{
+    if (timerHandle != -1)
+    {
+        endPollingTimer(timerHandle);
+    }
+}
+
 FILE_STATIC void enterStateOff()
 {
     gpsSetPower(FALSE);
@@ -234,7 +241,7 @@ FILE_STATIC gps_power_state_code stateEnablingBuck(gps_power_cmd cmd)
 {
     if (cmd == PowerCmd_Disable)
     {
-        // TODO free timer!
+        freeTimer();
         return State_Off;
     }
 
@@ -258,13 +265,13 @@ FILE_STATIC gps_power_state_code stateEnablingGPS(gps_power_cmd cmd)
 {
     if (cmd == PowerCmd_Disable)
     {
-        // TODO free timer!
+        freeTimer();
         return State_ShuttingDown;
     }
 
     if (!gpsIsBuckGood() && !gpsioIsBuckOverride())
     {
-        // TODO free timer!
+        freeTimer();
         return State_EnablingBuck;
     }
 
@@ -288,19 +295,19 @@ FILE_STATIC gps_power_state_code stateAwaitingGPSOn(gps_power_cmd cmd)
 {
     if (cmd == PowerCmd_Disable)
     {
-        // TODO free timer!
+        freeTimer();
         return State_ShuttingDown;
     }
 
     if (!gpsIsBuckGood() && !gpsioIsBuckOverride())
     {
-        // TODO free timer!
+        freeTimer();
         return State_EnablingBuck;
     }
 
     if (gpsioHandlePackage(gpsRead()))
     {
-        // TODO free timer!
+        freeTimer();
         return State_On;
     }
 
@@ -351,7 +358,7 @@ FILE_STATIC gps_power_state_code stateShuttingDown(gps_power_cmd cmd)
 {
     if (cmd == PowerCmd_Enable)
     {
-        // TODO free timer!
+        freeTimer();
         return State_EnablingBuck;
     }
 
