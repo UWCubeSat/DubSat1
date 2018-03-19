@@ -75,12 +75,13 @@ uint8_t gpsIsBuckGood()
 
 void gpsSetPower(uint8_t on)
 {
-    if (on)
+    uint8_t isOn = gpsIsPowerEnabled();
+    if (on && !isOn)
     {
         BufferedReaderFlush();
         GPS_ENABLE_OUT |= GPS_ENABLE_BIT;
     }
-    else
+    else if (!on && isOn)
     {
         GPS_ENABLE_OUT &= ~GPS_ENABLE_BIT;
         BufferedReaderFlush();

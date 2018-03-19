@@ -2,6 +2,9 @@
 #define ENABLE_PHOTODIODES 0
 #define ENABLE_SUNSENSOR   0
 
+// desired_TAR_dif to make a 5Hz timer
+#define TIMER_5HZ 6554
+
 #include <adcs_sensorproc.h>
 #include <msp430.h> 
 
@@ -18,6 +21,8 @@
 // Segment instances - used both to store information and as a structure for sending as telemetry/commands
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
+
+FILE_STATIC int timerHandle;
 
 int main(void)
 {
@@ -54,9 +59,9 @@ int main(void)
     // and then control is returned to this main loop
 
     // initialize timers
-    // TODO replace magic numbers
+    //
     initializeTimer();
-    int timerHandle = timerPollInitializer(0, 6554); // 5 Hz timer
+    startSensorprocTimer();
 
     // initialize sensors
     gpsioInit();
@@ -86,6 +91,7 @@ int main(void)
 
         if (checkTimer(timerHandle)) // 5 Hz
         {
+            startSensorprocTimer(); // reset the timer
             i++;
             /*
              * TODO assert that the photodiodes are not being read multiple
@@ -107,6 +113,11 @@ int main(void)
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
 	return 0;
+}
+
+void startSensorprocTimer()
+{
+    timerHandle = timerPollInitializer(0, TIMER_5HZ);
 }
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
