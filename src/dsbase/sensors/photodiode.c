@@ -31,7 +31,7 @@ uint8_t photodiodeInit(uint8_t addr, bus_instance_i2c i2cbus)
     pdData[currIndex].handle = hSensor;
     i2cMasterWrite(hSensor, defaultWrite, 1);
 
-    // TODO init timer library
+    initializeTimer();
     startTimer(currIndex);
     pdData[currIndex].lastReading = 0;
 
