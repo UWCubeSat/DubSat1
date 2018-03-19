@@ -41,4 +41,6 @@ typedef struct
 	hDev handle;
 	uint32_t lastVoltage;
 	double lastTemperature;
+	uint32_t lastReading;
+	int timer;
 } PhotodiodeData;
