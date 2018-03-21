@@ -11,9 +11,8 @@
  *
  *  Procedure to use non-interrupt (polling) based timer:
  *      1. Initialize timer with the function initalizeTimer()
- *      2. When user wants to start timer, call the function timerPollbackInitializer(). It has two parameters,
- *         desired_counter_dif, and desired_TAR_dif. 1 desired_counter_dif = 2 seconds; 1 desired_TAR_dif = 1/32768 = 30.5us.
- *         Function will return a timer identification number. // NOTE: I WILL MAKE A FUNCTION TO DO THE MATH
+ *      2. When user wants to start timer, call the function timerPollbackInitializer(). It has 1 parameter,
+ *         the desired milliseconds user wants to set the timer at. Function will return a timer identification number.
  *      3. Call on checkTimer(identification number). Will return 1 when timer goes off, 0 otherwise.
  *      4. To start timer again, repeat step 2-4.
  *      Ex:
@@ -71,11 +70,11 @@ typedef struct
     void (*fxPtr)();
 } callback_info;
 
-//typedef struct
-//{
-//    uint16_t counter;
-//    uint16_t TARval;
-//} desired_time;
+typedef struct
+{
+    uint16_t counter;
+    uint16_t TARval;
+} desired_time;
 
 static polling_info polling[NUM_SUPPORTED_DURATIONS_POLLING];
 static int initialized = 0;
@@ -115,13 +114,27 @@ void initializeTimer()
     initialized = 1;
 }
 
-//desired_time convertTime(uint16_t ms)
-//{
-//
-//}
-
-int timerPollInitializer(uint16_t desired_counter_dif, uint16_t desired_TAR_dif)
+desired_time convertTime(uint16_t ms)
 {
+    // 1 desired_counter_dif = 2 seconds; 1 desired_TAR_dif = 1/32768 = 30.5us.
+    desired_time convert;
+    uint16_t calc_counter;
+    uint16_t calc_TAR;
+    float microSec;
+    uint16_t new_ms = ms;
+    calc_counter = new_ms / 2000;
+    new_ms = new_ms - calc_counter * 2000;
+    // ms --> us
+    microSec = (float) new_ms * 1000.0;
+    calc_TAR = (uint16_t) (microSec / 30.517);
+    convert.counter = calc_counter;
+    convert.TARval = calc_TAR;
+    return convert;
+}
+
+int timerPollInitializer(uint16_t ms)
+{
+    desired_time convert = convertTime(ms);
     uint16_t start_counter = timer_counter;
     uint16_t start_TAR_ = TA0R;
     int i;
@@ -130,8 +143,8 @@ int timerPollInitializer(uint16_t desired_counter_dif, uint16_t desired_TAR_dif)
         if (!polling[i].inUse)
         {
             polling[i].inUse = 1;
-            polling[i].counter_dif = desired_counter_dif;
-            polling[i].tar_dif = desired_TAR_dif;
+            polling[i].counter_dif = convert.counter;
+            polling[i].tar_dif = convert.TARval;
             polling[i].start_timer_counter = start_counter;
             polling[i].start_TAR = start_TAR_;
             return i;
