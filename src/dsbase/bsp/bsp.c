@@ -132,7 +132,7 @@ void bspInit(SubsystemModule mod)
     {
       CSCTL5 &= ~LFXTOFFG;                  // Clear LFXT fault flag
       SFRIFG1 &= ~OFIFG;
-    } while (SFRIFG1 & OFIFG);              // Test oscillator fault flag
+    } while (SFRIFG1 & OFIFG );              // Test oscillator fault flag
     CSCTL0_H = 0;                           // Lock CS Registers
 
     // Force all outputs to be 0, so we don't get spurious signals when we unlock

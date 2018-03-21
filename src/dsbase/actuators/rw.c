@@ -123,6 +123,9 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
                 pid.lastcmd.newsetpoint = 666;
                 pid.lastcmd.resetwindup = 0;
                 break;
+//            case OPCODE_MANUAL:
+//                rwsSetMotorSpeed(60000);
+//                break;
             case OPCODE_SETPOINTCHANGE:
                 cmdpidctrl = (CmdPidCtrl *) &cmdstr[1];
                 if (cmdpidctrl->resetwindup == TRUE)
@@ -142,13 +145,21 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
                 }
                 else
                 {
-                    kp = (((double)(cmdpidctrl->p))/5000.0);
-                    ki = (((double)(cmdpidctrl->i))/5000.0);
-                    kd = (((double)(cmdpidctrl->d))/5000.0);
+                    kp = (((double)(cmdpidctrl->p))/2500.0);
+                    ki = (((double)(cmdpidctrl->i))/2500.0);
+                    kd = (((double)(cmdpidctrl->d))/2500.0);
                     setpoint_override = 1;
                     overridden_setpoint = cmdpidctrl->newsetpoint;
+
                     pid.lastcmd.newsetpoint = overridden_setpoint;
                     pid.setpoint = overridden_setpoint;
+                    if(kp == 2 && ki == 2 && kd == 2){
+                        rwsSetMotorSpeed((pid.setpoint/10000.0)*600);
+                        rwsRunManual();
+                    }
+                    else{
+                        rwsRunAuto();
+                    }
                 }
                 break;
         }
@@ -181,13 +192,13 @@ void rwsInit()
     // SMCLK as clk source, continuous mode
     FREQ_TIMER(CCTL0) = CM__RISING | CCIS__CCIB | SCS | CAP | CCIE;
     FREQ_TIMER(CTL) = FREQ_ROOT_TIMER(SSEL__ACLK) | MC__CONTINUOUS | FREQ_ROOT_TIMER(CLR) | TAIE;
+    TA4CCTL1 = CCIE;                   // CCR0 interrupt enabled
     // PWM output:  pin P1.7 ('1 0 1') - as TB0.4
     RW_PWM_DIR |= RW_PWM_PIN;
     RW_PWM_SEL1 &= ~RW_PWM_PIN;
     RW_PWM_SEL0 |= RW_PWM_PIN;
-//
-//    TB1CCR1 = 5;
 
+    TA4CCR1 = 3;
 
     TB0CCR0 = 60000;
     TB0CCR4 = 50;
@@ -234,6 +245,10 @@ void rwsRunManual()
 {
     active = 0;
 }
+int rwsMode()
+{
+    return active;
+}
 
 void rwsSetMinMaxOutput(int min, int max)
 {
@@ -250,8 +265,11 @@ void rwsSetTuningParams(double Kp, double Ki, double Kd)
 
 double rwsPIDStep(double cmd)
 {
-    if (active != 1)
+    if (active != 1){
+        pid.input = currentRPM;
+        rwSendTlm();
         return cmd;
+    }
 
 //    if (setpoint_override == 1)
 //        pid.setpoint = overridden_setpoint;
@@ -356,7 +374,7 @@ __interrupt void Timer4_A0_ISR(void)
         sumPeriods_cycles += avg_window[i];
     avgPeriod= sumPeriods_cycles/(float)AVG_WINDOW_SIZE;
     currentRPM = (CLK_RPM_PERIOD_CONVERSION_32KHZ)/avgPeriod;
-    rwsSetRPMUpdated(1);
+//    rwsSetRPMUpdated(1);
     //currentRPM = (240000000.0)/currentPeriod;
 }
 
@@ -372,7 +390,9 @@ __interrupt void Timer4_A1_ISR(void)
 {
     switch (__even_in_range(TA4IV, TAIV__TAIFG))
     {
-        case TAIV__TACCR1: break;           // not used
+        case TAIV__TACCR1:
+            rwsSetRPMUpdated(1);
+            break;           // not used
         case TAIV__TACCR2: break;           // not used
         case TAIV__TACCR3: break;           // not used
         case TAIV__TACCR4: break;           // not used

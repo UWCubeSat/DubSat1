@@ -65,14 +65,19 @@ int main(void)
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
     {
+
+//                    rwsSetMotorSpeed(40000);
+//                    rwsSetMotorSpeed(0);
         // This assumes that some interrupt code will change the value of the triggerStaten variables
         switch (ss_state)
         {
         case State_FirstState:
             if(rwsRPMUpdated()){
-                rwsSetRPMUpdated(0);
                 double b = rwsPIDStep(0);
-                rwsSetMotorSpeed(40000);
+                if(rwsMode()){
+                    rwsSetMotorSpeed(b);
+                }
+                rwsSetRPMUpdated(0);
 
             }
             if (triggerState2)
