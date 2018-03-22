@@ -26,8 +26,8 @@ int main(void)
     // __SUBSYSTEM_MODULE__ is set in bsp.h based on the __SS_<subsystemmodule>__ passed in
     // as a predefined symbol
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
-//    const DebugMode mode = Mode_ASCIIInteractive;
-//    debugSetMode(mode);
+    const DebugMode mode = Mode_ASCIIInteractive;
+    debugSetMode(mode);
 
     // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).

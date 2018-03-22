@@ -199,11 +199,12 @@ void rwsInit()
     RW_PWM_SEL0 |= RW_PWM_PIN;
 
 //    TA4CCR1 = 3;
-    TA0CTL = TASSEL_1 + MC_1 + TACLR;
+    TA0CTL = TASSEL__ACLK + MC_1  + ID_1 + TACLR;
     TA0CCTL0 = CCIE;
     TA0CCR0 = 65535;
     P1DIR |= BIT0;
     NVIC_EnableIRQ(TA0_0_IRQn);
+    NVIC->ISER[0] = 1 << ((EUSCIA0_IRQn) & 31);
     __enable_interrupt();
 //    TB0CCR0 = 60000;
 //    TB0CCR4 = 50;
@@ -390,11 +391,14 @@ double getCurrentRPM()
 
 
 // Timer4_A1 (CCR=1..n) TA Interrupt Handler
+int booped = 0;
 void TA0_0_IRQHandler (void)
 {
-
-    P1OUT ^= BIT0;
     TA0CCTL0 &= ~CCIFG;
+    debugTraceF(0,"hey dawg hey whats up");
+//    bcbinSendPacket((uint8_t *) &pid, sizeof(pid));
+    P1OUT ^= BIT0;
+//    booped=booped%2;
 //    switch (__even_in_range(TA4IV, TAIV__TAIFG))
 //    {
 //        case TAIV__TACCR1:

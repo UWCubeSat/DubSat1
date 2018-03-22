@@ -249,13 +249,13 @@ void bspUARTInit(bus_instance_UART instance)
     // LaunchPad for MSP430FR5994
     if (instance == BackchannelUART)
     {
-//        BACKCHANNEL_UART_SEL0 &= ~BACKCHANNEL_UART_BITS;
-//        BACKCHANNEL_UART_SEL1 |= BACKCHANNEL_UART_BITS;
+        BACKCHANNEL_UART_SEL0 &= ~BACKCHANNEL_UART_BITS;
+        BACKCHANNEL_UART_SEL1 |= BACKCHANNEL_UART_BITS;
     }
     else if (instance == ApplicationUART)
     {
-//        APP_UART_SEL0 &= ~APP_UART_BITS;
-//        APP_UART_SEL1 |= APP_UART_BITS;
+        APP_UART_SEL0 &= ~APP_UART_BITS;
+        APP_UART_SEL1 |= APP_UART_BITS;
     }
 }
 

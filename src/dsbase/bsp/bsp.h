@@ -269,6 +269,25 @@ uint64_t bspGetChipID();
 
 
 #elif defined(__MSP432P401R__)
+
+#define P401R_A1_UART_SEL0     P2SEL0
+#define P401R_A1_UART_SEL1     P2SEL1
+#define P401R_A1_UART_BITS     (BIT5 | BIT6)
+
+#define P401R_BACKCHANNEL_UART_SEL0    P1SEL0  // Maps to USCI A0
+#define P401R_BACKCHANNEL_UART_SEL1    P1SEL1  // Maps to USCI A0
+#define P401R_BACKCHANNEL_UART_BITS    (BIT0 | BIT1)
+// TX=P2.5, RX=P2.6
+#define APP_UART_SEL0   P401R_A1_UART_SEL0
+#define APP_UART_SEL1   P401R_A1_UART_SEL1
+#define APP_UART_BITS   P401R_A1_UART_BITS
+
+// TX=P2.0, RX=P2.1 - Exposed on LaunchPad in jumper J101 TXD and RXD
+#define BACKCHANNEL_UART_SEL0   P401R_BACKCHANNEL_UART_SEL0
+#define BACKCHANNEL_UART_SEL1   P401R_BACKCHANNEL_UART_SEL1
+#define BACKCHANNEL_UART_BITS   P401R_BACKCHANNEL_UART_BITS
+
+
 #else
 #error Unspecified board hardware, unable to determine correct BSP implementation.  Please specify board.
 #endif

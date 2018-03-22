@@ -93,5 +93,8 @@ TLM_SEGMENT {
 #define UCAxBRW_115200 4
 #define UCAxMCTLW_115200 (UCOS16 | UCBRF_5 | 0x55)
 
+#define UCAxBRW_9600_432 78
+#define UCAxMCTLW_9600_432  0x1000 | UCOS16 | 0x0020
+
 
 #endif /* UART_H_ */
