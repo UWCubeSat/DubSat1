@@ -74,7 +74,9 @@ uint8_t canInit() {
     P5IFG &= ~BIT7; // P5.7 IFG cleared
     P5DIR &= ~BIT7; // Set P5.7 to input direction
     // TODO: Need to set general interrupt enable (GIE) in status register(SR)
+    #ifdef __MSP430FR5994__
     __bis_SR_register(GIE);
+    #endif
 
     return canMode;
 }
@@ -234,6 +236,7 @@ void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t)
 // Interrupt handler for Receive Buffer
 // PORT1_VECTOR defined in C:\ti\ccsv7\ccs_base\msp430\include\msp430fr5994.h
 // GPIO port interrupts are all grouped together.
+#ifdef __MSP430FR5994__
 #pragma vector=PORT5_VECTOR
 __interrupt void ReceivedMsg(void) {
     P5IFG &=~BIT7;
@@ -312,3 +315,82 @@ __interrupt void ReceivedMsg(void) {
         }
     }
 }
+#elif defined __MSP432P401R__
+__interrupt void ReceivedMsg(void) {
+    P5IFG &=~BIT7;
+    PJDIR |= 0x01;
+    PJOUT |= 0x01;
+    uint8_t status, rx0if, rx1if, res, length;
+    readStatus(&status);
+    rx0if = status & 0x01;
+    rx1if = status & 0x02;
+
+    // Receive buffer 0 full
+    if (rx0if) {
+        uint8_t rxb0dlc; // rxb0sidl contains if extended or not extended can , rxb0dlc contains length of received message from bits 3:0
+        res = readRegister(MCP_RXB0DLC, &rxb0dlc);
+
+        if (res == 0) {
+            // Data received in bytes
+            length = rxb0dlc & 0xF;
+
+            // Read from receive buffer
+            uint8_t buf[8 + 1], msg[8];
+
+            // Read from receive buffer SPI instruction
+            buf[0] = 0x92;
+            spiTransceive(buf, buf, 9, CS_1);
+
+            // Read incoming message ID
+            uint32_t id = 0;
+            uint8_t bufBuf = 0xFF;
+            readRegister(MCP_RXB0SIDH, &bufBuf);
+            id |= (uint32_t) bufBuf << 21;
+            readRegister(MCP_RXB0SIDH + 1, &bufBuf);
+            id |= (uint32_t) (bufBuf & 0xE0) << 13;
+            id |= (uint32_t) (bufBuf & 0x03) << 16;
+            readRegister(MCP_RXB0SIDH + 2, &bufBuf);
+            id |= (uint32_t) bufBuf << 8;
+            readRegister(MCP_RXB0SIDH + 3, &bufBuf);
+            id |= bufBuf;
+            // Clear out the interrupt flag for receive buffer 0
+            bitModify(MCP_CANINTF, 0x1, 0x0);
+            int i = 0;
+            for (i = 0; i < length; i++){
+                msg[i] = buf[i+1];
+            }
+            ReceiveCallback0(length, msg, id);
+        }
+    }
+
+    // Receive buffer 1 full
+    if (rx1if) {
+        uint8_t rxb1dlc;
+        res = readRegister(MCP_RXB1DLC, &rxb1dlc);
+
+        if (res == 0) {
+            length = rxb1dlc & 0xF;
+            uint8_t buf[8 + 1], msg[8];
+            buf[0] = 0x96;
+            spiTransceive(buf, buf, 9, CS_1);
+            uint32_t id = 0;
+            uint8_t bufBuf = 0xFF;
+            readRegister(MCP_RXB1SIDH, &bufBuf);
+            id |= (uint32_t) bufBuf << 21;
+            readRegister(MCP_RXB1SIDH + 1, &bufBuf);
+            id |= (uint32_t) (bufBuf & 0xE0) << 13;
+            id |= (uint32_t) (bufBuf & 0x03) << 16;
+            readRegister(MCP_RXB1SIDH + 2, &bufBuf);
+            id |= (uint32_t) bufBuf << 8;
+            readRegister(MCP_RXB1SIDH + 3, &bufBuf);
+            id |= bufBuf;
+            bitModify(MCP_CANINTF, 0x2, 0x0);
+            int i = 0;
+            for (i = 0; i < length; i++){
+                msg[i] = buf[i+1];
+            }
+            ReceiveCallback1(length, msg, id);
+        }
+    }
+}
+#endif

@@ -46,6 +46,8 @@ uint64_t checkTimer(uint64_t startTime)
     return currentTime - startTime;
 }
 
+
+#ifdef __MSP430FR5994__
 #pragma vector = TIMER1_A0_VECTOR
 __interrupt void Timer1_A0_ISR(void)
 {
@@ -55,6 +57,10 @@ __interrupt void Timer1_A0_ISR(void)
         counter = 0;
     }
 }
+#elif defined __MSP432P401R__
+__interrupt void Timer1_A0_ISR(void)
+{}
+#endif
 
 //#pragma vector = TIMER1_A0_VECTOR
 //__interrupt void Timer1_A0_ISR(void)

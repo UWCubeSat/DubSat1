@@ -170,6 +170,7 @@ void i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, ui
 }
 
 // Primary interrupt vector for I2C on module B1 (I2C #1)
+#ifdef __MSP430FR5994__
 #pragma vector = EUSCI_B1_VECTOR
 __interrupt void USCI_B1_ISR(void)
 {
@@ -196,8 +197,14 @@ __interrupt void USCI_B1_ISR(void)
         default: break;
     }
 }
+#elif defined __MSP432P401R__
+__interrupt void USCI_B1_ISR(void)
+{
+}
+#endif
 
 // Primary interrupt vector for I2C on module B2 (I2C #2)
+#ifdef __MSP430FR5994__
 #pragma vector = EUSCI_B2_VECTOR
 __interrupt void USCI_B2_ISR(void)
 {
@@ -224,4 +231,10 @@ __interrupt void USCI_B2_ISR(void)
         default: break;
     }
 }
+#elif defined __MSP432P401R__
+__interrupt void USCI_B2_ISR(void)
+{
+}
+
+#endif
 

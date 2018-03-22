@@ -97,8 +97,17 @@ float asensorGetLastExtTempC(hDev hSensor);
 float asensorReadIntTempC();
 float asensorReadExtTempC(hDev hSensor);
 
-FILE_STATIC void inline enableADC() { ADC12CTL0 |= ADC12ENC; }
-FILE_STATIC void inline disableADC() { ADC12CTL0 &= ~ADC12ENC; }
+
+FILE_STATIC void inline enableADC() {
+    #ifdef __MSP430FR5994__
+        ADC12CTL0 |= ADC12ENC;
+    #endif
+}
+FILE_STATIC void inline disableADC() {
+    #ifdef __MSP430FR5994__
+        ADC12CTL0 &= ~ADC12ENC;
+    #endif
+}
 
 #define ASENSE_SEL1 P1SEL1
 #define ASENSE_SEL0 P1SEL0

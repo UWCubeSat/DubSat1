@@ -178,7 +178,7 @@ void rwsInit()
 //
 //    // Configure free-running timer to generate timestamps
 //    // TODO:  eventually move this to a clock library function
-    TIMESTAMP_TIMER(CTL) = TIMESTAMP_ROOT_TIMER(SSEL__SMCLK) | MC__CONTINOUS | TIMESTAMP_ROOT_TIMER(CLR);
+    TIMESTAMP_TIMER(CTL) = TIMESTAMP_ROOT_TIMER(SSEL__SMCLK) | TIMESTAMP_ROOT_TIMER(CLR);
 //
 //    // All pins configured to work with RW/CANMSP block board circa September 2017
 //    // FG:  Pin P7.4 for input, to monitor frequency (and thus RPM) of motor
@@ -190,20 +190,25 @@ void rwsInit()
     // Timer1_A4 setup for capturing FG pin frequency:
     // Rising edge, CCIA input, sync mode, capture mode and interrupts enabled
     // SMCLK as clk source, continuous mode
-    FREQ_TIMER(CCTL0) = CM__RISING | CCIS__CCIB | SCS | CAP | CCIE;
-    FREQ_TIMER(CTL) = FREQ_ROOT_TIMER(SSEL__ACLK) | MC__CONTINUOUS | FREQ_ROOT_TIMER(CLR) | TAIE;
-    TA4CCTL1 = CCIE;                   // CCR0 interrupt enabled
+//    FREQ_TIMER(CCTL0) = CM__RISING | CCIS__CCIB | SCS | CAP | CCIE;
+//    FREQ_TIMER(CTL) = FREQ_ROOT_TIMER(SSEL__ACLK) | MC__CONTINUOUS | FREQ_ROOT_TIMER(CLR) | TAIE;
+//    TA4CCTL1 = CCIE;                   // CCR0 interrupt enabled
     // PWM output:  pin P1.7 ('1 0 1') - as TB0.4
     RW_PWM_DIR |= RW_PWM_PIN;
     RW_PWM_SEL1 &= ~RW_PWM_PIN;
     RW_PWM_SEL0 |= RW_PWM_PIN;
 
-    TA4CCR1 = 3;
-
-    TB0CCR0 = 60000;
-    TB0CCR4 = 50;
-    TB0CCTL4 = OUTMOD_7 ;
-    TB0CTL = TASSEL_2 + MC_1;
+//    TA4CCR1 = 3;
+    TA0CTL = TASSEL_1 + MC_1 + TACLR;
+    TA0CCTL0 = CCIE;
+    TA0CCR0 = 65535;
+    P1DIR |= BIT0;
+    NVIC_EnableIRQ(TA0_0_IRQn);
+    __enable_interrupt();
+//    TB0CCR0 = 60000;
+//    TB0CCR4 = 50;
+//    TB0CCTL4 = OUTMOD_7 ;
+//    TB0CTL = TASSEL_2 + MC_1;
 
 //    // Setup binary telemetry header
     bcbinPopulateHeader(&(pid.header), TLM_ID_RWS_PIDMOT, sizeof(pid));
@@ -222,7 +227,7 @@ void rwsSetMotorSpeed(double percentage) {
     else if(percentage > 600) {
         percentage = 600;
     }
-    TB0CCR4 = (uint16_t)(percentage*100);
+//    TB0CCR4 = (uint16_t)(percentage*100);
 }
 
 //takes a percentage between 0 and 100 to run motor speed
@@ -337,7 +342,7 @@ int ignore = 0;
 uint8_t initialTAIFG = 1;
 //This interrupt reads the hall effect sensor of the motor and calculates rpm
 //averages over 3 readings
-#pragma vector = TIMER4_A0_VECTOR
+//#pragma vector = TIMER4_A0_VECTOR
 __interrupt void Timer4_A0_ISR(void)
 {
     ignore=(ignore+1)%2;
@@ -347,8 +352,8 @@ __interrupt void Timer4_A0_ISR(void)
     uint32_t sumPeriods_cycles, avgPeriod;
 
     tempTime_cycles = (overflowCount << 16);
-    currentPeriod_cycles = tempTime_cycles + TA4CCR0;
-    FREQ_TIMER(CTL) = FREQ_ROOT_TIMER(SSEL__ACLK) | MC__CONTINUOUS | FREQ_ROOT_TIMER(CLR) | FREQ_ROOT_TIMER(IE);
+//    currentPeriod_cycles = tempTime_cycles + TA4CCR0;
+//    FREQ_TIMER(CTL) = FREQ_ROOT_TIMER(SSEL__ACLK) | MC__CONTINUOUS | FREQ_ROOT_TIMER(CLR) | FREQ_ROOT_TIMER(IE);
     if (outputCounter++ > OUTPUT_INCREMENT)
     {
         //currentRPM = (240000000.0)/currentPeriod;
@@ -385,27 +390,29 @@ double getCurrentRPM()
 
 
 // Timer4_A1 (CCR=1..n) TA Interrupt Handler
-#pragma vector = TIMER4_A1_VECTOR
-__interrupt void Timer4_A1_ISR(void)
+void TA0_0_IRQHandler (void)
 {
-    switch (__even_in_range(TA4IV, TAIV__TAIFG))
-    {
-        case TAIV__TACCR1:
-            rwsSetRPMUpdated(1);
-            break;           // not used
-        case TAIV__TACCR2: break;           // not used
-        case TAIV__TACCR3: break;           // not used
-        case TAIV__TACCR4: break;           // not used
-        case TAIV__TACCR5: break;           // not used
-        case TAIV__TACCR6: break;           // not used
-        case TAIV__TAIFG:                   // TA4.0 overflow
+
+    P1OUT ^= BIT0;
+    TA0CCTL0 &= ~CCIFG;
+//    switch (__even_in_range(TA4IV, TAIV__TAIFG))
+//    {
+//        case TAIV__TACCR1:
+//            rwsSetRPMUpdated(1);
+//            break;           // not used
+//        case TAIV__TACCR2: break;           // not used
+//        case TAIV__TACCR3: break;           // not used
+//        case TAIV__TACCR4: break;           // not used
+//        case TAIV__TACCR5: break;           // not used
+//        case TAIV__TACCR6: break;           // not used
+//        case TAIV__TAIFG:                   // TA4.0 overflow
             // Deal with bogus initial overflow flag that pops on startup
-            if (initialTAIFG == 1)
-                initialTAIFG = 0;
-            else
-                overflowCount++;
-            break;
-        default:
-            break;
-    }
+//            if (initialTAIFG == 1)
+//                initialTAIFG = 0;
+//            else
+//                overflowCount++;
+//            break;
+//        default:
+//            break;
+//    }
 }

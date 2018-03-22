@@ -5,6 +5,8 @@
  *      Author: SatLab
  */
 
+#ifdef __MSP430FR5994__
+
 #include "sensors/analogsensor.h"
 
 FILE_STATIC uint16_t CALADC_30C, CALADC_85C;
@@ -499,3 +501,4 @@ __interrupt void ADC12ISR (void)
     }
 }
 
+#endif

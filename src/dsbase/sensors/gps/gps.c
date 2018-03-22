@@ -1,3 +1,4 @@
+#ifdef __MSP430FR5994__
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -282,3 +283,4 @@ __interrupt void Port_3(void)
     // update buck status
     health.buck_status = gpsBuckGood();
 }
+#endif

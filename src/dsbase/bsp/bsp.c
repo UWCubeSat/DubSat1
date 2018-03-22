@@ -98,6 +98,9 @@ FILE_STATIC hwsw_match_state enforceHWSWLock()
 }
 
 FILE_STATIC meta_segment mseg;   // Used if something fails before init complete
+
+
+#ifdef __MSP430FR5994__
 void bspInit(SubsystemModule mod)
 {
     ssModule = mod;
@@ -176,6 +179,55 @@ void bspInit(SubsystemModule mod)
 
 }
 
+#elif defined __MSP432P401R__
+void bspInit(SubsystemModule mod)
+{
+    ssModule = mod;
+    WDTCTL = WDTPW | WDTHOLD;
+    CS->KEY = CS_KEY_VAL;                  // Unlock CS module for register access
+    CS->CTL0 = 0;                         // Reset tuning parameters
+    CS->CTL0 = CS_CTL0_DCORSEL_3;                 // Set DCO to 12MHz (nominal, center of 8-16MHz range)
+    CS->CTL1 = CS_CTL1_SELA_2 | CS_CTL1_SELS_3 | CS_CTL1_SELM_3;  // Select ACLK = REFO, SMCLK = MCLK = DCO
+    CS->KEY = 0;
+    P1OUT = 0;
+    P2OUT = 0;
+    P3OUT = 0;
+    P4OUT = 0;
+    P5OUT = 0;
+    P6OUT = 0;
+    P7OUT = 0;
+    P8OUT = 0;
+    PJOUT = 0;
+#if defined(__DEBUG__)
+
+    debugInit();
+
+    // Now lock up, since the serial port now works but not much else has happened
+    if (hwsw_mstate == HWSW_LockViolation)
+    {
+        bcbinPopulateMeta(&mseg, sizeof(mseg));
+
+        while(1)
+        {
+            bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+            __delay_cycles(3 * SEC);
+        }
+    }
+
+    // Register the system info report function
+    // TODO:  Merge systeminfo and BSP, they aren't both needed
+    debugRegisterEntity(Entity_BSP, infoReport, NULL, NULL);
+
+    debugTraceF(1,"\r\n-------------------------------------------------------\r\nBSP initialization routine complete.\r\n");
+
+#endif // __DEBUG__
+
+}
+#endif
+
+
+
+#ifdef __MSP430FR5994__
 void bspUARTInit(bus_instance_UART instance)
 {
     // LaunchPad for MSP430FR5994
@@ -191,7 +243,26 @@ void bspUARTInit(bus_instance_UART instance)
     }
 }
 
+#elif defined __MSP432P401R__
+void bspUARTInit(bus_instance_UART instance)
+{
+    // LaunchPad for MSP430FR5994
+    if (instance == BackchannelUART)
+    {
+//        BACKCHANNEL_UART_SEL0 &= ~BACKCHANNEL_UART_BITS;
+//        BACKCHANNEL_UART_SEL1 |= BACKCHANNEL_UART_BITS;
+    }
+    else if (instance == ApplicationUART)
+    {
+//        APP_UART_SEL0 &= ~APP_UART_BITS;
+//        APP_UART_SEL1 |= APP_UART_BITS;
+    }
+}
+
+#endif
+
 // NOTE:  The LaunchPad only exposes pins for the I2C bus we call "Bus2", hence the macro usage
+#ifdef __MSP430FR5994__
 void bspI2CInit(bus_instance_i2c instance)
 {
     if (instance == I2CBus2)
@@ -199,16 +270,40 @@ void bspI2CInit(bus_instance_i2c instance)
         I2C2_PORTSEL1 &= ~(I2C2_SDA_BIT | I2C2_SCL_BIT);
         I2C2_PORTSEL0 |= (I2C2_SDA_BIT | I2C2_SCL_BIT);
     }
+
 #if !defined(__BSP_Board_MSP430FR5994LaunchPad__)
+
     else if (instance == I2CBus1)
     {
         I2C1_PORTSEL1 &= ~(I2C1_SDA_BIT | I2C1_SCL_BIT);
         I2C1_PORTSEL0 |= (I2C1_SDA_BIT | I2C1_SCL_BIT);
     }
+
 #endif
 
 }
 
+#elif defined __MSP432P401R__
+
+void bspI2CInit(bus_instance_i2c instance)
+{
+    if (instance == I2CBus2)
+    {
+//        I2C2_PORTSEL1 &= ~(I2C2_SDA_BIT | I2C2_SCL_BIT);
+//        I2C2_PORTSEL0 |= (I2C2_SDA_BIT | I2C2_SCL_BIT);
+    }
+#if !defined(__BSP_Board_MSP430FR5994LaunchPad__)
+    else if (instance == I2CBus1)
+    {
+//        I2C1_PORTSEL1 &= ~(I2C1_SDA_BIT | I2C1_SCL_BIT);
+//        I2C1_PORTSEL0 |= (I2C1_SDA_BIT | I2C1_SCL_BIT);
+    }
+#endif
+
+}
+
+
+#endif
 
 SubsystemModule bspGetModule()
 {

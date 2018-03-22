@@ -116,7 +116,7 @@ uint64_t bspGetChipID();
 
 // Hard-wired assignments for a given board are stashed in these #if defined(...)
 // blocks
-#if defined(__BSP_Board_MSP430FR5994LaunchPad__) || defined(__BSP_Board_SS__)
+#if defined(__BSP_Board_MSP430FR5994LaunchPad__) || defined(__BSP_Board_SS__) && ! defined(__MSP432P401R__)
 #include <msp430.h>
 
 // LaunchPad-specific pins for built-in LEDs
@@ -267,6 +267,8 @@ uint64_t bspGetChipID();
 #define BACKCHANNEL_UART_SEL1   CANMSP_BLOCKV1_BACKCHANNEL_UART_SEL1
 #define BACKCHANNEL_UART_BITS   CANMSP_BLOCKV1_BACKCHANNEL_UART_BITS
 
+
+#elif defined(__MSP432P401R__)
 #else
 #error Unspecified board hardware, unable to determine correct BSP implementation.  Please specify board.
 #endif
