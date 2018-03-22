@@ -395,8 +395,8 @@ int booped = 0;
 void TA0_0_IRQHandler (void)
 {
     TA0CCTL0 &= ~CCIFG;
-    debugTraceF(0,"hey dawg hey whats up");
-//    bcbinSendPacket((uint8_t *) &pid, sizeof(pid));
+//    debugTraceF(0,"hey dawg hey whats up");
+    bcbinSendPacket((uint8_t *) &pid, sizeof(pid));
     P1OUT ^= BIT0;
 //    booped=booped%2;
 //    switch (__even_in_range(TA4IV, TAIV__TAIFG))

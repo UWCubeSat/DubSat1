@@ -390,7 +390,7 @@ void handleUCTXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
 
 void EUSCIA0_IRQHandler(void){
     bus_context_UART *bus_ctx = &buses[BackchannelUART];
-    if(UCRXIFG){
+    if(UCRXIFG & UCA0IFG){
         handleUCRXIFG(bus_ctx, BackchannelUART);
     }
     if(UCTXIFG){
