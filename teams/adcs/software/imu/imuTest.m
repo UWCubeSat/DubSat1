@@ -13,7 +13,7 @@ slave_addr = '6Ah'; % ST LSM6DSM for when SDO/SA1 is low
 % slave_addr = '6Bh'; % for when SDO/SA1 is high
 
 % Figure out number of samples
-targetlens = 3600;  % target length in seconds (3600 = 1 hour)
+targetlens = 5;  % target length in seconds (3600 = 1 hour)
 
 resultsfolder = [pwd '\thermal\test1'];
 
@@ -34,7 +34,7 @@ PAUSE_AFTER_SETTINGS_CHANGE = 5.0;  % seconds
 
 % Handy constants
 ODR_26_FS125    = hex2dec('22');
-HIGH_PERF_ON    = hex2dec('00'); 
+HIGH_PERF_ON    = hex2dec('00');
 
 testtitle = '26 Hz (High Perf)';
 testbasefilename = 'AVAR26Hz_HighPerf';
@@ -93,6 +93,7 @@ title('Raw Results');
 xlabel('Time (s)');
 legend('X','Y','Z');
 saveas(hrawfig, [resultsfolder '\' testbasefilename '_raw_results'], 'fig');
+save([resultsfolder '\' testbasefilename '_captured_data.mat'], 'results');
 
 fclose(dut);
 delete(dut);

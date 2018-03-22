@@ -15,14 +15,14 @@ IMUData idata;
 
 
 
-void imuInit()
+void imuInit(bus_instance_i2c i2cbus)
 {
     if (imuInitialized != 0)
         return;
 
     imuInitialized = 1;
-    i2cEnable(I2CBus2);
-    hSensor = i2cInit(I2CBus2, IMU_I2C_7BIT_ADDRESS);
+    i2cEnable(i2cbus);
+    hSensor = i2cInit(i2cbus, IMU_I2C_7BIT_ADDRESS);
 
 #if defined (__BSP_HW_IMU_BMI160__)
 
