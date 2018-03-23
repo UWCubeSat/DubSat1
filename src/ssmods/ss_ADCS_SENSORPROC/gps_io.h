@@ -75,15 +75,21 @@ TLM_SEGMENT {
     gps_enum utcStatus;
 } time_segment;
 
+typedef struct PACKED_STRUCT
+{
+    float reading;
+    uint8_t status;
+} hwmonitor_segMember;
+
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
-    float temp;
-    float antCurrent;
-    float supVolt;
-    float antVolt;
-    float digCoreVolt;
-    float secTemp;
+    hwmonitor_segMember temp;
+    hwmonitor_segMember antCurrent;
+    hwmonitor_segMember supVolt;
+    hwmonitor_segMember antVolt;
+    hwmonitor_segMember digCoreVolt;
+    hwmonitor_segMember secTemp;
 } hwmonitor_segment;
 
 TLM_SEGMENT {

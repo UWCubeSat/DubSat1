@@ -23,6 +23,14 @@
  */
 #define DELAY_GPS_POLL_MS 1000
 
+/*
+ * number of milliseconds between each manual log while the GPS is on.
+ *
+ * TODO what is the maximum delay a timer can handle? This delay should really
+ * be about 10 seconds...
+ */
+#define DELAY_MANUAL_LOG_MS 1500
+
 #include <math.h>
 
 #include "gps_io.h"
@@ -349,21 +357,35 @@ FILE_STATIC void enterStateOn()
     gpsSetBuck(TRUE);
     gpsSetReset(FALSE);
     gpsioConfig();
+    timerHandle = timerPollInitializer(DELAY_MANUAL_LOG_MS);
 }
 
 FILE_STATIC gps_power_state_code stateOn(gps_power_cmd cmd)
 {
     if (cmd == PowerCmd_Disable)
     {
+        freeTimer();
         return State_ShuttingDown;
     }
 
     if (!gpsIsBuckGood() && !gpsioIsBuckOverride())
     {
+        freeTimer();
         return State_EnablingBuck;
     }
 
+    // handle incoming telemetry
     gpsioHandlePackage(gpsRead());
+
+    /*
+     * Periodically do a manual log.
+     * This would be unnecessary if "log hwmonitorb ontime 3" worked.
+     */
+    if (checkTimer(timerHandle))
+    {
+        gpsSendCommand("log hwmonitorb\r\n");
+        timerHandle = timerPollInitializer(DELAY_MANUAL_LOG_MS);
+    }
 
     return State_On;
 }
@@ -492,6 +514,7 @@ bool gpsioHandleCommand(uint8_t *cmdstr)
     enable_segment *enableSegment;
     buck_override_segment *overrideSegment;
 
+
     switch(cmdstr[0])
     {
         case OPCODE_SENDASCII:
@@ -517,6 +540,18 @@ bool gpsioHandleCommand(uint8_t *cmdstr)
         case OPCODE_OVERRIDE_BUCK:
             overrideSegment = (buck_override_segment *) (cmdstr + 1);
             gpsioSetBuckOverride(overrideSegment->enable);
+            break;
+        case OPCODE_TEST_RESET:
+            enableSegment = (enable_segment *) (cmdstr + 1);
+            gpsSetReset(enableSegment->enable);
+            break;
+        case OPCODE_TEST_BUCK:
+            enableSegment = (enable_segment *) (cmdstr + 1);
+            gpsSetBuck(enableSegment->enable);
+            break;
+        case OPCODE_TEST_GPS_SWITCH:
+            enableSegment = (enable_segment *) (cmdstr + 1);
+            gpsSetPower(enableSegment->enable);
             break;
         default:
             return 0;
@@ -614,31 +649,33 @@ FILE_STATIC void handleHwMonitor(const GPSPackage *package)
     uint32_t i = monLog->numMeasurements;
     while (i-- != 0)
     {
-        float reading = monLog->mes[i].reading;
-        uint8_t type = monLog->mes[i].type;
-        switch (type)
+        GPSMeasurement inMes = monLog->mes[i];
+        hwmonitor_segMember *outMes;
+        switch (mes.type)
         {
         case HW_TEMP:
-            hwmonitorSeg.temp = reading;
+            outMes = &hwmonitorSeg.temp;
             break;
         case HW_ANTCUR:
-            hwmonitorSeg.antCurrent = reading;
+            outMes = &hwmonitorSeg.antCurrent;
             break;
         case HW_SUPVOLT:
-            hwmonitorSeg.supVolt = reading;
+            outMes = &hwmonitorSeg.supVolt;
             break;
         case HW_ANTVOLT:
-            hwmonitorSeg.antVolt = reading;
+            outMes = &hwmonitorSeg.antVolt;
             break;
         case HW_DIGCORE:
-            hwmonitorSeg.digCoreVolt = reading;
+            outMes = &hwmonitorSeg.digCoreVolt;
             break;
         case HW_TEMP2:
-            hwmonitorSeg.secTemp = reading;
+            outMes = &hwmonitorSeg.secTemp;
             break;
         default:
-            break;
+            continue;
         }
+        outMes->reading = inMes.reading;
+        outMes->status = inMes.status;
     }
 
     bcbinPopulateHeader(&hwmonitorSeg.header, TLM_ID_HWMONITOR, sizeof(hwmonitorSeg));

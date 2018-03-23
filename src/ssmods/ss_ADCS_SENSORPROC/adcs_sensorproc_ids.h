@@ -24,8 +24,11 @@
 #define TLM_ID_RANGE      119
 
 // COSMOS command opcodes
-#define OPCODE_SENDASCII     0x01
-#define OPCODE_ENABLE        0x02
-#define OPCODE_OVERRIDE_BUCK 0x03
+#define OPCODE_SENDASCII       1
+#define OPCODE_ENABLE          2
+#define OPCODE_OVERRIDE_BUCK   3
+#define OPCODE_TEST_RESET      4
+#define OPCODE_TEST_BUCK       5
+#define OPCODE_TEST_GPS_SWITCH 6
 
 #endif /* ADCS_SENSORPROC_IDS_H_ */
