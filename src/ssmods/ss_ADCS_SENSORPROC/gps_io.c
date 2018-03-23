@@ -261,7 +261,13 @@ FILE_STATIC gps_power_state_code stateEnablingBuck(gps_power_cmd cmd)
         return State_Off;
     }
 
-    if ((gpsIsBuckGood() || gpsioIsBuckOverride()) && checkTimer(timerHandle))
+    if (gpsIsBuckGood())
+    {
+        freeTimer();
+        return State_EnablingGPS;
+    }
+
+    if (gpsioIsBuckOverride() && checkTimer(timerHandle))
     {
         return State_EnablingGPS;
     }
