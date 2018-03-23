@@ -5,7 +5,23 @@
  *      Author: djdup
  */
 
-#define TIMER_150_MS 4915
+/*
+ * minimum number of milliseconds between switching on/off the buck converter
+ * and switching on/off the GPS.
+ */
+#define DELAY_BUCK_MS 300
+
+/*
+ * number of milliseconds to hold the RESET pin low after switching on the GPS.
+ * The OEM719 manual recommends > 150 ms.
+ */
+#define DELAY_GPS_RESET_MS 150
+
+/*
+ * number of milliseconds between each query of the GPS to check if it is
+ * responsive after turning it on.
+ */
+#define DELAY_GPS_POLL_MS 1000
 
 #include <math.h>
 
@@ -234,7 +250,7 @@ FILE_STATIC void enterStateEnablingBuck()
     gpsSetPower(FALSE);
     gpsSetBuck(TRUE);
     gpsSetReset(TRUE);
-    timerHandle = timerPollInitializer(1, 0); // start a 2 second timer
+    timerHandle = timerPollInitializer(DELAY_BUCK_MS);
 }
 
 FILE_STATIC gps_power_state_code stateEnablingBuck(gps_power_cmd cmd)
@@ -258,7 +274,7 @@ FILE_STATIC void enterStateEnablingGPS()
     gpsSetPower(TRUE);
     gpsSetBuck(TRUE);
     gpsSetReset(TRUE);
-    timerHandle = timerPollInitializer(0, TIMER_150_MS);
+    timerHandle = timerPollInitializer(DELAY_GPS_RESET_MS);
 }
 
 FILE_STATIC gps_power_state_code stateEnablingGPS(gps_power_cmd cmd)
@@ -315,7 +331,7 @@ FILE_STATIC gps_power_state_code stateAwaitingGPSOn(gps_power_cmd cmd)
     if (timerHandle == -1 || checkTimer(timerHandle))
     {
         gpsSendCommand("log rxstatusb\r\n");
-        timerHandle = timerPollInitializer(1, 0); // every 2 seconds
+        timerHandle = timerPollInitializer(DELAY_GPS_POLL_MS);
     }
 
     return State_AwaitingGPSOn;
@@ -351,7 +367,7 @@ FILE_STATIC void enterStateShuttingDown()
     gpsSetPower(FALSE);
     gpsSetBuck(TRUE);
     gpsSetReset(FALSE);
-    timerHandle = timerPollInitializer(0, TIMER_150_MS);
+    timerHandle = timerPollInitializer(DELAY_BUCK_MS);
 }
 
 FILE_STATIC gps_power_state_code stateShuttingDown(gps_power_cmd cmd)

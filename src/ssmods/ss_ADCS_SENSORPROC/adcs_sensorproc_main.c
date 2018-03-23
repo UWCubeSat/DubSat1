@@ -2,8 +2,8 @@
 #define ENABLE_PHOTODIODES 0
 #define ENABLE_SUNSENSOR   0
 
-// desired_TAR_dif to make a 5Hz timer
-#define TIMER_5HZ 6554
+// time to wait between readings of the sun sensor and photodiodes
+#define UPDATE_DELAY_MS 200
 
 #include <adcs_sensorproc.h>
 #include <msp430.h> 
@@ -118,7 +118,7 @@ int main(void)
 
 void startSensorprocTimer()
 {
-    timerHandle = timerPollInitializer(0, TIMER_5HZ);
+    timerHandle = timerPollInitializer(UPDATE_DELAY_MS);
 }
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
