@@ -25,15 +25,9 @@ void magInit(bus_instance_i2c bus)
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)  /* */
 
     // HMC5883 pattern is to address
-    i2cBuff[0] = MAG_HMC5883L_REG_ADDR_CRA;
-    //i2cBuff[1] = MAG_HMC5883L_AVERAGE_1_SAMPLE | MAG_HMC5883L_CONTINUOUS_OUTPUT_RATE_75 | MAG_HMC5883L_MEASURE_MODE_NORMAL;
-    i2cBuff[1] = MAG_HMC5883L_AVERAGE_8_SAMPLE | MAG_HMC5883L_CONTINUOUS_OUTPUT_RATE_30 | MAG_HMC5883L_MEASURE_MODE_NORMAL;
-    i2cBuff[2] = MAG_HMC5883L_REG_ADDR_CRB;
-    i2cBuff[3] = MAG_HMC5883L_GAIN_1370;
-    i2cBuff[4] = MAG_HMC5883L_REG_ADDR_MR;
-    i2cBuff[5] = MAG_HMC5883L_OPERATING_MODE_CONTINUOUS;
 
-    i2cMasterWrite(hSensor, i2cBuff, 6);
+   // selfTestConfig();
+   normalOperationConfig();
 
 #elif defined( __BSP_HW_MAGTOM_MAG3110__)
 
@@ -54,34 +48,43 @@ void magInit(bus_instance_i2c bus)
 #endif  /* HW_MAGTOM */
 }
 
+void selfTestConfig()
+{
+    i2cBuff[0] = MAG_HMC5883L_REG_ADDR_CRA;
+    i2cBuff[1] = MAG_HMC5883L_CONFIG_REGISTER_A_SELF_TEST;
+    i2cBuff[2] = MAG_HMC5883L_CONFIG_REGISTER_B_SELF_TEST;
+    i2cBuff[3] = MAG_HMC5883L_MODE_REGISTER_SELF_TEST;
+    i2cMasterWrite(hSensor, i2cBuff, 4);
+}
+
+
+void normalOperationConfig()
+{
+    // HMC5883 pattern is to address
+    i2cBuff[0] = MAG_HMC5883L_REG_ADDR_CRA;
+    //i2cBuff[1] = MAG_HMC5883L_AVERAGE_1_SAMPLE | MAG_HMC5883L_CONTINUOUS_OUTPUT_RATE_75 | MAG_HMC5883L_MEASURE_MODE_NORMAL;
+    i2cBuff[1] = MAG_HMC5883L_AVERAGE_8_SAMPLE | MAG_HMC5883L_CONTINUOUS_OUTPUT_RATE_30 | MAG_HMC5883L_MEASURE_MODE_DEFAULT | MAG_HMC5883L_TEMP_COMP_MODE;
+    i2cBuff[2] = MAG_HMC5883L_GAIN_1370;
+    i2cBuff[3] = MAG_HMC5883L_OPERATING_MODE_CONTINUOUS;
+    i2cMasterWrite(hSensor, i2cBuff, 4);
+}
+
 MagnetometerData *magReadXYZData(UnitConversionMode desiredConversion)
 {
     mdata.conversionMode = desiredConversion;
-    int i = 0;
-    for(i = 0; i < 6; i++)
-    {
-        i2cBuff[i] = 0;
-    }
     i2cMasterRegisterRead(hSensor, MAG_XYZ_OUTPUT_REG_ADDR_START, i2cBuff, 6 );
+    i2cMasterRegisterRead(hSensor, MAG_HMC5883L_REG_ADDR_TORA, &i2cBuff[6], 2 );
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)
 
     // NOTE:  Order of X/Z/Y on HMC5883 is, unfortunately, intentional ...
 
+    mdata.rawX = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
+    mdata.rawZ = (int16_t)(i2cBuff[3] | ((int16_t)i2cBuff[2] << 8));
+    mdata.rawY = (int16_t)(i2cBuff[5] | ((int16_t)i2cBuff[4] << 8));
 
-        int8_t rawX_A = (int8_t) i2cBuff[0];
-        int8_t rawX_B = (int8_t) i2cBuff[1];
-        int8_t rawZ_A = (int8_t) i2cBuff[2];
-        int8_t rawZ_B = (int8_t) i2cBuff[3];
-        int8_t rawY_A = (int8_t) i2cBuff[4];
-        int8_t rawY_B = (int8_t) i2cBuff[5];
-        mdata.rawX = (int16_t)(rawX_B | ((int16_t)rawX_A << 8));
-        mdata.rawZ = (int16_t)(rawZ_B | ((int16_t)rawZ_A << 8));
-        mdata.rawY = (int16_t)(rawY_B | ((int16_t)rawY_A << 8));
-
-//    mdata.rawX = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
-//    mdata.rawZ = (int16_t)(i2cBuff[3] | ((int16_t)i2cBuff[2] << 8));
-//    mdata.rawY = (int16_t)(i2cBuff[5] | ((int16_t)i2cBuff[4] << 8));
+    mdata.rawTempA = (int8_t)i2cBuff[6];
+    mdata.rawTempB = (int8_t)i2cBuff[7];
 
 #elif defined( __BSP_HW_MAGTOM_MAG3110__)
 
@@ -113,9 +116,12 @@ MagnetometerData *magReadXYZData(UnitConversionMode desiredConversion)
             break;
     }
 
+    // (MSB * 2^8 + LSB) / (2^4 * 8) + 25 in C
+
     mdata.convertedX = mdata.rawX * conversionFactor;
     mdata.convertedY = mdata.rawY * conversionFactor;
     mdata.convertedZ = mdata.rawZ * conversionFactor;
+    mdata.convertedTemp = (double)((((double)mdata.rawTempA * 256.0)  +  (double) mdata.rawTempB * 1.0) / (8.0 * 16.0) + 25.0);
 
     return &mdata;
 }
