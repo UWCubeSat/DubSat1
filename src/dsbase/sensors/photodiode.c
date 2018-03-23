@@ -5,9 +5,6 @@
  *      Author: jerrolde
  */
 
-// photodiode delay of .2 s
-#define TIMER_200_MS 6554
-
 #include <stdint.h>
 #include "../core/utils.h"
 #include "../core/timer.h"
@@ -19,7 +16,7 @@ FILE_STATIC uint8_t currIndex = 0;
 
 FILE_STATIC void startTimer(uint8_t pdHandle)
 {
-    pdData[pdHandle].timer = timerPollInitializer(0, TIMER_200_MS);
+    pdData[pdHandle].timer = timerPollInitializer(PHOTODIODE_DELAY_MS);
 }
 
 uint8_t photodiodeInit(uint8_t addr, bus_instance_i2c i2cbus)
