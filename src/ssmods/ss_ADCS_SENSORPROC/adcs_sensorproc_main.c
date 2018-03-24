@@ -1,6 +1,6 @@
 // using theses macros b/c i2c blocks when they aren't plugged in
-#define ENABLE_PHOTODIODES 0
-#define ENABLE_SUNSENSOR   0
+#define ENABLE_PHOTODIODES 1
+#define ENABLE_SUNSENSOR   1
 
 // time to wait between readings of the sun sensor and photodiodes
 #define UPDATE_DELAY_MS 200
@@ -60,7 +60,6 @@ int main(void)
     // and then control is returned to this main loop
 
     // initialize timers
-    //
     initializeTimer();
     startSensorprocTimer();
 
@@ -89,12 +88,9 @@ int main(void)
             if (i % 64 == 0) // every 12.8 seconds
             {
                 sendMetaSegment();
+                gpsioSendStatus();
             }
 
-            /*
-             * TODO assert that the photodiodes are not being read multiple
-             * times in the space of PHOTODIODE_DELAY_S.
-             */
 #if ENABLE_PHOTODIODES
             photodiodeioUpdate();
             photodiodeioSendData();

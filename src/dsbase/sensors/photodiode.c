@@ -70,7 +70,7 @@ uint32_t photodiodeRead(uint8_t write, uint8_t handle)
     uint32_t x; //x contains the positive reading in the format of [16 zeroes,16-bit number]
     i2cMasterCombinedWriteRead(pdData[handle].handle, &write, 1, &read[0], 3);
 
-    startTimer(pdData[handle].timer);
+    startTimer(handle);
 
     read[2] &= 0b10000000;
     read[0] &= 0b01111111;

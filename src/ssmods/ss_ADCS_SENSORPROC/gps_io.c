@@ -26,7 +26,7 @@
 /*
  * number of milliseconds between each manual log while the GPS is on.
  */
-#define DELAY_MANUAL_LOG_MS 2000
+#define DELAY_MANUAL_LOG_MS 3000
 
 #include <math.h>
 
@@ -231,6 +231,7 @@ FILE_STATIC void freeTimer()
     if (timerHandle != -1)
     {
         endPollingTimer(timerHandle);
+        timerHandle = -1;
     }
 }
 
