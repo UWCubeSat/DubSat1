@@ -6354,18 +6354,18 @@ No silk outline, but tDocu layer shows pin location.
 <part name="U1" library="DubSat1 Components" deviceset="LT1761-X" device=""/>
 <part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
-<part name="C5" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.01u"/>
-<part name="C1" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
+<part name="C5" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.01uF"/>
+<part name="C1" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1uF"/>
 <part name="GND9" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C3" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="4.7u"/>
+<part name="C3" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="4.7uF"/>
 <part name="GND11" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U2" library="DubSat1 Components" deviceset="LT1761-X" device=""/>
 <part name="GND8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="+3V36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
-<part name="C6" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.01u"/>
-<part name="C2" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
+<part name="C6" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.01uF"/>
+<part name="C2" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1uF"/>
 <part name="GND10" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C4" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="4.7u"/>
+<part name="C4" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="4.7uF"/>
 <part name="GND12" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="PHOTODIODE" library="DubSat1 Components" deviceset="PICOLOCK_4" device=""/>
 <part name="P+1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
@@ -6381,32 +6381,32 @@ No silk outline, but tDocu layer shows pin location.
 <part name="+3V33" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="U4" library="DubSat1 Components" deviceset="LTC3624" device=""/>
 <part name="GND13" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C7" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="2.2u"/>
+<part name="C7" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="2.2uF"/>
 <part name="L1" library="DubSat1 Components" deviceset="COILCRAFT_XAL4020-222ME" device=""/>
 <part name="GND14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R3" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="R4" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
-<part name="C10" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="22p"/>
-<part name="C8" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.1u"/>
-<part name="C9" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
-<part name="C11" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10u"/>
-<part name="C12" library="DubSat1 Components" deviceset="CAPACITOR" device="1206" value="47u"/>
+<part name="C10" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="22pF"/>
+<part name="C8" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.1uF"/>
+<part name="C9" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1uF"/>
+<part name="C11" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10uF"/>
+<part name="C12" library="DubSat1 Components" deviceset="CAPACITOR" device="1206" value="47uF"/>
 <part name="GND15" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U$1" library="HuskySat-1 Logos" deviceset="LOGO_MOLEX" device=""/>
 <part name="U$3" library="DubSat1 Components" deviceset="SI3865DDV" device=""/>
-<part name="C_SLEW_1" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.1u"/>
+<part name="C_SLEW_1" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.1uF"/>
 <part name="R_SLEW_1" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="1k"/>
 <part name="GND17" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="R_PULLUP1" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
-<part name="C14" library="DubSat1 Components" deviceset="CAPACITOR" device="PANASONIC_16SVPG270M" value="230u"/>
-<part name="C15" library="DubSat1 Components" deviceset="CAPACITOR" device="PANASONIC_16SVPG270M" value="230u"/>
+<part name="C14" library="DubSat1 Components" deviceset="CAPACITOR" device="PANASONIC_16SVPG270M" value="DNP"/>
+<part name="C15" library="DubSat1 Components" deviceset="CAPACITOR" device="PANASONIC_16SVPG270M" value="DNP"/>
 <part name="GND18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND19" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C13" library="DubSat1 Components" deviceset="CAPACITOR" device="1206" value="22u"/>
+<part name="C13" library="DubSat1 Components" deviceset="CAPACITOR" device="1206" value="22uF"/>
 <part name="U$2" library="DubSat1 Components" deviceset="PROGRAM/DEBUG_PORT" device=""/>
 <part name="GND16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="D1" library="DubSat1 Components" deviceset="LED" device=""/>
-<part name="R5" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
+<part name="R5" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="330"/>
 <part name="GND20" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="J1" library="SparkFun-Connectors" deviceset="CONN_06" device="LOCK"/>
 <part name="J2" library="SparkFun-Connectors" deviceset="CONN_03" device="LOCK"/>
@@ -6416,18 +6416,18 @@ No silk outline, but tDocu layer shows pin location.
 <part name="GND22" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND23" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND24" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C16" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 uF"/>
+<part name="C16" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1uF"/>
 <part name="GND25" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C17" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10u"/>
-<part name="C18" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
+<part name="C17" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10uF"/>
+<part name="C18" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1uF"/>
 <part name="GND26" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C19" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10u"/>
+<part name="C19" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10uF"/>
 <part name="GND27" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C20" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
+<part name="C20" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1uF"/>
 <part name="GND28" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C21" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10u"/>
+<part name="C21" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10uF"/>
 <part name="GND29" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C22" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1u"/>
+<part name="C22" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1uF"/>
 <part name="GND30" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R_PULLDOWN" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="GND31" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
