@@ -20,13 +20,13 @@
 #define GAIN8 0b11100000 // G = 256
 
 /*
- * Wait for PHOTODIODE_DELAY_S seconds before reading from each photodiode
+ * Wait for PHOTODIODE_DELAY_MS before reading from each photodiode
  *
  * See page 11 of the LTC2483fc data sheet. After reading from the photodiode,
  * it enters a conversion state that lasts 150 ms. Attempting to read from the
  * photodiodes during this conversion period will destroy the I2C bus.
  */
-#define PHOTODIODE_DELAY_S 0.2
+#define PHOTODIODE_DELAY_MS 200
 
 uint8_t photodiodeInit(uint8_t addr, bus_instance_i2c i2cbus);
 uint32_t photodiodeVoltage(uint8_t handle, uint8_t gain);
@@ -41,4 +41,6 @@ typedef struct
 	hDev handle;
 	uint32_t lastVoltage;
 	double lastTemperature;
+	uint32_t lastReading;
+	int timer;
 } PhotodiodeData;

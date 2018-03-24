@@ -7,11 +7,17 @@
 
 #include <stdint.h>
 #include "../core/utils.h"
+#include "../core/timer.h"
 #include "photodiode.h"
 
 FILE_STATIC uint8_t read[3];
 FILE_STATIC PhotodiodeData pdData[8] = { 0 };
 FILE_STATIC uint8_t currIndex = 0;
+
+FILE_STATIC void startTimer(uint8_t pdHandle)
+{
+    pdData[pdHandle].timer = timerPollInitializer(PHOTODIODE_DELAY_MS);
+}
 
 uint8_t photodiodeInit(uint8_t addr, bus_instance_i2c i2cbus)
 {
@@ -22,8 +28,9 @@ uint8_t photodiodeInit(uint8_t addr, bus_instance_i2c i2cbus)
     pdData[currIndex].handle = hSensor;
     i2cMasterWrite(hSensor, defaultWrite, 1);
 
-    // wait for the conversion period to end
-    __delay_cycles(PHOTODIODE_DELAY_S * SEC);
+    initializeTimer();
+    startTimer(currIndex);
+    pdData[currIndex].lastReading = 0;
 
     return currIndex++;
 }
@@ -51,12 +58,20 @@ double photodiodeTemperature(uint8_t handle)
     return temp;
 }
 
-// TODO use the timer library to prevent multiple reads in the space of PHOTODIODE_DELAY
 uint32_t photodiodeRead(uint8_t write, uint8_t handle)
 {
+    // reject readings taken in the space of PHOTODIODE_DELAY
+    if (!checkTimer(pdData[handle].timer))
+    {
+        return pdData[handle].lastReading;
+    }
+
 //select adc with handle and read mode with write condfiguration
     uint32_t x; //x contains the positive reading in the format of [16 zeroes,16-bit number]
     i2cMasterCombinedWriteRead(pdData[handle].handle, &write, 1, &read[0], 3);
+
+    startTimer(pdData[handle].timer);
+
     read[2] &= 0b10000000;
     read[0] &= 0b01111111;
     x = 0;
@@ -70,6 +85,9 @@ uint32_t photodiodeRead(uint8_t write, uint8_t handle)
         x = ~x + 1;
         x &= 0x0000FFFF;
     }
+
+    pdData[handle].lastReading = x;
+
     return x;
 }
 
