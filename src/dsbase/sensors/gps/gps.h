@@ -50,9 +50,12 @@
 #define EVTTYPE_SET 1
 
 // see table 97 of firmware reference
-#define SATSYSTEM_GPS 0
+#define SATSYSTEM_GPS     0
 #define SATSYSTEM_GLONASS 1
-#define SATSYSTEM_SBAS 2
+#define SATSYSTEM_SBAS    2
+#define SATSYSTEM_GALILEO 5
+#define SATSYSTEM_BEIDOU  6
+#define SATSYSTEM_QZSS    7
 
 // HWMONITOR codes, see table 98 of firmware reference
 #define HW_TEMP    1

@@ -77,23 +77,20 @@ int main(void)
     while (1)
     {
         static uint8_t i = 0;
-
-        if (i % 4 == 0) // 1.25 Hz
-        {
-            LED_OUT ^= LED_BIT;
-            gpsioSendPowerStatus();
-            sendHealthSegment();
-        }
-
-        if (i % 64 == 0) // every 12.8 seconds
-        {
-            sendMetaSegment();
-        }
-
         if (checkTimer(timerHandle)) // 5 Hz
         {
-            startSensorprocTimer(); // reset the timer
-            i++;
+            if (i % 4 == 0) // 1.25 Hz
+            {
+                LED_OUT ^= LED_BIT;
+                gpsioSendPowerStatus();
+                sendHealthSegment();
+            }
+
+            if (i % 64 == 0) // every 12.8 seconds
+            {
+                sendMetaSegment();
+            }
+
             /*
              * TODO assert that the photodiodes are not being read multiple
              * times in the space of PHOTODIODE_DELAY_S.
@@ -106,6 +103,9 @@ int main(void)
             sunsensorioUpdate(); // TODO don't let these block
             sunsensorioSendData();
 #endif // ENABLE_SUNSENSOR
+
+            startSensorprocTimer(); // reset the timer
+            i++;
         }
 
         gpsioUpdate();

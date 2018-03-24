@@ -95,9 +95,12 @@ TLM_SEGMENT {
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
-    uint32_t numGPS;
-    uint32_t numGLONASS;
-    uint32_t numSBAS;
+    uint8_t numGPS;
+    uint8_t numGLONASS;
+    uint8_t numSBAS;
+    uint8_t numGalileo;
+    uint8_t numBeiDou;
+    uint8_t numQZSS;
 } satvis2_segment;
 
 typedef struct PACKED_STRUCT

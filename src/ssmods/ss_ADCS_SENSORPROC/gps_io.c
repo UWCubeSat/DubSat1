@@ -25,11 +25,8 @@
 
 /*
  * number of milliseconds between each manual log while the GPS is on.
- *
- * TODO what is the maximum delay a timer can handle? This delay should really
- * be about 10 seconds...
  */
-#define DELAY_MANUAL_LOG_MS 1500
+#define DELAY_MANUAL_LOG_MS 2000
 
 #include <math.h>
 
@@ -651,7 +648,7 @@ FILE_STATIC void handleHwMonitor(const GPSPackage *package)
     {
         GPSMeasurement inMes = monLog->mes[i];
         hwmonitor_segMember *outMes;
-        switch (mes.type)
+        switch (inMes.type)
         {
         case HW_TEMP:
             outMes = &hwmonitorSeg.temp;
@@ -689,6 +686,13 @@ FILE_STATIC void handleSatvis2(const GPSPackage *package)
     debugTraceF(GPS_TRACE_LEVEL, "\tsystem: %u\r\n", satvis2->system);
     debugTraceF(GPS_TRACE_LEVEL, "\tnum:    %u\r\n", satvis2->numSats);
 
+    /*
+     * Set part of the outgoing satvis telemetry segment to match the number
+     * visible in the system of the incoming telemetry segment.
+     *
+     * The number is truncated from a uint32_t to a uint8_t because we can
+     * assume no GNSS system will have over 255 satellites.
+     */
     satvis2_segment satvis2Seg = { 0 };
     switch (satvis2->system)
     {
@@ -700,6 +704,15 @@ FILE_STATIC void handleSatvis2(const GPSPackage *package)
             break;
         case SATSYSTEM_SBAS:
             satvis2Seg.numSBAS = satvis2->numSats;
+            break;
+        case SATSYSTEM_GALILEO:
+            satvis2Seg.numGalileo = satvis2->numSats;
+            break;
+        case SATSYSTEM_BEIDOU:
+            satvis2Seg.numBeiDou = satvis2->numSats;
+            break;
+        case SATSYSTEM_QZSS:
+            satvis2Seg.numQZSS = satvis2->numSats;
             break;
         default:
             break;
