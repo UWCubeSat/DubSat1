@@ -32,6 +32,7 @@ FILE_STATIC hDev hTempC;
 /* ------BATTERY BALANCER------ */
 FILE_STATIC void battInit()
 {       BATTERY_BALANCER_ENABLE_DIR |= BATTERY_BALANCER_ENABLE_BIT; //Initialize battery balancer enable register pin
+        HEATER_ENABLE_DIR |= HEATER_ENABLE_BIT;
         HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT;                    //Initialize heater enable pin to off
         LED_DIR |= LED_BIT;
         LED_OUT |= LED_BIT;
@@ -46,6 +47,8 @@ FILE_STATIC void battControlBalancer(Cmds cmd)
 
     if (cmd == Cmd_ExplicitEnable || cmd == Cmd_AutoEnable)
         BATTERY_BALANCER_ENABLE_OUT |= BATTERY_BALANCER_ENABLE_BIT;
+    else if (cmd == Cmd_ExplicitDisable || cmd == Cmd_InitialDisable)
+        BATTERY_BALANCER_ENABLE_OUT &= ~BATTERY_BALANCER_ENABLE_BIT;
 }
 
 
@@ -56,6 +59,8 @@ FILE_STATIC void battControlHeater(Cmds cmd)
 
     if (cmd == Cmd_ExplicitEnable || cmd == Cmd_AutoEnable)
         HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT;
+    else if (cmd == Cmd_ExplicitDisable || cmd == Cmd_InitialDisable)
+        HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT;
 }
 
 FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
@@ -180,7 +185,7 @@ int main(void)
     bcbinPopulateHeader(&(sseg.header), TLM_ID_EPS_BATT_SENSORDAT, sizeof(sseg));
 
     battControlBalancer(Cmd_AutoEnable);
-    battControlHeater(Cmd_AutoEnable);
+    //battControlHeater(Cmd_AutoEnable);
 
     uint16_t counter;
     while (1)
