@@ -14,7 +14,7 @@
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
-//#include "sensors/analogsensor.h"
+#include "sensors/analogsensor.h"
 
 // Configure battery balancer control pins
 #define BATTERY_BALANCER_ENABLE_DIR  P4DIR
@@ -57,6 +57,7 @@ TLM_SEGMENT {            //Add sensor data here
     uint8_t heaterState;
     uint8_t balancerState; //enable state
     float battCharge;
+
 
 } sensordat_segment;
 

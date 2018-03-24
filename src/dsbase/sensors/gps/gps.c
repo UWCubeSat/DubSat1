@@ -34,72 +34,88 @@ void gpsInit()
 
     // set GPS switch and buck converter to be off initially
     GPS_ENABLE_OUT &= ~GPS_ENABLE_BIT;
-    gpsBuckOff();
+    gpsSetBuck(FALSE);
 
     // configure GPIO pins
     GPS_ENABLE_DIR |= GPS_ENABLE_BIT;   // output
     BUCK_ENABLE_DIR |= BUCK_ENABLE_BIT; // output
-    BUCK_GOOD_DIR &= ~BUCK_GOOD_BIT; // input
+    RESET_DIR |= RESET_BIT;             // output
+    BUCK_GOOD_DIR &= ~BUCK_GOOD_BIT;    // input
 }
 
-void gpsBuckOn()
+void gpsSetBuck(uint8_t enable)
 {
-    BUCK_ENABLE_OUT |= BUCK_ENABLE_BIT; // enable buck converter
-    BUCK_GOOD_IE |= BUCK_GOOD_BIT;      // enable interrupt
-    BUCK_GOOD_IFG &= ~BUCK_GOOD_BIT;    // clear interrupt flag
-
-    // read initial buck status
-    health.buck_status = gpsBuckGood();
+    if (enable)
+    {
+        BUCK_ENABLE_OUT |= BUCK_ENABLE_BIT;
+    }
+    else
+    {
+        BUCK_ENABLE_OUT &= ~BUCK_ENABLE_BIT;
+    }
 }
 
-void gpsBuckOff()
-{
-    BUCK_GOOD_IE &= ~BUCK_GOOD_BIT;      // disable interrupt
-    BUCK_ENABLE_OUT &= ~BUCK_ENABLE_BIT; // disable buck converter
-}
-
-uint8_t gpsBuckEnabled()
+uint8_t gpsIsBuckEnabled()
 {
     if (BUCK_ENABLE_OUT & BUCK_ENABLE_BIT)
     {
-        return 1;
+        return TRUE;
     }
-    return 0;
+    return FALSE;
 }
 
-uint8_t gpsBuckGood()
+uint8_t gpsIsBuckGood()
 {
     if (BUCK_GOOD_IN & BUCK_GOOD_BIT)
     {
-        return 1;
+        return TRUE;
     }
-    return 0;
+    return FALSE;
 }
 
-void gpsPowerOn()
+void gpsSetPower(uint8_t on)
 {
-    if (!(gpsBuckEnabled() && gpsBuckGood()))
+    if (on)
     {
-        // TODO log some error
-        return;
+        BufferedReaderFlush();
+        GPS_ENABLE_OUT |= GPS_ENABLE_BIT;
     }
-    BufferedReaderFlush();
-    GPS_ENABLE_OUT |= GPS_ENABLE_BIT; // enable GPS
+    else
+    {
+        GPS_ENABLE_OUT &= ~GPS_ENABLE_BIT;
+        BufferedReaderFlush();
+    }
 }
 
-void gpsPowerOff()
-{
-    GPS_ENABLE_OUT &= ~GPS_ENABLE_BIT; // disable GPS
-    BufferedReaderFlush();
-}
-
-uint8_t gpsPowerEnabled()
+uint8_t gpsIsPowerEnabled()
 {
     if (GPS_ENABLE_OUT & GPS_ENABLE_BIT)
     {
-        return 1;
+        return TRUE;
     }
-    return 0;
+    return FALSE;
+}
+
+void gpsSetReset(uint8_t active)
+{
+    if (active)
+    {
+        // active low
+        RESET_OUT &= ~RESET_BIT;
+    }
+    else
+    {
+        RESET_OUT |= RESET_BIT;
+    }
+}
+
+uint8_t gpsIsResetActive()
+{
+    if (RESET_OUT & RESET_BIT)
+    {
+        return FALSE;
+    }
+    return TRUE;
 }
 
 // read from the BufferedReader into another buffer while also doing a crc
@@ -115,6 +131,10 @@ FILE_STATIC uint8_t readAndCrc(uint8_t *buf, uint8_t bytesRead, uint8_t numToRea
 
 GPSPackage *gpsRead()
 {
+#ifdef __SKIP_GPS_TRAFFIC__
+    return NULL;
+#endif // __SKIP_GPS_TRAFFIC__
+
     static uint8_t bytesRead = 0;
     static reader_state state = State_Sync;
     static uint32_t crc = 0;
@@ -232,6 +252,10 @@ GPSPackage *gpsRead()
 
 void gpsSendCommand(uint8_t *command)
 {
+#ifdef __SKIP_GPS_TRAFFIC__
+    return;
+#endif // __SKIP_GPS_TRAFFIC__
+
     uartTransmit(uartHandle, command, strlen((char*) command));
 }
 
@@ -239,6 +263,10 @@ void gpsSendBinaryCommand(gps_message_id messageId,
                           uint8_t *message,
                           uint16_t messageLength)
 {
+#ifdef __SKIP_GPS_TRAFFIC__
+    return;
+#endif // __SKIP_GPS_TRAFFIC__
+
     // populate header
     GPSHeader header;
     header.sync[0] = 0xAA;
@@ -271,17 +299,6 @@ void gpsSendBinaryCommand(gps_message_id messageId,
 
 void gpsGetHealth(gps_health *h)
 {
+    health.buck_status = gpsIsBuckGood();
     *h = health;
-}
-
-// Port 3 interrupt service routine for buck converter input
-// TODO should a bad status trigger a power reset?
-#pragma vector=PORT3_VECTOR
-__interrupt void Port_3(void)
-{
-    BUCK_GOOD_IFG &= ~BUCK_GOOD_BIT; // clear interrupt
-    BUCK_GOOD_IES ^= BUCK_GOOD_BIT;  // toggle interrupt edge
-
-    // update buck status
-    health.buck_status = gpsBuckGood();
 }

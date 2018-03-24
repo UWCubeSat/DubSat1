@@ -16,12 +16,13 @@
 #include "sensors/gps/gps.h"
 
 typedef enum {
-    State_GPSOff = 0,
-    State_BuckWaitOn = 1,
-    State_GPSWait = 2,
-    State_GPSOn = 3,
-    State_BuckWaitOff = 4,
-} gps_power_state;
+    State_Off = 0,
+    State_EnablingBuck = 1,
+    State_EnablingGPS = 2,
+    State_AwaitingGPSOn = 3,
+    State_On = 4,
+    State_ShuttingDown = 5
+} gps_power_state_code;
 
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
@@ -36,6 +37,8 @@ TLM_SEGMENT {
 
     uint8_t gpsEnabled;
     uint8_t buckEnabled;
+    uint8_t buckOverride;
+    uint8_t resetStatus;
     uint8_t state;
 } gpspower_segment;
 
@@ -110,12 +113,25 @@ CMD_SEGMENT {
     uint8_t enable;
 } enable_segment;
 
+CMD_SEGMENT {
+    uint8_t enable;
+} buck_override_segment;
+
 void gpsioInit();
 void gpsioConfig();
 void gpsioUpdate();
 
 void gpsioPowerOn();
 void gpsioPowerOff();
+
+/**
+ * Enable/disable the buck converter signal override. If enabled, the GPS will
+ * be switched on after a delay instead of waiting for a PGOOD buck converter
+ * status, and a !PGOOD buck converter status will never cause the GPS to switch
+ * off.
+ */
+void gpsioSetBuckOverride(uint8_t enable);
+uint8_t gpsioIsBuckOverride();
 
 void gpsioSendPowerStatus();
 void gpsioSendStatus();

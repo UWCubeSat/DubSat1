@@ -56,13 +56,18 @@ typedef struct  {
     int16_t rawX;
     int16_t rawY;
     int16_t rawZ;
+    int8_t rawTempA;
+    int8_t rawTempB;
     double convertedX;
     double convertedY;
     double convertedZ;
+    double convertedTemp;
 } MagnetometerData;
 
 // Main entry points
 void magInit();
 MagnetometerData *magReadXYZData(UnitConversionMode);
+void selfTestConfig();
+void normalOperationConfig();
 
 #endif /* MAGNETOMETER_H_ */

@@ -10,10 +10,12 @@
 #define TIMER_H_
 
 void initializeTimer();
-int timerPollInitializer(uint16_t desired_counter_dif, uint16_t desired_TAR_dif);
+int timerPollInitializer(uint16_t ms);
 int checkTimer(uint16_t timerNumber);
+void endPollingTimer(uint16_t timerNumber);
 
 int timerCallbackInitializer(void (*waitFunc)(), uint32_t us);
+int timerCallbackInitializer2(uint16_t ms);
 void startCallback(unsigned int n);
 void stopCallback(unsigned int n);
 

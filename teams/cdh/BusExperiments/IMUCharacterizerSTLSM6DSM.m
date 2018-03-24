@@ -18,7 +18,7 @@ slave_addr = '6Ah'; % ST LSM6DSM for when SDO/SA1 is low
 targetlens = 3600;  % target length in seconds (3600 = 1 hour)
 
 % resultsfolder = 'LSM6DSMResults';
-resultsfolder = [pwd '\previbeA_3_6_18__3'];
+resultsfolder = [pwd '\postvibe3'];
 
 % Connect to device
 dut = i2c('aardvark', 0, slave_addr);

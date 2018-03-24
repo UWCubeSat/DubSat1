@@ -24,12 +24,21 @@ FILE_STATIC general_segment gseg;
 FILE_STATIC sensordat_segment sseg;
 FILE_STATIC health_segment hseg;
 
+//Sensor data
+FILE_STATIC PCVSensorData *INAData;
+FILE_STATIC CoulombCounterData CCData;
+FILE_STATIC hDev hTempC;
+
 /* ------BATTERY BALANCER------ */
 FILE_STATIC void battInit()
 {       BATTERY_BALANCER_ENABLE_DIR |= BATTERY_BALANCER_ENABLE_BIT; //Initialize battery balancer enable register pin
+        HEATER_ENABLE_DIR |= HEATER_ENABLE_BIT;
         HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT;                    //Initialize heater enable pin to off
         LED_DIR |= LED_BIT;
         LED_OUT |= LED_BIT;
+        /*-------TMP36 TEMP SENSOR-------*/
+        //    asensorInit(Ref_2p5V);
+        hTempC = asensorActivateChannel(CHAN_A0, Type_GeneralV);
 }
 
 FILE_STATIC void battControlBalancer(Cmds cmd)
@@ -38,6 +47,8 @@ FILE_STATIC void battControlBalancer(Cmds cmd)
 
     if (cmd == Cmd_ExplicitEnable || cmd == Cmd_AutoEnable)
         BATTERY_BALANCER_ENABLE_OUT |= BATTERY_BALANCER_ENABLE_BIT;
+    else if (cmd == Cmd_ExplicitDisable || cmd == Cmd_InitialDisable)
+        BATTERY_BALANCER_ENABLE_OUT &= ~BATTERY_BALANCER_ENABLE_BIT;
 }
 
 
@@ -48,6 +59,8 @@ FILE_STATIC void battControlHeater(Cmds cmd)
 
     if (cmd == Cmd_ExplicitEnable || cmd == Cmd_AutoEnable)
         HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT;
+    else if (cmd == Cmd_ExplicitDisable || cmd == Cmd_InitialDisable)
+        HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT;
 }
 
 FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
@@ -112,21 +125,27 @@ FILE_STATIC void battBcSendMeta()
 
 void readCC (){
     //Reading Coulomb counter
-    CoulombCounterData deviceCC;
-    deviceCC = readCoulombCounter(); //reading the Coulomb counter (busVoltageV, calcdCurrentA, rawAccumCharge, (SOC?))
-    sseg.battVolt = deviceCC.busVoltageV;
-    sseg.SOC = deviceCC.SOC;
-    sseg.battCurr = deviceCC.calcdCurrentA;
-    sseg.battCharge = deviceCC.battCharge;
-    sseg.accumulatedCharge = deviceCC.accumulatedCharge;
+    CCData = readCoulombCounter(); //reading the Coulomb counter (busVoltageV, calcdCurrentA, rawAccumCharge, (SOC?))
+    sseg.battVolt = CCData.busVoltageV;
+    sseg.SOC = CCData.SOC;
+    sseg.battCurr = CCData.calcdCurrentA;
+    sseg.battCharge = CCData.battCharge;
+    sseg.accumulatedCharge = CCData.totalAccumulatedCharge;
 }
 
 void readINA(hDev hSensor){
     //Reading INA219
-    PCVSensorData *device;
-    device = pcvsensorRead(hSensor, Read_BusV | Read_CurrentA);
-    sseg.battNodeVolt = device->busVoltageV;
-    sseg.battNodeCurr = device->calcdCurrentA;
+    INAData = pcvsensorRead(hSensor, Read_BusV | Read_CurrentA);
+    sseg.battNodeVolt = INAData->busVoltageV;
+    sseg.battNodeCurr = INAData->calcdCurrentA;
+}
+
+void readTempSensor(){
+    float tempVoltageV =  asensorReadSingleSensorV(hTempC); //Assuming in V (not mV)
+    //sseg.battTemp = ((tempVoltageV/100.0) - 500) / 10.0; //Temp in Celcius
+    //conversion from voltage to temperatur, has a slope of 10mv per degree celcius
+    //and an intercept of 50 degrees at 0 volts
+    sseg.battTemp = (tempVoltageV /0.010) - 50;
 }
 
 
@@ -140,11 +159,9 @@ int main(void)
     /* ------INA219/PVC SENSOR------ */
     hDev hSensor;
     hSensor = pcvsensorInit(I2CBus2, 0x40, 1.0, 100); //ground ground, 1 ohm???, 100 mA
-    PCVSensorData *device;
 
     /* ------COULOMB COUNTER---- */
-      LTC2943Init(I2CBus2, 6.0);
-      CoulombCounterData deviceCC;
+    LTC2943Init(I2CBus2, 6.0);
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
@@ -168,6 +185,7 @@ int main(void)
     bcbinPopulateHeader(&(sseg.header), TLM_ID_EPS_BATT_SENSORDAT, sizeof(sseg));
 
     battControlBalancer(Cmd_AutoEnable);
+    //battControlHeater(Cmd_AutoEnable);
 
     uint16_t counter;
     while (1)
@@ -181,6 +199,8 @@ int main(void)
         readINA(hSensor);
         sseg.heaterState = (HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) != 0;
         sseg.balancerState = (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) != 0;
+        readTempSensor();
+
         battBcSendSensorDat();
 
         // Stuff running at 1Hz-ish
