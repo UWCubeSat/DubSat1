@@ -57,7 +57,7 @@
 <layer number="46" name="Milling" color="3" fill="1" visible="no" active="yes"/>
 <layer number="47" name="Measures" color="7" fill="1" visible="no" active="yes"/>
 <layer number="48" name="Document" color="7" fill="1" visible="no" active="yes"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="no" active="yes"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="50" name="dxf" color="7" fill="1" visible="no" active="yes"/>
 <layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="yes"/>
@@ -159,6 +159,30 @@
 </layers>
 <board>
 <plain>
+<wire x1="76.708" y1="84.328" x2="76.708" y2="79.502" width="0.1524" layer="49"/>
+<wire x1="76.708" y1="79.502" x2="76.708" y2="74.422" width="0.1524" layer="49"/>
+<wire x1="76.708" y1="74.422" x2="79.248" y2="74.422" width="0.1524" layer="49"/>
+<wire x1="79.248" y1="74.422" x2="79.248" y2="79.502" width="0.1524" layer="49"/>
+<wire x1="79.248" y1="79.502" x2="79.248" y2="84.328" width="0.1524" layer="49"/>
+<wire x1="79.248" y1="84.328" x2="76.708" y2="84.328" width="0.1524" layer="49"/>
+<wire x1="76.708" y1="79.502" x2="79.248" y2="79.502" width="0.1524" layer="49"/>
+<text x="77.978" y="74.168" size="1.778" layer="49" font="vector" rot="R270" align="center-left">VBAT</text>
+<text x="77.978" y="85.09" size="1.778" layer="49" font="vector" rot="R90" align="center-left">GND</text>
+<text x="32.004" y="9.398" size="1.778" layer="49" font="vector" rot="R90" align="center-left">MT_Y_A</text>
+<text x="36.068" y="9.144" size="1.778" layer="49" font="vector" rot="R90" align="center-left">MT_Y_B</text>
+<text x="21.59" y="67.818" size="1.778" layer="49" font="vector" align="center-left">MT_X_A</text>
+<text x="21.59" y="63.754" size="1.778" layer="49" font="vector" align="center-left">MT_X_B</text>
+<text x="98.806" y="65.024" size="1.778" layer="49" font="vector" rot="R270" align="center-left">MT_Z_A</text>
+<text x="94.996" y="67.818" size="1.778" layer="49" font="vector" rot="R270" align="center-left">MT_Z_B</text>
+<text x="17.272" y="67.818" size="1.778" layer="51" font="vector" rot="R180" align="center-left">A</text>
+<text x="17.272" y="63.754" size="1.778" layer="51" font="vector" rot="R180" align="center-left">B</text>
+<text x="30.226" y="7.112" size="1.778" layer="51" font="vector" rot="R180" align="center-left">A</text>
+<text x="39.624" y="7.112" size="1.778" layer="51" font="vector" rot="R180" align="center-left">B</text>
+<text x="98.806" y="65.024" size="1.778" layer="51" font="vector" rot="R270" align="center-left">A</text>
+<text x="94.996" y="67.818" size="1.778" layer="51" font="vector" rot="R270" align="center-left">B</text>
+<text x="69.342" y="32.512" size="1.27" layer="51" font="vector" rot="R180" align="center-left">DRV_Y</text>
+<text x="57.912" y="32.004" size="1.27" layer="51" font="vector" rot="R180" align="center-left">DRV_X</text>
+<text x="79.502" y="32.512" size="1.27" layer="51" font="vector" rot="R180" align="center-left">DRV_Z</text>
 </plain>
 <libraries>
 <library name="rcl" urn="urn:adsk.eagle:library:334">
