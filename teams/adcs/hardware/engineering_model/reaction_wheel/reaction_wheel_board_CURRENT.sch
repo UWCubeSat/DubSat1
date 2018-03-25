@@ -4400,7 +4400,7 @@ No silk outline, but tDocu layer shows pin location.
 <part name="C16" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.01uF"/>
 <part name="C17" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1uF"/>
 <part name="GND51" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C28" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1uF"/>
+<part name="C28" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10uF"/>
 <part name="GND52" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U3" library="DubSat1 Components" deviceset="LT1761-X" device=""/>
 <part name="GND53" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -4408,7 +4408,7 @@ No silk outline, but tDocu layer shows pin location.
 <part name="C29" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="0.01uF"/>
 <part name="C30" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1uF"/>
 <part name="GND54" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C31" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1uF"/>
+<part name="C31" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="10uF"/>
 <part name="GND55" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="D1" library="DubSat1 Components" deviceset="LED" device=""/>
 <part name="D3" library="DubSat1 Components" deviceset="LED" device=""/>
@@ -4558,12 +4558,12 @@ No silk outline, but tDocu layer shows pin location.
 <instance part="GND33" gate="1" x="195.58" y="-294.64"/>
 <instance part="SERIAL_Y" gate="J$1" x="223.52" y="-116.84" rot="R270"/>
 <instance part="GND34" gate="1" x="228.6" y="-134.62"/>
-<instance part="U$13" gate="G$1" x="375.92" y="-76.2"/>
-<instance part="MSP_Z_DEBUG" gate="G$1" x="439.42" y="-127" rot="R270"/>
-<instance part="GND35" gate="1" x="447.04" y="-101.6" rot="R180"/>
-<instance part="GND36" gate="1" x="327.66" y="-58.42" rot="R270"/>
-<instance part="+3V5" gate="G$1" x="312.42" y="-53.34" rot="R90"/>
-<instance part="P+5" gate="1" x="312.42" y="-33.02" rot="R90"/>
+<instance part="U$13" gate="G$1" x="375.92" y="-73.66"/>
+<instance part="MSP_Z_DEBUG" gate="G$1" x="439.42" y="-124.46" rot="R270"/>
+<instance part="GND35" gate="1" x="447.04" y="-99.06" rot="R180"/>
+<instance part="GND36" gate="1" x="327.66" y="-55.88" rot="R270"/>
+<instance part="+3V5" gate="G$1" x="312.42" y="-50.8" rot="R90"/>
+<instance part="P+5" gate="1" x="312.42" y="-30.48" rot="R90"/>
 <instance part="U$15" gate="G$1" x="360.68" y="-256.54" rot="R270"/>
 <instance part="C18" gate="G$1" x="378.46" y="-284.48"/>
 <instance part="R25" gate="G$1" x="347.98" y="-312.42" rot="R90"/>
@@ -4589,8 +4589,8 @@ No silk outline, but tDocu layer shows pin location.
 <instance part="GND45" gate="1" x="332.74" y="-231.14" rot="R180"/>
 <instance part="GND46" gate="1" x="358.14" y="-190.5" rot="R270"/>
 <instance part="GND47" gate="1" x="378.46" y="-294.64"/>
-<instance part="SERIAL_Z" gate="J$1" x="406.4" y="-119.38" rot="R270"/>
-<instance part="GND48" gate="1" x="411.48" y="-137.16"/>
+<instance part="SERIAL_Z" gate="J$1" x="406.4" y="-116.84" rot="R270"/>
+<instance part="GND48" gate="1" x="411.48" y="-134.62"/>
 <instance part="GND5" gate="1" x="-12.7" y="-215.9" rot="R180"/>
 <instance part="GND6" gate="1" x="170.18" y="-215.9" rot="R180"/>
 <instance part="GND7" gate="1" x="353.06" y="-215.9" rot="R180"/>
@@ -4612,16 +4612,16 @@ No silk outline, but tDocu layer shows pin location.
 <instance part="GND55" gate="1" x="213.36" y="53.34" rot="R180"/>
 <instance part="D1" gate="G$1" x="96.52" y="-99.06"/>
 <instance part="D3" gate="G$1" x="279.4" y="-101.6"/>
-<instance part="D4" gate="G$1" x="462.28" y="-101.6"/>
+<instance part="D4" gate="G$1" x="462.28" y="-99.06"/>
 <instance part="R9" gate="G$1" x="96.52" y="-111.76" rot="R90"/>
 <instance part="R10" gate="G$1" x="279.4" y="-116.84" rot="R90"/>
-<instance part="R11" gate="G$1" x="462.28" y="-116.84" rot="R90"/>
+<instance part="R11" gate="G$1" x="462.28" y="-114.3" rot="R90"/>
 <instance part="GND22" gate="1" x="96.52" y="-121.92"/>
 <instance part="GND38" gate="1" x="279.4" y="-127"/>
-<instance part="GND39" gate="1" x="462.28" y="-127"/>
+<instance part="GND39" gate="1" x="462.28" y="-124.46"/>
 <instance part="MOTOR_X_DEBUG" gate="J$1" x="91.44" y="-60.96" rot="R180"/>
 <instance part="MOTOR_Y_DEBUG" gate="J$1" x="274.32" y="-60.96" rot="R180"/>
-<instance part="MOTOR_Z_DEBUG" gate="J$1" x="459.74" y="-60.96" rot="R180"/>
+<instance part="MOTOR_Z_DEBUG" gate="J$1" x="459.74" y="-58.42" rot="R180"/>
 <instance part="GND56" gate="1" x="25.4" y="53.34"/>
 <instance part="C8" gate="G$1" x="25.4" y="60.96"/>
 </instances>
@@ -4836,17 +4836,17 @@ No silk outline, but tDocu layer shows pin location.
 <segment>
 <pinref part="MSP_Z_DEBUG" gate="G$1" pin="GND@2"/>
 <pinref part="GND35" gate="1" pin="GND"/>
-<wire x1="447.04" y1="-109.22" x2="447.04" y2="-106.68" width="0.1524" layer="91"/>
-<pinref part="MSP_Z_DEBUG" gate="G$1" pin="GND@1"/>
 <wire x1="447.04" y1="-106.68" x2="447.04" y2="-104.14" width="0.1524" layer="91"/>
-<wire x1="444.5" y1="-109.22" x2="444.5" y2="-106.68" width="0.1524" layer="91"/>
-<wire x1="444.5" y1="-106.68" x2="447.04" y2="-106.68" width="0.1524" layer="91"/>
-<junction x="447.04" y="-106.68"/>
+<pinref part="MSP_Z_DEBUG" gate="G$1" pin="GND@1"/>
+<wire x1="447.04" y1="-104.14" x2="447.04" y2="-101.6" width="0.1524" layer="91"/>
+<wire x1="444.5" y1="-106.68" x2="444.5" y2="-104.14" width="0.1524" layer="91"/>
+<wire x1="444.5" y1="-104.14" x2="447.04" y2="-104.14" width="0.1524" layer="91"/>
+<junction x="447.04" y="-104.14"/>
 </segment>
 <segment>
 <pinref part="U$13" gate="G$1" pin="GND"/>
 <pinref part="GND36" gate="1" pin="GND"/>
-<wire x1="335.28" y1="-58.42" x2="330.2" y2="-58.42" width="0.1524" layer="91"/>
+<wire x1="335.28" y1="-55.88" x2="330.2" y2="-55.88" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="C20" gate="G$1" pin="1"/>
@@ -4904,9 +4904,9 @@ No silk outline, but tDocu layer shows pin location.
 </segment>
 <segment>
 <pinref part="SERIAL_Z" gate="J$1" pin="3"/>
-<wire x1="408.94" y1="-127" x2="408.94" y2="-129.54" width="0.1524" layer="91"/>
-<wire x1="408.94" y1="-129.54" x2="411.48" y2="-129.54" width="0.1524" layer="91"/>
-<wire x1="411.48" y1="-129.54" x2="411.48" y2="-134.62" width="0.1524" layer="91"/>
+<wire x1="408.94" y1="-124.46" x2="408.94" y2="-127" width="0.1524" layer="91"/>
+<wire x1="408.94" y1="-127" x2="411.48" y2="-127" width="0.1524" layer="91"/>
+<wire x1="411.48" y1="-127" x2="411.48" y2="-132.08" width="0.1524" layer="91"/>
 <pinref part="GND48" gate="1" pin="GND"/>
 </segment>
 <segment>
@@ -4943,7 +4943,7 @@ No silk outline, but tDocu layer shows pin location.
 <segment>
 <pinref part="GND39" gate="1" pin="GND"/>
 <pinref part="R11" gate="G$1" pin="1"/>
-<wire x1="462.28" y1="-124.46" x2="462.28" y2="-121.92" width="0.1524" layer="91"/>
+<wire x1="462.28" y1="-121.92" x2="462.28" y2="-119.38" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND22" gate="1" pin="GND"/>
@@ -4966,10 +4966,10 @@ No silk outline, but tDocu layer shows pin location.
 </segment>
 <segment>
 <pinref part="MOTOR_Z_DEBUG" gate="J$1" pin="1"/>
-<wire x1="452.12" y1="-58.42" x2="449.58" y2="-58.42" width="0.1524" layer="91"/>
-<wire x1="449.58" y1="-58.42" x2="449.58" y2="-55.88" width="0.1524" layer="91"/>
-<wire x1="449.58" y1="-55.88" x2="447.04" y2="-55.88" width="0.1524" layer="91"/>
-<label x="447.04" y="-55.88" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="452.12" y1="-55.88" x2="449.58" y2="-55.88" width="0.1524" layer="91"/>
+<wire x1="449.58" y1="-55.88" x2="449.58" y2="-53.34" width="0.1524" layer="91"/>
+<wire x1="449.58" y1="-53.34" x2="447.04" y2="-53.34" width="0.1524" layer="91"/>
+<label x="447.04" y="-53.34" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
 <pinref part="PC104" gate="G$1" pin="WHEEL_GND@71"/>
@@ -5011,10 +5011,10 @@ No silk outline, but tDocu layer shows pin location.
 </segment>
 <segment>
 <pinref part="U$13" gate="G$1" pin="CANH"/>
-<wire x1="421.64" y1="-35.56" x2="424.18" y2="-35.56" width="0.1524" layer="91"/>
-<wire x1="424.18" y1="-35.56" x2="424.18" y2="-33.02" width="0.1524" layer="91"/>
-<wire x1="424.18" y1="-33.02" x2="426.72" y2="-33.02" width="0.1524" layer="91"/>
-<label x="426.72" y="-33.02" size="1.778" layer="95" xref="yes"/>
+<wire x1="421.64" y1="-33.02" x2="424.18" y2="-33.02" width="0.1524" layer="91"/>
+<wire x1="424.18" y1="-33.02" x2="424.18" y2="-30.48" width="0.1524" layer="91"/>
+<wire x1="424.18" y1="-30.48" x2="426.72" y2="-30.48" width="0.1524" layer="91"/>
+<label x="426.72" y="-30.48" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="CANL" class="0">
@@ -5041,10 +5041,10 @@ No silk outline, but tDocu layer shows pin location.
 </segment>
 <segment>
 <pinref part="U$13" gate="G$1" pin="CANL"/>
-<wire x1="421.64" y1="-38.1" x2="424.18" y2="-38.1" width="0.1524" layer="91"/>
-<wire x1="424.18" y1="-38.1" x2="424.18" y2="-40.64" width="0.1524" layer="91"/>
-<wire x1="424.18" y1="-40.64" x2="426.72" y2="-40.64" width="0.1524" layer="91"/>
-<label x="426.72" y="-40.64" size="1.778" layer="95" xref="yes"/>
+<wire x1="421.64" y1="-35.56" x2="424.18" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="424.18" y1="-35.56" x2="424.18" y2="-38.1" width="0.1524" layer="91"/>
+<wire x1="424.18" y1="-38.1" x2="426.72" y2="-38.1" width="0.1524" layer="91"/>
+<label x="426.72" y="-38.1" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="SYNC2" class="0">
@@ -5071,10 +5071,10 @@ No silk outline, but tDocu layer shows pin location.
 </segment>
 <segment>
 <pinref part="U$13" gate="G$1" pin="PJ.3_SYNC2"/>
-<label x="358.14" y="-127" size="1.778" layer="95" rot="R270" xref="yes"/>
-<wire x1="358.14" y1="-127" x2="358.14" y2="-124.46" width="0.1524" layer="91"/>
-<wire x1="358.14" y1="-124.46" x2="360.68" y2="-124.46" width="0.1524" layer="91"/>
-<wire x1="360.68" y1="-124.46" x2="360.68" y2="-114.3" width="0.1524" layer="91"/>
+<label x="358.14" y="-124.46" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="358.14" y1="-124.46" x2="358.14" y2="-121.92" width="0.1524" layer="91"/>
+<wire x1="358.14" y1="-121.92" x2="360.68" y2="-121.92" width="0.1524" layer="91"/>
+<wire x1="360.68" y1="-121.92" x2="360.68" y2="-111.76" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SYNC1" class="0">
@@ -5097,8 +5097,8 @@ No silk outline, but tDocu layer shows pin location.
 </segment>
 <segment>
 <pinref part="U$13" gate="G$1" pin="P7.2_SYNC1"/>
-<wire x1="363.22" y1="-114.3" x2="363.22" y2="-127" width="0.1524" layer="91"/>
-<label x="363.22" y="-127" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="363.22" y1="-111.76" x2="363.22" y2="-124.46" width="0.1524" layer="91"/>
+<label x="363.22" y="-124.46" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="PWM_X" class="0">
@@ -5301,24 +5301,24 @@ No silk outline, but tDocu layer shows pin location.
 <segment>
 <pinref part="+3V5" gate="G$1" pin="+3V3"/>
 <pinref part="U$13" gate="G$1" pin="3.3V_MSP-ANALOG@1"/>
-<wire x1="314.96" y1="-53.34" x2="330.2" y2="-53.34" width="0.1524" layer="91"/>
+<wire x1="314.96" y1="-50.8" x2="330.2" y2="-50.8" width="0.1524" layer="91"/>
 <pinref part="U$13" gate="G$1" pin="3.3V_MSP@2"/>
-<wire x1="330.2" y1="-53.34" x2="335.28" y2="-53.34" width="0.1524" layer="91"/>
-<wire x1="330.2" y1="-53.34" x2="330.2" y2="-48.26" width="0.1524" layer="91"/>
-<wire x1="330.2" y1="-48.26" x2="335.28" y2="-48.26" width="0.1524" layer="91"/>
-<junction x="330.2" y="-53.34"/>
-<pinref part="U$13" gate="G$1" pin="3.3V_MSP@3"/>
-<wire x1="330.2" y1="-48.26" x2="330.2" y2="-45.72" width="0.1524" layer="91"/>
+<wire x1="330.2" y1="-50.8" x2="335.28" y2="-50.8" width="0.1524" layer="91"/>
+<wire x1="330.2" y1="-50.8" x2="330.2" y2="-45.72" width="0.1524" layer="91"/>
 <wire x1="330.2" y1="-45.72" x2="335.28" y2="-45.72" width="0.1524" layer="91"/>
-<junction x="330.2" y="-48.26"/>
-<pinref part="U$13" gate="G$1" pin="3.3V_CAN@1"/>
-<wire x1="330.2" y1="-45.72" x2="330.2" y2="-40.64" width="0.1524" layer="91"/>
-<wire x1="330.2" y1="-40.64" x2="335.28" y2="-40.64" width="0.1524" layer="91"/>
+<junction x="330.2" y="-50.8"/>
+<pinref part="U$13" gate="G$1" pin="3.3V_MSP@3"/>
+<wire x1="330.2" y1="-45.72" x2="330.2" y2="-43.18" width="0.1524" layer="91"/>
+<wire x1="330.2" y1="-43.18" x2="335.28" y2="-43.18" width="0.1524" layer="91"/>
 <junction x="330.2" y="-45.72"/>
-<pinref part="U$13" gate="G$1" pin="3.3V_CAN@2"/>
-<wire x1="330.2" y1="-40.64" x2="330.2" y2="-38.1" width="0.1524" layer="91"/>
+<pinref part="U$13" gate="G$1" pin="3.3V_CAN@1"/>
+<wire x1="330.2" y1="-43.18" x2="330.2" y2="-38.1" width="0.1524" layer="91"/>
 <wire x1="330.2" y1="-38.1" x2="335.28" y2="-38.1" width="0.1524" layer="91"/>
-<junction x="330.2" y="-40.64"/>
+<junction x="330.2" y="-43.18"/>
+<pinref part="U$13" gate="G$1" pin="3.3V_CAN@2"/>
+<wire x1="330.2" y1="-38.1" x2="330.2" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="330.2" y1="-35.56" x2="335.28" y2="-35.56" width="0.1524" layer="91"/>
+<junction x="330.2" y="-38.1"/>
 </segment>
 <segment>
 <pinref part="U2" gate="G$1" pin="OUT"/>
@@ -5348,7 +5348,7 @@ No silk outline, but tDocu layer shows pin location.
 <segment>
 <pinref part="U$13" gate="G$1" pin="5V_CAN"/>
 <pinref part="P+5" gate="1" pin="+5V"/>
-<wire x1="335.28" y1="-33.02" x2="314.96" y2="-33.02" width="0.1524" layer="91"/>
+<wire x1="335.28" y1="-30.48" x2="314.96" y2="-30.48" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="U3" gate="G$1" pin="OUT"/>
@@ -6025,59 +6025,59 @@ No silk outline, but tDocu layer shows pin location.
 <segment>
 <pinref part="U$13" gate="G$1" pin="SBWTCK"/>
 <pinref part="MSP_Z_DEBUG" gate="G$1" pin="SBWTCK"/>
-<wire x1="421.64" y1="-106.68" x2="434.34" y2="-106.68" width="0.1524" layer="91"/>
-<wire x1="434.34" y1="-106.68" x2="434.34" y2="-109.22" width="0.1524" layer="91"/>
+<wire x1="421.64" y1="-104.14" x2="434.34" y2="-104.14" width="0.1524" layer="91"/>
+<wire x1="434.34" y1="-104.14" x2="434.34" y2="-106.68" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SBWTDIO_Z" class="0">
 <segment>
 <pinref part="MSP_Z_DEBUG" gate="G$1" pin="SBWTDIO"/>
 <pinref part="U$13" gate="G$1" pin="SBWTDIO"/>
-<wire x1="436.88" y1="-109.22" x2="436.88" y2="-104.14" width="0.1524" layer="91"/>
-<wire x1="436.88" y1="-104.14" x2="421.64" y2="-104.14" width="0.1524" layer="91"/>
+<wire x1="436.88" y1="-106.68" x2="436.88" y2="-101.6" width="0.1524" layer="91"/>
+<wire x1="436.88" y1="-101.6" x2="421.64" y2="-101.6" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="TXD_Z" class="0">
 <segment>
 <pinref part="U$13" gate="G$1" pin="P2.0_TXD"/>
 <pinref part="MSP_Z_DEBUG" gate="G$1" pin="P2.0_TXD"/>
-<wire x1="421.64" y1="-101.6" x2="439.42" y2="-101.6" width="0.1524" layer="91"/>
-<wire x1="439.42" y1="-101.6" x2="439.42" y2="-109.22" width="0.1524" layer="91"/>
+<wire x1="421.64" y1="-99.06" x2="439.42" y2="-99.06" width="0.1524" layer="91"/>
+<wire x1="439.42" y1="-99.06" x2="439.42" y2="-106.68" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RXD_Z" class="0">
 <segment>
 <pinref part="MSP_Z_DEBUG" gate="G$1" pin="P2.1_RXD"/>
 <pinref part="U$13" gate="G$1" pin="P2.1_RXD"/>
-<wire x1="441.96" y1="-109.22" x2="441.96" y2="-99.06" width="0.1524" layer="91"/>
-<wire x1="441.96" y1="-99.06" x2="421.64" y2="-99.06" width="0.1524" layer="91"/>
+<wire x1="441.96" y1="-106.68" x2="441.96" y2="-96.52" width="0.1524" layer="91"/>
+<wire x1="441.96" y1="-96.52" x2="421.64" y2="-96.52" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="GPIO_DEBUG_3.4_Z" class="0">
 <segment>
 <pinref part="MSP_Z_DEBUG" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
 <pinref part="U$13" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
-<wire x1="449.58" y1="-109.22" x2="449.58" y2="-96.52" width="0.1524" layer="91"/>
-<wire x1="449.58" y1="-96.52" x2="421.64" y2="-96.52" width="0.1524" layer="91"/>
+<wire x1="449.58" y1="-106.68" x2="449.58" y2="-93.98" width="0.1524" layer="91"/>
+<wire x1="449.58" y1="-93.98" x2="421.64" y2="-93.98" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="GPIO_DEBUG_3.5_Z" class="0">
 <segment>
 <pinref part="U$13" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
 <pinref part="MSP_Z_DEBUG" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
-<wire x1="421.64" y1="-93.98" x2="452.12" y2="-93.98" width="0.1524" layer="91"/>
-<wire x1="452.12" y1="-93.98" x2="452.12" y2="-109.22" width="0.1524" layer="91"/>
+<wire x1="421.64" y1="-91.44" x2="452.12" y2="-91.44" width="0.1524" layer="91"/>
+<wire x1="452.12" y1="-91.44" x2="452.12" y2="-106.68" width="0.1524" layer="91"/>
 <pinref part="D4" gate="G$1" pin="A"/>
-<wire x1="452.12" y1="-93.98" x2="462.28" y2="-93.98" width="0.1524" layer="91"/>
-<wire x1="462.28" y1="-93.98" x2="462.28" y2="-99.06" width="0.1524" layer="91"/>
-<junction x="452.12" y="-93.98"/>
+<wire x1="452.12" y1="-91.44" x2="462.28" y2="-91.44" width="0.1524" layer="91"/>
+<wire x1="462.28" y1="-91.44" x2="462.28" y2="-96.52" width="0.1524" layer="91"/>
+<junction x="452.12" y="-91.44"/>
 </segment>
 </net>
 <net name="PWM_Z" class="0">
 <segment>
 <pinref part="U$13" gate="G$1" pin="P1.7_GPIO/PWM"/>
-<wire x1="421.64" y1="-76.2" x2="429.26" y2="-76.2" width="0.1524" layer="91"/>
-<label x="429.26" y="-76.2" size="1.778" layer="95" xref="yes"/>
+<wire x1="421.64" y1="-73.66" x2="429.26" y2="-73.66" width="0.1524" layer="91"/>
+<label x="429.26" y="-73.66" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
 <pinref part="U$15" gate="G$1" pin="PWM"/>
@@ -6086,19 +6086,19 @@ No silk outline, but tDocu layer shows pin location.
 </segment>
 <segment>
 <pinref part="MOTOR_Z_DEBUG" gate="J$1" pin="3"/>
-<wire x1="452.12" y1="-63.5" x2="449.58" y2="-63.5" width="0.1524" layer="91"/>
-<wire x1="449.58" y1="-63.5" x2="449.58" y2="-66.04" width="0.1524" layer="91"/>
-<wire x1="449.58" y1="-66.04" x2="447.04" y2="-66.04" width="0.1524" layer="91"/>
-<label x="447.04" y="-66.04" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="452.12" y1="-60.96" x2="449.58" y2="-60.96" width="0.1524" layer="91"/>
+<wire x1="449.58" y1="-60.96" x2="449.58" y2="-63.5" width="0.1524" layer="91"/>
+<wire x1="449.58" y1="-63.5" x2="447.04" y2="-63.5" width="0.1524" layer="91"/>
+<label x="447.04" y="-63.5" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="RD_Z" class="0">
 <segment>
 <pinref part="U$13" gate="G$1" pin="P4.0_GPIO"/>
-<wire x1="373.38" y1="-114.3" x2="373.38" y2="-121.92" width="0.1524" layer="91"/>
-<wire x1="373.38" y1="-121.92" x2="378.46" y2="-121.92" width="0.1524" layer="91"/>
-<wire x1="378.46" y1="-121.92" x2="378.46" y2="-127" width="0.1524" layer="91"/>
-<label x="378.46" y="-127" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="373.38" y1="-111.76" x2="373.38" y2="-119.38" width="0.1524" layer="91"/>
+<wire x1="373.38" y1="-119.38" x2="378.46" y2="-119.38" width="0.1524" layer="91"/>
+<wire x1="378.46" y1="-119.38" x2="378.46" y2="-124.46" width="0.1524" layer="91"/>
+<label x="378.46" y="-124.46" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
 <pinref part="U$15" gate="G$1" pin="RD"/>
@@ -6114,10 +6114,10 @@ No silk outline, but tDocu layer shows pin location.
 <net name="FG_Z" class="0">
 <segment>
 <pinref part="U$13" gate="G$1" pin="P7.4_GPIO"/>
-<wire x1="370.84" y1="-114.3" x2="370.84" y2="-124.46" width="0.1524" layer="91"/>
-<wire x1="370.84" y1="-124.46" x2="373.38" y2="-124.46" width="0.1524" layer="91"/>
-<wire x1="373.38" y1="-124.46" x2="373.38" y2="-127" width="0.1524" layer="91"/>
-<label x="373.38" y="-127" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="370.84" y1="-111.76" x2="370.84" y2="-121.92" width="0.1524" layer="91"/>
+<wire x1="370.84" y1="-121.92" x2="373.38" y2="-121.92" width="0.1524" layer="91"/>
+<wire x1="373.38" y1="-121.92" x2="373.38" y2="-124.46" width="0.1524" layer="91"/>
+<label x="373.38" y="-124.46" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
 <pinref part="U$15" gate="G$1" pin="FG"/>
@@ -6131,15 +6131,15 @@ No silk outline, but tDocu layer shows pin location.
 </segment>
 <segment>
 <pinref part="MOTOR_Z_DEBUG" gate="J$1" pin="2"/>
-<wire x1="452.12" y1="-60.96" x2="447.04" y2="-60.96" width="0.1524" layer="91"/>
-<label x="447.04" y="-60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="452.12" y1="-58.42" x2="447.04" y2="-58.42" width="0.1524" layer="91"/>
+<label x="447.04" y="-58.42" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="FR_Z" class="0">
 <segment>
 <pinref part="U$13" gate="G$1" pin="P7.3_GPIO"/>
-<wire x1="368.3" y1="-114.3" x2="368.3" y2="-127" width="0.1524" layer="91"/>
-<label x="368.3" y="-127" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="368.3" y1="-111.76" x2="368.3" y2="-124.46" width="0.1524" layer="91"/>
+<label x="368.3" y="-124.46" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
 <pinref part="U$15" gate="G$1" pin="FR"/>
@@ -6204,10 +6204,10 @@ No silk outline, but tDocu layer shows pin location.
 </segment>
 <segment>
 <pinref part="U$13" gate="G$1" pin="P4.3_GPIO"/>
-<wire x1="381" y1="-114.3" x2="381" y2="-119.38" width="0.1524" layer="91"/>
-<wire x1="381" y1="-119.38" x2="383.54" y2="-119.38" width="0.1524" layer="91"/>
-<wire x1="383.54" y1="-119.38" x2="383.54" y2="-127" width="0.1524" layer="91"/>
-<label x="383.54" y="-127" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="381" y1="-111.76" x2="381" y2="-116.84" width="0.1524" layer="91"/>
+<wire x1="381" y1="-116.84" x2="383.54" y2="-116.84" width="0.1524" layer="91"/>
+<wire x1="383.54" y1="-116.84" x2="383.54" y2="-124.46" width="0.1524" layer="91"/>
+<label x="383.54" y="-124.46" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="CPP_Z" class="0">
@@ -6265,10 +6265,10 @@ No silk outline, but tDocu layer shows pin location.
 </segment>
 <segment>
 <pinref part="U$13" gate="G$1" pin="P3.6_GPIO/PWM"/>
-<wire x1="421.64" y1="-83.82" x2="441.96" y2="-83.82" width="0.1524" layer="91"/>
-<wire x1="441.96" y1="-83.82" x2="441.96" y2="-86.36" width="0.1524" layer="91"/>
-<wire x1="441.96" y1="-86.36" x2="444.5" y2="-86.36" width="0.1524" layer="91"/>
-<label x="444.5" y="-86.36" size="1.778" layer="95" xref="yes"/>
+<wire x1="421.64" y1="-81.28" x2="441.96" y2="-81.28" width="0.1524" layer="91"/>
+<wire x1="441.96" y1="-81.28" x2="441.96" y2="-83.82" width="0.1524" layer="91"/>
+<wire x1="441.96" y1="-83.82" x2="444.5" y2="-83.82" width="0.1524" layer="91"/>
+<label x="444.5" y="-83.82" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="HP_V_Z" class="0">
@@ -6287,8 +6287,8 @@ No silk outline, but tDocu layer shows pin location.
 </segment>
 <segment>
 <pinref part="U$13" gate="G$1" pin="P3.7_GPIO/PWM"/>
-<wire x1="421.64" y1="-81.28" x2="444.5" y2="-81.28" width="0.1524" layer="91"/>
-<label x="444.5" y="-81.28" size="1.778" layer="95" xref="yes"/>
+<wire x1="421.64" y1="-78.74" x2="444.5" y2="-78.74" width="0.1524" layer="91"/>
+<label x="444.5" y="-78.74" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="HP_U_Z" class="0">
@@ -6305,10 +6305,10 @@ No silk outline, but tDocu layer shows pin location.
 </segment>
 <segment>
 <pinref part="U$13" gate="G$1" pin="P1.6_GPIO/PWM"/>
-<wire x1="421.64" y1="-78.74" x2="441.96" y2="-78.74" width="0.1524" layer="91"/>
-<wire x1="441.96" y1="-78.74" x2="441.96" y2="-76.2" width="0.1524" layer="91"/>
-<wire x1="441.96" y1="-76.2" x2="444.5" y2="-76.2" width="0.1524" layer="91"/>
-<label x="444.5" y="-76.2" size="1.778" layer="95" xref="yes"/>
+<wire x1="421.64" y1="-76.2" x2="441.96" y2="-76.2" width="0.1524" layer="91"/>
+<wire x1="441.96" y1="-76.2" x2="441.96" y2="-73.66" width="0.1524" layer="91"/>
+<wire x1="441.96" y1="-73.66" x2="444.5" y2="-73.66" width="0.1524" layer="91"/>
+<label x="444.5" y="-73.66" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="CS_Z" class="0">
@@ -6388,29 +6388,29 @@ No silk outline, but tDocu layer shows pin location.
 <net name="M_Z_RX" class="0">
 <segment>
 <pinref part="SERIAL_Z" gate="J$1" pin="2"/>
-<wire x1="406.4" y1="-127" x2="406.4" y2="-134.62" width="0.1524" layer="91"/>
-<label x="406.4" y="-134.62" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="406.4" y1="-124.46" x2="406.4" y2="-132.08" width="0.1524" layer="91"/>
+<label x="406.4" y="-132.08" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
 <pinref part="U$13" gate="G$1" pin="P2.6_GPIO/PWM"/>
-<wire x1="421.64" y1="-88.9" x2="429.26" y2="-88.9" width="0.1524" layer="91"/>
-<label x="429.26" y="-88.9" size="1.778" layer="95" xref="yes"/>
+<wire x1="421.64" y1="-86.36" x2="429.26" y2="-86.36" width="0.1524" layer="91"/>
+<label x="429.26" y="-86.36" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="M_Z_TX" class="0">
 <segment>
 <pinref part="SERIAL_Z" gate="J$1" pin="1"/>
-<wire x1="403.86" y1="-127" x2="403.86" y2="-129.54" width="0.1524" layer="91"/>
-<wire x1="403.86" y1="-129.54" x2="401.32" y2="-129.54" width="0.1524" layer="91"/>
-<wire x1="401.32" y1="-129.54" x2="401.32" y2="-134.62" width="0.1524" layer="91"/>
-<label x="401.32" y="-134.62" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="403.86" y1="-124.46" x2="403.86" y2="-127" width="0.1524" layer="91"/>
+<wire x1="403.86" y1="-127" x2="401.32" y2="-127" width="0.1524" layer="91"/>
+<wire x1="401.32" y1="-127" x2="401.32" y2="-132.08" width="0.1524" layer="91"/>
+<label x="401.32" y="-132.08" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
 <pinref part="U$13" gate="G$1" pin="P2.5_GPIO"/>
-<wire x1="383.54" y1="-114.3" x2="383.54" y2="-116.84" width="0.1524" layer="91"/>
-<wire x1="383.54" y1="-116.84" x2="388.62" y2="-116.84" width="0.1524" layer="91"/>
-<wire x1="388.62" y1="-116.84" x2="388.62" y2="-127" width="0.1524" layer="91"/>
-<label x="388.62" y="-127" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="383.54" y1="-111.76" x2="383.54" y2="-114.3" width="0.1524" layer="91"/>
+<wire x1="383.54" y1="-114.3" x2="388.62" y2="-114.3" width="0.1524" layer="91"/>
+<wire x1="388.62" y1="-114.3" x2="388.62" y2="-124.46" width="0.1524" layer="91"/>
+<label x="388.62" y="-124.46" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="LDO_3V3_BYP2" class="0">
@@ -6437,7 +6437,7 @@ No silk outline, but tDocu layer shows pin location.
 <segment>
 <pinref part="R11" gate="G$1" pin="2"/>
 <pinref part="D4" gate="G$1" pin="C"/>
-<wire x1="462.28" y1="-111.76" x2="462.28" y2="-106.68" width="0.1524" layer="91"/>
+<wire x1="462.28" y1="-109.22" x2="462.28" y2="-104.14" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$3" class="0">
