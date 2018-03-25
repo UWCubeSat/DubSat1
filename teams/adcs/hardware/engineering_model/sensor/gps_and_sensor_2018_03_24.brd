@@ -158,6 +158,52 @@
 </layers>
 <board>
 <plain>
+<wire x1="66.04" y1="90.17" x2="66.04" y2="85.09" width="0.1524" layer="49"/>
+<wire x1="66.04" y1="85.09" x2="66.04" y2="80.264" width="0.1524" layer="49"/>
+<wire x1="66.04" y1="80.264" x2="68.58" y2="80.264" width="0.1524" layer="49"/>
+<wire x1="68.58" y1="80.264" x2="68.58" y2="85.09" width="0.1524" layer="49"/>
+<wire x1="68.58" y1="85.09" x2="68.58" y2="90.17" width="0.1524" layer="49"/>
+<wire x1="68.58" y1="90.17" x2="66.04" y2="90.17" width="0.1524" layer="49"/>
+<wire x1="66.04" y1="85.09" x2="68.58" y2="85.09" width="0.1524" layer="49"/>
+<text x="68.072" y="90.678" size="1.778" layer="49" font="vector" rot="R90">GND</text>
+<text x="66.548" y="79.502" size="1.778" layer="49" font="vector" rot="R270">VBAT</text>
+<text x="88.138" y="46.736" size="1.27" layer="51" font="vector" rot="R90" align="center-left">SS_SDA</text>
+<text x="90.678" y="46.736" size="1.27" layer="51" font="vector" rot="R90" align="center-left">SS_SCL</text>
+<text x="93.218" y="46.736" size="1.27" layer="51" font="vector" rot="R90" align="center-left">GND</text>
+<text x="62.484" y="9.906" size="1.27" layer="51" font="vector" rot="R180" align="center-left">SDA</text>
+<text x="62.484" y="7.366" size="1.27" layer="51" font="vector" rot="R180" align="center-left">SCL</text>
+<text x="62.484" y="12.446" size="1.27" layer="51" font="vector" rot="R180" align="center-left">GND</text>
+<wire x1="80.772" y1="14.224" x2="80.772" y2="11.684" width="0.254" layer="49"/>
+<wire x1="80.772" y1="11.684" x2="80.772" y2="9.144" width="0.254" layer="49"/>
+<wire x1="80.772" y1="9.144" x2="80.772" y2="6.604" width="0.254" layer="49"/>
+<wire x1="80.772" y1="6.604" x2="83.312" y2="6.604" width="0.254" layer="49"/>
+<wire x1="83.312" y1="6.604" x2="83.312" y2="9.144" width="0.254" layer="49"/>
+<wire x1="83.312" y1="9.144" x2="83.312" y2="11.684" width="0.254" layer="49"/>
+<wire x1="83.312" y1="11.684" x2="83.312" y2="14.224" width="0.254" layer="49"/>
+<wire x1="83.312" y1="14.224" x2="80.772" y2="14.224" width="0.254" layer="49"/>
+<wire x1="80.772" y1="11.684" x2="83.312" y2="11.684" width="0.254" layer="49"/>
+<wire x1="80.772" y1="9.144" x2="83.312" y2="9.144" width="0.254" layer="49"/>
+<wire x1="83.312" y1="14.224" x2="85.852" y2="14.224" width="0.254" layer="49"/>
+<wire x1="85.852" y1="14.224" x2="85.852" y2="11.684" width="0.254" layer="49"/>
+<wire x1="85.852" y1="11.684" x2="85.852" y2="9.144" width="0.254" layer="49"/>
+<wire x1="85.852" y1="9.144" x2="85.852" y2="6.604" width="0.254" layer="49"/>
+<wire x1="85.852" y1="6.604" x2="83.312" y2="6.604" width="0.254" layer="49"/>
+<wire x1="85.852" y1="9.144" x2="83.312" y2="9.144" width="0.254" layer="49"/>
+<wire x1="85.852" y1="11.684" x2="83.312" y2="11.684" width="0.254" layer="49"/>
+<text x="86.614" y="12.954" size="1.778" layer="49" font="vector" align="center-left">GND</text>
+<text x="86.614" y="10.414" size="1.778" layer="49" font="vector" align="center-left">SCL</text>
+<text x="86.614" y="7.874" size="1.778" layer="49" font="vector" align="center-left">SDA</text>
+<text x="80.01" y="7.874" size="1.778" layer="49" font="vector" rot="R180" align="center-left">PD_SDA</text>
+<text x="80.01" y="10.414" size="1.778" layer="49" font="vector" rot="R180" align="center-left">PD_SCL</text>
+<text x="80.01" y="12.954" size="1.778" layer="49" font="vector" rot="R180" align="center-left">GND</text>
+<text x="98.806" y="28.448" size="1.778" layer="49" font="vector" align="center-left">BDOT GND</text>
+<text x="98.806" y="25.908" size="1.778" layer="49" font="vector" align="center-left">BDOT GND</text>
+<text x="98.806" y="15.748" size="1.778" layer="49" font="vector" align="center-left">SBWTCK</text>
+<text x="98.806" y="18.288" size="1.778" layer="49" font="vector" align="center-left">SBWTDIO</text>
+<text x="98.806" y="20.828" size="1.778" layer="49" font="vector" align="center-left">TXD</text>
+<text x="98.806" y="23.368" size="1.778" layer="49" font="vector" align="center-left">RXD</text>
+<text x="98.806" y="30.988" size="1.778" layer="49" font="vector" align="center-left">P3.4 GPIO</text>
+<text x="98.806" y="33.528" size="1.778" layer="49" font="vector" align="center-left">P3.5 GPIO</text>
 </plain>
 <libraries>
 <library name="DubSat1 Components">
@@ -2257,8 +2303,8 @@ design rules under a new name.</description>
 <element name="R5" library="DubSat1 Components" package="0805" value="330" x="90.424" y="37.846" rot="R90"/>
 <element name="J1" library="SparkFun-Connectors" package="1X06_LOCK" value="" x="64.516" y="63.754" rot="R90"/>
 <element name="J2" library="SparkFun-Connectors" package="1X03_LOCK" value="" x="64.262" y="12.446" rot="R270"/>
-<element name="J3" library="SparkFun-Connectors" package="2X3" value="" x="88.138" y="44.958">
-<attribute name="PROD_ID" value="CONN-09701" x="88.138" y="44.958" size="1.778" layer="27" display="off"/>
+<element name="J3" library="SparkFun-Connectors" package="2X3" value="" x="88.138" y="41.656">
+<attribute name="PROD_ID" value="CONN-09701" x="88.138" y="41.656" size="1.778" layer="27" display="off"/>
 </element>
 <element name="J4" library="SparkFun-Connectors" package="2X3" value="" x="84.582" y="7.874" rot="R90">
 <attribute name="PROD_ID" value="CONN-09701" x="84.582" y="7.874" size="1.778" layer="27" rot="R90" display="off"/>
@@ -2868,13 +2914,13 @@ design rules under a new name.</description>
 <wire x1="64.135" y1="8.90805625" x2="63.119" y2="7.89205625" width="0.254" layer="1"/>
 <wire x1="83.82" y1="6.096" x2="84.582" y2="6.858" width="0.254" layer="1"/>
 <wire x1="84.582" y1="6.858" x2="84.582" y2="7.874" width="0.254" layer="1"/>
-<wire x1="91.948" y1="45.48405625" x2="91.20405625" y2="46.228" width="0.254" layer="1"/>
-<wire x1="91.20405625" y1="46.228" x2="90.15194375" y2="46.228" width="0.254" layer="1"/>
-<wire x1="91.948" y1="44.33458125" x2="91.948" y2="45.48405625" width="0.254" layer="1"/>
-<wire x1="92.879" y1="35.729" x2="92.879" y2="43.40358125" width="0.254" layer="1"/>
-<wire x1="92.879" y1="43.40358125" x2="91.948" y2="44.33458125" width="0.254" layer="1"/>
-<wire x1="88.88194375" y1="44.958" x2="88.138" y2="44.958" width="0.254" layer="1"/>
-<wire x1="90.15194375" y1="46.228" x2="88.88194375" y2="44.958" width="0.254" layer="1"/>
+<wire x1="91.948" y1="42.18205625" x2="91.20405625" y2="42.926" width="0.254" layer="1"/>
+<wire x1="91.20405625" y1="42.926" x2="90.15194375" y2="42.926" width="0.254" layer="1"/>
+<wire x1="91.948" y1="41.03258125" x2="91.948" y2="42.18205625" width="0.254" layer="1"/>
+<wire x1="92.879" y1="35.729" x2="92.879" y2="40.10158125" width="0.254" layer="1"/>
+<wire x1="92.879" y1="40.10158125" x2="91.948" y2="41.03258125" width="0.254" layer="1"/>
+<wire x1="88.88194375" y1="41.656" x2="88.138" y2="41.656" width="0.254" layer="1"/>
+<wire x1="90.15194375" y1="42.926" x2="88.88194375" y2="41.656" width="0.254" layer="1"/>
 <wire x1="64.135" y1="9.906" x2="65.212" y2="9.906" width="0.254" layer="1"/>
 <wire x1="65.212" y1="9.906" x2="67.31" y2="12.054" width="0.254" layer="1"/>
 </signal>
@@ -2901,8 +2947,8 @@ design rules under a new name.</description>
 <wire x1="82.51725625" y1="6.5532" x2="83.312" y2="7.34794375" width="0.254" layer="1"/>
 <wire x1="83.312" y1="9.144" x2="84.582" y2="10.414" width="0.254" layer="1"/>
 <wire x1="83.312" y1="7.34794375" x2="83.312" y2="9.144" width="0.254" layer="1"/>
-<wire x1="92.1678" y1="35.7798" x2="92.1678" y2="43.4682" width="0.254" layer="1"/>
-<wire x1="92.1678" y1="43.4682" x2="90.678" y2="44.958" width="0.254" layer="1"/>
+<wire x1="92.1678" y1="35.7798" x2="92.1678" y2="40.1662" width="0.254" layer="1"/>
+<wire x1="92.1678" y1="40.1662" x2="90.678" y2="41.656" width="0.254" layer="1"/>
 <wire x1="64.389" y1="7.366" x2="65.024" y2="7.366" width="0.254" layer="1"/>
 <wire x1="65.024" y1="7.366" x2="65.8368" y2="6.5532" width="0.254" layer="1"/>
 <wire x1="65.8368" y1="6.5532" x2="82.51725625" y2="6.5532" width="0.254" layer="1"/>
@@ -3371,8 +3417,6 @@ design rules under a new name.</description>
 </signal>
 <signal name="SUNSENSOR_SCL">
 <contactref element="J3" pad="4"/>
-<wire x1="90.678" y1="47.498" x2="90.678" y2="49.32723125" width="0.254" layer="1"/>
-<wire x1="90.678" y1="49.32723125" x2="94.0054" y2="52.65463125" width="0.254" layer="1"/>
 <contactref element="SUNSENSOR" pad="P$2"/>
 <wire x1="94.0054" y1="67.93118125" x2="87.26058125" y2="74.676" width="0.254" layer="1"/>
 <wire x1="87.26058125" y1="74.676" x2="85.344" y2="74.676" width="0.254" layer="1"/>
@@ -3380,16 +3424,17 @@ design rules under a new name.</description>
 <wire x1="85.344" y1="72.136" x2="85.368" y2="72.16" width="0.254" layer="1"/>
 <wire x1="85.368" y1="72.16" x2="86.36" y2="72.16" width="0.254" layer="1"/>
 <wire x1="94.0054" y1="52.65463125" x2="94.0054" y2="67.93118125" width="0.254" layer="1"/>
+<wire x1="90.678" y1="44.196" x2="90.678" y2="49.32723125" width="0.254" layer="1"/>
+<wire x1="90.678" y1="49.32723125" x2="94.0054" y2="52.65463125" width="0.254" layer="1"/>
 </signal>
 <signal name="SUNSENSOR_SDA">
 <contactref element="J3" pad="2"/>
-<wire x1="91.6819875" y1="50.9778" x2="93.5482" y2="52.8440125" width="0.254" layer="1"/>
-<wire x1="88.138" y1="47.498" x2="91.6178" y2="50.9778" width="0.254" layer="1"/>
-<wire x1="91.6178" y1="50.9778" x2="91.6819875" y2="50.9778" width="0.254" layer="1"/>
 <contactref element="SUNSENSOR" pad="P$1"/>
 <wire x1="93.5482" y1="67.7418" x2="87.63" y2="73.66" width="0.254" layer="1"/>
 <wire x1="87.63" y1="73.66" x2="86.36" y2="73.66" width="0.254" layer="1"/>
-<wire x1="93.5482" y1="52.8440125" x2="93.5482" y2="67.7418" width="0.254" layer="1"/>
+<wire x1="93.5482" y1="67.7418" x2="93.5482" y2="52.8440125" width="0.254" layer="1"/>
+<wire x1="88.138" y1="47.4338125" x2="88.138" y2="44.196" width="0.254" layer="1"/>
+<wire x1="93.5482" y1="52.8440125" x2="88.138" y2="47.4338125" width="0.254" layer="1"/>
 </signal>
 <signal name="PHOTODIODE_SCL">
 <contactref element="J4" pad="4"/>
