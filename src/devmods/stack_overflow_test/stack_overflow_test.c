@@ -4,10 +4,10 @@
 
 /*
  * Basic test to observe stack usage.
- * DEBUG is turned off to more closely control the stack
+ * DEBUG is turned off to more closely control the stack.
  *
- * TODO does setting the max stack size in the linker options have any effect?
- * TODO does the "breakpoint on stack overflow" tool actually work?
+ * Use "breakpoint on stack overflow" and refresh it after changing the stack
+ * size in the linker options.
  */
 
 #include <msp430.h> 
@@ -21,11 +21,15 @@ hBus handle;
 
 void logstack()
 {
-    uint16_t used = stackMinFreeCount();
+    uint16_t unused = stackMinFreeCount();
     uint16_t total = stackMaxSize();
 
-    // put a breakpoint here to read the variables
-    LED_OUT |= LED_BIT;
+    // doing an AND so the variables don't get optimized out
+    if (unused && total)
+    {
+        // put a breakpoint here to read the variables
+        LED_OUT |= LED_BIT;
+    }
 }
 
 void littleStack()
@@ -45,7 +49,7 @@ void bigStack()
 int main(void)
 {
     bspInit(__SUBSYSTEM_MODULE__);
-
+    logstack();
     littleStack();
     bigStack();
     return 0;
