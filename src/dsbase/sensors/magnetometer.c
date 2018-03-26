@@ -25,8 +25,9 @@ void magInit()
         return;
 
     i2cInitialized = 1;
-    i2cEnable(I2CBus2);
-    hSensor = i2cInit(I2CBus2, MAG_I2C_7BIT_ADDRESS);
+    i2cEnable(I2CBus1);
+    hSensor = i2cInit(I2CBus1, MAG_HMC5883L_I2C_7BIT_ADDRESS);
+
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)  /* */
 
@@ -38,7 +39,6 @@ void magInit()
     i2cBuff[3] = MAG_HMC5883L_GAIN_1370;
     i2cBuff[4] = MAG_HMC5883L_REG_ADDR_MR;
     i2cBuff[5] = MAG_HMC5883L_OPERATING_MODE_CONTINUOUS;
-
     i2cMasterWrite(hSensor, i2cBuff, 6);
 
 #elif defined( __BSP_HW_MAGTOM_MAG3110__)

@@ -16,6 +16,7 @@
 #include "core/utils.h"
 #include "core/debugtools.h"
 #include "core/timers.h"
+#include "sensors/imu.h"
 
 FILE_STATIC unsigned long lastTime_cycles;
 FILE_STATIC double rawOutput, lastInput;
@@ -170,6 +171,7 @@ uint8_t rwsActionCallback(DebugMode mode, uint8_t * cmdstr)
 
 void rwsInit()
 {
+//    SCB_SCR &= ~SCB_SCR_SLEEPONEXIT
     //  FR (direction):  P7.3 to control direction, P7.4 to read FG pin ('1 0 0')
     RW_MOTORDIR_DIR |= RW_MOTORDIR_PIN;
     RW_MOTORDIR_OUT &= ~RW_MOTORDIR_PIN;
@@ -204,8 +206,10 @@ void rwsInit()
     TA0CCR0 = 65535;
     P1DIR |= BIT0;
     NVIC_EnableIRQ(TA0_0_IRQn);
-    NVIC->ISER[0] = 1 << ((EUSCIA0_IRQn) & 31);
+//    NVIC->ISER[0] = 1 << ((EUSCIA0_IRQn) & 31);
+    NVIC->ISER[0] = 1 << ((EUSCIB1_IRQn) & 31);
     __enable_interrupt();
+    imuInit();
 //    TB0CCR0 = 60000;
 //    TB0CCR4 = 50;
 //    TB0CCTL4 = OUTMOD_7 ;
@@ -396,7 +400,10 @@ void TA0_0_IRQHandler (void)
 {
     TA0CCTL0 &= ~CCIFG;
 //    debugTraceF(0,"hey dawg hey whats up");
-    bcbinSendPacket((uint8_t *) &pid, sizeof(pid));
+    if(booped)
+        pid.output=imuReadGyroAccelData()->rawGyroX;
+    booped=1;
+//    bcbinSendPacket((uint8_t *) &pid, sizeof(pid));
     P1OUT ^= BIT0;
 //    booped=booped%2;
 //    switch (__even_in_range(TA4IV, TAIV__TAIFG))

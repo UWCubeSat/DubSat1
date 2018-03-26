@@ -67,9 +67,9 @@ typedef struct {
 /* I2C LOW-LEVEL FUNCTIONS */
 /***************************/
 FILE_STATIC void inline i2cDisable(bus_instance_i2c bus)  { I2CREG(bus, UCBxCTLW0) |= UCSWRST; }
-void inline i2cEnable(bus_instance_i2c bus)  { I2CREG(bus, UCBxCTL1) &= ~UCSWRST; }
-FILE_STATIC void inline i2cMasterTransmitStart(bus_instance_i2c bus)  { I2CREG(bus, UCBxCTL1) |= UCTR | UCTXSTT; }
-FILE_STATIC void inline i2cMasterReceiveStart(bus_instance_i2c bus)  { I2CREG(bus, UCBxCTL1) &= ~UCTR;  I2CREG(bus, UCBxCTL1) |= UCTXSTT;  }
+void inline i2cEnable(bus_instance_i2c bus)  { I2CREG(bus, UCBxCTLW0) &= ~UCSWRST; }
+FILE_STATIC void inline i2cMasterTransmitStart(bus_instance_i2c bus)  { I2CREG(bus, UCBxCTLW0) |= UCTR | UCTXSTT ; }
+FILE_STATIC void inline i2cMasterReceiveStart(bus_instance_i2c bus)  { I2CREG(bus, UCBxCTLW0) = I2CREG(bus, UCBxCTLW0) & ~UCTR | UCTXSTT;  }
 FILE_STATIC void inline i2cLoadTransmitBuffer(bus_instance_i2c bus, uint8_t input)  {  I2CREG(bus, UCBxTXBUF) = input; }
 FILE_STATIC uint8_t inline i2cRetrieveReceiveBuffer(bus_instance_i2c bus)  {  return I2CREG(bus, UCBxRXBUF);  }
 FILE_STATIC void inline i2cAutoStopSetTotalBytes(bus_instance_i2c bus, uint8_t count)  { I2CREG(bus, UCBxTBCNT) = count; }  // NOTE: must be called under reset!

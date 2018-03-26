@@ -21,8 +21,10 @@ void imuInit()
         return;
 
     imuInitialized = 1;
-    i2cEnable(I2CBus2);
-    hSensor = i2cInit(I2CBus2, IMU_I2C_7BIT_ADDRESS);
+    i2cEnable(I2CBus1);
+//    hSensor = i2cInit(I2CBus2, IMU_I2C_7BIT_ADDRESS);
+//    hSensor = i2cInit(I2CBus1, IMU_I2C_7BIT_ADDRESS);
+    hSensor = i2cInit(I2CBus1, 0x6A);
 
 #if defined (__BSP_HW_IMU_BMI160__)
 

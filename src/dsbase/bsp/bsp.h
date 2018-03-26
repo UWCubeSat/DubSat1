@@ -270,6 +270,16 @@ uint64_t bspGetChipID();
 
 #elif defined(__MSP432P401R__)
 
+#define P401R_I2C1_PORTSEL0        P6SEL0
+#define P401R_I2C1_PORTSEL1        P6SEL1
+#define P401R_I2C1_SDA_BIT         BIT4
+#define P401R_I2C1_SCL_BIT         BIT5
+
+#define I2C1_PORTSEL0        P401R_I2C1_PORTSEL0
+#define I2C1_PORTSEL1        P401R_I2C1_PORTSEL1
+#define I2C1_SDA_BIT         P401R_I2C1_SDA_BIT
+#define I2C1_SCL_BIT         P401R_I2C1_SCL_BIT
+
 #define P401R_A1_UART_SEL0     P2SEL0
 #define P401R_A1_UART_SEL1     P2SEL1
 #define P401R_A1_UART_BITS     (BIT5 | BIT6)

@@ -66,9 +66,19 @@ hDev i2cInit(bus_instance_i2c bus, uint8_t slaveaddr)
 
         // USCI Configuration:  Common for both TX and RX
         i2cDisable(bus);                                             // Software reset enabled
-        I2CREG(bus, UCBxCTLW0) |= UCMODE_3 | UCMST | UCSYNC | UCSSEL__SMCLK;     // I2C, master, synchronous, use SMCLK
-        I2CREG(bus, UCBxBRW) = 12;                                               // Baudrate = SMCLK / 12
+//        EUSCI_B1->CTLW0 |= EUSCI_A_CTLW0_SWRST; // Software reset enabled
+        //if you dont initialize to 0 doesnt work in ccs
+        I2CREG(bus, UCBxCTLW0) = 0;
+        I2CREG(bus, UCBxCTLW0) &= ~UCSSEL_M;
+        I2CREG(bus, UCBxCTLW0) |= EUSCI_B_CTLW0_SWRST | UCMODE_3 | UCMST | UCSYNC | UCSSEL__SMCLK;     // I2C, master, synchronous, use SMCLK
+        I2CREG(bus, UCBxBRW) = 60;                                               // Baudrate = SMCLK / 12
         I2CREG(bus, UCBxCTLW1) |= UCASTP_2;                                      // Automatic stop generated after transmission complete
+        EUSCI_B1->I2CSA = slaveaddr;               // Slave address
+       EUSCI_B1->CTLW0 &= ~EUSCI_B_CTLW0_SWRST;// Release eUSCI from reset
+
+       EUSCI_B1->IE |=
+               EUSCI_B_IE_NACKIE;              // Enable byte counter interrupt
+//    EUSCI_B1->CTLW0 |= EUSCI_B_CTLW0_TXSTT;
     }
 
     // Now setup the actual individual device
@@ -77,7 +87,6 @@ hDev i2cInit(bus_instance_i2c bus, uint8_t slaveaddr)
 
     devices[currindex].bus = bus;
     devices[currindex].slaveaddr = slaveaddr;
-
     return (hDev)currindex;
 }
 
@@ -94,8 +103,10 @@ static void i2cCoreRead(hDev device, uint8_t * buff, uint8_t szToRead, BOOL init
         i2cDisable(bus);
         i2cAutoStopSetTotalBytes(bus, szToRead);
         i2cEnable(bus);
+        EUSCI_B1->CTLW0 &= ~EUSCI_A_CTLW0_SWRST;// Release eUSCI from reset
     }
 
+//    i2cWaitForStopComplete(bus);
     // Send start message, in receive mode
     i2cMasterReceiveStart(bus);
     i2cWaitForStartComplete(bus);
@@ -103,9 +114,11 @@ static void i2cCoreRead(hDev device, uint8_t * buff, uint8_t szToRead, BOOL init
     //  Stop bit will be auto-set once we read szToRead bytes
     while ( (I2CREG(bus, UCBxIFG) & UCSTPIFG) == 0 && index < szToRead)
     {
-        if ( (I2CREG(bus, UCBxIFG) & UCRXIFG) != 0)
+        if (EUSCI_B1->IFG & EUSCI_B_IFG_RXIFG){
             buff[index++] = i2cRetrieveReceiveBuffer(bus);
+        }
     }
+
 }
 
 static void i2cCoreWrite(hDev device, uint8_t * buff, uint8_t szToWrite, BOOL initialAutoStopSetup )
@@ -115,24 +128,28 @@ static void i2cCoreWrite(hDev device, uint8_t * buff, uint8_t szToWrite, BOOL in
     bus_instance_i2c bus = devices[device].bus;
     I2CREG(bus, UCBxI2CSA) = devices[device].slaveaddr;
 
+
     if (initialAutoStopSetup)
     {
         i2cDisable(bus);
         i2cAutoStopSetTotalBytes(bus, szToWrite);
         i2cEnable(bus);
+        EUSCI_B1->CTLW0 &= ~EUSCI_A_CTLW0_SWRST;// Release eUSCI from reset
     }
 
     i2cMasterTransmitStart(bus);
-    i2cWaitForStartComplete(bus);
 
+    i2cWaitForStartComplete(bus);
     // Send in auto-stop or managed mode
+
     while ( (I2CREG(bus, UCBxIFG) & UCSTPIFG) == 0 && index < szToWrite)
     {
-        if ( (I2CREG(bus, UCBxIFG) & UCTXIFG0) != 0)
+        if ( EUSCI_B1->IFG & EUSCI_B_IFG_TXIFG0)
         {
             I2CREG(bus, UCBxTXBUF) = buff[index++];
         }
     }
+    EUSCI_B1->IFG &= ~EUSCI_B_IFG_TXIFG;
 }
 
 void i2cMasterRead(hDev device, uint8_t * buff, uint8_t szToRead)
@@ -168,7 +185,6 @@ void i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, ui
 
     i2cMasterCombinedWriteRead(device, &registeraddr, 1, buff, szToRead);
 }
-
 // Primary interrupt vector for I2C on module B1 (I2C #1)
 #ifdef __MSP430FR5994__
 #pragma vector = EUSCI_B1_VECTOR
@@ -198,8 +214,26 @@ __interrupt void USCI_B1_ISR(void)
     }
 }
 #elif defined __MSP432P401R__
-__interrupt void USCI_B1_ISR(void)
+uint8_t RXData[5] = {0};
+uint8_t RXDataPointer;
+
+
+void EUSCIB1_IRQHandler(void)
 {
+//        if(EUSCI_B1->IFG & EUSCI_B_IFG_NACKIFG){            // Vector 4: NACKIFG
+////            UCB1CTL1 |= UCTXSTT;            // Received NACK ... try again, start
+//           EUSCI_B1->CTLW0 |= EUSCI_B_CTLW0_TXSTT;
+//           EUSCI_B1->IFG &= ~ EUSCI_B_IFG_NACKIFG;
+//        }
+    if (EUSCI_B1->IFG & EUSCI_B_IFG_NACKIFG)
+       {
+           EUSCI_B1->IFG &= ~ EUSCI_B_IFG_NACKIFG;
+
+           // I2C start condition
+//           UCB1CTL0 |= UCTXSTT;            // Received NACK ... try again, start
+           EUSCI_B1->CTLW0 |= EUSCI_B_CTLW0_TXSTT;
+       }
+
 }
 #endif
 
