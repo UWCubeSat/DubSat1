@@ -249,6 +249,7 @@ void bspUARTInit(bus_instance_UART instance)
     // LaunchPad for MSP430FR5994
     if (instance == BackchannelUART)
     {
+        P1SEL0 |= BIT2 | BIT3;
         BACKCHANNEL_UART_SEL0 &= ~BACKCHANNEL_UART_BITS;
         BACKCHANNEL_UART_SEL1 |= BACKCHANNEL_UART_BITS;
     }
@@ -292,19 +293,11 @@ void bspI2CInit(bus_instance_i2c instance)
 //        I2C2_PORTSEL1 &= ~(I2C2_SDA_BIT | I2C2_SCL_BIT);
 //        I2C2_PORTSEL0 |= (I2C2_SDA_BIT | I2C2_SCL_BIT);
     }
-//#if !defined(__BSP_Board_MSP430FR5994LaunchPad__)
     else if (instance == I2CBus1)
     {
-//        I2C1_PORTSEL1 &= ~(I2C1_SDA_BIT | I2C1_SCL_BIT);
-        P6SEL0 |= BIT4;
-        P6SEL0 |= BIT5;
-        P6SEL1 &= ~BIT4;
-        P6SEL1 &= ~BIT5;
-//        I2C1_PORTSEL0 |= (I2C1_SDA_BIT | I2C1_SCL_BIT);
-//        I2C1_PORTSEL0 = 0x18;
+        I2C1_PORTSEL1 &= ~(I2C1_SDA_BIT | I2C1_SCL_BIT);
+        I2C1_PORTSEL0 |= (I2C1_SDA_BIT | I2C1_SCL_BIT);
     }
-//#endif
-
 }
 
 

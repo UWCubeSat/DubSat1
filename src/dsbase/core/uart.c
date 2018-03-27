@@ -124,32 +124,24 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable, UARTSpeed speed)
         switch (speed)
         {
             case Speed_9600:
-//                UCA0BRW = UCAxBRW_9600_432;
-
                 #ifdef __MSP432P401R__
-                    P1SEL0 |= BIT2 | BIT3;
-
-                    UCA0BR0 = UCAxBRW_9600_432;
-                    UCA0BR1 = 0x00;
-
-                    UCA0MCTLW |= UCAxMCTLW_9600_432;
-                    UCA0CTLW0  &= ~UCSWRST;
+                UCA0BR0 = UCAxBRW_9600_432;
+                UCA0MCTLW |= UCAxMCTLW_9600_432;
                 #elif defined __MSP430FR5994__
                 UCA0MCTLW |= UCAxMCTLW_9600;
                 #endif
                 break;
             case Speed_38400:
-                UCA0BRW = UCAxBRW_38400;
-
                 #ifdef __MSP432P401R__
                 #elif defined __MSP430FR5994__
+                UCA0BRW = UCAxBRW_38400;
                 UCA0MCTLW |= UCAxMCTLW_38400;
                 #endif
                 break;
             case Speed_115200:
-                UCA0BRW = UCAxBRW_115200;
                 #ifdef __MSP432P401R__
                 #elif defined __MSP430FR5994__
+                UCA0BRW = UCAxBRW_115200;
                 UCA0MCTLW |= UCAxMCTLW_115200;
                 #endif
                 break;
@@ -158,40 +150,42 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable, UARTSpeed speed)
         UCA0CTLW0 &= ~UCSWRST;
         UCA0IE |= UCRXIE | UCTXIE;
     }
-//    else if (instance == ApplicationUART)
-//    {
-//        UCA1CTLW0 = UCSWRST;
-//        UCA1CTLW0 |= UCSSEL__SMCLK;
-//
-//        switch (speed)
-//        {
-//            case Speed_9600:
-//                UCA1BRW = UCAxBRW_9600;
-//
-//                #ifdef __MSP432P401R__
-//                #elif defined __MSP430FR5994__
-//                UCA1MCTLW |= UCAxMCTLW_9600;
-//                #endif
-//                break;
-//            case Speed_38400:
-//                UCA1BRW = UCAxBRW_38400;
-//                #ifdef __MSP432P401R__
-//                #elif defined __MSP430FR5994__
-//                UCA1MCTLW |= UCAxMCTLW_38400;
-//                #endif
-//                break;
-//            case Speed_115200:
-//                UCA1BRW = UCAxBRW_115200;
-//                #ifdef __MSP432P401R__
-//                #elif defined __MSP430FR5994__
-//                UCA1MCTLW |= UCAxMCTLW_115200;
-//                #endif
-//                break;
-//        }
-//
-//        UCA1CTLW0 &= ~UCSWRST;
-//        UCA1IE |= UCRXIE | UCTXIE;
-//    }
+    else if (instance == ApplicationUART)
+    {
+        UCA1CTLW0 = UCSWRST;
+        UCA1CTLW0 |= UCSSEL__SMCLK;
+
+        switch (speed)
+        {
+            case Speed_9600:
+
+                #ifdef __MSP432P401R__
+                UCA1BR0 = UCAxBRW_9600_432;
+                UCA1MCTLW |= UCAxMCTLW_9600_432;
+                #elif defined __MSP430FR5994__
+                UCA1BRW = UCAxBRW_9600;
+                UCA1MCTLW |= UCAxMCTLW_9600;
+                #endif
+                break;
+            case Speed_38400:
+                #ifdef __MSP432P401R__
+                #elif defined __MSP430FR5994__
+                UCA1BRW = UCAxBRW_38400;
+                UCA1MCTLW |= UCAxMCTLW_38400;
+                #endif
+                break;
+            case Speed_115200:
+                #ifdef __MSP432P401R__
+                #elif defined __MSP430FR5994__
+                UCA1BRW = UCAxBRW_115200;
+                UCA1MCTLW |= UCAxMCTLW_115200;
+                #endif
+                break;
+        }
+
+        UCA1CTLW0 &= ~UCSWRST;
+        UCA1IE |= UCRXIE | UCTXIE;
+    }
 
     bus_ctx->health = Bus_Healthy;
     return handle;

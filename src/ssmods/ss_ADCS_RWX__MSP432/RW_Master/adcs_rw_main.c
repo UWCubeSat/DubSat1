@@ -73,9 +73,9 @@ int main(void)
         {
         case State_FirstState:
             if(rwsRPMUpdated()){
-                double b = rwsPIDStep(0);
+//                double b = rwsPIDStep(0);
                 if(rwsMode()){
-                    rwsSetMotorSpeed(b);
+//                    rwsSetMotorSpeed(b);
                 }
                 rwsSetRPMUpdated(0);
 
