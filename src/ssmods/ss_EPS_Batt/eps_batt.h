@@ -2,7 +2,7 @@
  * SUBSYSTEMNAME_MODULENAME.h
  *
  *  Created on: Jul 12, 2017
- *      Author: jeffc
+ *      Author: jeffc, Sean Poulter, Jamie Santos
  */
 
 #ifndef EPS_BATT_H_
@@ -40,6 +40,10 @@ TLM_SEGMENT {
 
     uint8_t lastbalancercmd;
     uint8_t lastheatercmd;
+
+    //Coulomb counter health info
+    uint8_t CC_StatusReg;
+    uint8_t CC_ControlReg;
 
 } general_segment;
 

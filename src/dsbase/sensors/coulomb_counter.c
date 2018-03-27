@@ -14,14 +14,14 @@ void LTC2943Init(bus_instance_i2c bus, float rShunt) {
     sensor.hI2CDevice = hSensor;
     sensor.shuntResistance = rShunt;
 
-    //Configure control register
-    i2cBuff[0] = LTC2943_ADDR_CONTROL;
-    i2cBuff[1] = ALERTDISABLED_PRESCALER256_ADCAUTOMATICMODE;
-    i2cMasterWrite(hSensor, i2cBuff, 2);
+    //read the lastStatus
+    readCoulombCounterStatus();
 
-//    //read set control register
-//    i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_CONTROL, i2cBuff, 1);
-//    sensor.controlReg = i2cBuff[0];
+    //Configure control register
+    setControl(Automatic_Mode, M_64, ALCC_Disabled, Active);
+
+    //read what was set in the control register
+    readCoulombCounterControl();
 
     //calculate charge LSB based on shunt resistance and prescaler.
     sensor.chargeLSB = 0.34*(50.0/sensor.shuntResistance)*((float)LTC2943_PRESCALEFACTOR/4096.0);
@@ -86,10 +86,29 @@ CoulombCounterData readCoulombCounter() {
 
 
     //Accumulated charge in batteries, assuming 2200mAh batteries.
-        sensor.sensorData.battCharge = sensor.chargeLSB*(sensor.sensorData.rawAccumCharge-sensor.accumChargeEmpty);
+    sensor.sensorData.battCharge = sensor.chargeLSB*(sensor.sensorData.rawAccumCharge-sensor.accumChargeEmpty);
+
 
     return sensor.sensorData;
 }
 
+void readCoulombCounterControl() {
+    //read control
+    i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_CONTROL, i2cBuff, 2); //combinedWriteRead is broken. Requires 2 bytes.
+    sensor.sensorData.controlReg = i2cBuff[0]; //Just take the first byte
+}
+
+void readCoulombCounterStatus() {
+    //read status
+    i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_STATUS, i2cBuff, 2); //combinedWriteRead is broken. Requires 2 bytes.
+    sensor.sensorData.statusReg = i2cBuff[0]; //Just take the first byte
+}
+
+void setControl(CC_Control_ADCmode ADCmode, CC_Control_PrescaleFactor m, CC_Control_ALCCConfiguration ALCC, CC_Control_Shutdown shutdown ) {
+    uint8_t control = (ADCmode<<8) | (m<<6) | (ALCC<<3) | shutdown;
+    i2cBuff[0] = LTC2943_ADDR_CONTROL;
+    i2cBuff[1] = control;
+    i2cMasterWrite(sensor.hI2CDevice, i2cBuff, 2);
+}
 
 

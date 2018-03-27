@@ -46,6 +46,9 @@ typedef struct _coulombCounterData {
     float totalAccumulatedCharge;
     float battCharge;
 
+    uint8_t controlReg;
+    uint8_t statusReg;
+
 } CoulombCounterData;
 
 typedef struct _device_context_coulombCounter {
@@ -57,13 +60,43 @@ typedef struct _device_context_coulombCounter {
     float chargeLSB; //mAh
     uint16_t accumChargeFull;
     uint16_t accumChargeEmpty;
-    uint8_t controlReg;
+
 
     CoulombCounterData sensorData;
 } deviceContextCoulombCounter;
 
+typedef enum {
+    Automatic_Mode = 0x03,
+    Scan_Mode = 0x02,
+    Manual_Mode = 0x01,
+    Sleep = 0x00,
+} CC_Control_ADCmode;
+
+typedef enum {
+    M_1 = 0x00,
+    M_4 = 0x01,
+    M_16 = 0x02,
+    M_64 = 0x03,
+    M_256 = 0x04,
+    M_1024 = 0x05,
+    M_4096 = 0x07,
+} CC_Control_PrescaleFactor;
+
+typedef enum {
+    Alert_Mode = 0x02,
+    Charge_Complete_Mode = 0x01,
+    ALCC_Disabled = 0x00,
+} CC_Control_ALCCConfiguration;
+
+typedef enum {
+    Shutdown = 0x01,
+    Active = 0x00,
+} CC_Control_Shutdown;
+
 void LTC2943Init(bus_instance_i2c bus, float rShunt);
 CoulombCounterData readCoulombCounter();
+void readCoulombCounterControl();
+void readCoulombCounterStatus();
 float rawBusVoltageToFloat(int16_t raw);
 float rawCurrentToFloat(int16_t raw);
 

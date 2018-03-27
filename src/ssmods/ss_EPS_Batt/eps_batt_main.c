@@ -117,12 +117,6 @@ FILE_STATIC void battBcSendMeta()
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
-
-/*
- * main.c
- */
-
-
 void readCC (){
     //Reading Coulomb counter
     CCData = readCoulombCounter(); //reading the Coulomb counter (busVoltageV, calcdCurrentA, rawAccumCharge, (SOC?))
@@ -147,6 +141,13 @@ void readTempSensor(){
     //and an intercept of 50 degrees at 0 volts
     sseg.battTemp = (tempVoltageV /0.010) - 50;
 }
+
+
+
+/*
+ * main.c
+ */
+
 
 
 int main(void)
@@ -206,6 +207,12 @@ int main(void)
         // Stuff running at 1Hz-ish
         if (counter % 8 == 0)
         {
+            //check Coulomb counter
+            readCoulombCounterStatus();
+            gseg.CC_StatusReg = CCData.statusReg;
+            readCoulombCounterControl();
+            gseg.CC_ControlReg = CCData.controlReg;
+
             battBcSendGeneral();
             battBcSendHealth();
         }
