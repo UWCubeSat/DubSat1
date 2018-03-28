@@ -28,6 +28,8 @@
  */
 #define PHOTODIODE_DELAY_MS 200
 
+#define MAX_NUM_PHOTODIODES 3
+
 uint8_t photodiodeInit(uint8_t addr, bus_instance_i2c i2cbus);
 uint32_t photodiodeVoltage(uint8_t handle, uint8_t gain);
 double photodiodeVoltageDouble(uint8_t handle, uint8_t gain);

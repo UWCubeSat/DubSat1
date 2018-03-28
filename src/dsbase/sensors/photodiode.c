@@ -11,7 +11,7 @@
 #include "photodiode.h"
 
 FILE_STATIC uint8_t read[3];
-FILE_STATIC PhotodiodeData pdData[8] = { 0 };
+FILE_STATIC PhotodiodeData pdData[MAX_NUM_PHOTODIODES] = { 0 };
 FILE_STATIC uint8_t currIndex = 0;
 
 FILE_STATIC void startTimer(uint8_t pdHandle)
