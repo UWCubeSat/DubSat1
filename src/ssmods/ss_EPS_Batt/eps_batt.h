@@ -75,7 +75,6 @@ TLM_SEGMENT {            //Add sensor data here
 CMD_SEGMENT {                          //no need to add anything unless change to CC (e.g. reset)
     uint8_t enablebattbal;
     uint8_t enablebattheater;
-    uint8_t enable
 } battmgmt_segment;
 
 CMD_SEGMENT {
