@@ -16,6 +16,8 @@
  */
 
 
+//NOTE: this build will fire on power-on w/o timeout
+
 #define OPCODE_COMMON_CMD 0
 #define OPCODE_START_FIRE 2
 #define OPCODE_STOP_FIRE 3
@@ -43,10 +45,10 @@ FILE_STATIC flag_t triggerState3;
 #pragma PERSISTENT(igniterChargeTime)
 #pragma PERSISTENT(cooldownTime)
 
-FILE_STATIC uint16_t mainChargeTime = 39322;
+FILE_STATIC uint16_t mainChargeTime = 36045;
 FILE_STATIC uint16_t mainIgniterDelay = 32;
-FILE_STATIC uint16_t igniterChargeTime = 3278;
-FILE_STATIC uint16_t cooldownTime = 22906;
+FILE_STATIC uint16_t igniterChargeTime = 1000;
+FILE_STATIC uint16_t cooldownTime = 28461;
 
 FILE_STATIC ppt_main_done mainDone;
 FILE_STATIC ppt_igniter_done igniterDone;
@@ -66,11 +68,20 @@ FILE_STATIC void sendIsOp() //TODO: remove before flight, or don't (maybe replac
 
 FILE_STATIC void sendMainDone()
 {
-    mainDone.timeDone = TB0R;
+    if(mod_status.ss_state == State_Main_Charging)
+        mainDone.timeDone = TB0R - TB0CCR1;
+    else
+        mainDone.timeDone = 0;
+
     bcbinSendPacket((uint8_t *) &mainDone, sizeof(mainDone));
 }
 FILE_STATIC void sendIgniterDone()
 {
+    if(mod_status.ss_state == State_Igniter_Charging)
+        mainDone.timeDone = TB0R - TB0CCR1;
+    else
+        mainDone.timeDone = 0;
+
     igniterDone.timeDone = TB0R;
     bcbinSendPacket((uint8_t *) &igniterDone, sizeof(igniterDone));
 }
@@ -132,18 +143,6 @@ int main(void)
     P2IES |= BIT1; //this represents capture mode (rising/falling/both)
     P2IE |= (BIT5 | BIT6);
 
-    firing = 0;
-
-    TB0CCR1 = mainChargeTime;
-    mod_status.ss_state = State_Main_Charging;
-    firing = 1;
-    P4OUT |= BIT3; //main high
-    //TODO: ^this code block is just for testing
-
-    //TB0CCR2 = 39354;
-    //TB0CCR3 = 42632; //was 42621
-    TB0CCTL1 = CCIE;
-
     TB0CTL = TBSSEL__ACLK | MC__CONTINOUS | TBCLR | TBIE;
 
 #if defined(__DEBUG__)
@@ -175,6 +174,16 @@ int main(void)
 
     sendIsOp();
     bcbinPopulateHeader(&currTiming.header, 5, sizeof(currTiming));
+
+
+    ///////////////////////////////////////
+    //TODO: this is a test block
+    firing = 1;
+    mod_status.ss_state = State_Cooldown;
+    TB0CCR1 = TB0R + cooldownTime;
+    TB0CCTL1 = CCIE;
+    ///////////////////////////////////////
+
 
     while (1)
     {
@@ -420,15 +429,16 @@ __interrupt void Timer0_B1_ISR (void)
                     break;
                 case State_Igniter_Charging:
                     fire();
-                    if(currTimeout)
+                    //TODO: this code was removed to enable firing w/o timeout on power on
+                    /*if(currTimeout)
                     {
                         //TODO: send sync pulse here
-                        currTimeout--;
+                        currTimeout--;*/
                         mod_status.ss_state = State_Cooldown;
                         TB0CCR1 += cooldownTime;
-                    }
+                    /*}
                     else
-                        stopFiring();
+                        stopFiring();*/
                     break;
                 case State_Cooldown:
                     P4OUT |= BIT3;
