@@ -1,10 +1,12 @@
 #define ENABLE_GPS         0
 #define ENABLE_PHOTODIODES 0
 #define ENABLE_SUNSENSOR   0
+#define ENABLE_MAG         1
+#define ENABLE_IMU         1
 
 // time between sending health packets
 // meta packets sent every 8 * UPDATE_DELAY_MS
-#define UPDATE_DELAY_MS 1000
+#define UPDATE_DELAY_MS 500
 
 #include <adcs_sensorproc.h>
 #include <msp430.h> 
@@ -18,6 +20,8 @@
 #include "gps_io.h"
 #include "sunsensor_io.h"
 #include "photodiode_io.h"
+#include "mag_io.h"
+#include "imu_io.h"
 
 /*
  * SensorInterface is a class-like struct for managing multiple (3 to 5) sensors
@@ -47,6 +51,12 @@ FILE_STATIC const SensorInterface sensorInterfaces[] = {
 #endif
 #if ENABLE_PHOTODIODES
     { photodiodeioInit, photodiodeioUpdate, NULL, NULL },
+#endif
+#if ENABLE_MAG
+    { magioInit, magioUpdate, NULL, NULL },
+#endif
+#if ENABLE_IMU
+    { imuioInit, imuioUpdate, NULL, NULL },
 #endif
 };
 
@@ -123,12 +133,12 @@ int main(void)
     {
         // make MSP-wide updates
         static uint8_t i = 0;
-        if (checkTimer(timerHandle)) // 1 Hz
+        if (checkTimer(timerHandle))
         {
             LED_OUT ^= LED_BIT;
             sendHealthSegment();
 
-            if (i % 8 == 0) // every 8 seconds
+            if (i % 8 == 0)
             {
                 sendMetaSegment();
             }

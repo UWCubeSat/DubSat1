@@ -13,6 +13,8 @@
 // COSMOS telemetry IDs
 #define TLM_ID_SUNSENSOR  121
 #define TLM_ID_PHOTODIODE 118
+#define TLM_ID_MAG        117
+#define TLM_ID_IMU        116
 
 #define TLM_ID_GPSHEALTH  120
 #define TLM_ID_GPSPOWER   122
