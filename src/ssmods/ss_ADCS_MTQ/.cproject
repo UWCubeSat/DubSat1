@@ -44,7 +44,7 @@
 									<listOptionValue builtIn="false" value="_MPU_ENABLE"/>
 								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DATA_MODEL.1741633690" name="Specify the data memory model. (--data_model)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DATA_MODEL" value="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DATA_MODEL.restricted" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.ADVICE__HW_CONFIG.1130792735" name="Check hardware configuration settings for device. (--advice:hw_config)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.ADVICE__HW_CONFIG" value="all" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.ADVICE__HW_CONFIG.1130792735" name="Check hardware configuration settings for device. (--advice:hw_config)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.ADVICE__HW_CONFIG" value="&quot;all&quot;" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.USE_HW_MPY.315640414" name="Inline hardware multiply version of RTS mpy routine (--use_hw_mpy)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.USE_HW_MPY" value="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.USE_HW_MPY.F5" valueType="enumerated"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.SILICON_ERRATA.CPU21.1531797530" name="Workaround specified silicon errata (--silicon_errata) [CPU21]" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.SILICON_ERRATA.CPU21" value="true" valueType="boolean"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.SILICON_ERRATA.CPU22.2122476452" name="Workaround specified silicon errata (--silicon_errata) [CPU22]" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.SILICON_ERRATA.CPU22" value="true" valueType="boolean"/>
@@ -57,7 +57,7 @@
 									<listOptionValue builtIn="false" value="&quot;${PROJECT_ROOT}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/include&quot;"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.ADVICE__POWER.1446760276" name="Enable checking of ULP power rules (--advice:power)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.ADVICE__POWER" value="all" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.ADVICE__POWER.1446760276" name="Enable checking of ULP power rules (--advice:power)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.ADVICE__POWER" value="" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DEBUGGING_MODEL.1248574109" name="Debugging model" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DEBUGGING_MODEL" value="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DEBUGGING_MODEL.SYMDEBUG__DWARF" valueType="enumerated"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DIAG_WARNING.1805193795" name="Treat diagnostic &lt;id&gt; as warning (--diag_warning, -pdsw)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DIAG_WARNING" valueType="stringList">
 									<listOptionValue builtIn="false" value="225"/>

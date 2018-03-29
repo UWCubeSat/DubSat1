@@ -1,0 +1,33 @@
+TELEMETRY EPS_DIST META LITTLE_ENDIAN "Standard shared meta data telemetry packet for this target."
+
+    # TO CUSTOMIZE FOR A GIVEN TARGET:  no changes required (i.e. do not change local id's specified)
+  
+    # This must ALWAYS be the first entry in any telemetry packet
+    <%= render "../../SYSTEM/cmd_tlm/_shared_tlm_header.txt", locals: {id: 0} %>
+    
+    # Standard items
+    <%= render "../../SYSTEM/cmd_tlm/_shared_tlm_meta_items.txt" %>
+    
+    
+TELEMETRY EPS_DIST HEALTH LITTLE_ENDIAN "Standard shared health telemetry packet."
+
+    # This must ALWAYS be the first entry in any telemetry packet
+    <%= render "../../SYSTEM/cmd_tlm/_shared_tlm_header.txt", locals: {id: 1} %>
+    
+    # Standard items
+    <%= render "../../SYSTEM/cmd_tlm/_shared_tlm_health_items.txt" %>
+    
+    
+TELEMETRY EPS_DIST BUS_UART0 LITTLE_ENDIAN "Captures key status values for the UART buses that are active."
+
+    # This must ALWAYS be the first entry in any telemetry packet
+    <%= render "../../SYSTEM/cmd_tlm/_shared_tlm_header.txt", locals: {id: 128} %>
+    
+    <%= render "../../SYSTEM/cmd_tlm/_shared_tlm_bus_uart.txt", locals: { bus: 0 } %>
+    
+TELEMETRY EPS_DIST BUS_UART1 LITTLE_ENDIAN "Captures key status values for the UART buses that are active."
+
+    # This must ALWAYS be the first entry in any telemetry packet
+    <%= render "../../SYSTEM/cmd_tlm/_shared_tlm_header.txt", locals: {id: 128} %>
+    
+    <%= render "../../SYSTEM/cmd_tlm/_shared_tlm_bus_uart.txt", locals: { bus: 1 } %>

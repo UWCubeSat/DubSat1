@@ -1,0 +1,10 @@
+SCREEN AUTO AUTO 1.0
+
+  VERTICALBOX
+    LABELVALUE EPS_DIST GENERAL RECEIVED_TIMEFORMATTED # COSMOS Received Time (Local time zone, Formatted string)
+    LABELVALUE EPS_DIST GENERAL RECEIVED_COUNT # COSMOS packet received count
+    
+    
+
+END
+

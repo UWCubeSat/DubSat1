@@ -19,6 +19,7 @@ Z2 - P2_6 - TB0.1
 #include <msp430.h> 
 #include "adcs_mtq.h"
 #include "bsp/bsp.h"
+#include "core/timer.h"
 #include "interfaces/canwrap.h" 
 
 //------------------------------------------------------------------
@@ -28,6 +29,8 @@ FILE_STATIC ModuleStatus mod_status;
 FILE_STATIC volatile TumbleState tumble_status = Idle; // static volatile enum _tumble_state {Tumbling=1,Idle=0} TumbleState tumble_status = Idle;
 FILE_STATIC volatile int duty_X1, duty_X2, duty_Y1, duty_Y2, duty_Z1, duty_Z2; // for assigning pwm to output 
 FILE_STATIC volatile int received_command_packet; // flag to protect against weird behavior if in tumbling state but no command packet has been received
+FILE_STATIC volatile int received_cosmos_command_packet; // flag to protect against weird behavior if in tumbling state but no command packet has been received
+FILE_STATIC duty_segment dutyseg;
 
 //------------------------------------------------------------------
 // function declarations
@@ -57,8 +60,13 @@ int main(void)
 	mtq_gpio_init(); // pins are timer b function
 	// timer initialization 
 	timer_b_init();
+	initializeTimer();
+    bcbinPopulateHeader(&(dutyseg.header), TLM_ID_SHARED_SSGENERAL, sizeof(dutyseg));
+    debugRegisterEntity(Entity_NONE, NULL, NULL, handleDebugActionCallback);
+    int timerID = timerCallbackInitializer(&sendDutyPacket, 500000); // timer will call on blinkLED every 2000 us.
+    startCallback(timerID);
 	// CAN initialization 
-	canWrapInit();
+	canWrapInitWithFilter();
 	setCANPacketRxCallback(can_packet_rx_callback);
 	// temperature sensor initialization 
 	//asensorInit(Ref_2p5V);
@@ -84,9 +92,10 @@ int main(void)
 			case Tumbling: 
 				PJOUT |= BIT0|BIT1|BIT2; // debug lights 
 				// set duty cycles 
-				if (received_command_packet)
+				if (received_command_packet || received_cosmos_command_packet)
 				{
 				    received_command_packet = 0; // reset received_command_packet flag
+				    received_cosmos_command_packet = 0; // reset received_command_packet flag
 					set_pwm(X1, duty_X1); 
 					set_pwm(X2, duty_X2); 
 					set_pwm(Y1, duty_Y1); 
@@ -230,28 +239,28 @@ void mtq_gpio_init(void)
 	PJSEL0 &= ~(BIT0|BIT1|BIT2);
 	PJSEL1 &= ~(BIT0|BIT1|BIT2);
 	// P1.7 - TB0.4 - x1
-	P1DIR |= BIT7; 
-    P1SEL0 |= BIT7; 
+	P1DIR |= BIT7;
+    P1SEL0 |= BIT7;
     P1SEL1 &= ~BIT7;
 	// P1.6 - TB0.3 - x2
-	P1DIR |= BIT6; 
-    P1SEL0 |= BIT6; 
+	P1DIR |= BIT6;
+    P1SEL0 |= BIT6;
     P1SEL1 &= ~BIT6;
 	// P3.7 - TB0.6 - y1
-	P3DIR |= BIT7; 
-    P3SEL0 |= BIT7; 
+	P3DIR |= BIT7;
+    P3SEL0 |= BIT7;
     P3SEL1 &= ~BIT7;
 	// P3.6 - TB0.5 - y2
-	P3DIR |= BIT6; 
-    P3SEL0 |= BIT6; 
+	P3DIR |= BIT6;
+    P3SEL0 |= BIT6;
     P3SEL1 &= ~BIT6;
 	// P2.2 - TB0.2 - z1
-	P2DIR |= BIT2; 
-    P2SEL0 |= BIT2; 
+	P2DIR |= BIT2;
+    P2SEL0 |= BIT2;
     P2SEL1 &= ~BIT2;
 	// P2.6 - TB0.1 - z2
-	P2DIR |= BIT6; 
-    P2SEL0 |= BIT6; 
+	P2DIR |= BIT6;
+    P2SEL0 |= BIT6;
     P2SEL1 &= ~BIT6;
 	//---------------------------------
 	// Power mode control (page 73 datasheet)
@@ -270,39 +279,39 @@ void mtq_gpio_debug_init(void)
 	PJSEL1 &= ~(BIT0|BIT1|BIT2);
 	// P1.7 - gpio - x1
 	P1OUT &= ~BIT7; // power on state
-	P1DIR |= BIT7; 
-    P1SEL0 &= ~BIT7; 
+	P1DIR |= BIT7;
+    P1SEL0 &= ~BIT7;
     P1SEL1 &= ~BIT7;
 	// P1.6 - gpio - x2
 	P1OUT &= ~BIT6; // power on state
-	P1DIR |= BIT6; 
-    P1SEL0 &= ~BIT6; 
+	P1DIR |= BIT6;
+    P1SEL0 &= ~BIT6;
     P1SEL1 &= ~BIT6;
 	// P3.7 - gpio - y1
 	P3OUT &= ~BIT7; // power on state
-	P3DIR |= BIT7; 
-    P3SEL0 &= ~BIT7; 
+	P3DIR |= BIT7;
+    P3SEL0 &= ~BIT7;
     P3SEL1 &= ~BIT7;
 	// P3.6 - gpio  - y2
 	P3OUT &= ~BIT6; // power on state
-	P3DIR |= BIT6; 
-    P3SEL0 &= ~BIT6; 
+	P3DIR |= BIT6;
+    P3SEL0 &= ~BIT6;
     P3SEL1 &= ~BIT6;
 	// P2.2 - gpio  - z1
 	P2OUT &= ~BIT2; // power on state
-	P2DIR |= BIT2; 
-    P2SEL0 &= ~BIT2; 
+	P2DIR |= BIT2;
+    P2SEL0 &= ~BIT2;
     P2SEL1 &= ~BIT2;
 	// P2.6 - gpio  - z2
 	P2OUT &= ~BIT6; // power on state
-	P2DIR |= BIT6; 
-    P2SEL0 &= ~BIT6; 
+	P2DIR |= BIT6;
+    P2SEL0 &= ~BIT6;
     P2SEL1 &= ~BIT6;
 	//---------------------------------
 	// Power mode control (page 73 datasheet)
 	//---------------------------------
-	// Disable the GPIO power-on default high-impedance mode to activate previously configured port settings 
-	PM5CTL0 &= ~LOCKLPM5;  
+	// Disable the GPIO power-on default high-impedance mode to activate previously configured port settings
+	PM5CTL0 &= ~LOCKLPM5;
 }
 
 void timer_b_init(void) 
@@ -328,6 +337,39 @@ void timer_b_init(void)
 	TB0CCTL1 = OUTMOD_7;
 	// TB0 control 
 	TB0CTL = TBSSEL__SMCLK | MC__UP | TBCLR; 
+}
+uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
+{
+    if (mode == Mode_BinaryStreaming)
+    {
+        command_segment *myCmdSegment;
+
+        uint8_t opcode = cmdstr[0];
+        switch(opcode)
+        {
+            case 1:
+                // cast the payload to our command segment
+                myCmdSegment = (command_segment *) (cmdstr + 1);
+                interpret_command_dipole(myCmdSegment->x,myCmdSegment->y,myCmdSegment->z);
+                // TODO do something based on the command segment
+
+            case OPCODE_COMMONCMD:
+                break;
+            default:
+                break;
+        }
+    }
+    return 1;
+}
+
+void sendDutyPacket(){
+    dutyseg.x1 = duty_X1;
+    dutyseg.x2 = duty_X2;
+    dutyseg.y1 = duty_Y1;
+    dutyseg.y2 = duty_Y2;
+    dutyseg.z1 = duty_Z1;
+    dutyseg.z2 = duty_Z2;
+    bcbinSendPacket((uint8_t *) &dutyseg, sizeof(dutyseg));
 }
 
 

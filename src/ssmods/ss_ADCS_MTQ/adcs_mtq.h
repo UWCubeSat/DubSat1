@@ -42,8 +42,27 @@ typedef struct _module_status {
     uint16_t in_unknown_state;
 } ModuleStatus;
 
+TLM_SEGMENT {
+    BcTlmHeader header;  // All COSMOS TLM packets must have this
+    uint8_t x1;
+    uint8_t x2;
+    uint8_t y1;
+    uint8_t y2;
+    uint8_t z1;
+    uint8_t z2;
+
+} duty_segment;
+
+CMD_SEGMENT {
+    int8_t x;
+    int8_t y;
+    int8_t z;
+} command_segment;
+
+
 void handlePPTFiringNotification();
 void handleRollCall();
+void sendDutyPacket();
 
 uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);
