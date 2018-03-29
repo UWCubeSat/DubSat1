@@ -95,6 +95,7 @@ FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
 // Packetizes and sends backchannel GENERAL packet
 FILE_STATIC void battBcSendGeneral()
 {
+    gseg.isChecking = isChecking;
     bcbinSendPacket((uint8_t *) &gseg, sizeof(gseg));
 }
 
