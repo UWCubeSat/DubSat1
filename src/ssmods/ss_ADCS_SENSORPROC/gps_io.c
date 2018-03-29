@@ -599,52 +599,46 @@ FILE_STATIC void sendBestXYZOverBackchannel(const GPSBestXYZ *m, uint16_t week, 
     bcbinSendPacket((uint8_t *) &bestxyzSeg, sizeof(bestxyz_segment));
 }
 
+// TODO this is kind of a lot to do. Check if the RX buffer doesn't overflow here
 FILE_STATIC void sendBestXYZOverCAN(const GPSBestXYZ *m, uint16_t week, gps_ec ms)
 {
-    // TODO this is kind of a lot to do. Check if the RX buffer doesn't overflow here
-
-    // reuse x-coordinate structs to save memory
-    sensorproc_gps_pos_x pos;
-    sensorproc_gps_vel_x vel;
-    sensorproc_gps_x_u uncertainty;
-    sensorproc_gps_time time;
     CANPacket canPacket;
 
     // send position packets
-    pos.sensorproc_gps_pos_x_val = m->pos.x;
-    encodesensorproc_gps_pos_x(&pos, &canPacket);
+    sensorproc_gps_pos_x pos_x = { m->pos.x };
+    encodesensorproc_gps_pos_x(&pos_x, &canPacket);
     canSendPacket(&canPacket);
-    pos.sensorproc_gps_pos_x_val = m->pos.y;
-    encodesensorproc_gps_pos_y((sensorproc_gps_pos_y *) &pos, &canPacket);
+    sensorproc_gps_pos_y pos_y = { m->pos.y };
+    encodesensorproc_gps_pos_y(&pos_y, &canPacket);
     canSendPacket(&canPacket);
-    pos.sensorproc_gps_pos_x_val = m->pos.z;
-    encodesensorproc_gps_pos_z((sensorproc_gps_pos_z *) &pos, &canPacket);
+    sensorproc_gps_pos_z pos_z = { m->pos.z };
+    encodesensorproc_gps_pos_z(&pos_z, &canPacket);
     canSendPacket(&canPacket);
 
     // send velocity packets
-    vel.sensorproc_gps_vel_x_val = m->vel.x;
-    encodesensorproc_gps_vel_x(&vel, &canPacket);
+    sensorproc_gps_vel_x vel_x = { m->vel.x };
+    encodesensorproc_gps_vel_x(&vel_x, &canPacket);
     canSendPacket(&canPacket);
-    vel.sensorproc_gps_vel_x_val = m->vel.y;
-    encodesensorproc_gps_vel_y((sensorproc_gps_vel_y *) &vel, &canPacket);
+    sensorproc_gps_vel_y vel_y = { m->vel.y };
+    encodesensorproc_gps_vel_y(&vel_y, &canPacket);
     canSendPacket(&canPacket);
-    vel.sensorproc_gps_vel_x_val = m->vel.z;
-    encodesensorproc_gps_vel_z((sensorproc_gps_vel_z *) &vel, &canPacket);
+    sensorproc_gps_vel_z vel_z = { m->vel.z };
+    encodesensorproc_gps_vel_z(&vel_z, &canPacket);
     canSendPacket(&canPacket);
 
     // send uncertainty packets
-    uncertainty = (sensorproc_gps_x_u) { m->velStdDev.x, m->posStdDev.x };
-    encodesensorproc_gps_x_u(&uncertainty, &canPacket);
+    sensorproc_gps_x_u x_u = { m->velStdDev.x, m->posStdDev.x };
+    encodesensorproc_gps_x_u(&x_u, &canPacket);
     canSendPacket(&canPacket);
-    uncertainty = (sensorproc_gps_x_u) { m->velStdDev.y, m->posStdDev.y };
-    encodesensorproc_gps_y_u((sensorproc_gps_y_u *) &uncertainty, &canPacket);
+    sensorproc_gps_y_u y_u = { m->velStdDev.y, m->posStdDev.y };
+    encodesensorproc_gps_y_u(&y_u, &canPacket);
     canSendPacket(&canPacket);
-    uncertainty = (sensorproc_gps_x_u) { m->velStdDev.z, m->posStdDev.z };
-    encodesensorproc_gps_z_u((sensorproc_gps_z_u *) &uncertainty, &canPacket);
+    sensorproc_gps_z_u z_u = { m->velStdDev.z, m->posStdDev.z };
+    encodesensorproc_gps_z_u(&z_u, &canPacket);
     canSendPacket(&canPacket);
 
     // send time packet
-    time = (sensorproc_gps_time) { ms, week };
+    sensorproc_gps_time time = { ms, week };
     encodesensorproc_gps_time(&time, &canPacket);
     canSendPacket(&canPacket);
 }
