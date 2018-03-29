@@ -9,7 +9,7 @@
 #endif
 
 // number of bytes allocated to array members of GPS messages
-#define FLEX_ARRAY_BUFFER_LENGTH 500
+#define FLEX_ARRAY_BUFFER_LENGTH 400
 
 // size of byte buffer for uart interrupt to fill while processing GPS messages
 #define GPS_RX_BUFFER_LENGTH 20

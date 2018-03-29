@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 #include "sensors/gps/gps.h"
+#include "interfaces/canwrap.h"
 
 typedef enum {
     State_Off = 0,
@@ -147,6 +148,7 @@ void gpsioSendStatus();
 void gpsioSendHealth();
 
 bool gpsioHandlePackage(GPSPackage *p);
-bool gpsioHandleCommand(uint8_t * cmdstr);
+uint8_t gpsioHandleCommand(uint8_t * cmdstr);
+uint8_t gpsioHandleCan(CANPacket *packet);
 
 #endif /* GPS_IO_H_ */

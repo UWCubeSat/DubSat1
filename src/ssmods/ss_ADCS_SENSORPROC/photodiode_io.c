@@ -8,6 +8,7 @@
 #include "photodiode_io.h"
 #include "sensors/photodiode.h"
 #include "interfaces/canwrap.h"
+#include "core/timer.h"
 #include "adcs_sensorproc_ids.h"
 
 // backchannel telemetry segment
@@ -18,8 +19,14 @@ FILE_STATIC uint8_t pdCenter;
 FILE_STATIC uint8_t pdRight;
 FILE_STATIC uint8_t pdLeft;
 
+// timer handle
+FILE_STATIC int timerHandle;
+
 void photodiodeioInit()
 {
+    initializeTimer();
+    timerHandle = timerPollInitializer(PHOTODIODE_DELAY_MS);
+
     bcbinPopulateHeader(&photodiodeSeg.header, TLM_ID_PHOTODIODE, sizeof(photodiodeSeg));
 
     pdCenter = photodiodeInit(PD_ADDR_HH, I2C_BUS_PHOTODIODES);
@@ -38,12 +45,20 @@ FILE_STATIC uint8_t compressReading(uint32_t reading)
 
 void photodiodeioUpdate()
 {
+    if (!checkTimer(timerHandle))
+    {
+        return;
+    }
+    timerHandle = timerPollInitializer(PHOTODIODE_DELAY_MS);
+
     photodiodeSeg.center = photodiodeRead(defaultWrite, pdCenter);
     photodiodeSeg.right = photodiodeRead(defaultWrite, pdRight);
     photodiodeSeg.left = photodiodeRead(defaultWrite, pdLeft);
     photodiodeSeg.cCenter = compressReading(photodiodeSeg.center);
     photodiodeSeg.cRight = compressReading(photodiodeSeg.right);
     photodiodeSeg.cLeft = compressReading(photodiodeSeg.left);
+
+    photodiodeioSendData();
 }
 
 void photodiodeioSendData()

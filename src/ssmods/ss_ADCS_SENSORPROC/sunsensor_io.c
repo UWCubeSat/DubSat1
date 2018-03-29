@@ -5,17 +5,25 @@
  *      Author: djdup
  */
 
+#define SUNSENSOR_UPDATE_DELAY_MS 200
+
 #include <math.h>
 
 #include "sunsensor_io.h"
 #include "sensors/sun_sensor.h"
 #include "interfaces/canwrap.h"
+#include "core/timer.h"
 #include "adcs_sensorproc_ids.h"
 
 FILE_STATIC sunsensor_segment sunsensorSeg;
 
+FILE_STATIC int timerHandle;
+
 void sunsensorioInit()
 {
+    initializeTimer();
+    timerHandle = timerPollInitializer(SUNSENSOR_UPDATE_DELAY_MS);
+
     bcbinPopulateHeader(&sunsensorSeg.header, TLM_ID_SUNSENSOR, sizeof(sunsensorSeg));
 
     sunSensorInit(I2C_BUS_SUNSENSOR);
@@ -23,6 +31,12 @@ void sunsensorioInit()
 
 void sunsensorioUpdate()
 {
+    if (!checkTimer(timerHandle))
+    {
+        return;
+    }
+    timerHandle = timerPollInitializer(SUNSENSOR_UPDATE_DELAY_MS);
+
     SunSensorAngle *angle = sunSensorReadAngle();
     if (angle != NULLP)
     {
@@ -34,6 +48,8 @@ void sunsensorioUpdate()
     {
         // TODO log read error
     }
+
+    sunsensorioSendData();
 }
 
 void sunsensorioSendData()

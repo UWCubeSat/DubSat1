@@ -1,9 +1,10 @@
-// using theses macros b/c i2c blocks when they aren't plugged in
-#define ENABLE_PHOTODIODES 1
-#define ENABLE_SUNSENSOR   1
+#define ENABLE_GPS         0
+#define ENABLE_PHOTODIODES 0
+#define ENABLE_SUNSENSOR   0
 
-// time to wait between readings of the sun sensor and photodiodes
-#define UPDATE_DELAY_MS 200
+// time between sending health packets
+// meta packets sent every 8 * UPDATE_DELAY_MS
+#define UPDATE_DELAY_MS 1000
 
 #include <adcs_sensorproc.h>
 #include <msp430.h> 
@@ -18,12 +19,63 @@
 #include "sunsensor_io.h"
 #include "photodiode_io.h"
 
+/*
+ * SensorInterface is a class-like struct for managing multiple (3 to 5) sensors
+ * on one microcontroller. Each interface should implement an init function, an
+ * update function, a backchannel command handler (optional), and a CAN packet
+ * handler (optional). Sensor outputs can be sent during the update function.
+ */
+
+typedef void (* sensorio_init_fn)(void);
+typedef void (* sensorio_update_fn)(void);
+typedef uint8_t (* sensorio_cmd_handler)(uint8_t *cmd);
+typedef uint8_t (* sensorio_can_handler)(CANPacket *packet);
+
+typedef struct {
+    sensorio_init_fn init;
+    sensorio_update_fn update;
+    sensorio_cmd_handler handleCmd;
+    sensorio_can_handler handleCan;
+} SensorInterface;
+
+FILE_STATIC const SensorInterface sensorInterfaces[] = {
+#if ENABLE_GPS
+    { gpsioInit, gpsioUpdate, gpsioHandleCommand, gpsioHandleCan },
+#endif
+#if ENABLE_SUNSENSOR
+    { sunsensorioInit, sunsensorioUpdate, NULL, NULL },
+#endif
+#if ENABLE_PHOTODIODES
+    { photodiodeioInit, photodiodeioUpdate, NULL, NULL },
+#endif
+};
+
+FILE_STATIC const uint8_t numInterfaces = sizeof(sensorInterfaces) / sizeof(SensorInterface);
+
 // Segment instances - used both to store information and as a structure for sending as telemetry/commands
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 
 FILE_STATIC int timerHandle;
 FILE_STATIC void startSensorprocTimer();
+
+FILE_STATIC void initSensorInterfaces()
+{
+    uint8_t i = numInterfaces;
+    while (i-- != 0)
+    {
+        sensorInterfaces[i].init();
+    }
+}
+
+FILE_STATIC void updateSensorInterfaces()
+{
+    uint8_t i = numInterfaces;
+    while (i-- != 0)
+    {
+        sensorInterfaces[i].update();
+    }
+}
 
 int main(void)
 {
@@ -50,8 +102,8 @@ int main(void)
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
-    // TODO:  Add the correct bus filters
-    canWrapInit();
+    canWrapInitWithFilter();
+    setCANPacketRxCallback(canRxCallback);
 
     debugTraceF(1, "CAN message bus configured.\r\n");
 
@@ -64,47 +116,29 @@ int main(void)
     startSensorprocTimer();
 
     // initialize sensors
-    gpsioInit();
-#if ENABLE_SUNSENSOR
-    sunsensorioInit();
-#endif // ENABLE_SUNSENSOR
-#if ENABLE_PHOTODIODES
-    photodiodeioInit();
-#endif // ENABLE_PHOTODIODES
+    initSensorInterfaces();
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
     {
+        // make MSP-wide updates
         static uint8_t i = 0;
-        if (checkTimer(timerHandle)) // 5 Hz
+        if (checkTimer(timerHandle)) // 1 Hz
         {
-            if (i % 4 == 0) // 1.25 Hz
-            {
-                LED_OUT ^= LED_BIT;
-                gpsioSendPowerStatus();
-                sendHealthSegment();
-            }
+            LED_OUT ^= LED_BIT;
+            sendHealthSegment();
 
-            if (i % 64 == 0) // every 12.8 seconds
+            if (i % 8 == 0) // every 8 seconds
             {
                 sendMetaSegment();
-                gpsioSendStatus();
             }
-
-#if ENABLE_PHOTODIODES
-            photodiodeioUpdate();
-            photodiodeioSendData();
-#endif // ENABLE_PHOTODIODES
-#if ENABLE_SUNSENSOR
-            sunsensorioUpdate(); // TODO don't let these block
-            sunsensorioSendData();
-#endif // ENABLE_SUNSENSOR
 
             startSensorprocTimer(); // reset the timer
             i++;
         }
 
-        gpsioUpdate();
+        // update each sensor
+        updateSensorInterfaces();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
@@ -165,13 +199,25 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     if (mode == Mode_BinaryStreaming)
     {
-        // if the command is handled by the GPS, return
-        if (gpsioHandleCommand(cmdstr))
+        // offer the command to each sensor interface for handling
+        uint8_t i = numInterfaces;
+        while (i-- != 0)
         {
-            return 1;
+            sensorio_cmd_handler cmdHandler = sensorInterfaces[i].handleCmd;
+
+            // if the interface has a command handler, use it
+            if (cmdHandler)
+            {
+                // if the command was handled, stop searching and return
+                if (cmdHandler(cmdstr))
+                {
+                    return 1;
+                }
+            }
         }
 
-        // handle non-gps commands
+        // the command was not handled by an sensor interface -- let the board
+        // handle it.
         switch(cmdstr[0])
         {
             case OPCODE_COMMONCMD:
@@ -181,4 +227,18 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
         }
     }
     return 1;
+}
+
+void canRxCallback(CANPacket *packet)
+{
+    // send the packet to each sensor interface
+    uint8_t i = numInterfaces;
+    while (i-- != 0)
+    {
+        sensorio_can_handler canHandler = sensorInterfaces[i].handleCan;
+        if (canHandler)
+        {
+            canHandler(packet);
+        }
+    }
 }

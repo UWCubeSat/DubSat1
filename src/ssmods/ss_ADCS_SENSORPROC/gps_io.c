@@ -28,6 +28,12 @@
  */
 #define DELAY_MANUAL_LOG_MS 3000
 
+/*
+ * number of milliseconds between sending telemetry *not* triggered by incoming
+ * GNSS logs. For example, health and status segments.
+ */
+#define DELAY_TELEM_UPDATE 1000
+
 #include <math.h>
 
 #include "gps_io.h"
@@ -119,7 +125,15 @@ FILE_STATIC const state states[] = {
         { enterStateShuttingDown, stateShuttingDown },
 };
 
-FILE_STATIC int timerHandle;
+//------------------------------------------------------------------
+// timers
+//------------------------------------------------------------------
+
+// timer handle for power finite state machine
+FILE_STATIC int fsmTimerHandle;
+
+// timer handle for sending telemetry at a reasonable rate
+FILE_STATIC int telemTimerHandle;
 
 //------------------------------------------------------------------
 // command handling
@@ -127,8 +141,6 @@ FILE_STATIC int timerHandle;
 
 FILE_STATIC flag_t triggerGPSOn;
 FILE_STATIC flag_t triggerGPSOff;
-
-FILE_STATIC void canRxCallback(CANPacket *packet);
 
 //------------------------------------------------------------------
 // incoming telemetry handlers
@@ -154,8 +166,6 @@ FILE_STATIC void sendBestXYZOverCAN(const GPSBestXYZ *m, uint16_t week, gps_ec m
 
 void gpsioInit()
 {
-    setCANPacketRxCallback(canRxCallback);
-
     gpshealthSeg = (gpshealth_segment) { 0 };
     gpspowerSeg = (gpspower_segment) { 0 };
     rxstatusSeg = (rxstatus_segment) { 0 };
@@ -172,6 +182,7 @@ void gpsioInit()
     gpsPowerState = State_Off;
 
     initializeTimer();
+    telemTimerHandle = timerPollInitializer(DELAY_TELEM_UPDATE);
 
     gpsInit();
 }
@@ -200,6 +211,16 @@ void gpsioConfig()
 
 void gpsioUpdate()
 {
+    // send periodic telemetry
+    if (checkTimer(telemTimerHandle))
+    {
+        telemTimerHandle = timerPollInitializer(DELAY_TELEM_UPDATE);
+        gpsioSendPowerStatus();
+        gpsioSendStatus();
+    }
+
+    // handle power state machine
+
     // convert the trigger flags into an enum
     gps_power_cmd cmd;
     if (triggerGPSOn)
@@ -230,10 +251,10 @@ void gpsioUpdate()
 
 FILE_STATIC void freeTimer()
 {
-    if (timerHandle != -1)
+    if (fsmTimerHandle != -1)
     {
-        endPollingTimer(timerHandle);
-        timerHandle = -1;
+        endPollingTimer(fsmTimerHandle);
+        fsmTimerHandle = -1;
     }
 }
 
@@ -258,7 +279,7 @@ FILE_STATIC void enterStateEnablingBuck()
     gpsSetPower(FALSE);
     gpsSetBuck(TRUE);
     gpsSetReset(TRUE);
-    timerHandle = timerPollInitializer(DELAY_BUCK_MS);
+    fsmTimerHandle = timerPollInitializer(DELAY_BUCK_MS);
 }
 
 FILE_STATIC gps_power_state_code stateEnablingBuck(gps_power_cmd cmd)
@@ -275,7 +296,7 @@ FILE_STATIC gps_power_state_code stateEnablingBuck(gps_power_cmd cmd)
         return State_EnablingGPS;
     }
 
-    if (gpsioIsBuckOverride() && checkTimer(timerHandle))
+    if (gpsioIsBuckOverride() && checkTimer(fsmTimerHandle))
     {
         return State_EnablingGPS;
     }
@@ -288,7 +309,7 @@ FILE_STATIC void enterStateEnablingGPS()
     gpsSetPower(TRUE);
     gpsSetBuck(TRUE);
     gpsSetReset(TRUE);
-    timerHandle = timerPollInitializer(DELAY_GPS_RESET_MS);
+    fsmTimerHandle = timerPollInitializer(DELAY_GPS_RESET_MS);
 }
 
 FILE_STATIC gps_power_state_code stateEnablingGPS(gps_power_cmd cmd)
@@ -305,7 +326,7 @@ FILE_STATIC gps_power_state_code stateEnablingGPS(gps_power_cmd cmd)
         return State_EnablingBuck;
     }
 
-    if (checkTimer(timerHandle))
+    if (checkTimer(fsmTimerHandle))
     {
         return State_AwaitingGPSOn;
     }
@@ -318,7 +339,7 @@ FILE_STATIC void enterStateAwaitingGPSOn()
     gpsSetPower(TRUE);
     gpsSetBuck(TRUE);
     gpsSetReset(FALSE);
-    timerHandle = -1;
+    fsmTimerHandle = -1;
 }
 
 FILE_STATIC gps_power_state_code stateAwaitingGPSOn(gps_power_cmd cmd)
@@ -342,10 +363,10 @@ FILE_STATIC gps_power_state_code stateAwaitingGPSOn(gps_power_cmd cmd)
     }
 
     // periodically poll the GPS until it responds
-    if (timerHandle == -1 || checkTimer(timerHandle))
+    if (fsmTimerHandle == -1 || checkTimer(fsmTimerHandle))
     {
         gpsSendCommand("log rxstatusb\r\n");
-        timerHandle = timerPollInitializer(DELAY_GPS_POLL_MS);
+        fsmTimerHandle = timerPollInitializer(DELAY_GPS_POLL_MS);
     }
 
     return State_AwaitingGPSOn;
@@ -357,7 +378,7 @@ FILE_STATIC void enterStateOn()
     gpsSetBuck(TRUE);
     gpsSetReset(FALSE);
     gpsioConfig();
-    timerHandle = timerPollInitializer(DELAY_MANUAL_LOG_MS);
+    fsmTimerHandle = timerPollInitializer(DELAY_MANUAL_LOG_MS);
 }
 
 FILE_STATIC gps_power_state_code stateOn(gps_power_cmd cmd)
@@ -381,10 +402,10 @@ FILE_STATIC gps_power_state_code stateOn(gps_power_cmd cmd)
      * Periodically do a manual log.
      * This would be unnecessary if "log hwmonitorb ontime 3" worked.
      */
-    if (checkTimer(timerHandle))
+    if (checkTimer(fsmTimerHandle))
     {
         gpsSendCommand("log hwmonitorb\r\n");
-        timerHandle = timerPollInitializer(DELAY_MANUAL_LOG_MS);
+        fsmTimerHandle = timerPollInitializer(DELAY_MANUAL_LOG_MS);
     }
 
     return State_On;
@@ -395,7 +416,7 @@ FILE_STATIC void enterStateShuttingDown()
     gpsSetPower(FALSE);
     gpsSetBuck(TRUE);
     gpsSetReset(FALSE);
-    timerHandle = timerPollInitializer(DELAY_BUCK_MS);
+    fsmTimerHandle = timerPollInitializer(DELAY_BUCK_MS);
 }
 
 FILE_STATIC gps_power_state_code stateShuttingDown(gps_power_cmd cmd)
@@ -406,7 +427,7 @@ FILE_STATIC gps_power_state_code stateShuttingDown(gps_power_cmd cmd)
         return State_EnablingBuck;
     }
 
-    if (checkTimer(timerHandle))
+    if (checkTimer(fsmTimerHandle))
     {
         return State_Off;
     }
@@ -509,11 +530,25 @@ bool gpsioHandlePackage(GPSPackage *p)
     return true;
 }
 
-bool gpsioHandleCommand(uint8_t *cmdstr)
+uint8_t gpsioHandleCan(CANPacket *packet)
+{
+    switch (packet->id)
+    {
+//    case CAN_ID_SENSORPROC_GPS_ENABLE:
+//        // TODO process GPS enable command once it is implemented
+//        break;
+    default:
+        // TODO log an error?
+        break;
+    }
+
+    return 0;
+}
+
+uint8_t gpsioHandleCommand(uint8_t *cmdstr)
 {
     enable_segment *enableSegment;
     buck_override_segment *overrideSegment;
-
 
     switch(cmdstr[0])
     {
@@ -805,19 +840,6 @@ FILE_STATIC void handlePositionStatusEvent(const GPSRXStatusEvent *e)
 FILE_STATIC void handleClockStatusEvent(const GPSRXStatusEvent *e)
 {
     gpsSendCommand("log timeb\r\n");
-}
-
-FILE_STATIC void canRxCallback(CANPacket *packet)
-{
-    switch (packet->id)
-    {
-//    case CAN_ID_SENSORPROC_GPS_ENABLE:
-//        // TODO process GPS enable command once it is implemented
-//        break;
-    default:
-        // TODO log an error?
-        break;
-    }
 }
 
 FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset)
