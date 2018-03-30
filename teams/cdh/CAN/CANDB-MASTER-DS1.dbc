@@ -59,43 +59,43 @@ BO_ 2428510208 eps_batt_voltage: 8 eps_batt
  SG_ eps_batt_voltage_min_v : 16|16@1+ (1,0) [0|10000] "mV" Vector__XXX
  SG_ eps_batt_voltage_v : 0|16@1+ (1,0) [0|10000] "mV" Vector__XXX
 
-BO_ 2417229888 dist_solar_deploy: 0 com_1
+BO_ 2417229888 d_dist_solar_deploy: 0 com_1
 
-BO_ 2424309760 sensorproc_gps_enable: 1 adcs_mpc
+BO_ 2424309760 d_sensorproc_gps_enable: 1 adcs_mpc
  SG_ sensorproc_gps_enable_cmd : 0|8@1+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 2421761024 sensorproc_gps_time: 8 adcs_sensorproc
+BO_ 2421761024 d_sensorproc_gps_time: 8 adcs_sensorproc
  SG_ sensorproc_gps_time_ms : 16|32@1+ (1,0) [0|604800000] "ms" Vector__XXX
  SG_ sensorproc_gps_time_wk : 0|16@1+ (1,0) [1983|4095] "week" Vector__XXX
 
-BO_ 2421695488 sensorproc_gps_z_u: 8 adcs_sensorproc
+BO_ 2421695488 d_sensorproc_gps_z_u: 8 adcs_sensorproc
  SG_ sensorproc_gps_x_u_v : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
  SG_ sensorproc_gps_z_u_p : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
 
-BO_ 2421629952 sensorproc_gps_y_u: 8 adcs_sensorproc
+BO_ 2421629952 d_sensorproc_gps_y_u: 8 adcs_sensorproc
  SG_ sensorproc_gps_y_u_v : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
  SG_ sensorproc_gps_y_u_p : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
 
-BO_ 2421564416 sensorproc_gps_x_u: 8 adcs_sensorproc
+BO_ 2421564416 d_sensorproc_gps_x_u: 8 adcs_sensorproc
  SG_ sensorproc_gps_x_u_v : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
  SG_ sensorproc_gps_x_u_p : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
 
-BO_ 2421498880 sensorproc_gps_vel_z: 8 adcs_sensorproc
+BO_ 2421498880 d_sensorproc_gps_vel_z: 8 adcs_sensorproc
  SG_ sensorproc_gps_vel_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
-BO_ 2421433344 sensorproc_gps_vel_y: 8 adcs_sensorproc
+BO_ 2421433344 d_sensorproc_gps_vel_y: 8 adcs_sensorproc
  SG_ sensorproc_gps_vel_y_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
-BO_ 2421367808 sensorproc_gps_vel_x: 8 adcs_sensorproc
+BO_ 2421367808 d_sensorproc_gps_vel_x: 8 adcs_sensorproc
  SG_ sensorproc_gps_vel_x_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
-BO_ 2421302272 sensorproc_gps_pos_z: 8 adcs_sensorproc
+BO_ 2421302272 d_sensorproc_gps_pos_z: 8 adcs_sensorproc
  SG_ sensorproc_gps_pos_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
-BO_ 2421236736 sensorproc_gps_pos_y: 8 adcs_sensorproc
+BO_ 2421236736 d_sensorproc_gps_pos_y: 8 adcs_sensorproc
  SG_ sensorproc_gps_pos_y_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
-BO_ 2421171200 sensorproc_gps_pos_x: 8 adcs_sensorproc
+BO_ 2421171200 d_sensorproc_gps_pos_x: 8 adcs_sensorproc
  SG_ sensorproc_gps_pos_x_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
 BO_ 2420179968 sensorproc_sun: 5 adcs_sensorproc
@@ -103,7 +103,7 @@ BO_ 2420179968 sensorproc_sun: 5 adcs_sensorproc
  SG_ sensorproc_sun_reading_beta : 16|16@1- (1,0) [-3600|3600] "arcminutes" Vector__XXX
  SG_ sensorproc_sun_reading_alpha : 0|16@1- (1,0) [-3600|3600] "arcminutes" Vector__XXX
 
-BO_ 2420114432 sensorproc_photodiode: 3 adcs_sensorproc
+BO_ 2420114432 d_sensorproc_photodiode: 3 adcs_sensorproc
  SG_ sensorproc_photodiode_x_neg : 16|8@1+ (1,0) [0|100] "" Vector__XXX
  SG_ sensorproc_photodiode_y_neg : 8|8@1+ (1,0) [0|100] "" Vector__XXX
  SG_ sensorproc_photodiode_x_pos : 0|8@1+ (1,0) [0|100] "" Vector__XXX
