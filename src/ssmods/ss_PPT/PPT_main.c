@@ -3,6 +3,7 @@
 
 #include "bsp/bsp.h"
 #include <core/timers.h>
+#include "interfaces/canwrap.h"
 
 /*
  * Output Pins:
@@ -29,7 +30,7 @@
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
-FILE_STATIC ModuleStatus mod_status; //TODO: make this volatile?
+FILE_STATIC volatile ModuleStatus mod_status;
 
 FILE_STATIC uint8_t firing;
 FILE_STATIC uint8_t currTimeout;
@@ -102,11 +103,22 @@ FILE_STATIC void sendTiming()
     bcbinSendPacket((uint8_t *)&currTiming, sizeof(currTiming));
 }
 
+///////////////////////////////////////////////////////////////
+FILE_STATIC void sendSync1()
+{
+    CANPacket syncPacket = {0};
+     sync_1 syncPacket_info = {0};
+
+    encodebdot_command_dipole(&syncPacket_info, &syncPacket);
+    canSendPacket(&syncPacket);
+}
+
 void startFiring(start_firing *startPkt);
 void stopFiring();
 void mainLow();
 void igniterHigh();
 void fire();
+void can_packet_rx_callback(CANPacket *packet);
 
 /*
  * main.c
@@ -129,6 +141,9 @@ int main(void)
     mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
     mod_status.ss_mode = Mode_Undetermined;
     mod_status.ss_state = State_Uncommissioned;
+
+    canWrapInitWithFilter();
+    setCANPacketRxCallback(can_packet_rx_callback);
 
     P1DIR |= (BIT0 | BIT1);
     P2DIR &= ~(BIT5 | BIT6);
@@ -182,6 +197,7 @@ int main(void)
     mod_status.ss_state = State_Cooldown;
     TB0CCR1 = TB0R + cooldownTime;
     TB0CCTL1 = CCIE;
+    sendSync1();
     ///////////////////////////////////////
 
 
@@ -216,7 +232,7 @@ void startFiring(start_firing *startPkt)
         firing = 1;
 
         currTimeout = startPkt->timeout - 1;
-        //TODO: send a sync pulse here
+        sendSync1();
         mod_status.ss_state = State_Cooldown;
         TB0CCR1 = TB0R + cooldownTime;
         TB0CCTL1 = CCIE;
@@ -354,6 +370,11 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr) //this shoul
     return 1;
 }
 
+void can_packet_rx_callback(CANPacket *packet)
+{
+    //see MTQ for example implementation
+}
+
 BOOL readyToFire()
 {
     // TODO:  Walk through all of the data items that are necessary to determine if it's
@@ -376,16 +397,6 @@ __interrupt void Port_2(void)
             break;
     }
     P2IFG = 0; //clear the interrupt flag
-}
-
-void mainLow()
-{
-    P4OUT &= ~BIT3;
-}
-
-void igniterHigh()
-{
-    P4OUT |= BIT2;
 }
 
 void fire()
@@ -432,8 +443,8 @@ __interrupt void Timer0_B1_ISR (void)
                     //TODO: this code was removed to enable firing w/o timeout on power on
                     /*if(currTimeout)
                     {
-                        //TODO: send sync pulse here
                         currTimeout--;*/
+                        sendSync1();
                         mod_status.ss_state = State_Cooldown;
                         TB0CCR1 += cooldownTime;
                     /*}
