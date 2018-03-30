@@ -105,7 +105,7 @@ void readCoulombCounterStatus() {
 }
 
 void setControl(CC_Control_ADCmode ADCmode, CC_Control_PrescaleFactor m, CC_Control_ALCCConfiguration ALCC, CC_Control_Shutdown shutdown ) {
-    uint8_t control = (ADCmode<<8) | (m<<6) | (ALCC<<3) | shutdown;
+    uint8_t control = (ADCmode<<6) | (m<<3) | (ALCC<<1) | shutdown;
     i2cBuff[0] = LTC2943_ADDR_CONTROL;
     i2cBuff[1] = control;
     i2cMasterWrite(sensor.hI2CDevice, i2cBuff, 2);
