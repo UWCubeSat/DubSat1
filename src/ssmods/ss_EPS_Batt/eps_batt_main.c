@@ -227,12 +227,12 @@ int main(void)
 
             if(isChecking)
             {
-                float temp = asensorReadIntTempC();
-                if(!(BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) && (temp < 0.5)) //not heating & < 0C
-                    BATTERY_BALANCER_ENABLE_OUT |= BATTERY_BALANCER_ENABLE_BIT; //turn on
+                float temp = asensorReadSingleSensorV(hTempC);
+                if(!(HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) && (temp < 0.5f)) //not heating & < 0C
+                    HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT; //turn on
 
-                else if ((BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) && (temp > 0.6)) //heating & > 10C
-                    BATTERY_BALANCER_ENABLE_OUT &= ~BATTERY_BALANCER_ENABLE_BIT; //turn off
+                else if ((HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) && (temp > 0.6f)) //heating & > 10C
+                    HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT; //turn off
             }
         }
 

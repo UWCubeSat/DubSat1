@@ -41,11 +41,11 @@ TLM_SEGMENT {
     uint8_t lastbalancercmd;
     uint8_t lastheatercmd;
 
-    uint8_t isChecking;
-
     //Coulomb counter health info
     uint8_t CC_StatusReg;
     uint8_t CC_ControlReg;
+
+    uint8_t isChecking;
 
 } general_segment;
 
