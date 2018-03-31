@@ -4,10 +4,6 @@
 #define ENABLE_MAG         1
 #define ENABLE_IMU         1
 
-// time between sending health packets
-// meta packets sent every 8 * UPDATE_DELAY_MS
-#define UPDATE_DELAY_MS 500
-
 #include <adcs_sensorproc.h>
 #include <msp430.h> 
 
@@ -32,60 +28,87 @@
 
 typedef void (* sensorio_init_fn)(void);
 typedef void (* sensorio_update_fn)(void);
-typedef uint8_t (* sensorio_cmd_handler)(uint8_t *cmd);
+typedef uint8_t (* sensorio_cmd_handler)(uint8_t opcode, uint8_t *cmd);
 typedef uint8_t (* sensorio_can_handler)(CANPacket *packet);
+
+/*
+ * Select an update rate for the sensor interface. If none of these fit, use
+ * UpdateRate_ASAP and use a timer in the update function
+ */
+typedef enum {
+    UpdateRate_ASAP,
+    UpdateRate_5Hz,
+    UpdateRate_1Hz,
+} UpdateRate;
 
 typedef struct {
     sensorio_init_fn init;
     sensorio_update_fn update;
+    UpdateRate updateRate;
     sensorio_cmd_handler handleCmd;
     sensorio_can_handler handleCan;
 } SensorInterface;
 
-FILE_STATIC const SensorInterface sensorInterfaces[] = {
+FILE_STATIC const SensorInterface sensorInterfaces[] =
+{
 #if ENABLE_GPS
-    { gpsioInit, gpsioUpdate, gpsioHandleCommand, gpsioHandleCan },
+    {
+     gpsioInit,
+     gpsioUpdate,
+     UpdateRate_ASAP
+     gpsioHandleCommand,
+     gpsioHandleCan,
+    },
 #endif
 #if ENABLE_SUNSENSOR
-    { sunsensorioInit, sunsensorioUpdate, NULL, NULL },
+    {
+     sunsensorioInit,
+     sunsensorioUpdate,
+     UpdateRate_5Hz,
+     NULL,
+     NULL,
+    },
 #endif
 #if ENABLE_PHOTODIODES
-    { photodiodeioInit, photodiodeioUpdate, NULL, NULL },
+    {
+     photodiodeioInit,
+     photodiodeioUpdate,
+     UpdateRate_5Hz,
+     NULL,
+     NULL,
+    },
 #endif
 #if ENABLE_MAG
-    { magioInit, magioUpdate, NULL, NULL },
+    {
+     magioInit,
+     magioUpdate,
+     UpdateRate_5Hz,
+     NULL,
+     NULL,
+    },
 #endif
 #if ENABLE_IMU
-    { imuioInit, imuioUpdate, NULL, NULL },
+    {
+     imuioInit,
+     imuioUpdate,
+     UpdateRate_5Hz,
+     NULL,
+     NULL,
+    },
 #endif
 };
 
-FILE_STATIC const uint8_t numInterfaces = sizeof(sensorInterfaces) / sizeof(SensorInterface);
+#define NUM_INTERFACES (sizeof(sensorInterfaces) / sizeof(SensorInterface))
 
 // Segment instances - used both to store information and as a structure for sending as telemetry/commands
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 
 FILE_STATIC int timerHandle;
-FILE_STATIC void startSensorprocTimer();
+FILE_STATIC void start5HzTimer();
 
-FILE_STATIC void initSensorInterfaces()
-{
-    uint8_t i = numInterfaces;
-    while (i-- != 0)
-    {
-        sensorInterfaces[i].init();
-    }
-}
-
-FILE_STATIC void updateSensorInterfaces()
-{
-    uint8_t i = numInterfaces;
-    while (i-- != 0)
-    {
-        sensorInterfaces[i].update();
-    }
-}
+FILE_STATIC void initSensorInterfaces();
+FILE_STATIC void updateSensorInterfaces(UpdateRate rate);
 
 int main(void)
 {
@@ -121,34 +144,49 @@ int main(void)
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
 
-    // initialize timers
+    // initialize timer
     initializeTimer();
-    startSensorprocTimer();
+    start5HzTimer();
 
     // initialize sensors
     initSensorInterfaces();
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
+
+    uint8_t num5HzUpdatesSince1HzUpdate = 0;
+    uint8_t secondsSince0p1HzUpdate = 0;
     while (1)
     {
-        // make MSP-wide updates
-        static uint8_t i = 0;
+        // make ASAP updates
+        updateSensorInterfaces(UpdateRate_ASAP);
+
         if (checkTimer(timerHandle))
         {
-            LED_OUT ^= LED_BIT;
-            sendHealthSegment();
+            start5HzTimer();
 
-            if (i % 8 == 0)
+            // make 5 Hz updates
+            LED_OUT ^= LED_BIT;
+            updateSensorInterfaces(UpdateRate_5Hz);
+            num5HzUpdatesSince1HzUpdate++;
+
+            // make 1 Hz updates
+            if (num5HzUpdatesSince1HzUpdate == 5)
             {
-                sendMetaSegment();
+                updateSensorInterfaces(UpdateRate_1Hz);
+                sendHealthSegment();
+
+                num5HzUpdatesSince1HzUpdate = 0;
+                secondsSince0p1HzUpdate++;
             }
 
-            startSensorprocTimer(); // reset the timer
-            i++;
-        }
+            // make 0.1 Hz updates
+            if (secondsSince0p1HzUpdate == 10)
+            {
+                sendMetaSegment();
 
-        // update each sensor
-        updateSensorInterfaces();
+                secondsSince0p1HzUpdate = 0;
+            }
+        }
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
@@ -156,9 +194,30 @@ int main(void)
 	return 0;
 }
 
-void startSensorprocTimer()
+FILE_STATIC void initSensorInterfaces()
 {
-    timerHandle = timerPollInitializer(UPDATE_DELAY_MS);
+    uint8_t i = NUM_INTERFACES;
+    while (i-- != 0)
+    {
+        sensorInterfaces[i].init();
+    }
+}
+
+FILE_STATIC void updateSensorInterfaces(UpdateRate rate)
+{
+    uint8_t i = NUM_INTERFACES;
+    while (i-- != 0)
+    {
+        if (sensorInterfaces[i].updateRate == rate)
+        {
+            sensorInterfaces[i].update();
+        }
+    }
+}
+
+void start5HzTimer()
+{
+    timerHandle = timerPollInitializer(200);
 }
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
@@ -210,7 +269,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
     if (mode == Mode_BinaryStreaming)
     {
         // offer the command to each sensor interface for handling
-        uint8_t i = numInterfaces;
+        uint8_t i = NUM_INTERFACES;
         while (i-- != 0)
         {
             sensorio_cmd_handler cmdHandler = sensorInterfaces[i].handleCmd;
@@ -219,7 +278,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
             if (cmdHandler)
             {
                 // if the command was handled, stop searching and return
-                if (cmdHandler(cmdstr))
+                if (cmdHandler(cmdstr[0], cmdstr + 1))
                 {
                     return 1;
                 }
@@ -242,7 +301,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 void canRxCallback(CANPacket *packet)
 {
     // send the packet to each sensor interface
-    uint8_t i = numInterfaces;
+    uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
     {
         sensorio_can_handler canHandler = sensorInterfaces[i].handleCan;

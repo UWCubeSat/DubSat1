@@ -545,20 +545,20 @@ uint8_t gpsioHandleCan(CANPacket *packet)
     return 0;
 }
 
-uint8_t gpsioHandleCommand(uint8_t *cmdstr)
+uint8_t gpsioHandleCommand(uint8_t opcode, uint8_t *cmdstr)
 {
     enable_segment *enableSegment;
     buck_override_segment *overrideSegment;
 
-    switch(cmdstr[0])
+    switch(opcode)
     {
         case OPCODE_SENDASCII:
             // send the part of the command that comes after the opcode
-            gpsSendCommand(cmdstr + 1);
+            gpsSendCommand(cmdstr);
             gpsSendCommand("\r\n");
             break;
         case OPCODE_ENABLE:
-            enableSegment = (enable_segment *) (cmdstr + 1);
+            enableSegment = (enable_segment *) cmdstr;
 
             // set enable/disable trigger and overwrite previous command
             if (enableSegment->enable)
@@ -573,19 +573,19 @@ uint8_t gpsioHandleCommand(uint8_t *cmdstr)
             }
             break;
         case OPCODE_OVERRIDE_BUCK:
-            overrideSegment = (buck_override_segment *) (cmdstr + 1);
+            overrideSegment = (buck_override_segment *) cmdstr;
             gpsioSetBuckOverride(overrideSegment->enable);
             break;
         case OPCODE_TEST_RESET:
-            enableSegment = (enable_segment *) (cmdstr + 1);
+            enableSegment = (enable_segment *) cmdstr;
             gpsSetReset(enableSegment->enable);
             break;
         case OPCODE_TEST_BUCK:
-            enableSegment = (enable_segment *) (cmdstr + 1);
+            enableSegment = (enable_segment *) cmdstr;
             gpsSetBuck(enableSegment->enable);
             break;
         case OPCODE_TEST_GPS_SWITCH:
-            enableSegment = (enable_segment *) (cmdstr + 1);
+            enableSegment = (enable_segment *) cmdstr;
             gpsSetPower(enableSegment->enable);
             break;
         default:

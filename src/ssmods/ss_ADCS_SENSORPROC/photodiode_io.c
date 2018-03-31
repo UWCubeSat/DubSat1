@@ -19,14 +19,8 @@ FILE_STATIC uint8_t pdCenter;
 FILE_STATIC uint8_t pdRight;
 FILE_STATIC uint8_t pdLeft;
 
-// timer handle
-FILE_STATIC int timerHandle;
-
 void photodiodeioInit()
 {
-    initializeTimer();
-    timerHandle = timerPollInitializer(PHOTODIODE_DELAY_MS);
-
     bcbinPopulateHeader(&photodiodeSeg.header, TLM_ID_PHOTODIODE, sizeof(photodiodeSeg));
 
     pdCenter = photodiodeInit(PD_ADDR_HH, I2C_BUS_PHOTODIODES);
@@ -45,12 +39,6 @@ FILE_STATIC uint8_t compressReading(uint32_t reading)
 
 void photodiodeioUpdate()
 {
-    if (!checkTimer(timerHandle))
-    {
-        return;
-    }
-    timerHandle = timerPollInitializer(PHOTODIODE_DELAY_MS);
-
     photodiodeSeg.center = photodiodeRead(defaultWrite, pdCenter);
     photodiodeSeg.right = photodiodeRead(defaultWrite, pdRight);
     photodiodeSeg.left = photodiodeRead(defaultWrite, pdLeft);

@@ -11,32 +11,15 @@
 
 #include "core/i2c.h"
 #include "core/utils.h"
-#include "core/timer.h"
-
-FILE_STATIC int timerHandle;
-
-FILE_STATIC void resetTimer()
-{
-    timerHandle = timerPollInitializer(DELAY_MAG_UPDATE_MS);
-}
 
 void magioInit()
 {
-    initializeTimer();
-    resetTimer();
-
     magInit(MAG_I2CBUS);
     normalOperationConfig();
 }
 
 void magioUpdate()
 {
-    if (!checkTimer(timerHandle))
-    {
-        return;
-    }
-    resetTimer();
-
     MagnetometerData *data = magReadXYZData(ConvertToNanoTeslas);
 
     // send backchannel data

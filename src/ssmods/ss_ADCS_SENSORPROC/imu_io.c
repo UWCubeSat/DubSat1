@@ -11,31 +11,14 @@
 
 #include "core/i2c.h"
 #include "core/utils.h"
-#include "core/timer.h"
-
-FILE_STATIC int timerHandle;
-
-FILE_STATIC void resetTimer()
-{
-    timerHandle = timerPollInitializer(DELAY_IMU_UPDATE_MS);
-}
 
 void imuioInit()
 {
-    initializeTimer();
-    resetTimer();
-
     imuInit(IMU_I2CBUS);
 }
 
 void imuioUpdate()
 {
-    if (!checkTimer(timerHandle))
-    {
-        return;
-    }
-    resetTimer();
-
     IMUData *data = imuReadGyroAccelData();
 
     // send backchannel data
