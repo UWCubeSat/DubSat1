@@ -65,9 +65,9 @@ typedef struct  {
 } MagnetometerData;
 
 // Main entry points
-void magInit();
-MagnetometerData *magReadXYZData(UnitConversionMode);
-void selfTestConfig();
-void normalOperationConfig();
+hDev magInit(bus_instance_i2c bus);
+void magReadXYZData(hDev handle, UnitConversionMode mode, MagnetometerData *output);
+void selfTestConfig(hDev handle);
+void normalOperationConfig(hDev handle);
 
 #endif /* MAGNETOMETER_H_ */
