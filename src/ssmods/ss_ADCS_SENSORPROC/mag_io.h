@@ -19,9 +19,9 @@
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
-    double x;
-    double y;
-    double z;
+    int16_t x;
+    int16_t y;
+    int16_t z;
 } mag_segment;
 
 void magioInit();

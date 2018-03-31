@@ -24,9 +24,9 @@ void magioUpdate()
 
     // send backchannel data
     mag_segment seg;
-    seg.x = data->convertedX;
-    seg.y = data->convertedY;
-    seg.z = data->convertedZ;
+    seg.x = data->rawX;
+    seg.y = data->rawY;
+    seg.z = data->rawZ;
     bcbinPopulateHeader(&seg.header, TLM_ID_MAG, sizeof(seg));
     bcbinSendPacket((uint8_t *) &seg, sizeof(seg));
 

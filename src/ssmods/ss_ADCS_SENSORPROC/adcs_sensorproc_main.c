@@ -1,6 +1,6 @@
 #define ENABLE_GPS         0
 #define ENABLE_PHOTODIODES 0
-#define ENABLE_SUNSENSOR   0
+#define ENABLE_SUNSENSOR   1
 #define ENABLE_MAG         1
 #define ENABLE_IMU         1
 
