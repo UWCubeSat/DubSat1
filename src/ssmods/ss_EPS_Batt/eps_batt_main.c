@@ -1,7 +1,10 @@
 #include <eps_batt.h>
-#include <msp430.h> 
-
+#include <msp430.h>
 #include "bsp/bsp.h"
+
+#include "sensors/pcvsensor.h"       //INA219
+#include "sensors/coulomb_counter.h" //Coulomb counter
+#include "core/i2c.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -15,42 +18,159 @@ FILE_STATIC flag_t triggerState1;
 FILE_STATIC flag_t triggerState2;
 FILE_STATIC flag_t triggerState3;
 
+// Telemetry and commands
+FILE_STATIC meta_segment mseg;
+FILE_STATIC general_segment gseg;
+FILE_STATIC sensordat_segment sseg;
+FILE_STATIC health_segment hseg;
+
+//Sensor data
+FILE_STATIC PCVSensorData *INAData;
+FILE_STATIC CoulombCounterData CCData;
+FILE_STATIC hDev hTempC;
+
+/* ------BATTERY BALANCER------ */
+FILE_STATIC void battInit()
+{       BATTERY_BALANCER_ENABLE_DIR |= BATTERY_BALANCER_ENABLE_BIT; //Initialize battery balancer enable register pin
+        HEATER_ENABLE_DIR |= HEATER_ENABLE_BIT;
+        HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT;                    //Initialize heater enable pin to off
+        LED_DIR |= LED_BIT;
+        LED_OUT |= LED_BIT;
+        /*-------TMP36 TEMP SENSOR-------*/
+        //    asensorInit(Ref_2p5V);
+        hTempC = asensorActivateChannel(CHAN_A0, Type_GeneralV);
+}
+
+FILE_STATIC void battControlBalancer(Cmds cmd)
+{
+    gseg.lastbalancercmd = (uint8_t)cmd;
+
+    if (cmd == Cmd_ExplicitEnable || cmd == Cmd_AutoEnable)
+        BATTERY_BALANCER_ENABLE_OUT |= BATTERY_BALANCER_ENABLE_BIT;
+    else if (cmd == Cmd_ExplicitDisable || cmd == Cmd_InitialDisable)
+        BATTERY_BALANCER_ENABLE_OUT &= ~BATTERY_BALANCER_ENABLE_BIT;
+}
+
+
+/* ------BATTERY HEATERS------ */
+FILE_STATIC void battControlHeater(Cmds cmd)
+{
+    gseg.lastheatercmd = (uint8_t)cmd;
+
+    if (cmd == Cmd_ExplicitEnable || cmd == Cmd_AutoEnable)
+        HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT;
+    else if (cmd == Cmd_ExplicitDisable || cmd == Cmd_InitialDisable)
+        HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT;
+}
+
+FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
+{
+    battmgmt_segment *bsegment;
+
+    if (mode == Mode_BinaryStreaming)
+    {
+        // Handle the cmdstr as binary values
+        switch (cmdstr[0])
+        {
+            case OPCODE_BATTMGMT:
+                bsegment = (battmgmt_segment *) &cmdstr[1];
+                if (bsegment->enablebattbal != NOCHANGE)
+                    battControlBalancer(bsegment->enablebattbal ? Cmd_ExplicitEnable : Cmd_ExplicitDisable);
+                if (bsegment->enablebattheater != NOCHANGE)
+                    battControlHeater(bsegment->enablebattheater ? Cmd_ExplicitEnable : Cmd_ExplicitDisable);
+                break;
+        }
+    }
+    return 1;
+}
+
+// Packetizes and sends backchannel GENERAL packet
+FILE_STATIC void battBcSendGeneral()
+{
+    bcbinSendPacket((uint8_t *) &gseg, sizeof(gseg));
+}
+
+// Packetizes and sends backchannel GENERAL packet
+FILE_STATIC void battBcSendHealth()
+{
+    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
+
+    // TODO:  Determine overall health based on querying various entities for their health
+    // For now, everythingis always marginal ...
+    hseg.oms = OMS_Unknown;
+    hseg.inttemp = asensorReadIntTempC();
+    hseg.reset_count = bspGetResetCount();
+    bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
+    debugInvokeStatusHandlers();
+}
+
+// Packetizes and sends backchannel SENSORDAT packet
+FILE_STATIC void battBcSendSensorDat()
+{
+    bcbinSendPacket((uint8_t *) &sseg, sizeof(sseg));
+}
+
+FILE_STATIC void battBcSendMeta()
+{
+    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
+    bcbinPopulateMeta(&mseg, sizeof(mseg));
+    bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+}
+
+void readCC (){
+    //Reading Coulomb counter
+    CCData = readCoulombCounter(); //reading the Coulomb counter (busVoltageV, calcdCurrentA, rawAccumCharge, (SOC?))
+    sseg.battVolt = CCData.busVoltageV;
+    sseg.SOC = CCData.SOC;
+    sseg.battCurr = CCData.calcdCurrentA;
+    sseg.battCharge = CCData.battCharge;
+    sseg.accumulatedCharge = CCData.totalAccumulatedCharge;
+}
+
+void readINA(hDev hSensor){
+    //Reading INA219
+    INAData = pcvsensorRead(hSensor, Read_BusV | Read_CurrentA);
+    sseg.battNodeVolt = INAData->busVoltageV;
+    sseg.battNodeCurr = INAData->calcdCurrentA;
+}
+
+void readTempSensor(){
+    float tempVoltageV =  asensorReadSingleSensorV(hTempC); //Assuming in V (not mV)
+    //sseg.battTemp = ((tempVoltageV/100.0) - 500) / 10.0; //Temp in Celcius
+    //conversion from voltage to temperatur, has a slope of 10mv per degree celcius
+    //and an intercept of 50 degrees at 0 volts
+    sseg.battTemp = (tempVoltageV /0.010) - 50;
+}
+
+
+
 /*
  * main.c
  */
 
-// TEMPORARY
-#define CANMSP_BLOCKV24_LED_PORT_DIR    PJDIR
-#define CANMSP_BLOCKV24_LED_PORT_OUT    PJOUT
-#define CANMSP_BLOCKV24_LED0_BIT        BIT0
-#define CANMSP_BLOCKV24_LED1_BIT        BIT1
-#define CANMSP_BLOCKV24_LED2_BIT        BIT2
-#define CANMSP_BLOCKV24_LED_BITS        (CANMSP_BLOCKV24_LED0_BIT | CANMSP_BLOCKV24_LED1_BIT | CANMSP_BLOCKV24_LED2_BIT)
+
 
 int main(void)
-{
-
+ {
     /* ----- INITIALIZATION -----*/
-    // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code, as
-    // it sets up critical hardware settings for board specified by the __BSP_Board... defintion used.
-    // If module not yet available in enum, add to SubsystemModule enumeration AND
-    // SubsystemModulePaths (a string name) in systeminfo.c/.h
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
+    asensorInit(Ref_2p5V);
+    battInit();
 
-    // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
-    // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
-    // Also hooks up sync pulse handlers.  Note that actual pulse interrupt handlers will update the
-    // firing state structures before calling the provided handler function pointers.
-    mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
+    /* ------INA219/PVC SENSOR------ */
+    hDev hSensor;
+    hSensor = pcvsensorInit(I2CBus2, 0x40, 1.0, 100); //ground ground, 1 ohm???, 100 mA
+
+    /* ------COULOMB COUNTER---- */
+    LTC2943Init(I2CBus2, 6.0);
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
     // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
     // debugtools.h.  Also, be sure to change the "path char"
-    debugRegisterEntity(Entity_Test, handleDebugInfoCallback,
-                                     handleDebugStatusCallback,
-                                     handleDebugActionCallback);
-
+    debugRegisterEntity(Entity_SUBSYSTEM, NULL,
+                                          NULL,
+                                          handleActionCallback);
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
@@ -59,136 +179,52 @@ int main(void)
     debugTraceF(1, "CAN message bus configured.\r\n");
 
     /* ----- SUBSYSTEM LOGIC -----*/
-    // TODO:  Finally ... NOW, implement the actual subsystem logic!
-    // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
-    // and then control is returned to this main loop
-
-    // TEMPORARY
-
-    CANMSP_BLOCKV24_LED_PORT_DIR |= CANMSP_BLOCKV24_LED_BITS;
-
-
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
+
+    bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
+    bcbinPopulateHeader(&(gseg.header), TLM_ID_EPS_BATT_GENERAL, sizeof(gseg));
+    bcbinPopulateHeader(&(sseg.header), TLM_ID_EPS_BATT_SENSORDAT, sizeof(sseg));
+
+    battControlBalancer(Cmd_AutoEnable);
+    //battControlHeater(Cmd_AutoEnable);
+
+    uint16_t counter;
     while (1)
     {
-        // TEMPORARY
-        CANMSP_BLOCKV24_LED_PORT_OUT ^= CANMSP_BLOCKV24_LED_BITS;
-        __delay_cycles(5 * SEC);
-//        // This assumes that some interrupt code will change the value of the triggerStaten variables
-//        switch (ss_state)
-//        {
-//        case State_FirstState:
-//            if (triggerState2)
-//            {
-//                triggerState2 = 0;
-//                ss_state = State_SecondState;
-//            }
-//            break;
-//        case State_SecondState:
-//            if (triggerState3)
-//            {
-//                triggerState3 = 0;
-//                ss_state = State_ThirdState;
-//            }
-//            break;
-//        case State_ThirdState:
-//            if (triggerState1)
-//            {
-//                triggerState1 = 0;
-//                ss_state = State_FirstState;
-//            }
-//            break;
-//        default:
-//            mod_status.state_transition_errors++;
-//            mod_status.in_unknown_state++;
-//            break;
-//        }
+        counter++;
+        LED_OUT ^= LED_BIT;
+        __delay_cycles(0.125 * SEC);
+
+        // Reading data
+        readCC(); // Read all of the I2C sensor data
+        readINA(hSensor);
+        sseg.heaterState = (HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) != 0;
+        sseg.balancerState = (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) != 0;
+        readTempSensor();
+
+        battBcSendSensorDat();
+
+        // Stuff running at 1Hz-ish
+        if (counter % 8 == 0)
+        {
+            //check Coulomb counter
+            readCoulombCounterStatus();
+            gseg.CC_StatusReg = CCData.statusReg;
+            readCoulombCounterControl();
+            gseg.CC_ControlReg = CCData.controlReg;
+
+            battBcSendGeneral();
+            battBcSendHealth();
+        }
+
+        // Stuff running 4Hz
+        if (counter % 32 ==0)
+        {
+            battBcSendMeta();
+        }
      }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
-	return 0;
-}
-
-/* ----- SYNC PULSE INTERRUPT HANDLERS ----- */
-// Both of these handlers are INTERRUPT HANDLERS, and run as such, which means that all OTHER
-// interrupts are blocked while they are running.  This can cause all sorts of issues, so
-// MAKE SURE TO MINIMIZE THE CODE RUNNING IN THESE FUNCTIONS.
-// Sync pulse 1:  typically raised every 2 seconds while PPT firing, to help each subsystem module
-// do the "correct thing" around the firing sequence.  This timing might
-// not be exact, and may even change - don't rely on it being 2 seconds every time, and it may
-// be shut off entirely during early or late stages of mission, so also do NOT use as a "heartbeat"
-// for other, unrelated functionality.
-void handleSyncPulse1()
-{
-    __no_operation();
-}
-
-// Sync pulse 2:  typically every 1-2 minutes, but again, don't count on any length.
-// General semanatics are that this pulse means all subsystems should share accumulated
-// status data on the CAN bus.  It is also the cue for the PPT to ascertain whether it
-// will use the following period as an active or suspended firing period.  All subsystems
-// will assume active until they are notified that firing has been suspended, but
-// this determination will be reset (back to active) at each sync pulse 2.
-void handleSyncPulse2()
-{
-    __no_operation();
-}
-
-// Optional callback for the debug system.  "Info" is considered static information
-// that doesn't change about the subsystem module code/executable, so this is most
-// often left off.
-uint8_t handleDebugInfoCallback(DebugMode mode)
-{
-    if (mode == Mode_ASCIIInteractive)
-    {
-        // debugPrintF information in a user-friendly, formatted way
-    }
-    else if (mode == Mode_ASCIIHeadless)
-    {
-        // debugPrintF information without field names, as CSV
-    }
-    else if (mode == Mode_BinaryStreaming)
-    {
-        // debugPrintF into a ground segment-friendly "packet" mode
-    }
-    return 1;
-}
-
-// Optional callback for the debug system.  "Status" is considered the
-// current state of dynamic information about the subsystem module, and is the most
-// common to be surfaced, particularly as "streaming telemetry".
-uint8_t handleDebugStatusCallback(DebugMode mode)
-{
-    if (mode == Mode_ASCIIInteractive)
-    {
-        // debugPrintF status in a user-friendly, formatted way
-    }
-    else if (mode == Mode_ASCIIHeadless)
-    {
-        // debugPrintF status without field names, as CSV
-    }
-    else if (mode == Mode_BinaryStreaming)
-    {
-        // debugPrintF status a ground segment-friendly "packet" format
-    }
-    return 1;
-}
-
-uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
-{
-    if (mode == Mode_ASCIIInteractive)
-    {
-        // handle actions in a user-friendly way
-    }
-    else if (mode == Mode_ASCIIHeadless)
-    {
-        // handle actions in a low-output way
-    }
-    else if (mode == Mode_BinaryStreaming)
-    {
-        // handle actions, any output should be ground-segment friendly
-        // "packet" format
-    }
-    return 1;
+    return 0;
 }

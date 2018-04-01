@@ -46,7 +46,7 @@ typedef struct  {
 } IMUData;
 
 // Main entry points
-void imuInit();
+void imuInit(bus_instance_i2c i2cbus);
 IMUData *imuReadGyroAccelData();
 
 #endif /* SENSORS_IMU_H_ */
