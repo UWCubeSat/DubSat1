@@ -12,13 +12,13 @@
 #include "core/i2c.h"
 #include "core/utils.h"
 
-FILE_STATIC hDev mag1;
-FILE_STATIC hDev mag2;
+FILE_STATIC hMag mag1;
+FILE_STATIC hMag mag2;
 
-FILE_STATIC hDev magioInit(bus_instance_i2c bus)
+FILE_STATIC hMag magioInit(bus_instance_i2c bus)
 {
-    hDev handle = magInit(bus);
-    normalOperationConfig(bus);
+    hMag handle = magInit(bus);
+    normalOperationConfig(handle);
     return handle;
 }
 
@@ -32,16 +32,15 @@ void magioInit2()
     mag2 = magioInit(MAG2_I2CBUS);
 }
 
-FILE_STATIC void magioUpdate(hDev handle, uint8_t tlmId)
+FILE_STATIC void magioUpdate(hMag handle, uint8_t tlmId)
 {
-    MagnetometerData data;
-    magReadXYZData(handle, ConvertToNanoTeslas, &data);
+    MagnetometerData *data = magReadXYZData(handle, ConvertToNone);
 
     // send backchannel data
     mag_segment seg;
-    seg.x = data.rawX;
-    seg.y = data.rawY;
-    seg.z = data.rawZ;
+    seg.x = data->rawX;
+    seg.y = data->rawY;
+    seg.z = data->rawZ;
     bcbinPopulateHeader(&seg.header, tlmId, sizeof(seg));
     bcbinSendPacket((uint8_t *) &seg, sizeof(seg));
 
