@@ -53,6 +53,9 @@ FILE_STATIC hDev hBattV;
 #define MAX_BUFF_SIZE   0x10
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 
+FILE_STATIC uint16_t startupDelay = 1800;
+#pragma PERSISTENT(startupDelay)
+
 void distDeployInit()
 {
     DEPLOY_ENABLE_DIR |= DEPLOY_ENABLE_BIT;
@@ -432,7 +435,11 @@ int main(void)
     __delay_cycles(0.5 * SEC);
 
 #else  //  __DEBUG__
-    __delay_cycles(1800 * SEC); //wait for 30 minutes
+    while(startupDelay)
+    {
+        __delay_cycles(SEC); //wait for 30 minutes
+        startupDelay--;
+    }
 #endif
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
