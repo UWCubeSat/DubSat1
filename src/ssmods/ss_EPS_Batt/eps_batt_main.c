@@ -231,10 +231,10 @@ int main(void)
             if(isChecking)
             {
                 float temp = asensorReadSingleSensorV(hTempC);
-                if(previousTemp > 0.5f && temp < 0.5f) //not heating & < 0C
+                if(previousTemp >= 0.5f && temp < 0.5f) //not heating & < 0C
                     HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT; //turn on
 
-                else if (previousTemp < 0.6f && temp > 0.6f) //heating & > 10C
+                else if (previousTemp =< 0.6f && temp > 0.6f) //heating & > 10C
                     HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT; //turn off
                 previousTemp = temp;
             }

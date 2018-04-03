@@ -431,7 +431,9 @@ int main(void)
     debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, distActionCallback);
     __delay_cycles(0.5 * SEC);
 
-#endif  //  __DEBUG__
+#else  //  __DEBUG__
+    __delay_cycles(1800 * SEC); //wait for 30 minutes
+#endif
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
     // TODO:  Add the correct bus filters and register CAN message receive handlers
