@@ -82,5 +82,13 @@ typedef enum _tumble_state {Tumbling=1,Idle=0} TumbleState;
 #define Z1 5 
 #define Z2 6 
 
+// SFR APIs 
+// ccrn register assigns 
+#define SET_X1_PWM TB0CCR4 =
+#define SET_X2_PWM TB0CCR3 =
+#define SET_Y1_PWM TB0CCR6 =
+#define SET_Y2_PWM TB0CCR5 =
+#define SET_Z1_PWM TB0CCR2 =
+#define SET_Z2_PWM TB0CCR1 =
 
 #endif /* ADCS_MTQ_H_ */

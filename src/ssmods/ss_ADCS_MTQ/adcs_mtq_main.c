@@ -17,6 +17,7 @@ Z2 - P2_6 - TB0.1
 // includes
 //------------------------------------------------------------------
 #include <msp430.h> 
+#include <stdint.h> 
 #include "adcs_mtq.h"
 #include "bsp/bsp.h"
 #include "core/timer.h"
@@ -28,8 +29,9 @@ Z2 - P2_6 - TB0.1
 FILE_STATIC ModuleStatus mod_status;
 FILE_STATIC volatile TumbleState tumble_status = Idle; // state variable 
 FILE_STATIC volatile int command_x, command_y, command_z; // commands for assigning pwm to output 
-FILE_STATIC volatile unsigned char received_CAN_command_packet; // flag to exit tumbling state if no command packet has been received
-FILE_STATIC volatile unsigned char received_cosmos_command_packet; 
+FILE_STATIC volatile int duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2; // for cosmos to monitor duty cycles 
+FILE_STATIC volatile int8_t received_CAN_command_packet; // flag to exit tumbling state if no command packet has been received
+FILE_STATIC volatile int8_t received_cosmos_command_packet; 
 FILE_STATIC duty_segment dutyseg;
 
 //------------------------------------------------------------------
@@ -71,17 +73,18 @@ int main(void)
     while (1)
     {
         /*
-		// hardcoded PWM for DEBUG
+		// DEBUG testing 
         set_pwm(x, 0);
         set_pwm(y, 0);
         set_pwm(z, 0);
+		degauss_lol(); 
         */
 
 		// control for turning on coils based on command dipole signals 
         switch (tumble_status) 
 		{
 			case Tumbling: 
-				blink_LED(); // blink debug lights  
+				//blink_LED(); // blink debug lights  
 				// set duty cycles 
 				if (received_CAN_command_packet || received_cosmos_command_packet)
 				{
@@ -160,8 +163,8 @@ void set_pwm(char axis, int pwm_percent)
 {
 	// set duty cycles based on chopping mode 
 	// TODO double check chopping mode specs 
-	int duty_1 = (pwm_percent >= 0) ? (100-pwm_percent) : 100;
-	int duty_2 = (pwm_percent >= 0) ? 100: 100-(-pwm_percent);
+	int duty_1 = (pwm_percent >= 0) ? pwm_percent : 0;
+	int duty_2 = (pwm_percent < 0) ? -pwm_percent: 0; 
 	
 	// set CCR values to assign pwm to output pins 
     int ccr_value_1;
@@ -180,16 +183,22 @@ void set_pwm(char axis, int pwm_percent)
 	switch(axis)
 	{
 		case 'x': // MTQ: P1_7 Launchpad: P3_5
-			TB0CCR4 = ccr_value_1; // P1_7
-			TB0CCR3 = ccr_value_2; // P1_6 
+			SET_X1_PWM ccr_value_1; // P1_7
+			SET_X2_PWM ccr_value_2; // P1_6 
+			duty_x1 = ccr_value_1; // set duty cycles for backchannel debug 
+			duty_x2 = ccr_value_2;
 			break;
 		case 'y': // MTQ: P3_7 Launchpad: P3_7
-			TB0CCR6 = ccr_value_1; // P3_7
-			TB0CCR5 = ccr_value_2; // P3_6 
+			SET_Y1_PWM ccr_value_1; // P3_7
+			SET_Y2_PWM ccr_value_2; // P3_6 
+			duty_y1 = ccr_value_1; // set duty cycles for backchannel debug 
+			duty_y2 = ccr_value_2;
 			break;	
 		case 'z': 
-			TB0CCR2 = ccr_value_1; // P2_2
-			TB0CCR1 = ccr_value_2; // P2_6
+			SET_Z1_PWM ccr_value_1; // P2_2
+			SET_Z2_PWM ccr_value_2; // P2_6
+			duty_z1 = ccr_value_1; // set duty cycles for backchannel debug 
+			duty_z2 = ccr_value_2;
 			break;
 		default: // unknown state 
 			break;
@@ -199,10 +208,10 @@ void set_pwm(char axis, int pwm_percent)
 // outputs a discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
 void degauss_lol(void)
 {
-	int sine_table[] = {0,50,100,50,0,-50,-100,-50,0,30,75,30,0,-30,-75,-30,0,20,50,20,0,-20,-50,-20,0,10,20,10,-10,-20,-10,0}
+	int sine_table[] = {0,50,100,50,0,-50,-100,-50,0,30,75,30,0,-30,-75,-30,0,20,50,20,0,-20,-50,-20,0,10,20,10,-10,-20,-10,0};
 	int sine_count = 0; 
 	
-	while (sine_count < 31)
+	while (sine_count < sizeof(sine_table))
 	{
 		set_pwm('x', sine_table[sine_count]);
 		set_pwm('y', sine_table[sine_count]);
@@ -227,9 +236,10 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
             case 1:
                 // cast the payload to our command segment
                 myCmdSegment = (command_segment *) (cmdstr + 1);
-                command_dipole_to_duty_cycles(myCmdSegment->x,myCmdSegment->y,myCmdSegment->z);
+                set_pwm('x' , myCmdSegment->x);
+				set_pwm('y' , myCmdSegment->x);
+				set_pwm('z' , myCmdSegment->x);
                 // TODO do something based on the command segment
-
             case OPCODE_COMMONCMD:
                 break;
             default:
@@ -240,12 +250,12 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 }
 
 void sendDutyPacket(){
-    dutyseg.x1 = duty_X1;
-    dutyseg.x2 = duty_X2;
-    dutyseg.y1 = duty_Y1;
-    dutyseg.y2 = duty_Y2;
-    dutyseg.z1 = duty_Z1;
-    dutyseg.z2 = duty_Z2;
+    dutyseg.x1 = duty_x1;
+    dutyseg.x2 = duty_x2;
+    dutyseg.y1 = duty_y1;
+    dutyseg.y2 = duty_y2;
+    dutyseg.z1 = duty_z1;
+	dutyseg.z2 = duty_z2;
     bcbinSendPacket((uint8_t *) &dutyseg, sizeof(dutyseg));
 }
 
