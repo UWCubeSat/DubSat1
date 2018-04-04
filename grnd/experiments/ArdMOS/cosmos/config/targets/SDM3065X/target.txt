@@ -1,0 +1,20 @@
+# If you have custom limits responses or conversions you require them here
+#REQUIRE SDM3065_limits_response.rb
+#REQUIRE SDM3065_conversion.rb
+
+# Ignored Parameters
+# (parameters you don't want to see by default in various tools)
+IGNORE_PARAMETER CMD_ID
+IGNORE_PARAMETER CMD_TEMPLATE
+IGNORE_PARAMETER RSP_TEMPLATE
+IGNORE_PARAMETER RSP_PACKET
+
+# Ignored Items
+# (items you don't want to see by default in various tools)
+IGNORE_ITEM TLM_ID
+
+# You can explicitly define the command and telemetry files
+# you want to process and the order they are processed.
+# If not then all files in cmd_tlm are processed in alphabetical order
+#COMMANDS cmd.txt
+#TELEMETRY tlm.txt
