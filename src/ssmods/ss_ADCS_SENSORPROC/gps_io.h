@@ -148,7 +148,7 @@ void gpsioSendStatus();
 void gpsioSendHealth();
 
 bool gpsioHandlePackage(GPSPackage *p);
-uint8_t gpsioHandleCommand(uint8_t * cmdstr);
+uint8_t gpsioHandleCommand(uint8_t opcode, uint8_t * cmdstr);
 uint8_t gpsioHandleCan(CANPacket *packet);
 
 #endif /* GPS_IO_H_ */

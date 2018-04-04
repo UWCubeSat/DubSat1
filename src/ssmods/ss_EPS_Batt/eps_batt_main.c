@@ -31,6 +31,8 @@ FILE_STATIC hDev hTempC;
 
 FILE_STATIC volatile uint8_t isChecking;
 
+FILE_STATIC float previousTemp;
+
 FILE_STATIC volatile int autoHeating = 1;
 
 /* ------BATTERY BALANCER------ */
@@ -197,6 +199,7 @@ int main(void)
     battControlBalancer(Cmd_AutoEnable);
     //battControlHeater(Cmd_AutoEnable);
 
+    previousTemp = asensorReadSingleSensorV(hTempC);
     uint16_t counter;
     while (1)
     {
@@ -227,12 +230,13 @@ int main(void)
 
             if(isChecking)
             {
-                float temp = asensorReadIntTempC();
-                if(!(BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) && (temp < 0.5)) //not heating & < 0C
-                    BATTERY_BALANCER_ENABLE_OUT |= BATTERY_BALANCER_ENABLE_BIT; //turn on
+                float temp = asensorReadSingleSensorV(hTempC);
+                if(previousTemp >= 0.5f && temp < 0.5f) //not heating & < 0C
+                    HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT; //turn on
 
-                else if ((BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) && (temp > 0.6)) //heating & > 10C
-                    BATTERY_BALANCER_ENABLE_OUT &= ~BATTERY_BALANCER_ENABLE_BIT; //turn off
+                else if (previousTemp =< 0.6f && temp > 0.6f) //heating & > 10C
+                    HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT; //turn off
+                previousTemp = temp;
             }
         }
 

@@ -17,6 +17,7 @@ Z2 - P2_6 - TB0.1
 // includes
 //------------------------------------------------------------------
 #include <msp430.h> 
+#include <stdint.h> 
 #include "adcs_mtq.h"
 #include "bsp/bsp.h"
 #include "core/timer.h"
@@ -26,10 +27,11 @@ Z2 - P2_6 - TB0.1
 // global variables 
 //------------------------------------------------------------------
 FILE_STATIC ModuleStatus mod_status;
-FILE_STATIC volatile TumbleState tumble_status = Idle; // static volatile enum _tumble_state {Tumbling=1,Idle=0} TumbleState tumble_status = Idle;
-FILE_STATIC volatile int duty_X1, duty_X2, duty_Y1, duty_Y2, duty_Z1, duty_Z2; // for assigning pwm to output 
-FILE_STATIC volatile int received_command_packet; // flag to protect against weird behavior if in tumbling state but no command packet has been received
-FILE_STATIC volatile int received_cosmos_command_packet; // flag to protect against weird behavior if in tumbling state but no command packet has been received
+FILE_STATIC volatile TumbleState tumble_status = Idle; // state variable 
+FILE_STATIC volatile int command_x, command_y, command_z; // commands for assigning pwm to output 
+FILE_STATIC volatile int duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2; // for cosmos to monitor duty cycles 
+FILE_STATIC volatile int8_t received_CAN_command_packet; // flag to exit tumbling state if no command packet has been received
+FILE_STATIC volatile int8_t received_cosmos_command_packet; 
 FILE_STATIC duty_segment dutyseg;
 
 //------------------------------------------------------------------
@@ -38,19 +40,17 @@ FILE_STATIC duty_segment dutyseg;
 void mtq_gpio_init(void);
 void mtq_gpio_debug_init(void); // DEBUG pins with gpio function 
 void timer_b_init(void); 
-void interpret_command_dipole(int x_command, int y_command, int z_command);
-void set_pwm(int which_pin, int ccr_value); 
+void set_pwm(char axis, int pwm_percent); 
 void can_packet_rx_callback(CANPacket *packet);
 void send_ping_packet(void);
-//void backchannel_send_health(void); 
+void blink_LED(void); 
+void degauss_lol(void);
 
 //------------------------------------------------------------------
 // Main 
-
 // TODO 
-// add de-gaussing 
-// add backchannel UART 
-// fix CAN ping packet function 
+// confirm backchannel functionality 
+// add ping packet? 
 //------------------------------------------------------------------
 int main(void)
 {	
@@ -60,6 +60,7 @@ int main(void)
 	mtq_gpio_init(); // pins are timer b function
 	// timer initialization 
 	timer_b_init();
+	// COSMOS backchannel initialization 
 	initializeTimer();
     bcbinPopulateHeader(&(dutyseg.header), TLM_ID_SHARED_SSGENERAL, sizeof(dutyseg));
     debugRegisterEntity(Entity_NONE, NULL, NULL, handleDebugActionCallback);
@@ -68,51 +69,38 @@ int main(void)
 	// CAN initialization 
 	canWrapInitWithFilter();
 	setCANPacketRxCallback(can_packet_rx_callback);
-	// temperature sensor initialization 
-	//asensorInit(Ref_2p5V);
 	
     while (1)
     {
         /*
-		// hardcoded PWM for DEBUG
-        cycle = ~cycle;
-        interpret_command_dipole(0, 0, cyle*100); // x y z
-        set_pwm(X1, duty_X1);
-        set_pwm(X2, duty_X2);
-        set_pwm(Y1, duty_Y1);
-        set_pwm(Y2, duty_Y2);
-        set_pwm(Z1, duty_Z1);
-        set_pwm(Z2, duty_Z2);
-        __delay_cycles(500000);
+		// DEBUG testing 
+        set_pwm(x, 0);
+        set_pwm(y, 0);
+        set_pwm(z, 0);
+		degauss_lol(); 
         */
 
 		// control for turning on coils based on command dipole signals 
         switch (tumble_status) 
 		{
 			case Tumbling: 
-				PJOUT |= BIT0|BIT1|BIT2; // debug lights 
+				//blink_LED(); // blink debug lights  
 				// set duty cycles 
-				if (received_command_packet || received_cosmos_command_packet)
+				if (received_CAN_command_packet || received_cosmos_command_packet)
 				{
-				    received_command_packet = 0; // reset received_command_packet flag
-				    received_cosmos_command_packet = 0; // reset received_command_packet flag
-					set_pwm(X1, duty_X1); 
-					set_pwm(X2, duty_X2); 
-					set_pwm(Y1, duty_Y1); 
-					set_pwm(Y2, duty_Y2);
-					set_pwm(Z1, duty_Z1); 
-					set_pwm(Z2, duty_Z2);
+				    received_CAN_command_packet = 0; // reset received command packet flags
+				    received_cosmos_command_packet = 0; 
+					set_pwm('x', command_x); 
+					set_pwm('y', command_y); 
+					set_pwm('z', command_z); 
 				} 		
 				break;
 			case Idle: 
-				PJOUT &= ~(BIT0|BIT1|BIT2); // debug lights 
+				PJOUT |= BIT0|BIT1|BIT2; // turn on debug lights 
 				// set all duty cycles to 0 
-				set_pwm(X1, 0);
-				set_pwm(X2, 0);
-				set_pwm(Y1, 0);
-				set_pwm(Y2, 0);
-				set_pwm(Z1, 0);
-				set_pwm(Z2, 0);
+				set_pwm('x', 0); 
+				set_pwm('y', 0); 
+				set_pwm('z', 0); 
 				break;
         	default:
 				// unknown state 
@@ -144,69 +132,15 @@ void can_packet_rx_callback(CANPacket *packet)
 	// check if packet is command dipole
 	if (packet->id == CAN_ID_BDOT_COMMAND_DIPOLE)
 	{
-		received_command_packet = 1; // set received_command_packet
+		received_CAN_command_packet = 1; // set received_CAN_command_packet
 		bdot_command_dipole command_dipole_packet = {0}; // initialize command dipole packet
 		decodebdot_command_dipole(packet, &command_dipole_packet);
-		// use dipole commands to update values for commands 
-		interpret_command_dipole(command_dipole_packet.bdot_command_dipole_x,
-								 command_dipole_packet.bdot_command_dipole_y, 
-								 command_dipole_packet.bdot_command_dipole_z);
+		// update global dipole command variables   
+		command_x = command_dipole_packet.bdot_command_dipole_x; 
+		command_y = command_dipole_packet.bdot_command_dipole_y; 
+		command_z = command_dipole_packet.bdot_command_dipole_z; 
 	}
 }	
-
-//------------------------------------------------------------------
-// software functions 
-//------------------------------------------------------------------
-
-// this function sets the PWM duty cycles for each of the outputs based 
-// on the A3903 driver chip data sheet description for chopping mode 
-void interpret_command_dipole(int x_command, int y_command, int z_command)  
-{
-	// valid command range : (-100 - 100)
-	if (x_command > 100 | x_command < -100 | y_command > 100 | y_command < -100 | z_command > 100 | z_command < -100)
-		; // TODO add error condition  
-	duty_X1 = (x_command >= 0) ? (100-x_command) : 100;
-	duty_X2 = (x_command >= 0) ? 100: 100-(-x_command);
-	duty_Y1 = (y_command >= 0) ? (100-y_command) : 100;
-	duty_Y2 = (y_command >= 0) ? 100: 100-(-y_command);
-	duty_Z1 = (z_command >= 0) ? (100-z_command) : 100;
-	duty_Z2 = (z_command >= 0) ? 100: 100-(-z_command);
-}
-
-// this function sets the CCRn register values to adjust PWM for output
-void set_pwm(int which_pin, int pwm_percent)  
-{
-    int ccr_value;
-
-    if (pwm_percent == 0)
-        ccr_value = 0;
-    else
-        ccr_value = pwm_percent*CCR_PERIOD;
-
-	switch(which_pin)
-	{
-		case X1: // MTQ: P1_7 Launchpad: P3_5
-			TB0CCR4 = ccr_value;
-			break; 
-		case X2: // MTQ: P1_6 Launchpad: P3_4
-			TB0CCR3 = ccr_value;
-			break;
-		case Y1: // MTQ: P3_7 Launchpad: P3_7
-			TB0CCR6 = ccr_value;
-			break;
-		case Y2: // MTQ: P3_6 Launchpad: P3_6
-			TB0CCR5 = ccr_value;
-			break;	
-		case Z1: // MTQ: P2_2 Launchpad: P1_5
-			TB0CCR2 = ccr_value;
-			break;	
-		case Z2: // MTQ: P2_6 Launchpad: P2_6
-			TB0CCR1 = ccr_value;
-			break;
-		default: // unknown state 
-			break;
-	}
-}
 
 // TODO do not use. Halts Bdot when sent 
 void send_ping_packet(void)
@@ -219,16 +153,127 @@ void send_ping_packet(void)
 	canSendPacket(&p);
 }
 
-/*
-void backchannel_send_health(void); 
+//------------------------------------------------------------------
+// PWM functions 
+//------------------------------------------------------------------
+
+// this function sets the PWM duty cycles for each of the outputs based 
+// on the A3903 driver chip data sheet description for chopping mode 
+void set_pwm(char axis, int pwm_percent)  
 {
-	int temp;
-	temp = asensorReadIntTempC();
+	// set duty cycles based on chopping mode 
+	// TODO double check chopping mode specs 
+	int duty_1 = (pwm_percent >= 0) ? pwm_percent : 0;
+	int duty_2 = (pwm_percent < 0) ? -pwm_percent: 0; 
+	
+	// set CCR values to assign pwm to output pins 
+    int ccr_value_1;
+	int ccr_value_2;
+    if (pwm_percent == 0)
+	{
+        ccr_value_1 = 0;
+		ccr_value_2 = 0;
+	} else
+	{
+		ccr_value_1 = duty_1*CCR_PERIOD;
+		ccr_value_2 = -(duty_2*CCR_PERIOD);
+	}
+	
+	// set SFRs 
+	switch(axis)
+	{
+		case 'x': // MTQ: P1_7 Launchpad: P3_5
+			SET_X1_PWM ccr_value_1; // P1_7
+			SET_X2_PWM ccr_value_2; // P1_6 
+			duty_x1 = ccr_value_1; // set duty cycles for backchannel debug 
+			duty_x2 = ccr_value_2;
+			break;
+		case 'y': // MTQ: P3_7 Launchpad: P3_7
+			SET_Y1_PWM ccr_value_1; // P3_7
+			SET_Y2_PWM ccr_value_2; // P3_6 
+			duty_y1 = ccr_value_1; // set duty cycles for backchannel debug 
+			duty_y2 = ccr_value_2;
+			break;	
+		case 'z': 
+			SET_Z1_PWM ccr_value_1; // P2_2
+			SET_Z2_PWM ccr_value_2; // P2_6
+			duty_z1 = ccr_value_1; // set duty cycles for backchannel debug 
+			duty_z2 = ccr_value_2;
+			break;
+		default: // unknown state 
+			break;
+	}
 }
-*/
+
+// outputs a discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
+void degauss_lol(void)
+{
+	int sine_table[] = {0,50,100,50,0,-50,-100,-50,0,30,75,30,0,-30,-75,-30,0,20,50,20,0,-20,-50,-20,0,10,20,10,-10,-20,-10,0};
+	int sine_count = 0; 
+	
+	while (sine_count < sizeof(sine_table))
+	{
+		set_pwm('x', sine_table[sine_count]);
+		set_pwm('y', sine_table[sine_count]);
+		set_pwm('z', sine_table[sine_count]);
+		sine_count++; 
+		_delay_cycles(1000); 
+	}	
+}
 
 //------------------------------------------------------------------
-// register initialization functions  
+// COSMOS backchannel functions  
+//------------------------------------------------------------------
+uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
+{
+    if (mode == Mode_BinaryStreaming)
+    {
+        command_segment *myCmdSegment;
+
+        uint8_t opcode = cmdstr[0];
+        switch(opcode)
+        {
+            case 1:
+                // cast the payload to our command segment
+                myCmdSegment = (command_segment *) (cmdstr + 1);
+                set_pwm('x' , myCmdSegment->x);
+				set_pwm('y' , myCmdSegment->x);
+				set_pwm('z' , myCmdSegment->x);
+                // TODO do something based on the command segment
+            case OPCODE_COMMONCMD:
+                break;
+            default:
+                break;
+        }
+    }
+    return 1;
+}
+
+void sendDutyPacket(){
+    dutyseg.x1 = duty_x1;
+    dutyseg.x2 = duty_x2;
+    dutyseg.y1 = duty_y1;
+    dutyseg.y2 = duty_y2;
+    dutyseg.z1 = duty_z1;
+	dutyseg.z2 = duty_z2;
+    bcbinSendPacket((uint8_t *) &dutyseg, sizeof(dutyseg));
+}
+
+
+//------------------------------------------------------------------
+// other functions  
+//------------------------------------------------------------------
+
+void blink_LED(void)
+{
+	PJOUT |= BIT0|BIT1|BIT2; // debug lights 
+	_delay_cycles(50000); 
+	PJOUT &= ~(BIT0|BIT1|BIT2); // debug lights 
+}
+
+
+//------------------------------------------------------------------
+// SFR initialization functions  
 //------------------------------------------------------------------
 
 void mtq_gpio_init(void)
@@ -337,39 +382,6 @@ void timer_b_init(void)
 	TB0CCTL1 = OUTMOD_7;
 	// TB0 control 
 	TB0CTL = TBSSEL__SMCLK | MC__UP | TBCLR; 
-}
-uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
-{
-    if (mode == Mode_BinaryStreaming)
-    {
-        command_segment *myCmdSegment;
-
-        uint8_t opcode = cmdstr[0];
-        switch(opcode)
-        {
-            case 1:
-                // cast the payload to our command segment
-                myCmdSegment = (command_segment *) (cmdstr + 1);
-                interpret_command_dipole(myCmdSegment->x,myCmdSegment->y,myCmdSegment->z);
-                // TODO do something based on the command segment
-
-            case OPCODE_COMMONCMD:
-                break;
-            default:
-                break;
-        }
-    }
-    return 1;
-}
-
-void sendDutyPacket(){
-    dutyseg.x1 = duty_X1;
-    dutyseg.x2 = duty_X2;
-    dutyseg.y1 = duty_Y1;
-    dutyseg.y2 = duty_Y2;
-    dutyseg.z1 = duty_Z1;
-    dutyseg.z2 = duty_Z2;
-    bcbinSendPacket((uint8_t *) &dutyseg, sizeof(dutyseg));
 }
 
 
