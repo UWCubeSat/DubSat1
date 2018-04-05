@@ -38,112 +38,89 @@ VAL_TABLE_ sunproc_sun_status_codes 18 "over_illumination" 17 "under_illuminatio
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
-BO_ 2418434080 mpc_vp: 1 adcs_mpc
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ sensorproc_gps_enable_cmd : 0|8@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ sensorproc_gps_time_ms : 0|32@1+ (1,0) [0|604800000] "ms" Vector__XXX
+ SG_ sensorproc_gps_time_wk : 0|16@1+ (1,0) [1983|4095] "week" Vector__XXX
+ SG_ sensorproc_gps_x_u_v : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+ SG_ sensorproc_gps_z_u_p : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+ SG_ sensorproc_gps_y_u_v : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+ SG_ sensorproc_gps_y_u_p : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+ SG_ sensorproc_gps_x_u_v : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+ SG_ sensorproc_gps_x_u_p : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+ SG_ sensorproc_gps_vel_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ sensorproc_gps_vel_y_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ sensorproc_gps_vel_x_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ sensorproc_gps_pos_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ sensorproc_gps_pos_y_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ sensorproc_gps_pos_x_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ sensorproc_photodiode_x_neg : 0|8@1+ (1,0) [0|100] "" Vector__XXX
+ SG_ sensorproc_photodiode_y_neg : 0|8@1+ (1,0) [0|100] "" Vector__XXX
+ SG_ sensorproc_photodiode_x_pos : 0|8@1+ (1,0) [0|100] "" Vector__XXX
+
+BO_ 2184642594 mpc_vp: 1 adcs_mpc
  SG_ mpc_vp_status : 0|1@1- (1,0) [0|1] "" Vector__XXX
 
-BO_ 2428641280 eps_batt_state: 3 Vector__XXX
+BO_ 2183266498 eps_batt_state: 3 Vector__XXX
  SG_ eps_batt_state_bal : 17|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ eps_batt_state_heat : 16|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ eps_batt_state_soc : 8|8@1+ (1,0) [0|100] "pct" Vector__XXX
  SG_ eps_batt_state_temp : 0|8@1- (1,0) [-128|127] "Deg C" Vector__XXX
 
-BO_ 2428575744 eps_batt_current: 8 eps_batt
+BO_ 2183266497 eps_batt_current: 8 eps_batt
  SG_ eps_batt_current_node_c : 48|16@1- (1,0) [-1000|1000] "dcA (0.1mA)" Vector__XXX
  SG_ eps_batt_current_min_c : 32|16@1- (1,0) [-700|1200] "cA" Vector__XXX
  SG_ eps_batt_current_max_c : 16|16@1- (1,0) [-700|1200] "cA" Vector__XXX
  SG_ eps_batt_current_c : 0|16@1- (1,0) [-700|1200] "cA" Vector__XXX
 
-BO_ 2428510208 eps_batt_voltage: 8 eps_batt
+BO_ 2183266496 eps_batt_voltage: 8 eps_batt
  SG_ eps_batt_voltage_v_max_delta : 48|16@1+ (1,0) [0|10000] "mV" Vector__XXX
  SG_ eps_batt_voltage_node_v : 32|16@1+ (1,0) [0|10000] "mV" Vector__XXX
  SG_ eps_batt_voltage_min_v : 16|16@1+ (1,0) [0|10000] "mV" Vector__XXX
  SG_ eps_batt_voltage_v : 0|16@1+ (1,0) [0|10000] "mV" Vector__XXX
 
-BO_ 2417229888 d_dist_solar_deploy: 0 com_1
-
-BO_ 2424309760 d_sensorproc_gps_enable: 1 adcs_mpc
- SG_ sensorproc_gps_enable_cmd : 0|8@1+ (1,0) [0|1] "" Vector__XXX
-
-BO_ 2421761024 d_sensorproc_gps_time: 8 adcs_sensorproc
- SG_ sensorproc_gps_time_ms : 16|32@1+ (1,0) [0|604800000] "ms" Vector__XXX
- SG_ sensorproc_gps_time_wk : 0|16@1+ (1,0) [1983|4095] "week" Vector__XXX
-
-BO_ 2421695488 d_sensorproc_gps_z_u: 8 adcs_sensorproc
- SG_ sensorproc_gps_x_u_v : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
- SG_ sensorproc_gps_z_u_p : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
-
-BO_ 2421629952 d_sensorproc_gps_y_u: 8 adcs_sensorproc
- SG_ sensorproc_gps_y_u_v : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
- SG_ sensorproc_gps_y_u_p : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
-
-BO_ 2421564416 d_sensorproc_gps_x_u: 8 adcs_sensorproc
- SG_ sensorproc_gps_x_u_v : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
- SG_ sensorproc_gps_x_u_p : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
-
-BO_ 2421498880 d_sensorproc_gps_vel_z: 8 adcs_sensorproc
- SG_ sensorproc_gps_vel_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
-
-BO_ 2421433344 d_sensorproc_gps_vel_y: 8 adcs_sensorproc
- SG_ sensorproc_gps_vel_y_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
-
-BO_ 2421367808 d_sensorproc_gps_vel_x: 8 adcs_sensorproc
- SG_ sensorproc_gps_vel_x_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
-
-BO_ 2421302272 d_sensorproc_gps_pos_z: 8 adcs_sensorproc
- SG_ sensorproc_gps_pos_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
-
-BO_ 2421236736 d_sensorproc_gps_pos_y: 8 adcs_sensorproc
- SG_ sensorproc_gps_pos_y_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
-
-BO_ 2421171200 d_sensorproc_gps_pos_x: 8 adcs_sensorproc
- SG_ sensorproc_gps_pos_x_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
-
-BO_ 2420179968 sensorproc_sun: 5 adcs_sensorproc
+BO_ 2181365825 sensorproc_sun: 5 adcs_sensorproc
  SG_ sensorproc_sun_status : 32|8@1+ (1,0) [0|13] "" Vector__XXX
  SG_ sensorproc_sun_reading_beta : 16|16@1- (1,0) [-3600|3600] "arcminutes" Vector__XXX
  SG_ sensorproc_sun_reading_alpha : 0|16@1- (1,0) [-3600|3600] "arcminutes" Vector__XXX
 
-BO_ 2420114432 d_sensorproc_photodiode: 3 adcs_sensorproc
- SG_ sensorproc_photodiode_x_neg : 16|8@1+ (1,0) [0|100] "" Vector__XXX
- SG_ sensorproc_photodiode_y_neg : 8|8@1+ (1,0) [0|100] "" Vector__XXX
- SG_ sensorproc_photodiode_x_pos : 0|8@1+ (1,0) [0|100] "" Vector__XXX
-
-BO_ 2418085888 bdot_command_dipole: 3 adcs_bdot
+BO_ 2181365793 bdot_command_dipole: 3 adcs_bdot
  SG_ bdot_command_dipole_z : 16|8@1- (1,0) [-100|100] "mA*m^2" Vector__XXX
  SG_ bdot_command_dipole_y : 8|8@1- (1,0) [-100|100] "mA*m^2" Vector__XXX
  SG_ bdot_command_dipole_x : 0|8@1- (1,0) [-100|100] "mA*m^2" Vector__XXX
 
-BO_ 2418041888 bdot_tumble_status: 1 adcs_bdot
+BO_ 2181496864 bdot_tumble_status: 1 adcs_bdot
  SG_ bdot_tumble_status_status : 0|1@1+ (1,0) [0|0] "bool" Vector__XXX
 
-BO_ 2148728831 sync_2: 0 eps_gen
+BO_ 2147549202 sync_2: 0 eps_gen
 
-BO_ 2148663295 sync_1: 0 ppt
+BO_ 2147549201 sync_1: 0 ppt
 
-BO_ 2417188864 msp_temp: 2 rahs
+BO_ 2183725075 msp_temp: 2 rahs
  SG_ msp_temp_temp : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
 
-BO_TX_BU_ 2417188864 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
+BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
-VAL_ 2418434080 mpc_vp_status 1 "true" 0 "false" ;
-VAL_ 2428641280 eps_batt_state_bal 1 "true" 0 "false" ;
-VAL_ 2428641280 eps_batt_state_heat 1 "true" 0 "false" ;
-VAL_ 2424309760 sensorproc_gps_enable_cmd 1 "true" 0 "false" ;
-VAL_ 2420179968 sensorproc_sun_status 18 "over_illumination" 17 "under_illumination" 5 "light_from_outside_fov_5" 4 "light_from_outside_fov_4" 3 "no_light" 0 "good_data" ;
-VAL_ 2418041888 bdot_tumble_status_status 1 "true" 0 "false" ;
-SIG_VALTYPE_ 2421695488 sensorproc_gps_x_u_v : 1;
-SIG_VALTYPE_ 2421695488 sensorproc_gps_z_u_p : 1;
-SIG_VALTYPE_ 2421629952 sensorproc_gps_y_u_v : 1;
-SIG_VALTYPE_ 2421629952 sensorproc_gps_y_u_p : 1;
-SIG_VALTYPE_ 2421564416 sensorproc_gps_x_u_v : 1;
-SIG_VALTYPE_ 2421564416 sensorproc_gps_x_u_p : 1;
-SIG_VALTYPE_ 2421498880 sensorproc_gps_vel_z_val : 2;
-SIG_VALTYPE_ 2421433344 sensorproc_gps_vel_y_val : 2;
-SIG_VALTYPE_ 2421367808 sensorproc_gps_vel_x_val : 2;
-SIG_VALTYPE_ 2421302272 sensorproc_gps_pos_z_val : 2;
-SIG_VALTYPE_ 2421236736 sensorproc_gps_pos_y_val : 2;
-SIG_VALTYPE_ 2421171200 sensorproc_gps_pos_x_val : 2;
+VAL_ 3221225472 sensorproc_gps_enable_cmd 1 "true" 0 "false" ;
+VAL_ 2184642594 mpc_vp_status 1 "true" 0 "false" ;
+VAL_ 2183266498 eps_batt_state_bal 1 "true" 0 "false" ;
+VAL_ 2183266498 eps_batt_state_heat 1 "true" 0 "false" ;
+VAL_ 2181365825 sensorproc_sun_status 18 "over_illumination" 17 "under_illumination" 5 "light_from_outside_fov_5" 4 "light_from_outside_fov_4" 3 "no_light" 0 "good_data" ;
+VAL_ 2181496864 bdot_tumble_status_status 1 "true" 0 "false" ;
+SIG_VALTYPE_ 3221225472 sensorproc_gps_x_u_v : 1;
+SIG_VALTYPE_ 3221225472 sensorproc_gps_z_u_p : 1;
+SIG_VALTYPE_ 3221225472 sensorproc_gps_y_u_v : 1;
+SIG_VALTYPE_ 3221225472 sensorproc_gps_y_u_p : 1;
+SIG_VALTYPE_ 3221225472 sensorproc_gps_x_u_v : 1;
+SIG_VALTYPE_ 3221225472 sensorproc_gps_x_u_p : 1;
+SIG_VALTYPE_ 3221225472 sensorproc_gps_vel_z_val : 2;
+SIG_VALTYPE_ 3221225472 sensorproc_gps_vel_y_val : 2;
+SIG_VALTYPE_ 3221225472 sensorproc_gps_vel_x_val : 2;
+SIG_VALTYPE_ 3221225472 sensorproc_gps_pos_z_val : 2;
+SIG_VALTYPE_ 3221225472 sensorproc_gps_pos_y_val : 2;
+SIG_VALTYPE_ 3221225472 sensorproc_gps_pos_x_val : 2;
 
