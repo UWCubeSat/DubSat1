@@ -247,6 +247,31 @@ def cMainEncodeFloat(frame, sig, sigType):
             + ")))))"
             + (" << " + str(64 - int(sig.getStartbit()) - sig.signalsize) if 64 - int(sig.getStartbit()) - sig.signalsize != 0 else "")
             + ";\n")
+
+def createCTestFile(candb, cFileName, floatList):
+    cFile = open(cFileName, "w")
+    cFile.write('''
+#include <msp430.h>
+#include <stddef.h>
+#include "interfaces/canwrap.h"
+''')
+    cFile.write("void canBlast() { \n");
+    for frame in candb.frames:
+        packetname= frame.name+"_packet"
+        infoname = frame.name+"_info"
+        cFile.write("\t__delay_cycles(10000);")
+        cFile.write("\tCANPacket " + packetname + " = {0};" +"\n")
+        cFile.write("\t" + frame.name +" " + infoname + " = {0};" +"\n")
+        cFile.write("\t" + "encode" +frame.name + "(&"+infoname + ", &"+ packetname + ");" +"\n")
+        cFile.write("\t" + "canSendPacket(&" + packetname + ");" +"\n")
+        cFile.write("\n")
+    cFile.write("} \n");
+    cFile.write("while (1) { \n");
+    cFile.write("\t" + "canBlast(); \n");
+    cFile.write("\t"+ "int i=0; \n\tfor(int i=0;i<100000;i++){} \n");
+    cFile.write("}");
+    cFile.close()
+
 def createCMain(candb, cFileName, floatList):
     cFile = open(cFileName, "w")
     cFile.write('''/*
@@ -495,6 +520,7 @@ def main():
     floatList = handleFloats(infile)
     createCHeader(CANObj, "codeGenOutput/canwrap.h", floatList)
     createCMain(CANObj, "codeGenOutput/canwrap.c", floatList)
+    createCTestFile(CANObj, "codeGenOutput/test.c", floatList)
 
 if __name__ == '__main__':
     sys.exit(main())

@@ -53,6 +53,9 @@ FILE_STATIC hDev hBattV;
 #define MAX_BUFF_SIZE   0x10
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 
+FILE_STATIC uint16_t startupDelay = 1800;
+#pragma PERSISTENT(startupDelay)
+
 void distDeployInit()
 {
     DEPLOY_ENABLE_DIR |= DEPLOY_ENABLE_BIT;
@@ -431,7 +434,13 @@ int main(void)
     debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, distActionCallback);
     __delay_cycles(0.5 * SEC);
 
-#endif  //  __DEBUG__
+#else  //  __DEBUG__
+    while(startupDelay)
+    {
+        __delay_cycles(SEC); //wait for 30 minutes
+        startupDelay--;
+    }
+#endif
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
     // TODO:  Add the correct bus filters and register CAN message receive handlers
