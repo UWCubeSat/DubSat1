@@ -1,7 +1,8 @@
 #define ENABLE_GPS         0
 #define ENABLE_PHOTODIODES 0
 #define ENABLE_SUNSENSOR   1
-#define ENABLE_MAG         1
+#define ENABLE_MAG1        1
+#define ENABLE_MAG2        1
 #define ENABLE_IMU         1
 
 #include <adcs_sensorproc.h>
@@ -78,10 +79,19 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
      NULL,
     },
 #endif
-#if ENABLE_MAG
+#if ENABLE_MAG1
     {
-     magioInit,
-     magioUpdate,
+     magioInit1,
+     magioUpdate1,
+     UpdateRate_5Hz,
+     NULL,
+     NULL,
+    },
+#endif
+#if ENABLE_MAG2
+    {
+     magioInit2,
+     magioUpdate2,
      UpdateRate_5Hz,
      NULL,
      NULL,
