@@ -5,6 +5,8 @@
 
 uint8_t overflowReg;
 
+uint8_t confirmed;
+
 void METInit()
 {
 	RTCCTL0_H = RTCKEY_H;                   // Unlock RTC
@@ -24,6 +26,22 @@ void METInit()
 	RTCCNT4 = 0;
 
 	RTCCTL13 &= ~(RTCHOLD);                 // Start RTC
+
+	confirmed = 0;
+
+}
+
+void updateMET(timeStamp newTime)
+{
+    RTCCTL13 |= RTCHOLD;
+    RTCCNT1 = newTime.count1;
+    RTCCNT2 = newTime.count2;
+    RTCCNT3 = newTime.count3;
+    RTCCNT4 = newTime.count4;
+    overflowReg = newTime.count5;
+    RTCCTL13 &= ~(RTCHOLD);
+
+    confirmed = 1;
 }
 
 timeStamp getTimeStamp()
