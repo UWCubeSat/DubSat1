@@ -68,7 +68,7 @@ BO_ 2182217936 gen_panel_voltage: 6 Vector__XXX
  SG_ gen_panel_voltage_y_pos : 0|16@1+ (1,0) [0|20000] "mV" Vector__XXX
 
 BO_ 2184642594 mpc_vp: 1 adcs_mpc
- SG_ mpc_vp_status : 0|1@1- (1,0) [0|1] "" Vector__XXX
+ SG_ mpc_vp_status : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2183266498 eps_batt_state: 3 Vector__XXX
  SG_ eps_batt_state_bal : 17|1@1+ (1,0) [0|1] "" Vector__XXX
