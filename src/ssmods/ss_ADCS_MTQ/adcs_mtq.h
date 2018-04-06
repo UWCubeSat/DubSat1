@@ -6,6 +6,9 @@ author: jeffc
 #ifndef ADCS_MTQ_H_
 #define ADCS_MTQ_H_
 
+// time between sending meta/health telemetry
+#define MTQ_TELEM_DELAY_MS 1000
+
 #include <stdint.h>
 #include "core/utils.h"
 #include "core/timers.h"

@@ -21,6 +21,8 @@ Z2 - P2_6 - TB0.1
 #include "bsp/bsp.h"
 #include "core/timer.h"
 #include "interfaces/canwrap.h" 
+#include "core/debugtools.h"
+#include "sensors/analogsensor.h"
 
 //------------------------------------------------------------------
 // global variables 
@@ -32,6 +34,9 @@ FILE_STATIC volatile int duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2; /
 FILE_STATIC volatile int8_t received_CAN_command_packet; // flag to exit tumbling state if no command packet has been received
 FILE_STATIC volatile int8_t received_cosmos_command_packet; 
 FILE_STATIC duty_segment dutyseg;
+FILE_STATIC meta_segment metaSeg;
+FILE_STATIC health_segment healthSeg;
+FILE_STATIC int telemTimer; // timer handle for sending meta/health updates
 
 //------------------------------------------------------------------
 // function declarations
@@ -40,6 +45,8 @@ void mtq_init(void);
 void set_pwm(char axis, int pwm_percent); 
 void can_packet_rx_callback(CANPacket *packet);
 void send_ping_packet(void);
+void send_meta_packet(void);
+void send_health_packet(void);
 void blink_LED(void); 
 void degauss_lol(void);
 
@@ -62,11 +69,16 @@ int main(void)
     debugRegisterEntity(Entity_NONE, NULL, NULL, handleDebugActionCallback);
     int timerID = timerCallbackInitializer(&sendDutyPacket, 500000); // timer will call on blinkLED every 2000 us.
     startCallback(timerID);
+
+    asensorInit(Ref_2p5V); // initialize temperature sensor
+    telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS);
+    bcbinPopulateHeader(&(healthSeg.header), TLM_ID_SHARED_HEALTH, sizeof(healthSeg));
+
 	// CAN initialization 
 	canWrapInitWithFilter();
 	setCANPacketRxCallback(can_packet_rx_callback);
 	
-	// DEBUG testing - comment out during normal operation 
+	// DEBUG testing - comment out during normal operation
 	while(1)
 	{
 		set_pwm('x', -100);
@@ -78,6 +90,17 @@ int main(void)
 	/*
     while (1)
     {
+        // send periodic telemetry
+        if (checkTimer(telemTimer))
+        {
+            // reset timer
+            telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS);
+
+            // send telemetry
+            send_health_packet();
+            send_meta_packet();
+        }
+
 		// control for turning on coils based on command dipole signals 
         switch (tumble_status) 
 		{
@@ -149,6 +172,28 @@ void send_ping_packet(void)
 	p.id = 1234;
 	p.length = 0;
 	canSendPacket(&p);
+}
+
+void send_health_packet(void)
+{
+    // TODO determine overall health based on querying sensors for their health
+    healthSeg.oms = OMS_Unknown;
+
+    healthSeg.inttemp = asensorReadIntTempC();
+    bcbinSendPacket((uint8_t *) &healthSeg, sizeof(healthSeg));
+    debugInvokeStatusHandler(Entity_UART); // send uart bus status over backchannel
+
+    // send CAN packet of temperature (in deci-Kelvin)
+    msp_temp temp = { (healthSeg.inttemp + 273.15f) * 10 };
+    CANPacket packet;
+    encodemsp_temp(&temp, &packet);
+    canSendPacket(&packet);
+}
+
+void send_meta_packet(void)
+{
+    bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
+    bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
 }
 
 //------------------------------------------------------------------
