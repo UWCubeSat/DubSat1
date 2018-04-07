@@ -34,6 +34,7 @@ FILE_STATIC volatile ModuleStatus mod_status;
 
 FILE_STATIC uint8_t firing;
 FILE_STATIC uint8_t currTimeout;
+FILE_STATIC uint8_t withFiringPulse;
 
 // These are sample "trigger" flags, used to indicate to the main loop
 // that a transition should occur
@@ -55,7 +56,9 @@ FILE_STATIC ppt_main_done mainDone;
 FILE_STATIC ppt_igniter_done igniterDone;
 FILE_STATIC ppt_operating pptOp;
 FILE_STATIC meta_segment mseg;
+FILE_STATIC health_segment hseg;
 FILE_STATIC timing currTiming;
+
 const uint32_t ledFreq = 200000;
 
 FILE_STATIC void sendIsOp() //TODO: remove before flight, or don't (maybe replace w/ meta packet)
@@ -94,6 +97,14 @@ FILE_STATIC void sendMeta()
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
+FILE_STATIC void sendHealth()
+{
+    // For now, everythingis always marginal ...
+    hseg.oms = OMS_Unknown;
+    hseg.reset_count = bspGetResetCount();
+    bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
+}
+
 FILE_STATIC void sendTiming()
 {
     currTiming.mainChargeTime = mainChargeTime;
@@ -109,11 +120,11 @@ FILE_STATIC void sendSync1()
     CANPacket syncPacket = {0};
      sync_1 syncPacket_info = {0};
 
-    encodebdot_command_dipole(&syncPacket_info, &syncPacket);
+    encodesync_1(&syncPacket_info, &syncPacket);
     canSendPacket(&syncPacket);
 }
 
-void startFiring(start_firing *startPkt);
+void startFiring(uint8_t timeout);
 void stopFiring();
 void mainLow();
 void igniterHigh();
@@ -145,7 +156,7 @@ int main(void)
     canWrapInitWithFilter();
     setCANPacketRxCallback(can_packet_rx_callback);
 
-    P1DIR |= (BIT0 | BIT1);
+    P1DIR |= (BIT0 | BIT1) & ~BIT5; //1.5 is the firing pin
     P2DIR &= ~(BIT5 | BIT6);
     P4DIR |= (BIT1 | BIT2 | BIT3);
 
@@ -157,6 +168,11 @@ int main(void)
     P2REN |= (BIT5 | BIT6);
     P2IES |= BIT1; //this represents capture mode (rising/falling/both)
     P2IE |= (BIT5 | BIT6);
+
+    P1IFG = 0;
+    P1REN |= BIT5;
+    P1IES |= (BIT1 | BIT2);
+    P1IE |= BIT5;
 
     TB0CTL = TBSSEL__ACLK | MC__CONTINOUS | TBCLR | TBIE;
 
@@ -189,17 +205,9 @@ int main(void)
 
     sendIsOp();
     bcbinPopulateHeader(&currTiming.header, 5, sizeof(currTiming));
+    bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
 
-
-    ///////////////////////////////////////
-    //TODO: this is a test block
-    firing = 1;
-    mod_status.ss_state = State_Cooldown;
-    TB0CCR1 = TB0R + cooldownTime;
-    TB0CCTL1 = CCIE;
-    sendSync1();
-    ///////////////////////////////////////
-
+    withFiringPulse = 1;
 
     while (1)
     {
@@ -212,6 +220,7 @@ int main(void)
                 P1OUT ^= BIT0;
             ledCount = ledFreq;
             sendMeta();
+            sendHealth();
         }
         else
         {
@@ -224,14 +233,13 @@ int main(void)
 	return 0;
 }
 
-void startFiring(start_firing *startPkt)
+void startFiring(uint8_t timeout)
 {
-    if(!firing && startPkt->timeout)
+    if(!firing && timeout)
     {
         P1OUT &= ~BIT0;
-        firing = 1;
 
-        currTimeout = startPkt->timeout - 1;
+        currTimeout = timeout - 1;
         sendSync1();
         mod_status.ss_state = State_Cooldown;
         TB0CCR1 = TB0R + cooldownTime;
@@ -249,6 +257,7 @@ void stopFiring()
         firing = 0;
         //P2IE &= ~(BIT5 | BIT6);
         P4OUT &= ~(BIT1 | BIT2 | BIT3);
+        withFiringPulse = 1;
     }
 }
 
@@ -338,7 +347,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr) //this shoul
             case OPCODE_COMMON_CMD:
                 break;
             case OPCODE_START_FIRE://OPCODE_MY_CMD:
-                startFiring((start_firing *) (cmdstr + 1));
+                startFiring(((start_firing *) (cmdstr + 1))->timeout);
                 break;
             case OPCODE_STOP_FIRE:
                 stopFiring();
@@ -372,7 +381,14 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr) //this shoul
 
 void can_packet_rx_callback(CANPacket *packet)
 {
-    //see MTQ for example implementation
+    if(packet->id == CAN_ID_CMD_PPT_FIRE)
+    {
+        cmd_ppt_fire pkt = {0};
+        decodecmd_ppt_fire(packet, &pkt);
+
+        withFiringPulse = (pkt.cmd_ppt_fire_fire) ? 1 : 0;
+        startFiring(1);
+    }
 }
 
 BOOL readyToFire()
@@ -397,6 +413,25 @@ __interrupt void Port_2(void)
             break;
     }
     P2IFG = 0; //clear the interrupt flag
+}
+
+#pragma vector=PORT1_VECTOR
+__interrupt void Port_1(void)
+{
+    switch(P1IV)
+    {
+        case P1IV__P1IFG5:
+            if(!firing && P1IN & BIT5) //1.5 is high
+                startFiring(1);
+
+            else if(firing && !(P1IN & BIT5)) //1.5 is low
+                stopFiring();
+
+            break;
+        default:
+            P1OUT ^= BIT0;
+            break;
+    }
 }
 
 void fire()
@@ -439,17 +474,18 @@ __interrupt void Timer0_B1_ISR (void)
                     TB0CCR1 += igniterChargeTime;
                     break;
                 case State_Igniter_Charging:
-                    fire();
-                    //TODO: this code was removed to enable firing w/o timeout on power on
-                    /*if(currTimeout)
+                    if(withFiringPulse)
+                        fire();
+                    if(currTimeout)
                     {
-                        currTimeout--;*/
-                        sendSync1();
+                        currTimeout--;
+                        if(currTimeout)
+                            sendSync1();
                         mod_status.ss_state = State_Cooldown;
                         TB0CCR1 += cooldownTime;
-                    /*}
+                    }
                     else
-                        stopFiring();*/
+                        stopFiring();
                     break;
                 case State_Cooldown:
                     P4OUT |= BIT3;

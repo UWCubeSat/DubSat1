@@ -10,7 +10,7 @@ typedef struct timeStamp{
 	uint8_t count5;
 } timeStamp;
 
-void METInit();
+void METInit(uint8_t _isDist);
 
 //returns the current MET timeStamp
 timeStamp getTimeStamp();
