@@ -18,7 +18,6 @@ FILE_STATIC hMag mag2;
 FILE_STATIC hMag magioInit(bus_instance_i2c bus)
 {
     hMag handle = magInit(bus);
-    normalOperationConfig(handle);
     return handle;
 }
 
