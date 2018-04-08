@@ -35,7 +35,7 @@ BS_:
 
 BU_: ppt eps_batt eps_dist eps_gen adcs_rwz adcs_rwy adcs_rwx adcs_mtq rahs adcs_sensorproc adcs_mpc adcs_estim adcs_bdot com_1 com_2
 VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
-VAL_TABLE_ sunproc_sun_status_codes 18 "over_illumination" 17 "under_illumination" 5 "light_from_outside_fov_5" 4 "light_from_outside_fov_4" 3 "no_light" 0 "good_data" ;
+VAL_TABLE_ sunproc_sun_status_codes 12 "over_illumination" 11 "under_illumination" 5 "light_from_outside_fov_5" 4 "light_from_outside_fov_4" 3 "no_light" 0 "good_data" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
@@ -120,6 +120,6 @@ VAL_ 2183266514 gen_panel_pwr_agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "n
 VAL_ 2184642594 mpc_vp_status 1 "true" 0 "false" ;
 VAL_ 2183266498 eps_batt_state_bal 1 "true" 0 "false" ;
 VAL_ 2183266498 eps_batt_state_heat 1 "true" 0 "false" ;
-VAL_ 2181365825 sensorproc_sun_status 18 "over_illumination" 17 "under_illumination" 5 "light_from_outside_fov_5" 4 "light_from_outside_fov_4" 3 "no_light" 0 "good_data" ;
+VAL_ 2181365825 sensorproc_sun_status 12 "over_illumination" 11 "under_illumination" 5 "light_from_outside_fov_5" 4 "light_from_outside_fov_4" 3 "no_light" 0 "good_data" ;
 VAL_ 2181496864 bdot_tumble_status_status 1 "true" 0 "false" ;
 
