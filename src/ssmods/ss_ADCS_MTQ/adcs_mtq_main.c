@@ -17,11 +17,12 @@ Z2 - P2_6 - TB0.1
 // includes
 //------------------------------------------------------------------
 #include <msp430.h> 
-#include <stdint.h> 
 #include "adcs_mtq.h"
 #include "bsp/bsp.h"
 #include "core/timer.h"
 #include "interfaces/canwrap.h" 
+#include "core/debugtools.h"
+#include "sensors/analogsensor.h"
 
 //------------------------------------------------------------------
 // global variables 
@@ -33,16 +34,19 @@ FILE_STATIC volatile int duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2; /
 FILE_STATIC volatile int8_t received_CAN_command_packet; // flag to exit tumbling state if no command packet has been received
 FILE_STATIC volatile int8_t received_cosmos_command_packet; 
 FILE_STATIC duty_segment dutyseg;
+FILE_STATIC meta_segment metaSeg;
+FILE_STATIC health_segment healthSeg;
+FILE_STATIC int telemTimer; // timer handle for sending meta/health updates
 
 //------------------------------------------------------------------
 // function declarations
 //------------------------------------------------------------------
-void mtq_gpio_init(void);
-void mtq_gpio_debug_init(void); // DEBUG pins with gpio function 
-void timer_b_init(void); 
+void mtq_init(void);
 void set_pwm(char axis, int pwm_percent); 
 void can_packet_rx_callback(CANPacket *packet);
 void send_ping_packet(void);
+void send_meta_packet(void);
+void send_health_packet(void);
 void blink_LED(void); 
 void degauss_lol(void);
 
@@ -51,40 +55,57 @@ void degauss_lol(void);
 // TODO 
 // confirm backchannel functionality 
 // add ping packet? 
+// add status to backchannel 
 //------------------------------------------------------------------
 int main(void)
 {	
-	// bsp initialization 
+	// BSP initialization 
 	bspInit(__SUBSYSTEM_MODULE__);
-	// port initialization 
-	mtq_gpio_init(); // pins are timer b function
-	// timer initialization 
-	timer_b_init();
+	// MTQ specific SFR initialization 
+	mtq_init(); 
 	// COSMOS backchannel initialization 
 	initializeTimer();
     bcbinPopulateHeader(&(dutyseg.header), TLM_ID_SHARED_SSGENERAL, sizeof(dutyseg));
     debugRegisterEntity(Entity_NONE, NULL, NULL, handleDebugActionCallback);
     int timerID = timerCallbackInitializer(&sendDutyPacket, 500000); // timer will call on blinkLED every 2000 us.
     startCallback(timerID);
+
+    asensorInit(Ref_2p5V); // initialize temperature sensor
+    telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS);
+    bcbinPopulateHeader(&(healthSeg.header), TLM_ID_SHARED_HEALTH, sizeof(healthSeg));
+
 	// CAN initialization 
 	canWrapInitWithFilter();
 	setCANPacketRxCallback(can_packet_rx_callback);
 	
+	// DEBUG testing - comment out during normal operation
+	while(1)
+	{
+		set_pwm('x', -100);
+	    set_pwm('y', -100);
+	    set_pwm('z', -100);
+	}
+	// end of DEBUG testing
+	
+	/*
     while (1)
     {
-        /*
-		// DEBUG testing 
-        set_pwm(x, 0);
-        set_pwm(y, 0);
-        set_pwm(z, 0);
-		degauss_lol(); 
-        */
+        // send periodic telemetry
+        if (checkTimer(telemTimer))
+        {
+            // reset timer
+            telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS);
+
+            // send telemetry
+            send_health_packet();
+            send_meta_packet();
+        }
 
 		// control for turning on coils based on command dipole signals 
         switch (tumble_status) 
 		{
 			case Tumbling: 
-				//blink_LED(); // blink debug lights  
+				PJOUT |= BIT0|BIT1|BIT2; // turn on debug lights 
 				// set duty cycles 
 				if (received_CAN_command_packet || received_cosmos_command_packet)
 				{
@@ -96,11 +117,11 @@ int main(void)
 				} 		
 				break;
 			case Idle: 
-				PJOUT |= BIT0|BIT1|BIT2; // turn on debug lights 
-				// set all duty cycles to 0 
-				set_pwm('x', 0); 
-				set_pwm('y', 0); 
-				set_pwm('z', 0); 
+				//blink_LED(); // blink debug lights 
+				// Turn off coils (according to driver chopping mode)
+				set_pwm('x', 100); 
+				set_pwm('y', 100); 
+				set_pwm('z', 100); 
 				break;
         	default:
 				// unknown state 
@@ -109,7 +130,7 @@ int main(void)
             	break;
         }
 	}
-
+*/
 	return 0;
 }
 
@@ -153,6 +174,28 @@ void send_ping_packet(void)
 	canSendPacket(&p);
 }
 
+void send_health_packet(void)
+{
+    // TODO determine overall health based on querying sensors for their health
+    healthSeg.oms = OMS_Unknown;
+
+    healthSeg.inttemp = asensorReadIntTempC();
+    bcbinSendPacket((uint8_t *) &healthSeg, sizeof(healthSeg));
+    debugInvokeStatusHandler(Entity_UART); // send uart bus status over backchannel
+
+    // send CAN packet of temperature (in deci-Kelvin)
+    msp_temp temp = { (healthSeg.inttemp + 273.15f) * 10 };
+    CANPacket packet;
+    encodemsp_temp(&temp, &packet);
+    canSendPacket(&packet);
+}
+
+void send_meta_packet(void)
+{
+    bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
+    bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
+}
+
 //------------------------------------------------------------------
 // PWM functions 
 //------------------------------------------------------------------
@@ -162,42 +205,32 @@ void send_ping_packet(void)
 void set_pwm(char axis, int pwm_percent)  
 {
 	// set duty cycles based on chopping mode 
-	// TODO double check chopping mode specs 
-	int duty_1 = (pwm_percent >= 0) ? pwm_percent : 0;
-	int duty_2 = (pwm_percent < 0) ? -pwm_percent: 0; 
+	int duty_1 = (pwm_percent >= 0) ? (100-pwm_percent) : 100;
+	int duty_2 = (pwm_percent < 0) ? (100-(-pwm_percent)): 100;
 	
 	// set CCR values to assign pwm to output pins 
-    int ccr_value_1;
-	int ccr_value_2;
-    if (pwm_percent == 0)
-	{
-        ccr_value_1 = 0;
-		ccr_value_2 = 0;
-	} else
-	{
-		ccr_value_1 = duty_1*CCR_PERIOD;
-		ccr_value_2 = -(duty_2*CCR_PERIOD);
-	}
+    int ccr_value_1 = duty_1*CCR_PERIOD;
+	int ccr_value_2 = duty_2*CCR_PERIOD;
 	
 	// set SFRs 
 	switch(axis)
 	{
-		case 'x': // MTQ: P1_7 Launchpad: P3_5
+		case 'x':
 			SET_X1_PWM ccr_value_1; // P1_7
 			SET_X2_PWM ccr_value_2; // P1_6 
-			duty_x1 = ccr_value_1; // set duty cycles for backchannel debug 
+			duty_x1 = ccr_value_1;  // for backchannel
 			duty_x2 = ccr_value_2;
 			break;
-		case 'y': // MTQ: P3_7 Launchpad: P3_7
+		case 'y': 
 			SET_Y1_PWM ccr_value_1; // P3_7
 			SET_Y2_PWM ccr_value_2; // P3_6 
-			duty_y1 = ccr_value_1; // set duty cycles for backchannel debug 
+			duty_y1 = ccr_value_1;  // for backchannel 
 			duty_y2 = ccr_value_2;
 			break;	
 		case 'z': 
 			SET_Z1_PWM ccr_value_1; // P2_2
 			SET_Z2_PWM ccr_value_2; // P2_6
-			duty_z1 = ccr_value_1; // set duty cycles for backchannel debug 
+			duty_z1 = ccr_value_1;  // for backchannel  
 			duty_z2 = ccr_value_2;
 			break;
 		default: // unknown state 
@@ -205,10 +238,14 @@ void set_pwm(char axis, int pwm_percent)
 	}
 }
 
-// outputs a discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
+// outputs a (very shitty) discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
+// note: HuskySat1 has only aircores so this function is never used; It's just for future reference. 
 void degauss_lol(void)
 {
-	int sine_table[] = {0,50,100,50,0,-50,-100,-50,0,30,75,30,0,-30,-75,-30,0,20,50,20,0,-20,-50,-20,0,10,20,10,-10,-20,-10,0};
+	int sine_table[] = {0,50,100,50,0,-50,-100,-50,
+						0,30,75,30,0,-30,-75,-30,
+						0,20,50,20,0,-20,-50,-20,
+						0,10,20,10,-10,-20,-10,0};
 	int sine_count = 0; 
 	
 	while (sine_count < sizeof(sine_table))
@@ -217,13 +254,14 @@ void degauss_lol(void)
 		set_pwm('y', sine_table[sine_count]);
 		set_pwm('z', sine_table[sine_count]);
 		sine_count++; 
-		_delay_cycles(1000); 
+		_delay_cycles(100000);
 	}	
 }
 
 //------------------------------------------------------------------
 // COSMOS backchannel functions  
 //------------------------------------------------------------------
+
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     if (mode == Mode_BinaryStreaming)
@@ -276,8 +314,10 @@ void blink_LED(void)
 // SFR initialization functions  
 //------------------------------------------------------------------
 
-void mtq_gpio_init(void)
+// used to configure SFRs for mtq
+void mtq_init(void)
 {	
+	//---------GPIO initialization--------------------------
 	// PJ.0,1,2 - gpio - board leds 
 	PJOUT &= ~(BIT0|BIT1|BIT2); // power on state
 	PJDIR |= BIT0|BIT1|BIT2;
@@ -307,63 +347,10 @@ void mtq_gpio_init(void)
 	P2DIR |= BIT6;
     P2SEL0 |= BIT6;
     P2SEL1 &= ~BIT6;
-	//---------------------------------
-	// Power mode control (page 73 datasheet)
-	//---------------------------------
-	// Disable the GPIO power-on default high-impedance mode to activate previously configured port settings 
+	// Disable the GPIO power-on default high-impedance 
+	// mode to activate previously configured port settings 
 	PM5CTL0 &= ~LOCKLPM5;  
-	// note: the n in px.n refers to the CCRn register that corresponds to the capture compare timer (page 24)
-}
-
-void mtq_gpio_debug_init(void)
-{	
-	// PJ.0,1,2 - gpio - board leds 
-	PJOUT &= ~(BIT0|BIT1|BIT2); // power on state
-	PJDIR |= BIT0|BIT1|BIT2;
-	PJSEL0 &= ~(BIT0|BIT1|BIT2);
-	PJSEL1 &= ~(BIT0|BIT1|BIT2);
-	// P1.7 - gpio - x1
-	P1OUT &= ~BIT7; // power on state
-	P1DIR |= BIT7;
-    P1SEL0 &= ~BIT7;
-    P1SEL1 &= ~BIT7;
-	// P1.6 - gpio - x2
-	P1OUT &= ~BIT6; // power on state
-	P1DIR |= BIT6;
-    P1SEL0 &= ~BIT6;
-    P1SEL1 &= ~BIT6;
-	// P3.7 - gpio - y1
-	P3OUT &= ~BIT7; // power on state
-	P3DIR |= BIT7;
-    P3SEL0 &= ~BIT7;
-    P3SEL1 &= ~BIT7;
-	// P3.6 - gpio  - y2
-	P3OUT &= ~BIT6; // power on state
-	P3DIR |= BIT6;
-    P3SEL0 &= ~BIT6;
-    P3SEL1 &= ~BIT6;
-	// P2.2 - gpio  - z1
-	P2OUT &= ~BIT2; // power on state
-	P2DIR |= BIT2;
-    P2SEL0 &= ~BIT2;
-    P2SEL1 &= ~BIT2;
-	// P2.6 - gpio  - z2
-	P2OUT &= ~BIT6; // power on state
-	P2DIR |= BIT6;
-    P2SEL0 &= ~BIT6;
-    P2SEL1 &= ~BIT6;
-	//---------------------------------
-	// Power mode control (page 73 datasheet)
-	//---------------------------------
-	// Disable the GPIO power-on default high-impedance mode to activate previously configured port settings
-	PM5CTL0 &= ~LOCKLPM5;
-}
-
-void timer_b_init(void) 
-{
-	//---------------------------------
-	// Timer B0 (page 661 userguide)
-	//---------------------------------
+	//---------Timer B initialization--------------------------
 	// capture control 0 (to define PWM period)
     TB0CCR0 = PWM_PERIOD; 
   	// capture control value (to define PWM duty cycles)
@@ -383,6 +370,7 @@ void timer_b_init(void)
 	// TB0 control 
 	TB0CTL = TBSSEL__SMCLK | MC__UP | TBCLR; 
 }
+
 
 
 

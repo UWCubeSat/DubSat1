@@ -9,6 +9,7 @@
 #include "interfaces/systeminfo.h"
 #include "core/uart.h"
 #include "core/i2c.h"
+#include "core/MET.h"
 
 void bspUARTInit(bus_instance_UART instance);
 void bspI2CInit( bus_instance_i2c instance);
@@ -144,7 +145,8 @@ void bspInit(SubsystemModule mod)
       CSCTL5 &= ~LFXTOFFG;                  // Clear LFXT fault flag
       SFRIFG1 &= ~OFIFG;
     } while (SFRIFG1 & OFIFG);              // Test oscillator fault flag
- 
+
+    METInit((mod == Module_EPS_Dist) ? 1 : 0);
  
     CSCTL0_H = 0;                           // Lock CS Registers
 

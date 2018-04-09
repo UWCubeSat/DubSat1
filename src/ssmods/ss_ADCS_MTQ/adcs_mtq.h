@@ -1,15 +1,15 @@
 /*
- * SUBSYSTEMNAME_MODULENAME.h
- *
- *  Created on: Jul 12, 2017
- *      Author: jeffc
- */
+file: adcs_mtq.h
+author: jeffc
+*/
 
 #ifndef ADCS_MTQ_H_
 #define ADCS_MTQ_H_
 
-#include <stdint.h>
+// time between sending meta/health telemetry
+#define MTQ_TELEM_DELAY_MS 1000
 
+#include <stdint.h>
 #include "core/utils.h"
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
@@ -90,5 +90,6 @@ typedef enum _tumble_state {Tumbling=1,Idle=0} TumbleState;
 #define SET_Y2_PWM TB0CCR5 =
 #define SET_Z1_PWM TB0CCR2 =
 #define SET_Z2_PWM TB0CCR1 =
+
 
 #endif /* ADCS_MTQ_H_ */

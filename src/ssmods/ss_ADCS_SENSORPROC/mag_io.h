@@ -10,8 +10,8 @@
 
 #define DELAY_MAG_UPDATE_MS 200
 
-// TODO confirm this bus after descope board redesign
-#define MAG_I2CBUS I2CBus1
+#define MAG1_I2CBUS I2CBus1
+#define MAG2_I2CBUS I2CBus2
 
 #include "core/debugtools.h"
 
@@ -24,7 +24,9 @@ TLM_SEGMENT {
     int16_t z;
 } mag_segment;
 
-void magioInit();
-void magioUpdate();
+void magioInit1();
+void magioInit2();
+void magioUpdate1();
+void magioUpdate2();
 
 #endif /* MAG_IO_H_ */
