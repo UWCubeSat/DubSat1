@@ -23,6 +23,7 @@
 #define NumBitsPerChar                 8U
 
 /* Block signals and states (auto storage) */
+#pragma NOINIT(rtDW)
 DW rtDW;
 
 /* External inputs (root inport signals with auto storage) */
