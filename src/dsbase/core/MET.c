@@ -28,9 +28,18 @@ void METInit(uint8_t _isDist)
 
 	RTCCTL13 &= ~(RTCHOLD);                 // Start RTC
 
-	confirmed = 0;
-
 	isDist = _isDist;
+	if(isDist)
+	{
+	    RTCCNT1 = recentTime.count1;
+        RTCCNT2 = recentTime.count2;
+        RTCCNT3 = recentTime.count3;
+        RTCCNT4 = recentTime.count4;
+	    //TODO: load time from memory
+	    confirmed = 1;
+	}
+	else
+	    confirmed = 0;
 }
 
 void updateMET(timeStamp newTime)
