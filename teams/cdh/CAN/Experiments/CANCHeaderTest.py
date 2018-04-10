@@ -334,96 +334,122 @@ void canWrapInit(){
 void canWrapInitWithFilter(){
     canWrapInit();
     SubsystemModule ss = bspGetModule();
-    uint32_t filter_one = 0x0;
+    uint8_t filter_one = 0x0;
+    uint8_t filter_two = 0x0;
+    uint8_t filter_three = 0x0;
+    uint8_t filter_four = 0x0;
     switch(ss) {
       case Module_Test :
-        filter_one = 0x1;
+        filter_one = 0x01;
+        filter_two = 0x02;
+        filter_three = 0x03;
+        filter_four = 0x04;
         break;
       case Module_ADCS_BDot :
-        filter_one = 0x2;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_ADCS_RWX :
-        filter_one = 0x4;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_ADCS_RWY :
-        filter_one = 0x8;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_ADCS_RWZ :
-        filter_one = 0x10;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_PPT :
-        filter_one = 0x20;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_EPS_Dist :
-        filter_one = 0x40;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_EPS_Gen :
-        filter_one = 0x80;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_EPS_Batt :
-        filter_one = 0x100;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_ADCS_Estim :
-        filter_one = 0x200;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_ADCS_MPC :
-        filter_one = 0x400;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_ADCS_SensorProc :
-        filter_one = 0x800;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_ADCS_MTQ :
-        filter_one = 0x1000;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_COM1 :
-        filter_one = 0x2000;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_COM2 :
-        filter_one = 0x4000;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       case Module_RAHS :
-        filter_one = 0x8000;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
         break;
       default :
-        filter_one = 0x0;
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
   	}
   	setTheFilter(CAN_MASK_0, (uint32_t) 0x10000000);
    	setTheFilter(CAN_FILTER_0, (uint32_t) 0x00);
    	setTheFilter(CAN_FILTER_1, (uint32_t) 0x00);
 
    	setTheFilter(CAN_MASK_1, filter_one);
-   	setTheFilter(CAN_FILTER_2, (uint32_t) filter_one);
-    setTheFilter(CAN_FILTER_3, (uint32_t) filter_one);
-    setTheFilter(CAN_FILTER_4, (uint32_t) filter_one);
-    setTheFilter(CAN_FILTER_5, (uint32_t) filter_one);
-
-    int8_t floop;
-    uint8_t filterNum = 0;
-    for(floop = 28;floop >= 0; floop--){
-        if((filter_one >> floop) & 0x01){
-            PJDIR |= 0x04;
-            PJOUT |= 0x04;
-            setTheFilter((filterNum*4+12)-(!filterNum * 4), 0x1 << floop);
-            filterNum++;
-        }
-    }
-
-
-//    uint8_t debugPollReg = CAN_FILTER_5;
-//
-//    CANPacket p = {0};
-//    p.length = 5;
-//    bitModify(MCP_CANCTRL, 0xE0, 0x80);
-//    readRegister(debugPollReg + 1, &(p.data[2]));
-//    // This line has to be duplicated for it to work.
-//    // Because of some weird delay between moving to config mode from normal mode.
-//    readRegister(debugPollReg + 1, &(p.data[2]));
-//    readRegister(debugPollReg + 2, &(p.data[3]));
-//    readRegister(debugPollReg + 3, &(p.data[4]));
-//    readRegister(debugPollReg, &(p.data[1]));
-//    bitModify(MCP_CANCTRL, 0xE0, 0x00);
-//    canSendPacket(&p);
-//
+   	setTheFilter(CAN_FILTER_2, (uint32_t) filter_one << 16);
+    setTheFilter(CAN_FILTER_3, (uint32_t) filter_two << 16);
+    setTheFilter(CAN_FILTER_4, (uint32_t) filter_three << 16);
+    setTheFilter(CAN_FILTER_5, (uint32_t) filter_four << 16);
 }
 
 
