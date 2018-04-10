@@ -165,7 +165,7 @@ void canWrapInitWithFilter(){
         filter_three = 0x04;
         filter_four = 0x04;
   	}
-  	setTheFilter(CAN_MASK_0, (uint32_t) 0x10000000);
+  	setTheFilter(CAN_MASK_0, (uint32_t) 0x1e000000);
    	setTheFilter(CAN_FILTER_0, (uint32_t) 0x00);
    	setTheFilter(CAN_FILTER_1, (uint32_t) 0x00);
 
