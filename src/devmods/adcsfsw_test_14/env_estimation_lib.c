@@ -23,7 +23,6 @@
 #define NumBitsPerChar                 8U
 
 /* Block signals and states (auto storage) */
-#pragma NOINIT(rtDW)
 DW rtDW;
 
 /* External inputs (root inport signals with auto storage) */
@@ -364,8 +363,8 @@ real_T rt_powd_snf(real_T u0, real_T u1)
   if (rtIsNaN(u0) || rtIsNaN(u1)) {
     y = (rtNaN);
   } else {
-    tmp = fabs(u0);
-    tmp_0 = fabs(u1);
+    tmp = fabsf(u0);
+    tmp_0 = fabsf(u1);
     if (rtIsInf(u1)) {
       if (tmp == 1.0) {
         y = (rtNaN);
@@ -391,11 +390,11 @@ real_T rt_powd_snf(real_T u0, real_T u1)
     } else if (u1 == 2.0) {
       y = u0 * u0;
     } else if ((u1 == 0.5) && (u0 >= 0.0)) {
-      y = sqrt(u0);
-    } else if ((u0 < 0.0) && (u1 > floor(u1))) {
+      y = sqrtf(u0);
+    } else if ((u0 < 0.0) && (u1 > floorf(u1))) {
       y = (rtNaN);
     } else {
-      y = pow(u0, u1);
+      y = powf(u0, u1);
     }
   }
 
@@ -405,13 +404,13 @@ real_T rt_powd_snf(real_T u0, real_T u1)
 real_T rt_roundd_snf(real_T u)
 {
   real_T y;
-  if (fabs(u) < 4.503599627370496E+15) {
+  if (fabsf(u) < 4.503599627370496E+15) {
     if (u >= 0.5) {
-      y = floor(u + 0.5);
+      y = floorf(u + 0.5);
     } else if (u > -0.5) {
       y = u * 0.0;
     } else {
-      y = ceil(u - 0.5);
+      y = ceilf(u - 0.5);
     }
   } else {
     y = u;
@@ -440,7 +439,7 @@ real_T rt_atan2d_snf(real_T u0, real_T u1)
       u1_0 = -1;
     }
 
-    y = atan2(u0_0, u1_0);
+    y = atan2f(u0_0, u1_0);
   } else if (u1 == 0.0) {
     if (u0 > 0.0) {
       y = RT_PI / 2.0;
@@ -450,7 +449,7 @@ real_T rt_atan2d_snf(real_T u0, real_T u1)
       y = 0.0;
     }
   } else {
-    y = atan2(u0, u1);
+    y = atan2f(u0, u1);
   }
 
   return y;
@@ -464,7 +463,7 @@ static real_T norm(const real_T x[3])
   real_T absxk;
   real_T t;
   scale = 2.2250738585072014E-308;
-  absxk = fabs(x[0]);
+  absxk = fabsf(x[0]);
   if (absxk > 2.2250738585072014E-308) {
     y = 1.0;
     scale = absxk;
@@ -473,7 +472,7 @@ static real_T norm(const real_T x[3])
     y = t * t;
   }
 
-  absxk = fabs(x[1]);
+  absxk = fabsf(x[1]);
   if (absxk > scale) {
     t = scale / absxk;
     y = y * t * t + 1.0;
@@ -483,7 +482,7 @@ static real_T norm(const real_T x[3])
     y += t * t;
   }
 
-  absxk = fabs(x[2]);
+  absxk = fabsf(x[2]);
   if (absxk > scale) {
     t = scale / absxk;
     y = y * t * t + 1.0;
@@ -493,7 +492,7 @@ static real_T norm(const real_T x[3])
     y += t * t;
   }
 
-  return scale * sqrt(y);
+  return scale * sqrtf(y);
 }
 
 real_T rt_remd_snf(real_T u0, real_T u1)
@@ -505,20 +504,20 @@ real_T rt_remd_snf(real_T u0, real_T u1)
     y = (rtNaN);
   } else {
     if (u1 < 0.0) {
-      u1_0 = ceil(u1);
+      u1_0 = ceilf(u1);
     } else {
-      u1_0 = floor(u1);
+      u1_0 = floorf(u1);
     }
 
     if ((u1 != 0.0) && (u1 != u1_0)) {
       u1_0 = u0 / u1;
-      if (fabs(u1_0 - rt_roundd_snf(u1_0)) <= DBL_EPSILON * fabs(u1_0)) {
+      if (fabsf(u1_0 - rt_roundd_snf(u1_0)) <= DBL_EPSILON * fabsf(u1_0)) {
         y = 0.0;
       } else {
-        y = fmod(u0, u1);
+        y = fmodf(u0, u1);
       }
     } else {
-      y = fmod(u0, u1);
+      y = fmodf(u0, u1);
     }
   }
 
@@ -533,7 +532,7 @@ static real_T norm_f(const real_T x[3])
   real_T absxk;
   real_T t;
   scale = 2.2250738585072014E-308;
-  absxk = fabs(x[0]);
+  absxk = fabsf(x[0]);
   if (absxk > 2.2250738585072014E-308) {
     y = 1.0;
     scale = absxk;
@@ -542,7 +541,7 @@ static real_T norm_f(const real_T x[3])
     y = t * t;
   }
 
-  absxk = fabs(x[1]);
+  absxk = fabsf(x[1]);
   if (absxk > scale) {
     t = scale / absxk;
     y = y * t * t + 1.0;
@@ -552,7 +551,7 @@ static real_T norm_f(const real_T x[3])
     y += t * t;
   }
 
-  absxk = fabs(x[2]);
+  absxk = fabsf(x[2]);
   if (absxk > scale) {
     t = scale / absxk;
     y = y * t * t + 1.0;
@@ -562,7 +561,7 @@ static real_T norm_f(const real_T x[3])
     y += t * t;
   }
 
-  return scale * sqrt(y);
+  return scale * sqrtf(y);
 }
 
 /* Model step function */
@@ -797,8 +796,8 @@ void env_estimation_lib_step(void)
   /* '<S8>:1:26' JD_GPS          = JD_J2000_GPS + JD_J2000; */
   /* '<S8>:1:27' JD_GPS_since_epoch    = JD_GPS - JD_GPSepoch; */
   /*  Convert to SoW and Week */
-  /* '<S8>:1:30' week    = floor(JD_GPS_since_epoch/dayinweek); */
-  rtb_Abs1 = floor((((rtU.MET * 1.1574074074074073E-5 - 0.00059240740740740738)
+  /* '<S8>:1:30' week    = floorf(JD_GPS_since_epoch/dayinweek); */
+  rtb_Abs1 = floorf((((rtU.MET * 1.1574074074074073E-5 - 0.00059240740740740738)
                      + 2.451545E+6) - 2.4442445E+6) / 7.0);
 
   /* MATLAB Function: '<S149>/time-conversion-lib' incorporates:
@@ -865,13 +864,13 @@ void env_estimation_lib_step(void)
   T1900 = ((JD_days_gps + -0.00020833333333333332) - 2.4150195E+6) / 365.25;
 
   /*  base epoch is 1900 */
-  /* '<S151>:1:54' year    = 1900 + floor(T1900); */
-  rtb_z1 = floor(T1900);
-  T1900 = 1900.0 + floor(T1900);
+  /* '<S151>:1:54' year    = 1900 + floorf(T1900); */
+  rtb_z1 = floorf(T1900);
+  T1900 = 1900.0 + floorf(T1900);
 
-  /* '<S151>:1:56' leapyrs = floor((year - 1900 - 1)*0.25); */
+  /* '<S151>:1:56' leapyrs = floorf((year - 1900 - 1)*0.25); */
   /* '<S151>:1:57' days    = (JD - JD_1900) - ((year - 1900)*365 + leapyrs ); */
-  days = ((JD_days_gps + -0.00020833333333333332) - 2.4150195E+6) - (floor
+  days = ((JD_days_gps + -0.00020833333333333332) - 2.4150195E+6) - (floorf
     ((((1900.0 + rtb_z1) - 1900.0) - 1.0) * 0.25) + ((1900.0 + rtb_z1) - 1900.0)
     * 365.0);
 
@@ -880,16 +879,16 @@ void env_estimation_lib_step(void)
     /* '<S151>:1:60' year    = year - 1; */
     T1900 = (1900.0 + rtb_z1) - 1.0;
 
-    /* '<S151>:1:61' leapyrs = floor((year - 1900 - 1)*0.25); */
+    /* '<S151>:1:61' leapyrs = floorf((year - 1900 - 1)*0.25); */
     /* '<S151>:1:62' days    = (JD - JD_1900) - ((year - 1900)*365 + leapyrs ); */
-    days = ((JD_days_gps + -0.00020833333333333332) - 2.4150195E+6) - (floor
+    days = ((JD_days_gps + -0.00020833333333333332) - 2.4150195E+6) - (floorf
       (((((1900.0 + rtb_z1) - 1.0) - 1900.0) - 1.0) * 0.25) + (((1900.0 + rtb_z1)
       - 1.0) - 1900.0) * 365.0);
   }
 
   /* '<S151>:1:65' if mod(year,4) == 0 */
-  /* '<S151>:1:69' dayofyear   = floor(days); */
-  rtb_Sum3 = floor(days);
+  /* '<S151>:1:69' dayofyear   = floorf(days); */
+  rtb_Sum3 = floorf(days);
 
   /* '<S151>:1:71' day     = 0; */
   /* '<S151>:1:72' month   = 0; */
@@ -898,11 +897,11 @@ void env_estimation_lib_step(void)
   /* '<S151>:1:81' tau     = 24*( days-dayofyear ); */
   days = (days - rtb_Sum3) * 24.0;
 
-  /* '<S151>:1:82' hour    = floor( tau ); */
-  rtb_z1 = floor(days);
+  /* '<S151>:1:82' hour    = floorf( tau ); */
+  rtb_z1 = floorf(days);
 
-  /* '<S151>:1:83' min     = floor( 60*(tau - hour) ); */
-  b_min = floor((days - rtb_z1) * 60.0);
+  /* '<S151>:1:83' min     = floorf( 60*(tau - hour) ); */
+  b_min = floorf((days - rtb_z1) * 60.0);
 
   /* '<S151>:1:84' sec     = 3600*( tau - hour - (min/60) ); */
   /* '<S151>:1:86' time    = [ year, month, dayofyear, hour, min, sec ]; */
@@ -1028,35 +1027,35 @@ void env_estimation_lib_step(void)
     IL2 = (((nc[30 + lowAlt] * days + nc[60 + lowAlt] * rtb_z1) + nc[90 + lowAlt]
             * b_min) + nc[120 + lowAlt] * rtb_Sum) + nc[150 + lowAlt] * rtb_Sum3;
 
-    /* '<S150>:1:95' dpsi_1980   =   0.0001 * (nc(i,7) + nc(i,8) * jd_tt_j2000_century) * sin(api) + dpsi_1980; */
+    /* '<S150>:1:95' dpsi_1980   =   0.0001 * (nc(i,7) + nc(i,8) * jd_tt_j2000_century) * sinf(api) + dpsi_1980; */
     rtb_Switch += (nc[210 + lowAlt] * rtb_T_TT_J2000 + nc[180 + lowAlt]) *
-      0.0001 * sin(IL2);
+      0.0001 * sinf(IL2);
 
-    /* '<S150>:1:96' deps_1980   =   0.0001 * (nc(i,9) + nc(i,10) * jd_tt_j2000_century) * cos(api) + deps_1980; */
+    /* '<S150>:1:96' deps_1980   =   0.0001 * (nc(i,9) + nc(i,10) * jd_tt_j2000_century) * cosf(api) + deps_1980; */
     deps_1980 += (nc[270 + lowAlt] * rtb_T_TT_J2000 + nc[240 + lowAlt]) * 0.0001
-      * cos(IL2);
+      * cosf(IL2);
   }
 
   /* '<S150>:1:99' eps_1980 = epsb_1980 + asec2rad * deps_1980; */
   rtb_z1 = 4.84813681109536E-6 * deps_1980 + T1900;
 
   /* '<S150>:1:100' tod_to_mod = rot1(-epsb_1980) * rot3(asec2rad * dpsi_1980) * rot1(eps_1980); */
-  /* '<S150>:1:149' y = [1 0 0; 0 cos(u) sin(u); 0 -sin(u) cos(u)]; */
+  /* '<S150>:1:149' y = [1 0 0; 0 cosf(u) sinf(u); 0 -sinf(u) cosf(u)]; */
   days = 4.84813681109536E-6 * rtb_Switch;
 
-  /* '<S150>:1:157' y = [cos(u) sin(u) 0; -sin(u) cos(u) 0; 0 0 1]; */
-  /* '<S150>:1:149' y = [1 0 0; 0 cos(u) sin(u); 0 -sin(u) cos(u)]; */
+  /* '<S150>:1:157' y = [cosf(u) sinf(u) 0; -sinf(u) cosf(u) 0; 0 0 1]; */
+  /* '<S150>:1:149' y = [1 0 0; 0 cosf(u) sinf(u); 0 -sinf(u) cosf(u)]; */
   c_0[1] = 0.0;
-  c_0[4] = cos(-T1900);
-  c_0[7] = sin(-T1900);
+  c_0[4] = cosf(-T1900);
+  c_0[7] = sinf(-T1900);
   c_0[2] = 0.0;
-  c_0[5] = -sin(-T1900);
-  c_0[8] = cos(-T1900);
-  rtb_teme_to_gcrf[0] = cos(days);
-  rtb_teme_to_gcrf[3] = sin(days);
+  c_0[5] = -sinf(-T1900);
+  c_0[8] = cosf(-T1900);
+  rtb_teme_to_gcrf[0] = cosf(days);
+  rtb_teme_to_gcrf[3] = sinf(days);
   rtb_teme_to_gcrf[6] = 0.0;
-  rtb_teme_to_gcrf[1] = -sin(days);
-  rtb_teme_to_gcrf[4] = cos(days);
+  rtb_teme_to_gcrf[1] = -sinf(days);
+  rtb_teme_to_gcrf[4] = cosf(days);
   rtb_teme_to_gcrf[7] = 0.0;
   c_0[0] = 1.0;
   rtb_teme_to_gcrf[2] = 0.0;
@@ -1079,11 +1078,11 @@ void env_estimation_lib_step(void)
   }
 
   c_1[1] = 0.0;
-  c_1[4] = cos(rtb_z1);
-  c_1[7] = sin(rtb_z1);
+  c_1[4] = cosf(rtb_z1);
+  c_1[7] = sinf(rtb_z1);
   c_1[2] = 0.0;
-  c_1[5] = -sin(rtb_z1);
-  c_1[8] = cos(rtb_z1);
+  c_1[5] = -sinf(rtb_z1);
+  c_1[8] = cosf(rtb_z1);
 
   /*  Generate Precession matrix */
   /* '<S150>:1:103' zeta    =   asec2rad * (2306.2181 * jd_tt_j2000_century + 0.30188 * jd_tt_j2000_century^2 + 0.017998 * jd_tt_j2000_century^3); */
@@ -1098,22 +1097,22 @@ void env_estimation_lib_step(void)
     4.84813681109536E-6;
 
   /* '<S150>:1:107' mod_to_gcrf = rot3(zeta) * rot2(-theta) * rot3(z); */
-  /* '<S150>:1:157' y = [cos(u) sin(u) 0; -sin(u) cos(u) 0; 0 0 1]; */
+  /* '<S150>:1:157' y = [cosf(u) sinf(u) 0; -sinf(u) cosf(u) 0; 0 0 1]; */
   rtb_T_TT_J2000 = -(((2004.3109 * rtb_T_TT_J2000 - rtb_T_TT_J2000 *
                        rtb_T_TT_J2000 * 0.42665) - 0.041833 * rt_powd_snf
                       (rtb_T_TT_J2000, 3.0)) * 4.84813681109536E-6);
 
-  /* '<S150>:1:153' y = [cos(u) 0 -sin(u); 0 1 0; sin(u) 0 cos(u)]; */
-  /* '<S150>:1:157' y = [cos(u) sin(u) 0; -sin(u) cos(u) 0; 0 0 1]; */
-  rtb_teme_to_gcrf[0] = cos(days);
-  rtb_teme_to_gcrf[3] = sin(days);
+  /* '<S150>:1:153' y = [cosf(u) 0 -sinf(u); 0 1 0; sinf(u) 0 cosf(u)]; */
+  /* '<S150>:1:157' y = [cosf(u) sinf(u) 0; -sinf(u) cosf(u) 0; 0 0 1]; */
+  rtb_teme_to_gcrf[0] = cosf(days);
+  rtb_teme_to_gcrf[3] = sinf(days);
   rtb_teme_to_gcrf[6] = 0.0;
-  rtb_teme_to_gcrf[1] = -sin(days);
-  rtb_teme_to_gcrf[4] = cos(days);
+  rtb_teme_to_gcrf[1] = -sinf(days);
+  rtb_teme_to_gcrf[4] = cosf(days);
   rtb_teme_to_gcrf[7] = 0.0;
-  c_0[0] = cos(rtb_T_TT_J2000);
+  c_0[0] = cosf(rtb_T_TT_J2000);
   c_0[3] = 0.0;
-  c_0[6] = -sin(rtb_T_TT_J2000);
+  c_0[6] = -sinf(rtb_T_TT_J2000);
   for (lowAlt = 0; lowAlt < 3; lowAlt++) {
     for (LOS = 0; LOS < 3; LOS++) {
       tod_to_mod[lowAlt + 3 * LOS] = 0.0;
@@ -1129,14 +1128,14 @@ void env_estimation_lib_step(void)
     c_0[1 + 3 * lowAlt] = e[lowAlt];
   }
 
-  c_0[2] = sin(rtb_T_TT_J2000);
+  c_0[2] = sinf(rtb_T_TT_J2000);
   c_0[5] = 0.0;
-  c_0[8] = cos(rtb_T_TT_J2000);
-  rtb_VectorConcatenate_2[0] = cos(rtb_z1);
-  rtb_VectorConcatenate_2[3] = sin(rtb_z1);
+  c_0[8] = cosf(rtb_T_TT_J2000);
+  rtb_VectorConcatenate_2[0] = cosf(rtb_z1);
+  rtb_VectorConcatenate_2[3] = sinf(rtb_z1);
   rtb_VectorConcatenate_2[6] = 0.0;
-  rtb_VectorConcatenate_2[1] = -sin(rtb_z1);
-  rtb_VectorConcatenate_2[4] = cos(rtb_z1);
+  rtb_VectorConcatenate_2[1] = -sinf(rtb_z1);
+  rtb_VectorConcatenate_2[4] = cosf(rtb_z1);
   rtb_VectorConcatenate_2[7] = 0.0;
   for (lowAlt = 0; lowAlt < 3; lowAlt++) {
     for (LOS = 0; LOS < 3; LOS++) {
@@ -1162,12 +1161,12 @@ void env_estimation_lib_step(void)
   }
 
   /*  Compute equation of Equinoxes */
-  /* '<S150>:1:110' eqe_1980 = asec2rad * (dpsi_1980  * cos(epsb_1980) + 0.00264 * sin(O_moon) + 0.000063 * sin(2 * O_moon)); */
-  rtb_T_TT_J2000 = ((rtb_Switch * cos(T1900) + 0.00264 * sin(rtb_Sum3)) + sin
+  /* '<S150>:1:110' eqe_1980 = asec2rad * (dpsi_1980  * cosf(epsb_1980) + 0.00264 * sinf(O_moon) + 0.000063 * sinf(2 * O_moon)); */
+  rtb_T_TT_J2000 = ((rtb_Switch * cosf(T1900) + 0.00264 * sinf(rtb_Sum3)) + sinf
                     (2.0 * rtb_Sum3) * 6.3E-5) * 4.84813681109536E-6;
 
   /* '<S150>:1:111' teme_to_tod = rot3(-eqe_1980); */
-  /* '<S150>:1:157' y = [cos(u) sin(u) 0; -sin(u) cos(u) 0; 0 0 1]; */
+  /* '<S150>:1:157' y = [cosf(u) sinf(u) 0; -sinf(u) cosf(u) 0; 0 0 1]; */
   /*  % Compute sidereal rotation */
   /*  GMST_1982 = asec2rad * (67310.54841 ... */
   /*                          + (876600 * 3600 + 8640184.812866) * jd_ut1_j2000_century ... */
@@ -1194,14 +1193,14 @@ void env_estimation_lib_step(void)
   rtb_Sum3 *= 86400.0;
   if (!(rtb_Sum3 == 0.0)) {
     if (rtb_Sum3 == rtb_Sum3) {
-      T1900 -= floor(T1900 / rtb_Sum3) * rtb_Sum3;
+      T1900 -= floorf(T1900 / rtb_Sum3) * rtb_Sum3;
     } else {
       T1900 /= rtb_Sum3;
-      if (fabs(T1900 - rt_roundd_snf(T1900)) <= 2.2204460492503131E-16 * fabs
+      if (fabsf(T1900 - rt_roundd_snf(T1900)) <= 2.2204460492503131E-16 * fabsf
           (T1900)) {
         T1900 = 0.0;
       } else {
-        T1900 = (T1900 - floor(T1900)) * rtb_Sum3;
+        T1900 = (T1900 - floorf(T1900)) * rtb_Sum3;
       }
     }
   }
@@ -1209,7 +1208,7 @@ void env_estimation_lib_step(void)
   T1900 /= 240.0;
 
   /* '<S150>:1:123' GMST_1982 = deg2rad * mod(GMST_1982, 360); */
-  T1900 = (T1900 - floor(T1900 / 360.0) * 360.0) * 0.017453292519943295;
+  T1900 = (T1900 - floorf(T1900 / 360.0) * 360.0) * 0.017453292519943295;
 
   /* '<S150>:1:124' GAST_1982 = GMST_1982 + eqe_1980; */
   /*  Compute sidereal rotation */
@@ -1224,17 +1223,17 @@ void env_estimation_lib_step(void)
   /* '<S150>:1:136' pef_to_tod = rot3(-GAST_1982); */
   T1900 = -(T1900 + rtb_T_TT_J2000);
 
-  /* '<S150>:1:157' y = [cos(u) sin(u) 0; -sin(u) cos(u) 0; 0 0 1]; */
+  /* '<S150>:1:157' y = [cosf(u) sinf(u) 0; -sinf(u) cosf(u) 0; 0 0 1]; */
   /*  % Compute polar motion (small angle approximation is assumed) */
   /*  itrf_to_pef = polar(polar_motion_rad(1), polar_motion_rad(2)); */
   /*  Compute composite rotations */
   /* '<S150>:1:142' teme_to_gcrf = mod_to_gcrf * tod_to_mod * teme_to_tod; */
   /* '<S150>:1:143' itrf_to_gcrf = mod_to_gcrf * tod_to_mod * pef_to_tod; */
-  rtb_teme_to_gcrf[0] = cos(T1900);
-  rtb_teme_to_gcrf[3] = sin(T1900);
+  rtb_teme_to_gcrf[0] = cosf(T1900);
+  rtb_teme_to_gcrf[3] = sinf(T1900);
   rtb_teme_to_gcrf[6] = 0.0;
-  rtb_teme_to_gcrf[1] = -sin(T1900);
-  rtb_teme_to_gcrf[4] = cos(T1900);
+  rtb_teme_to_gcrf[1] = -sinf(T1900);
+  rtb_teme_to_gcrf[4] = cosf(T1900);
   rtb_teme_to_gcrf[7] = 0.0;
   for (lowAlt = 0; lowAlt < 3; lowAlt++) {
     for (LOS = 0; LOS < 3; LOS++) {
@@ -1253,11 +1252,11 @@ void env_estimation_lib_step(void)
   /*  * itrf_to_pef;   % for vecef */
   /* '<S150>:1:144' ppef_to_vgcrf = itrf_to_gcrf * skew([0; 0; o_prec]); */
   /*  for w x recef */
-  c_0[0] = cos(-rtb_T_TT_J2000);
-  c_0[3] = sin(-rtb_T_TT_J2000);
+  c_0[0] = cosf(-rtb_T_TT_J2000);
+  c_0[3] = sinf(-rtb_T_TT_J2000);
   c_0[6] = 0.0;
-  c_0[1] = -sin(-rtb_T_TT_J2000);
-  c_0[4] = cos(-rtb_T_TT_J2000);
+  c_0[1] = -sinf(-rtb_T_TT_J2000);
+  c_0[4] = cosf(-rtb_T_TT_J2000);
   c_0[7] = 0.0;
   for (lowAlt = 0; lowAlt < 3; lowAlt++) {
     for (LOS = 0; LOS < 3; LOS++) {
@@ -1354,7 +1353,7 @@ void env_estimation_lib_step(void)
   /*    - nd_o  = the TRoC of n_o */
   /*    - ndd_o = the TRoC of nd_o */
   /*    - Bs = the SGP4 type drag coefficient */
-  /*    - k_e = gravitational constant of Earth, sqrt(GM_e) */
+  /*    - k_e = gravitational constant of Earth, sqrtf(GM_e) */
   /*    - a_E = the equatorial radius of Earth in ER */
   /*    - J_2 = the second gravitation zonal harmonic of Earth */
   /*    - J_3 = the third gravitational zonal harmonic of Earth */
@@ -1465,7 +1464,7 @@ void env_estimation_lib_step(void)
         rtU.orbit_tle[1];
 
       /* '<S145>:1:128' if( abs(tsince_JD) < 1e-8 || tsince_JD < 0) */
-      if ((fabs(JD_days_gps) < 1.0E-8) || (JD_days_gps < 0.0)) {
+      if ((fabsf(JD_days_gps) < 1.0E-8) || (JD_days_gps < 0.0)) {
         /* '<S145>:1:129' tsince_JD   = 0; */
         JD_days_gps = 0.0;
       }
@@ -1476,8 +1475,8 @@ void env_estimation_lib_step(void)
       /* '<S145>:1:134' a_1  = (XKE/n_o)^(2/3); */
       JD_days_gps = rt_powd_snf(0.0743669161 / rtb_Sum, 0.66666666666666663);
 
-      /* '<S145>:1:135' d_1  = 1.5*(k_2/(a_1^2))*((3*cos(i_o)^2 - 1)/(1 - e_o^2)^(3/2)); */
-      rtb_z1 = cos(rtb_T_TT_J2000);
+      /* '<S145>:1:135' d_1  = 1.5*(k_2/(a_1^2))*((3*cosf(i_o)^2 - 1)/(1 - e_o^2)^(3/2)); */
+      rtb_z1 = cosf(rtb_T_TT_J2000);
       rtb_z1 = (rtb_z1 * rtb_z1 * 3.0 - 1.0) / rt_powd_snf(1.0 - rtU.orbit_tle[5]
         * rtU.orbit_tle[5], 1.5) * (0.000541308 / (JD_days_gps * JD_days_gps) *
         1.5);
@@ -1486,8 +1485,8 @@ void env_estimation_lib_step(void)
       JD_days_gps *= ((1.0 - 0.33333333333333331 * rtb_z1) - rtb_z1 * rtb_z1) -
         1.654320987654321 * rt_powd_snf(rtb_z1, 3.0);
 
-      /* '<S145>:1:137' d_o  = (3/2)*(k_2/(a_o^2))*((3*cos(i_o)^2 - 1)/(1 - e_o^2)^(3/2)); */
-      rtb_z1 = cos(rtb_T_TT_J2000);
+      /* '<S145>:1:137' d_o  = (3/2)*(k_2/(a_o^2))*((3*cosf(i_o)^2 - 1)/(1 - e_o^2)^(3/2)); */
+      rtb_z1 = cosf(rtb_T_TT_J2000);
       rtb_z1 = (rtb_z1 * rtb_z1 * 3.0 - 1.0) / rt_powd_snf(1.0 - rtU.orbit_tle[5]
         * rtU.orbit_tle[5], 1.5) * (0.000541308 / (JD_days_gps * JD_days_gps) *
         1.5);
@@ -1539,15 +1538,15 @@ void env_estimation_lib_step(void)
       }
 
       /*  Constants */
-      /* '<S145>:1:164' tht     = cos(i_o); */
-      JD_days_gps = cos(rtb_T_TT_J2000);
+      /* '<S145>:1:164' tht     = cosf(i_o); */
+      JD_days_gps = cosf(rtb_T_TT_J2000);
 
       /* '<S145>:1:165' xi      = 1/(a_o_pp - s); */
       xi = 1.0 / (deps_1980 - T1900);
 
       /*  cannot be zero since s_star = s ~= a_o_pp */
       /* '<S145>:1:166' b_o     = (1 - e_o^2)^(0.5); */
-      b_o = sqrt(1.0 - rtU.orbit_tle[5] * rtU.orbit_tle[5]);
+      b_o = sqrtf(1.0 - rtU.orbit_tle[5] * rtU.orbit_tle[5]);
 
       /* '<S145>:1:167' eta     = a_o_pp*e_o*xi; */
       eta = deps_1980 * rtU.orbit_tle[5] * xi;
@@ -1579,19 +1578,19 @@ void env_estimation_lib_step(void)
           rt_powd_snf(xi, 4.0) * rtb_Sum * rt_powd_snf(1.0 - eta * eta, -3.5)) *
           rtU.orbit_tle[2];
 
-        /* '<S145>:1:178' C_3     = (QOMS4*xi^5*A_30*n_o_pp*a_E*sin(i_o))/(k_2*e_o); */
+        /* '<S145>:1:178' C_3     = (QOMS4*xi^5*A_30*n_o_pp*a_E*sinf(i_o))/(k_2*e_o); */
         /* '<S145>:1:179' C_4     = 2*n_o_pp*QOMS4*xi^4*a_o_pp*b_o^2*(1-eta^2)^(-7/2)* ... */
         /* '<S145>:1:180'             ((2*eta*(1+e_o*eta) + 0.5*e_o + 0.5*eta^3) - ... */
         /* '<S145>:1:181'             (2*k_2*xi)/(a_o_pp*(1-eta^2)) * (3*(1-3*tht^2)* ... */
         /* '<S145>:1:182'             (1-(3/2)*eta^2-2*e_o*eta-0.5*e_o*eta^3) + (3/4)*(1-tht^2)* ... */
-        /* '<S145>:1:183'             (2*eta^2-e_o*eta-e_o*eta^3)*cos(2*w_o))); */
+        /* '<S145>:1:183'             (2*eta^2-e_o*eta-e_o*eta^3)*cosf(2*w_o))); */
         C_4 = ((((rtU.orbit_tle[5] * eta + 1.0) * (2.0 * eta) + 0.5 *
                  rtU.orbit_tle[5]) + 0.5 * rt_powd_snf(eta, 3.0)) - ((((1.0 -
                    eta * eta * 1.5) - 2.0 * rtU.orbit_tle[5] * eta) - 0.5 *
                  rtU.orbit_tle[5] * rt_powd_snf(eta, 3.0)) * ((1.0 - JD_days_gps
                   * JD_days_gps * 3.0) * 3.0) + ((eta * eta * 2.0 -
                   rtU.orbit_tle[5] * eta) - rtU.orbit_tle[5] * rt_powd_snf(eta,
-                  3.0)) * ((1.0 - JD_days_gps * JD_days_gps) * 0.75) * cos(2.0 *
+                  3.0)) * ((1.0 - JD_days_gps * JD_days_gps) * 0.75) * cosf(2.0 *
                  b_min)) * (0.001082616 * xi / ((1.0 - eta * eta) * deps_1980)))
           * (2.0 * rtb_Sum * days * rt_powd_snf(xi, 4.0) * deps_1980 * (b_o *
               b_o) * rt_powd_snf(1.0 - eta * eta, -3.5));
@@ -1694,16 +1693,16 @@ void env_estimation_lib_step(void)
         /* '<S145>:1:218' if( lowAlt == FALSE ) */
         if (lowAlt == 0) {
           /*  #5 %     */
-          /* '<S145>:1:219' d_w     = BS*C_3*cos(w_o)*tsince; */
-          b_min = days * rt_powd_snf(xi, 5.0) * 2.538815E-6 * rtb_Sum * sin
+          /* '<S145>:1:219' d_w     = BS*C_3*cosf(w_o)*tsince; */
+          b_min = days * rt_powd_snf(xi, 5.0) * 2.538815E-6 * rtb_Sum * sinf
             (rtb_T_TT_J2000) / (0.000541308 * rtU.orbit_tle[5]) * rtU.orbit_tle
-            [2] * cos(b_min) * rtb_Sum3;
+            [2] * cosf(b_min) * rtb_Sum3;
 
           /* '<S145>:1:220' d_M     = -(2/3)*QOMS4*BS*xi^4*(a_E/(e_o*eta))* ... */
-          /* '<S145>:1:221'                 ( (1+eta*cos(M_DF))^3 - (1 + eta*cos(M_o))^3 ); */
+          /* '<S145>:1:221'                 ( (1+eta*cosf(M_DF))^3 - (1 + eta*cosf(M_o))^3 ); */
           days = -0.66666666666666663 * days * rtU.orbit_tle[2] * rt_powd_snf(xi,
-            4.0) * (1.0 / (rtU.orbit_tle[5] * eta)) * (rt_powd_snf(eta * cos
-            (M_DF) + 1.0, 3.0) - rt_powd_snf(eta * cos(rtb_Switch) + 1.0, 3.0));
+            4.0) * (1.0 / (rtU.orbit_tle[5] * eta)) * (rt_powd_snf(eta * cosf
+            (M_DF) + 1.0, 3.0) - rt_powd_snf(eta * cosf(rtb_Switch) + 1.0, 3.0));
 
           /* '<S145>:1:222' M_p     = M_DF + d_w + d_M; */
           M_DF = (M_DF + b_min) + days;
@@ -1711,9 +1710,9 @@ void env_estimation_lib_step(void)
           /* '<S145>:1:223' w       = w_DF - d_w - d_M; */
           rtb_z1 = (rtb_z1 - b_min) - days;
 
-          /* '<S145>:1:224' e       = e_o - BS*C_4*tsince - BS*C_5*( sin(M_p) - sin(M_o) ); */
+          /* '<S145>:1:224' e       = e_o - BS*C_4*tsince - BS*C_5*( sinf(M_p) - sinf(M_o) ); */
           days = (rtU.orbit_tle[5] - rtU.orbit_tle[2] * C_4 * rtb_Sum3) -
-            rtU.orbit_tle[2] * C_5 * (sin(M_DF) - sin(rtb_Switch));
+            rtU.orbit_tle[2] * C_5 * (sinf(M_DF) - sinf(rtb_Switch));
 
           /* '<S145>:1:225' a       = a_o_pp*( 1 - C_1*tsince - D_2*tsince^2 - D_3*tsince^3 - ... */
           /* '<S145>:1:226'                 D_4*tsince^4 )^2; */
@@ -1757,33 +1756,33 @@ void env_estimation_lib_step(void)
 
           /* '<S145>:1:240' FLAG = -1; */
         } else {
-          /* '<S145>:1:243' b       = sqrt(1-e^2); */
-          IL2 = sqrt(1.0 - days * days);
+          /* '<S145>:1:243' b       = sqrtf(1-e^2); */
+          IL2 = sqrtf(1.0 - days * days);
 
           /* '<S145>:1:244' n       = XKE/(a^(3/2)); */
           b_min = 0.0743669161 / rt_powd_snf(rtb_Switch, 1.5);
 
           /*  Add the long-period periodic terms */
-          /* '<S145>:1:247' a_xN    = e*cos(w); */
-          rtb_Sum = days * cos(rtb_z1);
+          /* '<S145>:1:247' a_xN    = e*cosf(w); */
+          rtb_Sum = days * cosf(rtb_z1);
 
-          /* '<S145>:1:248' L_L     = (A_30*sin(i_o)/(8*k_2*a*b^2))*e*cos(w)*((3+5*tht)/(1+tht)); */
-          /* '<S145>:1:249' a_yNL   = A_30*sin(i_o)/(4*k_2*a*b^2); */
+          /* '<S145>:1:248' L_L     = (A_30*sinf(i_o)/(8*k_2*a*b^2))*e*cosf(w)*((3+5*tht)/(1+tht)); */
+          /* '<S145>:1:249' a_yNL   = A_30*sinf(i_o)/(4*k_2*a*b^2); */
           /* '<S145>:1:250' L_T     = L + L_L; */
-          /* '<S145>:1:251' a_yN    = e*sin(w) + a_yNL; */
-          deps_1980 = 2.538815E-6 * sin(rtb_T_TT_J2000) / (0.002165232 *
-            rtb_Switch * (IL2 * IL2)) + days * sin(rtb_z1);
+          /* '<S145>:1:251' a_yN    = e*sinf(w) + a_yNL; */
+          deps_1980 = 2.538815E-6 * sinf(rtb_T_TT_J2000) / (0.002165232 *
+            rtb_Switch * (IL2 * IL2)) + days * sinf(rtb_z1);
 
           /* '<S145>:1:253' U       = mod(L_T - Om,2*pi); */
-          rtb_Sum3 = ((2.538815E-6 * sin(rtb_T_TT_J2000) / (0.004330464 *
-            rtb_Switch * (IL2 * IL2)) * days * cos(rtb_z1) * ((5.0 * JD_days_gps
+          rtb_Sum3 = ((2.538815E-6 * sinf(rtb_T_TT_J2000) / (0.004330464 *
+            rtb_Switch * (IL2 * IL2)) * days * cosf(rtb_z1) * ((5.0 * JD_days_gps
             + 3.0) / (1.0 + JD_days_gps)) + rtb_Sum3) - T1900) /
             6.2831853071795862;
-          if (fabs(rtb_Sum3 - rt_roundd_snf(rtb_Sum3)) <= 2.2204460492503131E-16
-              * fabs(rtb_Sum3)) {
+          if (fabsf(rtb_Sum3 - rt_roundd_snf(rtb_Sum3)) <= 2.2204460492503131E-16
+              * fabsf(rtb_Sum3)) {
             rtb_Sum3 = 0.0;
           } else {
-            rtb_Sum3 = (rtb_Sum3 - floor(rtb_Sum3)) * 6.2831853071795862;
+            rtb_Sum3 = (rtb_Sum3 - floorf(rtb_Sum3)) * 6.2831853071795862;
           }
 
           /* '<S145>:1:254' Epw     = kepler(U,a_yN,a_xN); */
@@ -1800,15 +1799,15 @@ void env_estimation_lib_step(void)
           lowAlt = 0;
 
           /* '<S145>:1:310' while( (abs(Epw - Epw_new) > tol) && (iter < iter_max) ) */
-          while ((fabs(rtb_z1 - days) > 1.0E-8) && (lowAlt < 10)) {
+          while ((fabsf(rtb_z1 - days) > 1.0E-8) && (lowAlt < 10)) {
             /* '<S145>:1:311' Epw     = Epw_new; */
             rtb_z1 = days;
 
-            /* '<S145>:1:312' dEpw    = (U-a_yN*cos(Epw) + a_xN*sin(Epw) - Epw)/ ... */
-            /* '<S145>:1:313'                     (-a_yN*sin(Epw) - a_xN*cos(Epw) + 1); */
+            /* '<S145>:1:312' dEpw    = (U-a_yN*cosf(Epw) + a_xN*sinf(Epw) - Epw)/ ... */
+            /* '<S145>:1:313'                     (-a_yN*sinf(Epw) - a_xN*cosf(Epw) + 1); */
             /* '<S145>:1:314' Epw_new = Epw + dEpw; */
-            days += (((rtb_Sum3 - deps_1980 * cos(days)) + rtb_Sum * sin(days))
-                     - days) / ((-deps_1980 * sin(days) - rtb_Sum * cos(days)) +
+            days += (((rtb_Sum3 - deps_1980 * cosf(days)) + rtb_Sum * sinf(days))
+                     - days) / ((-deps_1980 * sinf(days) - rtb_Sum * cosf(days)) +
                                 1.0);
 
             /* '<S145>:1:315' iter    = iter +1; */
@@ -1817,18 +1816,18 @@ void env_estimation_lib_step(void)
 
           /* '<S145>:1:318' Epw = Epw_new; */
           /*  Preliminary quantities for short-period periodics */
-          /* '<S145>:1:257' ecE     = a_xN*cos(Epw) + a_yN*sin(Epw); */
-          /* '<S145>:1:258' esE     = a_xN*sin(Epw) - a_yN*cos(Epw); */
-          IL3 = rtb_Sum * sin(days) - deps_1980 * cos(days);
+          /* '<S145>:1:257' ecE     = a_xN*cosf(Epw) + a_yN*sinf(Epw); */
+          /* '<S145>:1:258' esE     = a_xN*sinf(Epw) - a_yN*cosf(Epw); */
+          IL3 = rtb_Sum * sinf(days) - deps_1980 * cosf(days);
 
           /* '<S145>:1:259' e_L     = (a_xN^2 + a_yN^2)^(1/2); */
-          rtb_z1 = sqrt(rtb_Sum * rtb_Sum + deps_1980 * deps_1980);
+          rtb_z1 = sqrtf(rtb_Sum * rtb_Sum + deps_1980 * deps_1980);
 
           /* '<S145>:1:260' p_L     = a*(1 - e_L^2); */
           IL2 = (1.0 - rtb_z1 * rtb_z1) * rtb_Switch;
 
           /* '<S145>:1:261' r       = a*(1 - ecE); */
-          rtb_Sum3 = (1.0 - (rtb_Sum * cos(days) + deps_1980 * sin(days))) *
+          rtb_Sum3 = (1.0 - (rtb_Sum * cosf(days) + deps_1980 * sinf(days))) *
             rtb_Switch;
 
           /* '<S145>:1:262' if( (r == 0) || (p_L == 0) ) */
@@ -1845,67 +1844,67 @@ void env_estimation_lib_step(void)
 
             /* '<S145>:1:265' FLAG = -1; */
           } else {
-            /* '<S145>:1:268' r_dot   = XKE*sqrt(a)*esE/r; */
-            /* '<S145>:1:269' r_f_dot = XKE*sqrt(p_L)/r; */
-            /* '<S145>:1:270' cosu    = (a/r)*( cos(Epw) - a_xN + ((a_yN*esE)/(1+sqrt(1 - e_L^2))) ); */
-            /* '<S145>:1:271' sinu    = (a/r)*( sin(Epw) - a_yN - ((a_xN*esE)/(1 + sqrt(1 - e_L^2))) ); */
-            /* '<S145>:1:272' u       = atan2(sinu,cosu); */
-            days = rt_atan2d_snf(((sin(days) - deps_1980) - rtb_Sum * IL3 /
-                                  (sqrt(1.0 - rtb_z1 * rtb_z1) + 1.0)) *
+            /* '<S145>:1:268' r_dot   = XKE*sqrtf(a)*esE/r; */
+            /* '<S145>:1:269' r_f_dot = XKE*sqrtf(p_L)/r; */
+            /* '<S145>:1:270' cosu    = (a/r)*( cosf(Epw) - a_xN + ((a_yN*esE)/(1+sqrtf(1 - e_L^2))) ); */
+            /* '<S145>:1:271' sinu    = (a/r)*( sinf(Epw) - a_yN - ((a_xN*esE)/(1 + sqrtf(1 - e_L^2))) ); */
+            /* '<S145>:1:272' u       = atan2f(sinu,cosu); */
+            days = rt_atan2d_snf(((sinf(days) - deps_1980) - rtb_Sum * IL3 /
+                                  (sqrtf(1.0 - rtb_z1 * rtb_z1) + 1.0)) *
                                  (rtb_Switch / rtb_Sum3), (deps_1980 * IL3 /
-              (sqrt(1.0 - rtb_z1 * rtb_z1) + 1.0) + (cos(days) - rtb_Sum)) *
+              (sqrtf(1.0 - rtb_z1 * rtb_z1) + 1.0) + (cosf(days) - rtb_Sum)) *
                                  (rtb_Switch / rtb_Sum3));
 
-            /* '<S145>:1:273' dr      = (k_2/(2*p_L))*(1 - tht^2)*cos(2*u); */
-            /* '<S145>:1:274' du      = -(k_2/(4*p_L^2))*(7*tht^2 - 1)*sin(2*u); */
-            /* '<S145>:1:275' dOm     = (3*k_2*tht/(2*p_L^2))*sin(2*u); */
-            /* '<S145>:1:276' di      = (3*k_2*tht/(2*p_L^2))*sin(i_o)*cos(2*u); */
-            /* '<S145>:1:277' dr_dot  = -((k_2*n)/p_L)*(1-tht^2)*sin(2*u); */
-            /* '<S145>:1:278' dr_f_dot    = (k_2*n/p_L)*( (1-tht^2)*cos(2*u) - (3/2)*(1-3*tht^2) ); */
+            /* '<S145>:1:273' dr      = (k_2/(2*p_L))*(1 - tht^2)*cosf(2*u); */
+            /* '<S145>:1:274' du      = -(k_2/(4*p_L^2))*(7*tht^2 - 1)*sinf(2*u); */
+            /* '<S145>:1:275' dOm     = (3*k_2*tht/(2*p_L^2))*sinf(2*u); */
+            /* '<S145>:1:276' di      = (3*k_2*tht/(2*p_L^2))*sinf(i_o)*cosf(2*u); */
+            /* '<S145>:1:277' dr_dot  = -((k_2*n)/p_L)*(1-tht^2)*sinf(2*u); */
+            /* '<S145>:1:278' dr_f_dot    = (k_2*n/p_L)*( (1-tht^2)*cosf(2*u) - (3/2)*(1-3*tht^2) ); */
             /*  Add the short-period periodics to get osculating elements */
-            /* '<S145>:1:281' r_k     = r*(1 - (3/2)*k_2*sqrt(1 - e_L^2)*(3*tht^2 - 1)/p_L^2) + dr; */
-            rtb_z1 = (1.0 - sqrt(1.0 - rtb_z1 * rtb_z1) * 0.00081196200000000006
+            /* '<S145>:1:281' r_k     = r*(1 - (3/2)*k_2*sqrtf(1 - e_L^2)*(3*tht^2 - 1)/p_L^2) + dr; */
+            rtb_z1 = (1.0 - sqrtf(1.0 - rtb_z1 * rtb_z1) * 0.00081196200000000006
                       * (JD_days_gps * JD_days_gps * 3.0 - 1.0) / (IL2 * IL2)) *
               rtb_Sum3 + 0.000541308 / (2.0 * IL2) * (1.0 - JD_days_gps *
-              JD_days_gps) * cos(2.0 * days);
+              JD_days_gps) * cosf(2.0 * days);
 
             /* '<S145>:1:282' u_k     = u + du; */
             rtb_Sum = -(0.000541308 / (IL2 * IL2 * 4.0)) * (JD_days_gps *
-              JD_days_gps * 7.0 - 1.0) * sin(2.0 * days) + days;
+              JD_days_gps * 7.0 - 1.0) * sinf(2.0 * days) + days;
 
             /* '<S145>:1:283' Om_k    = Om + dOm; */
             T1900 += 0.0016239240000000001 * JD_days_gps / (IL2 * IL2 * 2.0) *
-              sin(2.0 * days);
+              sinf(2.0 * days);
 
             /* '<S145>:1:284' i_k     = i_o + di; */
             deps_1980 = 0.0016239240000000001 * JD_days_gps / (IL2 * IL2 * 2.0) *
-              sin(rtb_T_TT_J2000) * cos(2.0 * days) + rtb_T_TT_J2000;
+              sinf(rtb_T_TT_J2000) * cosf(2.0 * days) + rtb_T_TT_J2000;
 
             /* '<S145>:1:285' r_dot_k     = r_dot + dr_dot; */
             rtb_T_TT_J2000 = -(0.000541308 * b_min / IL2) * (1.0 - JD_days_gps *
-              JD_days_gps) * sin(2.0 * days) + 0.0743669161 * sqrt(rtb_Switch) *
+              JD_days_gps) * sinf(2.0 * days) + 0.0743669161 * sqrtf(rtb_Switch) *
               IL3 / rtb_Sum3;
 
             /* '<S145>:1:286' r_f_dot_k   = r_f_dot + dr_f_dot; */
-            JD_days_gps = ((1.0 - JD_days_gps * JD_days_gps) * cos(2.0 * days) -
+            JD_days_gps = ((1.0 - JD_days_gps * JD_days_gps) * cosf(2.0 * days) -
                            (1.0 - JD_days_gps * JD_days_gps * 3.0) * 1.5) *
-              (0.000541308 * b_min / IL2) + 0.0743669161 * sqrt(IL2) / rtb_Sum3;
+              (0.000541308 * b_min / IL2) + 0.0743669161 * sqrtf(IL2) / rtb_Sum3;
 
             /*  Create unit orientation vectors */
-            /* '<S145>:1:289' M       = [ -sin(Om_k)*cos(i_k); cos(Om_k)*cos(i_k); sin(i_k)]; */
-            M[0] = -sin(T1900) * cos(deps_1980);
-            M[1] = cos(T1900) * cos(deps_1980);
-            M[2] = sin(deps_1980);
+            /* '<S145>:1:289' M       = [ -sinf(Om_k)*cosf(i_k); cosf(Om_k)*cosf(i_k); sinf(i_k)]; */
+            M[0] = -sinf(T1900) * cosf(deps_1980);
+            M[1] = cosf(T1900) * cosf(deps_1980);
+            M[2] = sinf(deps_1980);
 
-            /* '<S145>:1:290' N       = [ cos(Om_k); sin(Om_k); 0 ]; */
-            eta = cos(T1900);
-            C_1 = sin(T1900);
+            /* '<S145>:1:290' N       = [ cosf(Om_k); sinf(Om_k); 0 ]; */
+            eta = cosf(T1900);
+            C_1 = sinf(T1900);
 
-            /* '<S145>:1:292' U       = M.*sin(u_k) + N.*cos(u_k); */
-            T1900 = sin(rtb_Sum);
-            rtb_Sum3 = cos(rtb_Sum);
+            /* '<S145>:1:292' U       = M.*sinf(u_k) + N.*cosf(u_k); */
+            T1900 = sinf(rtb_Sum);
+            rtb_Sum3 = cosf(rtb_Sum);
 
-            /* '<S145>:1:293' V       = M.*cos(u_k) - N.*sin(u_k); */
+            /* '<S145>:1:293' V       = M.*cosf(u_k) - N.*sinf(u_k); */
             days = M[0] * T1900 + eta * rtb_Sum3;
             rtb_pos_teme_km[0] = rtb_z1 * days * 6378.137;
             deps_1980 = days;
@@ -1914,8 +1913,8 @@ void env_estimation_lib_step(void)
             xi = days;
             days = M[2] * T1900 + 0.0 * rtb_Sum3;
             rtb_pos_teme_km[2] = rtb_z1 * days * 6378.137;
-            T1900 = cos(rtb_Sum);
-            rtb_Sum3 = sin(rtb_Sum);
+            T1900 = cosf(rtb_Sum);
+            rtb_Sum3 = sinf(rtb_Sum);
 
             /*  Find position and velocity in km & km/s */
             /* '<S145>:1:296' pos_teme_km     = r_k.*U.*XKMPER; */
@@ -1952,8 +1951,8 @@ void env_estimation_lib_step(void)
   /*  ----- */
   /*  Main Function */
   /*  Remnant from sun_vector, may not be relevant here? */
-  /*  gs_eci_km(3)  = gs_eci_km(3)/(sqrt(1 - ECCE2)); */
-  /*  sc_pos_eci_km(3)        = sc_pos_eci_km(3)/(sqrt(1 - ECCE2)); */
+  /*  gs_eci_km(3)  = gs_eci_km(3)/(sqrtf(1 - ECCE2)); */
+  /*  sc_pos_eci_km(3)        = sc_pos_eci_km(3)/(sqrtf(1 - ECCE2)); */
   /* '<S11>:1:17' gs_vec     = gs_ecef_m; */
   /* '<S11>:1:18' sc_vec      = sc_pos_ecef_m; */
   /* In ECI coordinates */
@@ -2053,28 +2052,28 @@ void env_estimation_lib_step(void)
   /* '<S146>:1:21' mean_anom_sun_rad   = mod(DEG2RAD*mean_anom_sun,TWOPI); */
   T1900 = rt_remd_snf(35999.05034 * rtb_Abs1 + 357.5291092, 360.0) *
     0.017453292519943295 / 6.2831853071795862;
-  if (fabs(T1900 - rt_roundd_snf(T1900)) <= 2.2204460492503131E-16 * fabs(T1900))
+  if (fabsf(T1900 - rt_roundd_snf(T1900)) <= 2.2204460492503131E-16 * fabsf(T1900))
   {
     T1900 = 0.0;
   } else {
-    T1900 = (T1900 - floor(T1900)) * 6.2831853071795862;
+    T1900 = (T1900 - floorf(T1900)) * 6.2831853071795862;
   }
 
   /*  Approximate the ecliptic longitude of the sun */
-  /* '<S146>:1:24' long_eclp       = mean_long_sun + 1.914666471*sin(mean_anom_sun_rad) + ... */
-  /* '<S146>:1:25'                     0.019994643*sin(2*mean_anom_sun_rad); */
+  /* '<S146>:1:24' long_eclp       = mean_long_sun + 1.914666471*sinf(mean_anom_sun_rad) + ... */
+  /* '<S146>:1:25'                     0.019994643*sinf(2*mean_anom_sun_rad); */
   /* [deg] */
   /* '<S146>:1:26' long_eclp       = rem(DEG2RAD*long_eclp,360); */
   /*  [rad]    */
   /* '<S146>:1:27' long_eclp_rad   = mod(DEG2RAD*long_eclp,TWOPI); */
   rtb_T_TT_J2000 = rt_remd_snf(((rt_remd_snf(36000.771 * rtb_Abs1 + 280.46,
-    360.0) + 1.914666471 * sin(T1900)) + sin(2.0 * T1900) * 0.019994643) *
+    360.0) + 1.914666471 * sinf(T1900)) + sinf(2.0 * T1900) * 0.019994643) *
     0.017453292519943295, 360.0) * 0.017453292519943295 / 6.2831853071795862;
-  if (fabs(rtb_T_TT_J2000 - rt_roundd_snf(rtb_T_TT_J2000)) <=
-      2.2204460492503131E-16 * fabs(rtb_T_TT_J2000)) {
+  if (fabsf(rtb_T_TT_J2000 - rt_roundd_snf(rtb_T_TT_J2000)) <=
+      2.2204460492503131E-16 * fabsf(rtb_T_TT_J2000)) {
     rtb_T_TT_J2000 = 0.0;
   } else {
-    rtb_T_TT_J2000 = (rtb_T_TT_J2000 - floor(rtb_T_TT_J2000)) *
+    rtb_T_TT_J2000 = (rtb_T_TT_J2000 - floorf(rtb_T_TT_J2000)) *
       6.2831853071795862;
   }
 
@@ -2087,14 +2086,14 @@ void env_estimation_lib_step(void)
   JD_days_gps = (23.439291 - 0.0130042 * rtb_Abs1) * 0.017453292519943295;
 
   /*  Find the distance in AU from E to S */
-  /* '<S146>:1:37' r           =  1.000140612 - 0.016708617*cos(mean_anom_sun_rad) - ... */
-  /* '<S146>:1:38'                     0.000139589*cos(2*mean_anom_sun_rad); */
-  rtb_Sum3 = (1.000140612 - 0.016708617 * cos(T1900)) - cos(2.0 * T1900) *
+  /* '<S146>:1:37' r           =  1.000140612 - 0.016708617*cosf(mean_anom_sun_rad) - ... */
+  /* '<S146>:1:38'                     0.000139589*cosf(2*mean_anom_sun_rad); */
+  rtb_Sum3 = (1.000140612 - 0.016708617 * cosf(T1900)) - cosf(2.0 * T1900) *
     0.000139589;
 
-  /* '<S146>:1:39' x_MOD_km    = r*cos(long_eclp_rad)*AU2KM; */
-  /* '<S146>:1:40' y_MOD_km    = r*cos(oblq_rad)*sin(long_eclp_rad)*AU2KM; */
-  /* '<S146>:1:41' z_MOD_km    = r*sin(oblq_rad)*sin(long_eclp_rad)*AU2KM; */
+  /* '<S146>:1:39' x_MOD_km    = r*cosf(long_eclp_rad)*AU2KM; */
+  /* '<S146>:1:40' y_MOD_km    = r*cosf(oblq_rad)*sinf(long_eclp_rad)*AU2KM; */
+  /* '<S146>:1:41' z_MOD_km    = r*sinf(oblq_rad)*sinf(long_eclp_rad)*AU2KM; */
   /* '<S146>:1:43' sun_vector_mod_km = [x_MOD_km; y_MOD_km; z_MOD_km]; */
   /*  Convert to ECI (mean-equator-mean-equinox) frame  */
   /* '<S146>:1:46' sun_vector_eci_km   = mod2eci(sun_vector_mod_km,JD_cent_ut1); */
@@ -2141,32 +2140,32 @@ void env_estimation_lib_step(void)
   /* '<S146>:1:86' oblo = oblo * convrt; */
   /*  " to rad */
   /* '<S146>:1:87' a4  = rot3mat(-xa); */
-  /* '<S146>:1:108' s   = sin( z_rad ); */
-  rtb_Abs1 = sin(-T1900);
+  /* '<S146>:1:108' s   = sinf( z_rad ); */
+  rtb_Abs1 = sinf(-T1900);
 
-  /* '<S146>:1:109' c   = cos( z_rad ); */
-  T1900 = cos(-T1900);
+  /* '<S146>:1:109' c   = cosf( z_rad ); */
+  T1900 = cosf(-T1900);
 
   /* '<S146>:1:111' DCMz    = [ c   s   0; */
   /* '<S146>:1:112'            -s   c   0; */
   /* '<S146>:1:113'             0   0   1 ]; */
   /* '<S146>:1:88' a5  = rot1mat(wa); */
   /*  precess */
-  /* '<S146>:1:97' s   = sin( x_rad ); */
-  days = sin(rtb_z1);
+  /* '<S146>:1:97' s   = sinf( x_rad ); */
+  days = sinf(rtb_z1);
 
-  /* '<S146>:1:98' c   = cos( x_rad ); */
-  rtb_z1 = cos(rtb_z1);
+  /* '<S146>:1:98' c   = cosf( x_rad ); */
+  rtb_z1 = cosf(rtb_z1);
 
   /* '<S146>:1:100' DCMx    = [ 1   0   0 */
   /* '<S146>:1:101'             0   c   s; */
   /* '<S146>:1:102'             0  -s   c ]; */
   /* '<S146>:1:89' a6  = rot3mat(psia); */
-  /* '<S146>:1:108' s   = sin( z_rad ); */
-  b_min = sin(rtb_Switch);
+  /* '<S146>:1:108' s   = sinf( z_rad ); */
+  b_min = sinf(rtb_Switch);
 
-  /* '<S146>:1:109' c   = cos( z_rad ); */
-  rtb_Switch = cos(rtb_Switch);
+  /* '<S146>:1:109' c   = cosf( z_rad ); */
+  rtb_Switch = cosf(rtb_Switch);
 
   /* '<S146>:1:111' DCMz    = [ c   s   0; */
   /* '<S146>:1:112'            -s   c   0; */
@@ -2233,10 +2232,10 @@ void env_estimation_lib_step(void)
     rtb_VectorConcatenate[2 + 3 * lowAlt] = d_0[lowAlt];
   }
 
-  rtb_Sum3_0[0] = rtb_Sum3 * cos(rtb_T_TT_J2000) * 1.495978707E+8;
-  rtb_Sum3_0[1] = rtb_Sum3 * cos(JD_days_gps) * sin(rtb_T_TT_J2000) *
+  rtb_Sum3_0[0] = rtb_Sum3 * cosf(rtb_T_TT_J2000) * 1.495978707E+8;
+  rtb_Sum3_0[1] = rtb_Sum3 * cosf(JD_days_gps) * sinf(rtb_T_TT_J2000) *
     1.495978707E+8;
-  rtb_Sum3_0[2] = rtb_Sum3 * sin(JD_days_gps) * sin(rtb_T_TT_J2000) *
+  rtb_Sum3_0[2] = rtb_Sum3 * sinf(JD_days_gps) * sinf(rtb_T_TT_J2000) *
     1.495978707E+8;
 
   /*  Constants */
@@ -2271,10 +2270,10 @@ void env_estimation_lib_step(void)
   /* '<S147>:1:16' LOS     = FALSE; */
   LOS = 0;
 
-  /* '<S147>:1:18' sun_vector_eci_km(3)    = sun_vector_eci_km(3)/(sqrt(1 - ECCE2)); */
+  /* '<S147>:1:18' sun_vector_eci_km(3)    = sun_vector_eci_km(3)/(sqrtf(1 - ECCE2)); */
   rtb_Sum_g[2] /= 0.99664718682189635;
 
-  /* '<S147>:1:19' sc_pos_eci_km(3)        = sc_pos_eci_km(3)/(sqrt(1 - ECCE2)); */
+  /* '<S147>:1:19' sc_pos_eci_km(3)        = sc_pos_eci_km(3)/(sqrtf(1 - ECCE2)); */
   rtb_pos_teme_km[2] /= 0.99664718682189635;
 
   /* '<S147>:1:21' sun_vec     = sun_vector_eci_km; */
@@ -2348,7 +2347,7 @@ void env_estimation_lib_step(void)
    *  Product: '<S68>/Product3'
    *  Sum: '<S68>/Sum2'
    */
-  rtb_Switch = sqrt(rtb_Sum_g[0] * rtb_Sum_g[0] + rtb_Sum_g[1] * rtb_Sum_g[1]);
+  rtb_Switch = sqrtf(rtb_Sum_g[0] * rtb_Sum_g[0] + rtb_Sum_g[1] * rtb_Sum_g[1]);
 
   /* Outputs for Iterator SubSystem: '<S53>/While Iterator Subsystem' incorporates:
    *  WhileIterator: '<S70>/While Iterator'
@@ -2360,13 +2359,13 @@ void env_estimation_lib_step(void)
       rtb_Abs1 = rt_atan2d_snf(rtb_Sum_g[2], 0.99664718933525254 * rtb_Switch);
     }
 
-    rtb_T_TT_J2000 = sin(rtb_Abs1);
-    JD_days_gps = cos(rtb_Abs1);
+    rtb_T_TT_J2000 = sinf(rtb_Abs1);
+    JD_days_gps = cosf(rtb_Abs1);
     days = rt_atan2d_snf(42841.31151331366 * rtb_T_TT_J2000 * rtb_T_TT_J2000 *
                          rtb_T_TT_J2000 + rtb_Sum_g[2], rtb_Switch - JD_days_gps
                          * JD_days_gps * JD_days_gps * 0.00669437999014133 *
                          6.378137E+6);
-    rtb_T_TT_J2000 = rt_atan2d_snf(0.99664718933525254 * sin(days), cos(days));
+    rtb_T_TT_J2000 = rt_atan2d_snf(0.99664718933525254 * sinf(days), cosf(days));
     rtDW.Memory_PreviousInput = rtb_T_TT_J2000;
     s70_iter++;
   } while ((rtb_Abs1 != rtb_T_TT_J2000) && (s70_iter <= 5));
@@ -2387,8 +2386,8 @@ void env_estimation_lib_step(void)
   rtb_Abs1 = 0.017453292519943295 * rtb_T_TT_J2000;
 
   /* Trigonometry: '<S52>/sincos' */
-  b_min = cos(rtb_Abs1);
-  rtb_Abs1 = sin(rtb_Abs1);
+  b_min = cosf(rtb_Abs1);
+  rtb_Abs1 = sinf(rtb_Abs1);
   C_1 = b_min;
 
   /* UnitConversion: '<S65>/Unit Conversion' */
@@ -2396,8 +2395,8 @@ void env_estimation_lib_step(void)
   rtb_Abs1 = 0.017453292519943295 * eta;
 
   /* Trigonometry: '<S52>/sincos' */
-  b_min = cos(rtb_Abs1);
-  rtb_Abs1 = sin(rtb_Abs1);
+  b_min = cosf(rtb_Abs1);
+  rtb_Abs1 = sinf(rtb_Abs1);
 
   /* UnaryMinus: '<S56>/Unary Minus' incorporates:
    *  Product: '<S56>/u(1)*u(4)'
@@ -2453,7 +2452,7 @@ void env_estimation_lib_step(void)
   rtb_Abs1 = 365.25;
 
   /* '<S144>:1:14' if mod(year,4) == 0 */
-  if (rtb_time_ut1_idx_0 - floor(rtb_time_ut1_idx_0 / 4.0) * 4.0 == 0.0) {
+  if (rtb_time_ut1_idx_0 - floorf(rtb_time_ut1_idx_0 / 4.0) * 4.0 == 0.0) {
     /* Lmonth(2) = 29; */
     /* '<S144>:1:16' days_in_year    = 366; */
     rtb_Abs1 = 366.0;
@@ -2514,10 +2513,10 @@ void env_estimation_lib_step(void)
   rtb_time_ut1_idx_3 = 0.017453292519943295 * T1900;
 
   /* Trigonometry: '<S90>/sincos' */
-  rtb_Sum3 = sin(C_1);
-  rtb_z1 = cos(C_1);
-  rtb_time_ut1_idx_4 = sin(rtb_time_ut1_idx_3);
-  rtb_time_ut1_idx_5 = cos(rtb_time_ut1_idx_3);
+  rtb_Sum3 = sinf(C_1);
+  rtb_z1 = cosf(C_1);
+  rtb_time_ut1_idx_4 = sinf(rtb_time_ut1_idx_3);
+  rtb_time_ut1_idx_5 = cosf(rtb_time_ut1_idx_3);
 
   /* Outputs for Enabled SubSystem: '<S85>/Convert from geodetic to  spherical coordinates ' incorporates:
    *  EnablePort: '<S89>/Enable'
@@ -2613,7 +2612,7 @@ void env_estimation_lib_step(void)
   /* End of Outputs for SubSystem: '<S85>/Convert from geodetic to  spherical coordinates ' */
 
   /* Trigonometry: '<S69>/sincos' */
-  rtb_z1 = sin(days);
+  rtb_z1 = sinf(days);
 
   /* Product: '<S69>/Product2' */
   rtb_Sum = rtb_z1 * 0.00669437999014133;
@@ -2625,7 +2624,7 @@ void env_estimation_lib_step(void)
    *  Sqrt: '<S69>/sqrt'
    *  Sum: '<S69>/Sum'
    */
-  rtb_Sum3 = 6.378137E+6 / sqrt(1.0 - rtb_Sum * rtb_z1);
+  rtb_Sum3 = 6.378137E+6 / sqrtf(1.0 - rtb_Sum * rtb_z1);
 
   /* Sum: '<S69>/Sum3' incorporates:
    *  Product: '<S69>/Product4'
@@ -2634,7 +2633,7 @@ void env_estimation_lib_step(void)
    *  Sum: '<S69>/Sum2'
    *  Trigonometry: '<S69>/sincos'
    */
-  rtb_Sum3 = ((rtb_Sum * rtb_Sum3 + rtb_Sum_g[2]) * rtb_z1 - rtb_Sum3) + cos
+  rtb_Sum3 = ((rtb_Sum * rtb_Sum3 + rtb_Sum_g[2]) * rtb_z1 - rtb_Sum3) + cosf
     (days) * rtb_Switch;
 
   /* Saturate: '<S54>/0 to 1,000,000 m' */
@@ -2674,7 +2673,7 @@ void env_estimation_lib_step(void)
      *  Product: '<S131>/Product'
      *  Sum: '<S131>/Sum'
      */
-    days = sqrt(4.0680631590768993E+7 - rtb_time_ut1_idx_2 * 272331.60668193549);
+    days = sqrtf(4.0680631590768993E+7 - rtb_time_ut1_idx_2 * 272331.60668193549);
 
     /* Product: '<S88>/Product1' */
     rtb_z1 = days * rtb_time_ut1_idx_0;
@@ -2684,7 +2683,7 @@ void env_estimation_lib_step(void)
      *  Product: '<S130>/Product9'
      *  Sum: '<S130>/Sum7'
      */
-    b_min = sqrt(rtb_Switch * 4.0680631590768993E+7 + 4.0408299984087057E+7 *
+    b_min = sqrtf(rtb_Switch * 4.0680631590768993E+7 + 4.0408299984087057E+7 *
                  rtb_time_ut1_idx_2);
 
     /* Sqrt: '<S88>/sqrt' incorporates:
@@ -2696,7 +2695,7 @@ void env_estimation_lib_step(void)
      *  Sum: '<S133>/Sum5'
      *  Sum: '<S133>/Sum6'
      */
-    rtDW.sqrt_o = sqrt((1.6549137866238722E+15 - 2.208307901990225E+13 *
+    rtDW.sqrt_o = sqrtf((1.6549137866238722E+15 - 2.208307901990225E+13 *
                         rtb_time_ut1_idx_2) / (days * days) + (2.0 * rtb_z1 +
       rtb_time_ut1_idx_0 * rtb_time_ut1_idx_0));
 
@@ -2718,7 +2717,7 @@ void env_estimation_lib_step(void)
      *  Sqrt: '<S129>/sqrt'
      *  Sum: '<S129>/Sum3'
      */
-    rtDW.Product4 = rtb_time_ut1_idx_4 / sqrt(days * days / (rtb_z1 * rtb_z1) *
+    rtDW.Product4 = rtb_time_ut1_idx_4 / sqrtf(days * days / (rtb_z1 * rtb_z1) *
       rtb_Switch + rtb_time_ut1_idx_2);
 
     /* Product: '<S134>/Product12' incorporates:
@@ -2732,7 +2731,7 @@ void env_estimation_lib_step(void)
      *  Product: '<S135>/Product5'
      *  Sum: '<S135>/Sum4'
      */
-    rtDW.sqrt_od = sqrt(1.0 - rtDW.Product4 * rtDW.Product4);
+    rtDW.sqrt_od = sqrtf(1.0 - rtDW.Product4 * rtDW.Product4);
   }
 
   /* End of Outputs for SubSystem: '<S85>/Convert from geodetic to  spherical coordinates' */
@@ -3474,11 +3473,11 @@ void env_estimation_lib_step(void)
      Expression: output = (0.0174533*input) + (0) */
   C_1 = 0.017453292519943295 * rtb_Switch;
   rtb_time_ut1_idx_3 = 57.295779513082323 * rt_atan2d_snf(rtb_time_ut1_idx_2,
-    sqrt(rtb_z1)) * 0.017453292519943295;
+    sqrtf(rtb_z1)) * 0.017453292519943295;
 
   /* Trigonometry: '<S80>/sincos' */
-  rtb_Sum = cos(C_1);
-  C_1 = sin(C_1);
+  rtb_Sum = cosf(C_1);
+  C_1 = sinf(C_1);
 
   /* Sum: '<S141>/Sum1' incorporates:
    *  Product: '<S141>/Product2'
@@ -3486,12 +3485,12 @@ void env_estimation_lib_step(void)
   rtb_z1 += rtb_time_ut1_idx_2 * rtb_time_ut1_idx_2;
 
   /* Sqrt: '<S141>/sqrt' */
-  rtb_z1 = sqrt(rtb_z1);
+  rtb_z1 = sqrtf(rtb_z1);
 
   /* Product: '<S80>/h1' incorporates:
    *  Trigonometry: '<S80>/sincos'
    */
-  rtb_time_ut1_idx_2 = cos(rtb_time_ut1_idx_3) * rtb_z1;
+  rtb_time_ut1_idx_2 = cosf(rtb_time_ut1_idx_3) * rtb_z1;
 
   /* Product: '<S80>/x1' */
   rtb_Sum *= rtb_time_ut1_idx_2;
@@ -3502,7 +3501,7 @@ void env_estimation_lib_step(void)
   /* Product: '<S80>/z1' incorporates:
    *  Trigonometry: '<S80>/sincos'
    */
-  rtb_z1 *= sin(rtb_time_ut1_idx_3);
+  rtb_z1 *= sinf(rtb_time_ut1_idx_3);
 
   /* Gain: '<S4>/Gain' */
   rtb_Sum1_i_idx_3 = 1.0E-9 * rtb_Sum;
@@ -3543,7 +3542,7 @@ void env_estimation_lib_step(void)
         idx1++;
       }
 
-      rtb_time_ut1_idx_2 = 1.0 / (sqrt(rtb_time_ut1_idx_2) + 1.0E-10);
+      rtb_time_ut1_idx_2 = 1.0 / (sqrtf(rtb_time_ut1_idx_2) + 1.0E-10);
       for (lowAlt = 0; lowAlt < 3; lowAlt++) {
         M[idx2] = rtb_Sum_g[idx2] * rtb_time_ut1_idx_2;
         idx2++;
