@@ -31,9 +31,10 @@
 							<tool id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.exe.compilerDebug.642628282" name="MSP430 Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.exe.compilerDebug">
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.DEFINE.1726757193" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.DEFINE" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__MSP430FR5994__"/>
+									<listOptionValue builtIn="false" value="_MPU_ENABLE"/>
 								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.DATA_MODEL.627263130" name="Specify the data memory model. (--data_model)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.DATA_MODEL" useByScannerDiscovery="false" value="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.DATA_MODEL.restricted" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.ADVICE__HW_CONFIG.868896544" name="Check hardware configuration settings for device. (--advice:hw_config)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.ADVICE__HW_CONFIG" useByScannerDiscovery="false" value="all" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.ADVICE__HW_CONFIG.868896544" name="Check hardware configuration settings for device. (--advice:hw_config)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.ADVICE__HW_CONFIG" useByScannerDiscovery="false" value="&quot;all&quot;" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.USE_HW_MPY.1541688006" name="Inline hardware multiply version of RTS mpy routine (--use_hw_mpy)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.USE_HW_MPY" useByScannerDiscovery="false" value="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.USE_HW_MPY.F5" valueType="enumerated"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.SILICON_ERRATA.CPU21.588517704" name="Workaround specified silicon errata (--silicon_errata) [CPU21]" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.SILICON_ERRATA.CPU21" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.SILICON_ERRATA.CPU22.2002519774" name="Workaround specified silicon errata (--silicon_errata) [CPU22]" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.SILICON_ERRATA.CPU22" useByScannerDiscovery="false" value="true" valueType="boolean"/>
@@ -52,7 +53,7 @@
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}"/>
 									<listOptionValue builtIn="false" value="${CG_TOOL_ROOT}/include"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.ADVICE__POWER.805608760" name="Enable checking of ULP power rules (--advice:power)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.ADVICE__POWER" useByScannerDiscovery="false" value="all" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.ADVICE__POWER.805608760" name="Enable checking of ULP power rules (--advice:power)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compilerID.ADVICE__POWER" useByScannerDiscovery="false" value="&quot;all&quot;" valueType="string"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compiler.inputType__C_SRCS.1492466828" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compiler.inputType__C_SRCS"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compiler.inputType__CPP_SRCS.1514134287" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compiler.inputType__CPP_SRCS"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compiler.inputType__ASM_SRCS.512462954" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.compiler.inputType__ASM_SRCS"/>
@@ -61,9 +62,12 @@
 							<tool id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.exe.linkerDebug.1149904977" name="MSP430 Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.exe.linkerDebug">
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.linkerID.LIBRARY.288272833" name="Include library file or command file as input (--library, -l)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.linkerID.LIBRARY" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="libmath.a"/>
+									<listOptionValue builtIn="false" value="libmpu_init.a"/>
 									<listOptionValue builtIn="false" value="libc.a"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.linkerID.DEFINE.277608905" name="Pre-define preprocessor macro _name_ to _value_ (--define)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.linkerID.DEFINE" valueType="definedSymbols"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.linkerID.DEFINE.277608905" name="Pre-define preprocessor macro _name_ to _value_ (--define)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.linkerID.DEFINE" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="_MPU_ENABLE"/>
+								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.9.linkerID.SEARCH_PATH.1479944869" name="Add &lt;dir&gt; to library search path (--search_path, -i)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.9.linkerID.SEARCH_PATH" valueType="libPaths">
 									<listOptionValue builtIn="false" value="${CCS_BASE_ROOT}/msp430/include"/>
 									<listOptionValue builtIn="false" value="${CCS_BASE_ROOT}/msp430/lib/5xx_6xx_FRxx"/>
