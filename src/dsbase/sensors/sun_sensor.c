@@ -3,7 +3,7 @@
 #include "sensors/sun_sensor.h"
 #include "core/utils.h"
 #include "core/i2c.h"
-#include "core/debugTools.h"
+#include "core/debugtools.h"
 
 #define MAX_BUFF_SIZE 17
 
@@ -26,7 +26,7 @@ FILE_STATIC sun_sensor_voltage vUnfiltered[4];
 FILE_STATIC sun_sensor_voltage vFiltered[4];
 FILE_STATIC SunSensorAngle angleData;
 
-void sunSensorInit()
+void sunSensorInit(bus_instance_i2c i2cbus)
 {
     // Initialize once and only once for this device
     if (i2cInitialized != 0)
@@ -35,8 +35,8 @@ void sunSensorInit()
     }
 
     i2cInitialized = 1;
-    i2cEnable(I2CBus2);
-    hSensor = i2cInit(I2CBus2, SUN_I2C_7BIT_ADDRESS);
+    i2cEnable(i2cbus);
+    hSensor = i2cInit(i2cbus, SUN_I2C_7BIT_ADDRESS);
 }
 
 /*

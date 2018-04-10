@@ -2,7 +2,6 @@
 
 #include "crc.h"
 
-// Calculate a CRC value to be used by CRC calculation functions.
 uint32_t crc32Value(int32_t i)
 {
     int32_t j;
@@ -22,13 +21,6 @@ uint32_t crc32Value(int32_t i)
     return ulCRC;
 }
 
-/**
- * Calculates the CRC-32 of a block of data all at once
- *
- * Arguments:
- *   -- ulCount: number of bytes in the data block
- *   -- ucBuffer: data block
- */
 uint32_t calculateBlockCrc32(uint32_t ulCount, uint8_t *ucBuffer)
 {
     return continueCrc32(0, ulCount, ucBuffer);

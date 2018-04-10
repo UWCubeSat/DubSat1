@@ -1,0 +1,82 @@
+COMMAND EPS_DIST DOMSWITCH LITTLE_ENDIAN "Provides direct enable/disable/toggle control of power domains."
+
+  # This must ALWAYS be the first entry in any command packet
+  <%= render "../../SYSTEM/cmd_tlm/_shared_cmd_header.txt", locals: { eid: 10, opc: 100 } %>
+  
+  # The rest of the fields are the actual commands passed
+  APPEND_PARAMETER PD_COM1 8 UINT 0 3 0 "Passes the desired power domain switch behavior for COM1." LITTLE_ENDIAN
+    STATE NOCHANGE 0 
+    STATE ENABLE 1 
+    STATE DISABLE 2 
+    STATE TOGGLE 3
+  APPEND_PARAMETER PD_COM2 8 UINT 0 3 0 "Passes the desired power domain switch behavior for COM2." LITTLE_ENDIAN
+    STATE NOCHANGE 0 
+    STATE ENABLE 1 
+    STATE DISABLE 2 
+    STATE TOGGLE 3
+  APPEND_PARAMETER PD_RAHS 8 UINT 0 3 0 "Passes the desired power domain switch behavior for RAHS." LITTLE_ENDIAN
+    STATE NOCHANGE 0 
+    STATE ENABLE 1 
+    STATE DISABLE 2 
+    STATE TOGGLE 3
+  APPEND_PARAMETER PD_BDOT 8 UINT 0 3 0 "Passes the desired power domain switch behavior for BDOT." LITTLE_ENDIAN
+    STATE NOCHANGE 0 
+    STATE ENABLE 1 
+    STATE DISABLE 2 
+    STATE TOGGLE 3
+  APPEND_PARAMETER PD_ESTIM 8 UINT 0 3 0 "Passes the desired power domain switch behavior for ESTIM." LITTLE_ENDIAN
+    STATE NOCHANGE 0 
+    STATE ENABLE 1 
+    STATE DISABLE 2 
+    STATE TOGGLE 3
+  APPEND_PARAMETER PD_WHEELS 8 UINT 0 3 0 "Passes the desired power domain switch behavior for WHEELS." LITTLE_ENDIAN
+    STATE NOCHANGE 0 
+    STATE ENABLE 1 
+    STATE DISABLE 2 
+    STATE TOGGLE 3
+  APPEND_PARAMETER PD_EPS 8 UINT 0 3 0 "Passes the desired power domain switch behavior for EPS." LITTLE_ENDIAN
+    STATE NOCHANGE 0 
+    STATE ENABLE 1 
+    STATE DISABLE 2 
+    STATE TOGGLE 3
+  APPEND_PARAMETER PD_PPT 8 UINT 0 3 0 "Passes the desired power domain switch behavior for PPT." LITTLE_ENDIAN
+    STATE NOCHANGE 0 
+    STATE ENABLE 1 
+    STATE DISABLE 2 
+    STATE TOGGLE 3
+
+
+COMMAND EPS_DIST CHNGOCPTHRSH LITTLE_ENDIAN "Allows the overcurrent threshold to be changed for each power domain."
+
+  # This must ALWAYS be the first entry in any command packet
+  <%= render "../../SYSTEM/cmd_tlm/_shared_cmd_header.txt", locals: { eid: 10, opc: 116 } %>
+  
+  APPEND_PARAMETER THRSH_COM1 32 FLOAT 0.0 100.0 0.0 "Specifies the new current limit for this power domain.  0.0 means that the current threshold should not be changed." LITTLE_ENDIAN
+    UNITS amps A
+  APPEND_PARAMETER THRSH_COM2 32 FLOAT 0.0 100.0 0.0 "Specifies the new current limit for this power domain.  0.0 means that the current threshold should not be changed." LITTLE_ENDIAN
+    UNITS amps A
+  APPEND_PARAMETER THRSH_RAHS 32 FLOAT 0.0 100.0 0.0 "Specifies the new current limit for this power domain.  0.0 means that the current threshold should not be changed." LITTLE_ENDIAN
+    UNITS amps A
+  APPEND_PARAMETER THRSH_BDOT 32 FLOAT 0.0 100.0 0.0 "Specifies the new current limit for this power domain.  0.0 means that the current threshold should not be changed." LITTLE_ENDIAN
+    UNITS amps A
+  APPEND_PARAMETER THRSH_ESTIM 32 FLOAT 0.0 100.0 0.0 "Specifies the new current limit for this power domain.  0.0 means that the current threshold should not be changed." LITTLE_ENDIAN
+    UNITS amps A
+  APPEND_PARAMETER THRSH_WHEELS 32 FLOAT 0.0 100.0 0.0 "Specifies the new current limit for this power domain.  0.0 means that the current threshold should not be changed." LITTLE_ENDIAN
+    UNITS amps A
+  APPEND_PARAMETER THRSH_EPS 32 FLOAT 0.0 100.0 0.0 "Specifies the new current limit for this power domain.  0.0 means that the current threshold should not be changed." LITTLE_ENDIAN
+    UNITS amps A
+  APPEND_PARAMETER THRSH_PPT 32 FLOAT 0.0 100.0 0.0 "Specifies the new current limit for this power domain.  0.0 means that the current threshold should not be changed." LITTLE_ENDIAN
+    UNITS amps A
+    
+  APPEND_PARAMETER BATTVTHRSH_PARTIAL 32 FLOAT 0.0 100.0 0.0 "Specifies the battery voltage threshold at which the distribution board triggers partial power domain shutdown mode." LITTLE_ENDIAN
+    UNITS volts V
+  APPEND_PARAMETER BATTVTHRSH_FULL 32 FLOAT 0.0 100.0 0.0 "Specifies the battery voltage threshold at which the distribution board triggers full power domain shutdown mode." LITTLE_ENDIAN
+    UNITS volts V
+    
+COMMAND EPS_DIST FIREDEPLOY LITTLE_ENDIAN "Indicates the satellite should fire deployables."
+
+  # This must ALWAYS be the first entry in any command packet
+  <%= render "../../SYSTEM/cmd_tlm/_shared_cmd_header.txt", locals: { eid: 10, opc: 102 } %>
+  
+  HAZARDOUS "This is a ONE-TIME, PYRO FIRING EVENT.  Make sure triggering this is what you want to do.  It cannot be 'undone'. "
+  APPEND_PARAMETER DEPLOYMENT_KEY 8 UINT 0 255 0 "Deployment key (= 126) MUST be entered manually to fire the system." LITTLE_ENDIAN

@@ -1,0 +1,5 @@
+      LABEL "<%= dom %>->  "
+      LABEL "Current:"      
+      VALUELIMITSBAR EPS_DIST SENSORDAT CURR_<%= dom %> WITH_UNITS 20 # Current draw by the power domain.
+      LABEL "Bus V:" 
+      VALUELIMITSBAR EPS_DIST SENSORDAT BUSV_<%= dom %> WITH_UNITS 20 # Current draw by the power domain.

@@ -19,6 +19,11 @@ void setTheFilter(uint8_t address, uint32_t value){
     setRegister(address + 1, (uint8_t) (value >> 16) & 0x03 | (uint8_t) (value >> 13) & 0xE0 | 0x08);
     setRegister(address + 2, (uint8_t) (value >> 8));
     setRegister(address + 3, (uint8_t) value);
+
+//    setRegister(address, 0xFF);
+//    setRegister(address + 1, 0xFF);
+//    setRegister(address + 2, 0xFF);
+//    setRegister(address + 3, 0xFF);
     // Add Masks and Filters
 
     //Set mode to Normal
@@ -38,11 +43,11 @@ uint8_t canInit() {
     //step 2: initialize buffers, masks, and filters
     // a: CNF1, synchronization jump width length, baud rate prescaler
     //    ref: pg 45
-    setRegister(MCP_CNF1, 0x47);
+    setRegister(MCP_CNF1, 0x83);
     // b: CNF2, bittime length bit, sample point config bit
-    setRegister(MCP_CNF2, 0xBF);
+    setRegister(MCP_CNF2, 0xbf);
     // c: CNF3, start of frame signal bit, wake up filter bit,
-    setRegister(MCP_CNF3, 0x07);
+    setRegister(MCP_CNF3, 0x02);
 
     // Set the interrupt pin low when the following occurs
     // Interrupts for receive
@@ -50,14 +55,14 @@ uint8_t canInit() {
     bitModify(MCP_CANINTE, 0x3,0x3);
 
     // Acceptance Filters only on extended identifiers
-    bitModify(MCP_RXB0CTRL, 0x60,0x40);
-    bitModify(MCP_RXB1CTRL, 0x60,0x40);
+    bitModify(MCP_RXB0CTRL, 0x60, 0x00);
+    bitModify(MCP_RXB1CTRL, 0x60, 0x00);
 
       //step 3: set mode to normal
     bitModify(MCP_CANCTRL, 0xE0, 0x00);
 
     // step 4: check on REQOP<2:0> on CANCTRL register
-    // a: verify normal mode by reading OPMOD bits in the CANCTRL register
+    // a: verify normal mode by reading OPMOD bits in the CANCTRL registe
     uint8_t canMode;
     readRegister(MCP_CANSTAT, &canMode);
 
@@ -237,8 +242,6 @@ void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t)
 #pragma vector=PORT5_VECTOR
 __interrupt void ReceivedMsg(void) {
     P5IFG &=~BIT7;
-    PJDIR |= 0x01;
-    PJOUT |= 0x01;
     uint8_t status, rx0if, rx1if, res, length;
     readStatus(&status);
     rx0if = status & 0x01;

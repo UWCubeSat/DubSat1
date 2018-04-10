@@ -53,6 +53,9 @@ FILE_STATIC hDev hBattV;
 #define MAX_BUFF_SIZE   0x10
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 
+FILE_STATIC uint16_t startupDelay = 1800;
+#pragma PERSISTENT(startupDelay)
+
 void distDeployInit()
 {
     DEPLOY_ENABLE_DIR |= DEPLOY_ENABLE_BIT;
@@ -143,11 +146,16 @@ PowerDomainSwitchState distQueryDomainSwitch(PowerDomainID domain)
 // Turns on/off switches for indicated domain
 void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
 {
+    // Record last command for each domain
     gseg.powerdomainlastcmds[(uint8_t)domain] = (uint8_t)cmd;
 
     // Overcurrent latching  or low batt commands only useful as a "special" disable for reporting purposes
     if (cmd == PD_CMD_OCLatch || cmd == PD_CMD_BattVLow)
         cmd = PD_CMD_Disable;
+
+    // Similarly, autostart is a just a "special" enable
+    if (cmd == PD_CMD_AutoStart)
+        cmd = PD_CMD_Enable;
 
     if (cmd == PD_CMD_NoChange)
         return;
@@ -272,7 +280,8 @@ FILE_STATIC void distMonitorBattery()
         for (i = 0; i < NUM_POWER_DOMAINS; i++)
         {
             // TODO:  Implement the true, final logic for partial vs. full
-            if (i == (uint8_t)PD_COM1)
+            // TODO:  For now, full shutdown takes out COm1 as well, to protect batteries
+            if (gseg.uvmode != (uint8_t)UV_FullShutdown && i == (uint8_t)PD_COM1)
                 continue;
             if (gseg.uvmode == (uint8_t)UV_PartialShutdown && i == (uint8_t)PD_WHEELS)
                 continue;
@@ -308,6 +317,7 @@ FILE_STATIC void distBcSendHealth()
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
     hseg.inttemp = asensorReadIntTempC();
+    hseg.reset_count = bspGetResetCount();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandlers();
 }
@@ -424,7 +434,13 @@ int main(void)
     debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, distActionCallback);
     __delay_cycles(0.5 * SEC);
 
-#endif  //  __DEBUG__
+#else  //  __DEBUG__
+    while(startupDelay)
+    {
+        __delay_cycles(SEC); //wait for 30 minutes
+        startupDelay--;
+    }
+#endif
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
     // TODO:  Add the correct bus filters and register CAN message receive handlers
@@ -434,6 +450,10 @@ int main(void)
     // TODO:  Finally ... NOW, implement the actual subsystem logic!
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
+
+    // Autostart the EPS power domain for now
+    __delay_cycles(2 * SEC);
+    distDomainSwitch(PD_EPS, PD_CMD_AutoStart);
 
     uint16_t counter = 0;
     while (1)
@@ -446,13 +466,14 @@ int main(void)
         switch (ss_state)
         {
             case State_FirstState:
+                LED_OUT ^= LED_BIT;
+
                 distMonitorDomains();
 
                 counter++;
                 distBcSendSensorDat();
                 if (counter % 8 == 0)
                 {
-                    LED_OUT ^= LED_BIT;
                     distBcSendGeneral();
                     distBcSendHealth();
                     distMonitorBattery();

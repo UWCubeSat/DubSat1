@@ -137,6 +137,7 @@ typedef struct CANPacket {
 } CANPacket;
 
 void canWrapInit();
+void canWrapInitWithFilter();
 
 // Global function pointer to point to the function
 // when a packet is received through CAN
@@ -171,8 +172,8 @@ def cMainDecodeInteger(frame, sig, sigType):
         + sigType
         + ") (((fullData & ((uint64_t) "
         + str(hex(int(str(int((-1 + 10 ** sig.signalsize)//9)), 2)))
-        + (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
-        + (")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
+        + (" << " + str(int(64 - int(sig.getStartbit()) - sig.signalsize)) if int(64 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
+        + (")) >> " + str(int(64 - int(sig.getStartbit()) - sig.signalsize)) if int(64 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
         + (") * " + (str(int(sig.factor)) if int(sig.factor) - float(sig.factor) == 0.0 else str(sig.factor)) if sig.factor != 1.0 else ")")
         + (" + " + (str(int(sig.offset)) if int(sig.offset) - float(sig.offset) == 0.0 else str(sig.offset)) if sig.offset != 0.0 else "")
         + ");\n")
@@ -182,8 +183,8 @@ def cMainDecodeFloat(frame, sig, sigType):
         out = "    uint32_t temp" + sig.name
         out += " = (uint32_t) ((fullData & ((uint64_t) "
         out += str(hex(int(str(int((-1 + 10 ** sig.signalsize)//9)), 2)))
-        out += (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
-        out +=(")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
+        out += (" << " + str(int(64 - int(sig.getStartbit()) - sig.signalsize)) if int(64 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
+        out +=(")) >> " + str(int(64 - int(sig.getStartbit()) - sig.signalsize)) if int(64 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
         out += (");\n")
         out += "    output -> "
         out += sig.name
@@ -197,8 +198,8 @@ def cMainDecodeFloat(frame, sig, sigType):
         out = "    uint64_t temp" + sig.name
         out += " = (uint64_t) ((fullData & ((uint64_t) "
         out += str(hex(int(str(int((-1 + 10 ** sig.signalsize)//9)), 2)))
-        out += (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
-        out +=(")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
+        out += (" << " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(64 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "")
+        out +=(")) >> " + str(int(frame.size * 8 - int(sig.getStartbit()) - sig.signalsize)) if int(64 - int(sig.getStartbit()) - sig.signalsize) != 0.0 else "))")
         out += (");\n")
         out += "output -> "
         out += sig.name
@@ -246,6 +247,31 @@ def cMainEncodeFloat(frame, sig, sigType):
             + ")))))"
             + (" << " + str(64 - int(sig.getStartbit()) - sig.signalsize) if 64 - int(sig.getStartbit()) - sig.signalsize != 0 else "")
             + ";\n")
+
+def createCTestFile(candb, cFileName, floatList):
+    cFile = open(cFileName, "w")
+    cFile.write('''
+#include <msp430.h>
+#include <stddef.h>
+#include "interfaces/canwrap.h"
+''')
+    cFile.write("void canBlast() { \n");
+    for frame in candb.frames:
+        packetname= frame.name+"_packet"
+        infoname = frame.name+"_info"
+        cFile.write("\t__delay_cycles(10000);")
+        cFile.write("\tCANPacket " + packetname + " = {0};" +"\n")
+        cFile.write("\t" + frame.name +" " + infoname + " = {0};" +"\n")
+        cFile.write("\t" + "encode" +frame.name + "(&"+infoname + ", &"+ packetname + ");" +"\n")
+        cFile.write("\t" + "canSendPacket(&" + packetname + ");" +"\n")
+        cFile.write("\n")
+    cFile.write("} \n");
+    cFile.write("while (1) { \n");
+    cFile.write("\t" + "canBlast(); \n");
+    cFile.write("\t"+ "int i=0; \n\tfor(int i=0;i<100000;i++){} \n");
+    cFile.write("}");
+    cFile.close()
+
 def createCMain(candb, cFileName, floatList):
     cFile = open(cFileName, "w")
     cFile.write('''/*
@@ -257,6 +283,8 @@ def createCMain(candb, cFileName, floatList):
 
 #include "canwrap.h"
 #include "../core/can.h"
+#include "../bsp/bsp.h"
+
 
 //void canPacketInit(uint8_t boardNum){
 //    canInit();
@@ -302,6 +330,128 @@ void canWrapInit(){
     setReceiveCallback0(wrapCB0);
     setReceiveCallback1(wrapCB1);
 }
+
+void canWrapInitWithFilter(){
+    canWrapInit();
+    SubsystemModule ss = bspGetModule();
+    uint8_t filter_one = 0x0;
+    uint8_t filter_two = 0x0;
+    uint8_t filter_three = 0x0;
+    uint8_t filter_four = 0x0;
+    switch(ss) {
+      case Module_Test :
+        filter_one = 0x01;
+        filter_two = 0x02;
+        filter_three = 0x03;
+        filter_four = 0x04;
+        break;
+      case Module_ADCS_BDot :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_ADCS_RWX :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_ADCS_RWY :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_ADCS_RWZ :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_PPT :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_EPS_Dist :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_EPS_Gen :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_EPS_Batt :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_ADCS_Estim :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_ADCS_MPC :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_ADCS_SensorProc :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_ADCS_MTQ :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_COM1 :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_COM2 :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      case Module_RAHS :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+        break;
+      default :
+        filter_one = 0x01;
+        filter_two = 0x03;
+        filter_three = 0x04;
+        filter_four = 0x04;
+  	}
+  	setTheFilter(CAN_MASK_0, (uint32_t) 0x1e000000);
+   	setTheFilter(CAN_FILTER_0, (uint32_t) 0x00);
+   	setTheFilter(CAN_FILTER_1, (uint32_t) 0x00);
+
+   	setTheFilter(CAN_MASK_1, filter_one);
+   	setTheFilter(CAN_FILTER_2, (uint32_t) filter_one << 16);
+    setTheFilter(CAN_FILTER_3, (uint32_t) filter_two << 16);
+    setTheFilter(CAN_FILTER_4, (uint32_t) filter_three << 16);
+    setTheFilter(CAN_FILTER_5, (uint32_t) filter_four << 16);
+}
+
 
 void reverseArray(uint8_t arr[], uint8_t start, uint8_t end)
 {
@@ -396,6 +546,7 @@ def main():
     floatList = handleFloats(infile)
     createCHeader(CANObj, "codeGenOutput/canwrap.h", floatList)
     createCMain(CANObj, "codeGenOutput/canwrap.c", floatList)
+    createCTestFile(CANObj, "codeGenOutput/test.c", floatList)
 
 if __name__ == '__main__':
     sys.exit(main())

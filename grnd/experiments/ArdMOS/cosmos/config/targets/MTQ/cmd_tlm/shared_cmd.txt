@@ -1,0 +1,13 @@
+COMMAND EPS_DIST COMMONCMD LITTLE_ENDIAN "Provides commands that are common to all the MSP43x modules."
+
+  # TO CUSTOMIZE FOR A GIVEN TARGET:  change expmod, below; all other params should 
+  # stay as they are
+  
+  # This must ALWAYS be the first entry in any command packet
+  # In this case, not that the entity ID is 2 = routes to the debug service itself (NOT any subsystem-specific code)
+  <%= render "../../SYSTEM/cmd_tlm/_shared_cmd_header.txt", locals: { eid: 2, opc: 0 } %>
+  
+  # The rest of the fields are the actual commands passed
+  # expmod = specifies the expected module (via setting the min/max/default value) - should match
+  # the correct module's value in _shared_mod_ids.txt
+  <%= render "../../SYSTEM/cmd_tlm/_shared_cmd_params.txt", locals: { expmod: 6 } %>
