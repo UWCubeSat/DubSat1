@@ -93,10 +93,10 @@ BO_ 2181365825 sensorproc_sun: 5 adcs_sensorproc
  SG_ sensorproc_sun_reading_beta : 16|16@1- (1,0) [-3600|3600] "arcminutes" Vector__XXX
  SG_ sensorproc_sun_reading_alpha : 0|16@1- (1,0) [-3600|3600] "arcminutes" Vector__XXX
 
-BO_ 2181365793 bdot_command_dipole: 3 adcs_bdot
- SG_ bdot_command_dipole_z : 16|8@1- (1,0) [-100|100] "mA*m^2" Vector__XXX
- SG_ bdot_command_dipole_y : 8|8@1- (1,0) [-100|100] "mA*m^2" Vector__XXX
- SG_ bdot_command_dipole_x : 0|8@1- (1,0) [-100|100] "mA*m^2" Vector__XXX
+BO_ 2181365793 cmd_mtq_fire: 3 adcs_bdot
+ SG_ cmd_mtq_fire_z : 16|8@1- (1,0) [-100|100] "mA*m^2" Vector__XXX
+ SG_ cmd_mtq_fire_y : 8|8@1- (1,0) [-100|100] "mA*m^2" Vector__XXX
+ SG_ cmd_mtq_fire_x : 0|8@1- (1,0) [-100|100] "mA*m^2" Vector__XXX
 
 BO_ 2181496864 bdot_tumble_status: 1 adcs_bdot
  SG_ bdot_tumble_status_status : 0|1@1+ (1,0) [0|0] "bool" Vector__XXX
