@@ -25,13 +25,6 @@
 #include "env_estimation_lib.h"        /* Model's header file */
 #include "rtwtypes.h"
 
-int _system_pre_init()
-{
-    // Stop watchdog timer
-    WDTCTL = WDTPW | WDTHOLD;
-    return 1;
-}
-
 /*
  * Associating rt_OneStep with a real-time clock or interrupt service routine
  * is what makes the generated code "real-time".  The function rt_OneStep is
