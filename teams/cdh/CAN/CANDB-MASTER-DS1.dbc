@@ -40,7 +40,7 @@ VAL_TABLE_ sunproc_sun_status_codes 12 "over_illumination" 11 "under_illuminatio
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
-BO_ 2181496880 mtq_ack: 2 Vector__XXX
+BO_ 2181496880 mtq_ack: 2 adcs_mtq
  SG_ mtq_ack_confirm : 8|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ mtq_ack_node : 0|8@1+ (1,0) [0|15] "" Vector__XXX
 
