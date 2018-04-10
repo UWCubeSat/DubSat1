@@ -25,6 +25,13 @@
 #include "env_estimation_lib.h"        /* Model's header file */
 #include "rtwtypes.h"
 
+int _system_pre_init()
+{
+    // Stop watchdog timer
+    WDTCTL = WDTPW | WDTHOLD;
+    return 1;
+}
+
 /*
  * Associating rt_OneStep with a real-time clock or interrupt service routine
  * is what makes the generated code "real-time".  The function rt_OneStep is
@@ -76,7 +83,54 @@ void rt_OneStep(void)
  */
 int_T main(int_T argc, const char *argv[])
 {
+    // Stop watchdog timer
     WDTCTL = WDTPW | WDTHOLD;
+
+    //Selection bits for external crystal and ACLK
+    PJSEL0 = BIT4 | BIT5;
+
+    // SAFE way of setting clock to 8Mhz, from
+    // per-device errata:  must set divider to 4 before changing frequency to
+    // prevent out of spec operation from overshoot transient
+    CSCTL0_H = CSKEY_H;                     // Unlock CS registers
+    CSCTL1 = DCOFSEL_0;                     // Set DCO to 1MHz
+    // Set SMCLK = MCLK = DCO, ACLK = LFXTCLK (was VLOCLK earlier)
+    CSCTL2 = SELA__LFXTCLK | SELS__DCOCLK | SELM__DCOCLK;
+
+    CSCTL3 = DIVA__4 | DIVS__4 | DIVM__4;   // Set all corresponding clk sources to divide by 4 for errata
+    CSCTL1 = DCOFSEL_6;                     // Set DCO to 8MHz
+
+    // Delay by ~10us to let DCO settle. 60 cycles = 20 cycles buffer + (10us / (1/4MHz))
+    __delay_cycles(60);
+    CSCTL3 = DIVA__1 | DIVS__1 | DIVM__1;   // Set all dividers to 1 for 8MHz operation
+
+    CSCTL4 &= ~LFXTOFF;                     // Enable LFXT
+    do
+    {
+      CSCTL5 &= ~LFXTOFFG;                  // Clear LFXT fault flag
+      SFRIFG1 &= ~OFIFG;
+    } while (SFRIFG1 & OFIFG);              // Test oscillator fault flag
+
+    CSCTL0_H = 0;                           // Lock CS Registers
+
+    // Force all outputs to be 0, so we don't get spurious signals when we unlock
+    P1OUT = 0;
+    P2OUT = 0;
+    P3OUT = 0;
+    P4OUT = 0;
+    P5OUT = 0;
+    P6OUT = 0;
+    P7OUT = 0;
+    P8OUT = 0;
+    PJOUT = 0;
+
+    // Disable the GPIO power-on default high-impedance mode to activate
+    // previously configured port settings
+    PM5CTL0 &= ~LOCKLPM5;
+
+    __enable_interrupt();
+
+    P1DIR |= BIT0; // P1.0 set as output
 
   /* Unused arguments */
   (void)(argc);
@@ -91,12 +145,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep();
    */
-  printf("Warning: The simulation will run forever. "
-         "Generated ERT main won't simulate model step behavior. "
-         "To change this behavior select the 'MAT-file logging' option.\n");
-  fflush((NULL));
   while (rtmGetErrorStatus(rtM) == (NULL)) {
     /*  Perform other application tasks here */
+      P1OUT ^= BIT0;
+      rt_OneStep();
   }
 
   /* Disable rt_OneStep() here */

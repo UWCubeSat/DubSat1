@@ -208,7 +208,7 @@ SECTIONS
     .bss        : {} > RAM                  /* Global & static vars              */
     .data       : {} > RAM                  /* Global & static vars              */
     .TI.noinit  : {} > FRAM                 /* For #pragma noinit                */
-    .stack      : {} > RAM (HIGH)           /* Software system stack             */
+    .stack      : {} > FRAM (HIGH)          /* Software system stack             */
 
     .tinyram    : {} > TINYRAM              /* Tiny RAM                          */
 
