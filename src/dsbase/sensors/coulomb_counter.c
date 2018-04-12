@@ -43,7 +43,7 @@ float rawCurrentToFloat(int16_t raw) {
 BOOL checkForFullState(float voltage, float current) {
     //full state is defined as 7.2 volts with the LTC2943 limiting the current into the batteries to .1A
     // +- .02 volt margin with +-.1A margin
-    if(voltage >= 7.18 || voltage <= 7.22 && current <= 0.11 || current >= 0.09) {
+    if((voltage >= 7.18 && voltage <= 7.22) && (current <= 0.11 && current >= 0.09)) {
         return TRUE;
     } else {
         return FALSE;
