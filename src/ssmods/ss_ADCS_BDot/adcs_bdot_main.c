@@ -41,6 +41,10 @@ void changeX();
 void changeY();
 void changeZ();
 
+void sendMeta();
+
+FILE_STATIC meta_segment mseg;
+
 
 /*
  * main.c
@@ -97,10 +101,18 @@ int main(void)
     MagnetometerData* data;
     initializeTimer();
 
+    unit8_t counter = 200000;
+
     while (1)
     {
         getMag();
         P3OUT ^= BIT5;
+        if(!counter)
+        {
+            counter
+            sendMeta();
+        }
+        counter--;
     }
     return 0;
 }
@@ -272,7 +284,12 @@ void changeZ()
     }
 }
 
-
+FILE_STATIC void sendMeta()
+{
+    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
+    bcbinPopulateMeta(&mseg, sizeof(mseg));
+    bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+}
 
 
 /*No op function */
