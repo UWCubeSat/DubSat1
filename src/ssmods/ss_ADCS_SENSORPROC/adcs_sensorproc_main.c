@@ -1,5 +1,3 @@
-#define ENABLE_GPS         0
-#define ENABLE_PHOTODIODES 0
 #define ENABLE_SUNSENSOR   1
 #define ENABLE_MAG1        1
 #define ENABLE_MAG2        1
@@ -14,9 +12,7 @@
 #include "interfaces/canwrap.h"
 
 #include "adcs_sensorproc_ids.h"
-#include "gps_io.h"
 #include "sunsensor_io.h"
-#include "photodiode_io.h"
 #include "mag_io.h"
 #include "imu_io.h"
 
@@ -52,28 +48,10 @@ typedef struct {
 
 FILE_STATIC const SensorInterface sensorInterfaces[] =
 {
-#if ENABLE_GPS
-    {
-     gpsioInit,
-     gpsioUpdate,
-     UpdateRate_ASAP
-     gpsioHandleCommand,
-     gpsioHandleCan,
-    },
-#endif
 #if ENABLE_SUNSENSOR
     {
      sunsensorioInit,
      sunsensorioUpdate,
-     UpdateRate_5Hz,
-     NULL,
-     NULL,
-    },
-#endif
-#if ENABLE_PHOTODIODES
-    {
-     photodiodeioInit,
-     photodiodeioUpdate,
      UpdateRate_5Hz,
      NULL,
      NULL,
@@ -249,9 +227,6 @@ void handleRollCall()
 void sendHealthSegment()
 {
     // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
-
-    // send gps-specific health segment
-    gpsioSendHealth();
 
     // TODO determine overall health based on querying sensors for their health
     hseg.oms = OMS_Unknown;
