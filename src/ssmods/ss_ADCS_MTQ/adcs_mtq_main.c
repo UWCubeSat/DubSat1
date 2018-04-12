@@ -81,9 +81,9 @@ int main(void)
 	// DEBUG testing - comment out during normal operation
 	while(1)
 	{
-		set_pwm('x', -100);
-	    set_pwm('y', -100);
-	    set_pwm('z', -100);
+		set_pwm('x', 50);
+	    set_pwm('y', 50);
+	    set_pwm('z', -50);
 	}
 	// end of DEBUG testing
 	
