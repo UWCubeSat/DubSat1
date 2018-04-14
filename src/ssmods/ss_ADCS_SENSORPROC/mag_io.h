@@ -28,5 +28,9 @@ void magioInit1();
 void magioInit2();
 void magioUpdate1();
 void magioUpdate2();
+void magioSendBackchannel1();
+void magioSendBackchannel2();
+void magioSendCAN1();
+void magioSendCAN2();
 
 #endif /* MAG_IO_H_ */

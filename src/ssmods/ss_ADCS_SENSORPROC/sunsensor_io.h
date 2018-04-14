@@ -25,6 +25,7 @@ TLM_SEGMENT {
 
 void sunsensorioInit();
 void sunsensorioUpdate();
-void sunsensorioSendData();
+void sunsensorioSendBackchannel();
+void sunsensorioSendCAN();
 
 #endif /* SUNSENSOR_IO_H_ */

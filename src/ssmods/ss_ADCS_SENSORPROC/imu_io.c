@@ -12,6 +12,8 @@
 #include "core/i2c.h"
 #include "core/utils.h"
 
+FILE_STATIC IMUData *data;
+
 void imuioInit()
 {
     imuInit(IMU_I2CBUS);
@@ -19,15 +21,22 @@ void imuioInit()
 
 void imuioUpdate()
 {
-    IMUData *data = imuReadGyroAccelData();
+    data = imuReadGyroAccelData();
 
-    // send backchannel data
+    // TODO set autocode inputs
+}
+
+void imuioSendBackchannel()
+{
     imu_segment seg;
     seg.x = data->rawGyroX;
     seg.y = data->rawGyroY;
     seg.z = data->rawGyroZ;
     bcbinPopulateHeader(&seg.header, TLM_ID_IMU, sizeof(seg));
     bcbinSendPacket((uint8_t *) &seg, sizeof(seg));
+}
 
-    // TODO send CAN data
+void imuioSendCAN()
+{
+    // TODO
 }

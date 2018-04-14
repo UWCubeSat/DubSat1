@@ -12,6 +12,8 @@
 #include "interfaces/canwrap.h"
 #include "adcs_sensorproc_ids.h"
 
+#include "autocode/MSP_SP.h"
+
 FILE_STATIC sunsensor_segment sunsensorSeg;
 
 void sunsensorioInit()
@@ -35,15 +37,18 @@ void sunsensorioUpdate()
         // TODO log read error
     }
 
-    sunsensorioSendData();
+    // TODO set autocode inputs
+    rtU.sun_vec_body_sunsensor[0] = 123.0;
 }
 
-void sunsensorioSendData()
+void sunsensorioSendBackchannel()
 {
-    // send backchannel telemetry
     bcbinSendPacket((uint8_t *) &sunsensorSeg, sizeof(sunsensorSeg));
+}
 
-    // send CAN packet
+void sunsensorioSendCAN()
+{
+    // TODO use autocode outputs instead of segment
     // converting degrees to arcminutes
     sensorproc_sun sun = { sunsensorSeg.error,
                            (int32_t) round(sunsensorSeg.alpha * 60),

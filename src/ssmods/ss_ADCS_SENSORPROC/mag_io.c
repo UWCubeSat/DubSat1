@@ -14,6 +14,8 @@
 
 FILE_STATIC hMag mag1;
 FILE_STATIC hMag mag2;
+FILE_STATIC MagnetometerData *data1;
+FILE_STATIC MagnetometerData *data2;
 
 FILE_STATIC hMag magioInit(bus_instance_i2c bus)
 {
@@ -31,27 +33,46 @@ void magioInit2()
     mag2 = magioInit(MAG2_I2CBUS);
 }
 
-FILE_STATIC void magioUpdate(hMag handle, uint8_t tlmId)
+void magioUpdate1()
 {
-    MagnetometerData *data = magReadXYZData(handle, ConvertToNone);
+    data1 = magReadXYZData(mag1, ConvertToNone);
 
-    // send backchannel data
+    // TODO set autocode inputs
+}
+
+void magioUpdate2()
+{
+    data1 = magReadXYZData(mag2, ConvertToNone);
+
+    // TODO set autocode inputs
+}
+
+FILE_STATIC void magioSendBackchannel(MagnetometerData *data, uint8_t tlmId)
+{
     mag_segment seg;
     seg.x = data->rawX;
     seg.y = data->rawY;
     seg.z = data->rawZ;
     bcbinPopulateHeader(&seg.header, tlmId, sizeof(seg));
     bcbinSendPacket((uint8_t *) &seg, sizeof(seg));
-
-    // TODO send CAN data
 }
 
-void magioUpdate1()
+void magioSendBackchannel1()
 {
-    magioUpdate(mag1, TLM_ID_MAG1);
+    magioSendBackchannel(data1, TLM_ID_MAG1);
 }
 
-void magioUpdate2()
+void magioSendBackchannel2()
 {
-    magioUpdate(mag2, TLM_ID_MAG2);
+    magioSendBackchannel(data2, TLM_ID_MAG2);
+}
+
+void magioSendCAN1()
+{
+    // TODO
+}
+
+void magioSendCAN2()
+{
+    // TODO
 }
