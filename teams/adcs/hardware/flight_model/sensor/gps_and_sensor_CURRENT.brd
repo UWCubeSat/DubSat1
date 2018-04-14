@@ -159,6 +159,10 @@
 <board>
 <plain>
 <text x="40.674" y="24.05" size="1.778" layer="51" font="vector" rot="R90">LSM6DSM</text>
+<text x="88.138" y="50.038" size="1.778" layer="51" font="vector" rot="R90" align="center-left">SDA</text>
+<text x="90.678" y="50.038" size="1.778" layer="51" font="vector" rot="R90" align="center-left">SCL</text>
+<text x="93.218" y="50.038" size="1.778" layer="51" font="vector" rot="R90" align="center-left">GND</text>
+<text x="85.598" y="42.418" size="1.778" layer="51" font="vector" rot="R90" align="center-left">SUN_S</text>
 </plain>
 <libraries>
 <library name="DubSat1 Components">
@@ -2877,19 +2881,19 @@ design rules under a new name.</description>
 <wire x1="47.879" y1="32.0675" x2="43.7515" y2="32.0675" width="0.254" layer="16"/>
 <wire x1="47.239" y1="29.21" x2="47.2915" y2="29.1575" width="0.254" layer="1"/>
 <wire x1="47.2915" y1="29.1575" x2="51.9115" y2="29.1575" width="0.254" layer="1"/>
-<wire x1="51.9115" y1="29.1575" x2="52.3543" y2="28.7147" width="0.254" layer="1"/>
 <wire x1="64.1196" y1="18.5578" x2="63.0658" y2="19.6116" width="0.254" layer="1"/>
-<wire x1="56.25988125" y1="28.7147" x2="58.981390625" y2="25.993190625" width="0.254" layer="1"/>
 <wire x1="58.981390625" y1="25.993190625" x2="58.981390625" y2="20.127734375" width="0.254" layer="1"/>
 <wire x1="58.981390625" y1="20.127734375" x2="59.497525" y2="19.6116" width="0.254" layer="1"/>
 <wire x1="59.497525" y1="19.6116" x2="63.0658" y2="19.6116" width="0.254" layer="1"/>
-<wire x1="52.3543" y1="28.7147" x2="56.25988125" y2="28.7147" width="0.254" layer="1"/>
 <wire x1="64.1108" y1="17.9136" x2="64.1108" y2="18.542" width="0.254" layer="1"/>
 <wire x1="64.1108" y1="18.542" x2="64.1196" y2="18.5508" width="0.254" layer="1"/>
 <wire x1="64.1196" y1="18.5508" x2="64.1196" y2="18.5578" width="0.254" layer="1"/>
 <wire x1="49.689" y1="29.1575" x2="51.9115" y2="29.1575" width="0.254" layer="1"/>
+<wire x1="51.9115" y1="29.1575" x2="51.964" y2="29.21" width="0.254" layer="1"/>
+<wire x1="51.964" y1="29.21" x2="53.594" y2="29.21" width="0.254" layer="1"/>
 <wire x1="83.058" y1="76.962" x2="82.55" y2="76.962" width="0" layer="19" extent="1-1"/>
 <wire x1="81.534" y1="40.894" x2="81.519" y2="40.751" width="0" layer="19" extent="1-1"/>
+<wire x1="53.594" y1="29.21" x2="58.981390625" y2="25.993190625" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="LDO_3V3_BYP">
 <contactref element="U2" pad="P$4"/>
@@ -2976,14 +2980,14 @@ design rules under a new name.</description>
 <wire x1="45.3898" y1="25.3492" x2="48.4632" y2="25.3492" width="0.254" layer="1"/>
 <wire x1="44.6588" y1="28.6202" x2="44.069" y2="29.21" width="0.254" layer="1"/>
 <wire x1="44.6588" y1="26.0802" x2="44.6588" y2="28.6202" width="0.254" layer="1"/>
-<wire x1="50.589" y1="28.2575" x2="49.689" y2="27.3575" width="0.254" layer="1"/>
-<wire x1="50.589" y1="28.2575" x2="56.0705" y2="28.2575" width="0.254" layer="1"/>
+<wire x1="49.689" y1="27.3575" x2="50.589" y2="28.2575" width="0.254" layer="1"/>
 <wire x1="58.5241875" y1="25.8038125" x2="58.5241875" y2="19.93835625" width="0.254" layer="1"/>
 <wire x1="61.722" y1="16.74054375" x2="61.722" y2="11.684" width="0.254" layer="1"/>
 <wire x1="58.5241875" y1="19.93835625" x2="61.722" y2="16.74054375" width="0.254" layer="1"/>
 <wire x1="61.722" y1="11.684" x2="63.5" y2="9.906" width="0.254" layer="1"/>
 <wire x1="63.5" y1="9.906" x2="64.135" y2="9.906" width="0.254" layer="1"/>
-<wire x1="56.0705" y1="28.2575" x2="58.5241875" y2="25.8038125" width="0.254" layer="1"/>
+<wire x1="50.589" y1="28.2575" x2="53.5305" y2="28.2575" width="0.254" layer="1"/>
+<wire x1="53.5305" y1="28.2575" x2="58.5241875" y2="25.8038125" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="I2C_SCL">
 <contactref element="BLK1" pad="P5.1_I2C-SCL-1"/>
@@ -3031,11 +3035,10 @@ design rules under a new name.</description>
 <wire x1="44.1192" y1="28.51321875" x2="43.6118" y2="29.02061875" width="0.254" layer="1"/>
 <wire x1="58.0669875" y1="25.61443125" x2="58.0669875" y2="19.748975" width="0.254" layer="1"/>
 <wire x1="58.0669875" y1="19.748975" x2="61.214" y2="16.6019625" width="0.254" layer="1"/>
-<wire x1="56.32391875" y1="27.3575" x2="58.0669875" y2="25.61443125" width="0.254" layer="1"/>
 <via x="61.214" y="7.366" extent="1-16" drill="0.35"/>
 <wire x1="61.214" y1="7.366" x2="64.389" y2="7.366" width="0.254" layer="16"/>
-<wire x1="51.9115" y1="27.3575" x2="56.32391875" y2="27.3575" width="0.254" layer="1"/>
 <wire x1="61.214" y1="16.6019625" x2="61.214" y2="7.366" width="0.254" layer="1"/>
+<wire x1="58.0669875" y1="25.61443125" x2="51.9115" y2="27.3575" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="3V3_BUCK_ENABLE">
 <contactref element="U4" pad="RUN"/>
