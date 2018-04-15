@@ -1,9 +1,10 @@
-#define ENABLE_SUNSENSOR   0
-#define ENABLE_MAG1        0
+#define ENABLE_SUNSENSOR   1
+#define ENABLE_MAG1        1
 #define ENABLE_MAG2        1
-#define ENABLE_IMU         0
+#define ENABLE_IMU         1
 
-#define AUTOCODE_UPDATE_DELAY_US 100000
+// 100 Hz
+#define AUTOCODE_UPDATE_DELAY_US 10000
 
 #include <adcs_sensorproc.h>
 #include <msp430.h> 
@@ -18,7 +19,7 @@
 #include "mag_io.h"
 #include "imu_io.h"
 
-#include "autocode/MSP_SP.h"
+#include "autocode/MSP_SP0.h"
 
 /*
  * SensorInterface is a class-like struct for managing multiple sensors on one
@@ -70,7 +71,7 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
      magioInit1,
      magioUpdate1,
      magioSendBackchannel1,
-     magioSendCAN1,
+     magioSendCAN,
      NULL,
      NULL,
     },
@@ -80,7 +81,7 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
      magioInit2,
      magioUpdate2,
      magioSendBackchannel2,
-     magioSendCAN2,
+     magioSendCAN,
      NULL,
      NULL,
     },
@@ -108,6 +109,8 @@ FILE_STATIC void updateSensorInterfaces();
 FILE_STATIC void sendSensorBackchannel();
 FILE_STATIC void sendSensorCAN();
 FILE_STATIC void step();
+
+FILE_STATIC void rt_OneStep();
 
 int main(void)
 {
@@ -144,7 +147,7 @@ int main(void)
     asensorInit(Ref_2p5V); // temperature sensor
 
     // initialize autocode
-    MSP_SP_initialize();
+    MSP_SP0_initialize();
 
     // initialize timer
     initializeTimer();
@@ -167,27 +170,167 @@ FILE_STATIC void step()
     static uint16_t i = 0;
     i++;
 
-    // blink LED
-    LED_OUT ^= LED_BIT;
-
-    // send a health and meta segments every 1 second
-    // TODO move to rollcall when it is implemented
-    if (i % 10 == 0)
+    if (i % 100 == 0) // 1 Hz
     {
+        // blink LED
+        LED_OUT ^= LED_BIT;
+
+        // send a health and meta segments every 1 second
+        // TODO move to rollcall when it is implemented
         sendHealthSegment();
         sendMetaSegment();
+
+        // send backchannel telemetry
+        sendSensorBackchannel();
     }
 
-    // read sensors and set autocode inputs
-    updateSensorInterfaces();
-
     // step autocode
-    // TODO handle autocode errors
-    MSP_SP_step();
+    if (rtmGetErrorStatus(rtM) != (NULL))
+    {
+        // TODO handle autocode errors
+    }
+    rt_OneStep();
+}
 
-    // send autocode outputs over CAN and/or backchannel
-    sendSensorCAN();
-    sendSensorBackchannel();
+/*
+ * Step function originally copied from autocode/ert_main.c, now with inputs
+ * and outputs filled out
+ */
+FILE_STATIC void rt_OneStep()
+{
+  static boolean_T OverrunFlags[4] = { 0, 0, 0, 0 };
+
+  static boolean_T eventFlags[4] = { 0, 0, 0, 0 };/* Model has 4 rates */
+
+  static int_T taskCounter[4] = { 0, 0, 0, 0 };
+
+  int_T i;
+
+  /* Disable interrupts here */
+  __disable_interrupt();
+
+  /* Check base rate for overrun */
+  if (OverrunFlags[0]) {
+    rtmSetErrorStatus(rtM, "Overrun");
+    return;
+  }
+
+  OverrunFlags[0] = true;
+
+  /* Save FPU context here (if necessary) */
+  /* Re-enable timer or interrupt here */
+  __enable_interrupt();
+
+  /*
+   * For a bare-board target (i.e., no operating system), the
+   * following code checks whether any subrate overruns,
+   * and also sets the rates that need to run this time step.
+   */
+  for (i = 1; i < 4; i++) {
+    if (taskCounter[i] == 0) {
+      if (eventFlags[i]) {
+        OverrunFlags[0] = false;
+        OverrunFlags[i] = true;
+
+        /* Sampling too fast */
+        rtmSetErrorStatus(rtM, "Overrun");
+        return;
+      }
+
+      eventFlags[i] = true;
+    }
+  }
+
+  taskCounter[1]++;
+  if (taskCounter[1] == 2) {
+    taskCounter[1]= 0;
+  }
+
+  taskCounter[2]++;
+  if (taskCounter[2] == 5) {
+    taskCounter[2]= 0;
+  }
+
+  taskCounter[3]++;
+  if (taskCounter[3] == 10) {
+    taskCounter[3]= 0;
+  }
+
+  /* Set model inputs associated with base rate here */
+
+  /* Step the model for base rate */
+  MSP_SP0_step0(); // does nothing
+
+  /* Get model outputs here */
+
+  /* Indicate task for base rate complete */
+  OverrunFlags[0] = false;
+
+  /* Step the model for any subrate */
+  for (i = 1; i < 4; i++) {
+    /* If task "i" is running, don't run any lower priority task */
+    if (OverrunFlags[i]) {
+      return;
+    }
+
+    if (eventFlags[i]) {
+      OverrunFlags[i] = true;
+
+      /* Set model inputs associated with subrates here */
+      // TODO does every sensor need to be updated here? Or just once above?
+      updateSensorInterfaces();
+
+      /* Step the model for subrate "i" */
+      switch (i) {
+       case 1 :
+        // rate: 50 Hz
+        // inputs: mag1_vec_body_T, mag2_vec_body_T, omega_body_radps_gyro, sun_vec_body_sunsensor
+        // outputs: omega_radps_processed
+        MSP_SP0_step1(); // uses both mag1 and mag2
+
+        /* Get model outputs here */
+#if ENABLE_IMU
+        imuioSendCAN();
+#endif
+        break;
+
+       case 2 :
+        // rate: 20 Hz
+        // inputs:
+        // outputs: mag_body_processed_T
+        MSP_SP0_step2();
+
+        /* Get model outputs here */
+#if ENABLE_MAG1 || ENABLE_MAG2
+        magioSendCAN();
+#endif
+        break;
+
+       case 3 :
+        // rate: 10 Hz
+        // inputs:
+        // outputs: sun_vec_body
+        MSP_SP0_step3();
+
+        /* Get model outputs here */
+#if ENABLE_SUNSENSOR
+        sunsensorioSendCAN();
+#endif
+        break;
+
+       default :
+        break;
+      }
+
+      /* Indicate task complete for sample time "i" */
+      OverrunFlags[i] = false;
+      eventFlags[i] = false;
+    }
+  }
+
+  /* Disable interrupts here */
+  /* Restore FPU context here (if necessary) */
+  /* Enable interrupts here */
 }
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
@@ -208,12 +351,10 @@ void handleRollCall()
 // also invokes uart status handler
 void sendHealthSegment()
 {
-    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
-
-    // TODO determine overall health based on querying sensors for their health
+    // TODO determine overall health
     hseg.oms = OMS_Unknown;
 
-//    hseg.inttemp = asensorReadIntTempC();
+    hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
@@ -226,7 +367,6 @@ void sendHealthSegment()
 
 void sendMetaSegment()
 {
-    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
     bcbinPopulateMeta(&mseg, sizeof(mseg));
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }

@@ -12,6 +12,9 @@
 #include "core/i2c.h"
 #include "core/utils.h"
 
+#include "autocode/MSP_SP0.h"
+#include "autocode/rtwtypes.h"
+
 FILE_STATIC hMag mag1;
 FILE_STATIC hMag mag2;
 FILE_STATIC MagnetometerData *data1;
@@ -33,18 +36,33 @@ void magioInit2()
     mag2 = magioInit(MAG2_I2CBUS);
 }
 
+FILE_STATIC uint8_t isValid(hMag handle)
+{
+    // TODO write a validity check
+    return 1;
+}
+
+FILE_STATIC void magioUpdate(hMag handle, MagnetometerData **output, real32_T *autoOutput)
+{
+    MagnetometerData *data = magReadXYZData(handle, ConvertToNone);
+    *output = data;
+
+    // set autocode inputs
+    // TODO verify units
+    autoOutput[0] = data->rawX;
+    autoOutput[1] = data->rawY;
+    autoOutput[2] = data->rawZ;
+    autoOutput[3] = isValid(handle);
+}
+
 void magioUpdate1()
 {
-    data1 = magReadXYZData(mag1, ConvertToNone);
-
-    // TODO set autocode inputs
+    magioUpdate(mag1, &data1, rtU.mag1_vec_body_T);
 }
 
 void magioUpdate2()
 {
-    data2 = magReadXYZData(mag2, ConvertToNone);
-
-    // TODO set autocode inputs
+    magioUpdate(mag2, &data2, rtU.mag2_vec_body_T);
 }
 
 FILE_STATIC void magioSendBackchannel(MagnetometerData *data, uint8_t tlmId)
@@ -67,12 +85,8 @@ void magioSendBackchannel2()
     magioSendBackchannel(data2, TLM_ID_MAG2);
 }
 
-void magioSendCAN1()
+void magioSendCAN()
 {
-    // TODO
-}
-
-void magioSendCAN2()
-{
-    // TODO
+    // TODO send CAN packet when implemented
+//    rtY.mag_body_processed_T...
 }

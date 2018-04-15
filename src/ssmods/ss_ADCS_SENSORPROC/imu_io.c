@@ -12,6 +12,8 @@
 #include "core/i2c.h"
 #include "core/utils.h"
 
+#include "autocode/MSP_SP0.h"
+
 FILE_STATIC IMUData *data;
 
 void imuioInit()
@@ -23,7 +25,15 @@ void imuioUpdate()
 {
     data = imuReadGyroAccelData();
 
-    // TODO set autocode inputs
+    // TODO write validity check
+    uint8_t valid = 1;
+
+    // set autocode inputs
+    // TODO verfiy units
+    rtU.omega_body_radps_gyro[0] = data->rawGyroX;
+    rtU.omega_body_radps_gyro[1] = data->rawGyroY;
+    rtU.omega_body_radps_gyro[2] = data->rawGyroZ;
+    rtU.omega_body_radps_gyro[3] = valid;
 }
 
 void imuioSendBackchannel()
@@ -38,5 +48,6 @@ void imuioSendBackchannel()
 
 void imuioSendCAN()
 {
-    // TODO
+    // TODO send CAN packet when implemented
+//    rtY.omega_radps_processed...
 }
