@@ -3,6 +3,26 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket sensorproc_imu_packet = {0};
+	sensorproc_imu sensorproc_imu_info = {0};
+	encodesensorproc_imu(&sensorproc_imu_info, &sensorproc_imu_packet);
+	canSendPacket(&sensorproc_imu_packet);
+
+	__delay_cycles(10000);	CANPacket sensorproc_mag_packet = {0};
+	sensorproc_mag sensorproc_mag_info = {0};
+	encodesensorproc_mag(&sensorproc_mag_info, &sensorproc_mag_packet);
+	canSendPacket(&sensorproc_mag_packet);
+
+	__delay_cycles(10000);	CANPacket cmd_rollcall_packet = {0};
+	cmd_rollcall cmd_rollcall_info = {0};
+	encodecmd_rollcall(&cmd_rollcall_info, &cmd_rollcall_packet);
+	canSendPacket(&cmd_rollcall_packet);
+
+	__delay_cycles(10000);	CANPacket mtq_ack_packet = {0};
+	mtq_ack mtq_ack_info = {0};
+	encodemtq_ack(&mtq_ack_info, &mtq_ack_packet);
+	canSendPacket(&mtq_ack_packet);
+
 	__delay_cycles(10000);	CANPacket gen_panel_temp_packet = {0};
 	gen_panel_temp gen_panel_temp_info = {0};
 	encodegen_panel_temp(&gen_panel_temp_info, &gen_panel_temp_packet);
@@ -58,10 +78,10 @@ void canBlast() {
 	encodesensorproc_sun(&sensorproc_sun_info, &sensorproc_sun_packet);
 	canSendPacket(&sensorproc_sun_packet);
 
-	__delay_cycles(10000);	CANPacket bdot_command_dipole_packet = {0};
-	bdot_command_dipole bdot_command_dipole_info = {0};
-	encodebdot_command_dipole(&bdot_command_dipole_info, &bdot_command_dipole_packet);
-	canSendPacket(&bdot_command_dipole_packet);
+	__delay_cycles(10000);	CANPacket cmd_mtq_fire_packet = {0};
+	cmd_mtq_fire cmd_mtq_fire_info = {0};
+	encodecmd_mtq_fire(&cmd_mtq_fire_info, &cmd_mtq_fire_packet);
+	canSendPacket(&cmd_mtq_fire_packet);
 
 	__delay_cycles(10000);	CANPacket bdot_tumble_status_packet = {0};
 	bdot_tumble_status bdot_tumble_status_info = {0};
