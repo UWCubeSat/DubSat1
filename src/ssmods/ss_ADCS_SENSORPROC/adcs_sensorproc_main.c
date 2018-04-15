@@ -1,9 +1,9 @@
-#define ENABLE_SUNSENSOR   1
-#define ENABLE_MAG1        1
+#define ENABLE_SUNSENSOR   0
+#define ENABLE_MAG1        0
 #define ENABLE_MAG2        1
-#define ENABLE_IMU         1
+#define ENABLE_IMU         0
 
-#define AUTOCODE_UPDATE_DELAY_MS 100
+#define AUTOCODE_UPDATE_DELAY_US 100000
 
 #include <adcs_sensorproc.h>
 #include <msp430.h> 
@@ -148,7 +148,8 @@ int main(void)
 
     // initialize timer
     initializeTimer();
-    timerCallbackInitializer(step, AUTOCODE_UPDATE_DELAY_MS);
+    int timerHandle = timerCallbackInitializer(&step, AUTOCODE_UPDATE_DELAY_US);
+    startCallback(timerHandle);
 
     /*
      * While loop is empty because all update code is in the step function.
@@ -169,16 +170,11 @@ FILE_STATIC void step()
     // blink LED
     LED_OUT ^= LED_BIT;
 
-    // send a health segment every 1 second
+    // send a health and meta segments every 1 second
     // TODO move to rollcall when it is implemented
     if (i % 10 == 0)
     {
         sendHealthSegment();
-    }
-
-    // send a meta segment every 10 seconds
-    if (i % 100 == 0)
-    {
         sendMetaSegment();
     }
 
@@ -217,7 +213,7 @@ void sendHealthSegment()
     // TODO determine overall health based on querying sensors for their health
     hseg.oms = OMS_Unknown;
 
-    hseg.inttemp = asensorReadIntTempC();
+//    hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 

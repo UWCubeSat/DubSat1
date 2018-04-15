@@ -42,7 +42,7 @@ void magioUpdate1()
 
 void magioUpdate2()
 {
-    data1 = magReadXYZData(mag2, ConvertToNone);
+    data2 = magReadXYZData(mag2, ConvertToNone);
 
     // TODO set autocode inputs
 }
