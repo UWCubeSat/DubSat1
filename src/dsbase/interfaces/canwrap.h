@@ -15,6 +15,10 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_SENSORPROC_IMU 335872066
+#define CAN_ID_SENSORPROC_MAG 335872067
+#define CAN_ID_CMD_ROLLCALL 1114132
+#define CAN_ID_MTQ_ACK 34013232
 #define CAN_ID_GEN_PANEL_TEMP 36241619
 #define CAN_ID_CMD_GEN_RST 34865424
 #define CAN_ID_CMD_PPT_FIRE 34865408
@@ -25,13 +29,37 @@
 #define CAN_ID_EPS_BATT_STATE 35782850
 #define CAN_ID_EPS_BATT_CURRENT 35782849
 #define CAN_ID_EPS_BATT_VOLTAGE 35782848
-#define CAN_ID_SENSORPROC_SUN 33882177
-#define CAN_ID_BDOT_COMMAND_DIPOLE 33882145
+#define CAN_ID_SENSORPROC_SUN 335872065
+#define CAN_ID_CMD_MTQ_FIRE 33882145
 #define CAN_ID_BDOT_TUMBLE_STATUS 34013216
 #define CAN_ID_SYNC_2 65554
 #define CAN_ID_SYNC_1 65553
 #define CAN_ID_MSP_TEMP 36241427
 
+#define CAN_ENUM_SENSORPROC_IMU_VALID_TRUE 1
+#define CAN_ENUM_SENSORPROC_IMU_VALID_FALSE 0
+#define CAN_ENUM_SENSORPROC_MAG_VALID_TRUE 1
+#define CAN_ENUM_SENSORPROC_MAG_VALID_FALSE 0
+#define CAN_ENUM_CMD_ROLLCALL_STATE_GOOD 1
+#define CAN_ENUM_CMD_ROLLCALL_STATE_BAD 0
+#define CAN_ENUM_MTQ_ACK_CONFIRM_TRUE 1
+#define CAN_ENUM_MTQ_ACK_CONFIRM_FALSE 0
+#define CAN_ENUM_MTQ_ACK_NODE_RAHS 15
+#define CAN_ENUM_MTQ_ACK_NODE_COM_2 14
+#define CAN_ENUM_MTQ_ACK_NODE_COM_1 13
+#define CAN_ENUM_MTQ_ACK_NODE_ADCS_MTQ 12
+#define CAN_ENUM_MTQ_ACK_NODE_ADCS_SENSORPROC 11
+#define CAN_ENUM_MTQ_ACK_NODE_ADCS_MPC 10
+#define CAN_ENUM_MTQ_ACK_NODE_ADCS_ESTIM 9
+#define CAN_ENUM_MTQ_ACK_NODE_EPS_BATT 8
+#define CAN_ENUM_MTQ_ACK_NODE_EPS_GEN 7
+#define CAN_ENUM_MTQ_ACK_NODE_EPS_DIST 6
+#define CAN_ENUM_MTQ_ACK_NODE_PPT 5
+#define CAN_ENUM_MTQ_ACK_NODE_ADCS_RWZ 4
+#define CAN_ENUM_MTQ_ACK_NODE_ADCS_RWY 3
+#define CAN_ENUM_MTQ_ACK_NODE_ADCS_RWX 2
+#define CAN_ENUM_MTQ_ACK_NODE_ADCS_BDOT 1
+#define CAN_ENUM_MTQ_ACK_NODE_TEST 0
 #define CAN_ENUM_GEN_PANEL_TEMP_AGG_SUM 5
 #define CAN_ENUM_GEN_PANEL_TEMP_AGG_MAX 4
 #define CAN_ENUM_GEN_PANEL_TEMP_AGG_MIN 3
@@ -54,27 +82,51 @@
 #define CAN_ENUM_EPS_BATT_STATE_BAL_FALSE 0
 #define CAN_ENUM_EPS_BATT_STATE_HEAT_TRUE 1
 #define CAN_ENUM_EPS_BATT_STATE_HEAT_FALSE 0
-#define CAN_ENUM_SENSORPROC_SUN_STATUS_OVER_ILLUMINATION 12
-#define CAN_ENUM_SENSORPROC_SUN_STATUS_UNDER_ILLUMINATION 11
-#define CAN_ENUM_SENSORPROC_SUN_STATUS_LIGHT_FROM_OUTSIDE_FOV_5 5
-#define CAN_ENUM_SENSORPROC_SUN_STATUS_LIGHT_FROM_OUTSIDE_FOV_4 4
-#define CAN_ENUM_SENSORPROC_SUN_STATUS_NO_LIGHT 3
-#define CAN_ENUM_SENSORPROC_SUN_STATUS_GOOD_DATA 0
+#define CAN_ENUM_SENSORPROC_SUN_VALID_TRUE 1
+#define CAN_ENUM_SENSORPROC_SUN_VALID_FALSE 0
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_RAHS 15
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_COM_2 14
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_COM_1 13
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_MTQ 12
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_SENSORPROC 11
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_MPC 10
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_ESTIM 9
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_EPS_BATT 8
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_EPS_GEN 7
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_EPS_DIST 6
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_PPT 5
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_RWZ 4
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_RWY 3
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_RWX 2
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_BDOT 1
+#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_TEST 0
 #define CAN_ENUM_BDOT_TUMBLE_STATUS_STATUS_TRUE 1
 #define CAN_ENUM_BDOT_TUMBLE_STATUS_STATUS_FALSE 0
 
+#define CAN_ENUM_SAT_STATE_GOOD 1
+#define CAN_ENUM_SAT_STATE_BAD 0
+#define CAN_ENUM_NODE_RAHS 15
+#define CAN_ENUM_NODE_COM_2 14
+#define CAN_ENUM_NODE_COM_1 13
+#define CAN_ENUM_NODE_ADCS_MTQ 12
+#define CAN_ENUM_NODE_ADCS_SENSORPROC 11
+#define CAN_ENUM_NODE_ADCS_MPC 10
+#define CAN_ENUM_NODE_ADCS_ESTIM 9
+#define CAN_ENUM_NODE_EPS_BATT 8
+#define CAN_ENUM_NODE_EPS_GEN 7
+#define CAN_ENUM_NODE_EPS_DIST 6
+#define CAN_ENUM_NODE_PPT 5
+#define CAN_ENUM_NODE_ADCS_RWZ 4
+#define CAN_ENUM_NODE_ADCS_RWY 3
+#define CAN_ENUM_NODE_ADCS_RWX 2
+#define CAN_ENUM_NODE_ADCS_BDOT 1
+#define CAN_ENUM_NODE_TEST 0
 #define CAN_ENUM_AGG_SUM 5
 #define CAN_ENUM_AGG_MAX 4
 #define CAN_ENUM_AGG_MIN 3
 #define CAN_ENUM_AGG_COUNT 2
 #define CAN_ENUM_AGG_AVG 1
 #define CAN_ENUM_AGG_NONE 0
-#define CAN_ENUM_SUNPROC_SUN_STATUS_CODES_OVER_ILLUMINATION 12
-#define CAN_ENUM_SUNPROC_SUN_STATUS_CODES_UNDER_ILLUMINATION 11
-#define CAN_ENUM_SUNPROC_SUN_STATUS_CODES_LIGHT_FROM_OUTSIDE_FOV_5 5
-#define CAN_ENUM_SUNPROC_SUN_STATUS_CODES_LIGHT_FROM_OUTSIDE_FOV_4 4
-#define CAN_ENUM_SUNPROC_SUN_STATUS_CODES_NO_LIGHT 3
-#define CAN_ENUM_SUNPROC_SUN_STATUS_CODES_GOOD_DATA 0
 #define CAN_ENUM_BOOL_TRUE 1
 #define CAN_ENUM_BOOL_FALSE 0
 
@@ -95,6 +147,32 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct sensorproc_imu {
+    int16_t sensorproc_imu_z; //  (No Units)
+    int16_t sensorproc_imu_y; //  (No Units)
+    int16_t sensorproc_imu_x; //  (No Units)
+    uint8_t sensorproc_imu_valid; // bool
+} sensorproc_imu;
+
+typedef struct sensorproc_mag {
+    int16_t sensorproc_mag_z; //  (No Units)
+    int16_t sensorproc_mag_y; //  (No Units)
+    int16_t sensorproc_mag_x; //  (No Units)
+    uint8_t sensorproc_mag_valid; // bool
+} sensorproc_mag;
+
+typedef struct cmd_rollcall {
+    uint8_t cmd_rollcall_type; //  (No Units)
+    uint8_t cmd_rollcall_met_overflow; //  (No Units)
+    uint32_t cmd_rollcall_met; //  (No Units)
+    uint8_t cmd_rollcall_state; //  (No Units)
+} cmd_rollcall;
+
+typedef struct mtq_ack {
+    uint8_t mtq_ack_confirm; //  (No Units)
+    uint8_t mtq_ack_node; //  (No Units)
+} mtq_ack;
+
 typedef struct gen_panel_temp {
     uint8_t gen_panel_temp_agg; //  (No Units)
     int8_t gen_panel_temp_x_pos; //  (No Units)
@@ -155,16 +233,18 @@ typedef struct eps_batt_voltage {
 } eps_batt_voltage;
 
 typedef struct sensorproc_sun {
-    uint8_t sensorproc_sun_status; //  (No Units)
-    int16_t sensorproc_sun_reading_beta; // arcminutes
-    int16_t sensorproc_sun_reading_alpha; // arcminutes
+    uint8_t sensorproc_sun_valid; // bool
+    int16_t sensorproc_sun_z; //  (No Units)
+    int16_t sensorproc_sun_y; //  (No Units)
+    int16_t sensorproc_sun_x; //  (No Units)
 } sensorproc_sun;
 
-typedef struct bdot_command_dipole {
-    int8_t bdot_command_dipole_z; // mA*m^2
-    int8_t bdot_command_dipole_y; // mA*m^2
-    int8_t bdot_command_dipole_x; // mA*m^2
-} bdot_command_dipole;
+typedef struct cmd_mtq_fire {
+    uint8_t cmd_mtq_fire_orig; //  (No Units)
+    int8_t cmd_mtq_fire_z; // mA*m^2
+    int8_t cmd_mtq_fire_y; // mA*m^2
+    int8_t cmd_mtq_fire_x; // mA*m^2
+} cmd_mtq_fire;
 
 typedef struct bdot_tumble_status {
     uint8_t bdot_tumble_status_status; // bool
@@ -179,6 +259,18 @@ typedef struct sync_1 {
 typedef struct msp_temp {
     uint16_t msp_temp_temp; // dK
 } msp_temp;
+
+void encodesensorproc_imu(sensorproc_imu *input, CANPacket* output);
+void decodesensorproc_imu(CANPacket *input, sensorproc_imu *output);
+
+void encodesensorproc_mag(sensorproc_mag *input, CANPacket* output);
+void decodesensorproc_mag(CANPacket *input, sensorproc_mag *output);
+
+void encodecmd_rollcall(cmd_rollcall *input, CANPacket* output);
+void decodecmd_rollcall(CANPacket *input, cmd_rollcall *output);
+
+void encodemtq_ack(mtq_ack *input, CANPacket* output);
+void decodemtq_ack(CANPacket *input, mtq_ack *output);
 
 void encodegen_panel_temp(gen_panel_temp *input, CANPacket* output);
 void decodegen_panel_temp(CANPacket *input, gen_panel_temp *output);
@@ -213,8 +305,8 @@ void decodeeps_batt_voltage(CANPacket *input, eps_batt_voltage *output);
 void encodesensorproc_sun(sensorproc_sun *input, CANPacket* output);
 void decodesensorproc_sun(CANPacket *input, sensorproc_sun *output);
 
-void encodebdot_command_dipole(bdot_command_dipole *input, CANPacket* output);
-void decodebdot_command_dipole(CANPacket *input, bdot_command_dipole *output);
+void encodecmd_mtq_fire(cmd_mtq_fire *input, CANPacket* output);
+void decodecmd_mtq_fire(CANPacket *input, cmd_mtq_fire *output);
 
 void encodebdot_tumble_status(bdot_tumble_status *input, CANPacket* output);
 void decodebdot_tumble_status(CANPacket *input, bdot_tumble_status *output);
