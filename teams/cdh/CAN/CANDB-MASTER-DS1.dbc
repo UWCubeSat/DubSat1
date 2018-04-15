@@ -37,21 +37,20 @@ BU_: ppt eps_batt eps_dist eps_gen adcs_rwz adcs_rwy adcs_rwx adcs_mtq rahs adcs
 VAL_TABLE_ sat_state 1 "good" 0 "bad" ;
 VAL_TABLE_ node 15 "rahs" 14 "com_2" 13 "com_1" 12 "adcs_mtq" 11 "adcs_sensorproc" 10 "adcs_mpc" 9 "adcs_estim" 8 "eps_batt" 7 "eps_gen" 6 "eps_dist" 5 "ppt" 4 "adcs_rwz" 3 "adcs_rwy" 2 "adcs_rwx" 1 "adcs_bdot" 0 "test" ;
 VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
-VAL_TABLE_ sunproc_sun_status_codes 12 "over_illumination" 11 "under_illumination" 5 "light_from_outside_fov_5" 4 "light_from_outside_fov_4" 3 "no_light" 0 "good_data" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
-BO_ 2181365827 sensorproc_imu: 8 Vector__XXX
- SG_ sensorproc_imu_z : 48|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ sensorproc_imu_y : 32|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ sensorproc_imu_x : 16|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ sensorproc_imu_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+BO_ 2483355714 sensorproc_imu: 7 Vector__XXX
+ SG_ sensorproc_imu_z : 32|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_imu_y : 16|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_imu_x : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_imu_valid : 48|1@1+ (1,0) [0|1] "bool" Vector__XXX
 
-BO_ 2181365826 sensorproc_mag: 8 Vector__XXX
- SG_ sensorproc_mag_z : 48|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ sensorproc_mag_y : 32|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ sensorproc_mag_x : 16|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ sensorproc_mag_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+BO_ 2483355715 sensorproc_mag: 7 Vector__XXX
+ SG_ sensorproc_mag_z : 32|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_mag_y : 16|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_mag_x : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_mag_valid : 48|1@1+ (1,0) [0|1] "bool" Vector__XXX
 
 BO_ 2148597780 cmd_rollcall: 7 Vector__XXX
  SG_ cmd_rollcall_type : 48|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -112,10 +111,10 @@ BO_ 2183266496 eps_batt_voltage: 8 eps_batt
  SG_ eps_batt_voltage_min_v : 16|16@1+ (1,0) [0|10000] "mV" Vector__XXX
  SG_ eps_batt_voltage_v : 0|16@1+ (1,0) [0|10000] "mV" Vector__XXX
 
-BO_ 2181365825 sensorproc_sun: 8 adcs_sensorproc
- SG_ sensorproc_sun_valid : 16|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ sensorproc_sun_z : 48|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ sensorproc_sun_y : 32|16@1- (1,0) [-32768|32767] "" Vector__XXX
+BO_ 2483355713 sensorproc_sun: 7 adcs_sensorproc
+ SG_ sensorproc_sun_valid : 48|1@1+ (1,0) [0|1] "bool" Vector__XXX
+ SG_ sensorproc_sun_z : 32|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_sun_y : 16|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ sensorproc_sun_x : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
 
 BO_ 2181365793 cmd_mtq_fire: 4 adcs_bdot
@@ -139,6 +138,8 @@ BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2483355714 sensorproc_imu_valid 1 "true" 0 "false" ;
+VAL_ 2483355715 sensorproc_mag_valid 1 "true" 0 "false" ;
 VAL_ 2148597780 cmd_rollcall_state 1 "good" 0 "bad" ;
 VAL_ 2181496880 mtq_ack_confirm 1 "true" 0 "false" ;
 VAL_ 2181496880 mtq_ack_node 15 "rahs" 14 "com_2" 13 "com_1" 12 "adcs_mtq" 11 "adcs_sensorproc" 10 "adcs_mpc" 9 "adcs_estim" 8 "eps_batt" 7 "eps_gen" 6 "eps_dist" 5 "ppt" 4 "adcs_rwz" 3 "adcs_rwy" 2 "adcs_rwx" 1 "adcs_bdot" 0 "test" ;
@@ -149,6 +150,7 @@ VAL_ 2183266514 gen_panel_pwr_agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "n
 VAL_ 2184642594 mpc_vp_status 1 "true" 0 "false" ;
 VAL_ 2183266498 eps_batt_state_bal 1 "true" 0 "false" ;
 VAL_ 2183266498 eps_batt_state_heat 1 "true" 0 "false" ;
+VAL_ 2483355713 sensorproc_sun_valid 1 "true" 0 "false" ;
 VAL_ 2181365793 cmd_mtq_fire_orig 15 "rahs" 14 "com_2" 13 "com_1" 12 "adcs_mtq" 11 "adcs_sensorproc" 10 "adcs_mpc" 9 "adcs_estim" 8 "eps_batt" 7 "eps_gen" 6 "eps_dist" 5 "ppt" 4 "adcs_rwz" 3 "adcs_rwy" 2 "adcs_rwx" 1 "adcs_bdot" 0 "test" ;
 VAL_ 2181496864 bdot_tumble_status_status 1 "true" 0 "false" ;
 
