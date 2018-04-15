@@ -1,7 +1,7 @@
-#define ENABLE_SUNSENSOR   1
-#define ENABLE_MAG1        1
-#define ENABLE_MAG2        1
-#define ENABLE_IMU         1
+#define ENABLE_SUNSENSOR   0
+#define ENABLE_MAG1        0
+#define ENABLE_MAG2        0
+#define ENABLE_IMU         0
 
 // 100 Hz
 #define AUTOCODE_UPDATE_DELAY_US 10000
@@ -188,6 +188,7 @@ FILE_STATIC void step()
     if (rtmGetErrorStatus(rtM) != (NULL))
     {
         // TODO handle autocode errors
+        hseg.oms = OMS_MajorFaults;
     }
     rt_OneStep();
 }
@@ -277,12 +278,11 @@ FILE_STATIC void rt_OneStep()
       OverrunFlags[i] = true;
 
       /* Set model inputs associated with subrates here */
-      // TODO does every sensor need to be updated here? Or just once above?
-      updateSensorInterfaces();
 
       /* Step the model for subrate "i" */
       switch (i) {
        case 1 :
+        updateSensorInterfaces();
         // rate: 50 Hz
         // inputs: mag1_vec_body_T, mag2_vec_body_T, omega_body_radps_gyro, sun_vec_body_sunsensor
         // outputs: omega_radps_processed
@@ -354,7 +354,7 @@ void sendHealthSegment()
     // TODO determine overall health
     hseg.oms = OMS_Unknown;
 
-    hseg.inttemp = asensorReadIntTempC();
+//    hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
