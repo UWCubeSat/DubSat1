@@ -28,5 +28,7 @@ TLM_SEGMENT {
 
 void imuioInit();
 void imuioUpdate();
+void imuioSendBackchannel();
+void imuioSendCAN();
 
 #endif /* IMU_IO_H_ */

@@ -7,31 +7,32 @@
  * IDs to interface with COSMOS backchannel
  */
 
+#define ENABLE_SUNSENSOR   0
+#define ENABLE_MAG1        0
+#define ENABLE_MAG2        0
+#define ENABLE_IMU         0
+
 #ifndef ADCS_SENSORPROC_IDS_H_
 #define ADCS_SENSORPROC_IDS_H_
 
 // COSMOS telemetry IDs
-#define TLM_ID_SUNSENSOR  121
-#define TLM_ID_PHOTODIODE 118
-#define TLM_ID_MAG1       117
-#define TLM_ID_MAG2       115
-#define TLM_ID_IMU        116
+#define TLM_ID_SUNSENSOR_RAW    121
+#define TLM_ID_SUNSENSOR_VECTOR 114
+#define TLM_ID_MAG1_RAW         117
+#define TLM_ID_MAG2_RAW         115
+#define TLM_ID_MAG_VECTOR       113
+#define TLM_ID_IMU_RAW          116
+#define TLM_ID_IMU_VECTOR       112
 
-#define TLM_ID_GPSHEALTH  120
-#define TLM_ID_GPSPOWER   122
-#define TLM_ID_RXSTATUS   123
-#define TLM_ID_BESTXYZ    124
-#define TLM_ID_TIME       125
-#define TLM_ID_HWMONITOR  126
-#define TLM_ID_SATVIS2    127
-#define TLM_ID_RANGE      119
+#include "core/utils.h"
 
-// COSMOS command opcodes
-#define OPCODE_SENDASCII       1
-#define OPCODE_ENABLE          2
-#define OPCODE_OVERRIDE_BUCK   3
-#define OPCODE_TEST_RESET      4
-#define OPCODE_TEST_BUCK       5
-#define OPCODE_TEST_GPS_SWITCH 6
+TLM_SEGMENT {
+    BcTlmHeader header; // All COSMOS TLM packets must have this
+
+    float x;
+    float y;
+    float z;
+    uint8_t valid;
+} sensor_vector_segment;
 
 #endif /* ADCS_SENSORPROC_IDS_H_ */

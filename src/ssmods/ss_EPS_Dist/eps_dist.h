@@ -119,15 +119,12 @@ typedef struct _power_domain_info {
 } PowerDomainInfo;
 
 // COSMOS telem and cmd packets
-#define PARTIAL_THRESHOLD_INDEX  0
-#define FULL_THRESHOLD_INDEX  1
-#define NUM_BATTV_THRESHOLDS  2
 TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
 
     float battV;
     uint8_t uvmode;   // Battery under voltage mode
-    float undervoltagethresholds[NUM_BATTV_THRESHOLDS];
+    float undervoltagethreshold;
 
     uint8_t powerdomainlastcmds[NUM_POWER_DOMAINS];
     uint8_t powerdomainswitchstate[NUM_POWER_DOMAINS];
@@ -151,14 +148,14 @@ CMD_SEGMENT {
 
 #define BATTV_CONV_FACTOR    2.8867925f
 
-#define BATT_DEFAULT_PARTIAL_THRESH   (5.8f)
+//#define BATT_DEFAULT_PARTIAL_THRESH   (5.8f)
 #define BATT_DEFAULT_FULL_THRESH      (5.2f)
 #define BATT_HYSTER   (0.25f)
 
 
 CMD_SEGMENT {
     float newCurrentThreshold[NUM_POWER_DOMAINS];
-    float newBattVThresholds[NUM_BATTV_THRESHOLDS];
+    float newBattVThreshold;
 } ocpthresh_segment;
 
 #define DEPLOYMENT_SYSTEM_KEY  126
@@ -178,6 +175,8 @@ CMD_SEGMENT {
 // as a state machine (specifically, a FSM).  Here the available states are
 // defined.
 typedef enum _subsystem_state {
+    State_Normal,
+    State_UnderVoltage,
     State_FirstState,
     State_SecondState,
     State_ThirdState,
