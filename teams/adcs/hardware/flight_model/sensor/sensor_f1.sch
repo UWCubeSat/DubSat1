@@ -7963,11 +7963,6 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <label x="175.26" y="-203.2" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
-<pinref part="J_MAG2" gate="G$1" pin="4"/>
-<wire x1="203.2" y1="-208.28" x2="203.2" y2="-203.2" width="0.1524" layer="91"/>
-<label x="203.2" y="-203.2" size="1.778" layer="95" rot="R90" xref="yes"/>
-</segment>
-<segment>
 <pinref part="J_IMU" gate="G$1" pin="4"/>
 <wire x1="231.14" y1="-208.28" x2="231.14" y2="-203.2" width="0.1524" layer="91"/>
 <label x="231.14" y="-203.2" size="1.778" layer="95" rot="R90" xref="yes"/>
@@ -8002,13 +7997,6 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <wire x1="172.72" y1="-205.74" x2="170.18" y2="-205.74" width="0.1524" layer="91"/>
 <wire x1="170.18" y1="-205.74" x2="170.18" y2="-203.2" width="0.1524" layer="91"/>
 <label x="170.18" y="-203.2" size="1.778" layer="95" rot="R90" xref="yes"/>
-</segment>
-<segment>
-<pinref part="J_MAG2" gate="G$1" pin="2"/>
-<wire x1="200.66" y1="-208.28" x2="200.66" y2="-205.74" width="0.1524" layer="91"/>
-<wire x1="200.66" y1="-205.74" x2="198.12" y2="-205.74" width="0.1524" layer="91"/>
-<wire x1="198.12" y1="-205.74" x2="198.12" y2="-203.2" width="0.1524" layer="91"/>
-<label x="198.12" y="-203.2" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
 <pinref part="J_IMU" gate="G$1" pin="2"/>
@@ -8557,6 +8545,36 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <pinref part="U$8" gate="G$1" pin="DRDY"/>
 <wire x1="76.2" y1="-294.64" x2="76.2" y2="-281.94" width="0.1524" layer="91"/>
 <label x="76.2" y="-281.94" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
+</net>
+<net name="I2C_SCL_2" class="0">
+<segment>
+<pinref part="J_MAG2" gate="G$1" pin="2"/>
+<wire x1="200.66" y1="-208.28" x2="200.66" y2="-205.74" width="0.1524" layer="91"/>
+<wire x1="200.66" y1="-205.74" x2="198.12" y2="-205.74" width="0.1524" layer="91"/>
+<wire x1="198.12" y1="-205.74" x2="198.12" y2="-203.2" width="0.1524" layer="91"/>
+<label x="198.12" y="-203.2" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
+<segment>
+<pinref part="BLK1" gate="G$1" pin="P7.1_I2C-SCL-2"/>
+<wire x1="-10.16" y1="-109.22" x2="-22.86" y2="-109.22" width="0.1524" layer="91"/>
+<wire x1="-22.86" y1="-109.22" x2="-22.86" y2="-111.76" width="0.1524" layer="91"/>
+<wire x1="-22.86" y1="-111.76" x2="-25.4" y2="-111.76" width="0.1524" layer="91"/>
+<label x="-25.4" y="-111.76" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="I2C_SDA_2" class="0">
+<segment>
+<pinref part="J_MAG2" gate="G$1" pin="4"/>
+<wire x1="203.2" y1="-208.28" x2="203.2" y2="-203.2" width="0.1524" layer="91"/>
+<label x="203.2" y="-203.2" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
+<segment>
+<pinref part="BLK1" gate="G$1" pin="P7.0_I2C-SDA-2"/>
+<wire x1="-10.16" y1="-106.68" x2="-22.86" y2="-106.68" width="0.1524" layer="91"/>
+<wire x1="-22.86" y1="-106.68" x2="-22.86" y2="-104.14" width="0.1524" layer="91"/>
+<wire x1="-22.86" y1="-104.14" x2="-25.4" y2="-104.14" width="0.1524" layer="91"/>
+<label x="-25.4" y="-104.14" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>
