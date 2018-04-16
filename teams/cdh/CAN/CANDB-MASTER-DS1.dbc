@@ -43,7 +43,7 @@ VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
 BO_ 2451832868 cmd_ignore_fsw: 1 Vector__XXX
- SG_ cmd_ignore_fsw_ignore : 0|1@1- (1,0) [0|1] "" Vector__XXX
+ SG_ cmd_ignore_fsw_ignore : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2451832867 cmd_mtq_fsw: 4 adcs_estim
  SG_ cmd_mtq_fsw_sc_mode : 24|8@1+ (1,0) [0|3] "" Vector__XXX
