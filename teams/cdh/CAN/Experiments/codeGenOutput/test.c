@@ -3,6 +3,21 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket cmd_ignore_fsw_packet = {0};
+	cmd_ignore_fsw cmd_ignore_fsw_info = {0};
+	encodecmd_ignore_fsw(&cmd_ignore_fsw_info, &cmd_ignore_fsw_packet);
+	canSendPacket(&cmd_ignore_fsw_packet);
+
+	__delay_cycles(10000);	CANPacket cmd_mtq_fsw_packet = {0};
+	cmd_mtq_fsw cmd_mtq_fsw_info = {0};
+	encodecmd_mtq_fsw(&cmd_mtq_fsw_info, &cmd_mtq_fsw_packet);
+	canSendPacket(&cmd_mtq_fsw_packet);
+
+	__delay_cycles(10000);	CANPacket eps_domain_output_packet = {0};
+	eps_domain_output eps_domain_output_info = {0};
+	encodeeps_domain_output(&eps_domain_output_info, &eps_domain_output_packet);
+	canSendPacket(&eps_domain_output_packet);
+
 	__delay_cycles(10000);	CANPacket sensorproc_imu_packet = {0};
 	sensorproc_imu sensorproc_imu_info = {0};
 	encodesensorproc_imu(&sensorproc_imu_info, &sensorproc_imu_packet);
@@ -78,10 +93,10 @@ void canBlast() {
 	encodesensorproc_sun(&sensorproc_sun_info, &sensorproc_sun_packet);
 	canSendPacket(&sensorproc_sun_packet);
 
-	__delay_cycles(10000);	CANPacket cmd_mtq_fire_packet = {0};
-	cmd_mtq_fire cmd_mtq_fire_info = {0};
-	encodecmd_mtq_fire(&cmd_mtq_fire_info, &cmd_mtq_fire_packet);
-	canSendPacket(&cmd_mtq_fire_packet);
+	__delay_cycles(10000);	CANPacket cmd_mtq_bdot_packet = {0};
+	cmd_mtq_bdot cmd_mtq_bdot_info = {0};
+	encodecmd_mtq_bdot(&cmd_mtq_bdot_info, &cmd_mtq_bdot_packet);
+	canSendPacket(&cmd_mtq_bdot_packet);
 
 	__delay_cycles(10000);	CANPacket bdot_tumble_status_packet = {0};
 	bdot_tumble_status bdot_tumble_status_info = {0};

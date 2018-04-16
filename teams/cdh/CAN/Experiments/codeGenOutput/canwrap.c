@@ -205,6 +205,73 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodecmd_ignore_fsw(CANPacket *input, cmd_ignore_fsw *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> cmd_ignore_fsw_ignore = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
+}
+
+void encodecmd_ignore_fsw(cmd_ignore_fsw *input, CANPacket *output){
+    output -> id = 304349220;
+    output -> length = 1;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> cmd_ignore_fsw_ignore))) & 0x1) << 63;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodecmd_mtq_fsw(CANPacket *input, cmd_mtq_fsw *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> cmd_mtq_fsw_sc_mode = (uint8_t) (((fullData & ((uint64_t) 0xff << 32)) >> 32));
+    output -> cmd_mtq_fsw_z = (int8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
+    output -> cmd_mtq_fsw_y = (int8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> cmd_mtq_fsw_x = (int8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+}
+
+void encodecmd_mtq_fsw(cmd_mtq_fsw *input, CANPacket *output){
+    output -> id = 304349219;
+    output -> length = 4;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> cmd_mtq_fsw_sc_mode))) & 0xff) << 32;
+    fullPacketData |= (((uint64_t)((input -> cmd_mtq_fsw_z))) & 0xff) << 40;
+    fullPacketData |= (((uint64_t)((input -> cmd_mtq_fsw_y))) & 0xff) << 48;
+    fullPacketData |= (((uint64_t)((input -> cmd_mtq_fsw_x))) & 0xff) << 56;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodeeps_domain_output(CANPacket *input, eps_domain_output *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> eps_domain_output_state = (uint8_t) (((fullData & ((uint64_t) 0x1 << 6)) >> 6));
+    output -> eps_domain_output_oc_trip = (uint8_t) (((fullData & ((uint64_t) 0x1 << 7)) >> 7));
+    output -> eps_domain_output_v_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
+    output -> eps_domain_output_v_c = (uint16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+    output -> eps_domain_output_v = (uint16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
+    output -> eps_domain_output_num = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+}
+
+void encodeeps_domain_output(eps_domain_output *input, CANPacket *output){
+    output -> id = 304218336;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> eps_domain_output_state))) & 0x1) << 6;
+    fullPacketData |= (((uint64_t)((input -> eps_domain_output_oc_trip))) & 0x1) << 7;
+    fullPacketData |= (((uint64_t)((input -> eps_domain_output_v_c_max))) & 0xffff) << 8;
+    fullPacketData |= (((uint64_t)((input -> eps_domain_output_v_c))) & 0xffff) << 24;
+    fullPacketData |= (((uint64_t)((input -> eps_domain_output_v))) & 0xffff) << 40;
+    fullPacketData |= (((uint64_t)((input -> eps_domain_output_num))) & 0xff) << 56;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decodesensorproc_imu(CANPacket *input, sensorproc_imu *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -278,7 +345,7 @@ void decodemtq_ack(CANPacket *input, mtq_ack *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> mtq_ack_confirm = (uint8_t) (((fullData & ((uint64_t) 0x1 << 55)) >> 55));
+    output -> mtq_ack_coils_state = (uint8_t) (((fullData & ((uint64_t) 0x1 << 55)) >> 55));
     output -> mtq_ack_node = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
@@ -286,7 +353,7 @@ void encodemtq_ack(mtq_ack *input, CANPacket *output){
     output -> id = 34013232;
     output -> length = 2;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> mtq_ack_confirm))) & 0x1) << 55;
+    fullPacketData |= (((uint64_t)((input -> mtq_ack_coils_state))) & 0x1) << 55;
     fullPacketData |= (((uint64_t)((input -> mtq_ack_node))) & 0xff) << 56;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
@@ -524,24 +591,22 @@ void encodesensorproc_sun(sensorproc_sun *input, CANPacket *output){
     reverseArray((output->data), 0, 7);
 }
 
-void decodecmd_mtq_fire(CANPacket *input, cmd_mtq_fire *output){
+void decodecmd_mtq_bdot(CANPacket *input, cmd_mtq_bdot *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> cmd_mtq_fire_orig = (uint8_t) (((fullData & ((uint64_t) 0xff << 32)) >> 32));
-    output -> cmd_mtq_fire_z = (int8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
-    output -> cmd_mtq_fire_y = (int8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
-    output -> cmd_mtq_fire_x = (int8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> cmd_mtq_bdot_z = (int8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
+    output -> cmd_mtq_bdot_y = (int8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> cmd_mtq_bdot_x = (int8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
-void encodecmd_mtq_fire(cmd_mtq_fire *input, CANPacket *output){
-    output -> id = 33882145;
-    output -> length = 4;
+void encodecmd_mtq_bdot(cmd_mtq_bdot *input, CANPacket *output){
+    output -> id = 304545825;
+    output -> length = 3;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> cmd_mtq_fire_orig))) & 0xff) << 32;
-    fullPacketData |= (((uint64_t)((input -> cmd_mtq_fire_z))) & 0xff) << 40;
-    fullPacketData |= (((uint64_t)((input -> cmd_mtq_fire_y))) & 0xff) << 48;
-    fullPacketData |= (((uint64_t)((input -> cmd_mtq_fire_x))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> cmd_mtq_bdot_z))) & 0xff) << 40;
+    fullPacketData |= (((uint64_t)((input -> cmd_mtq_bdot_y))) & 0xff) << 48;
+    fullPacketData |= (((uint64_t)((input -> cmd_mtq_bdot_x))) & 0xff) << 56;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
