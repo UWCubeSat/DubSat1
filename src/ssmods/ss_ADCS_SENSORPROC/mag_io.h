@@ -30,6 +30,7 @@ void magioUpdate1();
 void magioUpdate2();
 void magioSendBackchannel1();
 void magioSendBackchannel2();
+void magioSendBackchannelVector(); // send processed vector
 void magioSendCAN();
 
 #endif /* MAG_IO_H_ */

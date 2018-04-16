@@ -1,8 +1,3 @@
-#define ENABLE_SUNSENSOR   0
-#define ENABLE_MAG1        0
-#define ENABLE_MAG2        0
-#define ENABLE_IMU         0
-
 // 100 Hz
 #define AUTOCODE_UPDATE_DELAY_US 10000
 
@@ -56,7 +51,6 @@ typedef struct {
 
 FILE_STATIC const SensorInterface sensorInterfaces[] =
 {
-#if ENABLE_SUNSENSOR
     {
      sunsensorioInit,
      sunsensorioUpdate,
@@ -65,8 +59,6 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
      NULL,
      NULL,
     },
-#endif
-#if ENABLE_MAG1
     {
      magioInit1,
      magioUpdate1,
@@ -75,8 +67,6 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
      NULL,
      NULL,
     },
-#endif
-#if ENABLE_MAG2
     {
      magioInit2,
      magioUpdate2,
@@ -85,8 +75,6 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
      NULL,
      NULL,
     },
-#endif
-#if ENABLE_IMU
     {
      imuioInit,
      imuioUpdate,
@@ -95,7 +83,6 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
      NULL,
      NULL,
     },
-#endif
 };
 
 #define NUM_INTERFACES (sizeof(sensorInterfaces) / sizeof(SensorInterface))
@@ -182,6 +169,7 @@ FILE_STATIC void step()
 
         // send backchannel telemetry
         sendSensorBackchannel();
+        magioSendBackchannelVector();
     }
 
     // step autocode
@@ -289,9 +277,7 @@ FILE_STATIC void rt_OneStep()
         MSP_SP0_step1(); // uses both mag1 and mag2
 
         /* Get model outputs here */
-#if ENABLE_IMU
         imuioSendCAN();
-#endif
         break;
 
        case 2 :
@@ -301,9 +287,7 @@ FILE_STATIC void rt_OneStep()
         MSP_SP0_step2();
 
         /* Get model outputs here */
-#if ENABLE_MAG1 || ENABLE_MAG2
         magioSendCAN();
-#endif
         break;
 
        case 3 :
@@ -313,9 +297,7 @@ FILE_STATIC void rt_OneStep()
         MSP_SP0_step3();
 
         /* Get model outputs here */
-#if ENABLE_SUNSENSOR
         sunsensorioSendCAN();
-#endif
         break;
 
        default :
