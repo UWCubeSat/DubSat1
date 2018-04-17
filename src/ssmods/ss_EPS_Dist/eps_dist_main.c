@@ -259,28 +259,26 @@ FILE_STATIC void distMonitorDomains()
     }
 }
 
-// TODO:  Implement hysteresis, multiple tiers to PD power-off, and commands to change on the fly
+// TODO: commands to change threshold on the fly
 FILE_STATIC void distMonitorBattery()
 {
     int i;
     float predivV = asensorReadSingleSensorV(hBattV);
     float newbattV = BATTV_CONV_FACTOR * predivV;
+    float prevBattV = gseg.battV;
     gseg.battV = newbattV;
 
-    //TODO: use a running avg to enusure that newBattV is not a spike
-    if (newbattV <= gseg.undervoltagethreshold)
+    uint8_t prevMode = (uint8_t)gseg.uvmode;
+
+    if (newbattV <= gseg.undervoltagethreshold && prevBattV <= gseg.undervoltagethreshold)
         gseg.uvmode = (uint8_t)UV_FullShutdown;
     else
         gseg.uvmode = (uint8_t)UV_InRange;
 
-    if (gseg.uvmode != (uint8_t)UV_InRange)
-    {
-        //shut down everything
-        for (i = 0; i < NUM_POWER_DOMAINS; i++)
-        {
-            distDomainSwitch((PowerDomainID)i, PD_CMD_BattVLow);
-        }
-    }
+    //shut down everything (COM1 is hard-wired to never shut down)
+    if (gseg.uvmode != (uint8_t)UV_InRange && prevMode == (uint8_t)UV_InRange)
+        for (i = NUM_POWER_DOMAINS; i; i--)
+            distDomainSwitch((PowerDomainID)(i - 1), PD_CMD_BattVLow);
 }
 
 // Packetizes and sends backchannel GENERAL packet
