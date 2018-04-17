@@ -15,6 +15,9 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_CMD_IGNORE_FSW 304349220
+#define CAN_ID_CMD_MTQ_FSW 304349219
+#define CAN_ID_EPS_DOMAIN_OUTPUT 304218336
 #define CAN_ID_SENSORPROC_IMU 335872066
 #define CAN_ID_SENSORPROC_MAG 335872067
 #define CAN_ID_CMD_ROLLCALL 1114132
@@ -30,20 +33,39 @@
 #define CAN_ID_EPS_BATT_CURRENT 35782849
 #define CAN_ID_EPS_BATT_VOLTAGE 35782848
 #define CAN_ID_SENSORPROC_SUN 335872065
-#define CAN_ID_CMD_MTQ_FIRE 33882145
+#define CAN_ID_CMD_MTQ_BDOT 304545825
 #define CAN_ID_BDOT_TUMBLE_STATUS 34013216
 #define CAN_ID_SYNC_2 65554
 #define CAN_ID_SYNC_1 65553
 #define CAN_ID_MSP_TEMP 36241427
 
+#define CAN_ENUM_CMD_IGNORE_FSW_IGNORE_TRUE 1
+#define CAN_ENUM_CMD_IGNORE_FSW_IGNORE_FALSE 0
+#define CAN_ENUM_CMD_MTQ_FSW_SC_MODE_NOTTUMBLINGCHARLIE 3
+#define CAN_ENUM_CMD_MTQ_FSW_SC_MODE_NOTTUMBLINGBOB 2
+#define CAN_ENUM_CMD_MTQ_FSW_SC_MODE_NOTTUMBLINGALICE 1
+#define CAN_ENUM_CMD_MTQ_FSW_SC_MODE_TUMBLING 0
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_STATE_TRUE 1
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_STATE_FALSE 0
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_OC_TRIP_TRUE 1
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_OC_TRIP_FALSE 0
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_UNK 8
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_COM1 7
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_COM2 6
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_RAHS 5
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_BDOT 4
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_ESTIM 3
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_WHEEL 2
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_EPS 1
+#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_PPT 0
 #define CAN_ENUM_SENSORPROC_IMU_VALID_TRUE 1
 #define CAN_ENUM_SENSORPROC_IMU_VALID_FALSE 0
 #define CAN_ENUM_SENSORPROC_MAG_VALID_TRUE 1
 #define CAN_ENUM_SENSORPROC_MAG_VALID_FALSE 0
 #define CAN_ENUM_CMD_ROLLCALL_STATE_GOOD 1
 #define CAN_ENUM_CMD_ROLLCALL_STATE_BAD 0
-#define CAN_ENUM_MTQ_ACK_CONFIRM_TRUE 1
-#define CAN_ENUM_MTQ_ACK_CONFIRM_FALSE 0
+#define CAN_ENUM_MTQ_ACK_COILS_STATE_TRUE 1
+#define CAN_ENUM_MTQ_ACK_COILS_STATE_FALSE 0
 #define CAN_ENUM_MTQ_ACK_NODE_RAHS 15
 #define CAN_ENUM_MTQ_ACK_NODE_COM_2 14
 #define CAN_ENUM_MTQ_ACK_NODE_COM_1 13
@@ -84,25 +106,22 @@
 #define CAN_ENUM_EPS_BATT_STATE_HEAT_FALSE 0
 #define CAN_ENUM_SENSORPROC_SUN_VALID_TRUE 1
 #define CAN_ENUM_SENSORPROC_SUN_VALID_FALSE 0
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_RAHS 15
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_COM_2 14
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_COM_1 13
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_MTQ 12
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_SENSORPROC 11
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_MPC 10
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_ESTIM 9
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_EPS_BATT 8
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_EPS_GEN 7
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_EPS_DIST 6
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_PPT 5
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_RWZ 4
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_RWY 3
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_RWX 2
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_ADCS_BDOT 1
-#define CAN_ENUM_CMD_MTQ_FIRE_ORIG_TEST 0
 #define CAN_ENUM_BDOT_TUMBLE_STATUS_STATUS_TRUE 1
 #define CAN_ENUM_BDOT_TUMBLE_STATUS_STATUS_FALSE 0
 
+#define CAN_ENUM_MODE_NOTTUMBLINGCHARLIE 3
+#define CAN_ENUM_MODE_NOTTUMBLINGBOB 2
+#define CAN_ENUM_MODE_NOTTUMBLINGALICE 1
+#define CAN_ENUM_MODE_TUMBLING 0
+#define CAN_ENUM_PWR_DOMAIN_UNK 8
+#define CAN_ENUM_PWR_DOMAIN_COM1 7
+#define CAN_ENUM_PWR_DOMAIN_COM2 6
+#define CAN_ENUM_PWR_DOMAIN_RAHS 5
+#define CAN_ENUM_PWR_DOMAIN_BDOT 4
+#define CAN_ENUM_PWR_DOMAIN_ESTIM 3
+#define CAN_ENUM_PWR_DOMAIN_WHEEL 2
+#define CAN_ENUM_PWR_DOMAIN_EPS 1
+#define CAN_ENUM_PWR_DOMAIN_PPT 0
 #define CAN_ENUM_SAT_STATE_GOOD 1
 #define CAN_ENUM_SAT_STATE_BAD 0
 #define CAN_ENUM_NODE_RAHS 15
@@ -147,6 +166,26 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct cmd_ignore_fsw {
+    uint8_t cmd_ignore_fsw_ignore; //  (No Units)
+} cmd_ignore_fsw;
+
+typedef struct cmd_mtq_fsw {
+    uint8_t cmd_mtq_fsw_sc_mode; //  (No Units)
+    int8_t cmd_mtq_fsw_z; // pct doodie
+    int8_t cmd_mtq_fsw_y; // pct doodie
+    int8_t cmd_mtq_fsw_x; // pct doodie
+} cmd_mtq_fsw;
+
+typedef struct eps_domain_output {
+    uint8_t eps_domain_output_state; //  (No Units)
+    uint8_t eps_domain_output_oc_trip; //  (No Units)
+    uint16_t eps_domain_output_v_c_max; // mA
+    uint16_t eps_domain_output_v_c; // mA
+    uint16_t eps_domain_output_v; // mV
+    uint8_t eps_domain_output_num; //  (No Units)
+} eps_domain_output;
+
 typedef struct sensorproc_imu {
     int16_t sensorproc_imu_z; //  (No Units)
     int16_t sensorproc_imu_y; //  (No Units)
@@ -169,7 +208,7 @@ typedef struct cmd_rollcall {
 } cmd_rollcall;
 
 typedef struct mtq_ack {
-    uint8_t mtq_ack_confirm; //  (No Units)
+    uint8_t mtq_ack_coils_state; //  (No Units)
     uint8_t mtq_ack_node; //  (No Units)
 } mtq_ack;
 
@@ -239,12 +278,11 @@ typedef struct sensorproc_sun {
     int16_t sensorproc_sun_x; //  (No Units)
 } sensorproc_sun;
 
-typedef struct cmd_mtq_fire {
-    uint8_t cmd_mtq_fire_orig; //  (No Units)
-    int8_t cmd_mtq_fire_z; // mA*m^2
-    int8_t cmd_mtq_fire_y; // mA*m^2
-    int8_t cmd_mtq_fire_x; // mA*m^2
-} cmd_mtq_fire;
+typedef struct cmd_mtq_bdot {
+    int8_t cmd_mtq_bdot_z; // pct doodie
+    int8_t cmd_mtq_bdot_y; // pct doodie
+    int8_t cmd_mtq_bdot_x; // pct doodie
+} cmd_mtq_bdot;
 
 typedef struct bdot_tumble_status {
     uint8_t bdot_tumble_status_status; // bool
@@ -259,6 +297,15 @@ typedef struct sync_1 {
 typedef struct msp_temp {
     uint16_t msp_temp_temp; // dK
 } msp_temp;
+
+void encodecmd_ignore_fsw(cmd_ignore_fsw *input, CANPacket* output);
+void decodecmd_ignore_fsw(CANPacket *input, cmd_ignore_fsw *output);
+
+void encodecmd_mtq_fsw(cmd_mtq_fsw *input, CANPacket* output);
+void decodecmd_mtq_fsw(CANPacket *input, cmd_mtq_fsw *output);
+
+void encodeeps_domain_output(eps_domain_output *input, CANPacket* output);
+void decodeeps_domain_output(CANPacket *input, eps_domain_output *output);
 
 void encodesensorproc_imu(sensorproc_imu *input, CANPacket* output);
 void decodesensorproc_imu(CANPacket *input, sensorproc_imu *output);
@@ -305,8 +352,8 @@ void decodeeps_batt_voltage(CANPacket *input, eps_batt_voltage *output);
 void encodesensorproc_sun(sensorproc_sun *input, CANPacket* output);
 void decodesensorproc_sun(CANPacket *input, sensorproc_sun *output);
 
-void encodecmd_mtq_fire(cmd_mtq_fire *input, CANPacket* output);
-void decodecmd_mtq_fire(CANPacket *input, cmd_mtq_fire *output);
+void encodecmd_mtq_bdot(cmd_mtq_bdot *input, CANPacket* output);
+void decodecmd_mtq_bdot(CANPacket *input, cmd_mtq_bdot *output);
 
 void encodebdot_tumble_status(bdot_tumble_status *input, CANPacket* output);
 void decodebdot_tumble_status(CANPacket *input, bdot_tumble_status *output);
