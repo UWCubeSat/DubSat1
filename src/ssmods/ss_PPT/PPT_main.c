@@ -3,6 +3,7 @@
 
 #include "bsp/bsp.h"
 #include <core/timers.h>
+#include "interfaces/canwrap.h"
 
 /*
  * Output Pins:
@@ -16,6 +17,8 @@
  */
 
 
+//NOTE: this build will fire on power-on w/o timeout
+
 #define OPCODE_COMMON_CMD 0
 #define OPCODE_START_FIRE 2
 #define OPCODE_STOP_FIRE 3
@@ -27,10 +30,11 @@
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
-FILE_STATIC ModuleStatus mod_status; //TODO: make this volatile?
+FILE_STATIC volatile ModuleStatus mod_status;
 
 FILE_STATIC uint8_t firing;
 FILE_STATIC uint8_t currTimeout;
+FILE_STATIC uint8_t withFiringPulse;
 
 // These are sample "trigger" flags, used to indicate to the main loop
 // that a transition should occur
@@ -43,16 +47,18 @@ FILE_STATIC flag_t triggerState3;
 #pragma PERSISTENT(igniterChargeTime)
 #pragma PERSISTENT(cooldownTime)
 
-FILE_STATIC uint16_t mainChargeTime = 39322;
+FILE_STATIC uint16_t mainChargeTime = 36045;
 FILE_STATIC uint16_t mainIgniterDelay = 32;
-FILE_STATIC uint16_t igniterChargeTime = 3278;
-FILE_STATIC uint16_t cooldownTime = 22906;
+FILE_STATIC uint16_t igniterChargeTime = 1000;
+FILE_STATIC uint16_t cooldownTime = 28461;
 
 FILE_STATIC ppt_main_done mainDone;
 FILE_STATIC ppt_igniter_done igniterDone;
 FILE_STATIC ppt_operating pptOp;
 FILE_STATIC meta_segment mseg;
+FILE_STATIC health_segment hseg;
 FILE_STATIC timing currTiming;
+
 const uint32_t ledFreq = 200000;
 
 FILE_STATIC void sendIsOp() //TODO: remove before flight, or don't (maybe replace w/ meta packet)
@@ -66,11 +72,20 @@ FILE_STATIC void sendIsOp() //TODO: remove before flight, or don't (maybe replac
 
 FILE_STATIC void sendMainDone()
 {
-    mainDone.timeDone = TB0R;
+    if(mod_status.ss_state == State_Main_Charging)
+        mainDone.timeDone = TB0R - TB0CCR1;
+    else
+        mainDone.timeDone = 0;
+
     bcbinSendPacket((uint8_t *) &mainDone, sizeof(mainDone));
 }
 FILE_STATIC void sendIgniterDone()
 {
+    if(mod_status.ss_state == State_Igniter_Charging)
+        mainDone.timeDone = TB0R - TB0CCR1;
+    else
+        mainDone.timeDone = 0;
+
     igniterDone.timeDone = TB0R;
     bcbinSendPacket((uint8_t *) &igniterDone, sizeof(igniterDone));
 }
@@ -82,6 +97,14 @@ FILE_STATIC void sendMeta()
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
+FILE_STATIC void sendHealth()
+{
+    // For now, everythingis always marginal ...
+    hseg.oms = OMS_Unknown;
+    hseg.reset_count = bspGetResetCount();
+    bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
+}
+
 FILE_STATIC void sendTiming()
 {
     currTiming.mainChargeTime = mainChargeTime;
@@ -91,11 +114,22 @@ FILE_STATIC void sendTiming()
     bcbinSendPacket((uint8_t *)&currTiming, sizeof(currTiming));
 }
 
-void startFiring(start_firing *startPkt);
+///////////////////////////////////////////////////////////////
+FILE_STATIC void sendSync1()
+{
+    CANPacket syncPacket = {0};
+     sync_1 syncPacket_info = {0};
+
+    encodesync_1(&syncPacket_info, &syncPacket);
+    canSendPacket(&syncPacket);
+}
+
+void startFiring(uint8_t timeout);
 void stopFiring();
 void mainLow();
 void igniterHigh();
 void fire();
+void can_packet_rx_callback(CANPacket *packet);
 
 /*
  * main.c
@@ -119,7 +153,10 @@ int main(void)
     mod_status.ss_mode = Mode_Undetermined;
     mod_status.ss_state = State_Uncommissioned;
 
-    P1DIR |= (BIT0 | BIT1);
+    canWrapInitWithFilter();
+    setCANPacketRxCallback(can_packet_rx_callback);
+
+    P1DIR |= (BIT0 | BIT1) & ~BIT5; //1.5 is the firing pin
     P2DIR &= ~(BIT5 | BIT6);
     P4DIR |= (BIT1 | BIT2 | BIT3);
 
@@ -132,17 +169,10 @@ int main(void)
     P2IES |= BIT1; //this represents capture mode (rising/falling/both)
     P2IE |= (BIT5 | BIT6);
 
-    firing = 0;
-
-    TB0CCR1 = mainChargeTime;
-    mod_status.ss_state = State_Main_Charging;
-    firing = 1;
-    P4OUT |= BIT3; //main high
-    //TODO: ^this code block is just for testing
-
-    //TB0CCR2 = 39354;
-    //TB0CCR3 = 42632; //was 42621
-    TB0CCTL1 = CCIE;
+    P1IFG = 0;
+    P1REN |= BIT5;
+    P1IES |= (BIT1 | BIT2);
+    P1IE |= BIT5;
 
     TB0CTL = TBSSEL__ACLK | MC__CONTINOUS | TBCLR | TBIE;
 
@@ -175,6 +205,9 @@ int main(void)
 
     sendIsOp();
     bcbinPopulateHeader(&currTiming.header, 5, sizeof(currTiming));
+    bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
+
+    withFiringPulse = 1;
 
     while (1)
     {
@@ -187,6 +220,7 @@ int main(void)
                 P1OUT ^= BIT0;
             ledCount = ledFreq;
             sendMeta();
+            sendHealth();
         }
         else
         {
@@ -199,15 +233,14 @@ int main(void)
 	return 0;
 }
 
-void startFiring(start_firing *startPkt)
+void startFiring(uint8_t timeout)
 {
-    if(!firing && startPkt->timeout)
+    if(!firing && timeout)
     {
         P1OUT &= ~BIT0;
-        firing = 1;
 
-        currTimeout = startPkt->timeout - 1;
-        //TODO: send a sync pulse here
+        currTimeout = timeout - 1;
+        sendSync1();
         mod_status.ss_state = State_Cooldown;
         TB0CCR1 = TB0R + cooldownTime;
         TB0CCTL1 = CCIE;
@@ -224,6 +257,7 @@ void stopFiring()
         firing = 0;
         //P2IE &= ~(BIT5 | BIT6);
         P4OUT &= ~(BIT1 | BIT2 | BIT3);
+        withFiringPulse = 1;
     }
 }
 
@@ -313,7 +347,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr) //this shoul
             case OPCODE_COMMON_CMD:
                 break;
             case OPCODE_START_FIRE://OPCODE_MY_CMD:
-                startFiring((start_firing *) (cmdstr + 1));
+                startFiring(((start_firing *) (cmdstr + 1))->timeout);
                 break;
             case OPCODE_STOP_FIRE:
                 stopFiring();
@@ -345,6 +379,18 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr) //this shoul
     return 1;
 }
 
+void can_packet_rx_callback(CANPacket *packet)
+{
+    if(packet->id == CAN_ID_CMD_PPT_FIRE)
+    {
+        cmd_ppt_fire pkt = {0};
+        decodecmd_ppt_fire(packet, &pkt);
+
+        withFiringPulse = (pkt.cmd_ppt_fire_fire) ? 1 : 0;
+        startFiring(1);
+    }
+}
+
 BOOL readyToFire()
 {
     // TODO:  Walk through all of the data items that are necessary to determine if it's
@@ -369,14 +415,23 @@ __interrupt void Port_2(void)
     P2IFG = 0; //clear the interrupt flag
 }
 
-void mainLow()
+#pragma vector=PORT1_VECTOR
+__interrupt void Port_1(void)
 {
-    P4OUT &= ~BIT3;
-}
+    switch(P1IV)
+    {
+        case P1IV__P1IFG5:
+            if(!firing && P1IN & BIT5) //1.5 is high
+                startFiring(1);
 
-void igniterHigh()
-{
-    P4OUT |= BIT2;
+            else if(firing && !(P1IN & BIT5)) //1.5 is low
+                stopFiring();
+
+            break;
+        default:
+            P1OUT ^= BIT0;
+            break;
+    }
 }
 
 void fire()
@@ -419,11 +474,13 @@ __interrupt void Timer0_B1_ISR (void)
                     TB0CCR1 += igniterChargeTime;
                     break;
                 case State_Igniter_Charging:
-                    fire();
+                    if(withFiringPulse)
+                        fire();
                     if(currTimeout)
                     {
-                        //TODO: send sync pulse here
                         currTimeout--;
+                        if(currTimeout)
+                            sendSync1();
                         mod_status.ss_state = State_Cooldown;
                         TB0CCR1 += cooldownTime;
                     }

@@ -43,7 +43,7 @@ float rawCurrentToFloat(int16_t raw) {
 BOOL checkForFullState(float voltage, float current) {
     //full state is defined as 7.2 volts with the LTC2943 limiting the current into the batteries to .1A
     // +- .02 volt margin with +-.1A margin
-    if(voltage >= 7.18 || voltage <= 7.22 && current <= 0.11 || current >= 0.09) {
+    if((voltage >= 7.18 && voltage <= 7.22) && (current <= 0.11 && current >= 0.09)) {
         return TRUE;
     } else {
         return FALSE;
@@ -105,7 +105,7 @@ void readCoulombCounterStatus() {
 }
 
 void setControl(CC_Control_ADCmode ADCmode, CC_Control_PrescaleFactor m, CC_Control_ALCCConfiguration ALCC, CC_Control_Shutdown shutdown ) {
-    uint8_t control = (ADCmode<<8) | (m<<6) | (ALCC<<3) | shutdown;
+    uint8_t control = (ADCmode<<6) | (m<<3) | (ALCC<<1) | shutdown;
     i2cBuff[0] = LTC2943_ADDR_CONTROL;
     i2cBuff[1] = control;
     i2cMasterWrite(sensor.hI2CDevice, i2cBuff, 2);

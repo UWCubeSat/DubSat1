@@ -1,0 +1,11 @@
+SCREEN AUTO AUTO 1.0
+
+  VERTICALBOX
+    LABELVALUE EPS_DIST HEALTH RECEIVED_TIMESECONDS # COSMOS Received Time (UTC, Floating point, Unix epoch)
+    LABELVALUE EPS_DIST HEALTH RECEIVED_TIMEFORMATTED # COSMOS Received Time (Local time zone, Formatted string)
+    LABELVALUE EPS_DIST HEALTH RECEIVED_COUNT # COSMOS packet received count
+    LABELVALUE EPS_DIST HEALTH LENGTH # Length of packet.
+    LABELVALUE EPS_DIST HEALTH ID # ID of telemetry packet.
+    LABELVALUE EPS_DIST HEALTH OMS # Overall subsystem module status.
+  END
+

@@ -29,6 +29,12 @@ FILE_STATIC PCVSensorData *INAData;
 FILE_STATIC CoulombCounterData CCData;
 FILE_STATIC hDev hTempC;
 
+FILE_STATIC volatile uint8_t isChecking;
+
+FILE_STATIC float previousTemp;
+
+FILE_STATIC volatile int autoHeating = 1;
+
 /* ------BATTERY BALANCER------ */
 FILE_STATIC void battInit()
 {       BATTERY_BALANCER_ENABLE_DIR |= BATTERY_BALANCER_ENABLE_BIT; //Initialize battery balancer enable register pin
@@ -79,6 +85,10 @@ FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
                 if (bsegment->enablebattheater != NOCHANGE)
                     battControlHeater(bsegment->enablebattheater ? Cmd_ExplicitEnable : Cmd_ExplicitDisable);
                 break;
+
+            case OPCODE_SET_CHECK_STATE:
+                isChecking = ((setCheckState_segment *) &cmdstr[1])->isChecking;
+                break;
         }
     }
     return 1;
@@ -87,6 +97,7 @@ FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
 // Packetizes and sends backchannel GENERAL packet
 FILE_STATIC void battBcSendGeneral()
 {
+    gseg.isChecking = isChecking;
     bcbinSendPacket((uint8_t *) &gseg, sizeof(gseg));
 }
 
@@ -188,6 +199,7 @@ int main(void)
     battControlBalancer(Cmd_AutoEnable);
     //battControlHeater(Cmd_AutoEnable);
 
+    previousTemp = asensorReadSingleSensorV(hTempC);
     uint16_t counter;
     while (1)
     {
@@ -215,6 +227,17 @@ int main(void)
 
             battBcSendGeneral();
             battBcSendHealth();
+
+            if(isChecking)
+            {
+                float temp = asensorReadSingleSensorV(hTempC);
+                if(previousTemp >= 0.5f && temp < 0.5f) //not heating & < 0C
+                    HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT; //turn on
+
+                else if (previousTemp <= 0.6f && temp > 0.6f) //heating & > 10C
+                    HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT; //turn off
+                previousTemp = temp;
+            }
         }
 
         // Stuff running 4Hz

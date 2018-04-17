@@ -1,0 +1,194 @@
+TELEMETRY EPS_DIST GENERAL LITTLE_ENDIAN "EPS distribution module general status telemetry."
+
+    # This must ALWAYS be the first entry in any telemetry packet
+    <%= render "../../SYSTEM/cmd_tlm/_shared_tlm_header.txt", locals: {id: 2} %>
+    
+    APPEND_ITEM BATTV 32 FLOAT "The ADC12-measured battery voltage." LITTLE_ENDIAN
+      UNITS volts V
+      FORMAT_STRING "%0.4f"
+      LIMITS DEFAULT 3 ENABLED 5.2 5.8 7.3 7.7
+    APPEND_ITEM UVMODE 8 UINT "Indicates the undervoltage handling mode in effect." LITTLE_ENDIAN
+      STATE INRANGE 0 GREEN
+      STATE PARTIALSHUTDOWN 1 YELLOW
+      STATE FULLSHUTDOWN 2 RED
+    APPEND_ITEM UVPARTIALTHRSH 32 FLOAT "The voltage at which the board enters partial undervoltage mode." LITTLE_ENDIAN
+      UNITS volts V
+      FORMAT_STRING "%0.3f"
+    APPEND_ITEM UVFULLTHRSH 32 FLOAT "The voltage at which the board enters full undervoltage mode." LITTLE_ENDIAN
+      UNITS volts V
+      FORMAT_STRING "%0.3f"
+    
+    APPEND_ITEM CMD_COM1 8 UINT "Last command given to the COM1 power domain switch."
+      <%= render "_pd_cmds.txt" %>    
+    APPEND_ITEM CMD_COM2 8 UINT "Last command given to the COM2 power domain switch."
+      <%= render "_pd_cmds.txt" %>  
+    APPEND_ITEM CMD_RAHS 8 UINT "Last command given to the RAHS power domain switch."
+      <%= render "_pd_cmds.txt" %>  
+    APPEND_ITEM CMD_BDOT 8 UINT "Last command given to the BDOT power domain switch."
+      <%= render "_pd_cmds.txt" %>  
+    APPEND_ITEM CMD_ESTIM 8 UINT "Last command given to the ESTIM power domain switch."
+      <%= render "_pd_cmds.txt" %>  
+    APPEND_ITEM CMD_WHEELS 8 UINT "Last command given to the WHEELS power domain switch."
+      <%= render "_pd_cmds.txt" %>  
+    APPEND_ITEM CMD_EPS 8 UINT "Last command given to the EPS power domain switch."
+      <%= render "_pd_cmds.txt" %>  
+    APPEND_ITEM CMD_PPT 8 UINT "Last command given to the PPT power domain switch."
+      <%= render "_pd_cmds.txt" %>  
+   
+    APPEND_ITEM SW_COM1 8 UINT "Actual state of the GPIO pin driving the switch." LITTLE_ENDIAN
+      STATE DISABLED 0 YELLOW
+      STATE ENABLED 1 GREEN
+    APPEND_ITEM SW_COM2 8 UINT "Actual state of the GPIO pin driving the switch." LITTLE_ENDIAN
+      STATE DISABLED 0 YELLOW
+      STATE ENABLED 1 GREEN
+    APPEND_ITEM SW_RAHS 8 UINT "Actual state of the GPIO pin driving the switch." LITTLE_ENDIAN
+      STATE DISABLED 0 YELLOW
+      STATE ENABLED 1 GREEN
+    APPEND_ITEM SW_BDOT 8 UINT "Actual state of the GPIO pin driving the switch." LITTLE_ENDIAN
+      STATE DISABLED 0 YELLOW
+      STATE ENABLED 1 GREEN
+    APPEND_ITEM SW_ESTIM 8 UINT "Actual state of the GPIO pin driving the switch." LITTLE_ENDIAN
+      STATE DISABLED 0 YELLOW
+      STATE ENABLED 1 GREEN
+    APPEND_ITEM SW_WHEELS 8 UINT "Actual state of the GPIO pin driving the switch." LITTLE_ENDIAN
+      STATE DISABLED 0 YELLOW
+      STATE ENABLED 1 GREEN
+    APPEND_ITEM SW_EPS 8 UINT "Actual state of the GPIO pin driving the switch." LITTLE_ENDIAN
+      STATE DISABLED 0 YELLOW
+      STATE ENABLED 1 GREEN
+    APPEND_ITEM SW_PPT 8 UINT "Actual state of the GPIO pin driving the switch." LITTLE_ENDIAN
+      STATE DISABLED 0 YELLOW
+      STATE ENABLED 1 GREEN
+            
+    APPEND_ITEM OCCNT_COM1 8 UINT "Specifies the number of separate overcurrent events for the COM1 power domain." LITTLE_ENDIAN
+    APPEND_ITEM OCCNT_COM2 8 UINT "Specifies the number of separate overcurrent events for the COM2 power domain." LITTLE_ENDIAN
+    APPEND_ITEM OCCNT_RAHS 8 UINT "Specifies the number of separate overcurrent events for the RAHS power domain." LITTLE_ENDIAN
+    APPEND_ITEM OCCNT_BDOT 8 UINT "Specifies the number of separate overcurrent events for the BDOT power domain." LITTLE_ENDIAN
+    APPEND_ITEM OCCNT_ESTIM 8 UINT "Specifies the number of separate overcurrent events for the ESTIM power domain." LITTLE_ENDIAN
+    APPEND_ITEM OCCNT_WHEELS 8 UINT "Specifies the number of separate overcurrent events for the WHEELS power domain." LITTLE_ENDIAN
+    APPEND_ITEM OCCNT_EPS 8 UINT "Specifies the number of separate overcurrent events for the EPS power domain." LITTLE_ENDIAN
+    APPEND_ITEM OCCNT_PPT 8 UINT "Specifies the number of separate overcurrent events for the PPT power domain." LITTLE_ENDIAN
+    
+    APPEND_ITEM OCTHRESH_COM1 32 FLOAT "Indicates the current overcurrent protection setting for the domain." LITTLE_ENDIAN
+      UNITS amps A
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM OCTHRESH_COM2 32 FLOAT "Indicates the current overcurrent protection setting for the domain." LITTLE_ENDIAN
+      UNITS amps A
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM OCTHRESH_RAHS 32 FLOAT "Indicates the current overcurrent protection setting for the domain." LITTLE_ENDIAN    
+      UNITS amps A
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM OCTHRESH_BDOT 32 FLOAT "Indicates the current overcurrent protection setting for the domain." LITTLE_ENDIAN
+      UNITS amps A
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM OCTHRESH_ESTIM 32 FLOAT "Indicates the current overcurrent protection setting for the domain." LITTLE_ENDIAN
+      UNITS amps A
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM OCTHRESH_WHEELS 32 FLOAT "Indicates the current overcurrent protection setting for the domain." LITTLE_ENDIAN
+      UNITS amps A
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM OCTHRESH_EPS 32 FLOAT "Indicates the current overcurrent protection setting for the domain." LITTLE_ENDIAN
+      UNITS amps A
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM OCTHRESH_PPT 32 FLOAT "Indicates the current overcurrent protection setting for the domain." LITTLE_ENDIAN
+      UNITS amps A
+      FORMAT_STRING "%0.4f"
+      
+  
+TELEMETRY EPS_DIST SENSORDAT LITTLE_ENDIAN "EPS distribution module captured sensor data."
+
+    # This must ALWAYS be the first entry in any telemetry packet
+    <%= render "../../SYSTEM/cmd_tlm/_shared_tlm_header.txt", locals: {id: 3} %>
+    
+    #APPEND_ARRAY_ITEM ARRAY 32 FLOAT 224 "Array-view of the 8 power domain current numbers." LITTLE_ENDIAN
+    APPEND_ITEM CURR_COM1 32 FLOAT "Current draw by the COM1 power domain." LITTLE_ENDIAN
+      UNITS amps A
+      LIMITS DEFAULT 3 ENABLED 0.01 0.08 0.12 0.15
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM CURR_COM2 32 FLOAT "Current draw by the COM2 power domain." LITTLE_ENDIAN
+      UNITS amps A
+      LIMITS DEFAULT 3 ENABLED 0.07 0.095 0.135 0.20
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM CURR_RAHS 32 FLOAT "Current draw by the RAHS power domain." LITTLE_ENDIAN
+      UNITS amps A
+      LIMITS DEFAULT 3 ENABLED 0.01 0.08 0.12 0.15
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM CURR_BDOT 32 FLOAT "Current draw by the BDOT power domain." LITTLE_ENDIAN
+      UNITS amps A
+      LIMITS DEFAULT 3 ENABLED 0.01 0.08 0.12 0.15
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM CURR_ESTIM 32 FLOAT "Current draw by the ESTIM power domain." LITTLE_ENDIAN
+      UNITS amps A
+      LIMITS DEFAULT 3 ENABLED 0.01 0.08 0.12 0.15
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM CURR_WHEELS 32 FLOAT "Current draw by the WHEELS power domain." LITTLE_ENDIAN
+      UNITS amps A
+      LIMITS DEFAULT 3 ENABLED 0.01 0.08 0.12 0.15
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM CURR_EPS 32 FLOAT "Current draw by the EPS power domain." LITTLE_ENDIAN
+      UNITS amps A
+      LIMITS DEFAULT 3 ENABLED 0.01 0.08 0.12 0.15
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM CURR_PPT 32 FLOAT "Current draw by the PPT power domain." LITTLE_ENDIAN
+      UNITS amps A
+      LIMITS DEFAULT 3 ENABLED 0.1 0.25 0.40 0.50
+      FORMAT_STRING "%0.4f"
+      
+    APPEND_ITEM OC_COM1 8 UINT "Indicates whether COM1 power domain is drawing more current than threshold." LITTLE_ENDIAN
+      STATE INRANGE 0 GREEN
+      STATE OVERCURRENT 1 RED
+    APPEND_ITEM OC_COM2 8 UINT "Indicates whether COM2 power domain is drawing more current than threshold." LITTLE_ENDIAN
+      STATE INRANGE 0 GREEN
+      STATE OVERCURRENT 1 RED
+    APPEND_ITEM OC_RAHS 8 UINT "Indicates whether RAHS power domain is drawing more current than threshold." LITTLE_ENDIAN
+      STATE INRANGE 0 GREEN
+      STATE OVERCURRENT 1 RED
+    APPEND_ITEM OC_BDOT 8 UINT "Indicates whether BDOT power domain is drawing more current than threshold." LITTLE_ENDIAN
+      STATE INRANGE 0 GREEN
+      STATE OVERCURRENT 1 RED
+    APPEND_ITEM OC_ESTIM 8 UINT "Indicates whether ESTIM power domain is drawing more current than threshold." LITTLE_ENDIAN
+      STATE INRANGE 0 GREEN
+      STATE OVERCURRENT 1 RED
+    APPEND_ITEM OC_WHEELS 8 UINT "Indicates whether WHEELS power domain is drawing more current than threshold." LITTLE_ENDIAN
+      STATE INRANGE 0 GREEN
+      STATE OVERCURRENT 1 RED
+    APPEND_ITEM OC_EPS 8 UINT "Indicates whether EPS power domain is drawing more current than threshold." LITTLE_ENDIAN
+      STATE INRANGE 0 GREEN
+      STATE OVERCURRENT 1 RED
+    APPEND_ITEM OC_PPT 8 UINT "Indicates whether PPT power domain is drawing more current than threshold." LITTLE_ENDIAN
+      STATE INRANGE 0 GREEN
+      STATE OVERCURRENT 1 RED
+
+    APPEND_ITEM BUSV_COM1 32 FLOAT "Current bus voltage measured on the power domain." LITTLE_ENDIAN
+      UNITS volts V
+      LIMITS DEFAULT 3 ENABLED 0.5 3.0 7.0 10.0
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM BUSV_COM2 32 FLOAT "Current bus voltage measured on the power domain." LITTLE_ENDIAN
+      UNITS volts V
+      LIMITS DEFAULT 3 ENABLED 0.5 3.0 7.0 10.0
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM BUSV_RAHS 32 FLOAT "Current bus voltage measured on the power domain." LITTLE_ENDIAN
+      UNITS volts V
+      LIMITS DEFAULT 3 ENABLED 0.5 3.0 7.0 10.0
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM BUSV_BDOT 32 FLOAT "Current bus voltage measured on the power domain." LITTLE_ENDIAN
+      UNITS volts V
+      LIMITS DEFAULT 3 ENABLED 0.5 3.0 7.0 10.0
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM BUSV_ESTIM 32 FLOAT "Current bus voltage measured on the power domain." LITTLE_ENDIAN
+      UNITS volts V
+      LIMITS DEFAULT 3 ENABLED 0.5 3.0 7.0 10.0
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM BUSV_WHEELS 32 FLOAT "Current bus voltage measured on the power domain." LITTLE_ENDIAN
+      UNITS volts V
+      LIMITS DEFAULT 3 ENABLED 0.5 3.0 7.0 10.0
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM BUSV_EPS 32 FLOAT "Current bus voltage measured on the power domain." LITTLE_ENDIAN
+      UNITS volts V
+      LIMITS DEFAULT 3 ENABLED 0.5 3.0 7.0 10.0
+      FORMAT_STRING "%0.4f"
+    APPEND_ITEM BUSV_PPT 32 FLOAT "Current bus voltage measured on the power domain." LITTLE_ENDIAN
+      UNITS volts V
+      LIMITS DEFAULT 3 ENABLED 0.5 3.0 7.0 10.0
+      FORMAT_STRING "%0.4f"
+    

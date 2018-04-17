@@ -1,0 +1,15 @@
+SCREEN AUTO AUTO 1.0
+
+  VERTICALBOX
+    LABELVALUE EPS_DIST META RECEIVED_TIMESECONDS # COSMOS Received Time (UTC, Floating point, Unix epoch)
+    LABELVALUE EPS_DIST META RECEIVED_TIMEFORMATTED # COSMOS Received Time (Local time zone, Formatted string)
+    LABELVALUE EPS_DIST META RECEIVED_COUNT # COSMOS packet received count
+    LABELVALUE EPS_DIST META LENGTH # Length of packet.
+    LABELVALUE EPS_DIST META ID # ID of telemetry packet.
+    LABELVALUE EPS_DIST META MODULE # Internal module name.
+    LABELVALUE EPS_DIST META COMPILERVER # Version number of compiler used to compile module.
+    LABELVALUE EPS_DIST META STDCVER # Version of Standard C supported by compiler.
+    LABELVALUE EPS_DIST META COMPILEDATE # Date the module was compiled.
+    LABELVALUE EPS_DIST META COMPILETIME # Time the module was compiled.
+  END
+

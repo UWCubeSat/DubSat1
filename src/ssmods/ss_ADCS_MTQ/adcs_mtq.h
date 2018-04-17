@@ -1,15 +1,15 @@
 /*
- * SUBSYSTEMNAME_MODULENAME.h
- *
- *  Created on: Jul 12, 2017
- *      Author: jeffc
- */
+file: adcs_mtq.h
+author: jeffc
+*/
 
 #ifndef ADCS_MTQ_H_
 #define ADCS_MTQ_H_
 
-#include <stdint.h>
+// time between sending meta/health telemetry
+#define MTQ_TELEM_DELAY_MS 1000
 
+#include <stdint.h>
 #include "core/utils.h"
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
@@ -42,8 +42,27 @@ typedef struct _module_status {
     uint16_t in_unknown_state;
 } ModuleStatus;
 
+TLM_SEGMENT {
+    BcTlmHeader header;  // All COSMOS TLM packets must have this
+    uint8_t x1;
+    uint8_t x2;
+    uint8_t y1;
+    uint8_t y2;
+    uint8_t z1;
+    uint8_t z2;
+
+} duty_segment;
+
+CMD_SEGMENT {
+    int8_t x;
+    int8_t y;
+    int8_t z;
+} command_segment;
+
+
 void handlePPTFiringNotification();
 void handleRollCall();
+void sendDutyPacket();
 
 uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);
@@ -52,16 +71,25 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 //---------------------
 // MTQ specific 
 //---------------------
-typedef enum _tumble_state {Tumbling=1,Idle=0} TumbleState;
+typedef enum _tumble_state {Tumbling=CAN_ENUM_BOOL_TRUE,Idle=CAN_ENUM_BOOL_TRUE} TumbleState;
 // PWM pins 
-#define PWM_PERIOD 10000-1 //(10000-1) // pwm period = 1000 us
-#define CCR_PERIOD 100
+#define PWM_PERIOD 50000-1 //(10000-1) // pwm period = 1000 us
+#define CCR_PERIOD 500
 #define X1 1 // for set_pwm function which_pin 
 #define X2 2 
 #define Y1 3  
 #define Y2 4  
 #define Z1 5 
 #define Z2 6 
+
+// SFR APIs 
+// ccrn register assigns 
+#define SET_X1_PWM TB0CCR4 =
+#define SET_X2_PWM TB0CCR3 =
+#define SET_Y1_PWM TB0CCR6 =
+#define SET_Y2_PWM TB0CCR5 =
+#define SET_Z1_PWM TB0CCR2 =
+#define SET_Z2_PWM TB0CCR1 =
 
 
 #endif /* ADCS_MTQ_H_ */

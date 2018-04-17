@@ -9,25 +9,31 @@
 #include "magnetometer.h"
 
 #define MAX_BUFF_SIZE   0x25
+#define MAX_NUM_MAGNETOMETERS 2 // one for each i2c bus
+
+typedef struct {
+    hDev hSensor;
+    MagnetometerData data;
+} MagInternalData;
 
 // TODO:  Need some const decorations
-FILE_STATIC uint8_t szBuff;
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
-FILE_STATIC hDev hSensor;
 
-MagnetometerData mdata;
+FILE_STATIC MagInternalData mags[MAX_NUM_MAGNETOMETERS];
+FILE_STATIC uint8_t numRegistered = 0;
 
-void magInit(bus_instance_i2c bus)
+hMag magInit(bus_instance_i2c bus)
 {
     i2cEnable(bus);
-    hSensor = i2cInit(bus, MAG_I2C_7BIT_ADDRESS);
+    hDev hSensor = i2cInit(bus, MAG_I2C_7BIT_ADDRESS);
+    mags[numRegistered].hSensor = hSensor;
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)  /* */
 
     // HMC5883 pattern is to address
 
-   // selfTestConfig();
-   normalOperationConfig();
+   // selfTestConfig(numRegistered);
+   normalOperationConfig(numRegistered);
 
 #elif defined( __BSP_HW_MAGTOM_MAG3110__)
 
@@ -46,10 +52,14 @@ void magInit(bus_instance_i2c bus)
 #error Unknown - or no - magnetometer specified.  Use HW_MAGTOM definition to set type.
 
 #endif  /* HW_MAGTOM */
+
+    return numRegistered++;
 }
 
-void selfTestConfig()
+void selfTestConfig(hMag handle)
 {
+    hDev hSensor = mags[handle].hSensor;
+
     i2cBuff[0] = MAG_HMC5883L_REG_ADDR_CRA;
     i2cBuff[1] = MAG_HMC5883L_CONFIG_REGISTER_A_SELF_TEST;
     i2cBuff[2] = MAG_HMC5883L_CONFIG_REGISTER_B_SELF_TEST;
@@ -58,8 +68,10 @@ void selfTestConfig()
 }
 
 
-void normalOperationConfig()
+void normalOperationConfig(hMag handle)
 {
+    hDev hSensor = mags[handle].hSensor;
+
     // HMC5883 pattern is to address
     i2cBuff[0] = MAG_HMC5883L_REG_ADDR_CRA;
     //i2cBuff[1] = MAG_HMC5883L_AVERAGE_1_SAMPLE | MAG_HMC5883L_CONTINUOUS_OUTPUT_RATE_75 | MAG_HMC5883L_MEASURE_MODE_NORMAL;
@@ -69,9 +81,12 @@ void normalOperationConfig()
     i2cMasterWrite(hSensor, i2cBuff, 4);
 }
 
-MagnetometerData *magReadXYZData(UnitConversionMode desiredConversion)
+MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversion)
 {
-    mdata.conversionMode = desiredConversion;
+    hDev hSensor = mags[handle].hSensor;
+    MagnetometerData *mdata = &(mags[handle].data);
+
+    mdata->conversionMode = desiredConversion;
     i2cMasterRegisterRead(hSensor, MAG_XYZ_OUTPUT_REG_ADDR_START, i2cBuff, 6 );
     i2cMasterRegisterRead(hSensor, MAG_HMC5883L_REG_ADDR_TORA, &i2cBuff[6], 2 );
 
@@ -79,18 +94,18 @@ MagnetometerData *magReadXYZData(UnitConversionMode desiredConversion)
 
     // NOTE:  Order of X/Z/Y on HMC5883 is, unfortunately, intentional ...
 
-    mdata.rawX = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
-    mdata.rawZ = (int16_t)(i2cBuff[3] | ((int16_t)i2cBuff[2] << 8));
-    mdata.rawY = (int16_t)(i2cBuff[5] | ((int16_t)i2cBuff[4] << 8));
+    mdata->rawX = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
+    mdata->rawZ = (int16_t)(i2cBuff[3] | ((int16_t)i2cBuff[2] << 8));
+    mdata->rawY = (int16_t)(i2cBuff[5] | ((int16_t)i2cBuff[4] << 8));
 
-    mdata.rawTempA = (int8_t)i2cBuff[6];
-    mdata.rawTempB = (int8_t)i2cBuff[7];
+    mdata->rawTempA = (int8_t)i2cBuff[6];
+    mdata->rawTempB = (int8_t)i2cBuff[7];
 
 #elif defined( __BSP_HW_MAGTOM_MAG3110__)
 
-    mdata.rawX = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
-    mdata.rawY = (int16_t)(i2cBuff[3] | ((int16_t)i2cBuff[2] << 8));
-    mdata.rawZ = (int16_t)(i2cBuff[5] | ((int16_t)i2cBuff[4] << 8));
+    mdata->rawX = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
+    mdata->rawY = (int16_t)(i2cBuff[3] | ((int16_t)i2cBuff[2] << 8));
+    mdata->rawZ = (int16_t)(i2cBuff[5] | ((int16_t)i2cBuff[4] << 8));
 
 #else
 
@@ -111,6 +126,9 @@ MagnetometerData *magReadXYZData(UnitConversionMode desiredConversion)
         case ConvertToTeslas:
             conversionFactor = MAG_CONVERSION_FACTOR_RAW_TO_TESLAS;
             break;
+        case ConvertToNone:
+            // return early to skip conversions
+            return mdata;
         default:
             conversionFactor = MAG_CONVERSION_FACTOR_DEFAULT;
             break;
@@ -118,12 +136,12 @@ MagnetometerData *magReadXYZData(UnitConversionMode desiredConversion)
 
     // (MSB * 2^8 + LSB) / (2^4 * 8) + 25 in C
 
-    mdata.convertedX = mdata.rawX * conversionFactor;
-    mdata.convertedY = mdata.rawY * conversionFactor;
-    mdata.convertedZ = mdata.rawZ * conversionFactor;
-    mdata.convertedTemp = (double)((((double)mdata.rawTempA * 256.0)  +  (double) mdata.rawTempB * 1.0) / (8.0 * 16.0) + 25.0);
+    mdata->convertedX = mdata->rawX * conversionFactor;
+    mdata->convertedY = mdata->rawY * conversionFactor;
+    mdata->convertedZ = mdata->rawZ * conversionFactor;
+    mdata->convertedTemp = (double)((((double)mdata->rawTempA * 256.0)  +  (double) mdata->rawTempB * 1.0) / (8.0 * 16.0) + 25.0);
 
-    return &mdata;
+    return mdata;
 }
 
 

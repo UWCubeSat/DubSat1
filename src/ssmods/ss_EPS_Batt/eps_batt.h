@@ -45,6 +45,8 @@ TLM_SEGMENT {
     uint8_t CC_StatusReg;
     uint8_t CC_ControlReg;
 
+    uint8_t isChecking;
+
 } general_segment;
 
 // SensorDat packet:  high-frequency sends that capture state of sensors
@@ -67,11 +69,17 @@ TLM_SEGMENT {            //Add sensor data here
 
 #define OPCODE_BATTMGMT          0x64  // Dec '100', ASCII 'd'
 #define NOCHANGE  2
+#define OPCODE_SET_CHECK_STATE   0x65  // Dec '101'
+
+
 CMD_SEGMENT {                          //no need to add anything unless change to CC (e.g. reset)
     uint8_t enablebattbal;
     uint8_t enablebattheater;
 } battmgmt_segment;
 
+CMD_SEGMENT {
+    uint8_t isChecking;
+} setCheckState_segment;
 
 typedef enum {
     Cmd_InitialDisable,
