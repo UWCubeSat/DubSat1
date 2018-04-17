@@ -4009,12 +4009,12 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <pin name="GEN_VBATT$35" x="12.7" y="10.16" length="middle"/>
 <pin name="GEN_VBATT$36" x="63.5" y="10.16" length="middle" rot="R180"/>
 <pin name="MT_X_A@1" x="-66.04" y="7.62" length="middle"/>
-<pin name="MT_X_B@1" x="-12.7" y="7.62" length="middle" rot="R180"/>
+<pin name="MT_X_A@2" x="-12.7" y="7.62" length="middle" rot="R180"/>
 <pin name="MT_Y_A@1" x="12.7" y="7.62" length="middle"/>
-<pin name="MT_Y_B@1" x="63.5" y="7.62" length="middle" rot="R180"/>
-<pin name="MT_X_A@2" x="-66.04" y="5.08" length="middle"/>
+<pin name="MT_Y_A@2" x="63.5" y="7.62" length="middle" rot="R180"/>
+<pin name="MT_X_B@1" x="-66.04" y="5.08" length="middle"/>
 <pin name="MT_X_B@2" x="-12.7" y="5.08" length="middle" rot="R180"/>
-<pin name="MT_Y_A@2" x="12.7" y="5.08" length="middle"/>
+<pin name="MT_Y_B@1" x="12.7" y="5.08" length="middle"/>
 <pin name="MT_Y_B@2" x="63.5" y="5.08" length="middle" rot="R180"/>
 <pin name="SYNC1" x="-66.04" y="2.54" length="middle"/>
 <pin name="P$46" x="-12.7" y="2.54" length="middle" rot="R180"/>
@@ -6583,12 +6583,12 @@ datasheats:
 <connect gate="G$1" pin="GEN_VBATT$35" pad="P$35"/>
 <connect gate="G$1" pin="GEN_VBATT$36" pad="P$36"/>
 <connect gate="G$1" pin="MT_X_A@1" pad="P$37"/>
-<connect gate="G$1" pin="MT_X_A@2" pad="P$41"/>
-<connect gate="G$1" pin="MT_X_B@1" pad="P$38"/>
+<connect gate="G$1" pin="MT_X_A@2" pad="P$38"/>
+<connect gate="G$1" pin="MT_X_B@1" pad="P$41"/>
 <connect gate="G$1" pin="MT_X_B@2" pad="P$42"/>
 <connect gate="G$1" pin="MT_Y_A@1" pad="P$39"/>
-<connect gate="G$1" pin="MT_Y_A@2" pad="P$43"/>
-<connect gate="G$1" pin="MT_Y_B@1" pad="P$40"/>
+<connect gate="G$1" pin="MT_Y_A@2" pad="P$40"/>
+<connect gate="G$1" pin="MT_Y_B@1" pad="P$43"/>
 <connect gate="G$1" pin="MT_Y_B@2" pad="P$44"/>
 <connect gate="G$1" pin="P$46" pad="P$46"/>
 <connect gate="G$1" pin="P$47" pad="P$47"/>
