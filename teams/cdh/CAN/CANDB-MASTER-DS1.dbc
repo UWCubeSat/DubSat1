@@ -42,7 +42,29 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
-BO_ 2148663304 cmd_reboot_request: 1 rahs
+BO_ 2449998321 cmd_com2_run: 2 Vector__XXX
+ SG_ cmd_com2_run_clear : 9|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ cmd_com2_run_jump : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ cmd_com2_run_fileno : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2452095472 com2_state: 8 com_2
+ SG_ com2_state_health_state : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ com2_state_curr_file : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ com2_state_qfilesize : 32|16@1+ (1,0) [0|65535] "kB" Vector__XXX
+ SG_ com2_state_qlen : 16|16@1+ (1,0) [0|65535] "files" Vector__XXX
+ SG_ com2_state_uptime : 0|16@1+ (1,0) [0|65535] "s" Vector__XXX
+
+BO_ 2450784513 cmd_pd_enable: 2 Vector__XXX
+ SG_ cmd_pd_enable_enable : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ cmd_pd_enable_domain : 0|8@1+ (1,0) [0|8] "" Vector__XXX
+
+BO_ 2451833090 cmd_batt_rst: 1 Vector__XXX
+ SG_ cmd_batt_rst_confirm : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 2451833091 cmd_batt_bal_enable: 1 Vector__XXX
+ SG_ cmd_batt_bal_enable_enable : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 2148794376 cmd_reboot_request: 1 rahs
  SG_ cmd_reboot_request_domain : 0|8@1+ (1,0) [0|8] "" Vector__XXX
 
 BO_ 2451832868 cmd_ignore_fsw: 1 Vector__XXX
@@ -155,13 +177,19 @@ BO_ 2147549201 sync_1: 0 ppt
 BO_ 2183725075 msp_temp: 2 rahs
  SG_ msp_temp_temp : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
 
-BO_TX_BU_ 2148663304 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_batt,eps_dist,eps_gen,ppt,rahs;
+BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_batt,eps_dist,eps_gen,ppt,rahs;
 BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
-VAL_ 2148663304 cmd_reboot_request_domain 8 "unk" 7 "com1" 6 "com2" 5 "rahs" 4 "bdot" 3 "estim" 2 "wheel" 1 "eps" 0 "ppt" ;
+VAL_ 2449998321 cmd_com2_run_clear 1 "true" 0 "false" ;
+VAL_ 2449998321 cmd_com2_run_jump 1 "true" 0 "false" ;
+VAL_ 2450784513 cmd_pd_enable_enable 1 "true" 0 "false" ;
+VAL_ 2450784513 cmd_pd_enable_domain 8 "unk" 7 "com1" 6 "com2" 5 "rahs" 4 "bdot" 3 "estim" 2 "wheel" 1 "eps" 0 "ppt" ;
+VAL_ 2451833090 cmd_batt_rst_confirm 1 "true" 0 "false" ;
+VAL_ 2451833091 cmd_batt_bal_enable_enable 1 "true" 0 "false" ;
+VAL_ 2148794376 cmd_reboot_request_domain 8 "unk" 7 "com1" 6 "com2" 5 "rahs" 4 "bdot" 3 "estim" 2 "wheel" 1 "eps" 0 "ppt" ;
 VAL_ 2451832868 cmd_ignore_fsw_ignore 1 "true" 0 "false" ;
 VAL_ 2451832867 cmd_mtq_fsw_sc_mode 3 "not tumbling charlie" 2 "not tumbling bob" 1 "not tumbling alice" 0 "tumbling" ;
 VAL_ 2451701984 eps_domain_output_state 1 "true" 0 "false" ;
