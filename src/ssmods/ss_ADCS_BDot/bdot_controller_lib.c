@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'bdot_controller_lib'.
  *
- * Model version                  : 1.28
+ * Model version                  : 1.330
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Mon Aug 28 19:59:51 2017
+ * C/C++ source code generated on : Wed Apr 11 19:37:04 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -34,82 +34,18 @@ ExtY rtY;
 RT_MODEL rtM_;
 RT_MODEL *const rtM = &rtM_;
 
-/* Model step function for TID0 */
-void bdot_controller_lib_step0(void)   /* Sample time: [0.025s, 0.0s] */
-{
-  /* Update the flag to indicate when data transfers from
-   *  Sample time: [0.025s, 0.0s] to Sample time: [0.1s, 0.0s]  */
-  (rtM->Timing.RateInteraction.TID0_1)++;
-  if ((rtM->Timing.RateInteraction.TID0_1) > 3) {
-    rtM->Timing.RateInteraction.TID0_1 = 0;
-  }
-
-  /* RateTransition: '<S1>/Rate Transition3' incorporates:
-   *  Inport: '<Root>/MT_on'
-   */
-  if (!(rtDW.RateTransition3_semaphoreTaken != 0)) {
-    rtDW.RateTransition3_Buffer0 = rtU.MT_on;
-  }
-
-  /* End of RateTransition: '<S1>/Rate Transition3' */
-
-  /* RateTransition: '<S1>/Rate Transition2' incorporates:
-   *  Inport: '<Root>/B_meas_valid'
-   */
-  if (!(rtDW.RateTransition2_semaphoreTaken != 0)) {
-    rtDW.RateTransition2_Buffer0 = rtU.B_meas_valid;
-  }
-
-  /* End of RateTransition: '<S1>/Rate Transition2' */
-
-  /* RateTransition: '<S1>/Rate Transition1' */
-  if (rtM->Timing.RateInteraction.TID0_1 == 1) {
-    /* Outport: '<Root>/Dig_val' */
-    rtY.Dig_val[0] = rtDW.RateTransition1_Buffer0[0];
-    rtY.Dig_val[1] = rtDW.RateTransition1_Buffer0[1];
-    rtY.Dig_val[2] = rtDW.RateTransition1_Buffer0[2];
-  }
-
-  /* End of RateTransition: '<S1>/Rate Transition1' */
-
-  /* RateTransition: '<S1>/Rate Transition4' incorporates:
-   *  Inport: '<Root>/B_body_in_T'
-   */
-  if (!(rtDW.RateTransition4_semaphoreTaken != 0)) {
-    rtDW.RateTransition4_Buffer0[0] = rtU.B_body_in_T[0];
-    rtDW.RateTransition4_Buffer0[1] = rtU.B_body_in_T[1];
-    rtDW.RateTransition4_Buffer0[2] = rtU.B_body_in_T[2];
-  }
-
-  /* End of RateTransition: '<S1>/Rate Transition4' */
-}
-
-/* Model step function for TID1 */
-void bdot_controller_lib_step1(void)   /* Sample time: [0.1s, 0.0s] */
+/* Model step function */
+void bdot_controller_lib_step(void)
 {
   int16_T k;
-  real_T rtb_RateTransition3;
-  boolean_T rtb_LogicalOperator1;
-  real_T rtb_RateTransition2;
-  real_T rtb_Sum[3];
+  real_T rtb_Diff[3];
+  real_T rtb_TSamp[3];
   real_T rtb_MultiportSwitch1[3];
-  real_T rtb_MultiportSwitch2[3];
-  real_T rtb_RateTransition4[3];
-  real_T Product[3];
-  real_T u0;
-
-  /* RateTransition: '<S1>/Rate Transition3' */
-  rtDW.RateTransition3_semaphoreTaken = 1;
-  rtb_RateTransition3 = rtDW.RateTransition3_Buffer0;
-  rtDW.RateTransition3_semaphoreTaken = 0;
-
-  /* Logic: '<S1>/Logical Operator1' */
-  rtb_LogicalOperator1 = !(rtb_RateTransition3 != 0.0);
-
-  /* RateTransition: '<S1>/Rate Transition2' */
-  rtDW.RateTransition2_semaphoreTaken = 1;
-  rtb_RateTransition2 = rtDW.RateTransition2_Buffer0;
-  rtDW.RateTransition2_semaphoreTaken = 0;
+  real_T rtb_Product[3];
+  real_T rtb_Sum_idx_0;
+  real_T rtb_Sum_idx_1;
+  real_T rtb_Sum_idx_2;
+  real_T v;
 
   /* SampleTimeMath: '<S2>/TSamp' incorporates:
    *  DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
@@ -118,14 +54,12 @@ void bdot_controller_lib_step1(void)   /* Sample time: [0.1s, 0.0s] */
    * About '<S2>/TSamp':
    *  y = u * K where K = 1 / ( w * Ts )
    */
-  rtb_Sum[0] = 0.060898632575707344 * rtDW.DiscreteTransferFcn_states[0L] * 10.0;
-  rtb_Sum[1] = 0.060898632575707344 * rtDW.DiscreteTransferFcn_states[1L] * 10.0;
-  rtb_Sum[2] = 0.060898632575707344 * rtDW.DiscreteTransferFcn_states[2L] * 10.0;
+  rtb_TSamp[0] = 0.060898632575707344 * rtDW.DiscreteTransferFcn_states[0L] *
+    10.0;
 
-  /* MultiPortSwitch: '<S1>/Multiport Switch1' incorporates:
-   *  Logic: '<S1>/Logical Operator'
-   *  Sum: '<S2>/Diff'
-   *  UnitDelay: '<S1>/Unit Delay'
+  /* Sum: '<S2>/Diff' incorporates:
+   *  DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
+   *  Update for DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
    *  UnitDelay: '<S2>/UD'
    *
    * Block description for '<S2>/Diff':
@@ -136,92 +70,218 @@ void bdot_controller_lib_step1(void)   /* Sample time: [0.1s, 0.0s] */
    *
    *  Store in Global RAM
    */
-  if (!(rtb_LogicalOperator1 && (rtb_RateTransition2 != 0.0))) {
+  rtb_Diff[0] = rtb_TSamp[0] - rtDW.UD_DSTATE[0];
+
+  /* SampleTimeMath: '<S2>/TSamp' incorporates:
+   *  DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
+   *  Update for DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
+   *
+   * About '<S2>/TSamp':
+   *  y = u * K where K = 1 / ( w * Ts )
+   */
+  rtb_TSamp[1] = 0.060898632575707344 * rtDW.DiscreteTransferFcn_states[1L] *
+    10.0;
+
+  /* Sum: '<S2>/Diff' incorporates:
+   *  DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
+   *  Update for DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
+   *  UnitDelay: '<S2>/UD'
+   *
+   * Block description for '<S2>/Diff':
+   *
+   *  Add in CPU
+   *
+   * Block description for '<S2>/UD':
+   *
+   *  Store in Global RAM
+   */
+  rtb_Diff[1] = rtb_TSamp[1] - rtDW.UD_DSTATE[1];
+
+  /* SampleTimeMath: '<S2>/TSamp' incorporates:
+   *  DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
+   *  Update for DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
+   *
+   * About '<S2>/TSamp':
+   *  y = u * K where K = 1 / ( w * Ts )
+   */
+  rtb_TSamp[2] = 0.060898632575707344 * rtDW.DiscreteTransferFcn_states[2L] *
+    10.0;
+
+  /* Sum: '<S2>/Diff' incorporates:
+   *  DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
+   *  Update for DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
+   *  UnitDelay: '<S2>/UD'
+   *
+   * Block description for '<S2>/Diff':
+   *
+   *  Add in CPU
+   *
+   * Block description for '<S2>/UD':
+   *
+   *  Store in Global RAM
+   */
+  rtb_Diff[2] = rtb_TSamp[2] - rtDW.UD_DSTATE[2];
+
+  /* MultiPortSwitch: '<S1>/Multiport Switch1' incorporates:
+   *  Inport: '<Root>/B_meas_valid'
+   *  Inport: '<Root>/MT_on'
+   *  Logic: '<S1>/Logical Operator'
+   *  Logic: '<S1>/Logical Operator1'
+   *  UnitDelay: '<S1>/Unit Delay'
+   */
+  if (!((!(rtU.MT_on != 0.0)) && (rtU.B_meas_valid != 0.0))) {
     rtb_MultiportSwitch1[0] = rtDW.UnitDelay_DSTATE[0];
     rtb_MultiportSwitch1[1] = rtDW.UnitDelay_DSTATE[1];
     rtb_MultiportSwitch1[2] = rtDW.UnitDelay_DSTATE[2];
   } else {
-    rtb_MultiportSwitch1[0] = rtb_Sum[0] - rtDW.UD_DSTATE[0];
-    rtb_MultiportSwitch1[1] = rtb_Sum[1] - rtDW.UD_DSTATE[1];
-    rtb_MultiportSwitch1[2] = rtb_Sum[2] - rtDW.UD_DSTATE[2];
+    rtb_MultiportSwitch1[0] = rtb_Diff[0];
+    rtb_MultiportSwitch1[1] = rtb_Diff[1];
+    rtb_MultiportSwitch1[2] = rtb_Diff[2];
   }
 
   /* End of MultiPortSwitch: '<S1>/Multiport Switch1' */
 
   /* MultiPortSwitch: '<S1>/Multiport Switch2' incorporates:
    *  Gain: '<S1>/To DigVal1'
+   *  Gain: '<S1>/To DigVal2'
+   *  Gain: '<S1>/To DigVal3'
+   *  Inport: '<Root>/MT_on'
    */
-  if (!rtb_LogicalOperator1) {
-    rtb_MultiportSwitch2[0] = 0.0;
-    rtb_MultiportSwitch2[1] = 0.0;
-    rtb_MultiportSwitch2[2] = 0.0;
+  if ((int16_T)rtU.MT_on != 0) {
+    rtb_Sum_idx_0 = 0.0;
+    rtb_Sum_idx_1 = 0.0;
+    rtb_Sum_idx_2 = 0.0;
   } else {
-    /* Gain: '<S1>/Control Gain' */
-    u0 = -75000.0 * rtb_MultiportSwitch1[0];
-
-    /* Saturate: '<S1>/Saturation' */
-    if (u0 > 0.15) {
-      u0 = 0.15;
-    } else {
-      if (u0 < -0.15) {
-        u0 = -0.15;
-      }
+    /* Product: '<S1>/Product' incorporates:
+     *  Constant: '<S1>/gain matrix'
+     */
+    for (k = 0; k < 3; k++) {
+      rtb_Product[k] = rtConstP.gainmatrix_Value[k + 6] * rtb_MultiportSwitch1[2]
+        + (rtConstP.gainmatrix_Value[k + 3] * rtb_MultiportSwitch1[1] +
+           rtConstP.gainmatrix_Value[k] * rtb_MultiportSwitch1[0]);
     }
 
-    rtb_MultiportSwitch2[0] = 1700.0000000000002 * u0;
+    /* End of Product: '<S1>/Product' */
 
-    /* Gain: '<S1>/Control Gain' incorporates:
+    /* Saturate: '<S1>/Saturation1' */
+    if (rtb_Product[0] > 0.15) {
+      rtb_Sum_idx_2 = 0.15;
+    } else if (rtb_Product[0] < -0.15) {
+      rtb_Sum_idx_2 = -0.15;
+    } else {
+      rtb_Sum_idx_2 = rtb_Product[0];
+    }
+
+    /* End of Saturate: '<S1>/Saturation1' */
+    rtb_Sum_idx_0 = 846.66666666666663 * rtb_Sum_idx_2;
+
+    /* Saturate: '<S1>/Saturation2' incorporates:
      *  Gain: '<S1>/To DigVal1'
      */
-    u0 = -75000.0 * rtb_MultiportSwitch1[1];
-
-    /* Saturate: '<S1>/Saturation' */
-    if (u0 > 0.15) {
-      u0 = 0.15;
+    if (rtb_Product[1] > 0.15) {
+      rtb_Sum_idx_2 = 0.15;
+    } else if (rtb_Product[1] < -0.15) {
+      rtb_Sum_idx_2 = -0.15;
     } else {
-      if (u0 < -0.15) {
-        u0 = -0.15;
-      }
+      rtb_Sum_idx_2 = rtb_Product[1];
     }
 
-    rtb_MultiportSwitch2[1] = 1700.0000000000002 * u0;
+    /* End of Saturate: '<S1>/Saturation2' */
+    rtb_Sum_idx_1 = 846.66666666666663 * rtb_Sum_idx_2;
 
-    /* Gain: '<S1>/Control Gain' incorporates:
-     *  Gain: '<S1>/To DigVal1'
+    /* Saturate: '<S1>/Saturation3' incorporates:
+     *  Gain: '<S1>/To DigVal2'
      */
-    u0 = -75000.0 * rtb_MultiportSwitch1[2];
-
-    /* Saturate: '<S1>/Saturation' */
-    if (u0 > 0.15) {
-      u0 = 0.15;
+    if (rtb_Product[2] > 0.15) {
+      rtb_Sum_idx_2 = 0.15;
+    } else if (rtb_Product[2] < -0.15) {
+      rtb_Sum_idx_2 = -0.15;
     } else {
-      if (u0 < -0.15) {
-        u0 = -0.15;
-      }
+      rtb_Sum_idx_2 = rtb_Product[2];
     }
 
-    rtb_MultiportSwitch2[2] = 1700.0000000000002 * u0;
+    /* End of Saturate: '<S1>/Saturation3' */
+    rtb_Sum_idx_2 *= 846.66666666666663;
   }
 
   /* End of MultiPortSwitch: '<S1>/Multiport Switch2' */
 
-  /* RateTransition: '<S1>/Rate Transition4' */
-  rtDW.RateTransition4_semaphoreTaken = 1;
-  rtb_RateTransition4[0] = rtDW.RateTransition4_Buffer0[0];
-  rtb_RateTransition4[1] = rtDW.RateTransition4_Buffer0[1];
-  rtb_RateTransition4[2] = rtDW.RateTransition4_Buffer0[2];
-  rtDW.RateTransition4_semaphoreTaken = 0;
+  /* DataTypeConversion: '<S1>/Data Type Conversion' */
+  v = fabs(rtb_Sum_idx_0);
+  if (v < 4.503599627370496E+15) {
+    if (v >= 0.5) {
+      /* Outport: '<Root>/Dig_val' */
+      rtY.Dig_val[0] = (int8_T)floor(rtb_Sum_idx_0 + 0.5);
+    } else {
+      /* Outport: '<Root>/Dig_val' */
+      rtY.Dig_val[0] = (int8_T)(rtb_Sum_idx_0 * 0.0);
+    }
+  } else {
+    /* Outport: '<Root>/Dig_val' */
+    rtY.Dig_val[0] = (int8_T)rtb_Sum_idx_0;
+  }
+
+  v = fabs(rtb_Sum_idx_1);
+  if (v < 4.503599627370496E+15) {
+    if (v >= 0.5) {
+      /* Outport: '<Root>/Dig_val' */
+      rtY.Dig_val[1] = (int8_T)floor(rtb_Sum_idx_1 + 0.5);
+    } else {
+      /* Outport: '<Root>/Dig_val' */
+      rtY.Dig_val[1] = (int8_T)(rtb_Sum_idx_1 * 0.0);
+    }
+  } else {
+    /* Outport: '<Root>/Dig_val' */
+    rtY.Dig_val[1] = (int8_T)rtb_Sum_idx_1;
+  }
+
+  v = fabs(rtb_Sum_idx_2);
+  if (v < 4.503599627370496E+15) {
+    if (v >= 0.5) {
+      /* Outport: '<Root>/Dig_val' */
+      rtY.Dig_val[2] = (int8_T)floor(rtb_Sum_idx_2 + 0.5);
+    } else {
+      /* Outport: '<Root>/Dig_val' */
+      rtY.Dig_val[2] = (int8_T)(rtb_Sum_idx_2 * 0.0);
+    }
+  } else {
+    /* Outport: '<Root>/Dig_val' */
+    rtY.Dig_val[2] = (int8_T)rtb_Sum_idx_2;
+  }
+
+  /* End of DataTypeConversion: '<S1>/Data Type Conversion' */
+
+  /* Sqrt: '<S1>/Sqrt' incorporates:
+   *  DotProduct: '<S1>/Dot Product'
+   */
+  rtb_Sum_idx_0 = sqrt((rtb_Diff[0] * rtb_Diff[0] + rtb_Diff[1] * rtb_Diff[1]) +
+                       rtb_Diff[2] * rtb_Diff[2]);
+
+  /* Relay: '<S1>/Relay' */
+  if (rtb_Sum_idx_0 >= 2.9698484809834993E-6) {
+    rtDW.Relay_Mode = true;
+  } else {
+    if (rtb_Sum_idx_0 <= 1.0790449480906716E-7) {
+      rtDW.Relay_Mode = false;
+    }
+  }
+
+  /* Outport: '<Root>/tumble' incorporates:
+   *  Relay: '<S1>/Relay'
+   */
+  rtY.tumble = rtDW.Relay_Mode;
   for (k = 0; k < 3; k++) {
     /* Product: '<S3>/Product' incorporates:
      *  Constant: '<S3>/Constant1'
      *  DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
      *  Update for DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
+     *  Inport: '<Root>/B_body_in_T'
      *  Sum: '<S3>/Sum'
      */
-    Product[k] = 0.0;
-    Product[k] += rtConstP.Constant1_Value[k] * rtb_RateTransition4[0];
-    Product[k] += rtConstP.Constant1_Value[k + 3] * rtb_RateTransition4[1];
-    Product[k] += rtConstP.Constant1_Value[k + 6] * rtb_RateTransition4[2];
+    rtb_Diff[k] = 0.0;
+    rtb_Diff[k] += rtConstP.Constant1_Value[k] * rtU.B_body_in_T[0];
+    rtb_Diff[k] += rtConstP.Constant1_Value[k + 3] * rtU.B_body_in_T[1];
+    rtb_Diff[k] += rtConstP.Constant1_Value[k + 6] * rtU.B_body_in_T[2];
 
     /* Update for UnitDelay: '<S1>/Unit Delay' incorporates:
      *  DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
@@ -230,7 +290,7 @@ void bdot_controller_lib_step1(void)   /* Sample time: [0.1s, 0.0s] */
     rtDW.UnitDelay_DSTATE[k] = rtb_MultiportSwitch1[k];
 
     /* Update for DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn' */
-    rtDW.DiscreteTransferFcn_states[(int32_T)k] = Product[(int32_T)k] -
+    rtDW.DiscreteTransferFcn_states[(int32_T)k] = rtb_Diff[(int32_T)k] -
       -0.93910136742429262 * rtDW.DiscreteTransferFcn_states[(int32_T)k];
 
     /* Update for UnitDelay: '<S2>/UD' incorporates:
@@ -241,13 +301,7 @@ void bdot_controller_lib_step1(void)   /* Sample time: [0.1s, 0.0s] */
      *
      *  Store in Global RAM
      */
-    rtDW.UD_DSTATE[k] = rtb_Sum[k];
-
-    /* Update for RateTransition: '<S1>/Rate Transition1' incorporates:
-     *  DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
-     *  Update for DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
-     */
-    rtDW.RateTransition1_Buffer0[k] = rtb_MultiportSwitch2[k];
+    rtDW.UD_DSTATE[k] = rtb_TSamp[k];
   }
 }
 

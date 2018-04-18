@@ -46,7 +46,6 @@
 typedef enum _unitConversionMode {
     ConvertToNanoTeslas,
     ConvertToTeslas,
-    ConvertToNone, // skip conversions
 } UnitConversionMode;
 
 // Raw values are magnetometer-dependent
@@ -65,18 +64,11 @@ typedef struct  {
     double convertedTemp;
 } MagnetometerData;
 
-typedef uint8_t hMag;
-
-/*
- * Initializes a magnetometer on a specific I2C bus.
- * Initialize no more than one per bus.
- *
- * Returns the magnetometer's handle to be passed to other mag. functions
- */
-hMag magInit(bus_instance_i2c bus);
-
-MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode mode);
-void selfTestConfig(hMag handle);
-void normalOperationConfig(hMag handle);
+// Main entry points
+void magInit();
+MagnetometerData *magReadXYZData(UnitConversionMode);
+void selfTestConfig();
+void normalOperationConfig();
 
 #endif /* MAGNETOMETER_H_ */
+
