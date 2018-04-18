@@ -3,13 +3,13 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * File: MSP_SP0.c
+ * File: MSP_SP.c
  *
- * Code generated for Simulink model 'MSP_SP0'.
+ * Code generated for Simulink model 'MSP_SP'.
  *
- * Model version                  : 1.345
+ * Model version                  : 1.347
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Sat Apr 14 22:03:33 2018
+ * C/C++ source code generated on : Mon Apr 16 23:50:11 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -19,7 +19,7 @@
  * Validation result: Not run
  */
 
-#include "MSP_SP0.h"
+#include "MSP_SP.h"
 
 /* Block signals and states (auto storage) */
 DW rtDW;
@@ -35,13 +35,7 @@ RT_MODEL rtM_;
 RT_MODEL *const rtM = &rtM_;
 
 /* Model step function for TID0 */
-void MSP_SP0_step0(void)               /* Sample time: [0.01s, 0.0s] */
-{
-  /* (no output/update code required) */
-}
-
-/* Model step function for TID1 */
-void MSP_SP0_step1(void)               /* Sample time: [0.02s, 0.0s] */
+void MSP_SP_step0(void)                /* Sample time: [0.025s, 0.0s] */
 {
   real32_T denAccum;
   int16_T i;
@@ -49,49 +43,64 @@ void MSP_SP0_step1(void)               /* Sample time: [0.02s, 0.0s] */
   real32_T rtb_DiscreteTransferFcn1_idx_1;
 
   /* Update the flag to indicate when data transfers from
-   *  Sample time: [0.02s, 0.0s] to Sample time: [0.1s, 0.0s]  */
-  (rtM->Timing.RateInteraction.TID1_3)++;
-  if ((rtM->Timing.RateInteraction.TID1_3) > 4) {
-    rtM->Timing.RateInteraction.TID1_3 = 0;
+   *  Sample time: [0.025s, 0.0s] to Sample time: [0.05s, 0.0s]  */
+  (rtM->Timing.RateInteraction.TID0_1)++;
+  if ((rtM->Timing.RateInteraction.TID0_1) > 1) {
+    rtM->Timing.RateInteraction.TID0_1 = 0;
+  }
+
+  /* Update the flag to indicate when data transfers from
+   *  Sample time: [0.025s, 0.0s] to Sample time: [0.1s, 0.0s]  */
+  (rtM->Timing.RateInteraction.TID0_2)++;
+  if ((rtM->Timing.RateInteraction.TID0_2) > 3) {
+    rtM->Timing.RateInteraction.TID0_2 = 0;
   }
 
   /* RateTransition: '<S3>/Rate Transition2' incorporates:
    *  Inport: '<Root>/mag2_body_T'
    */
-  rtDW.RateTransition2_Buffer[(rtDW.RateTransition2_semaphoreTaken == 0) << 2] =
-    rtU.mag2_vec_body_T[0];
-  rtDW.RateTransition2_Buffer[1 + ((rtDW.RateTransition2_semaphoreTaken == 0) <<
-    2)] = rtU.mag2_vec_body_T[1];
-  rtDW.RateTransition2_Buffer[2 + ((rtDW.RateTransition2_semaphoreTaken == 0) <<
-    2)] = rtU.mag2_vec_body_T[2];
-  rtDW.RateTransition2_Buffer[3 + ((rtDW.RateTransition2_semaphoreTaken == 0) <<
-    2)] = rtU.mag2_vec_body_T[3];
-  rtDW.RateTransition2_ActiveBufIdx = (int8_T)
-    (rtDW.RateTransition2_semaphoreTaken == 0);
+  if (rtM->Timing.RateInteraction.TID0_1 == 1) {
+    rtDW.RateTransition2[0] = rtU.mag2_vec_body_T[0];
 
-  /* RateTransition: '<S3>/Rate Transition' incorporates:
-   *  Inport: '<Root>/mag1_body_T'
-   */
-  rtDW.RateTransition_Buffer[(rtDW.RateTransition_semaphoreTaken == 0) << 2] =
-    rtU.mag1_vec_body_T[0];
-  rtDW.RateTransition_Buffer[1 + ((rtDW.RateTransition_semaphoreTaken == 0) << 2)]
-    = rtU.mag1_vec_body_T[1];
-  rtDW.RateTransition_Buffer[2 + ((rtDW.RateTransition_semaphoreTaken == 0) << 2)]
-    = rtU.mag1_vec_body_T[2];
-  rtDW.RateTransition_Buffer[3 + ((rtDW.RateTransition_semaphoreTaken == 0) << 2)]
-    = rtU.mag1_vec_body_T[3];
-  rtDW.RateTransition_ActiveBufIdx = (int8_T)(rtDW.RateTransition_semaphoreTaken
-    == 0);
+    /* RateTransition: '<S3>/Rate Transition' incorporates:
+     *  Inport: '<Root>/mag1_body_T'
+     *  Inport: '<Root>/mag2_body_T'
+     */
+    rtDW.RateTransition[0] = rtU.mag1_vec_body_T[0];
+    rtDW.RateTransition2[1] = rtU.mag2_vec_body_T[1];
+
+    /* RateTransition: '<S3>/Rate Transition' incorporates:
+     *  Inport: '<Root>/mag1_body_T'
+     *  Inport: '<Root>/mag2_body_T'
+     */
+    rtDW.RateTransition[1] = rtU.mag1_vec_body_T[1];
+    rtDW.RateTransition2[2] = rtU.mag2_vec_body_T[2];
+
+    /* RateTransition: '<S3>/Rate Transition' incorporates:
+     *  Inport: '<Root>/mag1_body_T'
+     *  Inport: '<Root>/mag2_body_T'
+     */
+    rtDW.RateTransition[2] = rtU.mag1_vec_body_T[2];
+    rtDW.RateTransition2[3] = rtU.mag2_vec_body_T[3];
+
+    /* RateTransition: '<S3>/Rate Transition' incorporates:
+     *  Inport: '<Root>/mag1_body_T'
+     *  Inport: '<Root>/mag2_body_T'
+     */
+    rtDW.RateTransition[3] = rtU.mag1_vec_body_T[3];
+  }
+
+  /* End of RateTransition: '<S3>/Rate Transition2' */
 
   /* DiscreteTransferFcn: '<S2>/Discrete Transfer Fcn1' */
-  rtb_DiscreteTransferFcn1_idx_0 = 0.118088625F *
-    rtDW.DiscreteTransferFcn1_states[0L];
-  rtb_DiscreteTransferFcn1_idx_1 = 0.118088625F *
-    rtDW.DiscreteTransferFcn1_states[1L];
-  denAccum = 0.118088625F * rtDW.DiscreteTransferFcn1_states[2L];
+  rtb_DiscreteTransferFcn1_idx_0 = 0.145364F * rtDW.DiscreteTransferFcn1_states
+    [0L];
+  rtb_DiscreteTransferFcn1_idx_1 = 0.145364F * rtDW.DiscreteTransferFcn1_states
+    [1L];
+  denAccum = 0.145364F * rtDW.DiscreteTransferFcn1_states[2L];
 
   /* RateTransition: '<S2>/Rate Transition1' */
-  if (rtM->Timing.RateInteraction.TID1_3 == 1) {
+  if (rtM->Timing.RateInteraction.TID0_2 == 1) {
     /* Outport: '<Root>/omega_radps_processed' incorporates:
      *  Inport: '<Root>/omega_radps_gyro'
      */
@@ -119,30 +128,27 @@ void MSP_SP0_step1(void)               /* Sample time: [0.02s, 0.0s] */
    *  Update for Inport: '<Root>/omega_radps_gyro'
    */
   rtDW.DiscreteTransferFcn1_states[0L] = rtU.omega_body_radps_gyro[0L] -
-    -0.881911397F * rtDW.DiscreteTransferFcn1_states[0L];
+    -0.854636F * rtDW.DiscreteTransferFcn1_states[0L];
   rtDW.DiscreteTransferFcn1_states[1L] = rtU.omega_body_radps_gyro[1L] -
-    -0.881911397F * rtDW.DiscreteTransferFcn1_states[1L];
+    -0.854636F * rtDW.DiscreteTransferFcn1_states[1L];
   rtDW.DiscreteTransferFcn1_states[2L] = rtU.omega_body_radps_gyro[2L] -
-    -0.881911397F * rtDW.DiscreteTransferFcn1_states[2L];
+    -0.854636F * rtDW.DiscreteTransferFcn1_states[2L];
 }
 
-/* Model step function for TID2 */
-void MSP_SP0_step2(void)               /* Sample time: [0.05s, 0.0s] */
+/* Model step function for TID1 */
+void MSP_SP_step1(void)                /* Sample time: [0.05s, 0.0s] */
 {
   real32_T denAccum;
   real32_T tmp[3];
   int16_T i;
-  boolean_T tmp_0;
-  boolean_T tmp_1;
-  int16_T tmp_2;
   real32_T rtb_Switch_idx_0;
   real32_T rtb_Switch_idx_1;
 
   /* Update the flag to indicate when data transfers from
    *  Sample time: [0.05s, 0.0s] to Sample time: [0.1s, 0.0s]  */
-  (rtM->Timing.RateInteraction.TID2_3)++;
-  if ((rtM->Timing.RateInteraction.TID2_3) > 1) {
-    rtM->Timing.RateInteraction.TID2_3 = 0;
+  (rtM->Timing.RateInteraction.TID1_2)++;
+  if ((rtM->Timing.RateInteraction.TID1_2) > 1) {
+    rtM->Timing.RateInteraction.TID1_2 = 0;
   }
 
   /* DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn' */
@@ -150,14 +156,8 @@ void MSP_SP0_step2(void)               /* Sample time: [0.05s, 0.0s] */
   rtb_Switch_idx_1 = 0.0608986318F * rtDW.DiscreteTransferFcn_states[1L];
   denAccum = 0.0608986318F * rtDW.DiscreteTransferFcn_states[2L];
 
-  /* RateTransition: '<S3>/Rate Transition2' */
-  rtDW.RateTransition2_semaphoreTaken = rtDW.RateTransition2_ActiveBufIdx;
-
-  /* RateTransition: '<S3>/Rate Transition' */
-  rtDW.RateTransition_semaphoreTaken = rtDW.RateTransition_ActiveBufIdx;
-
   /* RateTransition: '<S3>/Rate Transition1' */
-  if (rtM->Timing.RateInteraction.TID2_3 == 1) {
+  if (rtM->Timing.RateInteraction.TID1_2 == 1) {
     /* Product: '<S3>/Product' incorporates:
      *  Constant: '<S3>/process_matrix'
      *  DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
@@ -182,49 +182,29 @@ void MSP_SP0_step2(void)               /* Sample time: [0.05s, 0.0s] */
     /* Outport: '<Root>/mag_body_processed_T' incorporates:
      *  DataTypeConversion: '<S3>/Data Type Conversion'
      *  Logic: '<S3>/Logical Operator'
-     *  RateTransition: '<S3>/Rate Transition'
-     *  RateTransition: '<S3>/Rate Transition2'
      */
-    rtY.mag_body_processed_T[3] = ((rtDW.RateTransition2_Buffer
-      [(rtDW.RateTransition2_ActiveBufIdx << 2) + 3] != 0.0F) ||
-      (rtDW.RateTransition_Buffer[(rtDW.RateTransition_ActiveBufIdx << 2) + 3]
-       != 0.0F));
+    rtY.mag_body_processed_T[3] = ((rtDW.RateTransition2[3] != 0.0F) ||
+      (rtDW.RateTransition[3] != 0.0F));
   }
 
   /* End of RateTransition: '<S3>/Rate Transition1' */
 
   /* Switch: '<S3>/Switch1' incorporates:
-   *  RateTransition: '<S3>/Rate Transition'
+   *  DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
+   *  Update for DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
    */
-  tmp_0 = (rtDW.RateTransition_Buffer[(rtDW.RateTransition_ActiveBufIdx << 2) +
-           3] != 0.0F);
-
-  /* RateTransition: '<S3>/Rate Transition' */
-  i = rtDW.RateTransition_ActiveBufIdx << 2;
-
-  /* Switch: '<S3>/Switch' incorporates:
-   *  RateTransition: '<S3>/Rate Transition2'
-   */
-  tmp_1 = (rtDW.RateTransition2_Buffer[(rtDW.RateTransition2_ActiveBufIdx << 2)
-           + 3] != 0.0F);
-
-  /* RateTransition: '<S3>/Rate Transition2' */
-  tmp_2 = rtDW.RateTransition2_ActiveBufIdx << 2;
-
-  /* Gain: '<S3>/Gain' incorporates:
-   *  RateTransition: '<S3>/Rate Transition'
-   *  RateTransition: '<S3>/Rate Transition2'
-   *  Switch: '<S3>/Switch'
-   *  Switch: '<S3>/Switch1'
-   */
-  if (tmp_0) {
-    rtb_Switch_idx_0 = rtDW.RateTransition_Buffer[i];
+  if (rtDW.RateTransition[3] != 0.0F) {
+    rtb_Switch_idx_0 = rtDW.RateTransition[0];
   } else {
     rtb_Switch_idx_0 = 0.0F;
   }
 
-  if (tmp_1) {
-    rtb_Switch_idx_1 = rtDW.RateTransition2_Buffer[tmp_2];
+  /* Switch: '<S3>/Switch' incorporates:
+   *  DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
+   *  Update for DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
+   */
+  if (rtDW.RateTransition2[3] != 0.0F) {
+    rtb_Switch_idx_1 = rtDW.RateTransition2[0];
   } else {
     rtb_Switch_idx_1 = 0.0F;
   }
@@ -236,20 +216,22 @@ void MSP_SP0_step2(void)               /* Sample time: [0.05s, 0.0s] */
   rtDW.DiscreteTransferFcn_states[0L] = (rtb_Switch_idx_0 + rtb_Switch_idx_1) *
     0.5F - -0.939101338F * rtDW.DiscreteTransferFcn_states[0L];
 
-  /* Gain: '<S3>/Gain' incorporates:
-   *  RateTransition: '<S3>/Rate Transition'
-   *  RateTransition: '<S3>/Rate Transition2'
-   *  Switch: '<S3>/Switch'
-   *  Switch: '<S3>/Switch1'
+  /* Switch: '<S3>/Switch1' incorporates:
+   *  DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
+   *  Update for DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
    */
-  if (tmp_0) {
-    rtb_Switch_idx_0 = rtDW.RateTransition_Buffer[1 + i];
+  if (rtDW.RateTransition[3] != 0.0F) {
+    rtb_Switch_idx_0 = rtDW.RateTransition[1];
   } else {
     rtb_Switch_idx_0 = 0.0F;
   }
 
-  if (tmp_1) {
-    rtb_Switch_idx_1 = rtDW.RateTransition2_Buffer[1 + tmp_2];
+  /* Switch: '<S3>/Switch' incorporates:
+   *  DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
+   *  Update for DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
+   */
+  if (rtDW.RateTransition2[3] != 0.0F) {
+    rtb_Switch_idx_1 = rtDW.RateTransition2[1];
   } else {
     rtb_Switch_idx_1 = 0.0F;
   }
@@ -261,20 +243,22 @@ void MSP_SP0_step2(void)               /* Sample time: [0.05s, 0.0s] */
   rtDW.DiscreteTransferFcn_states[1L] = (rtb_Switch_idx_0 + rtb_Switch_idx_1) *
     0.5F - -0.939101338F * rtDW.DiscreteTransferFcn_states[1L];
 
-  /* Gain: '<S3>/Gain' incorporates:
-   *  RateTransition: '<S3>/Rate Transition'
-   *  RateTransition: '<S3>/Rate Transition2'
-   *  Switch: '<S3>/Switch'
-   *  Switch: '<S3>/Switch1'
+  /* Switch: '<S3>/Switch1' incorporates:
+   *  DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
+   *  Update for DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
    */
-  if (tmp_0) {
-    rtb_Switch_idx_0 = rtDW.RateTransition_Buffer[2 + i];
+  if (rtDW.RateTransition[3] != 0.0F) {
+    rtb_Switch_idx_0 = rtDW.RateTransition[2];
   } else {
     rtb_Switch_idx_0 = 0.0F;
   }
 
-  if (tmp_1) {
-    rtb_Switch_idx_1 = rtDW.RateTransition2_Buffer[2 + tmp_2];
+  /* Switch: '<S3>/Switch' incorporates:
+   *  DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
+   *  Update for DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
+   */
+  if (rtDW.RateTransition2[3] != 0.0F) {
+    rtb_Switch_idx_1 = rtDW.RateTransition2[2];
   } else {
     rtb_Switch_idx_1 = 0.0F;
   }
@@ -287,8 +271,8 @@ void MSP_SP0_step2(void)               /* Sample time: [0.05s, 0.0s] */
     0.5F - -0.939101338F * rtDW.DiscreteTransferFcn_states[2L];
 }
 
-/* Model step function for TID3 */
-void MSP_SP0_step3(void)               /* Sample time: [0.1s, 0.0s] */
+/* Model step function for TID2 */
+void MSP_SP_step2(void)                /* Sample time: [0.1s, 0.0s] */
 {
   real32_T rtb_TrigonometricFunction;
   real32_T rtb_TrigonometricFunction1;
@@ -297,10 +281,10 @@ void MSP_SP0_step3(void)               /* Sample time: [0.1s, 0.0s] */
   real32_T u0;
 
   /* Trigonometry: '<S5>/Trigonometric Function' */
-  rtb_TrigonometricFunction = (real32_T)sin(rtDW.RateTransition1_m[0]);
+  rtb_TrigonometricFunction = sinf(rtDW.RateTransition1_m[0]);
 
   /* Trigonometry: '<S5>/Trigonometric Function1' */
-  rtb_TrigonometricFunction1 = (real32_T)sin(rtDW.RateTransition1_m[1]);
+  rtb_TrigonometricFunction1 = sinf(rtDW.RateTransition1_m[1]);
 
   /* Sqrt: '<S5>/Sqrt' incorporates:
    *  Constant: '<S5>/Constant'
@@ -322,7 +306,7 @@ void MSP_SP0_step3(void)               /* Sample time: [0.1s, 0.0s] */
   /* Sum: '<S4>/Sum' incorporates:
    *  Sqrt: '<S5>/Sqrt'
    */
-  u0 = (real32_T)sqrt(u0);
+  u0 = sqrtf(u0);
 
   /* Product: '<S4>/Product' incorporates:
    *  Constant: '<S4>/process_matrix'
@@ -350,13 +334,13 @@ void MSP_SP0_step3(void)               /* Sample time: [0.1s, 0.0s] */
 }
 
 /* Model initialize function */
-void MSP_SP0_initialize(void)
+void MSP_SP_initialize(void)
 {
   /* (no initialization code required) */
 }
 
 /* Model terminate function */
-void MSP_SP0_terminate(void)
+void MSP_SP_terminate(void)
 {
   /* (no terminate code required) */
 }

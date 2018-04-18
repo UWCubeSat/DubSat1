@@ -3,13 +3,13 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * File: MSP_SP0.h
+ * File: MSP_SP.h
  *
- * Code generated for Simulink model 'MSP_SP0'.
+ * Code generated for Simulink model 'MSP_SP'.
  *
- * Model version                  : 1.345
+ * Model version                  : 1.347
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Sat Apr 14 22:03:33 2018
+ * C/C++ source code generated on : Mon Apr 16 23:50:11 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -19,15 +19,15 @@
  * Validation result: Not run
  */
 
-#ifndef RTW_HEADER_MSP_SP0_h_
-#define RTW_HEADER_MSP_SP0_h_
+#ifndef RTW_HEADER_MSP_SP_h_
+#define RTW_HEADER_MSP_SP_h_
 #include <math.h>
-#ifndef MSP_SP0_COMMON_INCLUDES_
-# define MSP_SP0_COMMON_INCLUDES_
+#ifndef MSP_SP_COMMON_INCLUDES_
+# define MSP_SP_COMMON_INCLUDES_
 #include "rtwtypes.h"
 #include "rtw_continuous.h"
 #include "rtw_solver.h"
-#endif                                 /* MSP_SP0_COMMON_INCLUDES_ */
+#endif                                 /* MSP_SP_COMMON_INCLUDES_ */
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetErrorStatus
@@ -43,15 +43,11 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (auto storage) for system '<Root>' */
 typedef struct {
+  real32_T RateTransition2[4];         /* '<S3>/Rate Transition2' */
+  real32_T RateTransition[4];          /* '<S3>/Rate Transition' */
   real32_T RateTransition1_m[3];       /* '<S4>/Rate Transition1' */
   real32_T DiscreteTransferFcn_states[3];/* '<S3>/Discrete Transfer Fcn' */
   real32_T DiscreteTransferFcn1_states[3];/* '<S2>/Discrete Transfer Fcn1' */
-  real32_T RateTransition2_Buffer[8];  /* '<S3>/Rate Transition2' */
-  real32_T RateTransition_Buffer[8];   /* '<S3>/Rate Transition' */
-  int8_T RateTransition2_ActiveBufIdx; /* '<S3>/Rate Transition2' */
-  int8_T RateTransition2_semaphoreTaken;/* '<S3>/Rate Transition2' */
-  int8_T RateTransition_ActiveBufIdx;  /* '<S3>/Rate Transition' */
-  int8_T RateTransition_semaphoreTaken;/* '<S3>/Rate Transition' */
 } DW;
 
 /* Constant parameters (auto storage) */
@@ -93,8 +89,9 @@ struct tag_RTM {
    */
   struct {
     struct {
-      uint8_T TID1_3;
-      uint8_T TID2_3;
+      uint8_T TID0_1;
+      uint8_T TID0_2;
+      uint8_T TID1_2;
     } RateInteraction;
   } Timing;
 };
@@ -112,12 +109,11 @@ extern ExtY rtY;
 extern const ConstP rtConstP;
 
 /* Model entry point functions */
-extern void MSP_SP0_initialize(void);
-extern void MSP_SP0_step0(void);
-extern void MSP_SP0_step1(void);
-extern void MSP_SP0_step2(void);
-extern void MSP_SP0_step3(void);
-extern void MSP_SP0_terminate(void);
+extern void MSP_SP_initialize(void);
+extern void MSP_SP_step0(void);
+extern void MSP_SP_step1(void);
+extern void MSP_SP_step2(void);
+extern void MSP_SP_terminate(void);
 
 /* Real-time Model object */
 extern RT_MODEL *const rtM;
@@ -153,7 +149,7 @@ extern RT_MODEL *const rtM;
  * '<S4>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/sunsensor_processing_lib'
  * '<S5>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/sunsensor_processing_lib/angles_to_vec'
  */
-#endif                                 /* RTW_HEADER_MSP_SP0_h_ */
+#endif                                 /* RTW_HEADER_MSP_SP_h_ */
 
 /*
  * File trailer for generated code.

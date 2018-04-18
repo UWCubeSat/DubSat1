@@ -5,11 +5,11 @@
  *
  * File: ert_main.c
  *
- * Code generated for Simulink model 'MSP_SP0'.
+ * Code generated for Simulink model 'MSP_SP'.
  *
- * Model version                  : 1.345
+ * Model version                  : 1.347
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Sat Apr 14 22:03:33 2018
+ * C/C++ source code generated on : Mon Apr 16 23:50:11 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -21,7 +21,7 @@
 
 #include <stddef.h>
 #include <stdio.h>                     /* This ert_main.c example uses printf/fflush */
-#include "MSP_SP0.h"                   /* Model's header file */
+#include "MSP_SP.h"                    /* Model's header file */
 #include "rtwtypes.h"
 
 /*
@@ -38,11 +38,11 @@
 void rt_OneStep(void);
 void rt_OneStep(void)
 {
-  static boolean_T OverrunFlags[4] = { 0, 0, 0, 0 };
+  static boolean_T OverrunFlags[3] = { 0, 0, 0 };
 
-  static boolean_T eventFlags[4] = { 0, 0, 0, 0 };/* Model has 4 rates */
+  static boolean_T eventFlags[3] = { 0, 0, 0 };/* Model has 3 rates */
 
-  static int_T taskCounter[4] = { 0, 0, 0, 0 };
+  static int_T taskCounter[3] = { 0, 0, 0 };
 
   int_T i;
 
@@ -64,7 +64,7 @@ void rt_OneStep(void)
    * following code checks whether any subrate overruns,
    * and also sets the rates that need to run this time step.
    */
-  for (i = 1; i < 4; i++) {
+  for (i = 1; i < 3; i++) {
     if (taskCounter[i] == 0) {
       if (eventFlags[i]) {
         OverrunFlags[0] = false;
@@ -85,19 +85,14 @@ void rt_OneStep(void)
   }
 
   taskCounter[2]++;
-  if (taskCounter[2] == 5) {
+  if (taskCounter[2] == 4) {
     taskCounter[2]= 0;
-  }
-
-  taskCounter[3]++;
-  if (taskCounter[3] == 10) {
-    taskCounter[3]= 0;
   }
 
   /* Set model inputs associated with base rate here */
 
   /* Step the model for base rate */
-  MSP_SP0_step0();
+  MSP_SP_step0();
 
   /* Get model outputs here */
 
@@ -105,7 +100,7 @@ void rt_OneStep(void)
   OverrunFlags[0] = false;
 
   /* Step the model for any subrate */
-  for (i = 1; i < 4; i++) {
+  for (i = 1; i < 3; i++) {
     /* If task "i" is running, don't run any lower priority task */
     if (OverrunFlags[i]) {
       return;
@@ -119,19 +114,13 @@ void rt_OneStep(void)
       /* Step the model for subrate "i" */
       switch (i) {
        case 1 :
-        MSP_SP0_step1();
+        MSP_SP_step1();
 
         /* Get model outputs here */
         break;
 
        case 2 :
-        MSP_SP0_step2();
-
-        /* Get model outputs here */
-        break;
-
-       case 3 :
-        MSP_SP0_step3();
+        MSP_SP_step2();
 
         /* Get model outputs here */
         break;
@@ -164,10 +153,10 @@ int_T automain(int_T argc, const char *argv[])
   (void)(argv);
 
   /* Initialize model */
-  MSP_SP0_initialize();
+  MSP_SP_initialize();
 
   /* Attach rt_OneStep to a timer or interrupt service routine with
-   * period 0.01 seconds (the model's base sample time) here.  The
+   * period 0.025 seconds (the model's base sample time) here.  The
    * call syntax for rt_OneStep is
    *
    *  rt_OneStep();
@@ -183,7 +172,7 @@ int_T automain(int_T argc, const char *argv[])
   /* Disable rt_OneStep() here */
 
   /* Terminate model */
-  MSP_SP0_terminate();
+  MSP_SP_terminate();
   return 0;
 }
 

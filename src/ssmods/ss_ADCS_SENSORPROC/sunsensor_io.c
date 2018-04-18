@@ -12,7 +12,7 @@
 #include "interfaces/canwrap.h"
 #include "adcs_sensorproc_ids.h"
 
-#include "autocode/MSP_SP0.h"
+#include "autocode/MSP_SP.h"
 
 FILE_STATIC SunSensorAngle *angle;
 #if !ENABLE_SUNSENSOR

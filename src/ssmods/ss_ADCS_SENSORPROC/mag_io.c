@@ -13,7 +13,7 @@
 #include "core/utils.h"
 #include "interfaces/canwrap.h"
 
-#include "autocode/MSP_SP0.h"
+#include "autocode/MSP_SP.h"
 #include "autocode/rtwtypes.h"
 
 FILE_STATIC hMag mag1;
