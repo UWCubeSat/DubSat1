@@ -93,8 +93,9 @@ BO_ 2183725267 gen_panel_temp: 4 eps_gen
 BO_ 2182349072 cmd_gen_rst: 1 eps_gen
  SG_ cmd_gen_rst_confirm : 0|1@1+ (1,0) [0|1] "bool" Vector__XXX
 
-BO_ 2182349056 cmd_ppt_fire: 1 Vector__XXX
- SG_ cmd_ppt_fire_fire : 0|1@1+ (1,0) [0|1] "bool" Vector__XXX
+BO_ 2182349056 cmd_ppt_fire: 1 com_1
+ SG_ cmd_ppt_fire_override : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ cmd_ppt_fire_with_pulse : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2183266514 gen_panel_pwr: 7 eps_gen
  SG_ gen_panel_pwr_agg : 48|8@1- (1,0) [0|5] "" Vector__XXX
@@ -173,7 +174,8 @@ VAL_ 2181496880 mtq_ack_coils_state 1 "true" 0 "false" ;
 VAL_ 2181496880 mtq_ack_node 15 "rahs" 14 "com_2" 13 "com_1" 12 "adcs_mtq" 11 "adcs_sensorproc" 10 "adcs_mpc" 9 "adcs_estim" 8 "eps_batt" 7 "eps_gen" 6 "eps_dist" 5 "ppt" 4 "adcs_rwz" 3 "adcs_rwy" 2 "adcs_rwx" 1 "adcs_bdot" 0 "test" ;
 VAL_ 2183725267 gen_panel_temp_agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_ 2182349072 cmd_gen_rst_confirm 1 "true" 0 "false" ;
-VAL_ 2182349056 cmd_ppt_fire_fire 1 "true" 0 "false" ;
+VAL_ 2182349056 cmd_ppt_fire_override 1 "true" 0 "false" ;
+VAL_ 2182349056 cmd_ppt_fire_with_pulse 1 "true" 0 "false" ;
 VAL_ 2183266514 gen_panel_pwr_agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_ 2184642594 mpc_vp_status 1 "true" 0 "false" ;
 VAL_ 2183266498 eps_batt_state_bal 1 "true" 0 "false" ;
