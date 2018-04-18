@@ -1,3 +1,4 @@
+#define MOCK_TLE 1
 #define NUM_FIELDS_IN_TLE 9
 
 #include <adcs_estim.h>
@@ -16,18 +17,35 @@
 FILE_STATIC ModuleStatus mod_status;
 
 // backchannel telemetry segments
-health_segment hseg;
+FILE_STATIC meta_segment mseg;
+FILE_STATIC health_segment hseg;
 
 // The latest TLE from CAN is held here and passed to autocode on each step
 // TODO initialize it with a recent TLE before launch?
+#if MOCK_TLE
+// TLE taken from Wikipedia example
+FILE_STATIC real_T orbit_tle[NUM_FIELDS_IN_TLE] = {
+                                                   2008,
+                                                   264.51782528,
+                                                   -.11606E-4,
+                                                   51.6416,
+                                                   247.4627,
+                                                   .0006703,
+                                                   130.5360,
+                                                   325.0288,
+                                                   15.72125391
+};
+#else
 FILE_STATIC real_T orbit_tle[NUM_FIELDS_IN_TLE] = { 0 };
+#endif /* MOCK_TLE */
 
 // util functions to convert weird timeStamp type
 FILE_STATIC double getTimeStampSeconds();
 FILE_STATIC uint64_t getTimeStampInt();
 
 FILE_STATIC void setInputs();
-FILE_STATIC void useOutputs();
+FILE_STATIC void sendTelemOverBackchannel();
+FILE_STATIC void sendTelemOverCAN();
 
 FILE_STATIC void sendHealthSegment();
 FILE_STATIC void sendMetaSegment();
@@ -69,6 +87,9 @@ int main(void)
     // set LED gpio pin to output
     LED_DIR |= LED_BIT;
 
+    // populate segment headers
+    bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
+
     // init temperature sensor
     asensorInit(Ref_2p5V);
 
@@ -96,7 +117,8 @@ int main(void)
         env_estimation_lib_step();
 
         // send autocode outputs
-        useOutputs();
+        sendTelemOverBackchannel();
+        sendTelemOverCAN();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
@@ -123,14 +145,53 @@ FILE_STATIC void setInputs()
     // TODO verify units
     rtU.MET = getTimeStampSeconds();
 
-    // TODO how will the autocode handle unintialized TLEs?
     memcpy(rtU.orbit_tle, orbit_tle, NUM_FIELDS_IN_TLE * sizeof(real_T));
 }
 
-FILE_STATIC void useOutputs()
+FILE_STATIC void sendTelemOverBackchannel()
 {
-    // TODO send CAN packets
-    // use rtY
+    // send input TLE
+    input_tle_segment tle;
+    tle.year = rtU.orbit_tle[0];
+    tle.day = rtU.orbit_tle[1];
+    tle.bstar = rtU.orbit_tle[2];
+    tle.inc = rtU.orbit_tle[3];
+    tle.raan = rtU.orbit_tle[4];
+    tle.ecc = rtU.orbit_tle[5];
+    tle.aop = rtU.orbit_tle[6];
+    tle.mna = rtU.orbit_tle[7];
+    tle.mnm = rtU.orbit_tle[8];
+    bcbinPopulateHeader(&tle.header, TLM_ID_INPUT_TLE, sizeof(tle));
+    bcbinSendPacket((uint8_t *) &tle, sizeof(tle));
+
+    // send MET
+    input_met_segment metSeg;
+    metSeg.met = rtU.MET;
+    bcbinPopulateHeader(&metSeg.header, TLM_ID_INPUT_MET, sizeof(metSeg));
+    bcbinSendPacket((uint8_t *) &metSeg, sizeof(metSeg));
+
+    // send autocode outputs
+    output_segment out;
+    uint8_t i = 3;
+    while (i-- > 0)
+    {
+        out.sc2gs_unit[i] = rtY.sc2gs_unit[i];
+        out.sc2sun_unit[i] = rtY.sc2sun_unit[i];
+        out.mag_unit_vector_eci[i] = rtY.mag_unit_vector_eci[i];
+        out.mag_vector_eci[i] = rtY.mag_vector_eci[i];
+        out.vel_eci_mps[i] = rtY.vel_eci_mps[i];
+    }
+    out.sc_above_gs = rtY.sc_above_gs;
+    out.sc_in_fov = rtY.sc_in_fov;
+    out.sc_in_sun = rtY.sc_in_sun;
+    bcbinPopulateHeader(&out.header, TLM_ID_OUTPUT, sizeof(out));
+    bcbinSendPacket((uint8_t *) &out, sizeof(out));
+
+}
+
+FILE_STATIC void sendTelemOverCAN()
+{
+    // TODO
 }
 
 void canRxCallback(CANPacket *packet)
@@ -182,8 +243,6 @@ FILE_STATIC void sendHealthSegment()
 
 FILE_STATIC void sendMetaSegment()
 {
-    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
-    meta_segment mseg;
     bcbinPopulateMeta(&mseg, sizeof(mseg));
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
