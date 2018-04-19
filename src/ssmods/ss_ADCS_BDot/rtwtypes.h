@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'bdot_controller_lib'.
  *
- * Model version                  : 1.28
+ * Model version                  : 1.330
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Mon Aug 28 19:59:51 2017
+ * C/C++ source code generated on : Wed Apr 11 19:37:04 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
