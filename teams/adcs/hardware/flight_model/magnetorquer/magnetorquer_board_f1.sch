@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="9.0.0">
 <drawing>
 <settings>
-<setting alwaysvectorfont="no"/>
+<setting alwaysvectorfont="yes"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
@@ -8743,12 +8743,12 @@ chip</description>
 <pin name="GEN_VBATT$35" x="12.7" y="10.16" length="middle"/>
 <pin name="GEN_VBATT$36" x="63.5" y="10.16" length="middle" rot="R180"/>
 <pin name="MT_X_A@1" x="-66.04" y="7.62" length="middle"/>
-<pin name="MT_X_B@1" x="-12.7" y="7.62" length="middle" rot="R180"/>
+<pin name="MT_X_A@2" x="-12.7" y="7.62" length="middle" rot="R180"/>
 <pin name="MT_Y_A@1" x="12.7" y="7.62" length="middle"/>
-<pin name="MT_Y_B@1" x="63.5" y="7.62" length="middle" rot="R180"/>
-<pin name="MT_X_A@2" x="-66.04" y="5.08" length="middle"/>
+<pin name="MT_Y_A@2" x="63.5" y="7.62" length="middle" rot="R180"/>
+<pin name="MT_X_B@1" x="-66.04" y="5.08" length="middle"/>
 <pin name="MT_X_B@2" x="-12.7" y="5.08" length="middle" rot="R180"/>
-<pin name="MT_Y_A@2" x="12.7" y="5.08" length="middle"/>
+<pin name="MT_Y_B@1" x="12.7" y="5.08" length="middle"/>
 <pin name="MT_Y_B@2" x="63.5" y="5.08" length="middle" rot="R180"/>
 <pin name="SYNC1" x="-66.04" y="2.54" length="middle"/>
 <pin name="P$46" x="-12.7" y="2.54" length="middle" rot="R180"/>
@@ -8818,7 +8818,7 @@ chip</description>
 <wire x1="17.78" y1="33.02" x2="58.42" y2="33.02" width="0.254" layer="94"/>
 <wire x1="58.42" y1="33.02" x2="58.42" y2="-35.56" width="0.254" layer="94"/>
 <wire x1="58.42" y1="-35.56" x2="17.78" y2="-35.56" width="0.254" layer="94"/>
-<text x="-48.768" y="-38.862" size="1.778" layer="94">version: V2.3</text>
+<text x="-48.768" y="-38.862" size="1.778" layer="94">version: V2.4</text>
 <wire x1="-59.69" y1="-6.35" x2="57.15" y2="-6.35" width="0" layer="98"/>
 <wire x1="57.15" y1="-6.35" x2="57.15" y2="-29.21" width="0" layer="98"/>
 <wire x1="57.15" y1="-29.21" x2="7.62" y2="-29.21" width="0" layer="98"/>
@@ -9917,12 +9917,12 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="GEN_VBATT$35" pad="P$35"/>
 <connect gate="G$1" pin="GEN_VBATT$36" pad="P$36"/>
 <connect gate="G$1" pin="MT_X_A@1" pad="P$37"/>
-<connect gate="G$1" pin="MT_X_A@2" pad="P$41"/>
-<connect gate="G$1" pin="MT_X_B@1" pad="P$38"/>
+<connect gate="G$1" pin="MT_X_A@2" pad="P$38"/>
+<connect gate="G$1" pin="MT_X_B@1" pad="P$41"/>
 <connect gate="G$1" pin="MT_X_B@2" pad="P$42"/>
 <connect gate="G$1" pin="MT_Y_A@1" pad="P$39"/>
-<connect gate="G$1" pin="MT_Y_A@2" pad="P$43"/>
-<connect gate="G$1" pin="MT_Y_B@1" pad="P$40"/>
+<connect gate="G$1" pin="MT_Y_A@2" pad="P$40"/>
+<connect gate="G$1" pin="MT_Y_B@1" pad="P$43"/>
 <connect gate="G$1" pin="MT_Y_B@2" pad="P$44"/>
 <connect gate="G$1" pin="P$46" pad="P$46"/>
 <connect gate="G$1" pin="P$47" pad="P$47"/>
@@ -10899,10 +10899,11 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <label x="38.1" y="58.42" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
+<wire x1="-30.48" y1="60.96" x2="-30.48" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="-30.48" y1="68.58" x2="-38.1" y2="68.58" width="0.1524" layer="91"/>
+<label x="-38.1" y="68.58" size="1.778" layer="95" rot="R180" xref="yes"/>
 <pinref part="U$1" gate="G$1" pin="MT_X_B@1"/>
-<wire x1="30.48" y1="63.5" x2="38.1" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="38.1" y1="63.5" x2="38.1" y2="66.04" width="0.1524" layer="91"/>
-<label x="38.1" y="66.04" size="1.778" layer="95" rot="R90" xref="yes"/>
+<wire x1="-30.48" y1="60.96" x2="-22.86" y2="60.96" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="MT_X_A" class="0">
@@ -10912,18 +10913,17 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <label x="162.56" y="88.9" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$1" gate="G$1" pin="MT_X_A@2"/>
-<wire x1="-22.86" y1="60.96" x2="-30.48" y2="60.96" width="0.1524" layer="91"/>
-<wire x1="-30.48" y1="60.96" x2="-30.48" y2="68.58" width="0.1524" layer="91"/>
-<wire x1="-30.48" y1="68.58" x2="-38.1" y2="68.58" width="0.1524" layer="91"/>
-<label x="-38.1" y="68.58" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
 <pinref part="U$1" gate="G$1" pin="MT_X_A@1"/>
 <wire x1="-22.86" y1="63.5" x2="-27.94" y2="63.5" width="0.1524" layer="91"/>
 <wire x1="-27.94" y1="63.5" x2="-27.94" y2="73.66" width="0.1524" layer="91"/>
 <wire x1="-27.94" y1="73.66" x2="-38.1" y2="73.66" width="0.1524" layer="91"/>
 <label x="-38.1" y="73.66" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<wire x1="38.1" y1="63.5" x2="38.1" y2="66.04" width="0.1524" layer="91"/>
+<label x="38.1" y="66.04" size="1.778" layer="95" rot="R90" xref="yes"/>
+<pinref part="U$1" gate="G$1" pin="MT_X_A@2"/>
+<wire x1="38.1" y1="63.5" x2="30.48" y2="63.5" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="MT_Z_B" class="0">
@@ -11186,38 +11186,6 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <junction x="-2.54" y="127"/>
 </segment>
 </net>
-<net name="SYNC2" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="SYNC2"/>
-<wire x1="-22.86" y1="55.88" x2="-35.56" y2="55.88" width="0.1524" layer="91"/>
-<wire x1="-35.56" y1="55.88" x2="-35.56" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="-35.56" y1="58.42" x2="-38.1" y2="58.42" width="0.1524" layer="91"/>
-<label x="-38.1" y="58.42" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
-<pinref part="U$7" gate="G$1" pin="PJ.3_SYNC2"/>
-<wire x1="73.66" y1="-99.06" x2="83.82" y2="-99.06" width="0.1524" layer="91"/>
-<wire x1="83.82" y1="-99.06" x2="83.82" y2="-101.6" width="0.1524" layer="91"/>
-<wire x1="83.82" y1="-101.6" x2="86.36" y2="-101.6" width="0.1524" layer="91"/>
-<label x="86.36" y="-101.6" size="1.778" layer="95" xref="yes"/>
-</segment>
-</net>
-<net name="SYNC1" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="SYNC1"/>
-<wire x1="-22.86" y1="58.42" x2="-33.02" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="-33.02" y1="58.42" x2="-33.02" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="-33.02" y1="63.5" x2="-38.1" y2="63.5" width="0.1524" layer="91"/>
-<label x="-38.1" y="63.5" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
-<pinref part="U$7" gate="G$1" pin="P7.2_SYNC1"/>
-<wire x1="73.66" y1="-96.52" x2="83.82" y2="-96.52" width="0.1524" layer="91"/>
-<wire x1="83.82" y1="-96.52" x2="83.82" y2="-93.98" width="0.1524" layer="91"/>
-<wire x1="83.82" y1="-93.98" x2="86.36" y2="-93.98" width="0.1524" layer="91"/>
-<label x="86.36" y="-93.98" size="1.778" layer="95" xref="yes"/>
-</segment>
-</net>
 <net name="N$4" class="0">
 <segment>
 <pinref part="LDO_3V1" gate="G$1" pin="BYP"/>
@@ -11288,10 +11256,10 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <label x="48.26" y="66.04" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
+<wire x1="114.3" y1="63.5" x2="114.3" y2="66.04" width="0.1524" layer="91"/>
+<label x="114.3" y="66.04" size="1.778" layer="95" rot="R90" xref="yes"/>
 <pinref part="U$1" gate="G$1" pin="MT_Y_A@2"/>
-<wire x1="55.88" y1="60.96" x2="48.26" y2="60.96" width="0.1524" layer="91"/>
-<wire x1="48.26" y1="60.96" x2="48.26" y2="58.42" width="0.1524" layer="91"/>
-<label x="48.26" y="58.42" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="114.3" y1="63.5" x2="106.68" y2="63.5" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="MT_Y_B" class="0">
@@ -11307,10 +11275,10 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <label x="114.3" y="58.42" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
+<wire x1="48.26" y1="60.96" x2="48.26" y2="58.42" width="0.1524" layer="91"/>
+<label x="48.26" y="58.42" size="1.778" layer="95" rot="R270" xref="yes"/>
 <pinref part="U$1" gate="G$1" pin="MT_Y_B@1"/>
-<wire x1="106.68" y1="63.5" x2="114.3" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="114.3" y1="63.5" x2="114.3" y2="66.04" width="0.1524" layer="91"/>
-<label x="114.3" y="66.04" size="1.778" layer="95" rot="R90" xref="yes"/>
+<wire x1="48.26" y1="60.96" x2="55.88" y2="60.96" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="3V3_BUCK_ENABLE" class="0">
