@@ -38,7 +38,8 @@ the corresponding filter bit must match the id bit for a message to be accepted.
 The filters on Rx0 have a higher priority than the filters on Rx1.
 
 If the filters are confusing, there is a more detailed description in the
-full documentation, linked at the top.
+full documentation, linked at the top. If you would like a tutorial for that,
+let us know.
 
 ## Table of Commands
 
@@ -48,7 +49,7 @@ full documentation, linked at the top.
 | READ           | 0x03 | Read a byte from a register                     |
 | WRITE          | 0x02 | Set a register to a value                       |
 | RTS            | 0x8? | Request to Send a message in the Tx Buffer (1)  |
-| READ_STATUS    | 0xA0 | TODO                                            |
+| READ_STATUS    | 0xA0 | Quick command to poll several status bits       |
 | RX_STATUS      | 0xB0 | TODO                                            |
 | BIT_MODIFY     | 0x05 | Use a bit mask to set bits in a register        |
 | LOAD_TX_BUFFER | 0x4? | Shorthand for sending several bits to Tx Buf (2)|
@@ -332,3 +333,83 @@ Data 0x0123456789ABCDEF out of TX Buffer 0.
 NEWID_0 ... NEWID_3 are defined in step 1.
 
 ### CAN Receiving
+
+When receiving a packet, it has either been received in RxB0 or RxB1. We have
+to check and act appropriately. **It is important read the packet and clear
+the interrupt as fast as possible to avoid any possibility of a lost message.**
+As with transmitting, the ID register bits don't really align with any normal
+byte alignment. We also did the opposite conversion, from the ID bits to a
+uint32_t, so code for that is below.
+
+In this example, we will be receiving a packet of length 6 with an extended ID
+that was recevied in Rx Buffer 0.
+
+For the purposes of this tutorial, we will always assume we are going to
+read an extended ID, because we always use extended IDs in space.
+
+A full example showing the initialization is at the bottom.
+
+1. Determine which buffer received the message
+2. Get the message length
+3. Get the message data
+4. Get the message ID
+5. Decode the message ID
+6. Clear Flag.
+
+#### 1. Determine which buffer received the message
+
+Commands:
+
+```READ_STATUS RX_BYTE```
+
+Bits:
+
+```0xA0 0x00```
+
+Code Snippet:
+
+```c
+uint8_t status;
+readStatus(&status);
+
+if(status & 0x01){
+  // Message was received in Rx Buffer 1
+}
+if(status & 0x02){
+  // Message was received in Rx Buffer 1
+}
+```
+
+Translation:
+
+As you transmit RX_Byte, you will receive the state of the status register.
+if the LSB is a 1
+
+#### Full Example:
+
+Commands:
+
+```
+LOAD_TX_BUFFER NEWID_0 NEWID_1 NEWID_2 NEWID_3 0x08
+
+LOAD_TX_BUFFER 0x01 0x23 0x45 0x67 0x89 0xAB 0xCD 0xEF
+
+RTS
+```
+
+Bits:
+
+```
+0x40 0xDD 0x69 0xA5 0x55 0x08
+
+0x41 0x01 0x23 0x45 0x67 0x89 0xAB 0xCD 0xEF
+
+0x81
+```
+
+Translation:
+
+This example sends a message of length 8 with ID 0x1BADASSS and
+Data 0x0123456789ABCDEF out of TX Buffer 0.
+
+NEWID_0 ... NEWID_3 are defined in step 1.
