@@ -47,7 +47,7 @@ full documentation, linked at the top.
 | RESET          | 0xC0 | Reset all registers, put into config mode       |
 | READ           | 0x03 | Read a byte from a register                     |
 | WRITE          | 0x02 | Set a register to a value                       |
-| RTS            | 0x0? | Request to Send a message in the Tx Buffer (1)  |
+| RTS            | 0x8? | Request to Send a message in the Tx Buffer (1)  |
 | READ_STATUS    | 0xA0 | TODO                                            |
 | RX_STATUS      | 0xB0 | TODO                                            |
 | BIT_MODIFY     | 0x05 | Use a bit mask to set bits in a register        |
@@ -183,6 +183,7 @@ BIT_MODIFY CANINTE 0x03 0x03
 
 BIT_MODIFY RXB0CTRL 0x60 0x00
 BIT_MODIFY RXB1CTRL 0x60 0x00
+
 BIT_MODIFY CANCTRL 0xE0 0x00
 ```
 
@@ -221,7 +222,7 @@ Data 0x0123456789ABCDEF.
 A full example showing the initialization is at the bottom.
 
 1. Convert ID to align with Registers
-2. Load ID into TX Buffer
+2. Load ID and len into TX Buffer
 3. Load Data into TX Buffer
 4. RTS (Request to Send)
 
@@ -231,9 +232,9 @@ Code:
 
 ```c
 uint32_t id = 0x1BAD555;
-uint8_t NEWID_0 = (uint8_t) (id >> 21); // 0x0D
-uint8_t NEWID_1 = (uint8_t) (id >> 16) & 0x03 | (uint8_t) (id >> 13) & 0xE0 | 0x08; // 0xCA
-uint8_t NEWID_2 = (uint8_t) (id >> 8); // 0xD5
+uint8_t NEWID_0 = (uint8_t) (id >> 21); // 0xDD
+uint8_t NEWID_1 = (uint8_t) (id >> 16) & 0x03 | (uint8_t) (id >> 13) & 0xE0 | 0x08; // 0x69
+uint8_t NEWID_2 = (uint8_t) (id >> 8); // 0xA5
 uint8_t NEWID_3 = (uint8_t) id; // 0x55
 ```
 
@@ -244,62 +245,90 @@ not all byte aligned so we need to do some translation. the results are in
 NEWID_0, NEWID_1, NEWID_2, and NEWID_3
 
 NEWID_1 has a bitwise OR with 0x08. This enables sending the extended ID
-as opposed to a standard ID.
+as opposed to a Standard ID.
 
-#### 1. Convert ID to align with Registers
+(Im using inttypes.h for fix width integers if it wasn't clear.)
+
+#### 2. Load ID and len into TX Buffer
 
 Commands:
 
-```RST```
+```LOAD_TX_BUFFER NEWID_0 NEWID_1 NEWID_2 NEWID_3 0x08```
 
 Bits:
 
-```0x07```
+```0x40 0xDD 0x69 0xA5 0x55 0x08```
 
 Translation:
 
-First, you need to send the RESET instruction, as you may have power-cycled,
-but the MCP may not have, so you should do this to make sure you and the MCP
-agree on your state.
+For this example, we'll just TXB0, Therefore LOAD_TX_BUFFER will be 0x40 for
+the ID.
+
+The last bit in this step is the length of our payload. 8 in this case.
+
+#### 3. Load Data into TX Buffer
+
+Commands:
+
+```LOAD_TX_BUFFER 0x01 0x23 0x45 0x67 0x89 0xAB 0xCD 0xEF```
+
+Bits:
+
+```0x41 0x01 0x23 0x45 0x67 0x89 0xAB 0xCD 0xEF```
+
+Translation:
+
+For this example, we'll just TXB0, Therefore LOAD_TX_BUFFER will be 0x41 for
+the data.
+
+We are using data payload 0x0123456789ABCDEF, you can replace this with your
+actual payload. It shouldn't be hard to figure out how to do that.
+
+If the data length is less than 8, just send any garbage bits as the last bits
+of this message.
+
+#### 4. RTS (Request to Send)
+
+Commands:
+
+```RTS```
+
+Bits:
+
+```0x81```
+
+Translation:
+
+Now all that's left is request to send the buffer. This instruction does that.
+Since we're transmitting out of Tx Buffer 0, we are using 0x81.
 
 #### Full Example:
 
 Commands:
 
 ```
-RESET
+LOAD_TX_BUFFER NEWID_0 NEWID_1 NEWID_2 NEWID_3 0x08
 
-SET CNF1 0x83
-SET CNF2 0xBF
-SET CNF3 0x02
+LOAD_TX_BUFFER 0x01 0x23 0x45 0x67 0x89 0xAB 0xCD 0xEF
 
-BIT_MODIFY CANINTE 0x03 0x03
-
-BIT_MODIFY RXB0CTRL 0x60 0x00
-BIT_MODIFY RXB1CTRL 0x60 0x00
-BIT_MODIFY CANCTRL 0xE0 0x00
+RTS
 ```
 
 Bits:
 
 ```
-0x07
+0x40 0xDD 0x69 0xA5 0x55 0x08
 
-0x02 0x2A 0x83
-0x02 0x29 0xBF
-0x02 0x28 0x02
+0x41 0x01 0x23 0x45 0x67 0x89 0xAB 0xCD 0xEF
 
-0x05 0x2B 0x03 0x03
-
-0x05 0x60 0x60 0x00
-0x05 0x70 0x60 0x00
-
-0x05 0x0F 0xE0 0x00
+0x81
 ```
 
 Translation:
 
-This fully initializes the MCP25625 so that it is ready to send and receive
-messages at 125kbps, SJW 3
+This example sends a message of length 8 with ID 0x1BADASSS and
+Data 0x0123456789ABCDEF out of TX Buffer 0.
+
+NEWID_0 ... NEWID_3 are defined in step 1.
 
 ### CAN Receiving
