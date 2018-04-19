@@ -9,8 +9,13 @@ Full documetnation can be found
 
 ## Intro
 
-MCP25625 CAN interfaces via SPI. To read a bit, we send 0x00 over the bus
-and read it back.
+MCP25625 CAN interfaces via SPI.
+
+Most of the interaction with the MCP will be in the form of a command, usually
+followed a register address, possibly followed by 1 or 2 more arguments for a
+value. If that command was to read something, sending an extra bit (we use 0x00)
+will the MCP25625 to respond over the MISO/SDO SPI Line during that extra bit
+transmission. 
 
 The chip has 3 modes. When powering on or resetting the MCP, it goes into
 configuration mode. It will only send and recieve packets after it is set
@@ -152,7 +157,7 @@ Commands:
 
 Bits:
 
-```0x05 0x60 0xE0 0x00```
+```0x05 0x0F 0xE0 0x00```
 
 Translation:
 
@@ -174,6 +179,7 @@ BIT_MODIFY CANINTE 0x03 0x03
 
 BIT_MODIFY RXB0CTRL 0x60 0x00
 BIT_MODIFY RXB1CTRL 0x60 0x00
+BIT_MODIFY CANCTRL 0xE0 0x00
 ```
 
 Bits:
@@ -189,6 +195,8 @@ Bits:
 
 0x05 0x60 0x60 0x00
 0x05 0x70 0x60 0x00
+
+0x05 0x0F 0xE0 0x00
 ```
 
 Translation:
