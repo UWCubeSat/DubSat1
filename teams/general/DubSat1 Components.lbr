@@ -7,7 +7,7 @@
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.01" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
+<grid distance="50" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -3848,8 +3848,8 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <hole x="60.3" y="3.5" drill="3.05"/>
 <hole x="32" y="3.5" drill="3.05"/>
 <hole x="3.7" y="3.5" drill="3.05"/>
-<pad name="A" x="30" y="22" drill="1.5" diameter="2.5" shape="square"/>
-<pad name="B" x="34" y="22" drill="1.5" diameter="2.5" shape="square"/>
+<pad name="A" x="18.57" y="27.08" drill="1.5" diameter="3.81" shape="square"/>
+<pad name="B" x="31.46" y="27.08" drill="1.5" diameter="3.81" shape="square"/>
 </package>
 <package name="DFN-8_DD">
 <smd name="1" x="-1.4605" y="0.75" dx="0.7874" dy="0.3048" layer="1"/>
@@ -3883,7 +3883,7 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 </package>
 </packages>
 <packages3d>
-<package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2129163/2" locally_modified="yes" type="model">
+<package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2129163/2" type="model">
 <packageinstances>
 <packageinstance name="PICOLOCK_4"/>
 </packageinstances>
