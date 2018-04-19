@@ -11242,6 +11242,38 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <wire x1="330.2" y1="81.28" x2="325.12" y2="81.28" width="0.1524" layer="91"/>
 <label x="337.82" y="81.28" size="1.778" layer="95" xref="yes"/>
 </segment>
+<segment>
+<pinref part="L2" gate="G$1" pin="P$2"/>
+<wire x1="205.74" y1="-7.62" x2="215.9" y2="-7.62" width="0.1524" layer="91"/>
+<pinref part="R6" gate="G$1" pin="2"/>
+<wire x1="215.9" y1="-7.62" x2="220.98" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="220.98" y1="-7.62" x2="231.14" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="231.14" y1="-7.62" x2="241.3" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="-7.62" x2="251.46" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="231.14" y1="-25.4" x2="231.14" y2="-30.48" width="0.1524" layer="91"/>
+<wire x1="231.14" y1="-30.48" x2="238.76" y2="-30.48" width="0.1524" layer="91"/>
+<wire x1="238.76" y1="-30.48" x2="238.76" y2="-33.02" width="0.1524" layer="91"/>
+<pinref part="C15" gate="G$1" pin="2"/>
+<wire x1="231.14" y1="-35.56" x2="231.14" y2="-30.48" width="0.1524" layer="91"/>
+<junction x="231.14" y="-30.48"/>
+<wire x1="231.14" y1="-25.4" x2="215.9" y2="-25.4" width="0.1524" layer="91"/>
+<wire x1="215.9" y1="-25.4" x2="215.9" y2="-7.62" width="0.1524" layer="91"/>
+<junction x="215.9" y="-7.62"/>
+<pinref part="C16" gate="G$1" pin="1"/>
+<wire x1="220.98" y1="-10.16" x2="220.98" y2="-7.62" width="0.1524" layer="91"/>
+<junction x="220.98" y="-7.62"/>
+<pinref part="C17" gate="G$1" pin="1"/>
+<wire x1="231.14" y1="-10.16" x2="231.14" y2="-7.62" width="0.1524" layer="91"/>
+<junction x="231.14" y="-7.62"/>
+<pinref part="C18" gate="G$1" pin="1"/>
+<wire x1="241.3" y1="-10.16" x2="241.3" y2="-7.62" width="0.1524" layer="91"/>
+<junction x="241.3" y="-7.62"/>
+<pinref part="C22" gate="G$1" pin="1"/>
+<wire x1="251.46" y1="-10.16" x2="251.46" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="251.46" y1="-7.62" x2="259.08" y2="-7.62" width="0.1524" layer="91"/>
+<junction x="251.46" y="-7.62"/>
+<label x="259.08" y="-7.62" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="MT_Y_A" class="0">
 <segment>
@@ -11303,40 +11335,6 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <wire x1="170.18" y1="-30.48" x2="170.18" y2="-7.62" width="0.1524" layer="91"/>
 <wire x1="170.18" y1="-7.62" x2="175.26" y2="-7.62" width="0.1524" layer="91"/>
 <pinref part="L2" gate="G$1" pin="P$1"/>
-</segment>
-</net>
-<net name="3V3_BUCK_VOUT" class="0">
-<segment>
-<pinref part="L2" gate="G$1" pin="P$2"/>
-<wire x1="205.74" y1="-7.62" x2="215.9" y2="-7.62" width="0.1524" layer="91"/>
-<pinref part="R6" gate="G$1" pin="2"/>
-<wire x1="215.9" y1="-7.62" x2="220.98" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="220.98" y1="-7.62" x2="231.14" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="231.14" y1="-7.62" x2="241.3" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="241.3" y1="-7.62" x2="251.46" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="231.14" y1="-25.4" x2="231.14" y2="-30.48" width="0.1524" layer="91"/>
-<wire x1="231.14" y1="-30.48" x2="238.76" y2="-30.48" width="0.1524" layer="91"/>
-<wire x1="238.76" y1="-30.48" x2="238.76" y2="-33.02" width="0.1524" layer="91"/>
-<pinref part="C15" gate="G$1" pin="2"/>
-<wire x1="231.14" y1="-35.56" x2="231.14" y2="-30.48" width="0.1524" layer="91"/>
-<junction x="231.14" y="-30.48"/>
-<wire x1="231.14" y1="-25.4" x2="215.9" y2="-25.4" width="0.1524" layer="91"/>
-<wire x1="215.9" y1="-25.4" x2="215.9" y2="-7.62" width="0.1524" layer="91"/>
-<junction x="215.9" y="-7.62"/>
-<pinref part="C16" gate="G$1" pin="1"/>
-<wire x1="220.98" y1="-10.16" x2="220.98" y2="-7.62" width="0.1524" layer="91"/>
-<junction x="220.98" y="-7.62"/>
-<pinref part="C17" gate="G$1" pin="1"/>
-<wire x1="231.14" y1="-10.16" x2="231.14" y2="-7.62" width="0.1524" layer="91"/>
-<junction x="231.14" y="-7.62"/>
-<pinref part="C18" gate="G$1" pin="1"/>
-<wire x1="241.3" y1="-10.16" x2="241.3" y2="-7.62" width="0.1524" layer="91"/>
-<junction x="241.3" y="-7.62"/>
-<pinref part="C22" gate="G$1" pin="1"/>
-<wire x1="251.46" y1="-10.16" x2="251.46" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="251.46" y1="-7.62" x2="259.08" y2="-7.62" width="0.1524" layer="91"/>
-<junction x="251.46" y="-7.62"/>
-<label x="259.08" y="-7.62" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="3V3_BUCK_FB1" class="0">
