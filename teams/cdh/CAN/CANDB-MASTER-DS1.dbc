@@ -34,6 +34,7 @@ NS_ :
 BS_:
 
 BU_: ppt eps_batt eps_dist eps_gen adcs_rwz adcs_rwy adcs_rwx adcs_mtq rahs adcs_sensorproc adcs_mpc adcs_estim adcs_bdot com_1 com_2
+VAL_TABLE_ uv_state 1 "undervoltage" 0 "normal" ;
 VAL_TABLE_ mode 3 "not tumbling charlie" 2 "not tumbling bob" 1 "not tumbling alice" 0 "tumbling" ;
 VAL_TABLE_ pwr_domain 8 "unk" 7 "com1" 6 "com2" 5 "rahs" 4 "bdot" 3 "estim" 2 "wheel" 1 "eps" 0 "ppt" ;
 VAL_TABLE_ sat_state 1 "good" 0 "bad" ;
@@ -41,6 +42,16 @@ VAL_TABLE_ node 15 "rahs" 14 "com_2" 13 "com_1" 12 "adcs_mtq" 11 "adcs_sensorpro
 VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
+
+BO_ 2451701986 eps_pd_undervoltage: 1 Vector__XXX
+ SG_ eps_pd_undervoltage_state : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 2451701985 eps_pd_batt_voltage: 3 Vector__XXX
+ SG_ eps_pd_batt_voltage_agg : 16|8@1+ (1,0) [0|5] "" Vector__XXX
+ SG_ eps_pd_batt_voltage_val : 0|16@1+ (1,0) [0|10000] "mV" Vector__XXX
+
+BO_ 2451702033 cmd_pd_rst: 1 Vector__XXX
+ SG_ cmd_pd_rst_confirm : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2449998321 cmd_com2_run: 2 Vector__XXX
  SG_ cmd_com2_run_clear : 9|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -183,6 +194,8 @@ BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2451701986 eps_pd_undervoltage_state 1 "undervoltage" 0 "normal" ;
+VAL_ 2451701985 eps_pd_batt_voltage_agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_ 2449998321 cmd_com2_run_clear 1 "true" 0 "false" ;
 VAL_ 2449998321 cmd_com2_run_jump 1 "true" 0 "false" ;
 VAL_ 2450784513 cmd_pd_enable_enable 1 "true" 0 "false" ;
