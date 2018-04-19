@@ -137,6 +137,7 @@ SECTIONS
 
         GROUP(READ_WRITE_MEMORY)
         {
+            .stack
             .TI.noinit     : {}              /* For #pragma noinit                */
             .TI.persistent : {}              /* For #pragma persistent            */
             .cio           : {}              /* C I/O Buffer                      */
