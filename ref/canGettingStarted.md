@@ -26,7 +26,7 @@ and read it back.
 
 * ?=0x4 to send Tx Buffer 2, ?=0x2 to send Tx Buf 1, ?=0x1 to send Tx Buf 0
 
-## Table of Registers/Macro
+## Table of Registers/Macros
 
 | Register/Macro | Byte | Description                   |
 | -------------- | ----:|:-----------------------------:|
@@ -41,7 +41,14 @@ initialize, Tx and Rx packets with our MCP:
 
 ### CAN Initialization
 
-##### 1. RESET
+Here are the steps to follow to initialize the CAN bus. A full example
+showing the initialization is at the bottom.
+
+1. Reset
+2. Set Configuration Bits
+3. Enable the Rx Interrupt
+
+#### 1. RESET
 
 Commands:
 
@@ -57,7 +64,7 @@ First, you need to send the RESET instruction, as you may have power-cycled,
 but the MCP may not have, so you should do this to make sure you and the MCP
 agree on your state.
 
-##### 2. Set the configuration bits
+#### 2. Set the configuration bits
 
 Commands:
 
@@ -73,7 +80,7 @@ This sets registers CNF1 CNF2 and CNF3 to their correct values. This tells
 the MCP25625 the speed of the bus (125kbps), the SJW (3), and some other
 things.
 
-##### 3. Enable the Rx Interrupt
+#### 3. Enable the Rx Interrupt
 
 Commands:
 
@@ -89,7 +96,7 @@ This enables the interrupts for the RX0Buffer and RX1Buffer. This will
 mean the INT pin will go low when a new message has been received in either
 buffer. 
 
-##### Full Example:
+#### Full Example:
 
 Commands:
 
