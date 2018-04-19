@@ -230,18 +230,21 @@ A full example showing the initialization is at the bottom.
 Code:
 
 ```c
-uint32_t id = 0x1BADASSS
-uint8_t NEWID_1 = (uint8_t) (id >> 21),
-uint8_t NEWID_1 = (uint8_t) (id >> 16) & 0x03 | (uint8_t) (packet->id >> 13) & 0xE0 | 0x08,
-uint8_t NEWID_1 = (uint8_t) (id >> 8),
-uint8_t NEWID_1 = (uint8_t) id
+uint32_t id = 0x1BAD555;
+uint8_t NEWID_0 = (uint8_t) (id >> 21); // 0x0D
+uint8_t NEWID_1 = (uint8_t) (id >> 16) & 0x03 | (uint8_t) (id >> 13) & 0xE0 | 0x08; // 0xCA
+uint8_t NEWID_2 = (uint8_t) (id >> 8); // 0xD5
+uint8_t NEWID_3 = (uint8_t) id; // 0x55
 ```
 
 Translation:
 
 We need to load the ID into the proper register, but it the registers are
 not all byte aligned so we need to do some translation. the results are in
-ID1 ID2 ID3 ID4
+NEWID_0, NEWID_1, NEWID_2, and NEWID_3
+
+NEWID_1 has a bitwise OR with 0x08. This enables sending the extended ID
+as opposed to a standard ID.
 
 #### 1. Convert ID to align with Registers
 
