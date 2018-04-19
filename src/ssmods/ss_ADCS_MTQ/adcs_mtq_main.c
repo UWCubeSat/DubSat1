@@ -28,7 +28,8 @@ Z2 - P2_6 - TB0.1
 
 //--------globals--------
 FILE_STATIC ModuleStatus mod_status;
-FILE_STATIC tlm_segment tlmseg;
+FILE_STATIC bdot_fsw_commands cosmos_commandy_commands;
+FILE_STATIC duty_percent cosmos_dooty;
 FILE_STATIC meta_segment metaSeg;
 FILE_STATIC health_segment healthSeg;
 FILE_STATIC int telemTimer; // timer handle for sending meta/health updates 
@@ -39,6 +40,7 @@ FILE_STATIC volatile int8_t fsw_command_x, fsw_command_y, fsw_command_z = UNKNOW
 FILE_STATIC volatile int fsw_timer = 0; 
 FILE_STATIC volatile uint8_t bdot_ack_sent = 1;
 FILE_STATIC volatile uint8_t fsw_ack_sent = 0; 
+FILE_STATIC volatile uint8_t duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2 = 0; // for COSMOS
 #pragma PERSISTENT(fsw_ignore) // persist value of fsw_ignore on reboot 
 
 //--------function declarations--------
@@ -59,8 +61,9 @@ void send_health_packet(void);
 void send_meta_packet(void);
 void send_ack(int command_source, int coil_state);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
-void sendDutyPacket(void);
-void send_telemetry_packet(void);
+void send_COSMOS_commands_packet(void);
+void send_COSMOS_telemetry_packet(void);
+void send_COSMOS_dooty_packet();
 
  
 //------------------------------------------------------------------
@@ -113,7 +116,7 @@ int main(void)
 		// poll timer for periodic telemetry
         if (checkTimer(telemTimer))
         {
-            send_telemetry_packet();
+            send_COSMOS_telemetry_packet();
             // reset timer
             telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS);
         }
@@ -236,14 +239,20 @@ void set_pwm(char axis, int pwm_percent)
 		case 'x':
 			SET_X1_PWM ccr_value_1; // P1_7
 			SET_X2_PWM ccr_value_2; // P1_6
+			duty_x1 = ccr_value_1 / PWM_PERIOD; // for COSMOS
+			duty_x2 = ccr_value_2 / PWM_PERIOD; 
 			break;
 		case 'y': 
 			SET_Y1_PWM ccr_value_1; // P3_7
 			SET_Y2_PWM ccr_value_2; // P3_6
+			duty_y1 = ccr_value_1 / PWM_PERIOD; 
+			duty_y2 = ccr_value_2 / PWM_PERIOD; 
 			break;	
 		case 'z': 
 			SET_Z1_PWM ccr_value_1; // P2_2
 			SET_Z2_PWM ccr_value_2; // P2_6
+			duty_z1 = ccr_value_1 / PWM_PERIOD; 
+			duty_z2 = ccr_value_2 / PWM_PERIOD; 
 			break;
 		default: // unknown state 
 			break;
@@ -354,7 +363,7 @@ void send_ack(int command_source, int coil_state)
 void cosmos_init(void)
 {
 	initializeTimer();
-    bcbinPopulateHeader(&(tlmseg.header), TLM_ID_SHARED_SSGENERAL, sizeof(tlmseg));
+    bcbinPopulateHeader(&(cosmos_commandy_commands.header), TLM_ID_SHARED_SSGENERAL, sizeof(cosmos_commandy_commands));
     debugRegisterEntity(Entity_NONE, NULL, NULL, handleDebugActionCallback);
     asensorInit(Ref_2p5V); // initialize temperature sensor
     telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS);
@@ -386,23 +395,35 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
     return 1;
 }
 
-void sendDutyPacket()
+void send_COSMOS_commands_packet()
 {
-    tlmseg.bdot_x = bdot_command_x;
-    tlmseg.bdot_y = bdot_command_y;
-    tlmseg.bdot_z = bdot_command_z;
-    tlmseg.fsw_x = fsw_command_x;
-    tlmseg.fsw_y = fsw_command_y;
-	tlmseg.fsw_z = fsw_command_z;
-    bcbinSendPacket((uint8_t *) &tlmseg, sizeof(tlmseg));
+    cosmos_commandy_commands.bdot_x = bdot_command_x;
+    cosmos_commandy_commands.bdot_y = bdot_command_y;
+    cosmos_commandy_commands.bdot_z = bdot_command_z;
+    cosmos_commandy_commands.fsw_x = fsw_command_x;
+    cosmos_commandy_commands.fsw_y = fsw_command_y;
+	cosmos_commandy_commands.fsw_z = fsw_command_z;
+    bcbinSendPacket((uint8_t *) &cosmos_commandy_commands, sizeof(cosmos_commandy_commands));
 }
 
-void send_telemetry_packet()
+void send_COSMOS_dooty_packet()
+{
+    cosmos_dooty.x1 = duty_x1;
+    cosmos_dooty.x2 = duty_x2;
+    cosmos_dooty.y1 = duty_y1;
+    cosmos_dooty.y2 = duty_y2;
+    cosmos_dooty.z1 = duty_z1;
+    cosmos_dooty.z2 = duty_z2;
+	bcbinSendPacket((uint8_t *) &cosmos_dooty, sizeof(cosmos_dooty));
+}
+
+void send_COSMOS_telemetry_packet()
 {
 	// send telemetry
 //    send_health_packet();
     send_meta_packet();	
-	sendDutyPacket(); 
+	send_COSMOS_commands_packet(); 
+	send_COSMOS_dooty_packet(); 
 }   
 
 //-------- special function registers config --------	
