@@ -98,7 +98,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 #define TLM_ID_PIN_OUTPUTS 126
 // ---timer---
 #define MEASUREMENT_PHASE 0 
-#define ACUATION_PHASE 1 
+#define ACTUATION_PHASE 1
 #define MASTER_DUTY_PERIOD 1000 
 #define ACTUATION_TIME 500
 
