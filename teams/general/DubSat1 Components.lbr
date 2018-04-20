@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="8.4.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="50" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -3884,44 +3884,20 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 </packages>
 <packages3d>
 <package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2129163/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_4"/>
-</packageinstances>
 </package3d>
 <package3d name="PICOLOCK_12" urn="urn:adsk.eagle:package:2229923/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_12"/>
-</packageinstances>
 </package3d>
 <package3d name="PICOLOCK_10" urn="urn:adsk.eagle:package:2229922/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_10"/>
-</packageinstances>
 </package3d>
 <package3d name="PICOLOCK_8" urn="urn:adsk.eagle:package:2229921/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_8"/>
-</packageinstances>
 </package3d>
 <package3d name="PICOLOCK_7" urn="urn:adsk.eagle:package:2229920/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_7"/>
-</packageinstances>
 </package3d>
 <package3d name="PICOLOCK_6" urn="urn:adsk.eagle:package:2229919/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_6"/>
-</packageinstances>
 </package3d>
 <package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2229882/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_4"/>
-</packageinstances>
 </package3d>
 <package3d name="REACTION_WHEEL_BRACKET" urn="urn:adsk.eagle:package:2229934/2" type="model">
-<packageinstances>
-<packageinstance name="REACTION_WHEEL_BRACKET"/>
-</packageinstances>
 </package3d>
 </packages3d>
 <symbols>
@@ -4038,14 +4014,14 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <pin name="BATT_VBATT$34" x="-12.7" y="10.16" length="middle" rot="R180"/>
 <pin name="GEN_VBATT$35" x="12.7" y="10.16" length="middle"/>
 <pin name="GEN_VBATT$36" x="63.5" y="10.16" length="middle" rot="R180"/>
-<pin name="MT_X_A@1" x="-66.04" y="7.62" length="middle"/>
-<pin name="MT_X_A@2" x="-12.7" y="7.62" length="middle" rot="R180"/>
-<pin name="MT_Y_A@1" x="12.7" y="7.62" length="middle"/>
-<pin name="MT_Y_A@2" x="63.5" y="7.62" length="middle" rot="R180"/>
-<pin name="MT_X_B@1" x="-66.04" y="5.08" length="middle"/>
-<pin name="MT_X_B@2" x="-12.7" y="5.08" length="middle" rot="R180"/>
-<pin name="MT_Y_B@1" x="12.7" y="5.08" length="middle"/>
-<pin name="MT_Y_B@2" x="63.5" y="5.08" length="middle" rot="R180"/>
+<pin name="MT_Y_A@37" x="-66.04" y="7.62" length="middle"/>
+<pin name="MT_Y_A@38" x="-12.7" y="7.62" length="middle" rot="R180"/>
+<pin name="MT_X_A@39" x="12.7" y="7.62" length="middle"/>
+<pin name="MT_X_A@40" x="63.5" y="7.62" length="middle" rot="R180"/>
+<pin name="MT_Y_B@41" x="-66.04" y="5.08" length="middle"/>
+<pin name="MT_Y_B@42" x="-12.7" y="5.08" length="middle" rot="R180"/>
+<pin name="MT_X_B@43" x="12.7" y="5.08" length="middle"/>
+<pin name="MT_X_B@44" x="63.5" y="5.08" length="middle" rot="R180"/>
 <pin name="SYNC1" x="-66.04" y="2.54" length="middle"/>
 <pin name="P$46" x="-12.7" y="2.54" length="middle" rot="R180"/>
 <pin name="P$47" x="12.7" y="2.54" length="middle"/>
@@ -6662,14 +6638,14 @@ datasheats:
 <connect gate="G$1" pin="ESTIMAT_VBAT@78" pad="P$78"/>
 <connect gate="G$1" pin="GEN_VBATT$35" pad="P$35"/>
 <connect gate="G$1" pin="GEN_VBATT$36" pad="P$36"/>
-<connect gate="G$1" pin="MT_X_A@1" pad="P$37"/>
-<connect gate="G$1" pin="MT_X_A@2" pad="P$38"/>
-<connect gate="G$1" pin="MT_X_B@1" pad="P$41"/>
-<connect gate="G$1" pin="MT_X_B@2" pad="P$42"/>
-<connect gate="G$1" pin="MT_Y_A@1" pad="P$39"/>
-<connect gate="G$1" pin="MT_Y_A@2" pad="P$40"/>
-<connect gate="G$1" pin="MT_Y_B@1" pad="P$43"/>
-<connect gate="G$1" pin="MT_Y_B@2" pad="P$44"/>
+<connect gate="G$1" pin="MT_X_A@39" pad="P$39"/>
+<connect gate="G$1" pin="MT_X_A@40" pad="P$40"/>
+<connect gate="G$1" pin="MT_X_B@43" pad="P$43"/>
+<connect gate="G$1" pin="MT_X_B@44" pad="P$44"/>
+<connect gate="G$1" pin="MT_Y_A@37" pad="P$37"/>
+<connect gate="G$1" pin="MT_Y_A@38" pad="P$38"/>
+<connect gate="G$1" pin="MT_Y_B@41" pad="P$41"/>
+<connect gate="G$1" pin="MT_Y_B@42" pad="P$42"/>
 <connect gate="G$1" pin="P$46" pad="P$46"/>
 <connect gate="G$1" pin="P$47" pad="P$47"/>
 <connect gate="G$1" pin="P$48" pad="P$48"/>

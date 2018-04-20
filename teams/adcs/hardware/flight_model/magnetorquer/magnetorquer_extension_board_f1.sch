@@ -652,14 +652,14 @@ chip</description>
 <pin name="BATT_VBATT$34" x="-12.7" y="10.16" length="middle" rot="R180"/>
 <pin name="GEN_VBATT$35" x="12.7" y="10.16" length="middle"/>
 <pin name="GEN_VBATT$36" x="63.5" y="10.16" length="middle" rot="R180"/>
-<pin name="MT_X_A@1" x="-66.04" y="7.62" length="middle"/>
-<pin name="MT_X_A@2" x="-12.7" y="7.62" length="middle" rot="R180"/>
-<pin name="MT_Y_A@1" x="12.7" y="7.62" length="middle"/>
-<pin name="MT_Y_A@2" x="63.5" y="7.62" length="middle" rot="R180"/>
-<pin name="MT_X_B@1" x="-66.04" y="5.08" length="middle"/>
-<pin name="MT_X_B@2" x="-12.7" y="5.08" length="middle" rot="R180"/>
-<pin name="MT_Y_B@1" x="12.7" y="5.08" length="middle"/>
-<pin name="MT_Y_B@2" x="63.5" y="5.08" length="middle" rot="R180"/>
+<pin name="MT_Y_A@37" x="-66.04" y="7.62" length="middle"/>
+<pin name="MT_Y_A@38" x="-12.7" y="7.62" length="middle" rot="R180"/>
+<pin name="MT_X_A@39" x="12.7" y="7.62" length="middle"/>
+<pin name="MT_X_A@40" x="63.5" y="7.62" length="middle" rot="R180"/>
+<pin name="MT_Y_B@41" x="-66.04" y="5.08" length="middle"/>
+<pin name="MT_Y_B@42" x="-12.7" y="5.08" length="middle" rot="R180"/>
+<pin name="MT_X_B@43" x="12.7" y="5.08" length="middle"/>
+<pin name="MT_X_B@44" x="63.5" y="5.08" length="middle" rot="R180"/>
 <pin name="SYNC1" x="-66.04" y="2.54" length="middle"/>
 <pin name="P$46" x="-12.7" y="2.54" length="middle" rot="R180"/>
 <pin name="P$47" x="12.7" y="2.54" length="middle"/>
@@ -865,14 +865,14 @@ HORIZONTAL</text>
 <connect gate="G$1" pin="ESTIMAT_VBAT@78" pad="P$78"/>
 <connect gate="G$1" pin="GEN_VBATT$35" pad="P$35"/>
 <connect gate="G$1" pin="GEN_VBATT$36" pad="P$36"/>
-<connect gate="G$1" pin="MT_X_A@1" pad="P$37"/>
-<connect gate="G$1" pin="MT_X_A@2" pad="P$38"/>
-<connect gate="G$1" pin="MT_X_B@1" pad="P$41"/>
-<connect gate="G$1" pin="MT_X_B@2" pad="P$42"/>
-<connect gate="G$1" pin="MT_Y_A@1" pad="P$39"/>
-<connect gate="G$1" pin="MT_Y_A@2" pad="P$40"/>
-<connect gate="G$1" pin="MT_Y_B@1" pad="P$43"/>
-<connect gate="G$1" pin="MT_Y_B@2" pad="P$44"/>
+<connect gate="G$1" pin="MT_X_A@39" pad="P$39"/>
+<connect gate="G$1" pin="MT_X_A@40" pad="P$40"/>
+<connect gate="G$1" pin="MT_X_B@43" pad="P$43"/>
+<connect gate="G$1" pin="MT_X_B@44" pad="P$44"/>
+<connect gate="G$1" pin="MT_Y_A@37" pad="P$37"/>
+<connect gate="G$1" pin="MT_Y_A@38" pad="P$38"/>
+<connect gate="G$1" pin="MT_Y_B@41" pad="P$41"/>
+<connect gate="G$1" pin="MT_Y_B@42" pad="P$42"/>
 <connect gate="G$1" pin="P$46" pad="P$46"/>
 <connect gate="G$1" pin="P$47" pad="P$47"/>
 <connect gate="G$1" pin="P$48" pad="P$48"/>
@@ -2560,13 +2560,13 @@ FCI 10033526-N3212LF</text>
 <wire x1="93.98" y1="-5.08" x2="68.58" y2="-5.08" width="0.1524" layer="91"/>
 <wire x1="68.58" y1="-5.08" x2="68.58" y2="45.72" width="0.1524" layer="91"/>
 <junction x="93.98" y="-5.08"/>
-<pinref part="U$1" gate="G$1" pin="MT_Y_A@1"/>
+<pinref part="U$1" gate="G$1" pin="MT_X_A@39"/>
 <wire x1="68.58" y1="45.72" x2="73.66" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="68.58" y1="45.72" x2="68.58" y2="76.2" width="0.1524" layer="91"/>
 <junction x="68.58" y="45.72"/>
 <wire x1="68.58" y1="76.2" x2="129.54" y2="76.2" width="0.1524" layer="91"/>
 <wire x1="129.54" y1="76.2" x2="129.54" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="MT_Y_A@2"/>
+<pinref part="U$1" gate="G$1" pin="MT_X_A@40"/>
 <wire x1="129.54" y1="45.72" x2="124.46" y2="45.72" width="0.1524" layer="91"/>
 </segment>
 </net>
@@ -2580,12 +2580,12 @@ FCI 10033526-N3212LF</text>
 <wire x1="101.6" y1="-2.54" x2="129.54" y2="-2.54" width="0.1524" layer="91"/>
 <wire x1="129.54" y1="-2.54" x2="129.54" y2="43.18" width="0.1524" layer="91"/>
 <junction x="101.6" y="-2.54"/>
-<pinref part="U$1" gate="G$1" pin="MT_Y_B@2"/>
+<pinref part="U$1" gate="G$1" pin="MT_X_B@44"/>
 <wire x1="129.54" y1="43.18" x2="124.46" y2="43.18" width="0.1524" layer="91"/>
 <junction x="99.06" y="-2.54"/>
 <wire x1="99.06" y1="-2.54" x2="71.12" y2="-2.54" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="-2.54" x2="71.12" y2="43.18" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="MT_Y_B@1"/>
+<pinref part="U$1" gate="G$1" pin="MT_X_B@43"/>
 <wire x1="71.12" y1="43.18" x2="73.66" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
@@ -2599,11 +2599,11 @@ FCI 10033526-N3212LF</text>
 <wire x1="22.86" y1="-2.54" x2="50.8" y2="-2.54" width="0.1524" layer="91"/>
 <wire x1="50.8" y1="-2.54" x2="50.8" y2="43.18" width="0.1524" layer="91"/>
 <junction x="22.86" y="-2.54"/>
-<pinref part="U$1" gate="G$1" pin="MT_X_B@2"/>
+<pinref part="U$1" gate="G$1" pin="MT_Y_B@42"/>
 <wire x1="50.8" y1="43.18" x2="48.26" y2="43.18" width="0.1524" layer="91"/>
 <junction x="20.32" y="-2.54"/>
 <wire x1="20.32" y1="-2.54" x2="-7.62" y2="-2.54" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="MT_X_B@1"/>
+<pinref part="U$1" gate="G$1" pin="MT_Y_B@41"/>
 <wire x1="-7.62" y1="-2.54" x2="-7.62" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="-7.62" y1="43.18" x2="-5.08" y2="43.18" width="0.1524" layer="91"/>
 </segment>
@@ -2618,13 +2618,13 @@ FCI 10033526-N3212LF</text>
 <wire x1="15.24" y1="-5.08" x2="-10.16" y2="-5.08" width="0.1524" layer="91"/>
 <junction x="15.24" y="-5.08"/>
 <wire x1="-10.16" y1="-5.08" x2="-10.16" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="MT_X_A@1"/>
+<pinref part="U$1" gate="G$1" pin="MT_Y_A@37"/>
 <wire x1="-10.16" y1="45.72" x2="-5.08" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="-10.16" y1="45.72" x2="-10.16" y2="76.2" width="0.1524" layer="91"/>
 <wire x1="-10.16" y1="76.2" x2="50.8" y2="76.2" width="0.1524" layer="91"/>
 <junction x="-10.16" y="45.72"/>
 <wire x1="50.8" y1="76.2" x2="50.8" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="MT_X_A@2"/>
+<pinref part="U$1" gate="G$1" pin="MT_Y_A@38"/>
 <wire x1="50.8" y1="45.72" x2="48.26" y2="45.72" width="0.1524" layer="91"/>
 </segment>
 </net>
