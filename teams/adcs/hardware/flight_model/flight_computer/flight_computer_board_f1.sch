@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="9.0.0">
 <drawing>
 <settings>
-<setting alwaysvectorfont="no"/>
+<setting alwaysvectorfont="yes"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
@@ -8936,6 +8936,12 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <part name="D2" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:2128967" deviceset="LED" device="" package3d_urn="urn:adsk.eagle:package:2129139/1"/>
 <part name="R1" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:2128967" deviceset="RESISTOR" device="0805" package3d_urn="urn:adsk.eagle:package:2129148/1"/>
 <part name="R2" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:2128967" deviceset="RESISTOR" device="0805" package3d_urn="urn:adsk.eagle:package:2129148/1"/>
+<part name="BLK2" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:2128967" deviceset="MSP-CAN_BLOCK" device="" package3d_urn="urn:adsk.eagle:package:2129138/1"/>
+<part name="U$2" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:2128967" deviceset="PROGRAM/DEBUG_PORT" device="" package3d_urn="urn:adsk.eagle:package:2129129/1"/>
+<part name="D5" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:2128967" deviceset="LED" device="" package3d_urn="urn:adsk.eagle:package:2129139/1"/>
+<part name="D6" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:2128967" deviceset="LED" device="" package3d_urn="urn:adsk.eagle:package:2129139/1"/>
+<part name="R9" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:2128967" deviceset="RESISTOR" device="0805" package3d_urn="urn:adsk.eagle:package:2129148/1"/>
+<part name="R10" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:2128967" deviceset="RESISTOR" device="0805" package3d_urn="urn:adsk.eagle:package:2129148/1"/>
 </parts>
 <sheets>
 <sheet>
@@ -9011,6 +9017,12 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <instance part="D2" gate="G$1" x="-137.16" y="-25.4" rot="R90"/>
 <instance part="R1" gate="G$1" x="-121.92" y="-25.4"/>
 <instance part="R2" gate="G$1" x="-121.92" y="-15.24"/>
+<instance part="BLK2" gate="G$1" x="-22.86" y="12.7"/>
+<instance part="U$2" gate="G$1" x="40.64" y="-55.88" rot="R270"/>
+<instance part="D5" gate="G$1" x="60.96" y="-15.24" rot="R90"/>
+<instance part="D6" gate="G$1" x="60.96" y="-25.4" rot="R90"/>
+<instance part="R9" gate="G$1" x="76.2" y="-25.4"/>
+<instance part="R10" gate="G$1" x="76.2" y="-15.24"/>
 </instances>
 <busses>
 </busses>
@@ -9040,6 +9052,13 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <wire x1="-172.72" y1="48.26" x2="-170.18" y2="48.26" width="0.1524" layer="91"/>
 <label x="-170.18" y="48.26" size="1.778" layer="95" xref="yes"/>
 </segment>
+<segment>
+<pinref part="BLK2" gate="G$1" pin="CANL"/>
+<wire x1="22.86" y1="50.8" x2="25.4" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="25.4" y1="50.8" x2="25.4" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="25.4" y1="48.26" x2="27.94" y2="48.26" width="0.1524" layer="91"/>
+<label x="27.94" y="48.26" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="CANH" class="0">
 <segment>
@@ -9066,6 +9085,13 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <wire x1="-172.72" y1="55.88" x2="-170.18" y2="55.88" width="0.1524" layer="91"/>
 <label x="-170.18" y="55.88" size="1.778" layer="95" xref="yes"/>
 </segment>
+<segment>
+<pinref part="BLK2" gate="G$1" pin="CANH"/>
+<wire x1="22.86" y1="53.34" x2="25.4" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="25.4" y1="53.34" x2="25.4" y2="55.88" width="0.1524" layer="91"/>
+<wire x1="25.4" y1="55.88" x2="27.94" y2="55.88" width="0.1524" layer="91"/>
+<label x="27.94" y="55.88" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="N$17" class="0">
 <segment>
@@ -9086,11 +9112,6 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <wire x1="-101.6" y1="190.5" x2="-106.68" y2="190.5" width="0.1524" layer="91"/>
 <label x="-106.68" y="190.5" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
-<segment>
-<pinref part="U$7" gate="G$1" pin="P7.2_SYNC1"/>
-<wire x1="111.76" y1="147.32" x2="111.76" y2="137.16" width="0.1524" layer="91"/>
-<label x="111.76" y="137.16" size="1.27" layer="95" rot="R270" xref="yes"/>
-</segment>
 </net>
 <net name="SYNC2" class="0">
 <segment>
@@ -9099,11 +9120,6 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <wire x1="-104.14" y1="182.88" x2="-104.14" y2="185.42" width="0.1524" layer="91"/>
 <wire x1="-104.14" y1="185.42" x2="-106.68" y2="185.42" width="0.1524" layer="91"/>
 <label x="-106.68" y="185.42" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
-<pinref part="U$7" gate="G$1" pin="PJ.3_SYNC2"/>
-<wire x1="109.22" y1="147.32" x2="109.22" y2="137.16" width="0.1524" layer="91"/>
-<label x="109.22" y="137.16" size="1.27" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="BDOT_P3.5_GPIO_DEBUG" class="0">
@@ -9404,6 +9420,31 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <junction x="-111.76" y="-15.24"/>
 <label x="-106.68" y="-15.24" size="1.778" layer="95" xref="yes"/>
 </segment>
+<segment>
+<pinref part="U$2" gate="G$1" pin="GND@1"/>
+<wire x1="45.72" y1="-38.1" x2="45.72" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="-35.56" x2="48.26" y2="-35.56" width="0.1524" layer="91"/>
+<pinref part="U$2" gate="G$1" pin="GND@2"/>
+<wire x1="48.26" y1="-35.56" x2="48.26" y2="-38.1" width="0.1524" layer="91"/>
+<label x="45.72" y="-30.48" size="1.778" layer="95" rot="R90" xref="yes"/>
+<wire x1="45.72" y1="-35.56" x2="45.72" y2="-30.48" width="0.1524" layer="91"/>
+<junction x="45.72" y="-35.56"/>
+</segment>
+<segment>
+<pinref part="BLK2" gate="G$1" pin="GND"/>
+<wire x1="-63.5" y1="30.48" x2="-73.66" y2="30.48" width="0.1524" layer="91"/>
+<label x="-73.66" y="30.48" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="R10" gate="G$1" pin="2"/>
+<wire x1="81.28" y1="-15.24" x2="86.36" y2="-15.24" width="0.1524" layer="91"/>
+<pinref part="R9" gate="G$1" pin="2"/>
+<wire x1="86.36" y1="-15.24" x2="86.36" y2="-25.4" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="-25.4" x2="81.28" y2="-25.4" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="-15.24" x2="91.44" y2="-15.24" width="0.1524" layer="91"/>
+<junction x="86.36" y="-15.24"/>
+<label x="91.44" y="-15.24" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="ESTIMAT_3V3" class="0">
 <segment>
@@ -9442,6 +9483,28 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <junction x="-264.16" y="50.8"/>
 <label x="-271.78" y="50.8" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
+<segment>
+<pinref part="BLK2" gate="G$1" pin="3.3V_MSP-ANALOG@1"/>
+<wire x1="-63.5" y1="35.56" x2="-66.04" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="-66.04" y1="35.56" x2="-66.04" y2="40.64" width="0.1524" layer="91"/>
+<pinref part="BLK2" gate="G$1" pin="3.3V_CAN@2"/>
+<wire x1="-66.04" y1="40.64" x2="-66.04" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="-66.04" y1="43.18" x2="-66.04" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="-66.04" y1="48.26" x2="-66.04" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="-66.04" y1="50.8" x2="-63.5" y2="50.8" width="0.1524" layer="91"/>
+<pinref part="BLK2" gate="G$1" pin="3.3V_CAN@1"/>
+<wire x1="-63.5" y1="48.26" x2="-66.04" y2="48.26" width="0.1524" layer="91"/>
+<junction x="-66.04" y="48.26"/>
+<pinref part="BLK2" gate="G$1" pin="3.3V_MSP@3"/>
+<wire x1="-63.5" y1="43.18" x2="-66.04" y2="43.18" width="0.1524" layer="91"/>
+<junction x="-66.04" y="43.18"/>
+<pinref part="BLK2" gate="G$1" pin="3.3V_MSP@2"/>
+<wire x1="-63.5" y1="40.64" x2="-66.04" y2="40.64" width="0.1524" layer="91"/>
+<junction x="-66.04" y="40.64"/>
+<wire x1="-66.04" y1="50.8" x2="-73.66" y2="50.8" width="0.1524" layer="91"/>
+<junction x="-66.04" y="50.8"/>
+<label x="-73.66" y="50.8" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="ESTIMAT_LDO_3V3_BYP" class="0">
 <segment>
@@ -9472,6 +9535,11 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <pinref part="BLK1" gate="G$1" pin="5V_CAN"/>
 <wire x1="-261.62" y1="55.88" x2="-271.78" y2="55.88" width="0.1524" layer="91"/>
 <label x="-271.78" y="55.88" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="BLK2" gate="G$1" pin="5V_CAN"/>
+<wire x1="-63.5" y1="55.88" x2="-73.66" y2="55.88" width="0.1524" layer="91"/>
+<label x="-73.66" y="55.88" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="ESTIMAT_LDO_5V_BYP" class="0">
@@ -9568,6 +9636,7 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <segment>
 <pinref part="C17" gate="G$1" pin="2"/>
 <label x="403.86" y="157.48" size="1.778" layer="95" rot="R270" xref="yes"/>
+<junction x="403.86" y="157.48"/>
 </segment>
 <segment>
 <pinref part="U$6" gate="G$1" pin="BDOT_GND@87"/>
@@ -9848,22 +9917,74 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <wire x1="-132.08" y1="-15.24" x2="-127" y2="-15.24" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="ESTIMAT_BRIDGE_I2C_SDA_2" class="0">
+<net name="SBWTCK1" class="0">
 <segment>
-<pinref part="BLK1" gate="G$1" pin="P7.0_I2C-SDA-2"/>
-<wire x1="-261.62" y1="-10.16" x2="-274.32" y2="-10.16" width="0.1524" layer="91"/>
-<wire x1="-274.32" y1="-10.16" x2="-274.32" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="-274.32" y1="-7.62" x2="-276.86" y2="-7.62" width="0.1524" layer="91"/>
-<label x="-276.86" y="-7.62" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="BLK2" gate="G$1" pin="SBWTCK"/>
+<pinref part="U$2" gate="G$1" pin="SBWTCK"/>
+<wire x1="22.86" y1="-17.78" x2="35.56" y2="-17.78" width="0.1524" layer="91"/>
+<wire x1="35.56" y1="-17.78" x2="35.56" y2="-38.1" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="ESTIMAT_BRIDGE_I2C_SCL_2" class="0">
+<net name="SBWTDIO1" class="0">
 <segment>
-<pinref part="BLK1" gate="G$1" pin="P7.1_I2C-SCL-2"/>
-<wire x1="-261.62" y1="-12.7" x2="-274.32" y2="-12.7" width="0.1524" layer="91"/>
-<wire x1="-274.32" y1="-12.7" x2="-274.32" y2="-15.24" width="0.1524" layer="91"/>
-<wire x1="-274.32" y1="-15.24" x2="-276.86" y2="-15.24" width="0.1524" layer="91"/>
-<label x="-276.86" y="-15.24" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="U$2" gate="G$1" pin="SBWTDIO"/>
+<pinref part="BLK2" gate="G$1" pin="SBWTDIO"/>
+<wire x1="38.1" y1="-38.1" x2="38.1" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="-15.24" x2="22.86" y2="-15.24" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="TXD1" class="0">
+<segment>
+<pinref part="BLK2" gate="G$1" pin="P2.0_TXD"/>
+<pinref part="U$2" gate="G$1" pin="P2.0_TXD"/>
+<wire x1="22.86" y1="-12.7" x2="40.64" y2="-12.7" width="0.1524" layer="91"/>
+<wire x1="40.64" y1="-12.7" x2="40.64" y2="-38.1" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="RXD1" class="0">
+<segment>
+<pinref part="U$2" gate="G$1" pin="P2.1_RXD"/>
+<pinref part="BLK2" gate="G$1" pin="P2.1_RXD"/>
+<wire x1="43.18" y1="-38.1" x2="43.18" y2="-10.16" width="0.1524" layer="91"/>
+<wire x1="43.18" y1="-10.16" x2="22.86" y2="-10.16" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="P3.4_GPIO_DEBUG1" class="0">
+<segment>
+<pinref part="BLK2" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
+<pinref part="U$2" gate="G$1" pin="P3.4_GPIO_DEBUG"/>
+<wire x1="22.86" y1="-7.62" x2="50.8" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="50.8" y1="-7.62" x2="50.8" y2="-15.24" width="0.1524" layer="91"/>
+<pinref part="D5" gate="G$1" pin="A"/>
+<wire x1="50.8" y1="-15.24" x2="50.8" y2="-38.1" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="-15.24" x2="50.8" y2="-15.24" width="0.1524" layer="91"/>
+<junction x="50.8" y="-15.24"/>
+</segment>
+</net>
+<net name="P3.5_GPIO_DEBUG1" class="0">
+<segment>
+<pinref part="BLK2" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
+<pinref part="U$2" gate="G$1" pin="P3.5_GPIO_DEBUG"/>
+<wire x1="22.86" y1="-5.08" x2="53.34" y2="-5.08" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="-5.08" x2="53.34" y2="-25.4" width="0.1524" layer="91"/>
+<pinref part="D6" gate="G$1" pin="A"/>
+<wire x1="53.34" y1="-25.4" x2="53.34" y2="-38.1" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="-25.4" x2="58.42" y2="-25.4" width="0.1524" layer="91"/>
+<junction x="53.34" y="-25.4"/>
+</segment>
+</net>
+<net name="N$3" class="0">
+<segment>
+<pinref part="D6" gate="G$1" pin="C"/>
+<pinref part="R9" gate="G$1" pin="1"/>
+<wire x1="66.04" y1="-25.4" x2="71.12" y2="-25.4" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$4" class="0">
+<segment>
+<pinref part="D5" gate="G$1" pin="C"/>
+<pinref part="R10" gate="G$1" pin="1"/>
+<wire x1="66.04" y1="-15.24" x2="71.12" y2="-15.24" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
