@@ -43,6 +43,27 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2151810086 tle_6: 8 com_1
+ SG_ tle_mnm : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+
+BO_ 2151810085 tle_5: 4 com_1
+ SG_ tle_mna : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+
+BO_ 2151810084 tle_4: 8 com_1
+ SG_ tle_aop : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+ SG_ tle_ecc : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+
+BO_ 2151810083 tle_3: 8 com_1
+ SG_ tle_raan : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+ SG_ tle_inc : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+
+BO_ 2151810081 tle_2: 8 com_1
+ SG_ tle_day : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+
+BO_ 2151810080 tle_1: 6 com_1
+ SG_ tle_bstar : 16|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+ SG_ tle_year : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
 BO_ 2451701986 eps_pd_undervoltage: 1 Vector__XXX
  SG_ eps_pd_undervoltage_state : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
@@ -223,4 +244,12 @@ VAL_ 2183266498 eps_batt_state_bal 1 "true" 0 "false" ;
 VAL_ 2183266498 eps_batt_state_heat 1 "true" 0 "false" ;
 VAL_ 2483355713 sensorproc_sun_valid 1 "true" 0 "false" ;
 VAL_ 2181496864 bdot_tumble_status_status 1 "true" 0 "false" ;
+SIG_VALTYPE_ 2151810086 tle_mnm : 2;
+SIG_VALTYPE_ 2151810085 tle_mna : 1;
+SIG_VALTYPE_ 2151810084 tle_aop : 1;
+SIG_VALTYPE_ 2151810084 tle_ecc : 1;
+SIG_VALTYPE_ 2151810083 tle_raan : 1;
+SIG_VALTYPE_ 2151810083 tle_inc : 1;
+SIG_VALTYPE_ 2151810081 tle_day : 2;
+SIG_VALTYPE_ 2151810080 tle_bstar : 1;
 
