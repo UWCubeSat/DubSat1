@@ -3259,6 +3259,15 @@ design rules under a new name.</description>
 <wire x1="0.508" y1="-30.988" x2="-9.652" y2="-30.988" width="0.508" layer="1"/>
 <wire x1="-10.3716" y1="-30.2684" x2="-10.3716" y2="-28.3132" width="0.508" layer="1"/>
 <wire x1="-9.652" y1="-30.988" x2="-10.3716" y2="-30.2684" width="0.508" layer="1"/>
+<via x="-39.37" y="22.098" extent="1-16" drill="0.35"/>
+<via x="-22.86" y="16.764" extent="1-16" drill="0.35"/>
+<via x="4.572" y="9.652" extent="1-16" drill="0.35"/>
+<via x="5.842" y="4.064" extent="1-16" drill="0.35"/>
+<via x="4.064" y="-10.922" extent="1-16" drill="0.35"/>
+<via x="4.318" y="-15.748" extent="1-16" drill="0.35"/>
+<via x="0" y="-30.988" extent="1-16" drill="0.35"/>
+<via x="1.016" y="-30.988" extent="1-16" drill="0.35"/>
+<via x="-10.414" y="-4.826" extent="1-16" drill="0.35"/>
 </signal>
 <signal name="ESTIMAT_LDO_3V3_BYP">
 <contactref element="U4" pad="P$4"/>
@@ -3294,6 +3303,9 @@ design rules under a new name.</description>
 <wire x1="8.636" y1="-26.67" x2="8.244" y2="-27.062" width="0.508" layer="1"/>
 <wire x1="8.244" y1="-27.062" x2="8.244" y2="-27.462" width="0.508" layer="1"/>
 <wire x1="10.414" y1="-2.2326" x2="10.414" y2="-25.4" width="0.508" layer="3"/>
+<via x="-42.164" y="22.606" extent="1-16" drill="0.35"/>
+<via x="10.16" y="-25.654" extent="1-16" drill="0.35"/>
+<via x="8.4354" y="0.254" extent="1-16" drill="0.35"/>
 </signal>
 <signal name="ESTIMAT_LDO_5V_BYP">
 <contactref element="U6" pad="P$4"/>
