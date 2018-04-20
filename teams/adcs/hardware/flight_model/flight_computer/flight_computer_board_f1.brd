@@ -240,6 +240,11 @@
 <text x="-42.164" y="-24.638" size="1.27" layer="51" font="vector" align="center-left">GND</text>
 <text x="-42.164" y="-27.178" size="1.27" layer="51" font="vector" align="center-left">P3.4_GPIO</text>
 <text x="-42.164" y="-29.718" size="1.27" layer="51" font="vector" align="center-left">P3.5_GPIO</text>
+<wire x1="-46.482" y1="-7.366" x2="16.51" y2="-7.366" width="0.508" layer="112"/>
+<wire x1="16.51" y1="-7.366" x2="16.51" y2="28.448" width="0.508" layer="112"/>
+<wire x1="16.51" y1="-7.366" x2="16.51" y2="-46.736" width="0.508" layer="112"/>
+<text x="-27.94" y="-6.604" size="1.778" layer="112">ENV_ESTIM</text>
+<text x="-27.94" y="-9.906" size="1.778" layer="112">FSW</text>
 </plain>
 <libraries>
 <library name="DubSat1 Components">
