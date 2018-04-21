@@ -15,11 +15,9 @@ void METInit(uint8_t _isDist)
 	RTCCTL0_H = RTCKEY_H;                   // Unlock RTC
 
 	RTCCTL0_L = RTCTEVIE_L;                 // RTC event interrupt enable
-	RTCCTL13 = RTCSSEL_2 | RTCTEV_0 | RTCHOLD; // Counter Mode, RTC1PS, 8-bit ovf
-	RTCPS0CTL = RT0PSDIV1;                  // ACLK, /8
-	RTCPS1CTL = RT1SSEL1 | 0x1800; // out from RT0PS, /16; increment ~= 4 ms
-
-	RTCCTL1 = RTCTEV_3; //32-bit interrupt
+	RTCCTL1 = RTCSSEL_2 | RTCTEV_3 | RTCHOLD; // Counter Mode, RTC1PS, 8-bit ovf, 32-bit interrupt
+	RTCPS0CTL = RT0PSDIV1 | RT1PSDIV1;                  // ACLK, /8
+	RTCPS1CTL = RT1SSEL1 | RT1PSDIV__16; // out from RT0PS, /16; increment ~= 4 ms
 
 	RTCCNT1 = 0;
 	RTCCNT2 = 0;
@@ -66,6 +64,23 @@ timeStamp getTimeStamp()
 
 	return now;
 }
+
+uint64_t getTimeStampInt()
+{
+    timeStamp t = getTimeStamp();
+    uint64_t res = (uint64_t) t.count1;
+    res |= ((uint64_t) t.count2) << 8;
+    res |= ((uint64_t) t.count3) << 16;
+    res |= ((uint64_t) t.count4) << 24;
+    res |= ((uint64_t) t.count5) << 32;
+    return res;
+}
+
+double getTimeStampSeconds()
+{
+    return ((double) getTimeStampInt()) / 256.0;
+}
+
 #pragma vector=RTC_C_VECTOR
 __interrupt void RTC_ISR(void)
 {
