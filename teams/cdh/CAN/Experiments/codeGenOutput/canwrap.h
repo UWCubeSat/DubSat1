@@ -15,6 +15,21 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_TLE_6 309788745
+#define CAN_ID_TLE_5 309788744
+#define CAN_ID_TLE_4 309788743
+#define CAN_ID_TLE_3 309788742
+#define CAN_ID_TLE_2 309788741
+#define CAN_ID_TLE_1 302448708
+#define CAN_ID_EPS_PD_UNDERVOLTAGE 304218338
+#define CAN_ID_EPS_PD_BATT_VOLTAGE 304218337
+#define CAN_ID_CMD_PD_RST 304218385
+#define CAN_ID_CMD_COM2_RUN 302514673
+#define CAN_ID_COM2_STATE 304611824
+#define CAN_ID_CMD_PD_ENABLE 303300865
+#define CAN_ID_CMD_BATT_RST 304349442
+#define CAN_ID_CMD_BATT_BAL_ENABLE 304349443
+#define CAN_ID_CMD_REBOOT_REQUEST 1310728
 #define CAN_ID_CMD_IGNORE_FSW 304349220
 #define CAN_ID_CMD_MTQ_FSW 304349219
 #define CAN_ID_EPS_DOMAIN_OUTPUT 304218336
@@ -39,76 +54,8 @@
 #define CAN_ID_SYNC_1 65553
 #define CAN_ID_MSP_TEMP 36241427
 
-#define CAN_ENUM_CMD_IGNORE_FSW_IGNORE_TRUE 1
-#define CAN_ENUM_CMD_IGNORE_FSW_IGNORE_FALSE 0
-#define CAN_ENUM_CMD_MTQ_FSW_SC_MODE_NOTTUMBLINGCHARLIE 3
-#define CAN_ENUM_CMD_MTQ_FSW_SC_MODE_NOTTUMBLINGBOB 2
-#define CAN_ENUM_CMD_MTQ_FSW_SC_MODE_NOTTUMBLINGALICE 1
-#define CAN_ENUM_CMD_MTQ_FSW_SC_MODE_TUMBLING 0
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_STATE_TRUE 1
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_STATE_FALSE 0
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_OC_TRIP_TRUE 1
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_OC_TRIP_FALSE 0
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_UNK 8
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_COM1 7
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_COM2 6
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_RAHS 5
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_BDOT 4
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_ESTIM 3
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_WHEEL 2
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_EPS 1
-#define CAN_ENUM_EPS_DOMAIN_OUTPUT_NUM_PPT 0
-#define CAN_ENUM_SENSORPROC_IMU_VALID_TRUE 1
-#define CAN_ENUM_SENSORPROC_IMU_VALID_FALSE 0
-#define CAN_ENUM_SENSORPROC_MAG_VALID_TRUE 1
-#define CAN_ENUM_SENSORPROC_MAG_VALID_FALSE 0
-#define CAN_ENUM_CMD_ROLLCALL_STATE_GOOD 1
-#define CAN_ENUM_CMD_ROLLCALL_STATE_BAD 0
-#define CAN_ENUM_MTQ_ACK_COILS_STATE_TRUE 1
-#define CAN_ENUM_MTQ_ACK_COILS_STATE_FALSE 0
-#define CAN_ENUM_MTQ_ACK_NODE_RAHS 15
-#define CAN_ENUM_MTQ_ACK_NODE_COM_2 14
-#define CAN_ENUM_MTQ_ACK_NODE_COM_1 13
-#define CAN_ENUM_MTQ_ACK_NODE_ADCS_MTQ 12
-#define CAN_ENUM_MTQ_ACK_NODE_ADCS_SENSORPROC 11
-#define CAN_ENUM_MTQ_ACK_NODE_ADCS_MPC 10
-#define CAN_ENUM_MTQ_ACK_NODE_ADCS_ESTIM 9
-#define CAN_ENUM_MTQ_ACK_NODE_EPS_BATT 8
-#define CAN_ENUM_MTQ_ACK_NODE_EPS_GEN 7
-#define CAN_ENUM_MTQ_ACK_NODE_EPS_DIST 6
-#define CAN_ENUM_MTQ_ACK_NODE_PPT 5
-#define CAN_ENUM_MTQ_ACK_NODE_ADCS_RWZ 4
-#define CAN_ENUM_MTQ_ACK_NODE_ADCS_RWY 3
-#define CAN_ENUM_MTQ_ACK_NODE_ADCS_RWX 2
-#define CAN_ENUM_MTQ_ACK_NODE_ADCS_BDOT 1
-#define CAN_ENUM_MTQ_ACK_NODE_TEST 0
-#define CAN_ENUM_GEN_PANEL_TEMP_AGG_SUM 5
-#define CAN_ENUM_GEN_PANEL_TEMP_AGG_MAX 4
-#define CAN_ENUM_GEN_PANEL_TEMP_AGG_MIN 3
-#define CAN_ENUM_GEN_PANEL_TEMP_AGG_COUNT 2
-#define CAN_ENUM_GEN_PANEL_TEMP_AGG_AVG 1
-#define CAN_ENUM_GEN_PANEL_TEMP_AGG_NONE 0
-#define CAN_ENUM_CMD_GEN_RST_CONFIRM_TRUE 1
-#define CAN_ENUM_CMD_GEN_RST_CONFIRM_FALSE 0
-#define CAN_ENUM_CMD_PPT_FIRE_FIRE_TRUE 1
-#define CAN_ENUM_CMD_PPT_FIRE_FIRE_FALSE 0
-#define CAN_ENUM_GEN_PANEL_PWR_AGG_SUM 5
-#define CAN_ENUM_GEN_PANEL_PWR_AGG_MAX 4
-#define CAN_ENUM_GEN_PANEL_PWR_AGG_MIN 3
-#define CAN_ENUM_GEN_PANEL_PWR_AGG_COUNT 2
-#define CAN_ENUM_GEN_PANEL_PWR_AGG_AVG 1
-#define CAN_ENUM_GEN_PANEL_PWR_AGG_NONE 0
-#define CAN_ENUM_MPC_VP_STATUS_TRUE 1
-#define CAN_ENUM_MPC_VP_STATUS_FALSE 0
-#define CAN_ENUM_EPS_BATT_STATE_BAL_TRUE 1
-#define CAN_ENUM_EPS_BATT_STATE_BAL_FALSE 0
-#define CAN_ENUM_EPS_BATT_STATE_HEAT_TRUE 1
-#define CAN_ENUM_EPS_BATT_STATE_HEAT_FALSE 0
-#define CAN_ENUM_SENSORPROC_SUN_VALID_TRUE 1
-#define CAN_ENUM_SENSORPROC_SUN_VALID_FALSE 0
-#define CAN_ENUM_BDOT_TUMBLE_STATUS_STATUS_TRUE 1
-#define CAN_ENUM_BDOT_TUMBLE_STATUS_STATUS_FALSE 0
-
+#define CAN_ENUM_UV_STATE_UNDERVOLTAGE 1
+#define CAN_ENUM_UV_STATE_NORMAL 0
 #define CAN_ENUM_MODE_NOTTUMBLINGCHARLIE 3
 #define CAN_ENUM_MODE_NOTTUMBLINGBOB 2
 #define CAN_ENUM_MODE_NOTTUMBLINGALICE 1
@@ -166,6 +113,77 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct tle_6 {
+    double tle_6_mnm; //  (No Units)
+} tle_6;
+
+typedef struct tle_5 {
+    float tle_5_mna; //  (No Units)
+} tle_5;
+
+typedef struct tle_4 {
+    float tle_4_aop; //  (No Units)
+    float tle_4_ecc; //  (No Units)
+} tle_4;
+
+typedef struct tle_3 {
+    float tle_3_raan; //  (No Units)
+    float tle_3_inc; //  (No Units)
+} tle_3;
+
+typedef struct tle_2 {
+    double tle_2_day; //  (No Units)
+} tle_2;
+
+typedef struct tle_1 {
+    float tle_1_bstar; //  (No Units)
+    uint8_t tle_1_year; //  (No Units)
+} tle_1;
+
+typedef struct eps_pd_undervoltage {
+    uint8_t eps_pd_undervoltage_state; //  (No Units)
+} eps_pd_undervoltage;
+
+typedef struct eps_pd_batt_voltage {
+    uint8_t eps_pd_batt_voltage_agg; //  (No Units)
+    uint16_t eps_pd_batt_voltage_val; // mV
+} eps_pd_batt_voltage;
+
+typedef struct cmd_pd_rst {
+    uint8_t cmd_pd_rst_confirm; //  (No Units)
+} cmd_pd_rst;
+
+typedef struct cmd_com2_run {
+    uint8_t cmd_com2_run_clear; //  (No Units)
+    uint8_t cmd_com2_run_jump; //  (No Units)
+    uint8_t cmd_com2_run_fileno; //  (No Units)
+} cmd_com2_run;
+
+typedef struct com2_state {
+    uint8_t com2_state_health_state; //  (No Units)
+    uint8_t com2_state_curr_file; //  (No Units)
+    uint16_t com2_state_qfilesize; // kB
+    uint16_t com2_state_qlen; // files
+    uint16_t com2_state_uptime; // s
+} com2_state;
+
+typedef struct cmd_pd_enable {
+    uint8_t cmd_pd_enable_enable; //  (No Units)
+    uint8_t cmd_pd_enable_domain; //  (No Units)
+} cmd_pd_enable;
+
+typedef struct cmd_batt_rst {
+    uint8_t cmd_batt_rst_confirm; //  (No Units)
+} cmd_batt_rst;
+
+typedef struct cmd_batt_bal_enable {
+    uint8_t cmd_batt_bal_enable_enable; //  (No Units)
+} cmd_batt_bal_enable;
+
+typedef struct cmd_reboot_request {
+    uint8_t cmd_reboot_request_domain; //  (No Units)
+} cmd_reboot_request;
+
 typedef struct cmd_ignore_fsw {
     uint8_t cmd_ignore_fsw_ignore; //  (No Units)
 } cmd_ignore_fsw;
@@ -224,7 +242,8 @@ typedef struct cmd_gen_rst {
 } cmd_gen_rst;
 
 typedef struct cmd_ppt_fire {
-    uint8_t cmd_ppt_fire_fire; // bool
+    uint8_t cmd_ppt_fire_override; //  (No Units)
+    uint8_t cmd_ppt_fire_with_pulse; //  (No Units)
 } cmd_ppt_fire;
 
 typedef struct gen_panel_pwr {
@@ -297,6 +316,51 @@ typedef struct sync_1 {
 typedef struct msp_temp {
     uint16_t msp_temp_temp; // dK
 } msp_temp;
+
+void encodetle_6(tle_6 *input, CANPacket* output);
+void decodetle_6(CANPacket *input, tle_6 *output);
+
+void encodetle_5(tle_5 *input, CANPacket* output);
+void decodetle_5(CANPacket *input, tle_5 *output);
+
+void encodetle_4(tle_4 *input, CANPacket* output);
+void decodetle_4(CANPacket *input, tle_4 *output);
+
+void encodetle_3(tle_3 *input, CANPacket* output);
+void decodetle_3(CANPacket *input, tle_3 *output);
+
+void encodetle_2(tle_2 *input, CANPacket* output);
+void decodetle_2(CANPacket *input, tle_2 *output);
+
+void encodetle_1(tle_1 *input, CANPacket* output);
+void decodetle_1(CANPacket *input, tle_1 *output);
+
+void encodeeps_pd_undervoltage(eps_pd_undervoltage *input, CANPacket* output);
+void decodeeps_pd_undervoltage(CANPacket *input, eps_pd_undervoltage *output);
+
+void encodeeps_pd_batt_voltage(eps_pd_batt_voltage *input, CANPacket* output);
+void decodeeps_pd_batt_voltage(CANPacket *input, eps_pd_batt_voltage *output);
+
+void encodecmd_pd_rst(cmd_pd_rst *input, CANPacket* output);
+void decodecmd_pd_rst(CANPacket *input, cmd_pd_rst *output);
+
+void encodecmd_com2_run(cmd_com2_run *input, CANPacket* output);
+void decodecmd_com2_run(CANPacket *input, cmd_com2_run *output);
+
+void encodecom2_state(com2_state *input, CANPacket* output);
+void decodecom2_state(CANPacket *input, com2_state *output);
+
+void encodecmd_pd_enable(cmd_pd_enable *input, CANPacket* output);
+void decodecmd_pd_enable(CANPacket *input, cmd_pd_enable *output);
+
+void encodecmd_batt_rst(cmd_batt_rst *input, CANPacket* output);
+void decodecmd_batt_rst(CANPacket *input, cmd_batt_rst *output);
+
+void encodecmd_batt_bal_enable(cmd_batt_bal_enable *input, CANPacket* output);
+void decodecmd_batt_bal_enable(CANPacket *input, cmd_batt_bal_enable *output);
+
+void encodecmd_reboot_request(cmd_reboot_request *input, CANPacket* output);
+void decodecmd_reboot_request(CANPacket *input, cmd_reboot_request *output);
 
 void encodecmd_ignore_fsw(cmd_ignore_fsw *input, CANPacket* output);
 void decodecmd_ignore_fsw(CANPacket *input, cmd_ignore_fsw *output);
