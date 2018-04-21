@@ -44,9 +44,14 @@ FILE_STATIC volatile uint8_t fsw_ack_sent = 0;
 FILE_STATIC volatile uint8_t duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2 = 0; // for COSMOS
 FILE_STATIC volatile uint8_t enable_command_update = 0;
 FILE_STATIC int actuation_timer = 0;
-FILE_STATIC int actuation_time_ms = 500;
+FILE_STATIC int actuation_time_ms = 2000;
+#pragma PERSISTENT(actuation_time_ms)
 FILE_STATIC int measurement_timer = 0;
-FILE_STATIC int measurement_time_ms = 500;
+FILE_STATIC int measurement_time_ms = 2000;
+#pragma PERSISTENT(measurement_time_ms)
+FILE_STATIC int wait_timer = 0;
+FILE_STATIC int wait_time_ms = 100;
+#pragma PERSISTENT(wait_time_ms)
 FILE_STATIC volatile uint8_t mtq_state = MEASUREMENT_PHASE;
 
 //--------function declarations--------
@@ -55,22 +60,22 @@ void cosmos_init(void);
 void can_init(void); 
 void start_actuation_timer(void);
 void start_measurement_timer(void);
+void start_wait_timer(void);
 uint8_t spacecraft_is_not_tumbling(void);
 void manage_telemetry(void);
 uint8_t fsw_is_valid(void);
 void execute_fsw_command(void);
 void execute_bdot_command(void);
 uint8_t command_dipole_valid(int command_x, int command_y, int command_z);
-uint8_t are_coils_off(void);
+uint8_t are_coils_off(int x, int y, int z);
 void turn_off_coils(void);
 void blink_LED(void);
 void set_pwm(char axis, int pwm_percent);
 void degauss_lol(void);
 void can_packet_rx_callback(CANPacket *packet);
-void send_telemetry_packet(void);
-void send_health_packet(void);
-void send_meta_packet(void);
-void send_ack(int command_source, int coil_state);
+void send_CAN_health_packet(void);
+void send_COSMOS_meta_packet(void);
+void send_CAN_ack_packet(int command_source, int coil_state);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 void send_COSMOS_commands_packet(void);
 void send_COSMOS_telemetry_packet(void);
@@ -82,6 +87,8 @@ void send_COSMOS_dooty_packet(void);
 // TODO 
 // add dipole to CAN ack packet
 // add acknowledgements for state change
+// remove bdot/fsw ack sent flag 
+// add timeout if a bdot command that is not 0 remains the same for a few cycles
 //------------------------------------------------------------------
 
 int main(void)
@@ -95,12 +102,10 @@ int main(void)
         can_init();                    // CAN initialization
 
 
+    start_measurement_timer();  // kick off the measurement timer
     while (1)
     {
-        manage_telemetry(); // send periodic telemetry
-
         // mtq control loop
-        start_measurement_timer();
         switch(mtq_state)
         {
             case MEASUREMENT_PHASE:
@@ -110,6 +115,7 @@ int main(void)
                 {
                     mtq_state = ACTUATION_PHASE;
                     start_actuation_timer();
+                    send_CAN_ack_packet(FROM_BDOT, COILS_ARE_ON); // send acknowledgement
                 }
                 break;
             case ACTUATION_PHASE:
@@ -123,15 +129,27 @@ int main(void)
                 }
                 if(checkTimer(actuation_timer)) // finished actuation phase
                 {
-                    mtq_state = MEASUREMENT_PHASE;
-                    start_measurement_timer();
+                    mtq_state = WAIT_PHASE;
+                    start_wait_timer();
                 }
                 break;
+			case WAIT_PHASE:
+				turn_off_coils();
+				enable_command_update = 0;
+				if(checkTimer(wait_timer))
+				{
+					mtq_state = MEASUREMENT_PHASE;
+					start_measurement_timer();
+					send_CAN_ack_packet(FROM_BDOT, COILS_ARE_OFF); // send acknowledgement
+				}
             default:
                 mod_status.state_transition_errors++;
                 mod_status.in_unknown_state++;
                 break;
         }
+		
+		// send periodic telemetry
+		manage_telemetry(); 
     }
 		
 	return 0;
@@ -147,10 +165,13 @@ void start_actuation_timer(void)
 {
     actuation_timer = timerPollInitializer(actuation_time_ms);
 }
-
 void start_measurement_timer(void)
 {
     measurement_timer = timerPollInitializer(measurement_time_ms);
+}
+void start_wait_timer(void)
+{
+    wait_timer = timerPollInitializer(wait_time_ms);
 }
 
 uint8_t spacecraft_is_not_tumbling(void)
@@ -162,7 +183,7 @@ void manage_telemetry(void)
 {
     if (checkTimer(telemTimer))
     {
-        send_telemetry_packet();
+        send_CAN_health_packet();
         // reset timer
         telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS);
     }
@@ -189,8 +210,7 @@ void execute_fsw_command(void)
         set_pwm('z', fsw_command_z);
         if (!fsw_ack_sent) // only send acknowledgement once per interrupt
         {
-            uint8_t coil_status = are_coils_off();
-            send_ack(FROM_FSW, coil_status);
+            send_CAN_ack_packet(FROM_FSW, are_coils_off(fsw_command_x, fsw_command_y, fsw_command_z));
             fsw_ack_sent = 1;
         }
     } else // invalid xyz command
@@ -208,8 +228,7 @@ void execute_bdot_command(void)
         set_pwm('z', bdot_command_z);
         if (!bdot_ack_sent) // only send acknowledgement once per interrupt
         {
-            uint8_t coil_status = are_coils_off();
-            send_ack(FROM_BDOT, coil_status);
+            send_CAN_ack_packet(FROM_BDOT, are_coils_off(bdot_command_x, bdot_command_y, bdot_command_z));
             bdot_ack_sent = 1;
         }
     } else // invalid xyz command
@@ -229,9 +248,9 @@ uint8_t command_dipole_valid(int command_x, int command_y, int command_z)
 	}
 }
 
-uint8_t are_coils_off(void)
+uint8_t are_coils_off(int x, int y, int z)
 {
-	if((TB0CCR4==100*CCR_PERIOD) && (TB0CCR3==100*CCR_PERIOD) && (TB0CCR6==100*CCR_PERIOD) && (TB0CCR5==100*CCR_PERIOD) && (TB0CCR2==100*CCR_PERIOD) && (TB0CCR1==100*CCR_PERIOD))
+	if(x==100 && y==100 && z==100)
 	{
 		return 1; 
 	} else 
@@ -363,17 +382,7 @@ void can_packet_rx_callback(CANPacket *packet)
 	}
 }	
 
-void send_telemetry_packet(void)
-{
-    // send telemetry
-//    send_health_packet();
-    int coil_status = are_coils_off();
-    send_ack(FROM_BDOT, coil_status);
-    send_meta_packet();
-    send_COSMOS_dooty_packet();
-}
-
-void send_health_packet(void)
+void send_CAN_health_packet(void)
 {
     // TODO determine overall health based on querying sensors for their health
     healthSeg.oms = OMS_Unknown;
@@ -389,13 +398,7 @@ void send_health_packet(void)
     canSendPacket(&packet);
 }
 
-void send_meta_packet(void)
-{
-    bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
-    bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
-}
-
-void send_ack(int command_source, int coil_state)
+void send_CAN_ack_packet(int command_source, int coil_state)
 { 
 	mtq_ack ack = {0};
 	ack.mtq_ack_coils_state = coil_state;
@@ -466,14 +469,18 @@ void send_COSMOS_dooty_packet()
 	bcbinSendPacket((uint8_t *) &cosmos_dooty, sizeof(cosmos_dooty));
 }
 
+void send_COSMOS_meta_packet(void)
+{
+    bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
+    bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
+}
+
 void send_COSMOS_telemetry_packet()
 {
-	// send telemetry
-//    send_health_packet();
-    send_meta_packet();	
+    send_COSMOS_meta_packet();
 	send_COSMOS_commands_packet(); 
 	send_COSMOS_dooty_packet(); 
-}   
+}
 
 //-------- special function registers config --------	
 		

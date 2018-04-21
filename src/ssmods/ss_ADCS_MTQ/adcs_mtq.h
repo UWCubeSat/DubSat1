@@ -36,6 +36,7 @@ typedef struct _module_status {
     uint16_t in_unknown_state;
 } ModuleStatus;
 
+// ---- COSMOS------
 TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
     int8_t bdot_x;
@@ -55,6 +56,12 @@ TLM_SEGMENT {
     uint8_t z1;
     uint8_t z2;
 } duty_percent;
+
+//TLM_SEGMENT {
+//    BcTlmHeader header;
+//    uint8_t command_source;
+//    uint8_t coil_state;
+//} ack_pack;
 
 CMD_SEGMENT {
     int8_t x;
@@ -91,15 +98,18 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 #define OVERRIDE CAN_ENUM_BOOL_TRUE
 #define TUMBLING CAN_ENUM_BOOL_TRUE
 #define IDLE CAN_ENUM_BOOL_FALSE
+// --- CAN ack packet---
 #define FROM_FSW CAN_ENUM_BOOL_FALSE
 #define FROM_BDOT CAN_ENUM_BOOL_TRUE
+#define COILS_ARE_OFF CAN_ENUM_BOOL_TRUE
+#define COILS_ARE_ON CAN_ENUM_BOOL_FALSE
 // ---COSMOS-----
 #define TLM_ID_BDOT_FSW_COMMANDS 127 
 #define TLM_ID_PIN_OUTPUTS 126
-// ---timer---
+// ---state machine---
 #define MEASUREMENT_PHASE 0 
 #define ACTUATION_PHASE 1
-#define MASTER_DUTY_PERIOD 1000 
-#define ACTUATION_TIME 500
+#define WAIT_PHASE 2
+
 
 #endif /* ADCS_MTQ_H_ */
