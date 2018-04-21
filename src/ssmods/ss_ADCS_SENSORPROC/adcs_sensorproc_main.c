@@ -1,5 +1,5 @@
-// 100 Hz
-#define AUTOCODE_UPDATE_DELAY_US 10000
+// 40 Hz
+#define AUTOCODE_UPDATE_DELAY_US 25000
 
 #include <adcs_sensorproc.h>
 #include <msp430.h> 
@@ -14,7 +14,7 @@
 #include "mag_io.h"
 #include "imu_io.h"
 
-#include "autocode/MSP_SP0.h"
+#include "autocode/MSP_SP.h"
 
 /*
  * SensorInterface is a class-like struct for managing multiple sensors on one
@@ -134,7 +134,15 @@ int main(void)
     asensorInit(Ref_2p5V); // temperature sensor
 
     // initialize autocode
-    MSP_SP0_initialize();
+    MSP_SP_initialize();
+
+    /*
+     * Prime the sensor readings (initialize the data).
+     * This is necessary because the autocode's base rate reads from every
+     * sensor at the first update before the subrates' inputs have a chance to
+     * read from their sensors.
+     */
+    updateSensorInterfaces();
 
     // initialize timer
     initializeTimer();
@@ -157,7 +165,7 @@ FILE_STATIC void step()
     static uint16_t i = 0;
     i++;
 
-    if (i % 100 == 0) // 1 Hz
+    if (i % 40 == 0) // 1 Hz
     {
         // blink LED
         LED_OUT ^= LED_BIT;
@@ -185,13 +193,13 @@ FILE_STATIC void step()
  * Step function originally copied from autocode/ert_main.c, now with inputs
  * and outputs filled out
  */
-FILE_STATIC void rt_OneStep()
+void rt_OneStep(void)
 {
-  static boolean_T OverrunFlags[4] = { 0, 0, 0, 0 };
+  static boolean_T OverrunFlags[3] = { 0, 0, 0 };
 
-  static boolean_T eventFlags[4] = { 0, 0, 0, 0 };/* Model has 4 rates */
+  static boolean_T eventFlags[3] = { 0, 0, 0 };/* Model has 3 rates */
 
-  static int_T taskCounter[4] = { 0, 0, 0, 0 };
+  static int_T taskCounter[3] = { 0, 0, 0 };
 
   int_T i;
 
@@ -215,7 +223,7 @@ FILE_STATIC void rt_OneStep()
    * following code checks whether any subrate overruns,
    * and also sets the rates that need to run this time step.
    */
-  for (i = 1; i < 4; i++) {
+  for (i = 1; i < 3; i++) {
     if (taskCounter[i] == 0) {
       if (eventFlags[i]) {
         OverrunFlags[0] = false;
@@ -236,27 +244,34 @@ FILE_STATIC void rt_OneStep()
   }
 
   taskCounter[2]++;
-  if (taskCounter[2] == 5) {
+  if (taskCounter[2] == 4) {
     taskCounter[2]= 0;
   }
 
-  taskCounter[3]++;
-  if (taskCounter[3] == 10) {
-    taskCounter[3]= 0;
-  }
-
   /* Set model inputs associated with base rate here */
+  imuioUpdate();
 
   /* Step the model for base rate */
-  MSP_SP0_step0(); // does nothing
+  /*
+   * Though this lists magnetomers and sun sensor as input, it only reads from
+   * them at the rate which they are updated (20 Hz, 10 Hz). Because they are
+   * read during their subrate steps we can avoid reading from those sensors
+   * during the base rate.
+   *
+   * rate: 40 Hz
+   * inputs: imu, mag1, mag2, sun
+   * outputs: imu
+   */
+  MSP_SP_step0();
 
   /* Get model outputs here */
+  imuioSendCAN();
 
   /* Indicate task for base rate complete */
   OverrunFlags[0] = false;
 
   /* Step the model for any subrate */
-  for (i = 1; i < 4; i++) {
+  for (i = 1; i < 3; i++) {
     /* If task "i" is running, don't run any lower priority task */
     if (OverrunFlags[i]) {
       return;
@@ -270,31 +285,27 @@ FILE_STATIC void rt_OneStep()
       /* Step the model for subrate "i" */
       switch (i) {
        case 1 :
-        updateSensorInterfaces();
-        // rate: 50 Hz
-        // inputs: mag1_vec_body_T, mag2_vec_body_T, omega_body_radps_gyro, sun_vec_body_sunsensor
-        // outputs: omega_radps_processed
-        MSP_SP0_step1(); // uses both mag1 and mag2
-
-        /* Get model outputs here */
-        imuioSendCAN();
-        break;
-
-       case 2 :
-        // rate: 20 Hz
-        // inputs:
-        // outputs: mag_body_processed_T
-        MSP_SP0_step2();
+        magioUpdate1();
+        magioUpdate2();
+        /*
+         * rate: 20 Hz
+         * inputs: mag
+         * outputs: mag
+         */
+        MSP_SP_step1();
 
         /* Get model outputs here */
         magioSendCAN();
         break;
 
-       case 3 :
-        // rate: 10 Hz
-        // inputs:
-        // outputs: sun_vec_body
-        MSP_SP0_step3();
+       case 2 :
+        sunsensorioUpdate();
+        /*
+         * rate: 10 Hz
+         * inputs: sun
+         * outputs: sun
+         */
+        MSP_SP_step2();
 
         /* Get model outputs here */
         sunsensorioSendCAN();

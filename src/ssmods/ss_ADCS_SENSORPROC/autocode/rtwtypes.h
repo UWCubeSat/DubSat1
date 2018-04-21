@@ -5,11 +5,11 @@
  *
  * File: rtwtypes.h
  *
- * Code generated for Simulink model 'MSP_SP0'.
+ * Code generated for Simulink model 'MSP_SP'.
  *
- * Model version                  : 1.345
+ * Model version                  : 1.347
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Sat Apr 14 22:03:33 2018
+ * C/C++ source code generated on : Mon Apr 16 23:50:11 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
