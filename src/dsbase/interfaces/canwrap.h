@@ -39,7 +39,7 @@
 #define CAN_ID_MTQ_ACK 34013232
 #define CAN_ID_GEN_PANEL_TEMP 36241619
 #define CAN_ID_CMD_GEN_RST 34865424
-#define CAN_ID_CMD_PPT_FIRE 34865408
+#define CAN_ID_CMD_PPT_SINGLE_FIRE 34865408
 #define CAN_ID_GEN_PANEL_PWR 35782866
 #define CAN_ID_GEN_PANEL_CURRENT 35782865
 #define CAN_ID_GEN_PANEL_VOLTAGE 34734288
@@ -241,10 +241,10 @@ typedef struct cmd_gen_rst {
     uint8_t cmd_gen_rst_confirm; // bool
 } cmd_gen_rst;
 
-typedef struct cmd_ppt_fire {
-    uint8_t cmd_ppt_fire_override; //  (No Units)
-    uint8_t cmd_ppt_fire_with_pulse; //  (No Units)
-} cmd_ppt_fire;
+typedef struct cmd_ppt_single_fire {
+    uint8_t cmd_ppt_single_fire_override; //  (No Units)
+    uint8_t cmd_ppt_single_fire_with_pulse; //  (No Units)
+} cmd_ppt_single_fire;
 
 typedef struct gen_panel_pwr {
     uint8_t gen_panel_pwr_agg; //  (No Units)
@@ -389,8 +389,8 @@ void decodegen_panel_temp(CANPacket *input, gen_panel_temp *output);
 void encodecmd_gen_rst(cmd_gen_rst *input, CANPacket* output);
 void decodecmd_gen_rst(CANPacket *input, cmd_gen_rst *output);
 
-void encodecmd_ppt_fire(cmd_ppt_fire *input, CANPacket* output);
-void decodecmd_ppt_fire(CANPacket *input, cmd_ppt_fire *output);
+void encodecmd_ppt_single_fire(cmd_ppt_single_fire *input, CANPacket* output);
+void decodecmd_ppt_single_fire(CANPacket *input, cmd_ppt_single_fire *output);
 
 void encodegen_panel_pwr(gen_panel_pwr *input, CANPacket* output);
 void decodegen_panel_pwr(CANPacket *input, gen_panel_pwr *output);

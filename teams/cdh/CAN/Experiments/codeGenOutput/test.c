@@ -123,10 +123,10 @@ void canBlast() {
 	encodecmd_gen_rst(&cmd_gen_rst_info, &cmd_gen_rst_packet);
 	canSendPacket(&cmd_gen_rst_packet);
 
-	__delay_cycles(10000);	CANPacket cmd_ppt_fire_packet = {0};
-	cmd_ppt_fire cmd_ppt_fire_info = {0};
-	encodecmd_ppt_fire(&cmd_ppt_fire_info, &cmd_ppt_fire_packet);
-	canSendPacket(&cmd_ppt_fire_packet);
+	__delay_cycles(10000);	CANPacket cmd_ppt_single_fire_packet = {0};
+	cmd_ppt_single_fire cmd_ppt_single_fire_info = {0};
+	encodecmd_ppt_single_fire(&cmd_ppt_single_fire_info, &cmd_ppt_single_fire_packet);
+	canSendPacket(&cmd_ppt_single_fire_packet);
 
 	__delay_cycles(10000);	CANPacket gen_panel_pwr_packet = {0};
 	gen_panel_pwr gen_panel_pwr_info = {0};
