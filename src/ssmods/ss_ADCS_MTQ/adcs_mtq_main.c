@@ -13,165 +13,364 @@ Z1 - P2_2 - TB0.2
 Z2 - P2_6 - TB0.1
 */
 
-//------------------------------------------------------------------
-// includes
-//------------------------------------------------------------------
-#include <msp430.h> 
-#include "adcs_mtq.h"
-#include "bsp/bsp.h"
+//--------includes--------
+#include <msp430.h>
+#include <stdint.h>
+#include "core/utils.h"
 #include "core/timer.h"
-#include "interfaces/canwrap.h" 
+#include "interfaces/systeminfo.h"
+#include "core/debugtools.h"
+#include "bsp/bsp.h"
+#include "interfaces/canwrap.h"
 #include "core/debugtools.h"
 #include "sensors/analogsensor.h"
+#include "adcs_mtq.h"
 
-//------------------------------------------------------------------
-// global variables 
-//------------------------------------------------------------------
+//--------globals--------
 FILE_STATIC ModuleStatus mod_status;
-FILE_STATIC volatile TumbleState tumble_status = Idle; // state variable 
-FILE_STATIC volatile int command_x, command_y, command_z; // commands for assigning pwm to output 
-FILE_STATIC volatile int duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2; // for cosmos to monitor duty cycles 
-FILE_STATIC volatile int8_t received_CAN_command_packet; // flag to exit tumbling state if no command packet has been received
-FILE_STATIC volatile int8_t received_cosmos_command_packet; 
-FILE_STATIC duty_segment dutyseg;
+FILE_STATIC bdot_fsw_commands cosmos_commandy_commands;
+FILE_STATIC duty_percent cosmos_dooty;
 FILE_STATIC meta_segment metaSeg;
 FILE_STATIC health_segment healthSeg;
-FILE_STATIC int telemTimer; // timer handle for sending meta/health updates
+FILE_STATIC int telemTimer; // timer handle for sending meta/health updates 
+FILE_STATIC volatile int8_t sc_mode = UNKNOWN;
+FILE_STATIC volatile uint8_t fsw_ignore = OVERRIDE; 
+#pragma PERSISTENT(fsw_ignore) // persist value of fsw_ignore on reboot
+FILE_STATIC volatile int8_t bdot_command_x, bdot_command_y, bdot_command_z = UNKNOWN;
+FILE_STATIC volatile int8_t fsw_command_x, fsw_command_y, fsw_command_z = UNKNOWN;  
+FILE_STATIC volatile int fsw_timer = 0; 
+FILE_STATIC volatile uint8_t bdot_ack_sent = 1;
+FILE_STATIC volatile uint8_t fsw_ack_sent = 0; 
+FILE_STATIC volatile uint8_t duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2 = 0; // for COSMOS
+FILE_STATIC volatile uint8_t enable_command_update = 0;
+FILE_STATIC int actuation_timer = 0;
+FILE_STATIC int actuation_time_ms = 500;
+FILE_STATIC int measurement_timer = 0;
+FILE_STATIC int measurement_time_ms = 500;
+FILE_STATIC volatile uint8_t mtq_state = MEASUREMENT_PHASE;
 
-//------------------------------------------------------------------
-// function declarations
-//------------------------------------------------------------------
-void mtq_init(void);
-void set_pwm(char axis, int pwm_percent); 
-void can_packet_rx_callback(CANPacket *packet);
-void send_ping_packet(void);
-void send_meta_packet(void);
-void send_health_packet(void);
-void blink_LED(void); 
+//--------function declarations--------
+void mtq_sfr_init(void);
+void cosmos_init(void);
+void can_init(void); 
+void start_actuation_timer(void);
+void start_measurement_timer(void);
+uint8_t spacecraft_is_not_tumbling(void);
+void manage_telemetry(void);
+uint8_t fsw_is_valid(void);
+void execute_fsw_command(void);
+void execute_bdot_command(void);
+uint8_t command_dipole_valid(int command_x, int command_y, int command_z);
+uint8_t are_coils_off(void);
+void turn_off_coils(void);
+void blink_LED(void);
+void set_pwm(char axis, int pwm_percent);
 void degauss_lol(void);
+void can_packet_rx_callback(CANPacket *packet);
+void send_telemetry_packet(void);
+void send_health_packet(void);
+void send_meta_packet(void);
+void send_ack(int command_source, int coil_state);
+uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
+void send_COSMOS_commands_packet(void);
+void send_COSMOS_telemetry_packet(void);
+void send_COSMOS_dooty_packet(void);
 
+ 
 //------------------------------------------------------------------
 // Main 
 // TODO 
-// confirm backchannel functionality 
-// add ping packet? 
-// add status to backchannel 
+// add dipole to CAN ack packet
+// add acknowledgements for state change
 //------------------------------------------------------------------
+
 int main(void)
 {	
-	// BSP initialization 
-	bspInit(__SUBSYSTEM_MODULE__);
-	// MTQ specific SFR initialization 
-	mtq_init(); 
-	// COSMOS backchannel initialization 
-	initializeTimer();
-    bcbinPopulateHeader(&(dutyseg.header), TLM_ID_SHARED_SSGENERAL, sizeof(dutyseg));
-    debugRegisterEntity(Entity_NONE, NULL, NULL, handleDebugActionCallback);
-    int timerID = timerCallbackInitializer(&sendDutyPacket, 500000); // timer will call on blinkLED every 2000 us.
-    startCallback(timerID);
+    // general initialization
+        bspInit(__SUBSYSTEM_MODULE__); // BSP initialization
+        mtq_sfr_init();                // MTQ specific SFR initialization
+        turn_off_coils();              // make sure coils are off post initialization
+        initializeTimer();             // timer A initialization
+        cosmos_init();                 // COSMOS backchannel initialization
+        can_init();                    // CAN initialization
 
-    asensorInit(Ref_2p5V); // initialize temperature sensor
-    telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS);
-    bcbinPopulateHeader(&(healthSeg.header), TLM_ID_SHARED_HEALTH, sizeof(healthSeg));
 
-	// CAN initialization 
-	canWrapInitWithFilter();
-	setCANPacketRxCallback(can_packet_rx_callback);
-	
-	// DEBUG testing - comment out during normal operation
-	while(1)
-	{
-		set_pwm('x', 50);
-	    set_pwm('y', 50);
-	    set_pwm('z', -50);
-	}
-	// end of DEBUG testing
-	
-	/*
     while (1)
     {
-        // send periodic telemetry
-        if (checkTimer(telemTimer))
+        manage_telemetry(); // send periodic telemetry
+
+        // mtq control loop
+        start_measurement_timer();
+        switch(mtq_state)
         {
-            // reset timer
-            telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS);
-
-            // send telemetry
-            send_health_packet();
-            send_meta_packet();
+            case MEASUREMENT_PHASE:
+                turn_off_coils();
+                enable_command_update = 1;
+                if(checkTimer(measurement_timer)) // finished measurement phase
+                {
+                    mtq_state = ACTUATION_PHASE;
+                    start_actuation_timer();
+                }
+                break;
+            case ACTUATION_PHASE:
+                enable_command_update = 0;
+                if (spacecraft_is_not_tumbling() && fsw_is_valid())
+                {
+                    execute_fsw_command();
+                } else
+                {
+                    execute_bdot_command();
+                }
+                if(checkTimer(actuation_timer)) // finished actuation phase
+                {
+                    mtq_state = MEASUREMENT_PHASE;
+                    start_measurement_timer();
+                }
+                break;
+            default:
+                mod_status.state_transition_errors++;
+                mod_status.in_unknown_state++;
+                break;
         }
-
-		// control for turning on coils based on command dipole signals 
-        switch (tumble_status) 
-		{
-			case Tumbling: 
-				PJOUT |= BIT0|BIT1|BIT2; // turn on debug lights 
-				// set duty cycles 
-				if (received_CAN_command_packet || received_cosmos_command_packet)
-				{
-				    received_CAN_command_packet = 0; // reset received command packet flags
-				    received_cosmos_command_packet = 0; 
-					set_pwm('x', command_x); 
-					set_pwm('y', command_y); 
-					set_pwm('z', command_z); 
-				} 		
-				break;
-			case Idle: 
-				//blink_LED(); // blink debug lights 
-				// Turn off coils (according to driver chopping mode)
-				set_pwm('x', 100); 
-				set_pwm('y', 100); 
-				set_pwm('z', 100); 
-				break;
-        	default:
-				// unknown state 
-            	mod_status.state_transition_errors++;
-            	mod_status.in_unknown_state++;
-            	break;
-        }
-	}
-*/
+    }
+		
 	return 0;
 }
 
 //------------------------------------------------------------------
-// CAN interrupt handler 
+// Function definitions 
 //------------------------------------------------------------------
 
+//-------- main software control --------
+
+void start_actuation_timer(void)
+{
+    actuation_timer = timerPollInitializer(actuation_time_ms);
+}
+
+void start_measurement_timer(void)
+{
+    measurement_timer = timerPollInitializer(measurement_time_ms);
+}
+
+uint8_t spacecraft_is_not_tumbling(void)
+{
+    return (sc_mode == IDLE);
+}
+
+void manage_telemetry(void)
+{
+    if (checkTimer(telemTimer))
+    {
+        send_telemetry_packet();
+        // reset timer
+        telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS);
+    }
+}
+
+uint8_t fsw_is_valid(void)
+{
+	if(fsw_ignore == OVERRIDE || fsw_timer < FSW_TIMEOUT || sc_mode == TUMBLING)
+	{
+		return 0; 
+	} else 
+	{
+		return 1; 
+	}
+}
+
+void execute_fsw_command(void)
+{
+    fsw_timer++; // incrememnt fsw timer
+    if (command_dipole_valid(fsw_command_x, fsw_command_y, fsw_command_z))
+    {
+        set_pwm('x', fsw_command_x);
+        set_pwm('y', fsw_command_y);
+        set_pwm('z', fsw_command_z);
+        if (!fsw_ack_sent) // only send acknowledgement once per interrupt
+        {
+            uint8_t coil_status = are_coils_off();
+            send_ack(FROM_FSW, coil_status);
+            fsw_ack_sent = 1;
+        }
+    } else // invalid xyz command
+    {
+    }
+
+}
+
+void execute_bdot_command(void)
+{
+    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z))
+    {
+        set_pwm('x', bdot_command_x);
+        set_pwm('y', bdot_command_y);
+        set_pwm('z', bdot_command_z);
+        if (!bdot_ack_sent) // only send acknowledgement once per interrupt
+        {
+            uint8_t coil_status = are_coils_off();
+            send_ack(FROM_BDOT, coil_status);
+            bdot_ack_sent = 1;
+        }
+    } else // invalid xyz command
+    {
+    }
+}
+
+uint8_t command_dipole_valid(int command_x, int command_y, int command_z)
+{
+	// check to make sure commands are in the range -100 - 100
+	if (command_x > 100 || command_y > 100 || command_z > 100 || command_x < -100 || command_y < -100 || command_z < -100)
+	{
+		return 0; // invalid
+	} else 
+	{
+		return 1; // valid
+	}
+}
+
+uint8_t are_coils_off(void)
+{
+	if((TB0CCR4==100*CCR_PERIOD) && (TB0CCR3==100*CCR_PERIOD) && (TB0CCR6==100*CCR_PERIOD) && (TB0CCR5==100*CCR_PERIOD) && (TB0CCR2==100*CCR_PERIOD) && (TB0CCR1==100*CCR_PERIOD))
+	{
+		return 1; 
+	} else 
+	{
+		return 0; 
+	}
+}
+
+void turn_off_coils(void) 
+{
+	set_pwm('x', 0); 
+	set_pwm('y', 0); 
+	set_pwm('z', 0); 
+}
+
+void blink_LED(void)
+{
+	PJOUT |= BIT0|BIT1|BIT2; // debug lights 
+	_delay_cycles(50000); 
+	PJOUT &= ~(BIT0|BIT1|BIT2); // debug lights 
+}
+
+// sets the PWM duty cycles for each of the outputs based 
+// on the A3903 driver chip data sheet description for chopping mode 
+void set_pwm(char axis, int pwm_percent)  
+{
+	// set duty cycles based on driver chopping mode 
+	int duty_1 = (pwm_percent >= 0) ? (100-pwm_percent) : 100;
+	int duty_2 = (pwm_percent < 0) ? (100-(-pwm_percent)): 100;
+	
+	// set CCR values to assign pwm to output pins 
+    int ccr_value_1 = duty_1*CCR_PERIOD;
+	int ccr_value_2 = duty_2*CCR_PERIOD;
+	
+	// set SFRs 
+	switch(axis)
+	{
+		case 'x':
+			SET_X1_PWM ccr_value_1; // P1_7
+			SET_X2_PWM ccr_value_2; // P1_6
+			duty_x1 = ccr_value_1 / PWM_PERIOD; // for COSMOS
+			duty_x2 = ccr_value_2 / PWM_PERIOD; 
+			break;
+		case 'y': 
+			SET_Y1_PWM ccr_value_1; // P3_7
+			SET_Y2_PWM ccr_value_2; // P3_6
+			duty_y1 = ccr_value_1 / PWM_PERIOD; 
+			duty_y2 = ccr_value_2 / PWM_PERIOD; 
+			break;	
+		case 'z': 
+			SET_Z1_PWM ccr_value_1; // P2_2
+			SET_Z2_PWM ccr_value_2; // P2_6
+			duty_z1 = ccr_value_1 / PWM_PERIOD; 
+			duty_z2 = ccr_value_2 / PWM_PERIOD; 
+			break;
+		default: // unknown state 
+			break;
+	}
+}
+
+// outputs a (very shitty) discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
+// note: HuskySat1 has only aircores so this function is never used; It's just for future reference. 
+void degauss_lol(void)
+{
+	int sine_table_ish[] = {0,50,100,50,0,-50,-100,-50,
+						0,30,75,30,0,-30,-75,-30,
+						0,20,50,20,0,-20,-50,-20,
+						0,10,20,10,-10,-20,-10,0};
+	int sine_count = 0; 
+	
+	while (sine_count < sizeof(sine_table_ish))
+	{
+		set_pwm('x', sine_table_ish[sine_count]);
+		set_pwm('y', sine_table_ish[sine_count]);
+		set_pwm('z', sine_table_ish[sine_count]);
+		sine_count++; 
+		_delay_cycles(100000);
+	}	
+}
+
+//-------- CAN --------
+
+// can initialization 
+void can_init(void)
+{
+	canWrapInit();
+	setCANPacketRxCallback(can_packet_rx_callback);
+}
+
+// Interrupt service routine callback 
 void can_packet_rx_callback(CANPacket *packet)
 {  
-	// check if packet is tumble status 
-	if (packet->id == CAN_ID_BDOT_TUMBLE_STATUS)
-	{ 
-		bdot_tumble_status tumble_status_packet = {0}; // initialize tumble status packet
-		// use tumble status to set tumble state 
-		decodebdot_tumble_status(packet, &tumble_status_packet);
-		if (tumble_status_packet.bdot_tumble_status_status) //tumbling
-		    tumble_status = Tumbling;
-	}
-	 
-	// check if packet is command dipole
-	if (packet->id == CAN_ID_BDOT_COMMAND_DIPOLE)
+    cmd_mtq_bdot bdot_packet = {0};
+    cmd_mtq_fsw fsw_packet = {0};
+    cmd_ignore_fsw ignore = {0};
+
+	switch(packet->id)
 	{
-		received_CAN_command_packet = 1; // set received_CAN_command_packet
-		bdot_command_dipole command_dipole_packet = {0}; // initialize command dipole packet
-		decodebdot_command_dipole(packet, &command_dipole_packet);
-		// update global dipole command variables   
-		command_x = command_dipole_packet.bdot_command_dipole_x; 
-		command_y = command_dipole_packet.bdot_command_dipole_y; 
-		command_z = command_dipole_packet.bdot_command_dipole_z; 
+		case CAN_ID_CMD_MTQ_BDOT:
+		    if (enable_command_update) // only update commands on low level of master timer
+		    {
+                decodecmd_mtq_bdot(packet, &bdot_packet);
+                // update global bdot command variables
+                bdot_command_x = bdot_packet.cmd_mtq_bdot_x;
+                bdot_command_y = bdot_packet.cmd_mtq_bdot_y;
+                bdot_command_z = bdot_packet.cmd_mtq_bdot_z;
+                bdot_ack_sent = 0; // reset acknowledgement sent flag
+		    }
+			break;
+		case CAN_ID_CMD_MTQ_FSW:
+		    if (enable_command_update) // only update commands on low level of master timer
+		    {
+                decodecmd_mtq_fsw(packet, &fsw_packet);
+                // update global fsw command variables
+                fsw_command_x = fsw_packet.cmd_mtq_fsw_x;
+                fsw_command_y = fsw_packet.cmd_mtq_fsw_y;
+                fsw_command_z = fsw_packet.cmd_mtq_fsw_z;
+                sc_mode = fsw_packet.cmd_mtq_fsw_sc_mode;
+                fsw_ack_sent = 0; // reset acknowledgement sent flag
+                fsw_timer = 0; // reset fsw timer
+		    }
+			break;
+		case CAN_ID_CMD_IGNORE_FSW:
+		    decodecmd_ignore_fsw(packet, &ignore);
+			fsw_ignore = ignore.cmd_ignore_fsw_ignore;
+			break; 
+		default: 
+			break;
 	}
 }	
 
-// TODO do not use. Halts Bdot when sent 
-void send_ping_packet(void)
+void send_telemetry_packet(void)
 {
-	static int ping_packet_tx_count;
-	ping_packet_tx_count ++; // increment ping packet count 
-	CANPacket p = {0};
-	p.id = 1234;
-	p.length = 0;
-	canSendPacket(&p);
+    // send telemetry
+//    send_health_packet();
+    int coil_status = are_coils_off();
+    send_ack(FROM_BDOT, coil_status);
+    send_meta_packet();
+    send_COSMOS_dooty_packet();
 }
 
 void send_health_packet(void)
@@ -196,71 +395,29 @@ void send_meta_packet(void)
     bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
 }
 
-//------------------------------------------------------------------
-// PWM functions 
-//------------------------------------------------------------------
-
-// this function sets the PWM duty cycles for each of the outputs based 
-// on the A3903 driver chip data sheet description for chopping mode 
-void set_pwm(char axis, int pwm_percent)  
-{
-	// set duty cycles based on chopping mode 
-	int duty_1 = (pwm_percent >= 0) ? (100-pwm_percent) : 100;
-	int duty_2 = (pwm_percent < 0) ? (100-(-pwm_percent)): 100;
+void send_ack(int command_source, int coil_state)
+{ 
+	mtq_ack ack = {0};
+	ack.mtq_ack_coils_state = coil_state;
+	ack.mtq_ack_node = command_source;
 	
-	// set CCR values to assign pwm to output pins 
-    int ccr_value_1 = duty_1*CCR_PERIOD;
-	int ccr_value_2 = duty_2*CCR_PERIOD;
-	
-	// set SFRs 
-	switch(axis)
-	{
-		case 'x':
-			SET_X1_PWM ccr_value_1; // P1_7
-			SET_X2_PWM ccr_value_2; // P1_6 
-			duty_x1 = ccr_value_1;  // for backchannel
-			duty_x2 = ccr_value_2;
-			break;
-		case 'y': 
-			SET_Y1_PWM ccr_value_1; // P3_7
-			SET_Y2_PWM ccr_value_2; // P3_6 
-			duty_y1 = ccr_value_1;  // for backchannel 
-			duty_y2 = ccr_value_2;
-			break;	
-		case 'z': 
-			SET_Z1_PWM ccr_value_1; // P2_2
-			SET_Z2_PWM ccr_value_2; // P2_6
-			duty_z1 = ccr_value_1;  // for backchannel  
-			duty_z2 = ccr_value_2;
-			break;
-		default: // unknown state 
-			break;
-	}
+	CANPacket mtq_ack_packet; 
+	encodemtq_ack(&ack, &mtq_ack_packet);
+	canSendPacket(&mtq_ack_packet);
 }
 
-// outputs a (very shitty) discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
-// note: HuskySat1 has only aircores so this function is never used; It's just for future reference. 
-void degauss_lol(void)
-{
-	int sine_table[] = {0,50,100,50,0,-50,-100,-50,
-						0,30,75,30,0,-30,-75,-30,
-						0,20,50,20,0,-20,-50,-20,
-						0,10,20,10,-10,-20,-10,0};
-	int sine_count = 0; 
-	
-	while (sine_count < sizeof(sine_table))
-	{
-		set_pwm('x', sine_table[sine_count]);
-		set_pwm('y', sine_table[sine_count]);
-		set_pwm('z', sine_table[sine_count]);
-		sine_count++; 
-		_delay_cycles(100000);
-	}	
-}
+//-------- COSMOS backchannel --------
 
-//------------------------------------------------------------------
-// COSMOS backchannel functions  
-//------------------------------------------------------------------
+// cosmos initialization 
+void cosmos_init(void)
+{
+	initializeTimer();
+    bcbinPopulateHeader(&(cosmos_commandy_commands.header), TLM_ID_SHARED_SSGENERAL, sizeof(cosmos_commandy_commands));
+    debugRegisterEntity(Entity_NONE, NULL, NULL, handleDebugActionCallback);
+    asensorInit(Ref_2p5V); // initialize temperature sensor
+    telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS);
+    bcbinPopulateHeader(&(healthSeg.header), TLM_ID_SHARED_HEALTH, sizeof(healthSeg));
+}
 
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
@@ -287,35 +444,41 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
     return 1;
 }
 
-void sendDutyPacket(){
-    dutyseg.x1 = duty_x1;
-    dutyseg.x2 = duty_x2;
-    dutyseg.y1 = duty_y1;
-    dutyseg.y2 = duty_y2;
-    dutyseg.z1 = duty_z1;
-	dutyseg.z2 = duty_z2;
-    bcbinSendPacket((uint8_t *) &dutyseg, sizeof(dutyseg));
-}
-
-
-//------------------------------------------------------------------
-// other functions  
-//------------------------------------------------------------------
-
-void blink_LED(void)
+void send_COSMOS_commands_packet()
 {
-	PJOUT |= BIT0|BIT1|BIT2; // debug lights 
-	_delay_cycles(50000); 
-	PJOUT &= ~(BIT0|BIT1|BIT2); // debug lights 
+    cosmos_commandy_commands.bdot_x = bdot_command_x;
+    cosmos_commandy_commands.bdot_y = bdot_command_y;
+    cosmos_commandy_commands.bdot_z = bdot_command_z;
+    cosmos_commandy_commands.fsw_x = fsw_command_x;
+    cosmos_commandy_commands.fsw_y = fsw_command_y;
+	cosmos_commandy_commands.fsw_z = fsw_command_z;
+    bcbinSendPacket((uint8_t *) &cosmos_commandy_commands, sizeof(cosmos_commandy_commands));
 }
 
+void send_COSMOS_dooty_packet()
+{
+    cosmos_dooty.x1 = duty_x1;
+    cosmos_dooty.x2 = duty_x2;
+    cosmos_dooty.y1 = duty_y1;
+    cosmos_dooty.y2 = duty_y2;
+    cosmos_dooty.z1 = duty_z1;
+    cosmos_dooty.z2 = duty_z2;
+	bcbinSendPacket((uint8_t *) &cosmos_dooty, sizeof(cosmos_dooty));
+}
 
-//------------------------------------------------------------------
-// SFR initialization functions  
-//------------------------------------------------------------------
+void send_COSMOS_telemetry_packet()
+{
+	// send telemetry
+//    send_health_packet();
+    send_meta_packet();	
+	send_COSMOS_commands_packet(); 
+	send_COSMOS_dooty_packet(); 
+}   
 
+//-------- special function registers config --------	
+		
 // used to configure SFRs for mtq
-void mtq_init(void)
+void mtq_sfr_init(void)
 {	
 	//---------GPIO initialization--------------------------
 	// PJ.0,1,2 - gpio - board leds 
