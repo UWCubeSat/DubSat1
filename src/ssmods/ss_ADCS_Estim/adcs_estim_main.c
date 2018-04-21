@@ -39,10 +39,6 @@ FILE_STATIC real_T orbit_tle[NUM_FIELDS_IN_TLE] = {
 FILE_STATIC real_T orbit_tle[NUM_FIELDS_IN_TLE] = { 0 };
 #endif /* MOCK_TLE */
 
-// util functions to convert weird timeStamp type
-FILE_STATIC double getTimeStampSeconds();
-FILE_STATIC uint64_t getTimeStampInt();
-
 FILE_STATIC void setInputs();
 FILE_STATIC void sendTelemOverBackchannel();
 FILE_STATIC void sendTelemOverCAN();
@@ -201,24 +197,6 @@ void canRxCallback(CANPacket *packet)
     // TODO add MET case when available (unless bsp handles this automatically)
     // TODO add TLE case when available
     }
-}
-
-// combine timeStamp fields into one int
-FILE_STATIC uint64_t getTimeStampInt()
-{
-    timeStamp t = getTimeStamp();
-    uint64_t res = (uint64_t) t.count1;
-    res |= ((uint64_t) t.count2) << 8;
-    res |= ((uint64_t) t.count3) << 16;
-    res |= ((uint64_t) t.count4) << 24;
-    res |= ((uint64_t) t.count5) << 32;
-    return res;
-}
-
-FILE_STATIC double getTimeStampSeconds()
-{
-    // res is in units of 2^-8s, or about 4 ms
-    return ((double) getTimeStampInt()) / 256.0;
 }
 
 // Packetizes and sends backchannel health packet
