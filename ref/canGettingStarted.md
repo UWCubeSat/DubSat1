@@ -174,8 +174,8 @@ Bits:
 
 Description:
 
-This sets the acceptance filters to filter only on extended IDs. This is
-what we are using for Huskysat-1.
+This will set the MCP25625 to normal mode. The chip will now start looking
+for packets on the bus, as well as be able to send them.
 
 #### Full Example:
 
