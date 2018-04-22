@@ -3,6 +3,26 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket cmd_ppt_set_count_packet = {0};
+	cmd_ppt_set_count cmd_ppt_set_count_info = {0};
+	encodecmd_ppt_set_count(&cmd_ppt_set_count_info, &cmd_ppt_set_count_packet);
+	canSendPacket(&cmd_ppt_set_count_packet);
+
+	__delay_cycles(10000);	CANPacket cmd_ppt_time_upd_packet = {0};
+	cmd_ppt_time_upd cmd_ppt_time_upd_info = {0};
+	encodecmd_ppt_time_upd(&cmd_ppt_time_upd_info, &cmd_ppt_time_upd_packet);
+	canSendPacket(&cmd_ppt_time_upd_packet);
+
+	__delay_cycles(10000);	CANPacket cmd_ppt_halt_packet = {0};
+	cmd_ppt_halt cmd_ppt_halt_info = {0};
+	encodecmd_ppt_halt(&cmd_ppt_halt_info, &cmd_ppt_halt_packet);
+	canSendPacket(&cmd_ppt_halt_packet);
+
+	__delay_cycles(10000);	CANPacket ppt_firing_result_packet = {0};
+	ppt_firing_result ppt_firing_result_info = {0};
+	encodeppt_firing_result(&ppt_firing_result_info, &ppt_firing_result_packet);
+	canSendPacket(&ppt_firing_result_packet);
+
 	__delay_cycles(10000);	CANPacket tle_6_packet = {0};
 	tle_6 tle_6_info = {0};
 	encodetle_6(&tle_6_info, &tle_6_packet);
