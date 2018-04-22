@@ -33,7 +33,7 @@ void resetMinMax_uint16_t(uint16_t handle);
 
 /* return uint16_t sum of data in the given buffer
 */
-uint16_t getSum_uint16_t(uint16_t handle);
+uint32_t getSum_uint16_t(uint16_t handle);
 
 /* return uint16_t average of data in the given buffer
 */

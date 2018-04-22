@@ -52,7 +52,7 @@ void printArray_uint16_t(uint16_t handle) {
 
 void printAllStats_uint16_t(uint16_t handle) {
 	buffer_uint16_t *theirBuffer = &bufferContainer[handle];
-	uint16_t sum = getSum_uint16_t(handle);
+	uint32_t sum = getSum_uint16_t(handle);
 	printf("Sum: %u\n", sum);
 	uint16_t min = theirBuffer->min;
 	uint16_t max = theirBuffer->max;
@@ -177,8 +177,8 @@ void resetMinMax_uint16_t(uint16_t handle) {
  * @param handle the identifier for the buffer that will be manipulated.
  * @return uint16_t sum of the values within
  */
-uint16_t getSum_uint16_t(uint16_t handle) {
-	uint16_t sum = (uint16_t)0;
+uint32_t getSum_uint16_t(uint16_t handle) {
+	uint32_t sum = (uint16_t)0;
 	buffer_uint16_t *theirBuffer = &bufferContainer[handle];
 	uint16_t *curr = theirBuffer->startPt;
 	while (curr != theirBuffer->endPt) {
@@ -189,7 +189,7 @@ uint16_t getSum_uint16_t(uint16_t handle) {
 
     /* handles overflow */
 	if (sum < getMax_uint16_t(handle)) {
-		sum = (uint16_t)0;
+		sum = (uint32_t)0;
 	}
 	return sum;
 }
@@ -205,7 +205,7 @@ uint16_t getAvg_uint16_t(uint16_t handle) {
     if (theirBuffer->currentSize == 0) {
         return 0;
     }
-    uint16_t sum = getSum_uint16_t(handle);
+    uint32_t sum = getSum_uint16_t(handle);
     uint16_t avg = sum / theirBuffer->currentSize;
     return avg;
 }
