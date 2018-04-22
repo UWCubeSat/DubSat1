@@ -15,6 +15,10 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_CMD_PPT_SET_COUNT 302252294
+#define CAN_ID_CMD_PPT_TIME_UPD 302252293
+#define CAN_ID_CMD_PPT_HALT 285475076
+#define CAN_ID_PPT_FIRING_RESULT 304677104
 #define CAN_ID_TLE_6 309788745
 #define CAN_ID_TLE_5 309788744
 #define CAN_ID_TLE_4 309788743
@@ -54,6 +58,13 @@
 #define CAN_ID_SYNC_1 65553
 #define CAN_ID_MSP_TEMP 36241427
 
+#define CAN_ENUM_NBOOL_NULL 2
+#define CAN_ENUM_NBOOL_TRUE 1
+#define CAN_ENUM_NBOOL_FALSE 0
+#define CAN_ENUM_FIRE_STATE_NODISCHARGE 3
+#define CAN_ENUM_FIRE_STATE_NOCHARGE 2
+#define CAN_ENUM_FIRE_STATE_FIREOVERRIDDEN 1
+#define CAN_ENUM_FIRE_STATE_FIRESUCCESSFUL 0
 #define CAN_ENUM_UV_STATE_UNDERVOLTAGE 1
 #define CAN_ENUM_UV_STATE_NORMAL 0
 #define CAN_ENUM_MODE_NOTTUMBLINGCHARLIE 3
@@ -113,6 +124,30 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct cmd_ppt_set_count {
+    uint8_t cmd_ppt_set_count_count; //  (No Units)
+} cmd_ppt_set_count;
+
+typedef struct cmd_ppt_time_upd {
+    uint16_t cmd_ppt_time_upd_ign_charge; // 2^-15s
+    uint16_t cmd_ppt_time_upd_cooldown; // 2^-15s
+    uint16_t cmd_ppt_time_upd_ign_delay; // 2^-15s
+    uint16_t cmd_ppt_time_upd_charge; // 2^-15s
+} cmd_ppt_time_upd;
+
+typedef struct cmd_ppt_halt {
+    uint8_t cmd_ppt_halt_confirm; //  (No Units)
+} cmd_ppt_halt;
+
+typedef struct ppt_firing_result {
+    uint8_t ppt_firing_result_panel_good; //  (No Units)
+    uint8_t ppt_firing_result_batt_good; //  (No Units)
+    uint8_t ppt_firing_result_coulmb_good; //  (No Units)
+    uint16_t ppt_firing_result_ign_time; // 2^-15s
+    uint16_t ppt_firing_result_main_time; // 2^-15s
+    uint8_t ppt_firing_result_code; //  (No Units)
+} ppt_firing_result;
+
 typedef struct tle_6 {
     double tle_6_mnm; //  (No Units)
 } tle_6;
@@ -205,16 +240,16 @@ typedef struct eps_domain_output {
 } eps_domain_output;
 
 typedef struct sensorproc_imu {
-    int16_t sensorproc_imu_z; //  (No Units)
-    int16_t sensorproc_imu_y; //  (No Units)
-    int16_t sensorproc_imu_x; //  (No Units)
+    uint16_t sensorproc_imu_z; //  (No Units)
+    uint16_t sensorproc_imu_y; //  (No Units)
+    uint16_t sensorproc_imu_x; //  (No Units)
     uint8_t sensorproc_imu_valid; // bool
 } sensorproc_imu;
 
 typedef struct sensorproc_mag {
-    int16_t sensorproc_mag_z; //  (No Units)
-    int16_t sensorproc_mag_y; //  (No Units)
-    int16_t sensorproc_mag_x; //  (No Units)
+    uint16_t sensorproc_mag_z; //  (No Units)
+    uint16_t sensorproc_mag_y; //  (No Units)
+    uint16_t sensorproc_mag_x; //  (No Units)
     uint8_t sensorproc_mag_valid; // bool
 } sensorproc_mag;
 
@@ -316,6 +351,18 @@ typedef struct sync_1 {
 typedef struct msp_temp {
     uint16_t msp_temp_temp; // dK
 } msp_temp;
+
+void encodecmd_ppt_set_count(cmd_ppt_set_count *input, CANPacket* output);
+void decodecmd_ppt_set_count(CANPacket *input, cmd_ppt_set_count *output);
+
+void encodecmd_ppt_time_upd(cmd_ppt_time_upd *input, CANPacket* output);
+void decodecmd_ppt_time_upd(CANPacket *input, cmd_ppt_time_upd *output);
+
+void encodecmd_ppt_halt(cmd_ppt_halt *input, CANPacket* output);
+void decodecmd_ppt_halt(CANPacket *input, cmd_ppt_halt *output);
+
+void encodeppt_firing_result(ppt_firing_result *input, CANPacket* output);
+void decodeppt_firing_result(CANPacket *input, ppt_firing_result *output);
 
 void encodetle_6(tle_6 *input, CANPacket* output);
 void decodetle_6(CANPacket *input, tle_6 *output);

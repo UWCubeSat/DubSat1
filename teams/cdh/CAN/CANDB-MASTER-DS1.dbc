@@ -34,6 +34,8 @@ NS_ :
 BS_:
 
 BU_: ppt eps_batt eps_dist eps_gen adcs_rwz adcs_rwy adcs_rwx adcs_mtq rahs adcs_sensorproc adcs_mpc adcs_estim adcs_bdot com_1 com_2
+VAL_TABLE_ nbool 2 "null" 1 "true" 0 "false" ;
+VAL_TABLE_ fire_state 3 "no discharge" 2 "no charge" 1 "fire overridden" 0 "fire successful" ;
 VAL_TABLE_ uv_state 1 "undervoltage" 0 "normal" ;
 VAL_TABLE_ mode 3 "not tumbling charlie" 2 "not tumbling bob" 1 "not tumbling alice" 0 "tumbling" ;
 VAL_TABLE_ pwr_domain 8 "unk" 7 "com1" 6 "com2" 5 "rahs" 4 "bdot" 3 "estim" 2 "wheel" 1 "eps" 0 "ppt" ;
@@ -42,6 +44,26 @@ VAL_TABLE_ node 15 "rahs" 14 "com_2" 13 "com_1" 12 "adcs_mtq" 11 "adcs_sensorpro
 VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
+
+BO_ 2449735942 cmd_ppt_set_count: 1 Vector__XXX
+ SG_ cmd_ppt_set_count_count : 0|8@1+ (1,0) [0|30] "" Vector__XXX
+
+BO_ 2449735941 cmd_ppt_time_upd: 8 Vector__XXX
+ SG_ cmd_ppt_time_upd_ign_charge : 32|16@1+ (1,0) [0|65535] "2^-15s" Vector__XXX
+ SG_ cmd_ppt_time_upd_cooldown : 48|16@1+ (1,0) [0|65535] "2^-15s" Vector__XXX
+ SG_ cmd_ppt_time_upd_ign_delay : 16|16@1+ (1,0) [0|65535] "2^-15s" Vector__XXX
+ SG_ cmd_ppt_time_upd_charge : 0|16@1+ (1,0) [0|65535] "2^-15s" Vector__XXX
+
+BO_ 2432958724 cmd_ppt_halt: 1 Vector__XXX
+ SG_ cmd_ppt_halt_confirm : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 2452160752 ppt_firing_result: 8 Vector__XXX
+ SG_ ppt_firing_result_panel_good : 56|8@1+ (1,0) [0|2] "" Vector__XXX
+ SG_ ppt_firing_result_batt_good : 48|8@1- (1,0) [0|2] "" Vector__XXX
+ SG_ ppt_firing_result_coulmb_good : 8|8@1+ (1,0) [0|2] "" Vector__XXX
+ SG_ ppt_firing_result_ign_time : 32|16@1+ (1,0) [0|65535] "2^-15s" Vector__XXX
+ SG_ ppt_firing_result_main_time : 16|16@1+ (1,0) [0|65535] "2^-15s" Vector__XXX
+ SG_ ppt_firing_result_code : 0|8@1+ (1,0) [0|3] "" Vector__XXX
 
 BO_ 2457272393 tle_6: 8 com_1
  SG_ tle_6_mnm : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
@@ -117,15 +139,15 @@ BO_ 2451701984 eps_domain_output: 8 eps_dist
  SG_ eps_domain_output_num : 0|8@1+ (1,0) [0|8] "" Vector__XXX
 
 BO_ 2483355714 sensorproc_imu: 7 adcs_sensorproc
- SG_ sensorproc_imu_z : 32|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ sensorproc_imu_y : 16|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ sensorproc_imu_x : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_imu_z : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ sensorproc_imu_y : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ sensorproc_imu_x : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ sensorproc_imu_valid : 48|1@1+ (1,0) [0|1] "bool" Vector__XXX
 
 BO_ 2483355715 sensorproc_mag: 7 adcs_sensorproc
- SG_ sensorproc_mag_z : 32|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ sensorproc_mag_y : 16|16@1- (1,0) [-32768|32767] "" Vector__XXX
- SG_ sensorproc_mag_x : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_mag_z : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ sensorproc_mag_y : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ sensorproc_mag_x : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ sensorproc_mag_valid : 48|1@1+ (1,0) [0|1] "bool" Vector__XXX
 
 BO_ 2148597780 cmd_rollcall: 7 eps_dist
@@ -215,6 +237,11 @@ BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2432958724 cmd_ppt_halt_confirm 1 "true" 0 "false" ;
+VAL_ 2452160752 ppt_firing_result_panel_good 2 "null" 1 "true" 0 "false" ;
+VAL_ 2452160752 ppt_firing_result_batt_good 2 "null" 1 "true" 0 "false" ;
+VAL_ 2452160752 ppt_firing_result_coulmb_good 2 "null" 1 "true" 0 "false" ;
+VAL_ 2452160752 ppt_firing_result_code 3 "no discharge" 2 "no charge" 1 "fire overridden" 0 "fire successful" ;
 VAL_ 2451701986 eps_pd_undervoltage_state 1 "undervoltage" 0 "normal" ;
 VAL_ 2451701985 eps_pd_batt_voltage_agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_ 2449998321 cmd_com2_run_clear 1 "true" 0 "false" ;
