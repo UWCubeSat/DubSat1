@@ -1,5 +1,4 @@
 #define MOCK_TLE 1
-#define NUM_FIELDS_IN_TLE 9
 
 #include <adcs_estim.h>
 #include <msp430.h> 
@@ -77,7 +76,7 @@ int main(void)
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
-    tleInit(&tle);
+    tleInit(&tle, MOCK_TLE);
     canWrapInitWithFilter();
     setCANPacketRxCallback(canRxCallback);
 

@@ -59,9 +59,9 @@ void magioUpdate1()
 #if ENABLE_MAG1
     data1 = magReadXYZData(mag1, ConvertToNone);
 #else
-    mockData1.rawX = 123;
-    mockData1.rawY = 123;
-    mockData1.rawZ = 123;
+    mockData1.rawX = 100;
+    mockData1.rawY = 100;
+    mockData1.rawZ = 100;
     data1 = &mockData1;
 #endif
 
@@ -78,9 +78,9 @@ void magioUpdate2()
 #if ENABLE_MAG2
     data2 = magReadXYZData(mag2, ConvertToNone);
 #else
-    mockData2.rawX = 123;
-    mockData2.rawY = 123;
-    mockData2.rawZ = 123;
+    mockData2.rawX = 300;
+    mockData2.rawY = 300;
+    mockData2.rawZ = 300;
     data2 = &mockData2;
 #endif
 
