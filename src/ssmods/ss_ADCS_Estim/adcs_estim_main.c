@@ -9,6 +9,7 @@
 #include "core/MET.h"
 #include "interfaces/canwrap.h"
 #include "core/debugtools.h"
+#include "tle.h"
 
 #include "autocode/env_estimation_lib.h"
 
@@ -24,19 +25,19 @@ FILE_STATIC health_segment hseg;
 // TODO initialize it with a recent TLE before launch?
 #if MOCK_TLE
 // TLE taken from Wikipedia example
-FILE_STATIC real_T orbit_tle[NUM_FIELDS_IN_TLE] = {
-                                                   2008,
-                                                   264.51782528,
-                                                   -.11606E-4,
-                                                   51.6416,
-                                                   247.4627,
-                                                   .0006703,
-                                                   130.5360,
-                                                   325.0288,
-                                                   15.72125391
+FILE_STATIC struct tle tle = {
+                              2008,
+                              264.51782528,
+                              -.11606E-4,
+                              51.6416,
+                              247.4627,
+                              .0006703,
+                              130.5360,
+                              325.0288,
+                              15.72125391
 };
 #else
-FILE_STATIC real_T orbit_tle[NUM_FIELDS_IN_TLE] = { 0 };
+FILE_STATIC struct tle tle;
 #endif /* MOCK_TLE */
 
 FILE_STATIC void setInputs();
@@ -76,6 +77,7 @@ int main(void)
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
+    tleInit(&tle);
     canWrapInitWithFilter();
     setCANPacketRxCallback(canRxCallback);
 
@@ -141,7 +143,22 @@ FILE_STATIC void setInputs()
     // TODO verify units
     rtU.MET = getTimeStampSeconds();
 
-    memcpy(rtU.orbit_tle, orbit_tle, NUM_FIELDS_IN_TLE * sizeof(real_T));
+    // input the TLE unless we're in the middle of reading it from CAN
+    // disable interrupts so the TLE isn't modified during read
+    __disable_interrupt();
+    if (tleIsComplete(&tle))
+    {
+        rtU.orbit_tle[0] = tle.year;
+        rtU.orbit_tle[1] = tle.day;
+        rtU.orbit_tle[2] = tle.bstar;
+        rtU.orbit_tle[3] = tle.inc;
+        rtU.orbit_tle[4] = tle.raan;
+        rtU.orbit_tle[5] = tle.ecc;
+        rtU.orbit_tle[6] = tle.aop;
+        rtU.orbit_tle[7] = tle.mna;
+        rtU.orbit_tle[8] = tle.mnm;
+    }
+    __enable_interrupt();
 }
 
 FILE_STATIC void sendTelemOverBackchannel()
@@ -192,10 +209,13 @@ FILE_STATIC void sendTelemOverCAN()
 
 void canRxCallback(CANPacket *packet)
 {
+    __disable_interrupt();
+    tleUpdate(packet, &tle);
+    __enable_interrupt();
+
     switch (packet->id)
     {
     // TODO add MET case when available (unless bsp handles this automatically)
-    // TODO add TLE case when available
     }
 }
 
