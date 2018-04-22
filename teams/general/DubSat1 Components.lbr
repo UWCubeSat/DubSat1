@@ -1566,6 +1566,7 @@ Board Template: V2.1</text>
 <smd name="P$1" x="19.5" y="-2.5" dx="8" dy="3.5" layer="1"/>
 <smd name="P$2" x="40" y="-2.5" dx="8" dy="3.5" layer="1"/>
 <smd name="P$3" x="60.5" y="-2.5" dx="8" dy="3.5" layer="1"/>
+<smd name="P$4" x="75.306" y="35.346" dx="8" dy="3.5" layer="1" rot="R315"/>
 </package>
 <package name="SOLAR_CELL_TOP_SHORT-PAD">
 <wire x1="23" y1="0" x2="36.5" y2="0" width="0.127" layer="21"/>
@@ -5446,6 +5447,7 @@ SN74LVC2G14DBVR</text>
 <pin name="INTERCONNECT_2" x="33.02" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <pin name="INTERCONNECT_3" x="40.64" y="-5.08" visible="pin" length="middle" rot="R90"/>
 <text x="22.86" y="20.32" size="2.54" layer="94">&gt;NAME</text>
+<pin name="EXTERNAL_DIODE" x="63.5" y="30.48" length="middle" rot="R180"/>
 </symbol>
 <symbol name="SOLAR_CELL_TOP_PAD">
 <wire x1="12.7" y1="35.56" x2="0" y2="22.86" width="0.254" layer="94"/>
@@ -7466,6 +7468,7 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <devices>
 <device name="" package="SOLAR_CELL_BOTTOM_SHORT-PADS">
 <connects>
+<connect gate="G$1" pin="EXTERNAL_DIODE" pad="P$4"/>
 <connect gate="G$1" pin="INTERCONNECT_1" pad="P$1"/>
 <connect gate="G$1" pin="INTERCONNECT_2" pad="P$2"/>
 <connect gate="G$1" pin="INTERCONNECT_3" pad="P$3"/>
