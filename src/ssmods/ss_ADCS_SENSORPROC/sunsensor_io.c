@@ -5,6 +5,8 @@
  *      Author: djdup
  */
 
+#define UNIT_TO_INT16(U) ((uint16_t) ((U) * INT16_MAX))
+
 #include <math.h>
 
 #include "sunsensor_io.h"
@@ -41,8 +43,8 @@ void sunsensorioUpdate()
 #if ENABLE_SUNSENSOR
     angle = sunSensorReadAngle();
 #else
-    mockAngle.alpha = 30;
-    mockAngle.beta = 30;
+    mockAngle.alpha = 20;
+    mockAngle.beta = -10;
     mockAngle.error = 0;
     angle = &mockAngle;
 #endif
@@ -81,9 +83,9 @@ void sunsensorioSendBackchannel()
 void sunsensorioSendCAN()
 {
     sensorproc_sun sun;
-    sun.sensorproc_sun_x = rtY.sun_vec_body[0];
-    sun.sensorproc_sun_y = rtY.sun_vec_body[1];
-    sun.sensorproc_sun_z = rtY.sun_vec_body[2];
+    sun.sensorproc_sun_x = UNIT_TO_INT16(rtY.sun_vec_body[0]);
+    sun.sensorproc_sun_y = UNIT_TO_INT16(rtY.sun_vec_body[1]);
+    sun.sensorproc_sun_z = UNIT_TO_INT16(rtY.sun_vec_body[2]);
     sun.sensorproc_sun_valid = rtY.sun_vec_body[3];
     CANPacket packet;
     encodesensorproc_sun(&sun, &packet);
