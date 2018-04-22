@@ -20,15 +20,31 @@
 #include "interfaces/canwrap.h"
 #include "core/met.h"
 
+FILE_STATIC const uint64_t completeSet = TLE_BIT_YEAR
+                                       | TLE_BIT_DAY
+                                       | TLE_BIT_BSTAR
+                                       | TLE_BIT_INC
+                                       | TLE_BIT_RAAN
+                                       | TLE_BIT_ECC
+                                       | TLE_BIT_AOP
+                                       | TLE_BIT_MNA
+                                       | TLE_BIT_MNM;
+
 FILE_STATIC BOOL isComplete(uint16_t presentSet);
-
 FILE_STATIC BOOL isTimedOut(uint64_t startTime);
-
 FILE_STATIC void resetTLE(struct tle *tle);
 
-void tleInit(struct tle *tle)
+void tleInit(struct tle *tle, BOOL isPrepopulated)
 {
-    tle->_present = 0;
+    if (isPrepopulated)
+    {
+        tle->_present = completeSet;
+        tle->_startTime = getTimeStampInt();
+    }
+    else
+    {
+        tle->_present = 0;
+    }
 }
 
 // TODO should this do something about duplicate fields?
@@ -120,15 +136,7 @@ BOOL tleIsComplete(struct tle *tle)
 
 FILE_STATIC BOOL isComplete(uint16_t presentSet)
 {
-    return presentSet == TLE_BIT_YEAR
-            | TLE_BIT_DAY
-            | TLE_BIT_BSTAR
-            | TLE_BIT_INC
-            | TLE_BIT_RAAN
-            | TLE_BIT_ECC
-            | TLE_BIT_AOP
-            | TLE_BIT_MNA
-            | TLE_BIT_MNM;
+    return presentSet == completeSet;
 }
 
 FILE_STATIC BOOL isTimedOut(uint64_t startTime)

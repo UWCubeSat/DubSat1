@@ -30,7 +30,7 @@ struct tle {
     uint64_t _startTime;
 };
 
-void tleInit(struct tle *tle);
+void tleInit(struct tle *tle, BOOL isPrepopulated);
 
 /*
  * Processes an incoming CAN packet and writes into the input tle
