@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="7.5.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -692,7 +692,7 @@
 <wire x1="33.02" y1="30.61" x2="-33.02" y2="30.61" width="0.2032" layer="21"/>
 <wire x1="0" y1="38.23" x2="0" y2="33.15" width="0" layer="21"/>
 </package>
-<package name="BOARD_TEMPLATE" urn="urn:adsk.eagle:footprint:2229800/1">
+<package name="BOARD_TEMPLATE">
 <wire x1="-40" y1="-45" x2="-45" y2="-40" width="0" layer="20"/>
 <wire x1="-45" y1="-40" x2="-45" y2="40" width="0" layer="20"/>
 <wire x1="-45" y1="40" x2="-40" y2="45" width="0" layer="20"/>
@@ -797,7 +797,7 @@ Board Template: V2.1</text>
 <text x="-1.27" y="-0.235" size="0.4064" layer="27">&gt;VALUE</text>
 <text x="-1.27" y="0.3" size="0.4064" layer="25">&gt;NAME</text>
 </package>
-<package name="0805" urn="urn:adsk.eagle:footprint:2229819/1">
+<package name="0805">
 <smd name="1" x="-0.9" y="0" dx="0.8" dy="1.2" layer="1"/>
 <smd name="2" x="0.9" y="0" dx="0.8" dy="1.2" layer="1"/>
 <text x="0.185675" y="-0.58369375" size="0.4064" layer="25" font="vector" rot="R90">&gt;NAME</text>
@@ -982,32 +982,6 @@ chip</description>
 <smd name="C" x="1.5" y="0" dx="1.2" dy="1.4" layer="1"/>
 <text x="-1.524" y="1.397" size="1.016" layer="25" font="vector">&gt;NAME</text>
 </package>
-<package name="PICOLOCK_4" urn="urn:adsk.eagle:footprint:2229834/1">
-<smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
-<smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
-<smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
-<smd name="P$4" x="4.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
-<smd name="MNT@1" x="-2.605" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
-<smd name="MNT@2" x="6.805" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
-<wire x1="-3.5" y1="6.4" x2="-3.5" y2="-0.8" width="0.127" layer="21"/>
-<wire x1="-3.5" y1="-0.8" x2="7.7" y2="-0.8" width="0.127" layer="21"/>
-<wire x1="7.7" y1="-0.8" x2="7.7" y2="6.4" width="0.127" layer="21"/>
-<wire x1="7.7" y1="6.4" x2="5.9" y2="6.4" width="0.127" layer="21"/>
-<wire x1="5.9" y1="6.4" x2="5.9" y2="4.3" width="0.127" layer="21"/>
-<wire x1="5.9" y1="4.3" x2="-1.7" y2="4.3" width="0.127" layer="21"/>
-<wire x1="-1.7" y1="4.3" x2="-1.7" y2="6.4" width="0.127" layer="21"/>
-<wire x1="-1.7" y1="6.4" x2="-3.5" y2="6.4" width="0.127" layer="21"/>
-<wire x1="-3.5" y1="6.4" x2="-3.5" y2="8.4" width="0.127" layer="21"/>
-<wire x1="-3.5" y1="8.4" x2="7.7" y2="8.4" width="0.127" layer="21"/>
-<wire x1="7.7" y1="8.4" x2="7.7" y2="6.4" width="0.127" layer="21"/>
-<text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
-<polygon width="0.127" layer="39">
-<vertex x="-3.5" y="8.4"/>
-<vertex x="7.7" y="8.4"/>
-<vertex x="7.7" y="-0.8"/>
-<vertex x="-3.5" y="-0.8"/>
-</polygon>
-</package>
 <package name="SOT-23-5">
 <smd name="P$1" x="-0.95" y="-1.35" dx="1.2" dy="0.6" layer="1" rot="R90"/>
 <smd name="P$2" x="0" y="-1.35" dx="1.2" dy="0.6" layer="1" rot="R90"/>
@@ -1050,14 +1024,33 @@ chip</description>
 <wire x1="33.02" y1="40.77" x2="33.02" y2="30.61" width="0" layer="21"/>
 <wire x1="33.02" y1="30.61" x2="-33.02" y2="30.61" width="0" layer="21"/>
 </package>
+<package name="PICOLOCK_4-LEGACY">
+<smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$4" x="4.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="MNT@1" x="-2.605" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="MNT@2" x="6.805" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<wire x1="-3.5" y1="6.4" x2="-3.5" y2="-0.8" width="0.127" layer="21"/>
+<wire x1="-3.5" y1="-0.8" x2="7.7" y2="-0.8" width="0.127" layer="21"/>
+<wire x1="7.7" y1="-0.8" x2="7.7" y2="6.4" width="0.127" layer="21"/>
+<wire x1="7.7" y1="6.4" x2="5.9" y2="6.4" width="0.127" layer="21"/>
+<wire x1="5.9" y1="6.4" x2="5.9" y2="4.3" width="0.127" layer="21"/>
+<wire x1="5.9" y1="4.3" x2="-1.7" y2="4.3" width="0.127" layer="21"/>
+<wire x1="-1.7" y1="4.3" x2="-1.7" y2="6.4" width="0.127" layer="21"/>
+<wire x1="-1.7" y1="6.4" x2="-3.5" y2="6.4" width="0.127" layer="21"/>
+<text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
+<wire x1="-3.5" y1="6.4" x2="-3.5" y2="8.4" width="0.127" layer="21"/>
+<wire x1="-3.5" y1="8.4" x2="7.7" y2="8.4" width="0.127" layer="21"/>
+<wire x1="7.7" y1="8.4" x2="7.7" y2="6.4" width="0.127" layer="21"/>
+<polygon width="0.127" layer="39">
+<vertex x="-3.5" y="8.4"/>
+<vertex x="7.7" y="8.4"/>
+<vertex x="7.7" y="-0.8"/>
+<vertex x="-3.5" y="-0.8"/>
+</polygon>
+</package>
 </packages>
-<packages3d>
-<package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2229882/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_4"/>
-</packageinstances>
-</package3d>
-</packages3d>
 <symbols>
 <symbol name="MSP-CAN_BLOCK">
 <pin name="P1.0_A0" x="-40.64" y="7.62" visible="pin" length="middle"/>
@@ -2226,17 +2219,6 @@ P2.6 Rx and P2.5 Tx</text>
 <vertex x="-2.413" y="-2.921"/>
 </polygon>
 </symbol>
-<symbol name="PICOLOCK_4">
-<pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
-<pin name="P$2" x="-7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
-<pin name="P$3" x="-2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
-<pin name="P$4" x="2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
-<wire x1="-15.24" y1="0" x2="5.08" y2="0" width="0.254" layer="94"/>
-<wire x1="5.08" y1="0" x2="5.08" y2="10.16" width="0.254" layer="94"/>
-<wire x1="5.08" y1="10.16" x2="-15.24" y2="10.16" width="0.254" layer="94"/>
-<wire x1="-15.24" y1="10.16" x2="-15.24" y2="0" width="0.254" layer="94"/>
-<text x="-15.24" y="12.7" size="2.1844" layer="95">&gt;Name</text>
-</symbol>
 <symbol name="TPS732XX">
 <pin name="IN" x="-12.7" y="5.08" visible="pin" length="middle"/>
 <pin name="GND" x="-12.7" y="0" visible="pin" length="middle"/>
@@ -2248,6 +2230,17 @@ P2.6 Rx and P2.5 Tx</text>
 <wire x1="5.08" y1="7.62" x2="5.08" y2="-7.62" width="0.254" layer="94"/>
 <wire x1="5.08" y1="-7.62" x2="-7.62" y2="-7.62" width="0.254" layer="94"/>
 <text x="-7.62" y="-10.16" size="1.27" layer="95">TPS732xx</text>
+</symbol>
+<symbol name="PICOLOCK_4-LEGACY">
+<pin name="P$1" x="-12.7" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$2" x="-7.62" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$3" x="-2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="P$4" x="2.54" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<wire x1="-15.24" y1="0" x2="5.08" y2="0" width="0.254" layer="94"/>
+<wire x1="5.08" y1="0" x2="5.08" y2="10.16" width="0.254" layer="94"/>
+<wire x1="5.08" y1="10.16" x2="-15.24" y2="10.16" width="0.254" layer="94"/>
+<wire x1="-15.24" y1="10.16" x2="-15.24" y2="0" width="0.254" layer="94"/>
+<text x="-15.24" y="12.7" size="2.1844" layer="95">&gt;Name</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -2731,27 +2724,6 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 </device>
 </devices>
 </deviceset>
-<deviceset name="PICOLOCK_4" prefix="CONN">
-<gates>
-<gate name="G$1" symbol="PICOLOCK_4" x="15.24" y="0"/>
-</gates>
-<devices>
-<device name="PICOLOCK_4" package="PICOLOCK_4">
-<connects>
-<connect gate="G$1" pin="P$1" pad="P$1"/>
-<connect gate="G$1" pin="P$2" pad="P$2"/>
-<connect gate="G$1" pin="P$3" pad="P$3"/>
-<connect gate="G$1" pin="P$4" pad="P$4"/>
-</connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:2229882/2"/>
-</package3dinstances>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 <deviceset name="TPS732XX">
 <gates>
 <gate name="G$1" symbol="TPS732XX" x="0" y="0"/>
@@ -2764,6 +2736,24 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <connect gate="G$1" pin="GND" pad="P$2"/>
 <connect gate="G$1" pin="IN" pad="P$1"/>
 <connect gate="G$1" pin="OUT" pad="P$5"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="PICOLOCK_4-LEGACY" prefix="CONN">
+<gates>
+<gate name="G$1" symbol="PICOLOCK_4-LEGACY" x="15.24" y="0"/>
+</gates>
+<devices>
+<device name="" package="PICOLOCK_4-LEGACY">
+<connects>
+<connect gate="G$1" pin="P$1" pad="P$1"/>
+<connect gate="G$1" pin="P$2" pad="P$2"/>
+<connect gate="G$1" pin="P$3" pad="P$3"/>
+<connect gate="G$1" pin="P$4" pad="P$4"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -3192,7 +3182,7 @@ Pogo pins- HW-11044</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="supply1" urn="urn:adsk.eagle:library:371">
+<library name="supply1">
 <description>&lt;b&gt;Supply Symbols&lt;/b&gt;&lt;p&gt;
  GND, VCC, 0V, +5V, -5V, etc.&lt;p&gt;
  Please keep in mind, that these devices are necessary for the
@@ -3203,12 +3193,12 @@ Pogo pins- HW-11044</description>
 <packages>
 </packages>
 <symbols>
-<symbol name="GND" urn="urn:adsk.eagle:symbol:26925/1" library_version="1">
+<symbol name="GND">
 <wire x1="-1.905" y1="0" x2="1.905" y2="0" width="0.254" layer="94"/>
 <text x="-2.54" y="-2.54" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="GND" x="0" y="2.54" visible="off" length="short" direction="sup" rot="R270"/>
 </symbol>
-<symbol name="+5V" urn="urn:adsk.eagle:symbol:26929/1" library_version="1">
+<symbol name="+5V">
 <wire x1="1.27" y1="-1.905" x2="0" y2="0" width="0.254" layer="94"/>
 <wire x1="0" y1="0" x2="-1.27" y2="-1.905" width="0.254" layer="94"/>
 <text x="-2.54" y="-5.08" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
@@ -3216,7 +3206,7 @@ Pogo pins- HW-11044</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="GND" urn="urn:adsk.eagle:component:26954/1" prefix="GND" library_version="1">
+<deviceset name="GND" prefix="GND">
 <description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
 <gates>
 <gate name="1" symbol="GND" x="0" y="0"/>
@@ -3229,7 +3219,7 @@ Pogo pins- HW-11044</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="+5V" urn="urn:adsk.eagle:component:26963/1" prefix="P+" library_version="1">
+<deviceset name="+5V" prefix="P+">
 <description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
 <gates>
 <gate name="1" symbol="+5V" x="0" y="0"/>
@@ -3554,8 +3544,6 @@ Pogo pins- HW-11044</description>
 <part name="JP5" library="SparkFun-Connectors" deviceset="M03X2" device="NO_SILK"/>
 <part name="JP6" library="SparkFun-Connectors" deviceset="M03X2" device="NO_SILK"/>
 <part name="JP7" library="SparkFun-Connectors" deviceset="M03X2" device="NO_SILK"/>
-<part name="CONN1" library="DubSat1 Components" deviceset="PICOLOCK_4" device="PICOLOCK_4" package3d_urn="urn:adsk.eagle:package:2229882/2"/>
-<part name="CONN2" library="DubSat1 Components" deviceset="PICOLOCK_4" device="PICOLOCK_4" package3d_urn="urn:adsk.eagle:package:2229882/2"/>
 <part name="U$7" library="DubSat1 Components" deviceset="SI3865DDV" device=""/>
 <part name="C_SLEW_2" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
 <part name="R_SLEW_2" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="5k"/>
@@ -3563,20 +3551,20 @@ Pogo pins- HW-11044</description>
 <part name="R_PULLUP2" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="100k"/>
 <part name="GND24" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="U2" library="DubSat1 Components" deviceset="TPS732XX" device=""/>
-<part name="GND27" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND27" library="supply1" deviceset="GND" device=""/>
 <part name="C23" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
 <part name="C24" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 μF"/>
-<part name="GND28" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND28" library="supply1" deviceset="GND" device=""/>
 <part name="C25" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 μF"/>
-<part name="GND29" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND29" library="supply1" deviceset="GND" device=""/>
 <part name="U3" library="DubSat1 Components" deviceset="TPS732XX" device=""/>
-<part name="GND30" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="P+2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
+<part name="GND30" library="supply1" deviceset="GND" device=""/>
+<part name="P+2" library="supply1" deviceset="+5V" device=""/>
 <part name="C32" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
 <part name="C33" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1 μF"/>
-<part name="GND40" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND40" library="supply1" deviceset="GND" device=""/>
 <part name="C34" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value="1μF"/>
-<part name="GND41" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND41" library="supply1" deviceset="GND" device=""/>
 <part name="GND22" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="U$13" library="DubSat1 Components" deviceset="SI3865DDV" device=""/>
 <part name="C_SLEW_4" library="DubSat1 Components" deviceset="CAPACITOR" device="0805" value=".1u"/>
@@ -3660,6 +3648,8 @@ Pogo pins- HW-11044</description>
 <part name="GND83" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="R45" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="5000"/>
 <part name="GND103" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
+<part name="CONN1" library="DubSat1 Components" deviceset="PICOLOCK_4-LEGACY" device=""/>
+<part name="CONN2" library="DubSat1 Components" deviceset="PICOLOCK_4-LEGACY" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -4037,8 +4027,6 @@ if needed, add 100ohm series, and 1uF caps</text>
 <instance part="JP5" gate="G$1" x="-99.06" y="223.52"/>
 <instance part="JP6" gate="G$1" x="-358.14" y="205.74"/>
 <instance part="JP7" gate="G$1" x="-360.68" y="119.38"/>
-<instance part="CONN1" gate="G$1" x="-147.32" y="-40.64" rot="R270"/>
-<instance part="CONN2" gate="G$1" x="-147.32" y="-66.04" rot="R270"/>
 <instance part="U$7" gate="G$1" x="-205.74" y="15.24"/>
 <instance part="C_SLEW_2" gate="G$1" x="-187.96" y="12.7"/>
 <instance part="R_SLEW_2" gate="G$1" x="-195.58" y="5.08"/>
@@ -4143,6 +4131,8 @@ if needed, add 100ohm series, and 1uF caps</text>
 <instance part="GND83" gate="G$1" x="-162.56" y="228.6" smashed="yes"/>
 <instance part="R45" gate="G$1" x="-149.86" y="152.4" rot="R270"/>
 <instance part="GND103" gate="G$1" x="-149.86" y="142.24" smashed="yes"/>
+<instance part="CONN1" gate="G$1" x="-147.32" y="-40.64" rot="R270"/>
+<instance part="CONN2" gate="G$1" x="-147.32" y="-66.04" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -5251,21 +5241,21 @@ if needed, add 100ohm series, and 1uF caps</text>
 <wire x1="-187.96" y1="-43.18" x2="-190.5" y2="-43.18" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="CONN1" gate="G$1" pin="P$4"/>
 <wire x1="-152.4" y1="-43.18" x2="-162.56" y2="-43.18" width="0.1524" layer="91"/>
-<pinref part="CONN1" gate="G$1" pin="P$3"/>
 <wire x1="-152.4" y1="-38.1" x2="-162.56" y2="-38.1" width="0.1524" layer="91"/>
 <wire x1="-162.56" y1="-38.1" x2="-162.56" y2="-43.18" width="0.1524" layer="91"/>
-<pinref part="CONN2" gate="G$1" pin="P$4"/>
 <wire x1="-162.56" y1="-43.18" x2="-162.56" y2="-63.5" width="0.1524" layer="91"/>
 <wire x1="-162.56" y1="-63.5" x2="-162.56" y2="-68.58" width="0.1524" layer="91"/>
 <wire x1="-152.4" y1="-68.58" x2="-162.56" y2="-68.58" width="0.1524" layer="91"/>
-<pinref part="CONN2" gate="G$1" pin="P$3"/>
 <wire x1="-152.4" y1="-63.5" x2="-162.56" y2="-63.5" width="0.1524" layer="91"/>
 <junction x="-162.56" y="-43.18"/>
 <junction x="-162.56" y="-63.5"/>
 <pinref part="GND25" gate="G$1" pin="GND"/>
 <junction x="-162.56" y="-68.58"/>
+<pinref part="CONN1" gate="G$1" pin="P$3"/>
+<pinref part="CONN1" gate="G$1" pin="P$4"/>
+<pinref part="CONN2" gate="G$1" pin="P$3"/>
+<pinref part="CONN2" gate="G$1" pin="P$4"/>
 </segment>
 <segment>
 <pinref part="R101" gate="G$1" pin="1"/>
@@ -7077,17 +7067,13 @@ if needed, add 100ohm series, and 1uF caps</text>
 <wire x1="-177.8" y1="-33.02" x2="-177.8" y2="-27.94" width="0.1524" layer="91"/>
 <pinref part="C_SLEW_4" gate="G$1" pin="1"/>
 <wire x1="-175.26" y1="-30.48" x2="-175.26" y2="-27.94" width="0.1524" layer="91"/>
-<pinref part="CONN1" gate="G$1" pin="P$1"/>
 <wire x1="-175.26" y1="-27.94" x2="-167.64" y2="-27.94" width="0.1524" layer="91"/>
-<pinref part="CONN1" gate="G$1" pin="P$2"/>
 <wire x1="-167.64" y1="-27.94" x2="-157.48" y2="-27.94" width="0.1524" layer="91"/>
 <wire x1="-157.48" y1="-27.94" x2="-152.4" y2="-27.94" width="0.1524" layer="91"/>
 <wire x1="-152.4" y1="-33.02" x2="-157.48" y2="-33.02" width="0.1524" layer="91"/>
 <wire x1="-157.48" y1="-33.02" x2="-157.48" y2="-27.94" width="0.1524" layer="91"/>
-<pinref part="CONN2" gate="G$1" pin="P$1"/>
 <wire x1="-152.4" y1="-53.34" x2="-157.48" y2="-53.34" width="0.1524" layer="91"/>
 <wire x1="-157.48" y1="-53.34" x2="-157.48" y2="-33.02" width="0.1524" layer="91"/>
-<pinref part="CONN2" gate="G$1" pin="P$2"/>
 <wire x1="-152.4" y1="-58.42" x2="-157.48" y2="-58.42" width="0.1524" layer="91"/>
 <wire x1="-157.48" y1="-58.42" x2="-157.48" y2="-53.34" width="0.1524" layer="91"/>
 <junction x="-157.48" y="-53.34"/>
@@ -7096,6 +7082,10 @@ if needed, add 100ohm series, and 1uF caps</text>
 <pinref part="D6" gate="G$1" pin="A"/>
 <wire x1="-167.64" y1="-27.94" x2="-167.64" y2="-35.56" width="0.1524" layer="91"/>
 <junction x="-167.64" y="-27.94"/>
+<pinref part="CONN1" gate="G$1" pin="P$1"/>
+<pinref part="CONN1" gate="G$1" pin="P$2"/>
+<pinref part="CONN2" gate="G$1" pin="P$1"/>
+<pinref part="CONN2" gate="G$1" pin="P$2"/>
 </segment>
 </net>
 <net name="N$35" class="0">
@@ -7377,21 +7367,6 @@ if needed, add 100ohm series, and 1uF caps</text>
 <note version="6.3" minversion="6.2.2" severity="warning">
 Since Version 6.2.2 text objects can contain more than one line,
 which will not be processed correctly with this version.
-</note>
-<note version="8.2" severity="warning">
-Since Version 8.2, EAGLE supports online libraries. The ids
-of those online libraries will not be understood (or retained)
-with this version.
-</note>
-<note version="8.3" severity="warning">
-Since Version 8.3, EAGLE supports URNs for individual library
-assets (packages, symbols, and devices). The URNs of those assets
-will not be understood (or retained) with this version.
-</note>
-<note version="8.3" severity="warning">
-Since Version 8.3, EAGLE supports the association of 3D packages
-with devices in libraries, schematics, and board files. Those 3D
-packages will not be understood (or retained) with this version.
 </note>
 </compatibility>
 </eagle>
