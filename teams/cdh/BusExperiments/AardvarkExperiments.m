@@ -15,7 +15,7 @@ end
 
 %% Slave Setup
 % Configures Aardvark to listen as a slave, using native API wrapper
-slaveaddr = 9;
+slaveaddr = hex2dec('1E');
 
 % outstr = [222 173 190 239];
 % outstr = uint8(outstr);
