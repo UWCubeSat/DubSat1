@@ -11001,11 +11001,6 @@ current carrying trace</text>
 </net>
 <net name="MT_X_B" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="OUTB"/>
-<wire x1="259.08" y1="149.86" x2="238.76" y2="149.86" width="0.1524" layer="91"/>
-<label x="238.76" y="149.86" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
 <wire x1="48.26" y1="60.96" x2="48.26" y2="58.42" width="0.1524" layer="91"/>
 <label x="48.26" y="58.42" size="1.778" layer="95" rot="R270" xref="yes"/>
 <pinref part="U$1" gate="G$1" pin="MT_X_B@43"/>
@@ -11017,13 +11012,13 @@ current carrying trace</text>
 <wire x1="114.3" y1="60.96" x2="114.3" y2="58.42" width="0.1524" layer="91"/>
 <label x="114.3" y="58.42" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
+<segment>
+<pinref part="U2" gate="G$1" pin="OUTB"/>
+<wire x1="259.08" y1="101.6" x2="238.76" y2="101.6" width="0.1524" layer="91"/>
+<label x="238.76" y="101.6" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="MT_X_A" class="0">
-<segment>
-<pinref part="U1" gate="G$1" pin="OUTA"/>
-<wire x1="259.08" y1="142.24" x2="238.76" y2="142.24" width="0.1524" layer="91"/>
-<label x="238.76" y="142.24" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="MT_X_A@39"/>
 <wire x1="55.88" y1="63.5" x2="48.26" y2="63.5" width="0.1524" layer="91"/>
@@ -11035,6 +11030,11 @@ current carrying trace</text>
 <label x="114.3" y="66.04" size="1.778" layer="95" rot="R90" xref="yes"/>
 <pinref part="U$1" gate="G$1" pin="MT_X_A@40"/>
 <wire x1="114.3" y1="63.5" x2="106.68" y2="63.5" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U2" gate="G$1" pin="OUTA"/>
+<wire x1="259.08" y1="93.98" x2="238.76" y2="93.98" width="0.1524" layer="91"/>
+<label x="238.76" y="93.98" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="MT_Z_B" class="0">
@@ -11360,11 +11360,6 @@ current carrying trace</text>
 </net>
 <net name="MT_Y_A" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="OUTA"/>
-<wire x1="259.08" y1="93.98" x2="238.76" y2="93.98" width="0.1524" layer="91"/>
-<label x="238.76" y="93.98" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
 <pinref part="U$1" gate="G$1" pin="MT_Y_A@37"/>
 <wire x1="-22.86" y1="63.5" x2="-27.94" y2="63.5" width="0.1524" layer="91"/>
 <wire x1="-27.94" y1="63.5" x2="-27.94" y2="73.66" width="0.1524" layer="91"/>
@@ -11377,13 +11372,13 @@ current carrying trace</text>
 <pinref part="U$1" gate="G$1" pin="MT_Y_A@38"/>
 <wire x1="38.1" y1="63.5" x2="30.48" y2="63.5" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="U1" gate="G$1" pin="OUTA"/>
+<wire x1="259.08" y1="142.24" x2="238.76" y2="142.24" width="0.1524" layer="91"/>
+<label x="238.76" y="142.24" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="MT_Y_B" class="0">
-<segment>
-<pinref part="U2" gate="G$1" pin="OUTB"/>
-<wire x1="259.08" y1="101.6" x2="238.76" y2="101.6" width="0.1524" layer="91"/>
-<label x="238.76" y="101.6" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
 <segment>
 <wire x1="-30.48" y1="60.96" x2="-30.48" y2="68.58" width="0.1524" layer="91"/>
 <wire x1="-30.48" y1="68.58" x2="-38.1" y2="68.58" width="0.1524" layer="91"/>
@@ -11396,6 +11391,11 @@ current carrying trace</text>
 <wire x1="30.48" y1="60.96" x2="38.1" y2="60.96" width="0.1524" layer="91"/>
 <wire x1="38.1" y1="60.96" x2="38.1" y2="58.42" width="0.1524" layer="91"/>
 <label x="38.1" y="58.42" size="1.778" layer="95" rot="R270" xref="yes"/>
+</segment>
+<segment>
+<pinref part="U1" gate="G$1" pin="OUTB"/>
+<wire x1="259.08" y1="149.86" x2="238.76" y2="149.86" width="0.1524" layer="91"/>
+<label x="238.76" y="149.86" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="3V3_BUCK_ENABLE" class="0">
