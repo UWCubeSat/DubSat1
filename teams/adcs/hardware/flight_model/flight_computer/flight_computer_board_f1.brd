@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.0.0">
+<eagle version="8.4.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -2467,24 +2467,12 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 </packages>
 <packages3d>
 <package3d name="MSP-CAN_BLOCK" urn="urn:adsk.eagle:package:2129138/1" type="box" library_version="1">
-<packageinstances>
-<packageinstance name="MSP-CAN_BLOCK"/>
-</packageinstances>
 </package3d>
 <package3d name="1X08_CONNECTOR" urn="urn:adsk.eagle:package:2129129/1" type="box" library_version="1">
-<packageinstances>
-<packageinstance name="1X08_CONNECTOR"/>
-</packageinstances>
 </package3d>
 <package3d name="LED-1206" urn="urn:adsk.eagle:package:2129139/1" type="box" library_version="1">
-<packageinstances>
-<packageinstance name="LED-1206"/>
-</packageinstances>
 </package3d>
 <package3d name="0805" urn="urn:adsk.eagle:package:2129148/1" type="box" library_version="1">
-<packageinstances>
-<packageinstance name="0805"/>
-</packageinstances>
 </package3d>
 </packages3d>
 </library>
@@ -2578,7 +2566,6 @@ design rules under a new name.</description>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
 <param name="checkStop" value="0"/>
-<param name="checkValues" value="0"/>
 <param name="useDiameter" value="13"/>
 <param name="maxErrors" value="50"/>
 </designrules>
