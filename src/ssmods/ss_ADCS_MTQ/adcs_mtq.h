@@ -39,12 +39,15 @@ typedef struct _module_status {
 // ---- COSMOS------
 TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
-    int8_t bdot_x;
-    int8_t bdot_y;
-    int8_t bdot_z;
-    int8_t fsw_x;
-    int8_t fsw_y;
-    int8_t fsw_z;
+    int8_t last_bdot_x;
+    int8_t last_bdot_y;
+    int8_t last_bdot_z;
+    int8_t last_fsw_x;
+    int8_t last_fsw_y;
+    int8_t last_fsw_z;
+    int8_t last_mtq_executed_x;
+    int8_t last_mtq_executed_y;
+    int8_t last_mtq_executed_z;
 } bdot_fsw_commands;
 
 TLM_SEGMENT {
@@ -105,7 +108,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 #define COILS_ARE_ON CAN_ENUM_BOOL_FALSE
 // ---COSMOS-----
 #define TLM_ID_BDOT_FSW_COMMANDS 127 
-#define TLM_ID_PIN_OUTPUTS 126
+#define TLM_ID_DUTY_PERCENT 126
 // ---state machine---
 #define MEASUREMENT_PHASE 0 
 #define ACTUATION_PHASE 1

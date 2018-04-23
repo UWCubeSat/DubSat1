@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="8.4.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -1118,14 +1118,8 @@ Switch</text>
 </packages>
 <packages3d>
 <package3d name="PICOLOCK_8" urn="urn:adsk.eagle:package:2229921/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_8"/>
-</packageinstances>
 </package3d>
 <package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2229882/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_4"/>
-</packageinstances>
 </package3d>
 </packages3d>
 </library>
@@ -1302,21 +1296,12 @@ chip</description>
 </packages>
 <packages3d>
 <package3d name="0805" urn="urn:adsk.eagle:package:348281/2" type="box" library_version="23">
-<packageinstances>
-<packageinstance name="0805"/>
-</packageinstances>
 </package3d>
 <package3d name="R2010" urn="urn:adsk.eagle:package:348273/1" type="box" library_version="23">
 <description>RESISTOR
 chip</description>
-<packageinstances>
-<packageinstance name="R2010"/>
-</packageinstances>
 </package3d>
 <package3d name="DFN8(3X3)LT" urn="urn:adsk.eagle:package:348248/1" type="box" library_version="23">
-<packageinstances>
-<packageinstance name="DFN8(3X3)LT"/>
-</packageinstances>
 </package3d>
 </packages3d>
 </library>
@@ -1409,7 +1394,6 @@ design rules under a new name.</description>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
 <param name="checkStop" value="0"/>
-<param name="checkValues" value="0"/>
 <param name="useDiameter" value="13"/>
 <param name="maxErrors" value="50"/>
 </designrules>
