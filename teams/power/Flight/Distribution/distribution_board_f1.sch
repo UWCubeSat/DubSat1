@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.5.0">
+<eagle version="8.7.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
+<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
@@ -797,7 +798,7 @@ Board Template: V2.1</text>
 <text x="-1.27" y="-0.235" size="0.4064" layer="27">&gt;VALUE</text>
 <text x="-1.27" y="0.3" size="0.4064" layer="25">&gt;NAME</text>
 </package>
-<package name="0805">
+<package name="0805" urn="urn:adsk.eagle:footprint:2229819/1">
 <smd name="1" x="-0.9" y="0" dx="0.8" dy="1.2" layer="1"/>
 <smd name="2" x="0.9" y="0" dx="0.8" dy="1.2" layer="1"/>
 <text x="0.185675" y="-0.58369375" size="0.4064" layer="25" font="vector" rot="R90">&gt;NAME</text>
@@ -3650,6 +3651,8 @@ Pogo pins- HW-11044</description>
 <part name="GND103" library="SparkFun-Aesthetics" deviceset="DGND" device=""/>
 <part name="CONN1" library="DubSat1 Components" deviceset="PICOLOCK_4-LEGACY" device=""/>
 <part name="CONN2" library="DubSat1 Components" deviceset="PICOLOCK_4-LEGACY" device=""/>
+<part name="R62" library="DubSat1 Components" deviceset="RESISTOR" device="0603"/>
+<part name="R63" library="DubSat1 Components" deviceset="RESISTOR" device="0805"/>
 </parts>
 <sheets>
 <sheet>
@@ -3725,6 +3728,7 @@ if needed, add 100ohm series, and 1uF caps</text>
 <text x="134.62" y="431.8" size="2.54" layer="97">I2C Address: 1001110</text>
 <text x="134.62" y="485.14" size="2.54" layer="97">I2C Address: 1000110</text>
 <text x="-28.194" y="284.48" size="1.778" layer="97">DNP</text>
+<text x="-175.26" y="88.9" size="2.54" layer="97">resetable fuse in case of latch up</text>
 </plain>
 <instances>
 <instance part="BLK1" gate="G$1" x="-96.52" y="38.1"/>
@@ -4133,6 +4137,8 @@ if needed, add 100ohm series, and 1uF caps</text>
 <instance part="GND103" gate="G$1" x="-149.86" y="142.24" smashed="yes"/>
 <instance part="CONN1" gate="G$1" x="-147.32" y="-40.64" rot="R270"/>
 <instance part="CONN2" gate="G$1" x="-147.32" y="-66.04" rot="R270"/>
+<instance part="R62" gate="G$1" x="-162.56" y="83.82"/>
+<instance part="R63" gate="G$1" x="-162.56" y="76.2"/>
 </instances>
 <busses>
 </busses>
@@ -4735,7 +4741,7 @@ if needed, add 100ohm series, and 1uF caps</text>
 <wire x1="-139.7" y1="66.04" x2="-139.7" y2="68.58" width="0.1524" layer="91"/>
 <wire x1="-139.7" y1="68.58" x2="-139.7" y2="73.66" width="0.1524" layer="91"/>
 <wire x1="-139.7" y1="73.66" x2="-139.7" y2="76.2" width="0.1524" layer="91"/>
-<wire x1="-139.7" y1="76.2" x2="-142.24" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="-139.7" y1="76.2" x2="-157.48" y2="76.2" width="0.1524" layer="91"/>
 <pinref part="BLK1" gate="G$1" pin="3.3V_MSP@2"/>
 <wire x1="-137.16" y1="66.04" x2="-139.7" y2="66.04" width="0.1524" layer="91"/>
 <junction x="-139.7" y="66.04"/>
@@ -4746,8 +4752,10 @@ if needed, add 100ohm series, and 1uF caps</text>
 <wire x1="-137.16" y1="73.66" x2="-139.7" y2="73.66" width="0.1524" layer="91"/>
 <junction x="-139.7" y="73.66"/>
 <junction x="-139.7" y="76.2"/>
-<label x="-142.24" y="76.2" size="1.778" layer="95" rot="R180" xref="yes"/>
-<label x="-154.94" y="27.94" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="R63" gate="G$1" pin="2"/>
+<pinref part="R62" gate="G$1" pin="2"/>
+<wire x1="-157.48" y1="83.82" x2="-157.48" y2="76.2" width="0.1524" layer="91"/>
+<junction x="-157.48" y="76.2"/>
 </segment>
 <segment>
 <pinref part="R99" gate="G$1" pin="2"/>
@@ -4773,6 +4781,15 @@ if needed, add 100ohm series, and 1uF caps</text>
 <wire x1="-149.86" y1="27.94" x2="-154.94" y2="27.94" width="0.1524" layer="91"/>
 <wire x1="-154.94" y1="27.94" x2="-154.94" y2="25.4" width="0.1524" layer="91"/>
 <junction x="-154.94" y="27.94"/>
+<label x="-154.94" y="27.94" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<wire x1="-167.64" y1="76.2" x2="-180.34" y2="76.2" width="0.1524" layer="91"/>
+<pinref part="R63" gate="G$1" pin="1"/>
+<label x="-180.34" y="76.2" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="R62" gate="G$1" pin="1"/>
+<wire x1="-167.64" y1="83.82" x2="-167.64" y2="76.2" width="0.1524" layer="91"/>
+<junction x="-167.64" y="76.2"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -7367,6 +7384,11 @@ if needed, add 100ohm series, and 1uF caps</text>
 <note version="6.3" minversion="6.2.2" severity="warning">
 Since Version 6.2.2 text objects can contain more than one line,
 which will not be processed correctly with this version.
+</note>
+<note version="8.3" severity="warning">
+Since Version 8.3, EAGLE supports URNs for individual library
+assets (packages, symbols, and devices). The URNs of those assets
+will not be understood (or retained) with this version.
 </note>
 </compatibility>
 </eagle>
