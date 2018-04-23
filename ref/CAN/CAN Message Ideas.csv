@@ -1,0 +1,11 @@
+Proposed Message/Signal Title,Message or Signal?,Proposed Priority,Proposed Type,Subsystems Who Use,Usage
+RFR (request for reset),Message makes more sense,0,Power Mgmt,All but power,Amounts to a request for EPS to power-cycle the subsystem module's power domain
+NOW (notification of wakeup),Message (will have other data),0,Power Mgmt,All but power,Announcement broadcast when 
+METUP (mission elapsed time),Message,1,Full Broadcast,All,Time update from either EPS or the GPS unit (or both)
+TIME (utc time),Message,1,Full Broadcast,All,Time update from GPS
+POSX (position WGS84 ECEF),Message,10,ADCS Sensor/State Data,ADCS,
+POSY,Message,10,ADCS Sensor/State Data,ADCS,
+POSZ,Message,10,ADCS Sensor/State Data,ADCS,
+VELX (velocity WGS84 ECEF),Message,10,ADCS Sensor/State Data,ADCS,
+VELY,Message,10,ADCS Sensor/State Data,ADCS,
+VELZ,Message,10,ADCS Sensor/State Data,ADCS,

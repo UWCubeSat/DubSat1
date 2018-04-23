@@ -26,6 +26,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>dsbase/actuators</name>
+			<type>2</type>
+			<locationURI>DSBASE/actuators</locationURI>
+		</link>
+		<link>
 			<name>dsbase/bsp</name>
 			<type>2</type>
 			<locationURI>DSBASE/bsp</locationURI>

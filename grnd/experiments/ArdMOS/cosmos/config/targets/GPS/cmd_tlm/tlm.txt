@@ -1,0 +1,85 @@
+TELEMETRY GPS RXSTATUS BIG_ENDIAN "Receiver status"
+    APPEND_ITEM LENGTH 8 UINT "Length of packet." LITTLE_ENDIAN
+    APPEND_ID_ITEM ID 8 UINT 123 "ID of command" LITTLE_ENDIAN
+    APPEND_ITEM ERROR 32 UINT "Receiver error word." LITTLE_ENDIAN
+      FORMAT_STRING "0x%0x"
+    APPEND_ITEM STATUS 32 UINT "Receiver status word." LITTLE_ENDIAN
+      FORMAT_STRING "0x%0x"
+    APPEND_ITEM AUX1 32 UINT "Auxillary status word 1." LITTLE_ENDIAN
+      FORMAT_STRING "0x%0x"
+    APPEND_ITEM AUX2 32 UINT "Auxillary status word 2." LITTLE_ENDIAN
+      FORMAT_STRING "0x%0x"
+    APPEND_ITEM AUX3 32 UINT "Auxillary status word 3." LITTLE_ENDIAN
+      FORMAT_STRING "0x%0x"
+
+TELEMETRY GPS POSVEL BIG_ENDIAN "Position and velocity with timestamp"
+    APPEND_ITEM LENGTH 8 UINT "Length of packet." LITTLE_ENDIAN
+    APPEND_ID_ITEM ID 8 UINT 124 "ID of command" LITTLE_ENDIAN
+    APPEND_ITEM POS_STATUS 32 UINT "Position solution status." LITTLE_ENDIAN
+      STATE SOL_COMPUTED 0 GREEN
+      STATE INSUFFICIENT_OBS 1 RED
+      STATE COLD_START 6 YELLOW
+    APPEND_ITEM POSX 64 FLOAT "Position X-coordinate." LITTLE_ENDIAN
+      UNITS meters m
+    APPEND_ITEM POSY 64 FLOAT "Position Y-coordinate." LITTLE_ENDIAN
+      UNITS meters m
+    APPEND_ITEM POSZ 64 FLOAT "Position Z-coordinate." LITTLE_ENDIAN
+      UNITS meters m
+    APPEND_ITEM STDPOSX 32 FLOAT "Standard deviation of position X-coordinate." LITTLE_ENDIAN
+    APPEND_ITEM STDPOSY 32 FLOAT "Standard deviation of position Y-coordinate." LITTLE_ENDIAN
+    APPEND_ITEM STDPOSZ 32 FLOAT "Standard deviation of position Z-coordinate." LITTLE_ENDIAN
+    APPEND_ITEM VEL_STATUS 32 UINT "Velocity solution status." LITTLE_ENDIAN
+      STATE SOL_COMPUTED 0 GREEN
+      STATE INSUFFICIENT_OBS 1 RED
+      STATE COLD_START 6 YELLOW
+    APPEND_ITEM VELX 64 FLOAT "Velocity X-coordinate." LITTLE_ENDIAN
+      UNITS meters_per_second mps
+    APPEND_ITEM VELY 64 FLOAT "Velocity Y-coordinate." LITTLE_ENDIAN
+      UNITS meters_per_second mps
+    APPEND_ITEM VELZ 64 FLOAT "Velocity Z-coordinate." LITTLE_ENDIAN
+      UNITS meters_per_second mps
+    APPEND_ITEM STDVELX 32 FLOAT "Standard deviation of velocity X-coordinate." LITTLE_ENDIAN
+    APPEND_ITEM STDVELY 32 FLOAT "Standard deviation of velocity Y-coordinate." LITTLE_ENDIAN
+    APPEND_ITEM STDVELZ 32 FLOAT "Standard deviation of velocity Z-coordinate." LITTLE_ENDIAN
+    APPEND_ITEM WEEK 16 UINT "GPS Reference Week, UTC." LITTLE_ENDIAN
+      UNITS weeks w
+    APPEND_ITEM MS 32 INT "Milliseconds into this reference week, UTC." LITTLE_ENDIAN
+      UNITS milliseconds ms
+
+TELEMETRY GPS TIME BIG_ENDIAN "Time of latest message"
+    APPEND_ITEM LENGTH 8 UINT "Length of packet." LITTLE_ENDIAN
+    APPEND_ID_ITEM ID 8 UINT 125 "ID of command" LITTLE_ENDIAN
+    APPEND_ITEM OFFSET 64 FLOAT "Combined offset between GPS reference time and UTC." LITTLE_ENDIAN
+      UNITS seconds s
+    APPEND_ITEM MS 32 INT "Milliseconds into this reference week, UTC." LITTLE_ENDIAN
+      UNITS milliseconds ms
+    APPEND_ITEM WEEK 16 UINT "GPS Reference Week, UTC." LITTLE_ENDIAN
+      UNITS weeks w
+    APPEND_ITEM CLK_STAT 32 UINT "Clock status." LITTLE_ENDIAN
+      STATE VALID 0 GREEN
+      STATE CONVERGING 1 YELLOW
+      STATE ITERATING 2 YELLOW
+      STATE INVALID 3 RED
+    APPEND_ITEM UTC_STAT 32 UINT "UTC status." LITTLE_ENDIAN
+      STATE INVALID 0 RED
+      STATE VALID 1 GREEN
+      STATE WARNING 2 YELLOW
+
+TELEMETRY GPS HWMONITOR BIG_ENDIAN "Hardware measurements"
+    APPEND_ITEM LENGTH 8 UINT "Length of packet." LITTLE_ENDIAN
+    APPEND_ID_ITEM ID 8 UINT 126 "ID of command" LITTLE_ENDIAN
+    APPEND_ITEM TEMP 32 FLOAT "Temperature." LITTLE_ENDIAN
+      UNITS Celcius C
+    APPEND_ITEM TEMP_STATUS 8 UINT "Temperature limit status."
+      STATE OK 0 GREEN
+      STATE UNDERWARN 1 YELLOW
+      STATE UNDERERR 2 YELLOW
+      STATE OVERWARN 3 RED
+      STATE OVERERR 4 RED
+
+TELEMETRY GPS SATVIS2 BIG_ENDIAN "Satellite visibility"
+    APPEND_ITEM LENGTH 8 UINT "Length of packet." LITTLE_ENDIAN
+    APPEND_ID_ITEM ID 8 UINT 127 "ID of command" LITTLE_ENDIAN
+    APPEND_ITEM NUM_GPS 32 UINT "Number of visible GPS satellites." LITTLE_ENDIAN
+    APPEND_ITEM NUM_GLONASS 32 UINT "Number of visible GLONASS satellites." LITTLE_ENDIAN
+    APPEND_ITEM NUM_SBAS 32 UINT "Number of visible SBAS satellites." LITTLE_ENDIAN

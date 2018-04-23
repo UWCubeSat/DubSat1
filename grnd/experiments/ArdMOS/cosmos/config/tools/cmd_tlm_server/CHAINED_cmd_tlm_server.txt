@@ -1,0 +1,10 @@
+TITLE 'Chained COSMOS Command and Telemetry Server'
+
+PACKET_LOG_WRITER DEFAULT packet_log_writer.rb nil false
+
+INTERFACE CHAININT tcpip_client_interface.rb 172.28.23.188 7779 7779 10 5 PREIDENTIFIED
+  TARGET BLINK
+  TARGET MATLAB
+  TARGET PS_DP832A
+  TARGET RWS
+  TARGET SYSTEM

@@ -17,9 +17,9 @@ As a result of these principles, the following needs to be kept in mind as indiv
 - Never copy files from someone in the repo to anywhere else, even if you think it's "just in this workspace" or project - nobody will be happy with the results
 
 There are several clever CCS features, along with key settings, that help enable this in CCS.  Here is how to use those features to set things up properly:
-- "Linked Resources":  this is the CCS way of creating a path variable that you can use in other toolset configuration places, making it easy to point CCS at the right place.  You access this by right-clicking into Properties from your project in Project Explorer (be sure NOT to click on some file underneath, CCS allows to set some settings on individual files, which can lead to heartbreak), and going to Resource->Linked Resources, on the Path Variables tab.  Create a New... one called 'dsbase', and BASE IT ON THE PROJECT LOCATION VARIABLE (use the Variable... button on the subdialog).  This should then give you a variable with name 'DSBASE' with value ${PROJECT_LOC}\..\..\dsbase [or use ${PROJECT_LOC}\..\..\dsbase-dev if you are on the CDH team and are working on a pre-release of the core libraries].
+- "Linked Resources":  this is the CCS way of creating a path variable that you can use in other toolset configuration places, making it easy to point CCS at the right place.  You access this by right-clicking into Properties from your project in Project Explorer (be sure NOT to click on some file underneath, CCS allows to set some settings on individual files, which can lead to heartbreak), and going to Resource->Linked Resources, on the Path Variables tab.  Create a New... one called 'dsbase', and BASE IT ON THE PROJECT LOCATION VARIABLE (use the Variable... button on the subdialog).  This should then give you a variable with name 'DSBASE' with value ${PROJECT_LOC}\..\..\dsbase
 - Next, you must add the dsbase files to the include path.  The way to do this is with the DSBASE variable you just created.  Again, in Project-->Properties (again, from the project, not a file within the project), go to Build (or CCS Build, if you have "Advanced Settings" shown)-->MSP430 Compiler-->Include Options, and click the little green plus to add a new include folder.  Click Variables ... on the dialog that pops up to select the DSBASE variable you created in the last step.  Now you should be able include the right dsbase header files by using the format #include "folder/header.h"
-- The last step is a bit cumbersome, but it's required to get the source (rather than just header) files to build within the dsbase folder structure, as well as the subsystem-specific code.  To do this, I added a folder in the project simply called dsbase.  Into THAT folder, I add several more folders - but those folders aren't normal folders.  Instead, we'll be using virtual folders that redirect to the dsbase (or dsbase-dev, depending on what you have the DSBASE folder pointing to at a given moment) folder structure.  To do this, right-click on the 'dsbase' folder you added to your project and select New-->Folder.  In the New Folder dialog, click Advanced... down at the bottom, select the last radio button option for Link to Alternate Location, then in the textbox below that you'll put the RELATIVE path to the dsbase source files.  You MUST use the DSBASE variable again to do this (hit the "Variables..." button), otherwise absolute paths will work their way in.  Unfortunately, using this technique means you have to add each of the separate dsbase folders to the dsbase folder (currently, that is 5:  bsp, config, core, sensors, and interfaces).  If you can figure out how to make it work without doing that, have at, and share how you did it!
+- The last step is a bit cumbersome, but it's required to get the source (rather than just header) files to build within the dsbase folder structure, as well as the subsystem-specific code.  To do this, I added a folder in the project simply called dsbase.  Into THAT folder, I add several more folders - but those folders aren't normal folders.  Instead, we'll be using virtual folders that redirect to the dsbase folder structure.  To do this, right-click on the 'dsbase' folder you added to your project and select New-->Folder.  In the New Folder dialog, click Advanced... down at the bottom, select the last radio button option for Link to Alternate Location, then in the textbox below that you'll put the RELATIVE path to the dsbase source files.  You MUST use the DSBASE variable again to do this (hit the "Variables..." button), otherwise absolute paths will work their way in.  Unfortunately, using this technique means you have to add each of the separate dsbase folders to the dsbase folder (currently, that is 5:  bsp, config, core, sensors, and interfaces).  If you can figure out how to make it work without doing that, have at, and share how you did it!
 
 ## Subsystem Module Predefined Symbols
 
@@ -29,11 +29,15 @@ Important symbols include (note:  underbars are DOUBLED (i.e. '__') for the begi
 
 * `__DEBUG__`   :  Should be set for debug builds.  All the debug printing and other infrastructure is keyed off of this
 * `__INITIAL_TRACE_LEVEL__`   :  Optional, defaults to 0 if not specified, and to 1 in standard templates.  Allows you to immediately pick up trace statements without having to change trace levels at startup.  
+* `__INITIAL_DEBUG_MODE__`   :   Optional, defaults to 0 if not specified.  0=interactive ASCII console, 1="headless" ASCII mode, 2=COSMOS-compatible binary telemetry mode
+* `__DEBUG_UART_SPEED_<spd>__`  :  Optional, <spd> can be "9600", "38400", or "115200" - defaults to 115200.
 
 * Board selection (ONE must be selected - it will help the dsbase infrastructure choose the right pins, and make other assumptions):
     * `__BSP_Board_MSP430FR5994LaunchPad__`:  The standard MSP430FR5994 LaunchPad board used for testing.
-    * `__BSP_Board_MSP430FR5994_CANMSPBlockv1__`:  New (as of 5/12/17) boards for testing custom boards.
+    * `__BSP_Board_MSP430FR5994_CANMSPBlockv1__`:  New (as of 5/12/17) boards for testing custom boards.``
+	* `__BSP_Board_MSP430FR5994_CANMSPBlockv24__`:  Current test boards, circa September, 2017.
     * TODO:  MSP432 symbol will be needed very shortly
+    * `__BSP_Board_SS__`:  This is the symbol that a module should be given if it has moved onto engineering or flight boards specific to that module.
 
 * Other hardware selection (optional, if a given piece of hardware is used - i.e. if the header is included and the define isn't included, you get a compile error):
 
@@ -43,6 +47,7 @@ Important symbols include (note:  underbars are DOUBLED (i.e. '__') for the begi
         * TODO:  the closely related HMC5983L will likely get its own definition and code chunks ... 
     * IMU sensor (for imu.c/.h):
         * `__BSP_HW_IMU_BMI160__`:  Bosch BMI160 IMU (default if no imu symbol defined)
+		* `__BSP_HW_IMU_LSM6DSM__`:  ST LSM6DSM IMU 
 
 ## Workspace Creation Strategy
 

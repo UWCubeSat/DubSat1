@@ -1,26 +1,24 @@
-Below are the current peripheral and pin assignments for the MSP430's being tested on LaunchPads.  Ideally, we will stick with these when we move over to test and then final flight hardware.
-
-Empty peripherals listed based on choice of MSP430FR5994 80-pin LQFP version.  Substantial differences exist on lower-pin-count devices.
+Below are the current peripheral and pin assignments for the MSP430's in their various test configurations/boards.  While the 80-pin "PN" package is used on the MSP430FR5994 LaunchPad dev boards, we are currently planning to use (and all test boards are indeed using) the smaller, 64-pin "PM" package.  The main difference between the two is the number of eUSCI peripherals exposed - the larger package has 4 each of A and B eUSCI peripherals, while the flight choice, PM, has only 3 of each.  Therefore, unless an application is definitively meant for ONLY a LaunchPad, A3 and B3 eUSCI unit usage should be avoided.
 
 eUSCI Peripherals (A blocks = UART/SPI/Irda, B blocks =SPI/I2C)
 - A0:  Backchannel UART
-- A1:  
-- A2:  
-- A3:  
+- A1:  Application UART
+- A2:  SPI (and therefore CAN)
+- A3:  *** DOES NOT EXIST ON FLIGHT PACKAGE (PM), only available on LauchPad board ***
 
 - B0:  
-- B1:  SPI (and therefore CAN)
+- B1:  
 - B2:  I2C
-- B3:  
+- B3:  *** DOES NOT EXIST ON FLIGHT PACKAGE (PM), only available on LauchPad board ***
 
 Timer Blocks:
 - A0 (3 CCRs):  Main timer driving BDot controller >>> let's use this for any timers needed for subsystem-specific use
-- A1 (3 CCRs):  
+- A1 (3 CCRs):  Timer library will use this - KEEP OUT!
 - A2 (2 CCRs):  
 - A3 (2 CCRs):
 - A4 (2 CCRs): 
 
-- B0 (7(!!) CCRs) - Probably reserve for PWM due to enhancements over A blocks?
+- B0 (7(!!) CCRs) - Reserved for PWM on boards that need it (MTQ, RWs)
 
 
 Ports/Pins in Use:

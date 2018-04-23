@@ -1,0 +1,7 @@
+TELEMETRY VISA_DM3058E_USB STATUS BIG_ENDIAN "Telemetry description"
+
+      APPEND_ID_ITEM ID 8 UINT  1 "Main info packet from the DM." BIG_ENDIAN
+      APPEND_ITEM LENGTH 8 UINT "Length of the packet." BIG_ENDIAN
+      APPEND_ITEM RPM 16 UINT "RPM of the motor, as measured at the FG pin on the motor controller."
+      
+ 

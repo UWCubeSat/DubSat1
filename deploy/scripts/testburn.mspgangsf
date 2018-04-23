@@ -1,0 +1,30 @@
+>START
+; Configurations (projects) store all the settings except code files ...
+
+F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\tests\multigang_dist.mspgangproj
+F_GO
+
+F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\tests\multigang_gen.mspgangproj
+F_GO
+
+F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\tests\multigang_batt.mspgangproj
+F_GO
+
+; NOT YET CONNECTED!
+;F_LOADCFGFILE D:\Repos\DubSat1\deploy\scripts\dep_ppt.mspgangproj
+;F_GO
+
+
+
+
+
+
+
+
+
+
+
+
+
+>finish
+END

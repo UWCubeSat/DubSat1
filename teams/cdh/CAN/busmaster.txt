@@ -1,0 +1,7 @@
+The .dbf file is generated from the .dbc file for use with BUSMASTER.
+
+Generate the .dbf file by following the README here:
+https://github.com/ebroecker/canmatrix
+
+Or assuming you have canmatrix installed, just run this:
+canconvert CANDB-MASTER-DS1.dbc CANDB-MASTER-DS1.dbf
