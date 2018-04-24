@@ -15,10 +15,12 @@
 
 // BEGIN GENERATOR MACROS
 
-#define CAN_ID_ROLLCALL_EPS_4 304677379
-#define CAN_ID_ROLLCALL_EPS_3 304677378
-#define CAN_ID_ROLLCALL_EPS_2 304677377
-#define CAN_ID_ROLLCALL_EPS_1 304677376
+#define CAN_ID_RC_EPS_BATT_6 304677381
+#define CAN_ID_RC_EPS_BATT_5 304677380
+#define CAN_ID_RC_EPS_BATT_4 304677379
+#define CAN_ID_RC_EPS_BATT_3 304677378
+#define CAN_ID_RC_EPS_BATT_2 304677377
+#define CAN_ID_RC_EPS_BATT_1 304677376
 #define CAN_ID_CMD_PPT_SET_COUNT 302252294
 #define CAN_ID_CMD_PPT_TIME_UPD 302252293
 #define CAN_ID_CMD_PPT_HALT 285475076
@@ -128,34 +130,48 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
-typedef struct rollcall_eps_4 {
-    uint8_t rollcall_eps_4_heater_state; //  (No Units)
-    uint8_t rollcall_eps_4_balancer_state; //  (No Units)
-    uint8_t rollcall_eps_4_soc; // pct
-    uint16_t rollcall_eps_4_voltage_min; // mV
-    uint16_t rollcall_eps_4_voltage_max; // mV
-    uint16_t rollcall_eps_4_voltage_avg; // mV
-} rollcall_eps_4;
+typedef struct rc_eps_batt_6 {
+    uint8_t rc_eps_batt_6_soc_min; // pct
+    uint8_t rc_eps_batt_6_soc_max; // pct
+    uint8_t rc_eps_batt_6_soc_avg; // pct
+    uint64_t rc_eps_batt_6_last_charge; // 2^-8 seconds
+} rc_eps_batt_6;
 
-typedef struct rollcall_eps_3 {
-    int16_t rollcall_eps_3_node_current; // dmA
-    int16_t rollcall_eps_3_current_min; // cA
-    int16_t rollcall_eps_3_current_max; // cA
-    int16_t rollcall_eps_3_current_avg; // cA
-} rollcall_eps_3;
+typedef struct rc_eps_batt_5 {
+    int16_t rc_eps_batt_5_node_c_min; // dmA
+    int16_t rc_eps_batt_5_node_c_max; // dmA
+    int16_t rc_eps_batt_5_node_c_avg; // dmA
+    int8_t rc_eps_batt_5_batt_temp_min; // deg C
+    int8_t rc_eps_batt_5_batt_temp_max; // deg C
+} rc_eps_batt_5;
 
-typedef struct rollcall_eps_2 {
-    uint16_t rollcall_eps_2_node_min; // mV
-    uint16_t rollcall_eps_2_node_max; // mV
-    uint16_t rollcall_eps_2_node_avg; // mV
-    int8_t rollcall_eps_2_batt_temp; // deg C
-} rollcall_eps_2;
+typedef struct rc_eps_batt_4 {
+    uint16_t rc_eps_batt_4_voltage_min; // mV
+    uint16_t rc_eps_batt_4_voltage_max; // mV
+    uint16_t rc_eps_batt_4_voltage_avg; // mV
+    uint8_t rc_eps_batt_4_heater_state; //  (No Units)
+    uint8_t rc_eps_batt_4_balancer_state; //  (No Units)
+} rc_eps_batt_4;
 
-typedef struct rollcall_eps_1 {
-    uint16_t rollcall_eps_1_sysrstiv; //  (No Units)
-    uint64_t rollcall_eps_1_last_charge; // 2^-8 seconds
-    uint16_t rollcall_eps_1_temp; // dK
-} rollcall_eps_1;
+typedef struct rc_eps_batt_3 {
+    int16_t rc_eps_batt_3_current_min; // cA
+    int16_t rc_eps_batt_3_current_max; // cA
+    int16_t rc_eps_batt_3_current_avg; // cA
+    int8_t rc_eps_batt_3_batt_temp_avg; // deg C
+} rc_eps_batt_3;
+
+typedef struct rc_eps_batt_2 {
+    uint16_t rc_eps_batt_2_node_v_min; // mV
+    uint16_t rc_eps_batt_2_node_v_max; // mV
+    uint16_t rc_eps_batt_2_node_v_avg; // mV
+} rc_eps_batt_2;
+
+typedef struct rc_eps_batt_1 {
+    uint16_t rc_eps_batt_1_temp_min; // dK
+    uint16_t rc_eps_batt_1_temp_max; // dK
+    uint16_t rc_eps_batt_1_temp_avg; // dK
+    uint16_t rc_eps_batt_1_sysrstiv; //  (No Units)
+} rc_eps_batt_1;
 
 typedef struct cmd_ppt_set_count {
     uint8_t cmd_ppt_set_count_count; //  (No Units)
@@ -385,17 +401,23 @@ typedef struct msp_temp {
     uint16_t msp_temp_temp; // dK
 } msp_temp;
 
-void encoderollcall_eps_4(rollcall_eps_4 *input, CANPacket* output);
-void decoderollcall_eps_4(CANPacket *input, rollcall_eps_4 *output);
+void encoderc_eps_batt_6(rc_eps_batt_6 *input, CANPacket* output);
+void decoderc_eps_batt_6(CANPacket *input, rc_eps_batt_6 *output);
 
-void encoderollcall_eps_3(rollcall_eps_3 *input, CANPacket* output);
-void decoderollcall_eps_3(CANPacket *input, rollcall_eps_3 *output);
+void encoderc_eps_batt_5(rc_eps_batt_5 *input, CANPacket* output);
+void decoderc_eps_batt_5(CANPacket *input, rc_eps_batt_5 *output);
 
-void encoderollcall_eps_2(rollcall_eps_2 *input, CANPacket* output);
-void decoderollcall_eps_2(CANPacket *input, rollcall_eps_2 *output);
+void encoderc_eps_batt_4(rc_eps_batt_4 *input, CANPacket* output);
+void decoderc_eps_batt_4(CANPacket *input, rc_eps_batt_4 *output);
 
-void encoderollcall_eps_1(rollcall_eps_1 *input, CANPacket* output);
-void decoderollcall_eps_1(CANPacket *input, rollcall_eps_1 *output);
+void encoderc_eps_batt_3(rc_eps_batt_3 *input, CANPacket* output);
+void decoderc_eps_batt_3(CANPacket *input, rc_eps_batt_3 *output);
+
+void encoderc_eps_batt_2(rc_eps_batt_2 *input, CANPacket* output);
+void decoderc_eps_batt_2(CANPacket *input, rc_eps_batt_2 *output);
+
+void encoderc_eps_batt_1(rc_eps_batt_1 *input, CANPacket* output);
+void decoderc_eps_batt_1(CANPacket *input, rc_eps_batt_1 *output);
 
 void encodecmd_ppt_set_count(cmd_ppt_set_count *input, CANPacket* output);
 void decodecmd_ppt_set_count(CANPacket *input, cmd_ppt_set_count *output);
