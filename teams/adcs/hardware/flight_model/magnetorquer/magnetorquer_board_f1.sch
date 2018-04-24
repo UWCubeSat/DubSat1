@@ -10551,6 +10551,14 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <part name="R12" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="0"/>
 <part name="R13" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value="0"/>
 <part name="R14" library="DubSat1 Components" deviceset="RESISTOR" device="2010" value="DNP"/>
+<part name="C4" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1µF"/>
+<part name="C10" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10µF"/>
+<part name="GND10" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="D1" library="DubSat1 Components" deviceset="LED" device=""/>
+<part name="R15" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="330"/>
+<part name="D3" library="DubSat1 Components" deviceset="LED" device=""/>
+<part name="R16" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="330"/>
 </parts>
 <sheets>
 <sheet>
@@ -10655,6 +10663,14 @@ current carrying trace</text>
 <instance part="R12" gate="G$1" x="213.36" y="157.48"/>
 <instance part="R13" gate="G$1" x="101.6" y="114.3"/>
 <instance part="R14" gate="G$1" x="101.6" y="124.46"/>
+<instance part="C4" gate="G$1" x="162.56" y="-30.48" rot="R180"/>
+<instance part="C10" gate="G$1" x="152.4" y="-30.48" rot="R180"/>
+<instance part="GND10" gate="1" x="152.4" y="-20.32" rot="R180"/>
+<instance part="GND14" gate="1" x="162.56" y="-20.32" rot="R180"/>
+<instance part="D1" gate="G$1" x="210.82" y="20.32" rot="R180"/>
+<instance part="R15" gate="G$1" x="210.82" y="33.02" rot="R90"/>
+<instance part="D3" gate="G$1" x="220.98" y="35.56"/>
+<instance part="R16" gate="G$1" x="220.98" y="22.86" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -10888,6 +10904,16 @@ current carrying trace</text>
 <pinref part=".C15" gate="G$1" pin="2"/>
 <wire x1="198.12" y1="137.16" x2="198.12" y2="139.7" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="C10" gate="G$1" pin="2"/>
+<pinref part="GND10" gate="1" pin="GND"/>
+<wire x1="152.4" y1="-25.4" x2="152.4" y2="-22.86" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="C4" gate="G$1" pin="2"/>
+<pinref part="GND14" gate="1" pin="GND"/>
+<wire x1="162.56" y1="-25.4" x2="162.56" y2="-22.86" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="PWM_X_1" class="0">
 <segment>
@@ -10983,11 +11009,6 @@ current carrying trace</text>
 </net>
 <net name="MT_X_B" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="OUTB"/>
-<wire x1="259.08" y1="149.86" x2="238.76" y2="149.86" width="0.1524" layer="91"/>
-<label x="238.76" y="149.86" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
 <wire x1="48.26" y1="60.96" x2="48.26" y2="58.42" width="0.1524" layer="91"/>
 <label x="48.26" y="58.42" size="1.778" layer="95" rot="R270" xref="yes"/>
 <pinref part="U$1" gate="G$1" pin="MT_X_B@43"/>
@@ -10999,13 +11020,13 @@ current carrying trace</text>
 <wire x1="114.3" y1="60.96" x2="114.3" y2="58.42" width="0.1524" layer="91"/>
 <label x="114.3" y="58.42" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
+<segment>
+<pinref part="U2" gate="G$1" pin="OUTB"/>
+<wire x1="259.08" y1="101.6" x2="238.76" y2="101.6" width="0.1524" layer="91"/>
+<label x="238.76" y="101.6" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="MT_X_A" class="0">
-<segment>
-<pinref part="U1" gate="G$1" pin="OUTA"/>
-<wire x1="259.08" y1="142.24" x2="238.76" y2="142.24" width="0.1524" layer="91"/>
-<label x="238.76" y="142.24" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="MT_X_A@39"/>
 <wire x1="55.88" y1="63.5" x2="48.26" y2="63.5" width="0.1524" layer="91"/>
@@ -11018,6 +11039,11 @@ current carrying trace</text>
 <pinref part="U$1" gate="G$1" pin="MT_X_A@40"/>
 <wire x1="114.3" y1="63.5" x2="106.68" y2="63.5" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="U2" gate="G$1" pin="OUTA"/>
+<wire x1="259.08" y1="93.98" x2="238.76" y2="93.98" width="0.1524" layer="91"/>
+<label x="238.76" y="93.98" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="MT_Z_B" class="0">
 <segment>
@@ -11029,6 +11055,14 @@ current carrying trace</text>
 <pinref part="U3" gate="G$1" pin="OUTB"/>
 <wire x1="238.76" y1="53.34" x2="259.08" y2="53.34" width="0.1524" layer="91"/>
 <label x="238.76" y="53.34" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="R15" gate="G$1" pin="2"/>
+<pinref part="D3" gate="G$1" pin="A"/>
+<wire x1="210.82" y1="38.1" x2="220.98" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="220.98" y1="38.1" x2="220.98" y2="55.88" width="0.1524" layer="91"/>
+<wire x1="220.98" y1="55.88" x2="238.76" y2="55.88" width="0.1524" layer="91"/>
+<wire x1="238.76" y1="55.88" x2="238.76" y2="53.34" width="0.1524" layer="91"/>
+<junction x="220.98" y="38.1"/>
+<junction x="238.76" y="53.34"/>
 </segment>
 </net>
 <net name="MT_Z_A" class="0">
@@ -11041,6 +11075,15 @@ current carrying trace</text>
 <pinref part="U3" gate="G$1" pin="OUTA"/>
 <wire x1="238.76" y1="45.72" x2="259.08" y2="45.72" width="0.1524" layer="91"/>
 <label x="238.76" y="45.72" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="238.76" y1="45.72" x2="238.76" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="238.76" y1="48.26" x2="226.06" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="226.06" y1="48.26" x2="226.06" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="226.06" y1="17.78" x2="220.98" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="D1" gate="G$1" pin="A"/>
+<pinref part="R16" gate="G$1" pin="1"/>
+<wire x1="210.82" y1="17.78" x2="220.98" y2="17.78" width="0.1524" layer="91"/>
+<junction x="220.98" y="17.78"/>
+<junction x="238.76" y="45.72"/>
 </segment>
 </net>
 <net name="VBAT" class="0">
@@ -11089,8 +11132,16 @@ current carrying trace</text>
 </segment>
 <segment>
 <pinref part="U5" gate="G$1" pin="V_IN"/>
-<wire x1="175.26" y1="-35.56" x2="170.18" y2="-35.56" width="0.1524" layer="91"/>
-<label x="170.18" y="-35.56" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="175.26" y1="-35.56" x2="162.56" y2="-35.56" width="0.1524" layer="91"/>
+<label x="144.78" y="-35.56" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="C10" gate="G$1" pin="1"/>
+<wire x1="162.56" y1="-35.56" x2="152.4" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="152.4" y1="-35.56" x2="144.78" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="152.4" y1="-35.56" x2="152.4" y2="-33.02" width="0.1524" layer="91"/>
+<junction x="152.4" y="-35.56"/>
+<pinref part="C4" gate="G$1" pin="1"/>
+<wire x1="162.56" y1="-35.56" x2="162.56" y2="-33.02" width="0.1524" layer="91"/>
+<junction x="162.56" y="-35.56"/>
 </segment>
 <segment>
 <pinref part="R14" gate="G$1" pin="1"/>
@@ -11334,11 +11385,6 @@ current carrying trace</text>
 </net>
 <net name="MT_Y_A" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="OUTA"/>
-<wire x1="259.08" y1="93.98" x2="238.76" y2="93.98" width="0.1524" layer="91"/>
-<label x="238.76" y="93.98" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
 <pinref part="U$1" gate="G$1" pin="MT_Y_A@37"/>
 <wire x1="-22.86" y1="63.5" x2="-27.94" y2="63.5" width="0.1524" layer="91"/>
 <wire x1="-27.94" y1="63.5" x2="-27.94" y2="73.66" width="0.1524" layer="91"/>
@@ -11351,13 +11397,13 @@ current carrying trace</text>
 <pinref part="U$1" gate="G$1" pin="MT_Y_A@38"/>
 <wire x1="38.1" y1="63.5" x2="30.48" y2="63.5" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="U1" gate="G$1" pin="OUTA"/>
+<wire x1="259.08" y1="142.24" x2="238.76" y2="142.24" width="0.1524" layer="91"/>
+<label x="238.76" y="142.24" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="MT_Y_B" class="0">
-<segment>
-<pinref part="U2" gate="G$1" pin="OUTB"/>
-<wire x1="259.08" y1="101.6" x2="238.76" y2="101.6" width="0.1524" layer="91"/>
-<label x="238.76" y="101.6" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
 <segment>
 <wire x1="-30.48" y1="60.96" x2="-30.48" y2="68.58" width="0.1524" layer="91"/>
 <wire x1="-30.48" y1="68.58" x2="-38.1" y2="68.58" width="0.1524" layer="91"/>
@@ -11370,6 +11416,11 @@ current carrying trace</text>
 <wire x1="30.48" y1="60.96" x2="38.1" y2="60.96" width="0.1524" layer="91"/>
 <wire x1="38.1" y1="60.96" x2="38.1" y2="58.42" width="0.1524" layer="91"/>
 <label x="38.1" y="58.42" size="1.778" layer="95" rot="R270" xref="yes"/>
+</segment>
+<segment>
+<pinref part="U1" gate="G$1" pin="OUTB"/>
+<wire x1="259.08" y1="149.86" x2="238.76" y2="149.86" width="0.1524" layer="91"/>
+<label x="238.76" y="149.86" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="3V3_BUCK_ENABLE" class="0">
@@ -11662,6 +11713,20 @@ current carrying trace</text>
 <pinref part="R10" gate="G$1" pin="1"/>
 <wire x1="208.28" y1="60.96" x2="203.2" y2="60.96" width="0.1524" layer="91"/>
 <label x="203.2" y="60.96" size="1.778" layer="95" rot="R180"/>
+</segment>
+</net>
+<net name="N$5" class="0">
+<segment>
+<pinref part="D3" gate="G$1" pin="C"/>
+<pinref part="R16" gate="G$1" pin="2"/>
+<wire x1="220.98" y1="30.48" x2="220.98" y2="27.94" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$13" class="0">
+<segment>
+<pinref part="R15" gate="G$1" pin="1"/>
+<pinref part="D1" gate="G$1" pin="C"/>
+<wire x1="210.82" y1="27.94" x2="210.82" y2="25.4" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="8.4.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
+<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="0.25" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.1" altunitdist="mm" altunit="mm"/>
@@ -755,7 +756,7 @@ SDA</text>
 <wire x1="33.02" y1="30.61" x2="-33.02" y2="30.61" width="0.2032" layer="21"/>
 <wire x1="0" y1="38.23" x2="0" y2="33.15" width="0" layer="21"/>
 </package>
-<package name="BOARD_TEMPLATE" urn="urn:adsk.eagle:footprint:2229800/1">
+<package name="BOARD_TEMPLATE">
 <wire x1="-40" y1="-45" x2="-45" y2="-40" width="0" layer="20"/>
 <wire x1="-45" y1="-40" x2="-45" y2="40" width="0" layer="20"/>
 <wire x1="-45" y1="40" x2="-40" y2="45" width="0" layer="20"/>
@@ -919,7 +920,7 @@ chip</description>
 <smd name="2" x="1.6" y="0" dx="1.2" dy="2" layer="1" thermals="no"/>
 <text x="0.135" y="-0.927" size="0.4064" layer="25" font="vector" rot="R90">&gt;NAME</text>
 </package>
-<package name="PICOLOCK_4" urn="urn:adsk.eagle:footprint:2229834/1">
+<package name="PICOLOCK_4">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -934,10 +935,10 @@ chip</description>
 <wire x1="5.9" y1="4.3" x2="-1.7" y2="4.3" width="0.127" layer="21"/>
 <wire x1="-1.7" y1="4.3" x2="-1.7" y2="6.4" width="0.127" layer="21"/>
 <wire x1="-1.7" y1="6.4" x2="-3.5" y2="6.4" width="0.127" layer="21"/>
+<text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
 <wire x1="-3.5" y1="6.4" x2="-3.5" y2="8.4" width="0.127" layer="21"/>
 <wire x1="-3.5" y1="8.4" x2="7.7" y2="8.4" width="0.127" layer="21"/>
 <wire x1="7.7" y1="8.4" x2="7.7" y2="6.4" width="0.127" layer="21"/>
-<text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
 <polygon width="0.127" layer="39">
 <vertex x="-3.5" y="8.4"/>
 <vertex x="7.7" y="8.4"/>
@@ -957,19 +958,48 @@ chip</description>
 <wire x1="1.5" y1="-0.8" x2="1.5" y2="0.8" width="0.127" layer="21"/>
 <wire x1="-0.92075" y1="-0.5207" x2="-0.92075" y2="0.4191" width="0.2286" layer="21"/>
 </package>
+<package name="PICOLOCK_4-LEGACY">
+<smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="P$4" x="4.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
+<smd name="MNT@1" x="-2.605" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<smd name="MNT@2" x="6.805" y="5.2" dx="1.25" dy="1.8" layer="1" rot="R180"/>
+<wire x1="-3.5" y1="6.4" x2="-3.5" y2="-0.8" width="0.127" layer="21"/>
+<wire x1="-3.5" y1="-0.8" x2="7.7" y2="-0.8" width="0.127" layer="21"/>
+<wire x1="7.7" y1="-0.8" x2="7.7" y2="6.4" width="0.127" layer="21"/>
+<wire x1="7.7" y1="6.4" x2="5.9" y2="6.4" width="0.127" layer="21"/>
+<wire x1="5.9" y1="6.4" x2="5.9" y2="4.3" width="0.127" layer="21"/>
+<wire x1="5.9" y1="4.3" x2="-1.7" y2="4.3" width="0.127" layer="21"/>
+<wire x1="-1.7" y1="4.3" x2="-1.7" y2="6.4" width="0.127" layer="21"/>
+<wire x1="-1.7" y1="6.4" x2="-3.5" y2="6.4" width="0.127" layer="21"/>
+<text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
+<wire x1="-3.5" y1="6.4" x2="-3.5" y2="8.4" width="0.127" layer="21"/>
+<wire x1="-3.5" y1="8.4" x2="7.7" y2="8.4" width="0.127" layer="21"/>
+<wire x1="7.7" y1="8.4" x2="7.7" y2="6.4" width="0.127" layer="21"/>
+<polygon width="0.127" layer="39">
+<vertex x="-3.5" y="8.4"/>
+<vertex x="7.7" y="8.4"/>
+<vertex x="7.7" y="-0.8"/>
+<vertex x="-3.5" y="-0.8"/>
+</polygon>
+</package>
+<package name="0603">
+<wire x1="-1.473" y1="0.729" x2="1.473" y2="0.729" width="0.0508" layer="21"/>
+<wire x1="1.473" y1="0.729" x2="1.473" y2="-0.729" width="0.0508" layer="21"/>
+<wire x1="1.473" y1="-0.729" x2="-1.473" y2="-0.729" width="0.0508" layer="21"/>
+<wire x1="-1.473" y1="-0.729" x2="-1.473" y2="0.729" width="0.0508" layer="21"/>
+<wire x1="-0.356" y1="0.432" x2="0.356" y2="0.432" width="0.1016" layer="51"/>
+<wire x1="-0.356" y1="-0.419" x2="0.356" y2="-0.419" width="0.1016" layer="51"/>
+<smd name="1" x="-0.85" y="0" dx="1.1" dy="1" layer="1"/>
+<smd name="2" x="0.85" y="0" dx="1.1" dy="1" layer="1"/>
+<text x="1.651" y="-0.1778" size="0.4064" layer="25" font="vector">&gt;NAME</text>
+<rectangle x1="-0.8382" y1="-0.4699" x2="-0.3381" y2="0.4801" layer="51"/>
+<rectangle x1="0.3302" y1="-0.4699" x2="0.8303" y2="0.4801" layer="51"/>
+<rectangle x1="-0.1999" y1="-0.3" x2="0.1999" y2="0.3" layer="35"/>
+<rectangle x1="-0.2286" y1="-0.381" x2="0.2286" y2="0.381" layer="21"/>
+</package>
 </packages>
-<packages3d>
-<package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2229882/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_4"/>
-</packageinstances>
-</package3d>
-<package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2229882/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_4"/>
-</packageinstances>
-</package3d>
-</packages3d>
 </library>
 <library name="SparkFun-Connectors">
 <description>&lt;h3&gt;SparkFun Electronics' preferred foot prints&lt;/h3&gt;
@@ -1110,7 +1140,6 @@ design rules under a new name.</description>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
 <param name="checkStop" value="0"/>
-<param name="checkValues" value="0"/>
 <param name="useDiameter" value="13"/>
 <param name="maxErrors" value="50"/>
 </designrules>
@@ -1581,8 +1610,6 @@ design rules under a new name.</description>
 <element name="JP5" library="SparkFun-Connectors" package="2X3-NS" value="" x="5.1" y="-6.4"/>
 <element name="JP6" library="SparkFun-Connectors" package="2X3-NS" value="" x="28.4" y="-6.3"/>
 <element name="JP7" library="SparkFun-Connectors" package="2X3-NS" value="" x="-39.3" y="-13.3"/>
-<element name="CONN1" library="DubSat1 Components" package="PICOLOCK_4" package3d_urn="urn:adsk.eagle:package:2229882/2" value="PICOLOCK_4PICOLOCK_4" x="36.6" y="-14.3" rot="R270"/>
-<element name="CONN2" library="DubSat1 Components" package="PICOLOCK_4" package3d_urn="urn:adsk.eagle:package:2229882/2" value="PICOLOCK_4PICOLOCK_4" x="36.6" y="-25.9" rot="R270"/>
 <element name="C_SLEW_2" library="DubSat1 Components" package="0805" value=".1u" x="12.99" y="-18.22" rot="R270"/>
 <element name="R_PULLUP2" library="DubSat1 Components" package="0805" value="100k" x="15.53" y="-20.76" smashed="yes" rot="R180">
 <attribute name="NAME" x="16.74869375" y="-21.717325" size="0.4064" layer="25" font="vector" rot="R180"/>
@@ -1681,6 +1708,10 @@ design rules under a new name.</description>
 <element name="R43" library="DubSat1 Components" package="0805" value="5000" x="-22.5" y="24.75" rot="R270"/>
 <element name="R44" library="DubSat1 Components" package="0805" value="5000" x="37.5" y="32.5"/>
 <element name="R45" library="DubSat1 Components" package="0805" value="5000" x="-42.5" y="23.5" rot="R270"/>
+<element name="CONN1" library="DubSat1 Components" package="PICOLOCK_4-LEGACY" value="PICOLOCK_4-LEGACY" x="36.5" y="-26" rot="R270"/>
+<element name="CONN2" library="DubSat1 Components" package="PICOLOCK_4-LEGACY" value="PICOLOCK_4-LEGACY" x="36.5" y="-14.25" rot="R270"/>
+<element name="R62" library="DubSat1 Components" package="0603" value="" x="9.25" y="-29"/>
+<element name="R63" library="DubSat1 Components" package="0805" value="" x="9.25" y="-26.75"/>
 </elements>
 <signals>
 <signal name="INA219_A1_1">
@@ -2348,17 +2379,12 @@ design rules under a new name.</description>
 <wire x1="43.3128" y1="-8.4372" x2="43.3128" y2="2.194275" width="0.2032" layer="1"/>
 <wire x1="14.63" y1="-24.02811875" x2="14.63" y2="-20.76" width="0.2032" layer="1"/>
 <wire x1="12.89311875" y1="-25.765" x2="14.63" y2="-24.02811875" width="0.2032" layer="1"/>
-<wire x1="13.993" y1="-28.8475" x2="13.993" y2="-28.47855" width="0.2032" layer="1"/>
-<wire x1="13.993" y1="-28.47855" x2="12.89311875" y2="-27.37866875" width="0.2032" layer="1"/>
-<wire x1="12.89311875" y1="-27.37866875" x2="12.89311875" y2="-25.765" width="0.2032" layer="1"/>
+<wire x1="11.89311875" y1="-26.62866875" x2="12.89311875" y2="-25.765" width="0.2032" layer="1"/>
 <contactref element="BLK1" pad="3.3V@CAN2"/>
 <contactref element="BLK1" pad="3.3V_ANALOG@MSP2"/>
 <contactref element="BLK1" pad="3.3V@MSP1"/>
 <contactref element="BLK1" pad="3.3V@MSP2"/>
 <contactref element="BLK1" pad="3.3V@CAN1"/>
-<wire x1="13.993" y1="-28.8475" x2="13.1455" y2="-28" width="0.2032" layer="1"/>
-<wire x1="3" y1="-28" x2="13.1455" y2="-28" width="0.2032" layer="1"/>
-<wire x1="3" y1="-28" x2="2.75" y2="-28" width="0.2032" layer="1"/>
 <wire x1="-15.4" y1="-38.85" x2="-15.8552" y2="-38.3948" width="0.2032" layer="1"/>
 <wire x1="-17.33125" y1="-24.8102" x2="-17.5098" y2="-24.98875" width="0.2032" layer="1"/>
 <wire x1="-17.5098" y1="-32.99125" x2="-17.5098" y2="-24.98875" width="0.2032" layer="1"/>
@@ -2375,8 +2401,7 @@ design rules under a new name.</description>
 <wire x1="-28" y1="-23.25" x2="-28" y2="-23" width="0.2032" layer="1"/>
 <wire x1="-16.6864" y1="-24.1864" x2="-16.25" y2="-23.75" width="0.2032" layer="1"/>
 <wire x1="-16.25" y1="-23.75" x2="-16.25" y2="-23" width="0.2032" layer="1"/>
-<wire x1="3" y1="-27.75" x2="2.75" y2="-28" width="0.2032" layer="1"/>
-<wire x1="3" y1="-27.75" x2="3" y2="-25.5" width="0.2032" layer="1"/>
+<wire x1="3" y1="-26.72105" x2="3" y2="-25.5" width="0.2032" layer="1"/>
 <wire x1="-15.4" y1="-38.85" x2="-3.9" y2="-38.85" width="0.2032" layer="1"/>
 <wire x1="-3.9" y1="-38.85" x2="-3.75" y2="-38.7" width="0.2032" layer="1"/>
 <wire x1="-17.3102" y1="-24.8102" x2="-16.6864" y2="-24.1864" width="0.2032" layer="1"/>
@@ -2384,8 +2409,10 @@ design rules under a new name.</description>
 <wire x1="-16.6864" y1="-19.79535" x2="-15.89105" y2="-19" width="0.2032" layer="1"/>
 <wire x1="-15.89105" y1="-19" x2="3.75" y2="-19" width="0.2032" layer="1"/>
 <wire x1="3.8798" y1="-24.88875" x2="3.8798" y2="-26.34125" width="0.2032" layer="1"/>
-<wire x1="3" y1="-27.22105" x2="3" y2="-28" width="0.2032" layer="1"/>
-<wire x1="3.8798" y1="-26.34125" x2="3" y2="-27.22105" width="0.2032" layer="1"/>
+<wire x1="3" y1="-26.72105" x2="3" y2="-26.75" width="0.2032" layer="1"/>
+<wire x1="3.8798" y1="-26.34125" x2="3.735525" y2="-26.735525" width="0.2032" layer="1"/>
+<wire x1="3.735525" y1="-26.735525" x2="3.00056875" y2="-26.7210625" width="0.2032" layer="1"/>
+<wire x1="3.00056875" y1="-26.7210625" x2="3" y2="-26.72105" width="0.2032" layer="1"/>
 <wire x1="3.75" y1="-19" x2="3.75" y2="-24.75895" width="0.2032" layer="1"/>
 <wire x1="3.75" y1="-24.75895" x2="3.8798" y2="-24.88875" width="0.2032" layer="1"/>
 <contactref element="R99" pad="2"/>
@@ -2422,9 +2449,28 @@ design rules under a new name.</description>
 <wire x1="15.75" y1="-16" x2="15.5" y2="-16.25" width="0.2032" layer="1"/>
 <wire x1="15.5" y1="-16.25" x2="15.53" y2="-16.28" width="0.2032" layer="1"/>
 <wire x1="15.53" y1="-16.28" x2="15.53" y2="-17.058" width="0.2032" layer="1"/>
+<contactref element="R63" pad="2"/>
+<contactref element="R63" pad="1"/>
+<contactref element="R62" pad="1"/>
+<contactref element="R62" pad="2"/>
+<wire x1="8.35" y1="-26.75" x2="3.5" y2="-26.75" width="0.2032" layer="1"/>
+<wire x1="3.5" y1="-26.75" x2="3.735525" y2="-26.735525" width="0.2032" layer="1"/>
+<wire x1="8.35" y1="-26.75" x2="3.02950625" y2="-26.75" width="0.3048" layer="1"/>
+<wire x1="3.02950625" y1="-26.75" x2="3.00056875" y2="-26.7210625" width="0.3048" layer="1"/>
+<wire x1="8.4" y1="-29" x2="8.4" y2="-26.8" width="0.3048" layer="1"/>
+<wire x1="8.4" y1="-26.8" x2="8.35" y2="-26.75" width="0.3048" layer="1"/>
+<wire x1="10.15" y1="-26.75" x2="10.15" y2="-28.95" width="0.3048" layer="1"/>
+<wire x1="10.15" y1="-28.95" x2="10.1" y2="-29" width="0.3048" layer="1"/>
+<wire x1="11.993" y1="-26.75" x2="10.15" y2="-26.75" width="0.3048" layer="1"/>
+<wire x1="13.993" y1="-28.8475" x2="13.8955" y2="-28.75" width="0.3048" layer="1"/>
+<wire x1="13.8955" y1="-28.75" x2="12.25" y2="-28.75" width="0.3048" layer="1"/>
+<wire x1="12.25" y1="-28.75" x2="11.993" y2="-28.493" width="0.3048" layer="1"/>
+<wire x1="11.993" y1="-28.493" x2="11.993" y2="-26.75" width="0.3048" layer="1"/>
 <wire x1="-16.6864" y1="-38.18465" x2="-16.1456" y2="-37.4912" width="0" layer="19" extent="1-1"/>
 <wire x1="-16.1258" y1="-20.5076" x2="-16.6864" y2="-19.79535" width="0" layer="19" extent="1-1"/>
 <wire x1="-3.155" y1="-37.865" x2="-3.75" y2="-38.7" width="0" layer="19" extent="1-1"/>
+<wire x1="10.1" y1="-29" x2="8.4" y2="-29" width="0" layer="19" extent="1-1"/>
+<wire x1="11.89311875" y1="-26.62866875" x2="11.993" y2="-26.75" width="0" layer="19" extent="1-1"/>
 <wire x1="14.53" y1="-17.058" x2="14.53" y2="-19.382" width="0" layer="19" extent="1-1"/>
 <wire x1="-32.3802" y1="-6.2992" x2="-32.3444875" y2="-6.2857125" width="0" layer="19" extent="1-1"/>
 <wire x1="-21.6132" y1="4.75" x2="-21.375" y2="4.625" width="0" layer="19" extent="1-1"/>
@@ -2855,10 +2901,6 @@ design rules under a new name.</description>
 <wire x1="32.677" y1="-31.574" x2="32.053" y2="-31.32" width="0.2032" layer="1"/>
 <via x="32.677" y="-31.574" extent="1-16" drill="0.35"/>
 <via x="32.677" y="-30.939" extent="1-16" drill="0.35"/>
-<contactref element="CONN1" pad="P$4"/>
-<contactref element="CONN1" pad="P$3"/>
-<contactref element="CONN2" pad="P$4"/>
-<contactref element="CONN2" pad="P$3"/>
 <wire x1="36.6" y1="-30.4" x2="36.6" y2="-28.9" width="1.016" layer="1"/>
 <wire x1="36.6" y1="-17.3" x2="36.6" y2="-18.8" width="1.016" layer="1"/>
 <via x="35.8" y="-16.8" extent="1-16" drill="0.35"/>
@@ -3010,9 +3052,15 @@ design rules under a new name.</description>
 <wire x1="-40.25" y1="34.25" x2="-39.5" y2="35" width="1.016" layer="16"/>
 <wire x1="-43" y1="39" x2="-36.5" y2="39" width="4" layer="16"/>
 <wire x1="-39.5" y1="35.25" x2="-39.5" y2="43.25" width="4" layer="16"/>
+<contactref element="CONN1" pad="P$3"/>
+<contactref element="CONN1" pad="P$4"/>
+<contactref element="CONN2" pad="P$3"/>
+<contactref element="CONN2" pad="P$4"/>
 <wire x1="33.4" y1="29.7" x2="33.1" y2="28.5" width="0" layer="19" extent="1-1"/>
 <wire x1="-35.19" y1="-7.204" x2="-35.19" y2="-7.32" width="0" layer="19" extent="1-1"/>
 <wire x1="29.31" y1="-0.204" x2="29.31" y2="-0.32" width="0" layer="19" extent="1-1"/>
+<wire x1="36.5" y1="-17.25" x2="36.6" y2="-17.3" width="0" layer="19" extent="1-1"/>
+<wire x1="36.5" y1="-18.75" x2="36.6" y2="-18.8" width="0" layer="19" extent="1-1"/>
 <wire x1="39.677" y1="3.768" x2="39.377" y2="3.452" width="0" layer="19" extent="1-1"/>
 <wire x1="-24.423" y1="3.768" x2="-24.723" y2="3.452" width="0" layer="19" extent="1-1"/>
 <wire x1="15.977" y1="3.768" x2="15.677" y2="3.452" width="0" layer="19" extent="1-1"/>
@@ -3029,7 +3077,9 @@ design rules under a new name.</description>
 <wire x1="-41.1" y1="19" x2="-40.55" y2="18.75" width="0" layer="19" extent="1-1"/>
 <wire x1="-35.19" y1="-7.944" x2="-35.19" y2="-7.32" width="0" layer="19" extent="1-1"/>
 <wire x1="29.31" y1="-0.944" x2="29.31" y2="-0.32" width="0" layer="19" extent="1-1"/>
-<wire x1="36.6" y1="-28.9" x2="35.9" y2="-28.8" width="0" layer="19" extent="1-1"/>
+<wire x1="36.5" y1="-29" x2="35.9" y2="-28.8" width="0" layer="19" extent="1-1"/>
+<wire x1="36.6" y1="-28.9" x2="36.5" y2="-29" width="0" layer="19" extent="1-1"/>
+<wire x1="36.5" y1="-30.5" x2="36.6" y2="-30.4" width="0" layer="19" extent="1-1"/>
 <wire x1="32.4" y1="26" x2="33.15" y2="25.65" width="0" layer="19" extent="1-1"/>
 <wire x1="-32.1" y1="19" x2="-31.35" y2="18.65" width="0" layer="19" extent="1-1"/>
 <wire x1="-41.6" y1="32.5" x2="-42.55" y2="32.35" width="0" layer="19" extent="1-1"/>
@@ -4827,15 +4877,10 @@ design rules under a new name.</description>
 <vertex x="32.804" y="-25.732"/>
 <vertex x="32.804" y="-29.034"/>
 </polygon>
-<contactref element="CONN1" pad="P$1"/>
-<contactref element="CONN1" pad="P$2"/>
-<contactref element="CONN2" pad="P$1"/>
-<contactref element="CONN2" pad="P$2"/>
 <wire x1="32.442" y1="-27.78" x2="32.822" y2="-27.4" width="1.016" layer="1"/>
 <wire x1="32.822" y1="-27.4" x2="33.75" y2="-27.4" width="1.016" layer="1"/>
 <wire x1="33.75" y1="-27.4" x2="36.6" y2="-27.4" width="1.016" layer="1"/>
-<wire x1="36.6" y1="-27.4" x2="36.6" y2="-25.9" width="1.016" layer="1"/>
-<wire x1="36.6" y1="-25.9" x2="36.6" y2="-20.6057875" width="1.016" layer="1"/>
+<wire x1="36.6" y1="-27.4" x2="36.6" y2="-20.6057875" width="1.016" layer="1"/>
 <wire x1="36.6" y1="-15.4942125" x2="36.6" y2="-14.3" width="1.016" layer="1"/>
 <wire x1="36.6" y1="-20.6057875" x2="37.8112" y2="-19.3945875" width="1.016" layer="1"/>
 <wire x1="37.8112" y1="-19.3945875" x2="37.8112" y2="-16.7054125" width="1.016" layer="1"/>
@@ -4843,7 +4888,14 @@ design rules under a new name.</description>
 <contactref element="D6" pad="A"/>
 <wire x1="33.75" y1="-27.4" x2="33.75" y2="-35.75" width="0.2032" layer="1"/>
 <wire x1="33.75" y1="-35.75" x2="32.5" y2="-37" width="0.2032" layer="1"/>
-<wire x1="36.6" y1="-15.4942125" x2="36.6" y2="-15.8" width="0" layer="19" extent="1-1"/>
+<contactref element="CONN1" pad="P$1"/>
+<contactref element="CONN1" pad="P$2"/>
+<contactref element="CONN2" pad="P$1"/>
+<contactref element="CONN2" pad="P$2"/>
+<wire x1="36.6" y1="-14.3" x2="36.5" y2="-14.25" width="0" layer="19" extent="1-1"/>
+<wire x1="36.5" y1="-27.5" x2="36.6" y2="-27.4" width="0" layer="19" extent="1-1"/>
+<wire x1="36.5" y1="-15.75" x2="36.6" y2="-15.4942125" width="0" layer="19" extent="1-1"/>
+<wire x1="36.5" y1="-26" x2="36.6" y2="-27.4" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="CANH">
 <contactref element="BLK1" pad="CANH"/>
@@ -5144,11 +5196,6 @@ which will not be processed correctly with this version.
 Since Version 8.3, EAGLE supports URNs for individual library
 assets (packages, symbols, and devices). The URNs of those assets
 will not be understood (or retained) with this version.
-</note>
-<note version="8.3" severity="warning">
-Since Version 8.3, EAGLE supports the association of 3D packages
-with devices in libraries, schematics, and board files. Those 3D
-packages will not be understood (or retained) with this version.
 </note>
 </compatibility>
 </eagle>
