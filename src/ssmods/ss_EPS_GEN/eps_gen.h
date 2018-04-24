@@ -20,8 +20,8 @@
 #define CENTER_PANEL_INDEX  2
 
 // Resistance (ohms) of the shunt resistors used by the INA219 on each panel circuit
-#define SHUNT_SIDE_PANELS       0.09f
-#define SHUNT_CENTER_PANEL      0.11f
+#define SHUNT_SIDE_PANELS       0.10f
+#define SHUNT_CENTER_PANEL      0.10f
 
 // Various control lines
 #define DISABLE_PTRACKER1_DIR       P1DIR

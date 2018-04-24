@@ -9,12 +9,6 @@ author: jeffc
 // time between sending meta/health telemetry
 #define MTQ_TELEM_DELAY_MS 1000
 
-#include <stdint.h>
-#include "core/utils.h"
-#include "core/timers.h"
-#include "interfaces/systeminfo.h"
-#include "core/debugtools.h"
-
 // Most subsystem modules should be implemented at least in part
 // as a state machine (specifically, a FSM).  Here the available states are
 // defined.
@@ -42,16 +36,35 @@ typedef struct _module_status {
     uint16_t in_unknown_state;
 } ModuleStatus;
 
+// ---- COSMOS------
 TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this
+    int8_t last_bdot_x;
+    int8_t last_bdot_y;
+    int8_t last_bdot_z;
+    int8_t last_fsw_x;
+    int8_t last_fsw_y;
+    int8_t last_fsw_z;
+    int8_t last_mtq_executed_x;
+    int8_t last_mtq_executed_y;
+    int8_t last_mtq_executed_z;
+} bdot_fsw_commands;
+
+TLM_SEGMENT {
+    BcTlmHeader header;  
     uint8_t x1;
     uint8_t x2;
     uint8_t y1;
     uint8_t y2;
     uint8_t z1;
     uint8_t z2;
+} duty_percent;
 
-} duty_segment;
+//TLM_SEGMENT {
+//    BcTlmHeader header;
+//    uint8_t command_source;
+//    uint8_t coil_state;
+//} ack_pack;
 
 CMD_SEGMENT {
     int8_t x;
@@ -71,25 +84,35 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 //---------------------
 // MTQ specific 
 //---------------------
-typedef enum _tumble_state {Tumbling=1,Idle=0} TumbleState;
-// PWM pins 
+// ---PWM stuff----
 #define PWM_PERIOD 10000-1 //(10000-1) // pwm period = 1000 us
 #define CCR_PERIOD 100
-#define X1 1 // for set_pwm function which_pin 
-#define X2 2 
-#define Y1 3  
-#define Y2 4  
-#define Z1 5 
-#define Z2 6 
-
-// SFR APIs 
-// ccrn register assigns 
+// ---SFR APIs----
 #define SET_X1_PWM TB0CCR4 =
 #define SET_X2_PWM TB0CCR3 =
 #define SET_Y1_PWM TB0CCR6 =
 #define SET_Y2_PWM TB0CCR5 =
 #define SET_Z1_PWM TB0CCR2 =
 #define SET_Z2_PWM TB0CCR1 =
+// ---other stuffs----
+#define FSW_TIMEOUT 1000 // TODO arbitrary change this
+#define UNKNOWN -128 // completely arbitrary but outside the -100 - 100 range
+#define DONT_OVERRIDE CAN_ENUM_BOOL_FALSE
+#define OVERRIDE CAN_ENUM_BOOL_TRUE
+#define TUMBLING CAN_ENUM_BOOL_TRUE
+#define IDLE CAN_ENUM_BOOL_FALSE
+// --- CAN ack packet---
+#define FROM_FSW CAN_ENUM_BOOL_FALSE
+#define FROM_BDOT CAN_ENUM_BOOL_TRUE
+#define COILS_ARE_OFF CAN_ENUM_BOOL_TRUE
+#define COILS_ARE_ON CAN_ENUM_BOOL_FALSE
+// ---COSMOS-----
+#define TLM_ID_BDOT_FSW_COMMANDS 127 
+#define TLM_ID_DUTY_PERCENT 126
+// ---state machine---
+#define MEASUREMENT_PHASE 0 
+#define ACTUATION_PHASE 1
+#define WAIT_PHASE 2
 
 
 #endif /* ADCS_MTQ_H_ */

@@ -1,19 +1,50 @@
+#define MOCK_TLE 1
+
 #include <adcs_estim.h>
 #include <msp430.h> 
 
 #include "bsp/bsp.h"
+#include "core/timer.h"
+#include "core/MET.h"
+#include "interfaces/canwrap.h"
+#include "core/debugtools.h"
+#include "tle.h"
+
+#include "autocode/env_estimation_lib.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
 FILE_STATIC ModuleStatus mod_status;
-FILE_STATIC volatile SubsystemState ss_state    = State_FirstState;
-FILE_STATIC volatile SubsystemMode ss_mode      = Mode_FirstMode;
 
-// These are sample "trigger" flags, used to indicate to the main loop
-// that a transition should occur
-FILE_STATIC flag_t triggerState1;
-FILE_STATIC flag_t triggerState2;
-FILE_STATIC flag_t triggerState3;
+// backchannel telemetry segments
+FILE_STATIC meta_segment mseg;
+FILE_STATIC health_segment hseg;
+
+// The latest TLE from CAN is held here and passed to autocode on each step
+// TODO initialize it with a recent TLE before launch?
+#if MOCK_TLE
+// TLE taken from Wikipedia example
+FILE_STATIC struct tle tle = {
+                              2008,
+                              264.51782528,
+                              -.11606E-4,
+                              51.6416,
+                              247.4627,
+                              .0006703,
+                              130.5360,
+                              325.0288,
+                              15.72125391
+};
+#else
+FILE_STATIC struct tle tle;
+#endif /* MOCK_TLE */
+
+FILE_STATIC void setInputs();
+FILE_STATIC void sendTelemOverBackchannel();
+FILE_STATIC void sendTelemOverCAN();
+
+FILE_STATIC void sendHealthSegment();
+FILE_STATIC void sendMetaSegment();
 
 /*
  * main.c
@@ -45,49 +76,46 @@ int main(void)
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
-    // TODO:  Add the correct bus filters and register CAN message receive handlers
-
-    debugTraceF(1, "CAN message bus configured.\r\n");
+    tleInit(&tle, MOCK_TLE);
+    canWrapInitWithFilter();
+    setCANPacketRxCallback(canRxCallback);
 
     /* ----- SUBSYSTEM LOGIC -----*/
-    // TODO:  Finally ... NOW, implement the actual subsystem logic!
-    // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
-    // and then control is returned to this main loop
+    // set LED gpio pin to output
+    LED_DIR |= LED_BIT;
 
-    // See ss_EPS_Dist for ideas on how to structure creating telemetry and command packets, etc.
+    // populate segment headers
+    bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
 
-    debugTraceF(1, "Commencing subsystem module execution ...\r\n");
+    // init temperature sensor
+    asensorInit(Ref_2p5V);
+
+    // init autocode
+    env_estimation_lib_initialize();
+
+    /*
+     * TODO consider using a callback timer instead of a while loop. We'll
+     * likely want to run as fast as possible, but it may also be worthwhile to
+     * run at a fixed rate (using timers instead).
+     */
     while (1)
     {
-        // This assumes that some interrupt code will change the value of the triggerStaten variables
-        switch (ss_state)
-        {
-        case State_FirstState:
-            if (triggerState2)
-            {
-                triggerState2 = 0;
-                ss_state = State_SecondState;
-            }
-            break;
-        case State_SecondState:
-            if (triggerState3)
-            {
-                triggerState3 = 0;
-                ss_state = State_ThirdState;
-            }
-            break;
-        case State_ThirdState:
-            if (triggerState1)
-            {
-                triggerState1 = 0;
-                ss_state = State_FirstState;
-            }
-            break;
-        default:
-            mod_status.state_transition_errors++;
-            mod_status.in_unknown_state++;
-            break;
-        }
+        LED_OUT ^= LED_BIT;
+
+        // send basic subsystem telemetry
+        // TODO move this to rollcall
+        sendHealthSegment();
+        sendMetaSegment();
+
+        // set autocode inputs
+        setInputs();
+
+        // step autocode
+        env_estimation_lib_step();
+
+        // send autocode outputs
+        sendTelemOverBackchannel();
+        sendTelemOverCAN();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
@@ -109,3 +137,109 @@ void handleRollCall()
     __no_operation();
 }
 
+FILE_STATIC void setInputs()
+{
+    // TODO verify units
+    rtU.MET = getTimeStampSeconds();
+
+    // input the TLE unless we're in the middle of reading it from CAN
+    // disable interrupts so the TLE isn't modified during read
+    __disable_interrupt();
+    if (tleIsComplete(&tle))
+    {
+        rtU.orbit_tle[0] = tle.year;
+        rtU.orbit_tle[1] = tle.day;
+        rtU.orbit_tle[2] = tle.bstar;
+        rtU.orbit_tle[3] = tle.inc;
+        rtU.orbit_tle[4] = tle.raan;
+        rtU.orbit_tle[5] = tle.ecc;
+        rtU.orbit_tle[6] = tle.aop;
+        rtU.orbit_tle[7] = tle.mna;
+        rtU.orbit_tle[8] = tle.mnm;
+    }
+    __enable_interrupt();
+}
+
+FILE_STATIC void sendTelemOverBackchannel()
+{
+    // send input TLE
+    input_tle_segment tle;
+    tle.year = rtU.orbit_tle[0];
+    tle.day = rtU.orbit_tle[1];
+    tle.bstar = rtU.orbit_tle[2];
+    tle.inc = rtU.orbit_tle[3];
+    tle.raan = rtU.orbit_tle[4];
+    tle.ecc = rtU.orbit_tle[5];
+    tle.aop = rtU.orbit_tle[6];
+    tle.mna = rtU.orbit_tle[7];
+    tle.mnm = rtU.orbit_tle[8];
+    bcbinPopulateHeader(&tle.header, TLM_ID_INPUT_TLE, sizeof(tle));
+    bcbinSendPacket((uint8_t *) &tle, sizeof(tle));
+
+    // send MET
+    input_met_segment metSeg;
+    metSeg.met = rtU.MET;
+    bcbinPopulateHeader(&metSeg.header, TLM_ID_INPUT_MET, sizeof(metSeg));
+    bcbinSendPacket((uint8_t *) &metSeg, sizeof(metSeg));
+
+    // send autocode outputs
+    output_segment out;
+    uint8_t i = 3;
+    while (i-- > 0)
+    {
+        out.sc2gs_unit[i] = rtY.sc2gs_unit[i];
+        out.sc2sun_unit[i] = rtY.sc2sun_unit[i];
+        out.mag_unit_vector_eci[i] = rtY.mag_unit_vector_eci[i];
+        out.mag_vector_eci[i] = rtY.mag_vector_eci[i];
+        out.vel_eci_mps[i] = rtY.vel_eci_mps[i];
+    }
+    out.sc_above_gs = rtY.sc_above_gs;
+    out.sc_in_fov = rtY.sc_in_fov;
+    out.sc_in_sun = rtY.sc_in_sun;
+    bcbinPopulateHeader(&out.header, TLM_ID_OUTPUT, sizeof(out));
+    bcbinSendPacket((uint8_t *) &out, sizeof(out));
+
+}
+
+FILE_STATIC void sendTelemOverCAN()
+{
+    // TODO
+}
+
+void canRxCallback(CANPacket *packet)
+{
+    __disable_interrupt();
+    tleUpdate(packet, &tle);
+    __enable_interrupt();
+
+    switch (packet->id)
+    {
+    // TODO add MET case when available (unless bsp handles this automatically)
+    }
+}
+
+// Packetizes and sends backchannel health packet
+// also invokes uart status handler
+FILE_STATIC void sendHealthSegment()
+{
+    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
+
+    // TODO determine overall health based on querying sensors for their health
+    hseg.oms = OMS_Unknown;
+
+    hseg.inttemp = asensorReadIntTempC();
+    bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
+    debugInvokeStatusHandler(Entity_UART);
+
+    // send CAN packet of temperature (in deci-Kelvin)
+    msp_temp temp = { (hseg.inttemp + 273.15f) * 10 };
+    CANPacket packet;
+    encodemsp_temp(&temp, &packet);
+    canSendPacket(&packet);
+}
+
+FILE_STATIC void sendMetaSegment()
+{
+    bcbinPopulateMeta(&mseg, sizeof(mseg));
+    bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+}

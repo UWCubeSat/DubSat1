@@ -73,8 +73,7 @@ void distFireDeploy()
 void distDomainInit()
 {
     // Set initial thresholds for undervoltage monitoring
-    gseg.undervoltagethresholds[PARTIAL_THRESHOLD_INDEX] = BATT_DEFAULT_PARTIAL_THRESH;
-    gseg.undervoltagethresholds[FULL_THRESHOLD_INDEX] = BATT_DEFAULT_FULL_THRESH;
+    gseg.undervoltagethreshold = BATT_DEFAULT_FULL_THRESH;
 
     // Setup GPIO pin used to turn on all INA219's and turn them on
     DOMAIN_ENABLE_CURRENT_SENSORS_DIR |= DOMAIN_ENABLE_CURRENT_SENSORS_BIT;
@@ -260,36 +259,26 @@ FILE_STATIC void distMonitorDomains()
     }
 }
 
-// TODO:  Implement hysteresis, multiple tiers to PD power-off, and commands to change on the fly
+// TODO: commands to change threshold on the fly
 FILE_STATIC void distMonitorBattery()
 {
     int i;
     float predivV = asensorReadSingleSensorV(hBattV);
     float newbattV = BATTV_CONV_FACTOR * predivV;
+    float prevBattV = gseg.battV;
     gseg.battV = newbattV;
 
-    if (newbattV <= gseg.undervoltagethresholds[FULL_THRESHOLD_INDEX])
+    uint8_t prevMode = (uint8_t)gseg.uvmode;
+
+    if (newbattV <= gseg.undervoltagethreshold && prevBattV <= gseg.undervoltagethreshold)
         gseg.uvmode = (uint8_t)UV_FullShutdown;
-    else if (newbattV <= gseg.undervoltagethresholds[PARTIAL_THRESHOLD_INDEX])
-        gseg.uvmode = (uint8_t)UV_PartialShutdown;
     else
         gseg.uvmode = (uint8_t)UV_InRange;
 
-    if (gseg.uvmode != (uint8_t)UV_InRange)
-    {
-        for (i = 0; i < NUM_POWER_DOMAINS; i++)
-        {
-            // TODO:  Implement the true, final logic for partial vs. full
-            // TODO:  For now, full shutdown takes out COm1 as well, to protect batteries
-            if (gseg.uvmode != (uint8_t)UV_FullShutdown && i == (uint8_t)PD_COM1)
-                continue;
-            if (gseg.uvmode == (uint8_t)UV_PartialShutdown && i == (uint8_t)PD_WHEELS)
-                continue;
-
-            // Shutdown everything else
-            distDomainSwitch((PowerDomainID)i, PD_CMD_BattVLow);
-        }
-    }
+    //shut down everything (COM1 is hard-wired to never shut down)
+    if (gseg.uvmode != (uint8_t)UV_InRange && prevMode == (uint8_t)UV_InRange)
+        for (i = NUM_POWER_DOMAINS; i; i--)
+            distDomainSwitch((PowerDomainID)(i - 1), PD_CMD_BattVLow);
 }
 
 // Packetizes and sends backchannel GENERAL packet
@@ -385,8 +374,7 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
             case OPCODE_OCPTHRESH:
                 osegment = (ocpthresh_segment *) &cmdstr[1];
 
-                gseg.undervoltagethresholds[PARTIAL_THRESHOLD_INDEX] = osegment->newBattVThresholds[PARTIAL_THRESHOLD_INDEX];
-                gseg.undervoltagethresholds[FULL_THRESHOLD_INDEX] = osegment->newBattVThresholds[FULL_THRESHOLD_INDEX];
+                gseg.undervoltagethreshold = osegment->newBattVThreshold;
 
                 for (i = 0; i < NUM_POWER_DOMAINS; i++)
                 {

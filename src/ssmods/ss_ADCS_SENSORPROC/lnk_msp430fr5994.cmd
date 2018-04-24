@@ -47,7 +47,7 @@
 /* -heap   0x0100                                   HEAP AREA SIZE            */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* Version: 1.199                                                             */
+/* 1.203 */
 /*----------------------------------------------------------------------------*/
 
 /****************************************************************************/
@@ -62,7 +62,7 @@ MEMORY
     INFOC                   : origin = 0x1880, length = 0x80
     INFOB                   : origin = 0x1900, length = 0x80
     INFOA                   : origin = 0x1980, length = 0x80
-    RAM                     : origin = 0x1C00, length = 0x1000
+    RAM                     : origin = 0x1C00, length = 0x2000
     FRAM                    : origin = 0x4000, length = 0xBF80
     FRAM2                   : origin = 0x10000,length = 0x34000
     JTAGSIGNATURE           : origin = 0xFF80, length = 0x0004, fill = 0xFFFF
@@ -127,18 +127,6 @@ MEMORY
 }
 
 /****************************************************************************/
-/* Specify the LEA memory map                                               */
-/****************************************************************************/
-
-#define LEASTACK_SIZE   0x138
-
-MEMORY
-{
-    LEARAM                  : origin = 0x2C00, length = 0x1000 - LEASTACK_SIZE
-    LEASTACK                : origin = 0x3C00 - LEASTACK_SIZE, length = LEASTACK_SIZE
-}
-
-/****************************************************************************/
 /* SPECIFY THE SECTIONS ALLOCATION INTO MEMORY                              */
 /****************************************************************************/
 
@@ -149,7 +137,7 @@ SECTIONS
 
         GROUP(READ_WRITE_MEMORY)
         {
-
+            .TI.noinit     : {}              /* For #pragma noinit                */
             .TI.persistent : {}              /* For #pragma persistent            */
             .cio           : {}              /* C I/O Buffer                      */
             .sysmem        : {}              /* Dynamic memory allocation area    */
@@ -180,7 +168,7 @@ SECTIONS
     .const            : {} >> FRAM | FRAM2  /* Constant data                     */
 #endif
 
-#ifndef __LARGE_DATA_MODEL__
+#ifndef __LARGE_CODE_MODEL__
     .text             : {} > FRAM           /* Code                              */
 #else
     .text             : {} >> FRAM2 | FRAM  /* Code                              */
@@ -188,7 +176,7 @@ SECTIONS
 
     #ifdef __TI_COMPILER_VERSION__
         #if __TI_COMPILER_VERSION__ >= 15009000
-            #ifndef __LARGE_DATA_MODEL__
+            #ifndef __LARGE_CODE_MODEL__
                 .TI.ramfunc : {} load=FRAM, run=RAM, table(BINIT)
             #else
                 .TI.ramfunc : {} load=FRAM | FRAM2, run=RAM, table(BINIT)
@@ -207,7 +195,7 @@ SECTIONS
 
     .bss        : {} > RAM                  /* Global & static vars              */
     .data       : {} > RAM                  /* Global & static vars              */
-    .TI.noinit  : {} > RAM                  /* For #pragma noinit                */
+    .TI.noinit  : {} > FRAM                 /* For #pragma noinit                */
     .stack      : {} > RAM (HIGH)           /* Software system stack             */
 
     .tinyram    : {} > TINYRAM              /* Tiny RAM                          */
@@ -218,9 +206,6 @@ SECTIONS
     .infoC : type = NOINIT{} > INFOC
     .infoD : type = NOINIT{} > INFOD
 
-
-    .leaRAM      : {} > LEARAM               /* LEA RAM                           */
-    .leaStack    : {} > LEASTACK (HIGH)      /* LEA STACK                         */
 
     /* MSP430 interrupt vectors */
 

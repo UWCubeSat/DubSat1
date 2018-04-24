@@ -8,45 +8,64 @@
 #ifndef ADCS_ESTIM_H_
 #define ADCS_ESTIM_H_
 
+// Debug LED
+#define LED_DIR P1DIR
+#define LED_OUT P1OUT
+#define LED_BIT BIT0
+
+#define TLM_ID_INPUT_TLE 2
+#define TLM_ID_INPUT_MET 3
+#define TLM_ID_OUTPUT    4
+
 #include <stdint.h>
 
 #include "core/utils.h"
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
-
-// Most subsystem modules should be implemented at least in part
-// as a state machine (specifically, a FSM).  Here the available states are
-// defined.
-typedef enum _subsystem_state {
-    State_FirstState,
-    State_SecondState,
-    State_ThirdState,
-} SubsystemState;
-
-// Additional, it can be helpful if states are grouped into higher level
-// "modes" in a hierarchical way for certain kinds of decision making and
-// reporting.  These are not mandatory, however.  State transitions will need
-// to explicitly transition the mode as well
-typedef enum _subsystem_mode {
-    Mode_FirstMode,
-    Mode_SecondMode,
-    Mode_ThirdMode,
-} SubsystemMode;
+#include "interfaces/canwrap.h"
 
 // A struct for storing various interesting info about the subsystem module
 typedef struct _module_status {
     StartupType startup_type;
-
-    uint16_t state_transition_errors;
-    uint16_t in_unknown_state;
 } ModuleStatus;
+
+TLM_SEGMENT {
+    BcTlmHeader header; // All COSMOS TLM packets must have this
+
+    float year;
+    float day;
+    float bstar;
+    float inc;
+    float raan;
+    float ecc;
+    float aop;
+    float mna;
+    float mnm;
+} input_tle_segment;
+
+TLM_SEGMENT {
+    BcTlmHeader header; // All COSMOS TLM packets must have this
+
+    double met;
+} input_met_segment;
+
+TLM_SEGMENT {
+    BcTlmHeader header; // All COSMOS TLM packets must have this
+
+    float sc2gs_unit[3];
+    float sc2sun_unit[3];
+    float mag_unit_vector_eci[3];
+    float mag_vector_eci[3];
+    float vel_eci_mps[3];
+    uint8_t sc_above_gs;
+    uint8_t sc_in_fov;
+    uint8_t sc_in_sun;
+} output_segment;
 
 void handlePPTFiringNotification();
 void handleRollCall();
 
-uint8_t handleDebugInfoCallback(DebugMode mode);
-uint8_t handleDebugStatusCallback(DebugMode mode);
-uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
+void canRxCallback(CANPacket *packet);
 
 #endif /* ADCS_ESTIM_H_ */

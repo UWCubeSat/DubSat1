@@ -119,12 +119,12 @@ def createCHeader(candb, cFileName, floatList):
         cFile.write("#define CAN_ID_" + frame.name.upper() + " " + (str(frame.id) if frame.id != 2147483648 else "0") + "\n")
     # Add macros for ENUMS defined at the signal level.
     cFile.write("\n")
-    for frame in candb.frames:
-        for sig in frame:
-            for a in sig.values.keys():
-                cFile.write ("#define CAN_ENUM_" + sig.name.upper() + "_" + sig.values[a].upper().replace(" ", "") + " " + str(a) + "\n")
-    # Add macros for ENUMS defined at the global level.
-    cFile.write("\n")
+    # for frame in candb.frames:
+    #     for sig in frame:
+    #         for a in sig.values.keys():
+    #             cFile.write ("#define CAN_ENUM_" + sig.name.upper() + "_" + sig.values[a].upper().replace(" ", "") + " " + str(a) + "\n")
+    # # Add macros for ENUMS defined at the global level.
+    # cFile.write("\n")
     for vt in candb.valueTables:
         for a in candb.valueTables[vt].keys():
             cFile.write ("#define CAN_ENUM_" + vt.upper() + "_" + candb.valueTables[vt][a].upper().replace(" ", "") + " " + str(a) + "\n")
@@ -349,7 +349,7 @@ void canWrapInitWithFilter(){
         filter_one = 0x01;
         filter_two = 0x03;
         filter_three = 0x04;
-        filter_four = 0x04;
+        filter_four = 0x07;
         break;
       case Module_ADCS_RWX :
         filter_one = 0x01;
@@ -397,7 +397,7 @@ void canWrapInitWithFilter(){
         filter_one = 0x01;
         filter_two = 0x03;
         filter_three = 0x04;
-        filter_four = 0x04;
+        filter_four = 0x07;
         break;
       case Module_ADCS_MPC :
         filter_one = 0x01;
@@ -415,7 +415,7 @@ void canWrapInitWithFilter(){
         filter_one = 0x01;
         filter_two = 0x03;
         filter_three = 0x04;
-        filter_four = 0x04;
+        filter_four = 0x07;
         break;
       case Module_COM1 :
         filter_one = 0x01;

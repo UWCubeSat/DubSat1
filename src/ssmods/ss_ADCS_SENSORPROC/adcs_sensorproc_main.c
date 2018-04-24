@@ -1,7 +1,5 @@
-#define ENABLE_SUNSENSOR   1
-#define ENABLE_MAG1        1
-#define ENABLE_MAG2        1
-#define ENABLE_IMU         1
+// 40 Hz
+#define AUTOCODE_UPDATE_DELAY_US 25000
 
 #include <adcs_sensorproc.h>
 #include <msp430.h> 
@@ -16,94 +14,95 @@
 #include "mag_io.h"
 #include "imu_io.h"
 
+#include "autocode/MSP_SP.h"
+
 /*
- * SensorInterface is a class-like struct for managing multiple (3 to 5) sensors
- * on one microcontroller. Each interface should implement an init function, an
- * update function, a backchannel command handler (optional), and a CAN packet
- * handler (optional). Sensor outputs can be sent during the update function.
+ * SensorInterface is a class-like struct for managing multiple sensors on one
+ * microcontroller. Each interface should implement an init function and an
+ * update function.
  */
 
 typedef void (* sensorio_init_fn)(void);
 typedef void (* sensorio_update_fn)(void);
-typedef uint8_t (* sensorio_cmd_handler)(uint8_t opcode, uint8_t *cmd);
+typedef void (* sensorio_sendBc_fn)(void);
+typedef void (* sensorio_sendCan_fn)(void);
+typedef uint8_t (* sensorio_bc_handler)(uint8_t opcode, uint8_t *cmd);
 typedef uint8_t (* sensorio_can_handler)(CANPacket *packet);
 
-/*
- * Select an update rate for the sensor interface. If none of these fit, use
- * UpdateRate_ASAP and use a timer in the update function
- */
-typedef enum {
-    UpdateRate_ASAP,
-    UpdateRate_5Hz,
-    UpdateRate_1Hz,
-} UpdateRate;
-
 typedef struct {
+    // initialize the sensor
     sensorio_init_fn init;
+
+    // read from the sensor and set autocode inputs
     sensorio_update_fn update;
-    UpdateRate updateRate;
-    sensorio_cmd_handler handleCmd;
+
+    // send raw sensor telemetry over the backchannel (uart)
+    sensorio_sendBc_fn sendBackchannel;
+
+    // send autocode outputs over CAN
+    sensorio_sendCan_fn sendCan;
+
+    // handle commands from the backchannel
+    sensorio_bc_handler handleBackchannel;
+
+    // handle commands from CAN
     sensorio_can_handler handleCan;
 } SensorInterface;
 
 FILE_STATIC const SensorInterface sensorInterfaces[] =
 {
-#if ENABLE_SUNSENSOR
     {
      sunsensorioInit,
      sunsensorioUpdate,
-     UpdateRate_5Hz,
+     sunsensorioSendBackchannel,
+     sunsensorioSendCAN,
      NULL,
      NULL,
     },
-#endif
-#if ENABLE_MAG1
     {
      magioInit1,
      magioUpdate1,
-     UpdateRate_5Hz,
+     magioSendBackchannel1,
+     magioSendCAN,
      NULL,
      NULL,
     },
-#endif
-#if ENABLE_MAG2
     {
      magioInit2,
      magioUpdate2,
-     UpdateRate_5Hz,
+     magioSendBackchannel2,
+     magioSendCAN,
      NULL,
      NULL,
     },
-#endif
-#if ENABLE_IMU
     {
      imuioInit,
      imuioUpdate,
-     UpdateRate_5Hz,
+     imuioSendBackchannel,
+     imuioSendCAN,
      NULL,
      NULL,
     },
-#endif
 };
 
 #define NUM_INTERFACES (sizeof(sensorInterfaces) / sizeof(SensorInterface))
 
-// Segment instances - used both to store information and as a structure for sending as telemetry/commands
+// sensor-independent backchannel segment instances
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 
-FILE_STATIC int timerHandle;
-FILE_STATIC void start5HzTimer();
-
 FILE_STATIC void initSensorInterfaces();
-FILE_STATIC void updateSensorInterfaces(UpdateRate rate);
+FILE_STATIC void updateSensorInterfaces();
+FILE_STATIC void sendSensorBackchannel();
+FILE_STATIC void sendSensorCAN();
+FILE_STATIC void step();
+
+FILE_STATIC void rt_OneStep();
 
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
-
-    asensorInit(Ref_2p5V);
 
     // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
@@ -126,86 +125,205 @@ int main(void)
     canWrapInitWithFilter();
     setCANPacketRxCallback(canRxCallback);
 
-    debugTraceF(1, "CAN message bus configured.\r\n");
-
     /* ----- SUBSYSTEM LOGIC -----*/
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
 
-    // initialize timer
-    initializeTimer();
-    start5HzTimer();
-
     // initialize sensors
     initSensorInterfaces();
+    asensorInit(Ref_2p5V); // temperature sensor
 
-    debugTraceF(1, "Commencing subsystem module execution ...\r\n");
+    // initialize autocode
+    MSP_SP_initialize();
 
-    uint8_t num5HzUpdatesSince1HzUpdate = 0;
-    uint8_t secondsSince0p1HzUpdate = 0;
-    while (1)
-    {
-        // make ASAP updates
-        updateSensorInterfaces(UpdateRate_ASAP);
+    /*
+     * Prime the sensor readings (initialize the data).
+     * This is necessary because the autocode's base rate reads from every
+     * sensor at the first update before the subrates' inputs have a chance to
+     * read from their sensors.
+     */
+    updateSensorInterfaces();
 
-        if (checkTimer(timerHandle))
-        {
-            start5HzTimer();
+    // initialize timer
+    initializeTimer();
+    int timerHandle = timerCallbackInitializer(&step, AUTOCODE_UPDATE_DELAY_US);
+    startCallback(timerHandle);
 
-            // make 5 Hz updates
-            LED_OUT ^= LED_BIT;
-            updateSensorInterfaces(UpdateRate_5Hz);
-            num5HzUpdatesSince1HzUpdate++;
-
-            // make 1 Hz updates
-            if (num5HzUpdatesSince1HzUpdate == 5)
-            {
-                updateSensorInterfaces(UpdateRate_1Hz);
-                sendHealthSegment();
-
-                num5HzUpdatesSince1HzUpdate = 0;
-                secondsSince0p1HzUpdate++;
-            }
-
-            // make 0.1 Hz updates
-            if (secondsSince0p1HzUpdate == 10)
-            {
-                sendMetaSegment();
-
-                secondsSince0p1HzUpdate = 0;
-            }
-        }
-    }
+    /*
+     * While loop is empty because all update code is in the step function.
+     */
+    while (1);
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
 	return 0;
 }
 
-FILE_STATIC void initSensorInterfaces()
+FILE_STATIC void step()
 {
-    uint8_t i = NUM_INTERFACES;
-    while (i-- != 0)
+    // counter to trigger operations that don't happen every step
+    static uint16_t i = 0;
+    i++;
+
+    if (i % 40 == 0) // 1 Hz
     {
-        sensorInterfaces[i].init();
+        // blink LED
+        LED_OUT ^= LED_BIT;
+
+        // send a health and meta segments every 1 second
+        // TODO move to rollcall when it is implemented
+        sendHealthSegment();
+        sendMetaSegment();
+
+        // send backchannel telemetry
+        sendSensorBackchannel();
+        magioSendBackchannelVector();
     }
+
+    // step autocode
+    if (rtmGetErrorStatus(rtM) != (NULL))
+    {
+        // TODO handle autocode errors
+        hseg.oms = OMS_MajorFaults;
+    }
+    rt_OneStep();
 }
 
-FILE_STATIC void updateSensorInterfaces(UpdateRate rate)
+/*
+ * Step function originally copied from autocode/ert_main.c, now with inputs
+ * and outputs filled out
+ */
+void rt_OneStep(void)
 {
-    uint8_t i = NUM_INTERFACES;
-    while (i-- != 0)
-    {
-        if (sensorInterfaces[i].updateRate == rate)
-        {
-            sensorInterfaces[i].update();
-        }
-    }
-}
+  static boolean_T OverrunFlags[3] = { 0, 0, 0 };
 
-void start5HzTimer()
-{
-    timerHandle = timerPollInitializer(200);
+  static boolean_T eventFlags[3] = { 0, 0, 0 };/* Model has 3 rates */
+
+  static int_T taskCounter[3] = { 0, 0, 0 };
+
+  int_T i;
+
+  /* Disable interrupts here */
+  __disable_interrupt();
+
+  /* Check base rate for overrun */
+  if (OverrunFlags[0]) {
+    rtmSetErrorStatus(rtM, "Overrun");
+    return;
+  }
+
+  OverrunFlags[0] = true;
+
+  /* Save FPU context here (if necessary) */
+  /* Re-enable timer or interrupt here */
+  __enable_interrupt();
+
+  /*
+   * For a bare-board target (i.e., no operating system), the
+   * following code checks whether any subrate overruns,
+   * and also sets the rates that need to run this time step.
+   */
+  for (i = 1; i < 3; i++) {
+    if (taskCounter[i] == 0) {
+      if (eventFlags[i]) {
+        OverrunFlags[0] = false;
+        OverrunFlags[i] = true;
+
+        /* Sampling too fast */
+        rtmSetErrorStatus(rtM, "Overrun");
+        return;
+      }
+
+      eventFlags[i] = true;
+    }
+  }
+
+  taskCounter[1]++;
+  if (taskCounter[1] == 2) {
+    taskCounter[1]= 0;
+  }
+
+  taskCounter[2]++;
+  if (taskCounter[2] == 4) {
+    taskCounter[2]= 0;
+  }
+
+  /* Set model inputs associated with base rate here */
+  imuioUpdate();
+
+  /* Step the model for base rate */
+  /*
+   * Though this lists magnetomers and sun sensor as input, it only reads from
+   * them at the rate which they are updated (20 Hz, 10 Hz). Because they are
+   * read during their subrate steps we can avoid reading from those sensors
+   * during the base rate.
+   *
+   * rate: 40 Hz
+   * inputs: imu, mag1, mag2, sun
+   * outputs: imu
+   */
+  MSP_SP_step0();
+
+  /* Get model outputs here */
+  imuioSendCAN();
+
+  /* Indicate task for base rate complete */
+  OverrunFlags[0] = false;
+
+  /* Step the model for any subrate */
+  for (i = 1; i < 3; i++) {
+    /* If task "i" is running, don't run any lower priority task */
+    if (OverrunFlags[i]) {
+      return;
+    }
+
+    if (eventFlags[i]) {
+      OverrunFlags[i] = true;
+
+      /* Set model inputs associated with subrates here */
+
+      /* Step the model for subrate "i" */
+      switch (i) {
+       case 1 :
+        magioUpdate1();
+        magioUpdate2();
+        /*
+         * rate: 20 Hz
+         * inputs: mag
+         * outputs: mag
+         */
+        MSP_SP_step1();
+
+        /* Get model outputs here */
+        magioSendCAN();
+        break;
+
+       case 2 :
+        sunsensorioUpdate();
+        /*
+         * rate: 10 Hz
+         * inputs: sun
+         * outputs: sun
+         */
+        MSP_SP_step2();
+
+        /* Get model outputs here */
+        sunsensorioSendCAN();
+        break;
+
+       default :
+        break;
+      }
+
+      /* Indicate task complete for sample time "i" */
+      OverrunFlags[i] = false;
+      eventFlags[i] = false;
+    }
+  }
+
+  /* Disable interrupts here */
+  /* Restore FPU context here (if necessary) */
+  /* Enable interrupts here */
 }
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
@@ -226,12 +344,10 @@ void handleRollCall()
 // also invokes uart status handler
 void sendHealthSegment()
 {
-    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
-
-    // TODO determine overall health based on querying sensors for their health
+    // TODO determine overall health
     hseg.oms = OMS_Unknown;
 
-    hseg.inttemp = asensorReadIntTempC();
+//    hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
@@ -244,9 +360,50 @@ void sendHealthSegment()
 
 void sendMetaSegment()
 {
-    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
     bcbinPopulateMeta(&mseg, sizeof(mseg));
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+}
+
+FILE_STATIC void initSensorInterfaces()
+{
+    uint8_t i = NUM_INTERFACES;
+    while (i-- != 0)
+    {
+        sensorInterfaces[i].init();
+    }
+}
+
+FILE_STATIC void updateSensorInterfaces()
+{
+    uint8_t i = NUM_INTERFACES;
+    while (i-- != 0)
+    {
+        sensorInterfaces[i].update();
+    }
+}
+
+FILE_STATIC void sendSensorBackchannel()
+{
+    uint8_t i = NUM_INTERFACES;
+    while (i-- != 0)
+    {
+        if (sensorInterfaces[i].sendBackchannel)
+        {
+            sensorInterfaces[i].sendBackchannel();
+        }
+    }
+}
+
+FILE_STATIC void sendSensorCAN()
+{
+    uint8_t i = NUM_INTERFACES;
+    while (i-- != 0)
+    {
+        if (sensorInterfaces[i].sendCan)
+        {
+            sensorInterfaces[i].sendCan();
+        }
+    }
 }
 
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
@@ -257,7 +414,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
         uint8_t i = NUM_INTERFACES;
         while (i-- != 0)
         {
-            sensorio_cmd_handler cmdHandler = sensorInterfaces[i].handleCmd;
+            sensorio_bc_handler cmdHandler = sensorInterfaces[i].handleBackchannel;
 
             // if the interface has a command handler, use it
             if (cmdHandler)
