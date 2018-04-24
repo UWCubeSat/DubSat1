@@ -3,6 +3,26 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rollcall_eps_4_packet = {0};
+	rollcall_eps_4 rollcall_eps_4_info = {0};
+	encoderollcall_eps_4(&rollcall_eps_4_info, &rollcall_eps_4_packet);
+	canSendPacket(&rollcall_eps_4_packet);
+
+	__delay_cycles(10000);	CANPacket rollcall_eps_3_packet = {0};
+	rollcall_eps_3 rollcall_eps_3_info = {0};
+	encoderollcall_eps_3(&rollcall_eps_3_info, &rollcall_eps_3_packet);
+	canSendPacket(&rollcall_eps_3_packet);
+
+	__delay_cycles(10000);	CANPacket rollcall_eps_2_packet = {0};
+	rollcall_eps_2 rollcall_eps_2_info = {0};
+	encoderollcall_eps_2(&rollcall_eps_2_info, &rollcall_eps_2_packet);
+	canSendPacket(&rollcall_eps_2_packet);
+
+	__delay_cycles(10000);	CANPacket rollcall_eps_1_packet = {0};
+	rollcall_eps_1 rollcall_eps_1_info = {0};
+	encoderollcall_eps_1(&rollcall_eps_1_info, &rollcall_eps_1_packet);
+	canSendPacket(&rollcall_eps_1_packet);
+
 	__delay_cycles(10000);	CANPacket cmd_ppt_set_count_packet = {0};
 	cmd_ppt_set_count cmd_ppt_set_count_info = {0};
 	encodecmd_ppt_set_count(&cmd_ppt_set_count_info, &cmd_ppt_set_count_packet);

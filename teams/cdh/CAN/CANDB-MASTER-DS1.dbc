@@ -45,6 +45,31 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2452161027 rollcall_eps_4: 8 eps_batt
+ SG_ rollcall_eps_4_heater_state : 57|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rollcall_eps_4_balancer_state : 56|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rollcall_eps_4_soc : 0|8@1+ (1,0) [0|255] "pct" Vector__XXX
+ SG_ rollcall_eps_4_voltage_min : 8|16@1+ (1,0) [0|10000] "mV" Vector__XXX
+ SG_ rollcall_eps_4_voltage_max : 40|16@1+ (1,0) [0|10000] "mV" Vector__XXX
+ SG_ rollcall_eps_4_voltage_avg : 24|16@1+ (1,0) [0|10000] "mV" Vector__XXX
+
+BO_ 2452161026 rollcall_eps_3: 8 eps_batt
+ SG_ rollcall_eps_3_node_current : 48|16@1- (1,0) [-1000|1000] "dmA" Vector__XXX
+ SG_ rollcall_eps_3_current_min : 0|16@1- (1,0) [-700|1200] "cA" Vector__XXX
+ SG_ rollcall_eps_3_current_max : 16|16@1- (1,0) [-700|1200] "cA" Vector__XXX
+ SG_ rollcall_eps_3_current_avg : 32|16@1- (1,0) [-700|1200] "cA" Vector__XXX
+
+BO_ 2452161025 rollcall_eps_2: 7 eps_batt
+ SG_ rollcall_eps_2_node_min : 0|16@1+ (1,0) [0|10000] "mV" Vector__XXX
+ SG_ rollcall_eps_2_node_max : 16|16@1+ (1,0) [0|10000] "mV" Vector__XXX
+ SG_ rollcall_eps_2_node_avg : 32|16@1+ (1,0) [0|10000] "mV" Vector__XXX
+ SG_ rollcall_eps_2_batt_temp : 48|8@1- (1,0) [-128|127] "deg C" Vector__XXX
+
+BO_ 2452161024 rollcall_eps_1: 8 eps_batt
+ SG_ rollcall_eps_1_sysrstiv : 16|8@1+ (1,0) [0|256] "" Vector__XXX
+ SG_ rollcall_eps_1_last_charge : 24|40@1+ (1,0) [0|0] "2^8 seconds" Vector__XXX
+ SG_ rollcall_eps_1_temp : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+
 BO_ 2449735942 cmd_ppt_set_count: 1 Vector__XXX
  SG_ cmd_ppt_set_count_count : 0|8@1+ (1,0) [0|30] "" Vector__XXX
 
@@ -237,6 +262,8 @@ BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2452161027 rollcall_eps_4_heater_state 1 "true" 0 "false" ;
+VAL_ 2452161027 rollcall_eps_4_balancer_state 1 "true" 0 "false" ;
 VAL_ 2432958724 cmd_ppt_halt_confirm 1 "true" 0 "false" ;
 VAL_ 2452160752 ppt_firing_result_panel_good 2 "null" 1 "true" 0 "false" ;
 VAL_ 2452160752 ppt_firing_result_batt_good 2 "null" 1 "true" 0 "false" ;
