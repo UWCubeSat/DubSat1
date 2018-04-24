@@ -6,9 +6,6 @@ author: jeffc
 #ifndef ADCS_MTQ_H_
 #define ADCS_MTQ_H_
 
-// time between sending meta/health telemetry
-#define MTQ_TELEM_DELAY_MS 1000
-
 // Most subsystem modules should be implemented at least in part
 // as a state machine (specifically, a FSM).  Here the available states are
 // defined.
