@@ -37,6 +37,7 @@ void stabalize();
 void start_actuation_timer(void);
 void start_measurement_timer(void);
 void start_stabalize_timer(void);
+void start_telem_timer(void); 
 void manage_telemetry(void);
 uint8_t fsw_is_valid(void);
 uint8_t command_dipole_valid(int command_x, int command_y, int command_z);
@@ -54,6 +55,7 @@ void send_CAN_ack_packet(int command_source, int coil_state);
 //---------COSMOS functions--------------
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 void cosmos_init(void);
+void send_COSMOS_health_packet(void); 
 void send_COSMOS_meta_packet(void);
 void send_COSMOS_commands_packet(void);
 void send_COSMOS_telemetry_packet(void);
@@ -86,8 +88,9 @@ FILE_STATIC volatile uint8_t last_pwm_percent_executed_x, last_pwm_percent_execu
 
 //------------timers ----------------
 
-FILE_STATIC int telemTimer; // timer handle for sending meta/health updates 
-FILE_STATIC volatile int fsw_timeout_timer = 0; 
+FILE_STATIC int telem_timer; 
+FILE_STATIC int telem_time_ms = 1000;
+#pragma PERSISTENT(telem_time_ms)
 FILE_STATIC int actuation_timer = 0;
 FILE_STATIC int actuation_time_ms = 2000;
 #pragma PERSISTENT(actuation_time_ms)
@@ -120,7 +123,8 @@ eMTQState curr_state;
 // TODO 
 // add dipole to CAN ack packet
 // add bdot timeout? 
-// fix fsw timeout   
+// fix fsw timeout 
+// fix blink LED function   
 //------------------------------------------------------------------
 
 int main(void)
@@ -132,7 +136,6 @@ int main(void)
     initializeTimer();             // timer A initialization
     cosmos_init();                 // COSMOS backchannel initialization
     can_init();                    // CAN initialization
-
 
     restartMTQ(); // restart 
 	
@@ -160,7 +163,7 @@ void restartMTQ()
 	turn_off_coils();
 	
 	// set input signals to unknown
-	sc_mode = UNKNOWN; 
+	sc_mode = UNKNOWN;
 	bdot_command_x = UNKNOWN; 
 	bdot_command_y = UNKNOWN; 
 	bdot_command_z = UNKNOWN; 
@@ -198,7 +201,6 @@ void measurement()
 
 void fsw_actuation()
 {
-    fsw_timeout_timer++; // incrememnt fsw timeout timer
     if (command_dipole_valid(fsw_command_x, fsw_command_y, fsw_command_z))
     {
         set_pwm('x', fsw_command_x);
@@ -211,6 +213,7 @@ void fsw_actuation()
         }
     } else // invalid xyz command
     {
+		turn_off_coils(); 
     }
 	
     if(checkTimer(actuation_timer)) // finished actuation phase
@@ -234,6 +237,7 @@ void bdot_actuation()
         }
     } else // invalid xyz command
     {
+		turn_off_coils(); 
     }
 	
     if(checkTimer(actuation_timer)) // finished actuation phase
@@ -270,20 +274,24 @@ void start_stabalize_timer(void)
 {
     stabalize_timer = timerPollInitializer(stabalize_time_ms);
 }
+void start_telem_timer(void)
+{
+    telem_timer = timerPollInitializer(telem_time_ms);
+}
 
 void manage_telemetry(void)
 {
-    if (checkTimer(telemTimer))
+    if (checkTimer(telem_timer))
     {
-        send_CAN_health_packet();
+		send_COSMOS_health_packet(); 
 		send_COSMOS_telemetry_packet();
-        telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS); // reset timer
+        start_telem_timer(); // reset timer 
     }
 }
 
 uint8_t fsw_is_valid(void)
 {
-	if(fsw_ignore == OVERRIDE || fsw_timeout_timer < FSW_TIMEOUT)
+	if(fsw_ignore == OVERRIDE)
 	{
 		return 0; 
 	} else 
@@ -393,29 +401,24 @@ void can_init(void)
 // Interrupt service routine callback 
 void can_packet_rx_callback(CANPacket *packet)
 {  
-	if (packet->id == CAN_ID_CMD_MTQ_BDOT){
-	    if (enable_command_update){ // only updates during measurement phase
-			cmd_mtq_bdot bdot_packet = {0};
-            decodecmd_mtq_bdot(packet, &bdot_packet);
-            // update global bdot command variables
-            bdot_command_x = bdot_packet.cmd_mtq_bdot_x;
-            bdot_command_y = bdot_packet.cmd_mtq_bdot_y;
-            bdot_command_z = bdot_packet.cmd_mtq_bdot_z;
-            bdot_ack_sent = 0; // reset acknowledgment sent flag
-	    }
+	if (packet->id == CAN_ID_CMD_MTQ_BDOT && enable_command_update){
+		cmd_mtq_bdot bdot_packet = {0};
+        decodecmd_mtq_bdot(packet, &bdot_packet);
+        // update global bdot command variables
+        bdot_command_x = bdot_packet.cmd_mtq_bdot_x;
+        bdot_command_y = bdot_packet.cmd_mtq_bdot_y;
+        bdot_command_z = bdot_packet.cmd_mtq_bdot_z;
+        bdot_ack_sent = 0; // reset acknowledgment sent flag
 	}
-	if (packet->id == CAN_ID_CMD_MTQ_FSW){
-	    if (enable_command_update){ // only updates during measurement phase
-			cmd_mtq_fsw fsw_packet = {0};
-            decodecmd_mtq_fsw(packet, &fsw_packet);
-            // update global fsw command variables
-            fsw_command_x = fsw_packet.cmd_mtq_fsw_x;
-            fsw_command_y = fsw_packet.cmd_mtq_fsw_y;
-            fsw_command_z = fsw_packet.cmd_mtq_fsw_z;
-            sc_mode = fsw_packet.cmd_mtq_fsw_sc_mode;
-            fsw_ack_sent = 0; // reset acknowledgment sent flag
-            fsw_timeout_timer = 0; // reset fsw timer
-	    }
+	if (packet->id == CAN_ID_CMD_MTQ_FSW && enable_command_update){
+		cmd_mtq_fsw fsw_packet = {0};
+        decodecmd_mtq_fsw(packet, &fsw_packet);
+        // update global fsw command variables
+        fsw_command_x = fsw_packet.cmd_mtq_fsw_x;
+        fsw_command_y = fsw_packet.cmd_mtq_fsw_y;
+        fsw_command_z = fsw_packet.cmd_mtq_fsw_z;
+        sc_mode = fsw_packet.cmd_mtq_fsw_sc_mode;
+        fsw_ack_sent = 0; // reset acknowledgment sent flag
 	}
 	if (packet->id == CAN_ID_CMD_IGNORE_FSW){
 		cmd_ignore_fsw ignore = {0};
@@ -426,13 +429,6 @@ void can_packet_rx_callback(CANPacket *packet)
 
 void send_CAN_health_packet(void)
 {
-    // TODO determine overall health based on querying sensors for their health
-    healthSeg.oms = OMS_Unknown;
-
-    healthSeg.inttemp = asensorReadIntTempC();
-    bcbinSendPacket((uint8_t *) &healthSeg, sizeof(healthSeg));
-    debugInvokeStatusHandler(Entity_UART); // send uart bus status over backchannel
-
     // send CAN packet of temperature (in deci-Kelvin)
     msp_temp temp = { (healthSeg.inttemp + 273.15f) * 10 };
     CANPacket packet;
@@ -463,7 +459,7 @@ void cosmos_init(void)
 	bcbinPopulateHeader(&cosmos_dooty.header, TLM_ID_DUTY_PERCENT, sizeof(duty_percent));
     debugRegisterEntity(Entity_NONE, NULL, NULL, handleDebugActionCallback);
     asensorInit(Ref_2p5V); // initialize temperature sensor
-    telemTimer = timerPollInitializer(MTQ_TELEM_DELAY_MS);
+    telem_timer = timerPollInitializer(telem_time_ms);
 }
 
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
@@ -489,6 +485,15 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
         }
     }
     return 1;
+}
+
+void send_COSMOS_health_packet(void)
+{
+    healthSeg.oms = OMS_Unknown;
+    healthSeg.inttemp = asensorReadIntTempC();
+	healthSeg.reset_count = bspGetResetCount(); 
+    bcbinSendPacket((uint8_t *) &healthSeg, sizeof(healthSeg));
+    debugInvokeStatusHandler(Entity_UART); // send uart bus status over backchannel
 }
 
 void send_COSMOS_commands_packet()
