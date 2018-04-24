@@ -205,6 +205,100 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decoderollcall_eps_4(CANPacket *input, rollcall_eps_4 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rollcall_eps_4_heater_state = (uint8_t) (((fullData & ((uint64_t) 0x1 << 6)) >> 6));
+    output -> rollcall_eps_4_balancer_state = (uint8_t) (((fullData & ((uint64_t) 0x1 << 7)) >> 7));
+    output -> rollcall_eps_4_soc = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rollcall_eps_4_voltage_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
+    output -> rollcall_eps_4_voltage_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
+    output -> rollcall_eps_4_voltage_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+}
+
+void encoderollcall_eps_4(rollcall_eps_4 *input, CANPacket *output){
+    output -> id = 304677379;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_4_heater_state))) & 0x1) << 6;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_4_balancer_state))) & 0x1) << 7;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_4_soc))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_4_voltage_min))) & 0xffff) << 40;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_4_voltage_max))) & 0xffff) << 8;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_4_voltage_avg))) & 0xffff) << 24;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decoderollcall_eps_3(CANPacket *input, rollcall_eps_3 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rollcall_eps_3_node_current = (int16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> rollcall_eps_3_current_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rollcall_eps_3_current_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rollcall_eps_3_current_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+}
+
+void encoderollcall_eps_3(rollcall_eps_3 *input, CANPacket *output){
+    output -> id = 304677378;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_3_node_current))) & 0xffff);
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_3_current_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_3_current_max))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_3_current_avg))) & 0xffff) << 16;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decoderollcall_eps_2(CANPacket *input, rollcall_eps_2 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rollcall_eps_2_node_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rollcall_eps_2_node_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rollcall_eps_2_node_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rollcall_eps_2_batt_temp = (int8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+}
+
+void encoderollcall_eps_2(rollcall_eps_2 *input, CANPacket *output){
+    output -> id = 304677377;
+    output -> length = 7;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_2_node_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_2_node_max))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_2_node_avg))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_2_batt_temp))) & 0xff) << 8;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decoderollcall_eps_1(CANPacket *input, rollcall_eps_1 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rollcall_eps_1_sysrstiv = (uint16_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
+    output -> rollcall_eps_1_last_charge = (uint8_t) (((fullData & ((uint64_t) 0xffffffffff))));
+    output -> rollcall_eps_1_temp = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+}
+
+void encoderollcall_eps_1(rollcall_eps_1 *input, CANPacket *output){
+    output -> id = 304677376;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_1_sysrstiv))) & 0xff) << 40;
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_1_last_charge))) & 0xffffffffff);
+    fullPacketData |= (((uint64_t)((input -> rollcall_eps_1_temp))) & 0xffff) << 48;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decodecmd_ppt_set_count(CANPacket *input, cmd_ppt_set_count *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
