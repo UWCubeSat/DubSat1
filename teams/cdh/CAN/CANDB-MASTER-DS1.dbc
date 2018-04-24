@@ -67,7 +67,7 @@ BO_ 2452161025 rollcall_eps_2: 7 eps_batt
 
 BO_ 2452161024 rollcall_eps_1: 8 eps_batt
  SG_ rollcall_eps_1_sysrstiv : 16|8@1+ (1,0) [0|256] "" Vector__XXX
- SG_ rollcall_eps_1_last_charge : 24|40@1+ (1,0) [0|0] "2^8 seconds" Vector__XXX
+ SG_ rollcall_eps_1_last_charge : 24|40@1+ (1,0) [0|1099511627775] "2^-8 seconds" Vector__XXX
  SG_ rollcall_eps_1_temp : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
 
 BO_ 2449735942 cmd_ppt_set_count: 1 Vector__XXX

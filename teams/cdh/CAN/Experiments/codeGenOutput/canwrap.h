@@ -153,7 +153,7 @@ typedef struct rollcall_eps_2 {
 
 typedef struct rollcall_eps_1 {
     uint16_t rollcall_eps_1_sysrstiv; //  (No Units)
-    uint8_t rollcall_eps_1_last_charge; // 2^8 seconds
+    uint64_t rollcall_eps_1_last_charge; // 2^-8 seconds
     uint16_t rollcall_eps_1_temp; // dK
 } rollcall_eps_1;
 

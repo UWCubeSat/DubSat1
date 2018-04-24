@@ -283,7 +283,7 @@ void decoderollcall_eps_1(CANPacket *input, rollcall_eps_1 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rollcall_eps_1_sysrstiv = (uint16_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
-    output -> rollcall_eps_1_last_charge = (uint8_t) (((fullData & ((uint64_t) 0xffffffffff))));
+    output -> rollcall_eps_1_last_charge = (uint64_t) (((fullData & ((uint64_t) 0xffffffffff))));
     output -> rollcall_eps_1_temp = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
 
