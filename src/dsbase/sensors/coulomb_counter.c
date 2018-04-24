@@ -43,11 +43,7 @@ float rawCurrentToFloat(int16_t raw) {
 BOOL checkForFullState(float voltage, float current) {
     //full state is defined as 7.2 volts with the LTC2943 limiting the current into the batteries to .1A
     // +- .02 volt margin with +-.1A margin
-    if((voltage >= 7.18 && voltage <= 7.22) && (current <= 0.11 && current >= 0.09)) {
-        return TRUE;
-    } else {
-        return FALSE;
-    }
+    return (voltage >= 7.18 && voltage <= 7.22) && (current <= 0.11 && current >= 0.09);
 }
 
 void calibrate(hDev hSensor) {
@@ -74,9 +70,9 @@ CoulombCounterData readCoulombCounter() {
     sensor.sensorData.rawAccumCharge = ((uint16_t)i2cBuff[1] | ((uint16_t)i2cBuff[0]<<8));
 
     //if the batteries are full, then calibrate the mAh measurement.
-    if(checkForFullState(sensor.sensorData.busVoltageV, sensor.sensorData.calcdCurrentA)){
+    sensor.sensorData.fullCharge = checkForFullState(sensor.sensorData.busVoltageV, sensor.sensorData.calcdCurrentA);
+    if(sensor.sensorData.fullCharge)
         calibrate(sensor.hI2CDevice);
-    }
 
     //State of charge calculation
     sensor.sensorData.SOC = sensor.chargeLSB*((float)(sensor.sensorData.rawAccumCharge - sensor.accumChargeEmpty)/(float)(sensor.accumChargeFull - sensor.accumChargeEmpty));
