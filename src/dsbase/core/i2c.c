@@ -152,7 +152,7 @@ void i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWrite,
     i2cWaitForStopComplete(bus);
 
     i2cDisable(bus);
-    i2cAutoStopSetTotalBytes(bus, szToWrite + szToRead - 1);
+    i2cAutoStopSetTotalBytes(bus, szToWrite + szToRead);
     i2cEnable(bus);
 
     i2cCoreWrite(device, wbuff, szToWrite, FALSE);
