@@ -21,6 +21,9 @@
 //    setTheFilter(CAN_FILTER_4, 0x01 << boardNum);
 //    setTheFilter(CAN_FILTER_5, 0x01 << boardNum);
 //}
+
+uint8_t CAN_WRAP_BUFFER_KEEPER_TRACKER;
+
 void setMaskOrFilter(uint8_t addr, uint32_t filter){
     setTheFilter(addr, filter);
 }
@@ -53,6 +56,7 @@ void canWrapInit(){
     canInit();
     setReceiveCallback0(wrapCB0);
     setReceiveCallback1(wrapCB1);
+    CAN_WRAP_BUFFER_KEEPER_TRACKER = 0;
 }
 
 void canWrapInitWithFilter(){
@@ -196,7 +200,8 @@ void canSendPacket(CANPacket *packet){
        (uint8_t) packet->id,
        packet->length
     };
-    canSend(0,tech, packet->data);
+    CAN_WRAP_BUFFER_KEEPER_TRACKER = (CAN_WRAP_BUFFER_KEEPER_TRACKER + 1) % 3;
+    canSend(CAN_WRAP_BUFFER_KEEPER_TRACKER,tech, packet->data);
 }
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
