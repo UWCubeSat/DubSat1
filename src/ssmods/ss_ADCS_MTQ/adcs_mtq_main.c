@@ -112,7 +112,7 @@ typedef enum MTQState {
 } eMTQState;
 
 // This table contains a pointer to the function to call in each state 
-void (*state_table[])() = {measurement, fsw_actuation, bdot_actuation, stabalize};
+void (* const state_table[])() = {measurement, fsw_actuation, bdot_actuation, stabalize};
 
 // camera state declaration  
 eMTQState curr_state; 
@@ -402,6 +402,7 @@ void can_init(void)
 void can_packet_rx_callback(CANPacket *packet)
 {  
 	if (packet->id == CAN_ID_CMD_MTQ_BDOT && enable_command_update){
+		P3OUT ^= BIT5; // toggle LED 
 		cmd_mtq_bdot bdot_packet = {0};
         decodecmd_mtq_bdot(packet, &bdot_packet);
         // update global bdot command variables
@@ -539,10 +540,17 @@ void mtq_sfr_init(void)
 {	
 	//---------GPIO initialization--------------------------
 	// PJ.0,1,2 - gpio - board leds 
+	/*
 	PJOUT &= ~(BIT0|BIT1|BIT2); // power on state
 	PJDIR |= BIT0|BIT1|BIT2;
 	PJSEL0 &= ~(BIT0|BIT1|BIT2);
 	PJSEL1 &= ~(BIT0|BIT1|BIT2);
+	*/
+	// P3.5 - LED - board leds 
+	P3OUT &= ~BIT5; // power on state
+	P3DIR |= BIT5;
+	P3SEL0 &= ~BIT5;
+	P3SEL1 &= ~BIT5;
 	// P1.7 - TB0.4 - x1
 	P1DIR |= BIT7;
     P1SEL0 |= BIT7;
