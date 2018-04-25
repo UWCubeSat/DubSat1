@@ -95,6 +95,9 @@ FILE_STATIC void initSensorInterfaces();
 FILE_STATIC void updateSensorInterfaces();
 FILE_STATIC void sendSensorBackchannel();
 FILE_STATIC void sendSensorCAN();
+
+FILE_STATIC flag_t triggerStepFlag = FALSE;
+FILE_STATIC void triggerStep();
 FILE_STATIC void step();
 
 FILE_STATIC void rt_OneStep();
@@ -146,17 +149,25 @@ int main(void)
 
     // initialize timer
     initializeTimer();
-    int timerHandle = timerCallbackInitializer(&step, AUTOCODE_UPDATE_DELAY_US);
+    int timerHandle = timerCallbackInitializer(&triggerStep,
+                                               AUTOCODE_UPDATE_DELAY_US);
     startCallback(timerHandle);
 
-    /*
-     * While loop is empty because all update code is in the step function.
-     */
-    while (1);
+    while (1)
+    {
+        while (!triggerStepFlag);
+        triggerStepFlag = FALSE;
+        step();
+    }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
 	return 0;
+}
+
+FILE_STATIC void triggerStep()
+{
+    triggerStepFlag = TRUE;
 }
 
 FILE_STATIC void step()
@@ -347,7 +358,7 @@ void sendHealthSegment()
     // TODO determine overall health
     hseg.oms = OMS_Unknown;
 
-//    hseg.inttemp = asensorReadIntTempC();
+    hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
