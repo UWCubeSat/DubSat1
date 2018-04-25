@@ -37,7 +37,8 @@ void stabalize();
 void start_actuation_timer(void);
 void start_measurement_timer(void);
 void start_stabalize_timer(void);
-void start_telem_timer(void); 
+void start_telem_timer(void);
+void start_LED_timer(void); 
 void manage_telemetry(void);
 uint8_t fsw_is_valid(void);
 uint8_t command_dipole_valid(int command_x, int command_y, int command_z);
@@ -100,6 +101,8 @@ FILE_STATIC int measurement_time_ms = 2000;
 FILE_STATIC int stabalize_timer = 0;
 FILE_STATIC int stabalize_time_ms = 100;
 #pragma PERSISTENT(stabalize_time_ms)
+FILE_STATIC int LED_timer = 0;
+FILE_STATIC int LED_time_ms = 500;
 
 //-------state machine-----------
 
@@ -138,9 +141,14 @@ int main(void)
     can_init();                    // CAN initialization
 
     restartMTQ(); // restart 
+	start_LED_timer();
 	
     while (1)
     {
+		if (checkTimer(telem_timer)){
+			P3OUT ^= BIT5; // toggle LED 
+			start_LED_timer();
+		}
         // mtq control loop
         state_table[curr_state]();
 		
@@ -278,6 +286,10 @@ void start_telem_timer(void)
 {
     telem_timer = timerPollInitializer(telem_time_ms);
 }
+void start_LED_timer(void)
+{
+    LED_timer = timerPollInitializer(LED_time_ms);
+}
 
 void manage_telemetry(void)
 {
@@ -402,7 +414,6 @@ void can_init(void)
 void can_packet_rx_callback(CANPacket *packet)
 {  
 	if (packet->id == CAN_ID_CMD_MTQ_BDOT && enable_command_update){
-		P3OUT ^= BIT5; // toggle LED 
 		cmd_mtq_bdot bdot_packet = {0};
         decodecmd_mtq_bdot(packet, &bdot_packet);
         // update global bdot command variables
