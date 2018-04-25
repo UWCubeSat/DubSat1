@@ -5,6 +5,9 @@
 #include "sensors/pcvsensor.h"       //INA219
 #include "sensors/coulomb_counter.h" //Coulomb counter
 #include "core/i2c.h"
+#include "interfaces/canwrap.h"
+#include "core/dataArray.h"
+#include "core/MET.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -34,6 +37,30 @@ FILE_STATIC volatile uint8_t isChecking;
 FILE_STATIC float previousTemp;
 
 FILE_STATIC volatile int autoHeating = 1;
+
+FILE_STATIC uint16_t tempAg;
+FILE_STATIC uint16_t voltageAg;
+FILE_STATIC uint16_t currentAg;
+FILE_STATIC uint16_t nodeVoltageAg;
+FILE_STATIC uint16_t nodeCurrentAg;
+FILE_STATIC uint16_t SOCAg;
+
+FILE_STATIC float tempAgArray[480] = {0};
+FILE_STATIC float voltageAgArray[480] = {0};
+FILE_STATIC float currentAgArray[480] = {0};
+FILE_STATIC float nodeVoltageAgArray[480] = {0};
+FILE_STATIC float nodeCurrentAgArray[480] = {0};
+FILE_STATIC float SOCAgArray[480] = {0};
+
+#pragma PERSISTENT(tempAgArray);
+#pragma PERSISTENT(voltageAgArray);
+#pragma PERSISTENT(currentAgArray);
+#pragma PERSISTENT(nodeVoltageAgArray);
+#pragma PERSISTENT(nodeCurrentAgArray);
+#pragma PERSISTENT(SOCAgArray);
+
+FILE_STATIC uint64_t lastFullChargeTime = 0;
+#pragma PERSISTENT(lastFullChargeTime);
 
 /* ------BATTERY BALANCER------ */
 FILE_STATIC void battInit()
@@ -136,6 +163,12 @@ void readCC (){
     sseg.battCurr = CCData.calcdCurrentA;
     sseg.battCharge = CCData.battCharge;
     sseg.accumulatedCharge = CCData.totalAccumulatedCharge;
+
+    addData_float(voltageAg, CCData.busVoltageV);
+    addData_float(currentAg, CCData.calcdCurrentA);
+    addData_float(SOCAg, CCData.SOC);
+    /*if(CCData.fullCharge)
+        lastFullChargeTime = getTimeStampInt();*/
 }
 
 void readINA(hDev hSensor){
@@ -143,6 +176,8 @@ void readINA(hDev hSensor){
     INAData = pcvsensorRead(hSensor, Read_BusV | Read_CurrentA);
     sseg.battNodeVolt = INAData->busVoltageV;
     sseg.battNodeCurr = INAData->calcdCurrentA;
+    addData_float(nodeCurrentAg, INAData->calcdCurrentA);
+    addData_float(nodeVoltageAg, INAData-> busVoltageV);
 }
 
 void readTempSensor(){
@@ -150,20 +185,95 @@ void readTempSensor(){
     //sseg.battTemp = ((tempVoltageV/100.0) - 500) / 10.0; //Temp in Celcius
     //conversion from voltage to temperatur, has a slope of 10mv per degree celcius
     //and an intercept of 50 degrees at 0 volts
+    addData_float(tempAg, tempVoltageV);
     sseg.battTemp = (tempVoltageV /0.010) - 50;
 }
 
+void can_packet_rx_callback(CANPacket *packet)
+{
+    CANPacket rollcallPkt1 = {0};
+    rc_eps_batt_1 rollcallPkt1_info = {0};
+    CANPacket rollcallPkt2 = {0};
+    rc_eps_batt_2 rollcallPkt2_info = {0};
+    CANPacket rollcallPkt3 = {0};
+    rc_eps_batt_3 rollcallPkt3_info = {0};
+    CANPacket rollcallPkt4 = {0};
+    rc_eps_batt_4 rollcallPkt4_info = {0};
+    CANPacket rollcallPkt5 = {0};
+    rc_eps_batt_5 rollcallPkt5_info = {0};
+    CANPacket rollcallPkt6 = {0};
+    rc_eps_batt_6 rollcallPkt6_info = {0};
+    switch(packet->id)
+    {
+        case CAN_ID_CMD_ROLLCALL:
 
+            rollcallPkt1_info.rc_eps_batt_1_sysrstiv = bspGetResetCount();
+            rollcallPkt1_info.rc_eps_batt_1_temp_avg = 0;//asensorReadIntTempC(); //TODO: this
+            rollcallPkt1_info.rc_eps_batt_1_temp_max = 0;//asensorReadIntTempC(); //TODO: this
+            rollcallPkt1_info.rc_eps_batt_1_temp_min = 0;//asensorReadIntTempC(); //TODO: this
+
+            rollcallPkt2_info.rc_eps_batt_2_node_v_avg = getAvg_float(nodeVoltageAg);
+            rollcallPkt2_info.rc_eps_batt_2_node_v_max = getMax_float(nodeVoltageAg);
+            rollcallPkt2_info.rc_eps_batt_2_node_v_min = getMin_float(nodeVoltageAg);
+
+            rollcallPkt3_info.rc_eps_batt_3_batt_temp_avg = getAvg_float(tempAg);
+            rollcallPkt3_info.rc_eps_batt_3_current_avg = getAvg_float(currentAg);
+            rollcallPkt3_info.rc_eps_batt_3_current_max = getMax_float(currentAg);
+            rollcallPkt3_info.rc_eps_batt_3_current_min = getMin_float(currentAg);
+
+            rollcallPkt4_info.rc_eps_batt_4_balancer_state = (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) != 0;
+            rollcallPkt4_info.rc_eps_batt_4_heater_state = (HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) != 0;
+            rollcallPkt4_info.rc_eps_batt_4_voltage_avg = getAvg_float(voltageAg);
+            rollcallPkt4_info.rc_eps_batt_4_voltage_max = getMax_float(voltageAg);
+            rollcallPkt4_info.rc_eps_batt_4_voltage_min = getMin_float(voltageAg);
+
+            rollcallPkt5_info.rc_eps_batt_5_batt_temp_max = getMax_float(tempAg);
+            rollcallPkt5_info.rc_eps_batt_5_batt_temp_min = getMin_float(tempAg);
+            rollcallPkt5_info.rc_eps_batt_5_node_c_avg = getAvg_float(currentAg);
+            rollcallPkt5_info.rc_eps_batt_5_node_c_max = getMax_float(currentAg);
+            rollcallPkt5_info.rc_eps_batt_5_node_c_min = getMin_float(currentAg);
+
+            rollcallPkt6_info.rc_eps_batt_6_last_charge = lastFullChargeTime;
+            rollcallPkt6_info.rc_eps_batt_6_soc_avg = getAvg_float(SOCAg);
+            rollcallPkt6_info.rc_eps_batt_6_soc_max = getMax_float(SOCAg);
+            rollcallPkt6_info.rc_eps_batt_6_soc_min = getMin_float(SOCAg);
+
+            encoderc_eps_batt_1(&rollcallPkt1_info, &rollcallPkt1);
+            encoderc_eps_batt_2(&rollcallPkt2_info, &rollcallPkt2);
+            encoderc_eps_batt_3(&rollcallPkt3_info, &rollcallPkt3);
+            encoderc_eps_batt_4(&rollcallPkt4_info, &rollcallPkt4);
+            encoderc_eps_batt_5(&rollcallPkt5_info, &rollcallPkt5);
+            encoderc_eps_batt_6(&rollcallPkt6_info, &rollcallPkt6);
+            canSendPacket(&rollcallPkt1);
+            __delay_cycles(32000);
+            canSendPacket(&rollcallPkt2);
+            __delay_cycles(32000);
+            canSendPacket(&rollcallPkt3);
+            __delay_cycles(32000);
+            canSendPacket(&rollcallPkt4);
+            __delay_cycles(32000);
+            canSendPacket(&rollcallPkt5);
+            __delay_cycles(32000);
+            canSendPacket(&rollcallPkt6);
+            resetAvg_float(tempAg);
+            resetAvg_float(voltageAg);
+            resetAvg_float(currentAg);
+            resetAvg_float(nodeVoltageAg);
+            resetAvg_float(nodeCurrentAg);
+            resetAvg_float(SOCAg);
+            break;
+        default:
+            break;
+    }
+}
 
 /*
  * main.c
  */
 
-
-
 int main(void)
- {
-    /* ----- INITIALIZATION -----*/
+{
+    /* ----- INITIALIZATION -----*/\
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     asensorInit(Ref_2p5V);
     battInit();
@@ -174,6 +284,9 @@ int main(void)
 
     /* ------COULOMB COUNTER---- */
     LTC2943Init(I2CBus2, 6.0);
+
+    canWrapInitWithFilter();
+    setCANPacketRxCallback(can_packet_rx_callback);
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
@@ -198,6 +311,13 @@ int main(void)
 
     battControlBalancer(Cmd_AutoEnable);
     //battControlHeater(Cmd_AutoEnable);
+
+    tempAg = init_float(tempAgArray, 1);
+    voltageAg = init_float(voltageAgArray, 1);
+    currentAg = init_float(currentAgArray, 1);
+    nodeVoltageAg = init_float(nodeVoltageAgArray, 1);
+    nodeCurrentAg = init_float(nodeCurrentAgArray, 1);
+    SOCAg = init_float(SOCAgArray, 1);
 
     previousTemp = asensorReadSingleSensorV(hTempC);
     uint16_t counter;
@@ -225,12 +345,12 @@ int main(void)
             readCoulombCounterControl();
             gseg.CC_ControlReg = CCData.controlReg;
 
-            battBcSendGeneral();
-            battBcSendHealth();
+            //battBcSendGeneral();
+            //battBcSendHealth();
 
             if(isChecking)
             {
-                float temp = asensorReadSingleSensorV(hTempC);
+                float temp = asensorReadSingleSensorV(hTempC); //<-- this is batt temp
                 if(previousTemp >= 0.5f && temp < 0.5f) //not heating & < 0C
                     HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT; //turn on
 
