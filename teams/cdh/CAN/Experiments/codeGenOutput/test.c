@@ -3,6 +3,36 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rc_eps_batt_6_packet = {0};
+	rc_eps_batt_6 rc_eps_batt_6_info = {0};
+	encoderc_eps_batt_6(&rc_eps_batt_6_info, &rc_eps_batt_6_packet);
+	canSendPacket(&rc_eps_batt_6_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_batt_5_packet = {0};
+	rc_eps_batt_5 rc_eps_batt_5_info = {0};
+	encoderc_eps_batt_5(&rc_eps_batt_5_info, &rc_eps_batt_5_packet);
+	canSendPacket(&rc_eps_batt_5_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_batt_4_packet = {0};
+	rc_eps_batt_4 rc_eps_batt_4_info = {0};
+	encoderc_eps_batt_4(&rc_eps_batt_4_info, &rc_eps_batt_4_packet);
+	canSendPacket(&rc_eps_batt_4_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_batt_3_packet = {0};
+	rc_eps_batt_3 rc_eps_batt_3_info = {0};
+	encoderc_eps_batt_3(&rc_eps_batt_3_info, &rc_eps_batt_3_packet);
+	canSendPacket(&rc_eps_batt_3_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_batt_2_packet = {0};
+	rc_eps_batt_2 rc_eps_batt_2_info = {0};
+	encoderc_eps_batt_2(&rc_eps_batt_2_info, &rc_eps_batt_2_packet);
+	canSendPacket(&rc_eps_batt_2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_batt_1_packet = {0};
+	rc_eps_batt_1 rc_eps_batt_1_info = {0};
+	encoderc_eps_batt_1(&rc_eps_batt_1_info, &rc_eps_batt_1_packet);
+	canSendPacket(&rc_eps_batt_1_packet);
+
 	__delay_cycles(10000);	CANPacket cmd_ppt_set_count_packet = {0};
 	cmd_ppt_set_count cmd_ppt_set_count_info = {0};
 	encodecmd_ppt_set_count(&cmd_ppt_set_count_info, &cmd_ppt_set_count_packet);
