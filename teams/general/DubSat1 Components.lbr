@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="9.0.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -3906,6 +3906,14 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <vertex x="7.7" y="-0.8"/>
 <vertex x="-3.5" y="-0.8"/>
 </polygon>
+</package>
+<package name="POWERDI_323">
+<smd name="P$1" x="-1.25" y="0" dx="1.1" dy="2" layer="1" rot="R90"/>
+<smd name="P$2" x="0.65" y="0" dx="0.8" dy="0.8" layer="1" rot="R90"/>
+<wire x1="-1.35" y1="-0.65" x2="-1.35" y2="0.65" width="0.2032" layer="21"/>
+<wire x1="-1.35" y1="0.65" x2="0.6" y2="0.65" width="0.2032" layer="21"/>
+<wire x1="0.6" y1="0.65" x2="0.6" y2="-0.65" width="0.2032" layer="21"/>
+<wire x1="0.6" y1="-0.65" x2="-1.35" y2="-0.65" width="0.2032" layer="21"/>
 </package>
 </packages>
 <packages3d>
@@ -8538,6 +8546,22 @@ Contains an outline of the cell with pads on the bottom for the main interconnec
 <connect gate="G$1" pin="P$2" pad="P$2"/>
 <connect gate="G$1" pin="P$3" pad="P$3"/>
 <connect gate="G$1" pin="P$4" pad="P$4"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="PD3S130H_1.0A_SHOTTKYDIODE">
+<gates>
+<gate name="G$1" symbol="DIODE" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="POWERDI_323">
+<connects>
+<connect gate="G$1" pin="A" pad="P$2"/>
+<connect gate="G$1" pin="C" pad="P$1"/>
 </connects>
 <technologies>
 <technology name=""/>
