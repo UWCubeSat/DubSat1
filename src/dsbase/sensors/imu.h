@@ -45,8 +45,15 @@ typedef struct  {
     // TODO:  add timestamp?
 } IMUData;
 
+typedef enum {
+    IMUUpdateRate_12p5Hz,
+    IMUUpdateRate_26Hz,
+    IMUUpdateRate_52Hz,
+    IMUUpdateRate_104Hz,
+} IMUUpdateRate;
+
 // Main entry points
-void imuInit(bus_instance_i2c i2cbus);
+void imuInit(bus_instance_i2c i2cbus, IMUUpdateRate rate);
 IMUData *imuReadGyroAccelData();
 
 #endif /* SENSORS_IMU_H_ */

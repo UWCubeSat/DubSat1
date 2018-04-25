@@ -24,7 +24,7 @@ FILE_STATIC IMUData *data;
 void imuioInit()
 {
 #if ENABLE_IMU
-    imuInit(IMU_I2CBUS);
+    imuInit(IMU_I2CBUS, IMUUpdateRate_52Hz);
 #endif
 }
 
