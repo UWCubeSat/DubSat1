@@ -162,39 +162,6 @@
 
 Datsheet: http://cds.linear.com/docs/en/datasheet/2943fa.pdf</description>
 <packages>
-<package name="SOLAR_CELL_BOTTOM_SHORT-PADS" urn="urn:adsk.eagle:footprint:348224/1" locally_modified="yes" library_version="23" library_locally_modified="yes">
-<wire x1="0" y1="0" x2="16" y2="0" width="0.127" layer="21"/>
-<wire x1="23" y1="0" x2="36.5" y2="0" width="0.127" layer="21"/>
-<wire x1="43.5" y1="0" x2="57" y2="0" width="0.127" layer="21"/>
-<wire x1="64" y1="0" x2="80" y2="0" width="0.127" layer="21"/>
-<wire x1="80" y1="0" x2="80" y2="26.5" width="0.127" layer="21"/>
-<wire x1="80" y1="26.5" x2="66.5" y2="40" width="0.127" layer="21"/>
-<wire x1="66.5" y1="40" x2="53.75" y2="40" width="0.127" layer="21"/>
-<wire x1="46.5" y1="40" x2="13.5" y2="40" width="0.127" layer="21"/>
-<wire x1="13.5" y1="40" x2="0" y2="26.5" width="0.127" layer="21"/>
-<wire x1="0" y1="26.5" x2="0" y2="0" width="0.127" layer="21"/>
-<wire x1="46.5" y1="40" x2="46.5" y2="47" width="0.127" layer="21"/>
-<wire x1="46.5" y1="47" x2="53.75" y2="47" width="0.127" layer="21"/>
-<wire x1="53.75" y1="47" x2="53.75" y2="40" width="0.127" layer="21"/>
-<wire x1="53.75" y1="40" x2="46.5" y2="40" width="0.127" layer="21"/>
-<wire x1="16" y1="0" x2="16" y2="-7" width="0.127" layer="21"/>
-<wire x1="16" y1="-7" x2="23" y2="-7" width="0.127" layer="21"/>
-<wire x1="23" y1="-7" x2="23" y2="0" width="0.127" layer="21"/>
-<wire x1="23" y1="0" x2="16" y2="0" width="0.127" layer="21"/>
-<wire x1="36.5" y1="0" x2="36.5" y2="-7" width="0.127" layer="21"/>
-<wire x1="36.5" y1="-7" x2="43.5" y2="-7" width="0.127" layer="21"/>
-<wire x1="43.5" y1="-7" x2="43.5" y2="0" width="0.127" layer="21"/>
-<wire x1="43.5" y1="0" x2="36.5" y2="0" width="0.127" layer="21"/>
-<wire x1="57" y1="0" x2="57" y2="-7" width="0.127" layer="21"/>
-<wire x1="57" y1="-7" x2="64" y2="-7" width="0.127" layer="21"/>
-<wire x1="64" y1="-7" x2="64" y2="0" width="0.127" layer="21"/>
-<wire x1="64" y1="0" x2="57" y2="0" width="0.127" layer="21"/>
-<text x="33.8" y="18.5" size="1.778" layer="21">&gt;NAME</text>
-<smd name="P$1" x="19.5" y="-2.5" dx="8" dy="3.5" layer="1"/>
-<smd name="P$2" x="40" y="-2.5" dx="8" dy="3.5" layer="1"/>
-<smd name="P$3" x="60.5" y="-2.5" dx="8" dy="3.5" layer="1"/>
-<smd name="P$4" x="75.74" y="35.6" dx="8" dy="3.5" layer="1" rot="R315"/>
-</package>
 <package name="SOLAR_CELL_OUTLINE" urn="urn:adsk.eagle:footprint:348220/1" library_version="1">
 <wire x1="0" y1="0" x2="16" y2="0" width="0.127" layer="21"/>
 <wire x1="23" y1="0" x2="36.5" y2="0" width="0.127" layer="21"/>
@@ -444,11 +411,6 @@ chip</description>
 </package>
 </packages>
 <packages3d>
-<package3d name="SOLAR_CELL_BOTTOM_SHORT-PADS" urn="urn:adsk.eagle:package:348282/2" locally_modified="yes" type="model" library_version="23" library_locally_modified="yes">
-<packageinstances>
-<packageinstance name="SOLAR_CELL_BOTTOM_SHORT-PADS"/>
-</packageinstances>
-</package3d>
 <package3d name="SOLAR_CELL_OUTLINE" urn="urn:adsk.eagle:package:348279/2" type="model" library_version="23" library_locally_modified="yes">
 <packageinstances>
 <packageinstance name="SOLAR_CELL_OUTLINE"/>
@@ -518,19 +480,6 @@ chip</description>
 </package3d>
 </packages3d>
 <symbols>
-<symbol name="SOLAR_CELL_BOTTOM_PADS" urn="urn:adsk.eagle:symbol:348223/1" locally_modified="yes" library_version="23" library_locally_modified="yes">
-<wire x1="12.7" y1="35.56" x2="0" y2="22.86" width="0.254" layer="94"/>
-<wire x1="0" y1="22.86" x2="0" y2="0" width="0.254" layer="94"/>
-<wire x1="0" y1="0" x2="66.04" y2="0" width="0.254" layer="94"/>
-<wire x1="66.04" y1="0" x2="66.04" y2="22.86" width="0.254" layer="94"/>
-<wire x1="66.04" y1="22.86" x2="53.34" y2="35.56" width="0.254" layer="94"/>
-<wire x1="53.34" y1="35.56" x2="12.7" y2="35.56" width="0.254" layer="94"/>
-<pin name="INTERCONNECT_1" x="25.4" y="-5.08" visible="pin" length="middle" rot="R90"/>
-<pin name="INTERCONNECT_2" x="33.02" y="-5.08" visible="pin" length="middle" rot="R90"/>
-<pin name="INTERCONNECT_3" x="40.64" y="-5.08" visible="pin" length="middle" rot="R90"/>
-<text x="22.86" y="20.32" size="2.54" layer="94">&gt;NAME</text>
-<pin name="EXTERNAL_DIODE" x="63.5" y="30.48" length="middle" rot="R180"/>
-</symbol>
 <symbol name="SOLAR_CELL_OUTLINE" urn="urn:adsk.eagle:symbol:348219/1" library_version="1">
 <wire x1="12.7" y1="35.56" x2="0" y2="22.86" width="0.254" layer="94"/>
 <wire x1="0" y1="22.86" x2="0" y2="0" width="0.254" layer="94"/>
@@ -602,30 +551,6 @@ chip</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="SOLAR_CELL_BOTTOM" urn="urn:adsk.eagle:component:348321/6" locally_modified="yes" library_version="23" library_locally_modified="yes">
-<description>Azurspace Solar cell: http://www.azurspace.com/images/products/0003401-01-01_DB_3G30A.pdf
-
-Contains an outline of the cell with pads on the bottom for the main interconnectors. To be used as the bottom cell in a string of cells.</description>
-<gates>
-<gate name="G$1" symbol="SOLAR_CELL_BOTTOM_PADS" x="-33.02" y="-15.24"/>
-</gates>
-<devices>
-<device name="" package="SOLAR_CELL_BOTTOM_SHORT-PADS">
-<connects>
-<connect gate="G$1" pin="EXTERNAL_DIODE" pad="P$4"/>
-<connect gate="G$1" pin="INTERCONNECT_1" pad="P$1"/>
-<connect gate="G$1" pin="INTERCONNECT_2" pad="P$2"/>
-<connect gate="G$1" pin="INTERCONNECT_3" pad="P$3"/>
-</connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:348282/2"/>
-</package3dinstances>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 <deviceset name="SOALAR_CELL_OUTLINE" urn="urn:adsk.eagle:component:348317/6" library_version="23" library_locally_modified="yes">
 <description>Azurspace Solar Cell: http://www.azurspace.com/images/products/0003401-01-01_DB_3G30A.pdf
 
@@ -892,6 +817,39 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="0.6" y1="0.65" x2="0.6" y2="-0.65" width="0.2032" layer="21"/>
 <wire x1="0.6" y1="-0.65" x2="-1.35" y2="-0.65" width="0.2032" layer="21"/>
 </package>
+<package name="SOLAR_CELL_BOTTOM_SHORT-PADS">
+<wire x1="0" y1="0" x2="16" y2="0" width="0.127" layer="21"/>
+<wire x1="23" y1="0" x2="36.5" y2="0" width="0.127" layer="21"/>
+<wire x1="43.5" y1="0" x2="57" y2="0" width="0.127" layer="21"/>
+<wire x1="64" y1="0" x2="80" y2="0" width="0.127" layer="21"/>
+<wire x1="80" y1="0" x2="80" y2="26.5" width="0.127" layer="21"/>
+<wire x1="80" y1="26.5" x2="66.5" y2="40" width="0.127" layer="21"/>
+<wire x1="66.5" y1="40" x2="53.75" y2="40" width="0.127" layer="21"/>
+<wire x1="46.5" y1="40" x2="13.5" y2="40" width="0.127" layer="21"/>
+<wire x1="13.5" y1="40" x2="0" y2="26.5" width="0.127" layer="21"/>
+<wire x1="0" y1="26.5" x2="0" y2="0" width="0.127" layer="21"/>
+<wire x1="46.5" y1="40" x2="46.5" y2="47" width="0.127" layer="21"/>
+<wire x1="46.5" y1="47" x2="53.75" y2="47" width="0.127" layer="21"/>
+<wire x1="53.75" y1="47" x2="53.75" y2="40" width="0.127" layer="21"/>
+<wire x1="53.75" y1="40" x2="46.5" y2="40" width="0.127" layer="21"/>
+<wire x1="16" y1="0" x2="16" y2="-7" width="0.127" layer="21"/>
+<wire x1="16" y1="-7" x2="23" y2="-7" width="0.127" layer="21"/>
+<wire x1="23" y1="-7" x2="23" y2="0" width="0.127" layer="21"/>
+<wire x1="23" y1="0" x2="16" y2="0" width="0.127" layer="21"/>
+<wire x1="36.5" y1="0" x2="36.5" y2="-7" width="0.127" layer="21"/>
+<wire x1="36.5" y1="-7" x2="43.5" y2="-7" width="0.127" layer="21"/>
+<wire x1="43.5" y1="-7" x2="43.5" y2="0" width="0.127" layer="21"/>
+<wire x1="43.5" y1="0" x2="36.5" y2="0" width="0.127" layer="21"/>
+<wire x1="57" y1="0" x2="57" y2="-7" width="0.127" layer="21"/>
+<wire x1="57" y1="-7" x2="64" y2="-7" width="0.127" layer="21"/>
+<wire x1="64" y1="-7" x2="64" y2="0" width="0.127" layer="21"/>
+<wire x1="64" y1="0" x2="57" y2="0" width="0.127" layer="21"/>
+<text x="33.8" y="18.5" size="1.778" layer="21">&gt;NAME</text>
+<smd name="P$1" x="19.5" y="-2.5" dx="8" dy="3.5" layer="1"/>
+<smd name="P$2" x="40" y="-2.5" dx="8" dy="3.5" layer="1"/>
+<smd name="P$3" x="60.5" y="-2.5" dx="8" dy="3.5" layer="1"/>
+<smd name="P$4" x="75.306" y="35.346" dx="8" dy="3.5" layer="1" rot="R315"/>
+</package>
 </packages>
 <symbols>
 <symbol name="DIODE">
@@ -907,6 +865,19 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pin name="C" x="2.54" y="0" visible="off" length="point" direction="pas" rot="R180"/>
 <wire x1="-2.54" y1="0" x2="-1.27" y2="0" width="0.1524" layer="94"/>
 <wire x1="2.54" y1="0" x2="1.27" y2="0" width="0.1524" layer="94"/>
+</symbol>
+<symbol name="SOLAR_CELL_BOTTOM_PADS-1">
+<wire x1="12.7" y1="35.56" x2="0" y2="22.86" width="0.254" layer="94"/>
+<wire x1="0" y1="22.86" x2="0" y2="0" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="66.04" y2="0" width="0.254" layer="94"/>
+<wire x1="66.04" y1="0" x2="66.04" y2="22.86" width="0.254" layer="94"/>
+<wire x1="66.04" y1="22.86" x2="53.34" y2="35.56" width="0.254" layer="94"/>
+<wire x1="53.34" y1="35.56" x2="12.7" y2="35.56" width="0.254" layer="94"/>
+<pin name="INTERCONNECT_1" x="25.4" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="INTERCONNECT_2" x="33.02" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<pin name="INTERCONNECT_3" x="40.64" y="-5.08" visible="pin" length="middle" rot="R90"/>
+<text x="22.86" y="20.32" size="2.54" layer="94">&gt;NAME</text>
+<pin name="EXTERNAL_DIODE" x="63.5" y="30.48" length="middle" rot="R180"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -926,6 +897,27 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </device>
 </devices>
 </deviceset>
+<deviceset name="SOLAR_CELL_BOTTOM_W_DIODE">
+<description>Azurspace Solar cell: http://www.azurspace.com/images/products/0003401-01-01_DB_3G30A.pdf
+
+Contains an outline of the cell with pads on the bottom for the main interconnectors. To be used as the bottom cell in a string of cells.</description>
+<gates>
+<gate name="G$1" symbol="SOLAR_CELL_BOTTOM_PADS-1" x="-33.02" y="-15.24"/>
+</gates>
+<devices>
+<device name="" package="SOLAR_CELL_BOTTOM_SHORT-PADS">
+<connects>
+<connect gate="G$1" pin="EXTERNAL_DIODE" pad="P$4"/>
+<connect gate="G$1" pin="INTERCONNECT_1" pad="P$1"/>
+<connect gate="G$1" pin="INTERCONNECT_2" pad="P$2"/>
+<connect gate="G$1" pin="INTERCONNECT_3" pad="P$3"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 </libraries>
@@ -938,7 +930,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </class>
 </classes>
 <parts>
-<part name="U$1" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:348159" deviceset="SOLAR_CELL_BOTTOM" device="" package3d_urn="urn:adsk.eagle:package:348282/2"/>
+<part name="U$1" library="DubSat1 Components" deviceset="SOLAR_CELL_BOTTOM_W_DIODE" device=""/>
 <part name="U$2" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:348159" deviceset="SOALAR_CELL_OUTLINE" device="" package3d_urn="urn:adsk.eagle:package:348279/2"/>
 <part name="U$3" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:348159" deviceset="SOALAR_CELL_OUTLINE" device="" package3d_urn="urn:adsk.eagle:package:348279/2"/>
 <part name="U$5" library="DubSat1 Components" library_urn="urn:adsk.eagle:library:348159" deviceset="SOLAR_CELL_TOP" device="" package3d_urn="urn:adsk.eagle:package:348280/2"/>
