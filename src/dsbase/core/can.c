@@ -6,12 +6,20 @@
  *      Author: UW Satellite Team
  */
 #include "can.h"
+
+void disableCanInterrupt(){
+    P5IE &= ~BIT7;
+}
+void enableCanInterrupt(){
+    P5IE |= BIT7;
+}
 // Dummy callback used in place until we set a
 // callback method
 void DummyCallback(uint8_t length, uint8_t* data, uint32_t id){}
 
 void setTheFilter(uint8_t address, uint32_t value){
     // Set mode to CFG
+    disableCanInterrupt();
     bitModify(MCP_CANCTRL, 0xE0, 0x80);
 
     //Set The Registers
@@ -28,6 +36,7 @@ void setTheFilter(uint8_t address, uint32_t value){
 
     //Set mode to Normal
     bitModify(MCP_CANCTRL, 0xE0, 0x00);
+    enableCanInterrupt();
 }
 
 
@@ -151,6 +160,7 @@ uint8_t canSend(uint8_t bufNum, uint8_t* tech, uint8_t* msg) {
     for(i = 0; i < 5; i++) {
         sendBuf[i+1] = tech[i];
     }
+    disableCanInterrupt();
     spiTransceive(sendBuf, sendBuf, 6, CS_1);
 
     // Send the Data to the MCP
@@ -163,6 +173,7 @@ uint8_t canSend(uint8_t bufNum, uint8_t* tech, uint8_t* msg) {
 
     // Request CAN to transmit buffer bufNum
     requestToSend(txBuf);
+    enableCanInterrupt();
     return 0;
 }
 
@@ -242,6 +253,7 @@ void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t)
 #pragma vector=PORT5_VECTOR
 __interrupt void ReceivedMsg(void) {
     P5IFG &=~BIT7;
+    disableCanInterrupt();
     uint8_t status, rx0if, rx1if, res, length;
     readStatus(&status);
     rx0if = status & 0x01;
@@ -281,12 +293,14 @@ __interrupt void ReceivedMsg(void) {
             for (i = 0; i < length; i++){
                 msg[i] = buf[i+1];
             }
+            enableCanInterrupt();
             ReceiveCallback0(length, msg, id);
         }
     }
 
     // Receive buffer 1 full
     if (rx1if) {
+        disableCanInterrupt();
         uint8_t rxb1dlc;
         res = readRegister(MCP_RXB1DLC, &rxb1dlc);
 
@@ -311,6 +325,7 @@ __interrupt void ReceivedMsg(void) {
             for (i = 0; i < length; i++){
                 msg[i] = buf[i+1];
             }
+            enableCanInterrupt();
             ReceiveCallback1(length, msg, id);
         }
     }
