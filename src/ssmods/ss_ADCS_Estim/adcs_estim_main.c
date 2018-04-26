@@ -10,7 +10,7 @@
 #include "core/debugtools.h"
 #include "tle.h"
 
-#include "autocode/env_estimation_lib.h"
+#include "autocode/MSP_env_estim.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -45,6 +45,8 @@ FILE_STATIC void sendTelemOverCAN();
 
 FILE_STATIC void sendHealthSegment();
 FILE_STATIC void sendMetaSegment();
+
+FILE_STATIC void rt_OneStep(void);
 
 /*
  * main.c
@@ -91,7 +93,7 @@ int main(void)
     asensorInit(Ref_2p5V);
 
     // init autocode
-    env_estimation_lib_initialize();
+    MSP_env_estim_initialize();
 
     /*
      * TODO consider using a callback timer instead of a while loop. We'll
@@ -107,20 +109,98 @@ int main(void)
         sendHealthSegment();
         sendMetaSegment();
 
-        // set autocode inputs
-        setInputs();
-
         // step autocode
-        env_estimation_lib_step();
-
-        // send autocode outputs
-        sendTelemOverBackchannel();
-        sendTelemOverCAN();
+        rt_OneStep();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
 	return 0;
+}
+
+void rt_OneStep(void)
+{
+  static boolean_T OverrunFlags[2] = { 0, 0 };
+
+  static boolean_T eventFlags[2] = { 0, 0 };/* Model has 2 rates */
+
+  static int_T taskCounter[2] = { 0, 0 };
+
+  /* Disable interrupts here */
+  __disable_interrupt();
+
+  /* Check base rate for overrun */
+  if (OverrunFlags[0]) {
+    rtmSetErrorStatus(rtM, "Overrun");
+    return;
+  }
+
+  OverrunFlags[0] = true;
+
+  /* Save FPU context here (if necessary) */
+  /* Re-enable timer or interrupt here */
+  __enable_interrupt();
+
+  /*
+   * For a bare-board target (i.e., no operating system), the
+   * following code checks whether any subrate overruns,
+   * and also sets the rates that need to run this time step.
+   */
+  if (taskCounter[1] == 0) {
+    if (eventFlags[1]) {
+      OverrunFlags[0] = false;
+      OverrunFlags[1] = true;
+
+      /* Sampling too fast */
+      rtmSetErrorStatus(rtM, "Overrun");
+      return;
+    }
+
+    eventFlags[1] = true;
+  }
+
+  taskCounter[1]++;
+  if (taskCounter[1] == 2) {
+    taskCounter[1]= 0;
+  }
+
+  /* Set model inputs associated with base rate here */
+
+  /* Step the model for base rate */
+  MSP_env_estim_step0();
+
+  /* Get model outputs here */
+  sendTelemOverBackchannel();
+  sendTelemOverCAN();
+
+  /* Indicate task for base rate complete */
+  OverrunFlags[0] = false;
+
+  /* If task 1 is running, don't run any lower priority task */
+  if (OverrunFlags[1]) {
+    return;
+  }
+
+  /* Step the model for subrate */
+  if (eventFlags[1]) {
+    OverrunFlags[1] = true;
+
+    /* Set model inputs associated with subrates here */
+    setInputs();
+
+    /* Step the model for subrate 1 */
+    MSP_env_estim_step1();
+
+    /* Get model outputs here */
+
+    /* Indicate task complete for subrate */
+    OverrunFlags[1] = false;
+    eventFlags[1] = false;
+  }
+
+  /* Disable interrupts here */
+  /* Restore FPU context here (if necessary) */
+  /* Enable interrupts here */
 }
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
@@ -147,15 +227,15 @@ FILE_STATIC void setInputs()
     __disable_interrupt();
     if (tleIsComplete(&tle))
     {
-        rtU.orbit_tle[0] = tle.year;
-        rtU.orbit_tle[1] = tle.day;
-        rtU.orbit_tle[2] = tle.bstar;
-        rtU.orbit_tle[3] = tle.inc;
-        rtU.orbit_tle[4] = tle.raan;
-        rtU.orbit_tle[5] = tle.ecc;
-        rtU.orbit_tle[6] = tle.aop;
-        rtU.orbit_tle[7] = tle.mna;
-        rtU.orbit_tle[8] = tle.mnm;
+        rtU.orbit_TLE[0] = tle.year;
+        rtU.orbit_TLE[1] = tle.day;
+        rtU.orbit_TLE[2] = tle.bstar;
+        rtU.orbit_TLE[3] = tle.inc;
+        rtU.orbit_TLE[4] = tle.raan;
+        rtU.orbit_TLE[5] = tle.ecc;
+        rtU.orbit_TLE[6] = tle.aop;
+        rtU.orbit_TLE[7] = tle.mna;
+        rtU.orbit_TLE[8] = tle.mnm;
     }
     __enable_interrupt();
 }
@@ -164,15 +244,15 @@ FILE_STATIC void sendTelemOverBackchannel()
 {
     // send input TLE
     input_tle_segment tle;
-    tle.year = rtU.orbit_tle[0];
-    tle.day = rtU.orbit_tle[1];
-    tle.bstar = rtU.orbit_tle[2];
-    tle.inc = rtU.orbit_tle[3];
-    tle.raan = rtU.orbit_tle[4];
-    tle.ecc = rtU.orbit_tle[5];
-    tle.aop = rtU.orbit_tle[6];
-    tle.mna = rtU.orbit_tle[7];
-    tle.mnm = rtU.orbit_tle[8];
+    tle.year = rtU.orbit_TLE[0];
+    tle.day = rtU.orbit_TLE[1];
+    tle.bstar = rtU.orbit_TLE[2];
+    tle.inc = rtU.orbit_TLE[3];
+    tle.raan = rtU.orbit_TLE[4];
+    tle.ecc = rtU.orbit_TLE[5];
+    tle.aop = rtU.orbit_TLE[6];
+    tle.mna = rtU.orbit_TLE[7];
+    tle.mnm = rtU.orbit_TLE[8];
     bcbinPopulateHeader(&tle.header, TLM_ID_INPUT_TLE, sizeof(tle));
     bcbinSendPacket((uint8_t *) &tle, sizeof(tle));
 
@@ -187,15 +267,14 @@ FILE_STATIC void sendTelemOverBackchannel()
     uint8_t i = 3;
     while (i-- > 0)
     {
-        out.sc2gs_unit[i] = rtY.sc2gs_unit[i];
         out.sc2sun_unit[i] = rtY.sc2sun_unit[i];
-        out.mag_unit_vector_eci[i] = rtY.mag_unit_vector_eci[i];
-        out.mag_vector_eci[i] = rtY.mag_vector_eci[i];
+        out.mag_eci_unit[i] = rtY.mag_eci_unit[i];
+        out.pos_eci_m[i] = rtY.pos_eci_m[i];
         out.vel_eci_mps[i] = rtY.vel_eci_mps[i];
     }
-    out.sc_above_gs = rtY.sc_above_gs;
-    out.sc_in_fov = rtY.sc_in_fov;
+    out.SGP4_flag = rtY.SGP4_flag;
     out.sc_in_sun = rtY.sc_in_sun;
+    out.sc_above_gs = rtY.sc_above_gs;
     bcbinPopulateHeader(&out.header, TLM_ID_OUTPUT, sizeof(out));
     bcbinSendPacket((uint8_t *) &out, sizeof(out));
 
