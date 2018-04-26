@@ -3,7 +3,9 @@
 #include <stdint.h>
 #include "spi.h"
 
-uint8_t wowweinterruptedboiz = 0;
+uint8_t wowwewereinterrupted = 0;
+uint8_t numOfOurInterruptions = 0;
+
 
 void spiInit(uint8_t csPins)
 {
@@ -71,8 +73,8 @@ void spiInit(uint8_t csPins)
     }
 }
 void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
-	if (wowweinterruptedboiz){
-		PJOUT |= 0x1;
+	if (wowwewereinterrupted){
+		numOfOurInterruptions++;
 	}
 	// Clear the MSP430's rxBuffer of any junk data left over from previous transactions.
 	//*pRxBuf = UCB1RXBUF;
@@ -103,7 +105,7 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
             }
 		}
 		// Write to tx buffer.
-		wowweinterruptedboiz = 1;
+		wowwewereinterrupted = 1;
 		UCA2TXBUF = *pTxBuf;
 
 		// Bring CS High again.
@@ -124,7 +126,7 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
 		while (!(UCA2IFG & UCRXIFG) && timeout){
 			timeout--;
 		}
-		wowweinterruptedboiz = 0;
+		wowwewereinterrupted = 0;
 
 		// Store data transmitted from the slave.
 		*pRxBuf = UCA2RXBUF;
