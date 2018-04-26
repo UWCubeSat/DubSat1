@@ -5,7 +5,7 @@
  *      Author: djdup
  */
 
-#define UNIT_TO_INT16(U) ((uint16_t) ((U) * INT16_MAX))
+#define UNIT_TO_INT16(U) ((int16_t) ((U) * INT16_MAX))
 
 #include <math.h>
 
@@ -28,7 +28,7 @@ FILE_STATIC uint8_t isValid()
     {
         return 0;
     }
-    return 1;
+    return angle->error == 0 ? 1 : 0;
 }
 
 void sunsensorioInit()
