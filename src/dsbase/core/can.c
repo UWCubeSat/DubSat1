@@ -329,4 +329,5 @@ __interrupt void ReceivedMsg(void) {
             ReceiveCallback1(length, msg, id);
         }
     }
+    enableCanInterrupt();
 }
