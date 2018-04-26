@@ -113,6 +113,7 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
                 P4OUT |= 0x20;
             }
 		}
+		timeout = 65535;
 
 		// Wait for any previous rx to finish rx-ing.
 		while (!(UCA2IFG & UCRXIFG) && timeout){
