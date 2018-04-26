@@ -79,9 +79,12 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
 	// Store all data received from the slave in pRxBuf.
 	uint8_t i;
 	for(i = 0; i < num; i++) {
+		uint16_t timeout = 65535;
 
 		// Wait for any previous tx to finish.
-		while (!(UCA2IFG & UCTXIFG));
+		while (!(UCA2IFG & UCTXIFG)){
+			timeout--;
+		}
 
 		// Drop CS Pin if it hasn't been dropped yet.
 		if (i == 0){
@@ -95,7 +98,6 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
                 P4OUT &= ~0x20;
             }
 		}
-
 		// Write to tx buffer.
 		UCA2TXBUF = *pTxBuf;
 
@@ -113,7 +115,9 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
 		}
 
 		// Wait for any previous rx to finish rx-ing.
-		while (!(UCA2IFG & UCRXIFG));
+		while (!(UCA2IFG & UCRXIFG) && timeout){
+			timeout--;
+		}
 
 		// Store data transmitted from the slave.
 		*pRxBuf = UCA2RXBUF;
