@@ -34,6 +34,7 @@ FILE_STATIC health_segment hseg;
 
 FILE_STATIC void sendHealthSegment();
 FILE_STATIC void sendMetaSegment();
+FILE_STATIC void sendBackchannelTelem();
 
 /*
  * main.c
@@ -94,17 +95,19 @@ int main(void)
         while (!triggerStepFlag);
         triggerStepFlag = FALSE;
 
+        LED_OUT ^= LED_BIT;
+
         // check slow timer for non-autocode functions
         if (checkTimer(slowTimerHandle))
         {
             slowTimerHandle = timerPollInitializer(BACKCHANNEL_DELAY_MS);
 
-            LED_OUT ^= LED_BIT;
-
             // send basic subsystem telemetry
             // TODO move this to rollcall
             sendHealthSegment();
             sendMetaSegment();
+
+            sendBackchannelTelem();
         }
 
         // step autocode
@@ -322,6 +325,25 @@ FILE_STATIC void sendCANOutputs()
      * TODO send sc_quat, body_rates, sc_mode, sc_above_gsb, sc_modeb, and
      * cmd_MT_fsw_dv.
      */
+}
+
+FILE_STATIC void sendBackchannelTelem()
+{
+    output_segment out;
+    memcpy(out.sc_quat, rtY.sc_quat, 4 * sizeof(rtY.sc_quat[0]));
+    memcpy(out.body_rates, rtY.body_rates, 3 * sizeof(rtY.body_rates[0]));
+    out.sc_mode = rtY.sc_mode; // TODO sc_mode or sc_modeb?
+    out.point_true = rtY.point_true;
+    out.sc_above_gs = rtY.sc_above_gsb;
+    bcbinPopulateHeader(&out.header, TLM_ID_OUTPUT, sizeof(out));
+    bcbinSendPacket((uint8_t *) &out, sizeof(out));
+
+    mtqcmd_segment cmd;
+    memcpy(cmd.cmd_MT_fsw_dv, rtY.cmd_MT_fsw_dv,
+           3 * sizeof(rtY.cmd_MT_fsw_dv[0]));
+    cmd.sc_mode = rtY.sc_modeb; // TODO sc_mode or sc_modeb?
+    bcbinPopulateHeader(&cmd.header, TLM_ID_MTQCMD, sizeof(cmd));
+    bcbinSendPacket((uint8_t *) &cmd, sizeof(cmd));
 }
 
 // Packetizes and sends backchannel health packet
