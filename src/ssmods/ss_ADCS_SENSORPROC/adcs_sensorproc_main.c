@@ -71,7 +71,7 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
      magioInit2,
      magioUpdate2,
      magioSendBackchannel2,
-     magioSendCAN,
+     NULL,
      NULL,
      NULL,
     },
