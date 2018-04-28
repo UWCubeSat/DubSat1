@@ -60,7 +60,6 @@ void cosmos_init(void);
 void send_COSMOS_health_packet(void); 
 void send_COSMOS_meta_packet(void);
 void send_COSMOS_commands_packet(void);
-void send_COSMOS_telemetry_packet(void);
 void send_COSMOS_dooty_packet(void);
 
 //--------SFR initialization------
@@ -128,7 +127,8 @@ eMTQState curr_state;
 // Main 
 // TODO 
 // add dipole to CAN ack packet
-// add fsw timeout   
+// add fsw timeout 
+// fix manage telem function   
 //------------------------------------------------------------------
 
 int main(void)
@@ -293,8 +293,10 @@ void manage_telemetry(void)
 {
     if (checkTimer(telem_timer))
     {
-		send_COSMOS_health_packet(); 
-		send_COSMOS_telemetry_packet();
+		void send_COSMOS_health_packet(); 
+		void send_COSMOS_commands_packet();
+		void send_COSMOS_dooty_packet();
+		void send_COSMOS_meta_packet();
         start_telem_timer(); // reset timer 
     }
 }
@@ -492,6 +494,8 @@ void cosmos_init(void)
     telem_timer = timerPollInitializer(telem_time_ms);
 }
 
+//commented out for debug 
+/*
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     if (mode == Mode_BinaryStreaming)
@@ -516,8 +520,9 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
     }
     return 1;
 }
+*/
 
-void send_COSMOS_health_packet(void)
+void send_COSMOS_health_packet()
 {
     healthSeg.oms = OMS_Unknown;
     healthSeg.inttemp = asensorReadIntTempC();
@@ -554,12 +559,6 @@ void send_COSMOS_dooty_packet()
 void send_COSMOS_meta_packet(void)
 {
     bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
-}
-
-void send_COSMOS_telemetry_packet()
-{
-    send_COSMOS_meta_packet();
-	send_COSMOS_dooty_packet(); 
 }
 
 //-------- special function registers config --------	
