@@ -129,6 +129,7 @@ eMTQState curr_state;
 // add dipole to CAN ack packet
 // add fsw timeout 
 // fix manage telem function   
+// cntrl f DEBUG to see commented out sections 
 //------------------------------------------------------------------
 
 int main(void)
@@ -293,10 +294,12 @@ void manage_telemetry(void)
 {
     if (checkTimer(telem_timer))
     {
-		void send_COSMOS_health_packet(); 
-		void send_COSMOS_commands_packet();
+		void send_COSMOS_health_packet();
+		// commented out for DEBUG
+		/* 
 		void send_COSMOS_dooty_packet();
 		void send_COSMOS_meta_packet();
+		*/
         start_telem_timer(); // reset timer 
     }
 }
@@ -343,8 +346,6 @@ void blink_LED(void)
 // on the A3903 driver chip data sheet description for chopping mode 
 void set_pwm(char axis, int pwm_percent)  
 {
-    send_COSMOS_commands_packet();
-
 	// set duty cycles based on driver chopping mode 
 	int duty_1 = (pwm_percent >= 0) ? (100-pwm_percent) : 100;
 	int duty_2 = (pwm_percent < 0) ? (100-(-pwm_percent)): 100;
@@ -380,6 +381,8 @@ void set_pwm(char axis, int pwm_percent)
 		default: // unknown state 
 			break;
 	}
+	
+	send_COSMOS_commands_packet();
 }
 
 // outputs a (very shitty) discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
@@ -494,7 +497,7 @@ void cosmos_init(void)
     telem_timer = timerPollInitializer(telem_time_ms);
 }
 
-//commented out for debug 
+//commented out for DEBUG
 /*
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
