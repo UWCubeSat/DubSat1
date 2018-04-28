@@ -4,7 +4,8 @@
  *  Created on: Apr 21, 2018
  *      Author: djdup
  *
- * Reads a TLE from CAN. Prevents reading half-baked TLEs.
+ * Reads a TLE from CAN. A TLE is only recognized as complete if the last two
+ * packets from each segment match.
  */
 
 #ifndef TLE_H_
@@ -17,17 +18,14 @@
 #include "interfaces/canwrap.h"
 
 struct tle {
-    uint16_t year;
-    double day;
-    float bstar;
-    float inc;
-    float raan;
-    float ecc;
-    float aop;
-    float mna;
-    double mnm;
-    uint16_t _present;
-    uint64_t _startTime;
+    tle_1 tle1;
+    tle_2 tle2;
+    tle_3 tle3;
+    tle_4 tle4;
+    tle_5 tle5;
+    tle_6 tle6;
+    uint8_t _present1;
+    uint8_t _present2;
 };
 
 void tleInit(struct tle *tle, BOOL isPrepopulated);
