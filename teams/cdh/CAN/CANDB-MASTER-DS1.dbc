@@ -46,12 +46,32 @@ VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ tle_6_id : 0|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ tle_5_id : 0|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ tle_4_id : 0|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ tle_3_id : 0|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ tle_2_id : 0|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ tle_1_id : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ estim_sun_unit_z : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ estim_sun_unit_y : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ estim_sun_unit_x : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ estim_mag_unit_z : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+
+BO_ 2147483945 estim_sun_unit_zp: 8 Vector__XXX
+ SG_ estim_mag_unit_y : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+
+BO_ 2147483944 estim_sun_unit_yp: 8 Vector__XXX
+ SG_ estim_mag_unit_y : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+
+BO_ 2147483943 estim_sun_unit_xp: 8 Vector__XXX
+ SG_ estim_mag_unit_y : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+
+BO_ 2147483942 estim_mag_unit_zp: 8 Vector__XXX
+ SG_ estim_mag_unit_y : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+
+BO_ 2147483941 estim_mag_unit_yp: 8 Vector__XXX
+ SG_ estim_mag_unit_y : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+
+BO_ 2147483940 estim_mag_unit_xp: 8 Vector__XXX
+ SG_ estim_mag_unit_x : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+
+BO_ 2147483939 estim_state: 1 Vector__XXX
+ SG_ estim_in_sun : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ estim_above_gs : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2452161029 rc_eps_batt_6: 8 Vector__XXX
  SG_ rc_eps_batt_6_soc_min : 0|8@1+ (1,0) [0|255] "pct" Vector__XXX
@@ -111,24 +131,30 @@ BO_ 2452160752 ppt_firing_result: 8 Vector__XXX
  SG_ ppt_firing_result_code : 0|8@1+ (1,0) [0|3] "" Vector__XXX
 
 BO_ 2457272393 tle_6: 8 com_1
+ SG_ tle_6_id : 63|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ tle_6_mnm : 0|63@1+ (1,0) [0|9.22337203685478E+018] "" Vector__XXX
 
-BO_ 2457272392 tle_5: 4 com_1
+BO_ 2457272392 tle_5: 5 com_1
+ SG_ tle_5_id : 32|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ tle_5_mna : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
 
 BO_ 2457272391 tle_4: 8 com_1
+ SG_ tle_4_id : 63|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ tle_4_aop : 32|31@1- (1,0) [-1073741824|1073741823] "" Vector__XXX
  SG_ tle_4_ecc : 0|32@1+ (1,0) [0|4294967295] "" Vector__XXX
 
 BO_ 2457272390 tle_3: 8 com_1
+ SG_ tle_3_id : 63|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ tle_3_raan : 32|31@1- (1,0) [-1073741824|1073741823] "" Vector__XXX
  SG_ tle_3_inc : 0|32@1- (1,0) [-2147483648|2147483647] "" Vector__XXX
 
 BO_ 2457272389 tle_2: 8 com_1
+ SG_ tle_2_id : 63|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ tle_2_day : 0|63@1+ (1,0) [0|9.22337203685478E+018] "" Vector__XXX
 
 BO_ 2449932356 tle_1: 6 com_1
- SG_ tle_1_bstar : 16|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
+ SG_ tle_1_id : 40|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ tle_1_bstar : 8|32@1- (1,0) [-3.4E+038|3.4E+038] "" Vector__XXX
  SG_ tle_1_year : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2451701986 eps_pd_undervoltage: 1 Vector__XXX
@@ -283,12 +309,8 @@ BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
-VAL_ 3221225472 tle_6_id 1 "true" 0 "false" ;
-VAL_ 3221225472 tle_5_id 1 "true" 0 "false" ;
-VAL_ 3221225472 tle_4_id 1 "true" 0 "false" ;
-VAL_ 3221225472 tle_3_id 1 "true" 0 "false" ;
-VAL_ 3221225472 tle_2_id 1 "true" 0 "false" ;
-VAL_ 3221225472 tle_1_id 1 "true" 0 "false" ;
+VAL_ 2147483939 estim_in_sun 1 "true" 0 "false" ;
+VAL_ 2147483939 estim_above_gs 1 "true" 0 "false" ;
 VAL_ 2452161027 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
 VAL_ 2452161027 rc_eps_batt_4_balancer_state 1 "true" 0 "false" ;
 VAL_ 2432958724 cmd_ppt_halt_confirm 1 "true" 0 "false" ;
@@ -296,6 +318,12 @@ VAL_ 2452160752 ppt_firing_result_panel_good 2 "null" 1 "true" 0 "false" ;
 VAL_ 2452160752 ppt_firing_result_batt_good 2 "null" 1 "true" 0 "false" ;
 VAL_ 2452160752 ppt_firing_result_coulmb_good 2 "null" 1 "true" 0 "false" ;
 VAL_ 2452160752 ppt_firing_result_code 3 "no discharge" 2 "no charge" 1 "fire overridden" 0 "fire successful" ;
+VAL_ 2457272393 tle_6_id 1 "true" 0 "false" ;
+VAL_ 2457272392 tle_5_id 1 "true" 0 "false" ;
+VAL_ 2457272391 tle_4_id 1 "true" 0 "false" ;
+VAL_ 2457272390 tle_3_id 1 "true" 0 "false" ;
+VAL_ 2457272389 tle_2_id 1 "true" 0 "false" ;
+VAL_ 2449932356 tle_1_id 1 "true" 0 "false" ;
 VAL_ 2451701986 eps_pd_undervoltage_state 1 "undervoltage" 0 "normal" ;
 VAL_ 2451701985 eps_pd_batt_voltage_agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_ 2449998321 cmd_com2_run_clear 1 "true" 0 "false" ;
@@ -325,6 +353,16 @@ VAL_ 2183266498 eps_batt_state_bal 1 "true" 0 "false" ;
 VAL_ 2183266498 eps_batt_state_heat 1 "true" 0 "false" ;
 VAL_ 2483355713 sensorproc_sun_valid 1 "true" 0 "false" ;
 VAL_ 2181496864 bdot_tumble_status_status 1 "true" 0 "false" ;
+SIG_VALTYPE_ 3221225472 estim_sun_unit_z : 2;
+SIG_VALTYPE_ 3221225472 estim_sun_unit_y : 2;
+SIG_VALTYPE_ 3221225472 estim_sun_unit_x : 2;
+SIG_VALTYPE_ 3221225472 estim_mag_unit_z : 2;
+SIG_VALTYPE_ 2147483945 estim_mag_unit_y : 2;
+SIG_VALTYPE_ 2147483944 estim_mag_unit_y : 2;
+SIG_VALTYPE_ 2147483943 estim_mag_unit_y : 2;
+SIG_VALTYPE_ 2147483942 estim_mag_unit_y : 2;
+SIG_VALTYPE_ 2147483941 estim_mag_unit_y : 2;
+SIG_VALTYPE_ 2147483940 estim_mag_unit_x : 2;
 SIG_VALTYPE_ 2457272392 tle_5_mna : 1;
 SIG_VALTYPE_ 2449932356 tle_1_bstar : 1;
 
