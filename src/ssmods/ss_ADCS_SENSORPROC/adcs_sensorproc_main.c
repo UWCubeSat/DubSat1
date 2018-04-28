@@ -276,7 +276,8 @@ void rt_OneStep(void)
   MSP_SP_step0();
 
   /* Get model outputs here */
-  imuioSendCAN();
+  // (none)
+  // save outputs for the 10 Hz step
 
   /* Indicate task for base rate complete */
   OverrunFlags[0] = false;
@@ -306,7 +307,8 @@ void rt_OneStep(void)
         MSP_SP_step1();
 
         /* Get model outputs here */
-        magioSendCAN();
+        // (none)
+        // save outputs for the 10 Hz step
         break;
 
        case 2 :
@@ -319,7 +321,8 @@ void rt_OneStep(void)
         MSP_SP_step2();
 
         /* Get model outputs here */
-        sunsensorioSendCAN();
+        // update them all at the 10 Hz step
+        sendSensorCAN();
         break;
 
        default :
