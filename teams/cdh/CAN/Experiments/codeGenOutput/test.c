@@ -3,6 +3,101 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rc_eps_gen_11_packet = {0};
+	rc_eps_gen_11 rc_eps_gen_11_info = {0};
+	encoderc_eps_gen_11(&rc_eps_gen_11_info, &rc_eps_gen_11_packet);
+	canSendPacket(&rc_eps_gen_11_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_10_packet = {0};
+	rc_eps_gen_10 rc_eps_gen_10_info = {0};
+	encoderc_eps_gen_10(&rc_eps_gen_10_info, &rc_eps_gen_10_packet);
+	canSendPacket(&rc_eps_gen_10_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_19_packet = {0};
+	rc_eps_gen_19 rc_eps_gen_19_info = {0};
+	encoderc_eps_gen_19(&rc_eps_gen_19_info, &rc_eps_gen_19_packet);
+	canSendPacket(&rc_eps_gen_19_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_18_packet = {0};
+	rc_eps_gen_18 rc_eps_gen_18_info = {0};
+	encoderc_eps_gen_18(&rc_eps_gen_18_info, &rc_eps_gen_18_packet);
+	canSendPacket(&rc_eps_gen_18_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_17_packet = {0};
+	rc_eps_gen_17 rc_eps_gen_17_info = {0};
+	encoderc_eps_gen_17(&rc_eps_gen_17_info, &rc_eps_gen_17_packet);
+	canSendPacket(&rc_eps_gen_17_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_15_packet = {0};
+	rc_eps_gen_15 rc_eps_gen_15_info = {0};
+	encoderc_eps_gen_15(&rc_eps_gen_15_info, &rc_eps_gen_15_packet);
+	canSendPacket(&rc_eps_gen_15_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_16_packet = {0};
+	rc_eps_gen_16 rc_eps_gen_16_info = {0};
+	encoderc_eps_gen_16(&rc_eps_gen_16_info, &rc_eps_gen_16_packet);
+	canSendPacket(&rc_eps_gen_16_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_13_packet = {0};
+	rc_eps_gen_13 rc_eps_gen_13_info = {0};
+	encoderc_eps_gen_13(&rc_eps_gen_13_info, &rc_eps_gen_13_packet);
+	canSendPacket(&rc_eps_gen_13_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_14_packet = {0};
+	rc_eps_gen_14 rc_eps_gen_14_info = {0};
+	encoderc_eps_gen_14(&rc_eps_gen_14_info, &rc_eps_gen_14_packet);
+	canSendPacket(&rc_eps_gen_14_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_12_packet = {0};
+	rc_eps_gen_12 rc_eps_gen_12_info = {0};
+	encoderc_eps_gen_12(&rc_eps_gen_12_info, &rc_eps_gen_12_packet);
+	canSendPacket(&rc_eps_gen_12_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_9_packet = {0};
+	rc_eps_gen_9 rc_eps_gen_9_info = {0};
+	encoderc_eps_gen_9(&rc_eps_gen_9_info, &rc_eps_gen_9_packet);
+	canSendPacket(&rc_eps_gen_9_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_8_packet = {0};
+	rc_eps_gen_8 rc_eps_gen_8_info = {0};
+	encoderc_eps_gen_8(&rc_eps_gen_8_info, &rc_eps_gen_8_packet);
+	canSendPacket(&rc_eps_gen_8_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_7_packet = {0};
+	rc_eps_gen_7 rc_eps_gen_7_info = {0};
+	encoderc_eps_gen_7(&rc_eps_gen_7_info, &rc_eps_gen_7_packet);
+	canSendPacket(&rc_eps_gen_7_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_6_packet = {0};
+	rc_eps_gen_6 rc_eps_gen_6_info = {0};
+	encoderc_eps_gen_6(&rc_eps_gen_6_info, &rc_eps_gen_6_packet);
+	canSendPacket(&rc_eps_gen_6_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_5_packet = {0};
+	rc_eps_gen_5 rc_eps_gen_5_info = {0};
+	encoderc_eps_gen_5(&rc_eps_gen_5_info, &rc_eps_gen_5_packet);
+	canSendPacket(&rc_eps_gen_5_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_4_packet = {0};
+	rc_eps_gen_4 rc_eps_gen_4_info = {0};
+	encoderc_eps_gen_4(&rc_eps_gen_4_info, &rc_eps_gen_4_packet);
+	canSendPacket(&rc_eps_gen_4_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_3_packet = {0};
+	rc_eps_gen_3 rc_eps_gen_3_info = {0};
+	encoderc_eps_gen_3(&rc_eps_gen_3_info, &rc_eps_gen_3_packet);
+	canSendPacket(&rc_eps_gen_3_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_2_packet = {0};
+	rc_eps_gen_2 rc_eps_gen_2_info = {0};
+	encoderc_eps_gen_2(&rc_eps_gen_2_info, &rc_eps_gen_2_packet);
+	canSendPacket(&rc_eps_gen_2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_1_packet = {0};
+	rc_eps_gen_1 rc_eps_gen_1_info = {0};
+	encoderc_eps_gen_1(&rc_eps_gen_1_info, &rc_eps_gen_1_packet);
+	canSendPacket(&rc_eps_gen_1_packet);
+
 	__delay_cycles(10000);	CANPacket rc_eps_batt_6_packet = {0};
 	rc_eps_batt_6 rc_eps_batt_6_info = {0};
 	encoderc_eps_batt_6(&rc_eps_batt_6_info, &rc_eps_batt_6_packet);

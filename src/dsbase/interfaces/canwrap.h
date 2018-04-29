@@ -15,6 +15,31 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_RC_EPS_GEN_11 304677402
+#define CAN_ID_RC_EPS_GEN_10 304677401
+#define CAN_ID_RC_EPS_GEN_19 304677410
+#define CAN_ID_RC_EPS_GEN_18 304677409
+#define CAN_ID_RC_EPS_GEN_17 304677408
+#define CAN_ID_RC_EPS_GEN_15 304677406
+#define CAN_ID_RC_EPS_GEN_16 304677407
+#define CAN_ID_RC_EPS_GEN_13 304677404
+#define CAN_ID_RC_EPS_GEN_14 304677405
+#define CAN_ID_RC_EPS_GEN_12 304677403
+#define CAN_ID_RC_EPS_GEN_9 304677400
+#define CAN_ID_RC_EPS_GEN_8 304677399
+#define CAN_ID_RC_EPS_GEN_7 304677398
+#define CAN_ID_RC_EPS_GEN_6 304677397
+#define CAN_ID_RC_EPS_GEN_5 304677396
+#define CAN_ID_RC_EPS_GEN_4 304677395
+#define CAN_ID_RC_EPS_GEN_3 304677394
+#define CAN_ID_RC_EPS_GEN_2 304677393
+#define CAN_ID_RC_EPS_GEN_1 304677392
+#define CAN_ID_RC_EPS_BATT_6 304677381
+#define CAN_ID_RC_EPS_BATT_5 304677380
+#define CAN_ID_RC_EPS_BATT_4 304677379
+#define CAN_ID_RC_EPS_BATT_3 304677378
+#define CAN_ID_RC_EPS_BATT_2 304677377
+#define CAN_ID_RC_EPS_BATT_1 304677376
 #define CAN_ID_CMD_PPT_SET_COUNT 302252294
 #define CAN_ID_CMD_PPT_TIME_UPD 302252293
 #define CAN_ID_CMD_PPT_HALT 285475076
@@ -124,6 +149,146 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct rc_eps_gen_11 {
+    float rc_eps_gen_11_pnl_1_power_min; // V
+    float rc_eps_gen_11_pnl_1_power_max; // V
+} rc_eps_gen_11;
+
+typedef struct rc_eps_gen_10 {
+    float rc_eps_gen_10_pnl_3_current_max; // V
+    float rc_eps_gen_10_pnl_3_current_avg; // V
+} rc_eps_gen_10;
+
+typedef struct rc_eps_gen_19 {
+    float rc_eps_gen_19_pnl_3_temp_max; // V
+    float rc_eps_gen_19_pnl_3_temp_avg; // V
+} rc_eps_gen_19;
+
+typedef struct rc_eps_gen_18 {
+    float rc_eps_gen_18_pnl_3_temp_min; // V
+    float rc_eps_gen_18_pnl_2_temp_avg; // V
+} rc_eps_gen_18;
+
+typedef struct rc_eps_gen_17 {
+    float rc_eps_gen_17_pnl_2_temp_max; // V
+    float rc_eps_gen_17_pnl_2_temp_min; // V
+} rc_eps_gen_17;
+
+typedef struct rc_eps_gen_15 {
+    float rc_eps_gen_15_pnl_3_power_avg; // V
+    float rc_eps_gen_15_pnl_1_temp_min; // V
+} rc_eps_gen_15;
+
+typedef struct rc_eps_gen_16 {
+    float rc_eps_gen_16_pnl_1_temp_max; // V
+    float rc_eps_gen_16_pnl_1_temp_avg; // V
+} rc_eps_gen_16;
+
+typedef struct rc_eps_gen_13 {
+    float rc_eps_gen_13_pnl_2_power_max; // V
+    float rc_eps_gen_13_pnl_2_power_avg; // V
+} rc_eps_gen_13;
+
+typedef struct rc_eps_gen_14 {
+    float rc_eps_gen_14_pnl_3_power_min; // V
+    float rc_eps_gen_14_pnl_3_power_max; // V
+} rc_eps_gen_14;
+
+typedef struct rc_eps_gen_12 {
+    float rc_eps_gen_12_pnl_2_power_min; // V
+    float rc_eps_gen_12_pnl_1_power_avg; // V
+} rc_eps_gen_12;
+
+typedef struct rc_eps_gen_9 {
+    float rc_eps_gen_9_pnl_3_current_min; // V
+    float rc_eps_gen_9_pnl_2_current_avg; // V
+} rc_eps_gen_9;
+
+typedef struct rc_eps_gen_8 {
+    float rc_eps_gen_8_pnl_2_current_min; // V
+    float rc_eps_gen_8_pnl_2_current_max; // V
+} rc_eps_gen_8;
+
+typedef struct rc_eps_gen_7 {
+    float rc_eps_gen_7_pnl_1_current_max; // V
+    float rc_eps_gen_7_pnl_1_current_avg; // V
+} rc_eps_gen_7;
+
+typedef struct rc_eps_gen_6 {
+    float rc_eps_gen_6_pnl_3_voltage_avg; // V
+    float rc_eps_gen_6_pnl_1_current_min; // V
+} rc_eps_gen_6;
+
+typedef struct rc_eps_gen_5 {
+    float rc_eps_gen_5_pnl_3_voltage_min; // V
+    float rc_eps_gen_5_pnl_3_voltage_max; // V
+} rc_eps_gen_5;
+
+typedef struct rc_eps_gen_4 {
+    float rc_eps_gen_4_pnl_2_voltage_avg; // V
+    float rc_eps_gen_4_pnl_2_voltage_max; // V
+} rc_eps_gen_4;
+
+typedef struct rc_eps_gen_3 {
+    float rc_eps_gen_3_pnl_1_voltage_avg; // V
+    float rc_eps_gen_3_pnl_2_voltage_min; // V
+} rc_eps_gen_3;
+
+typedef struct rc_eps_gen_2 {
+    float rc_eps_gen_2_pnl_1_voltage_min; // V
+    float rc_eps_gen_2_pnl_1_voltage_max; // V
+} rc_eps_gen_2;
+
+typedef struct rc_eps_gen_1 {
+    uint16_t rc_eps_gen_1_temp_min; // dK
+    uint16_t rc_eps_gen_1_temp_max; // dK
+    uint16_t rc_eps_gen_1_temp_avg; // dK
+    uint16_t rc_eps_gen_1_sysrstiv; //  (No Units)
+} rc_eps_gen_1;
+
+typedef struct rc_eps_batt_6 {
+    uint8_t rc_eps_batt_6_soc_min; // pct
+    uint8_t rc_eps_batt_6_soc_max; // pct
+    uint8_t rc_eps_batt_6_soc_avg; // pct
+    uint64_t rc_eps_batt_6_last_charge; // 2^-8 seconds
+} rc_eps_batt_6;
+
+typedef struct rc_eps_batt_5 {
+    int16_t rc_eps_batt_5_node_c_min; // dmA
+    int16_t rc_eps_batt_5_node_c_max; // dmA
+    int16_t rc_eps_batt_5_node_c_avg; // dmA
+    int8_t rc_eps_batt_5_batt_temp_min; // deg C
+    int8_t rc_eps_batt_5_batt_temp_max; // deg C
+} rc_eps_batt_5;
+
+typedef struct rc_eps_batt_4 {
+    uint16_t rc_eps_batt_4_voltage_min; // mV
+    uint16_t rc_eps_batt_4_voltage_max; // mV
+    uint16_t rc_eps_batt_4_voltage_avg; // mV
+    uint8_t rc_eps_batt_4_heater_state; //  (No Units)
+    uint8_t rc_eps_batt_4_balancer_state; //  (No Units)
+} rc_eps_batt_4;
+
+typedef struct rc_eps_batt_3 {
+    int16_t rc_eps_batt_3_current_min; // cA
+    int16_t rc_eps_batt_3_current_max; // cA
+    int16_t rc_eps_batt_3_current_avg; // cA
+    int8_t rc_eps_batt_3_batt_temp_avg; // deg C
+} rc_eps_batt_3;
+
+typedef struct rc_eps_batt_2 {
+    uint16_t rc_eps_batt_2_node_v_min; // mV
+    uint16_t rc_eps_batt_2_node_v_max; // mV
+    uint16_t rc_eps_batt_2_node_v_avg; // mV
+} rc_eps_batt_2;
+
+typedef struct rc_eps_batt_1 {
+    uint16_t rc_eps_batt_1_temp_min; // dK
+    uint16_t rc_eps_batt_1_temp_max; // dK
+    uint16_t rc_eps_batt_1_temp_avg; // dK
+    uint16_t rc_eps_batt_1_sysrstiv; //  (No Units)
+} rc_eps_batt_1;
+
 typedef struct cmd_ppt_set_count {
     uint8_t cmd_ppt_set_count_count; //  (No Units)
 } cmd_ppt_set_count;
@@ -257,7 +422,7 @@ typedef struct cmd_rollcall {
     uint8_t cmd_rollcall_type; //  (No Units)
     uint8_t cmd_rollcall_met_overflow; //  (No Units)
     uint32_t cmd_rollcall_met; //  (No Units)
-    uint8_t cmd_rollcall_state; //  (No Units)
+    uint8_t cmd_rollcall_msp; //  (No Units)
 } cmd_rollcall;
 
 typedef struct mtq_ack {
@@ -351,6 +516,81 @@ typedef struct sync_1 {
 typedef struct msp_temp {
     uint16_t msp_temp_temp; // dK
 } msp_temp;
+
+void encoderc_eps_gen_11(rc_eps_gen_11 *input, CANPacket* output);
+void decoderc_eps_gen_11(CANPacket *input, rc_eps_gen_11 *output);
+
+void encoderc_eps_gen_10(rc_eps_gen_10 *input, CANPacket* output);
+void decoderc_eps_gen_10(CANPacket *input, rc_eps_gen_10 *output);
+
+void encoderc_eps_gen_19(rc_eps_gen_19 *input, CANPacket* output);
+void decoderc_eps_gen_19(CANPacket *input, rc_eps_gen_19 *output);
+
+void encoderc_eps_gen_18(rc_eps_gen_18 *input, CANPacket* output);
+void decoderc_eps_gen_18(CANPacket *input, rc_eps_gen_18 *output);
+
+void encoderc_eps_gen_17(rc_eps_gen_17 *input, CANPacket* output);
+void decoderc_eps_gen_17(CANPacket *input, rc_eps_gen_17 *output);
+
+void encoderc_eps_gen_15(rc_eps_gen_15 *input, CANPacket* output);
+void decoderc_eps_gen_15(CANPacket *input, rc_eps_gen_15 *output);
+
+void encoderc_eps_gen_16(rc_eps_gen_16 *input, CANPacket* output);
+void decoderc_eps_gen_16(CANPacket *input, rc_eps_gen_16 *output);
+
+void encoderc_eps_gen_13(rc_eps_gen_13 *input, CANPacket* output);
+void decoderc_eps_gen_13(CANPacket *input, rc_eps_gen_13 *output);
+
+void encoderc_eps_gen_14(rc_eps_gen_14 *input, CANPacket* output);
+void decoderc_eps_gen_14(CANPacket *input, rc_eps_gen_14 *output);
+
+void encoderc_eps_gen_12(rc_eps_gen_12 *input, CANPacket* output);
+void decoderc_eps_gen_12(CANPacket *input, rc_eps_gen_12 *output);
+
+void encoderc_eps_gen_9(rc_eps_gen_9 *input, CANPacket* output);
+void decoderc_eps_gen_9(CANPacket *input, rc_eps_gen_9 *output);
+
+void encoderc_eps_gen_8(rc_eps_gen_8 *input, CANPacket* output);
+void decoderc_eps_gen_8(CANPacket *input, rc_eps_gen_8 *output);
+
+void encoderc_eps_gen_7(rc_eps_gen_7 *input, CANPacket* output);
+void decoderc_eps_gen_7(CANPacket *input, rc_eps_gen_7 *output);
+
+void encoderc_eps_gen_6(rc_eps_gen_6 *input, CANPacket* output);
+void decoderc_eps_gen_6(CANPacket *input, rc_eps_gen_6 *output);
+
+void encoderc_eps_gen_5(rc_eps_gen_5 *input, CANPacket* output);
+void decoderc_eps_gen_5(CANPacket *input, rc_eps_gen_5 *output);
+
+void encoderc_eps_gen_4(rc_eps_gen_4 *input, CANPacket* output);
+void decoderc_eps_gen_4(CANPacket *input, rc_eps_gen_4 *output);
+
+void encoderc_eps_gen_3(rc_eps_gen_3 *input, CANPacket* output);
+void decoderc_eps_gen_3(CANPacket *input, rc_eps_gen_3 *output);
+
+void encoderc_eps_gen_2(rc_eps_gen_2 *input, CANPacket* output);
+void decoderc_eps_gen_2(CANPacket *input, rc_eps_gen_2 *output);
+
+void encoderc_eps_gen_1(rc_eps_gen_1 *input, CANPacket* output);
+void decoderc_eps_gen_1(CANPacket *input, rc_eps_gen_1 *output);
+
+void encoderc_eps_batt_6(rc_eps_batt_6 *input, CANPacket* output);
+void decoderc_eps_batt_6(CANPacket *input, rc_eps_batt_6 *output);
+
+void encoderc_eps_batt_5(rc_eps_batt_5 *input, CANPacket* output);
+void decoderc_eps_batt_5(CANPacket *input, rc_eps_batt_5 *output);
+
+void encoderc_eps_batt_4(rc_eps_batt_4 *input, CANPacket* output);
+void decoderc_eps_batt_4(CANPacket *input, rc_eps_batt_4 *output);
+
+void encoderc_eps_batt_3(rc_eps_batt_3 *input, CANPacket* output);
+void decoderc_eps_batt_3(CANPacket *input, rc_eps_batt_3 *output);
+
+void encoderc_eps_batt_2(rc_eps_batt_2 *input, CANPacket* output);
+void decoderc_eps_batt_2(CANPacket *input, rc_eps_batt_2 *output);
+
+void encoderc_eps_batt_1(rc_eps_batt_1 *input, CANPacket* output);
+void decoderc_eps_batt_1(CANPacket *input, rc_eps_batt_1 *output);
 
 void encodecmd_ppt_set_count(cmd_ppt_set_count *input, CANPacket* output);
 void decodecmd_ppt_set_count(CANPacket *input, cmd_ppt_set_count *output);

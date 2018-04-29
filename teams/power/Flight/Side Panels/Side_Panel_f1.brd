@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.0.0">
+<eagle version="8.4.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -379,24 +379,12 @@ Datsheet: http://cds.linear.com/docs/en/datasheet/2943fa.pdf</description>
 </packages>
 <packages3d>
 <package3d name="SOLAR_CELL_OUTLINE" urn="urn:adsk.eagle:package:348279/2" type="model" library_version="23">
-<packageinstances>
-<packageinstance name="SOLAR_CELL_OUTLINE"/>
-</packageinstances>
 </package3d>
 <package3d name="SOLAR_CELL_TOP_SHORT-PAD" urn="urn:adsk.eagle:package:348280/2" type="model" library_version="23">
-<packageinstances>
-<packageinstance name="SOLAR_CELL_TOP_SHORT-PAD"/>
-</packageinstances>
 </package3d>
 <package3d name="SOLAR_CELL_STAND-ALONE" urn="urn:adsk.eagle:package:348283/2" type="model" library_version="23">
-<packageinstances>
-<packageinstance name="SOLAR_CELL_STAND-ALONE"/>
-</packageinstances>
 </package3d>
 <package3d name="SOLAR_CELL_BOTTOM+BYPASS" urn="urn:adsk.eagle:package:348284/2" type="model" library_version="23">
-<packageinstances>
-<packageinstance name="SOLAR_CELL_BOTTOM+BYPASS"/>
-</packageinstances>
 </package3d>
 </packages3d>
 </library>
@@ -463,9 +451,6 @@ Datsheet: http://cds.linear.com/docs/en/datasheet/2943fa.pdf</description>
 </packages>
 <packages3d>
 <package3d name="PICOLOCK_6" urn="urn:adsk.eagle:package:2229919/2" type="model">
-<packageinstances>
-<packageinstance name="PICOLOCK_6"/>
-</packageinstances>
 </package3d>
 </packages3d>
 </library>
@@ -558,7 +543,6 @@ design rules under a new name.</description>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
 <param name="checkStop" value="0"/>
-<param name="checkValues" value="0"/>
 <param name="useDiameter" value="13"/>
 <param name="maxErrors" value="50"/>
 </designrules>
@@ -733,12 +717,12 @@ design rules under a new name.</description>
 <via x="50.52" y="5.15" extent="1-16" drill="0.35" shape="square"/>
 <via x="51.25" y="5.15" extent="1-16" drill="0.35" shape="square"/>
 <via x="51.25" y="5.85" extent="1-16" drill="0.35" shape="square"/>
-<wire x1="51.25" y1="5.85" x2="51.25" y2="55.91770625" width="0.508" layer="16"/>
-<wire x1="51.25" y1="55.91770625" x2="54.7705" y2="59.43820625" width="0.508" layer="16"/>
+<wire x1="51.25" y1="5.85" x2="51.25" y2="55.91770625" width="1.016" layer="16"/>
+<wire x1="51.25" y1="55.91770625" x2="54.7705" y2="59.43820625" width="1.016" layer="16"/>
 <wire x1="53.1" y1="173" x2="28.9" y2="173" width="0.508" layer="16"/>
 <wire x1="28.9" y1="168.5" x2="53.1" y2="168.5" width="0.508" layer="16"/>
 <wire x1="54" y1="173" x2="53.1" y2="173" width="0.508" layer="16"/>
-<wire x1="54.7705" y1="59.43820625" x2="54.7705" y2="168.54" width="0.508" layer="16"/>
+<wire x1="54.7705" y1="59.43820625" x2="54.7705" y2="168.54" width="1.016" layer="16"/>
 <wire x1="54.7705" y1="168.54" x2="54.7705" y2="172.2295" width="0.508" layer="16"/>
 <wire x1="54.7705" y1="172.2295" x2="54" y2="173" width="0.508" layer="16"/>
 <wire x1="53.1" y1="168.5" x2="54.7305" y2="168.5" width="0.508" layer="16"/>
@@ -746,7 +730,7 @@ design rules under a new name.</description>
 <contactref element="U$9" pad="P$2"/>
 <wire x1="54.7705" y1="59.43820625" x2="54.8947" y2="59.43820625" width="0.3048" layer="16"/>
 <via x="54.8947" y="59.43820625" extent="1-16" drill="0.35"/>
-<wire x1="54.8947" y1="59.43820625" x2="60.9" y2="53.43290625" width="0.3048" layer="1"/>
+<wire x1="54.8947" y1="59.43820625" x2="60.9" y2="53.43290625" width="1.016" layer="1"/>
 <wire x1="60.9" y1="53.43290625" x2="60.9" y2="53.09" width="0.3048" layer="1"/>
 <via x="54.8947" y="60.04820625" extent="1-16" drill="0.35"/>
 <wire x1="54.8947" y1="59.43820625" x2="54.8947" y2="60.04820625" width="0" layer="19" extent="1-1"/>
@@ -766,7 +750,7 @@ design rules under a new name.</description>
 <wire x1="46.8485" y1="59.2803875" x2="51" y2="55.1288875" width="1.27" layer="1"/>
 <contactref element="U$9" pad="P$1"/>
 <wire x1="51" y1="50.5" x2="51.69" y2="51.19" width="0.3048" layer="1" curve="-90"/>
-<wire x1="51.69" y1="51.19" x2="60.9" y2="51.19" width="0.3048" layer="1"/>
+<wire x1="51.69" y1="51.19" x2="60.9" y2="51.19" width="1.016" layer="1"/>
 </signal>
 <signal name="N$10">
 <contactref element="U$1" pad="P$5"/>
@@ -786,11 +770,11 @@ design rules under a new name.</description>
 </signal>
 <signal name="POWER">
 <contactref element="U$6" pad="P$2"/>
-<wire x1="27.6" y1="274.6" x2="27.6" y2="175.8" width="0.508" layer="1"/>
+<wire x1="27.6" y1="274.6" x2="27.6" y2="175.8" width="1.016" layer="1"/>
 <wire x1="21" y1="276" x2="20.5" y2="275.5" width="1.016" layer="1"/>
 <via x="27.6" y="175.8" extent="1-16" drill="0.3"/>
-<wire x1="20.5" y1="275.5" x2="26.7" y2="275.5" width="0.508" layer="1"/>
-<wire x1="26.7" y1="275.5" x2="27.6" y2="274.6" width="0.508" layer="1"/>
+<wire x1="20.5" y1="275.5" x2="26.7" y2="275.5" width="1.016" layer="1"/>
+<wire x1="26.7" y1="275.5" x2="27.6" y2="274.6" width="1.016" layer="1"/>
 <via x="27" y="175.8" extent="1-16" drill="0.3"/>
 <via x="27" y="175.2" extent="1-16" drill="0.3"/>
 <via x="27.6" y="175.2" extent="1-16" drill="0.3"/>
