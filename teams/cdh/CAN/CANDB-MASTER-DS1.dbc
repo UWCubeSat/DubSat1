@@ -45,21 +45,22 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
-BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ rc_ppt_2_total_fire_count : 0|8@1+ (1,0) [0|0] "" Vector__XXX
- SG_ rc_ppt_2_main_chg_avg : 0|8@1+ (1,0) [0|0] "2^-15 seconds" Vector__XXX
- SG_ rc_ppt_2_main_chg_max : 0|8@1+ (1,0) [0|0] "2^-15 seconds" Vector__XXX
- SG_ rc_ppt_2_main_chg_min : 0|8@1+ (1,0) [0|0] "2^-15 seconds" Vector__XXX
- SG_ rc_ppt_1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_ppt_1_temp_max : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_ppt_1_temp_avg : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_ppt_1_sysrstiv : 0|8@1+ (1,0) [0|256] "" Vector__XXX
-
-BO_ 2452161034 rc_ppt_3: 8 Vector__XXX
+BO_ 2452161034 rc_ppt_3: 6 Vector__XXX
+ SG_ rc_ppt_3_ign_chg_min : 0|16@1+ (1,0) [0|0] "2^-15 seconds" Vector__XXX
+ SG_ rc_ppt_3_ign_chg_max : 16|16@1+ (1,0) [0|0] "2^-15 seconds" Vector__XXX
+ SG_ rc_ppt_3_ign_chg_avg : 32|16@1+ (1,0) [0|0] "2^-15 seconds" Vector__XXX
 
 BO_ 2452161033 rc_ppt_2: 8 Vector__XXX
+ SG_ rc_ppt_2_total_fire_count : 48|16@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ rc_ppt_2_main_chg_min : 0|16@1+ (1,0) [0|0] "2^-15 seconds" Vector__XXX
+ SG_ rc_ppt_2_main_chg_max : 16|16@1+ (1,0) [0|0] "2^-15 seconds" Vector__XXX
+ SG_ rc_ppt_2_main_chg_avg : 32|16@1+ (1,0) [0|0] "2^-15 seconds" Vector__XXX
 
-BO_ 2452161032 rc_ppt_1: 8 Vector__XXX
+BO_ 2452161032 rc_ppt_1: 7 Vector__XXX
+ SG_ rc_ppt_1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_ppt_1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_ppt_1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_ppt_1_sysrstiv : 48|8@1+ (1,0) [0|256] "" Vector__XXX
 
 BO_ 2452161050 rc_eps_gen_11: 8 Vector__XXX
  SG_ rc_eps_gen_11_pnl_1_power_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
@@ -366,7 +367,6 @@ BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,
 BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
-CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
 VAL_ 2452161027 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
