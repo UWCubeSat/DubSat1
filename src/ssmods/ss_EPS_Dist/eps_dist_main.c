@@ -410,12 +410,14 @@ uint32_t constructPrimaryTime(timeStamp* currTime)
 void sendSubsystemRollCall(uint8_t ssID)
 {
     CANPacket rcPkt = {0};
-    cmd_rollcall rc_info = {0};
+    //cmd_rollcall rc_info = {0};
+    cmd_mtq_fsw test_info = {0};
 //    timeStamp currTime = getTimeStamp();
 //    rc_info.cmd_rollcall_met = constructPrimaryTime(&currTime);
 //    rc_info.cmd_rollcall_met_overflow = currTime.count5;
 //    rc_info.cmd_rollcall_msp = ssID;
-    encodecmd_rollcall(&rc_info, &rcPkt);
+    //encodecmd_rollcall(&rc_info, &rcPkt);
+    encodecmd_mtq_fsw(&test_info, &rcPkt);
     canSendPacket(&rcPkt);
 }
 
