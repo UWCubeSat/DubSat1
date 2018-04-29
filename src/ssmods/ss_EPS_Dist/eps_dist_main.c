@@ -2,6 +2,9 @@
 #include <msp430.h> 
 
 #include "bsp/bsp.h"
+#include "core/timer.h"
+#include "core/MET.h"
+#include "interfaces/canwrap.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -55,6 +58,8 @@ FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 
 FILE_STATIC uint16_t startupDelay = 1800;
 #pragma PERSISTENT(startupDelay)
+
+FILE_STATIC uint8_t rcFlag = 0;
 
 void distDeployInit()
 {
@@ -393,6 +398,33 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
     return 1;
 }
 
+uint32_t constructPrimaryTime(timeStamp* currTime)
+{
+    uint32_t baseStuff = (uint32_t) currTime->count1;
+    baseStuff |= ((uint32_t) currTime->count2) << 8;
+    baseStuff |= ((uint32_t) currTime->count3) << 16;
+    baseStuff |= ((uint32_t) currTime->count4) << 24;
+    return baseStuff;
+}
+
+void sendSubsystemRollCall(uint8_t ssID)
+{
+    CANPacket rcPkt = {0};
+    cmd_rollcall rc_info = {0};
+//    timeStamp currTime = getTimeStamp();
+//    rc_info.cmd_rollcall_met = constructPrimaryTime(&currTime);
+//    rc_info.cmd_rollcall_met_overflow = currTime.count5;
+//    rc_info.cmd_rollcall_msp = ssID;
+    encodecmd_rollcall(&rc_info, &rcPkt);
+    canSendPacket(&rcPkt);
+}
+
+void sendRollCall()
+{
+    rcFlag = 1;
+    //TODO: but not 2,3,4 (those are RWs
+}
+
 /*
  * main.c
  */
@@ -406,6 +438,7 @@ int main(void)
     hBattV = asensorActivateChannel(CHAN_A0, Type_GeneralV);
     distDomainInit();
     distDeployInit();
+    canWrapInit();
 
     LED_DIR |= LED_BIT;
 
@@ -443,6 +476,11 @@ int main(void)
     __delay_cycles(2 * SEC);
     distDomainSwitch(PD_EPS, PD_CMD_AutoStart);
 
+    initializeTimer();
+    startCallback(timerCallbackInitializer(&sendRollCall, 6000000));
+
+
+
     uint16_t counter = 0;
     while (1)
     {
@@ -477,6 +515,16 @@ int main(void)
                 mod_status.state_transition_errors++;
                 mod_status.in_unknown_state++;
                 break;
+        }
+        if(rcFlag)
+        {
+            /*uint8_t ssID;
+            for(ssID = 15; ssID - 1; ssID--)
+            {
+                sendSubsystemRollCall(ssID);
+            }*/
+            sendSubsystemRollCall(8);
+            rcFlag = 0;
         }
     }
 
