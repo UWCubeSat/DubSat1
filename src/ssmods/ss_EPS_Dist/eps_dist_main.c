@@ -410,14 +410,12 @@ uint32_t constructPrimaryTime(timeStamp* currTime)
 void sendSubsystemRollCall(uint8_t ssID)
 {
     CANPacket rcPkt = {0};
-    //cmd_rollcall rc_info = {0};
-    cmd_mtq_fsw test_info = {0};
-//    timeStamp currTime = getTimeStamp();
-//    rc_info.cmd_rollcall_met = constructPrimaryTime(&currTime);
-//    rc_info.cmd_rollcall_met_overflow = currTime.count5;
-//    rc_info.cmd_rollcall_msp = ssID;
-    //encodecmd_rollcall(&rc_info, &rcPkt);
-    encodecmd_mtq_fsw(&test_info, &rcPkt);
+    cmd_rollcall rc_info = {0};
+    timeStamp currTime = getTimeStamp();
+    rc_info.cmd_rollcall_met = constructPrimaryTime(&currTime);
+    rc_info.cmd_rollcall_met_overflow = currTime.count5;
+    rc_info.cmd_rollcall_msp = ssID;
+    encodecmd_rollcall(&rc_info, &rcPkt);
     canSendPacket(&rcPkt);
 }
 
@@ -425,6 +423,11 @@ void sendRollCall()
 {
     rcFlag = 1;
     //TODO: but not 2,3,4 (those are RWs
+}
+
+void can_packet_rx_callback(CANPacket *packet)
+{
+    //Nothing
 }
 
 /*
@@ -441,6 +444,7 @@ int main(void)
     distDomainInit();
     distDeployInit();
     canWrapInit();
+    setCANPacketRxCallback(can_packet_rx_callback);
 
     LED_DIR |= LED_BIT;
 
@@ -480,7 +484,6 @@ int main(void)
 
     initializeTimer();
     startCallback(timerCallbackInitializer(&sendRollCall, 6000000));
-
 
 
     uint16_t counter = 0;
@@ -526,6 +529,7 @@ int main(void)
                 sendSubsystemRollCall(ssID);
             }*/
             sendSubsystemRollCall(8);
+            sendSubsystemRollCall(7);
             rcFlag = 0;
         }
     }
