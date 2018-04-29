@@ -22,6 +22,7 @@
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
+#include "interfaces/canwrap.h"
 
 // A struct for storing various interesting info about the subsystem module
 typedef struct _module_status {
@@ -44,6 +45,23 @@ TLM_SEGMENT {
     int8_t sc_mode;
     int8_t cmd_MT_fsw_dv[3];
 } mtqcmd_segment;
+
+// Autocode steps and timing
+void triggerStep();
+FILE_STATIC void rt_OneStep();
+void acceptInputs();
+
+// CAN input
+void canRxCallback(CANPacket *p);
+
+// CAN output
+void sendCANVelocityPointing();
+void sendCANMtqCmd();
+
+// Backchannel telemerty
+void sendHealthSegment();
+void sendMetaSegment();
+void sendBackchannelTelem();
 
 void handlePPTFiringNotification();
 void handleRollCall();
