@@ -481,6 +481,20 @@ int main(void)
     // Autostart the EPS power domain for now
     __delay_cycles(2 * SEC);
     distDomainSwitch(PD_EPS, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_BDOT, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_COM1, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_COM2, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_ESTIM, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_RAHS, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_WHEELS, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_PPT, PD_CMD_AutoStart);
 
     initializeTimer();
     startCallback(timerCallbackInitializer(&sendRollCall, 6000000));
