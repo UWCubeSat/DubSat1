@@ -253,6 +253,7 @@ void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t)
 #pragma vector=PORT5_VECTOR
 __interrupt void ReceivedMsg(void) {
     P5IFG &=~BIT7;
+    P3OUT ^= BIT5;
     disableCanInterrupt();
     uint8_t status, rx0if, rx1if, res, length;
     readStatus(&status);

@@ -18,6 +18,11 @@ FILE_STATIC flag_t triggerState3;
 /*
  * main.c
  */
+#define ONE 1
+//#define TWO 2
+void receive_packet(){
+
+}
 int main(void)
 {
 
@@ -56,38 +61,24 @@ int main(void)
 
     // See ss_EPS_Dist for ideas on how to structure creating telemetry and command packets, etc.
 
+    P3DIR |= BIT5;
+    canWrapInit();
+    setCANPacketRxCallback(receive_packet);
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
     {
         // This assumes that some interrupt code will change the value of the triggerStaten variables
-        switch (ss_state)
-        {
-        case State_FirstState:
-            if (triggerState2)
-            {
-                triggerState2 = 0;
-                ss_state = State_SecondState;
-            }
-            break;
-        case State_SecondState:
-            if (triggerState3)
-            {
-                triggerState3 = 0;
-                ss_state = State_ThirdState;
-            }
-            break;
-        case State_ThirdState:
-            if (triggerState1)
-            {
-                triggerState1 = 0;
-                ss_state = State_FirstState;
-            }
-            break;
-        default:
-            mod_status.state_transition_errors++;
-            mod_status.in_unknown_state++;
-            break;
-        }
+#ifdef ONE
+        CANPacket boop ={0}
+        boop.id = 1324235;
+        canSendPacket(boop)
+        __delay_cycles(100000);
+#elif defined TWO
+        CANPacket boop ={0}
+        boop.id = 1849197;
+        canSendPacket(boop)
+        __delay_cycles(100000);
+#endif
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
