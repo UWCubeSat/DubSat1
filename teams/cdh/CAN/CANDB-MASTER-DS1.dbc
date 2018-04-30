@@ -45,27 +45,27 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
-BO_ 2147483945 estim_sun_unit_zp: 8 Vector__XXX
- SG_ estim_sun_unit_z : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+BO_ 2449932980 estim_sun_unit_z: 8 Vector__XXX
+ SG_ estim_sun_unit_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
-BO_ 2147483944 estim_sun_unit_yp: 8 Vector__XXX
- SG_ estim_sun_unit_y : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+BO_ 2449932979 estim_sun_unit_y: 8 Vector__XXX
+ SG_ estim_sun_unit_y_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
-BO_ 2147483943 estim_sun_unit_xp: 8 Vector__XXX
- SG_ estim_sun_unit_x : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+BO_ 2449932978 estim_sun_unit_x: 8 Vector__XXX
+ SG_ estim_sun_unit_x_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
-BO_ 2147483942 estim_mag_unit_zp: 8 Vector__XXX
- SG_ estim_mag_unit_z : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+BO_ 2449932983 estim_mag_unit_z: 8 Vector__XXX
+ SG_ estim_mag_unit_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
-BO_ 2147483941 estim_mag_unit_yp: 8 Vector__XXX
- SG_ estim_mag_unit_y : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+BO_ 2449932982 estim_mag_unit_y: 8 Vector__XXX
+ SG_ estim_mag_unit_y_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
-BO_ 2147483940 estim_mag_unit_xp: 8 Vector__XXX
- SG_ estim_mag_unit_x : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+BO_ 2449932981 estim_mag_unit_x: 8 Vector__XXX
+ SG_ estim_mag_unit_x_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
-BO_ 2147483939 estim_state: 1 Vector__XXX
- SG_ estim_in_sun : 1|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ estim_above_gs : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+BO_ 2449932984 estim_state: 1 Vector__XXX
+ SG_ estim_state_in_sun : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ estim_state_above_gs : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2452161050 rc_eps_gen_11: 8 Vector__XXX
  SG_ rc_eps_gen_11_pnl_1_power_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
@@ -376,8 +376,8 @@ BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
-VAL_ 2147483939 estim_in_sun 1 "true" 0 "false" ;
-VAL_ 2147483939 estim_above_gs 1 "true" 0 "false" ;
+VAL_ 2449932984 estim_state_in_sun 1 "true" 0 "false" ;
+VAL_ 2449932984 estim_state_above_gs 1 "true" 0 "false" ;
 VAL_ 2452161027 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
 VAL_ 2452161027 rc_eps_batt_4_balancer_state 1 "true" 0 "false" ;
 VAL_ 2432958724 cmd_ppt_halt_confirm 1 "true" 0 "false" ;
@@ -416,12 +416,12 @@ VAL_ 2183266498 eps_batt_state_bal 1 "true" 0 "false" ;
 VAL_ 2183266498 eps_batt_state_heat 1 "true" 0 "false" ;
 VAL_ 2483355713 sensorproc_sun_valid 1 "true" 0 "false" ;
 VAL_ 2181496864 bdot_tumble_status_status 1 "true" 0 "false" ;
-SIG_VALTYPE_ 2147483945 estim_sun_unit_z : 2;
-SIG_VALTYPE_ 2147483944 estim_sun_unit_y : 2;
-SIG_VALTYPE_ 2147483943 estim_sun_unit_x : 2;
-SIG_VALTYPE_ 2147483942 estim_mag_unit_z : 2;
-SIG_VALTYPE_ 2147483941 estim_mag_unit_y : 2;
-SIG_VALTYPE_ 2147483940 estim_mag_unit_x : 2;
+SIG_VALTYPE_ 2449932980 estim_sun_unit_z_val : 2;
+SIG_VALTYPE_ 2449932979 estim_sun_unit_y_val : 2;
+SIG_VALTYPE_ 2449932978 estim_sun_unit_x_val : 2;
+SIG_VALTYPE_ 2449932983 estim_mag_unit_z_val : 2;
+SIG_VALTYPE_ 2449932982 estim_mag_unit_y_val : 2;
+SIG_VALTYPE_ 2449932981 estim_mag_unit_x_val : 2;
 SIG_VALTYPE_ 2452161050 rc_eps_gen_11_pnl_1_power_min : 1;
 SIG_VALTYPE_ 2452161050 rc_eps_gen_11_pnl_1_power_max : 1;
 SIG_VALTYPE_ 2452161049 rc_eps_gen_10_pnl_3_current_max : 1;
