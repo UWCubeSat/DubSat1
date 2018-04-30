@@ -5,60 +5,69 @@
  *      Author: djdup
  */
 
-#define MAKE_FLAG16(N) (((uint16_t) 1) << N)
-#define TLE_BIT_YEAR  MAKE_FLAG16(0)
-#define TLE_BIT_DAY   MAKE_FLAG16(1)
-#define TLE_BIT_BSTAR MAKE_FLAG16(2)
-#define TLE_BIT_INC   MAKE_FLAG16(3)
-#define TLE_BIT_RAAN  MAKE_FLAG16(4)
-#define TLE_BIT_ECC   MAKE_FLAG16(5)
-#define TLE_BIT_AOP   MAKE_FLAG16(6)
-#define TLE_BIT_MNA   MAKE_FLAG16(7)
-#define TLE_BIT_MNM   MAKE_FLAG16(8)
+#define MAKE_FLAG(N) (((uint8_t) 1) << N)
+#define TLE_BIT_1 MAKE_FLAG(0)
+#define TLE_BIT_2 MAKE_FLAG(1)
+#define TLE_BIT_3 MAKE_FLAG(2)
+#define TLE_BIT_4 MAKE_FLAG(3)
+#define TLE_BIT_5 MAKE_FLAG(4)
+#define TLE_BIT_6 MAKE_FLAG(5)
+
+#include <string.h>
 
 #include "tle.h"
 #include "interfaces/canwrap.h"
-#include "core/met.h"
 
-FILE_STATIC const uint64_t completeSet = TLE_BIT_YEAR
-                                       | TLE_BIT_DAY
-                                       | TLE_BIT_BSTAR
-                                       | TLE_BIT_INC
-                                       | TLE_BIT_RAAN
-                                       | TLE_BIT_ECC
-                                       | TLE_BIT_AOP
-                                       | TLE_BIT_MNA
-                                       | TLE_BIT_MNM;
-
-FILE_STATIC BOOL isComplete(uint16_t presentSet);
-FILE_STATIC BOOL isTimedOut(uint64_t startTime);
-FILE_STATIC void resetTLE(struct tle *tle);
+FILE_STATIC const uint8_t completeSet = TLE_BIT_1
+                                      | TLE_BIT_2
+                                      | TLE_BIT_3
+                                      | TLE_BIT_4
+                                      | TLE_BIT_5
+                                      | TLE_BIT_6;
 
 void tleInit(struct tle *tle, BOOL isPrepopulated)
 {
     if (isPrepopulated)
     {
-        tle->_present = completeSet;
-        tle->_startTime = getTimeStampInt();
+        tle->_present1 = completeSet;
+        tle->_present2 = completeSet;
     }
     else
     {
-        tle->_present = 0;
+        tle->_present1 = 0;
+        tle->_present2 = 0;
     }
 }
 
-// TODO should this do something about duplicate fields?
-void tleUpdate(CANPacket *p, struct tle *tle)
+FILE_STATIC void updateSegment(struct tle *tle, uint8_t bit, uint8_t *storedTLE,
+                               uint8_t *canTLE, uint8_t size)
 {
-    /*
-     * If this is a brand new timer or the last TLE read finished / timed out,
-     * reset the TLE.
-     */
-    if (tle->_present == 0 || isTimedOut(tle->_startTime))
+    // check if this TLE segment has been seen already
+    if (tle->_present1 | bit)
     {
-        resetTLE(tle);
+        // check if this TLE segment matches the last one recorded
+        if (memcmp(storedTLE, canTLE, size) == 0)
+        {
+            // if they match, indicate the second pass and return
+            tle->_present2 |= bit;
+            return;
+        }
+        else
+        {
+            // if they don't match, this is a brand new TLE. Reset the entire
+            // TLE state and allow the new segment to be copied in
+            tle->_present1 = 0;
+            tle->_present2 = 0;
+        }
     }
 
+    // mark this segment as present and save the data
+    tle->_present1 |= bit;
+    memcpy(storedTLE, canTLE, size);
+}
+
+void tleUpdate(CANPacket *p, struct tle *tle)
+{
     tle_1 tle1;
     tle_2 tle2;
     tle_3 tle3;
@@ -69,84 +78,34 @@ void tleUpdate(CANPacket *p, struct tle *tle)
     switch (p->id)
     {
     case CAN_ID_TLE_1:
-        // if this is the first packet in a new TLE, reset it
-        if (isComplete(tle->_present)) resetTLE(tle);
-
         decodetle_1(p, &tle1);
-
-        tle->bstar = tle1.tle_1_bstar;
-        tle->year = tle1.tle_1_year + 2000;
-
-        tle->_present |= TLE_BIT_BSTAR | TLE_BIT_YEAR;
+        updateSegment(tle, TLE_BIT_1, (uint8_t *) &tle->tle1, (uint8_t *) &tle1, sizeof(tle1));
         break;
     case CAN_ID_TLE_2:
-        if (isComplete(tle->_present)) resetTLE(tle);
-
         decodetle_2(p, &tle2);
-
-        tle->day = tle2.tle_2_day;
-
-        tle->_present |= TLE_BIT_DAY;
+        updateSegment(tle, TLE_BIT_2, (uint8_t *) &tle->tle2, (uint8_t *) &tle2, sizeof(tle2));
         break;
     case CAN_ID_TLE_3:
-        if (isComplete(tle->_present)) resetTLE(tle);
-
         decodetle_3(p, &tle3);
-
-        tle->inc = tle3.tle_3_inc;
-        tle->raan = tle3.tle_3_raan;
-
-        tle->_present |= TLE_BIT_INC | TLE_BIT_RAAN;
+        updateSegment(tle, TLE_BIT_3, (uint8_t *) &tle->tle3, (uint8_t *) &tle3, sizeof(tle3));
         break;
     case CAN_ID_TLE_4:
-        if (isComplete(tle->_present)) resetTLE(tle);
-
         decodetle_4(p, &tle4);
-
-        tle->aop = tle4.tle_4_aop;
-        tle->ecc = tle4.tle_4_ecc;
-
-        tle->_present |= TLE_BIT_AOP | TLE_BIT_ECC;
+        updateSegment(tle, TLE_BIT_4, (uint8_t *) &tle->tle4, (uint8_t *) &tle4, sizeof(tle4));
         break;
     case CAN_ID_TLE_5:
-        if (isComplete(tle->_present)) resetTLE(tle);
-
         decodetle_5(p, &tle5);
-
-        tle->mna = tle5.tle_5_mna;
-
-        tle->_present |= TLE_BIT_MNA;
+        updateSegment(tle, TLE_BIT_5, (uint8_t *) &tle->tle5, (uint8_t *) &tle5, sizeof(tle5));
         break;
     case CAN_ID_TLE_6:
-        if (isComplete(tle->_present)) resetTLE(tle);
-
         decodetle_6(p, &tle6);
-
-        tle->mnm = tle6.tle_6_mnm;
-
-        tle->_present |= TLE_BIT_MNM;
+        updateSegment(tle, TLE_BIT_6, (uint8_t *) &tle->tle6, (uint8_t *) &tle6, sizeof(tle6));
         break;
     }
 }
 
 BOOL tleIsComplete(struct tle *tle)
 {
-    return isComplete(tle->_present);
-}
-
-FILE_STATIC BOOL isComplete(uint16_t presentSet)
-{
-    return presentSet == completeSet;
-}
-
-FILE_STATIC BOOL isTimedOut(uint64_t startTime)
-{
-    // this depends on the units of getTimeStampInt being 2^-8 s
-    return getTimeStampInt() - startTime > TLE_TIMEOUT_MS * 256000;
-}
-
-FILE_STATIC void resetTLE(struct tle *tle)
-{
-    tle->_present = 0;
-    tle->_startTime = getTimeStampInt();
+    // only recognize it as complete if each segment has been seen twice
+    return tle->_present1 == completeSet && tle->_present2 == completeSet;
 }

@@ -227,15 +227,15 @@ FILE_STATIC void setInputs()
     __disable_interrupt();
     if (tleIsComplete(&tle))
     {
-        rtU.orbit_TLE[0] = tle.year;
-        rtU.orbit_TLE[1] = tle.day;
-        rtU.orbit_TLE[2] = tle.bstar;
-        rtU.orbit_TLE[3] = tle.inc;
-        rtU.orbit_TLE[4] = tle.raan;
-        rtU.orbit_TLE[5] = tle.ecc;
-        rtU.orbit_TLE[6] = tle.aop;
-        rtU.orbit_TLE[7] = tle.mna;
-        rtU.orbit_TLE[8] = tle.mnm;
+        rtU.orbit_TLE[0] = tle.tle1.tle_1_year + 2000;
+        rtU.orbit_TLE[1] = tle.tle2.tle_2_day;
+        rtU.orbit_TLE[2] = tle.tle1.tle_1_bstar;
+        rtU.orbit_TLE[3] = tle.tle3.tle_3_inc;
+        rtU.orbit_TLE[4] = tle.tle3.tle_3_raan;
+        rtU.orbit_TLE[5] = tle.tle4.tle_4_ecc;
+        rtU.orbit_TLE[6] = tle.tle4.tle_4_aop;
+        rtU.orbit_TLE[7] = tle.tle5.tle_5_mna;
+        rtU.orbit_TLE[8] = tle.tle6.tle_6_mnm;
     }
     __enable_interrupt();
 }

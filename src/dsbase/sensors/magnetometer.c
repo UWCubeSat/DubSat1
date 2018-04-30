@@ -6,6 +6,7 @@
  */
 
 #include <stdint.h>
+#include <math.h>
 #include "magnetometer.h"
 
 #define MAX_BUFF_SIZE   0x25
@@ -142,6 +143,16 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
     mdata->convertedTemp = (double)((((double)mdata->rawTempA * 256.0)  +  (double) mdata->rawTempB * 1.0) / (8.0 * 16.0) + 25.0);
 
     return mdata;
+}
+
+float magConvertRawToTeslas(int16_t raw)
+{
+    return raw * MAG_CONVERSION_FACTOR_RAW_TO_TESLAS;
+}
+
+int16_t magConvertTeslasToRaw(float teslas)
+{
+    return roundf(teslas / MAG_CONVERSION_FACTOR_RAW_TO_TESLAS);
 }
 
 

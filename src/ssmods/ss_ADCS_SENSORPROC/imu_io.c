@@ -18,7 +18,7 @@
 FILE_STATIC IMUData *data;
 
 #if !ENABLE_IMU
-    FILE_STATIC IMUData mockData;
+FILE_STATIC IMUData mockData;
 #endif
 
 void imuioInit()
@@ -43,10 +43,9 @@ void imuioUpdate()
     uint8_t valid = 1;
 
     // set autocode inputs
-    // TODO fix units
-    rtU.omega_body_radps_gyro[0] = data->rawGyroX;
-    rtU.omega_body_radps_gyro[1] = data->rawGyroY;
-    rtU.omega_body_radps_gyro[2] = data->rawGyroZ;
+    rtU.omega_body_radps_gyro[0] = imuConvertRawToRPS(data->rawGyroX);
+    rtU.omega_body_radps_gyro[1] = imuConvertRawToRPS(data->rawGyroY);
+    rtU.omega_body_radps_gyro[2] = imuConvertRawToRPS(data->rawGyroZ);
     rtU.omega_body_radps_gyro[3] = valid;
 }
 
@@ -73,9 +72,9 @@ void imuioSendBackchannel()
 void imuioSendCAN()
 {
     sensorproc_imu gyro;
-    gyro.sensorproc_imu_x = rtY.omega_radps_processed[0];
-    gyro.sensorproc_imu_y = rtY.omega_radps_processed[1];
-    gyro.sensorproc_imu_z = rtY.omega_radps_processed[2];
+    gyro.sensorproc_imu_x = imuConvertRPSToRaw(rtY.omega_radps_processed[0]);
+    gyro.sensorproc_imu_y = imuConvertRPSToRaw(rtY.omega_radps_processed[1]);
+    gyro.sensorproc_imu_z = imuConvertRPSToRaw(rtY.omega_radps_processed[2]);
     gyro.sensorproc_imu_valid = rtY.omega_radps_processed[3];
     CANPacket packet;
     encodesensorproc_imu(&gyro, &packet);

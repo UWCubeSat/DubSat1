@@ -107,9 +107,8 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 #define TLM_ID_BDOT_FSW_COMMANDS 127 
 #define TLM_ID_DUTY_PERCENT 126
 // ---state machine---
-#define MEASUREMENT_PHASE 0 
-#define ACTUATION_PHASE 1
-#define WAIT_PHASE 2
+#define MEASUREMENT_PHASE CAN_ENUM_BOOL_FALSE
+#define ACTUATION_PHASE CAN_ENUM_BOOL_TRUE
 
 
 #endif /* ADCS_MTQ_H_ */

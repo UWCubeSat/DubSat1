@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'MSP_SP'.
  *
- * Model version                  : 1.347
+ * Model version                  : 1.359
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Mon Apr 16 23:50:11 2018
+ * C/C++ source code generated on : Fri Apr 27 17:45:09 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -28,8 +28,8 @@ const ConstP rtConstP = {
    *   '<S2>/Constant1'
    *   '<S3>/process_matrix'
    *   '<S3>/sensor2body'
-   *   '<S4>/process_matrix'
-   *   '<S4>/sensor2body'
+   *   '<S5>/process_matrix'
+   *   '<S5>/sensor2body'
    */
   { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F }
 };

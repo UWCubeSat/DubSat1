@@ -46,12 +46,13 @@ void turn_off_coils(void);
 void blink_LED(void);
 void set_pwm(char axis, int pwm_percent);
 void degauss_lol(void);
+int is_bdot_still_alive(void); 
 
 //--------CAN functions---------------
 void can_init(void);
 void can_packet_rx_callback(CANPacket *packet);
 void send_CAN_health_packet(void);
-void send_CAN_ack_packet(int command_source, int coil_state);
+void send_CAN_ack_packet(int command_source, int which_phase);
 
 //---------COSMOS functions--------------
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
@@ -59,7 +60,6 @@ void cosmos_init(void);
 void send_COSMOS_health_packet(void); 
 void send_COSMOS_meta_packet(void);
 void send_COSMOS_commands_packet(void);
-void send_COSMOS_telemetry_packet(void);
 void send_COSMOS_dooty_packet(void);
 
 //--------SFR initialization------
@@ -101,8 +101,10 @@ FILE_STATIC int measurement_time_ms = 2000;
 FILE_STATIC int stabalize_timer = 0;
 FILE_STATIC int stabalize_time_ms = 100;
 #pragma PERSISTENT(stabalize_time_ms)
-FILE_STATIC int LED_timer = 0;
+FILE_STATIC int LED_timer = 500;
 FILE_STATIC int LED_time_ms = 500;
+FILE_STATIC int bdot_death_timer = 0;
+FILE_STATIC int bdot_death_time_ms = 4000; // 4 second timeout 
 
 //-------state machine-----------
 
@@ -125,9 +127,9 @@ eMTQState curr_state;
 // Main 
 // TODO 
 // add dipole to CAN ack packet
-// add bdot timeout? 
-// fix fsw timeout 
-// fix blink LED function   
+// add fsw timeout 
+// fix manage telem function   
+// cntrl f DEBUG to see commented out sections 
 //------------------------------------------------------------------
 
 int main(void)
@@ -141,14 +143,11 @@ int main(void)
     can_init();                    // CAN initialization
 
     restartMTQ(); // restart 
-	start_LED_timer();
 	
     while (1)
     {
-		if (checkTimer(telem_timer)){
-			P3OUT ^= BIT5; // toggle LED 
-			start_LED_timer();
-		}
+		blink_LED(); 
+		
         // mtq control loop
         state_table[curr_state]();
 		
@@ -233,7 +232,7 @@ void fsw_actuation()
 
 void bdot_actuation() 
 {
-    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z))
+    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z) && is_bdot_still_alive())
     {
         set_pwm('x', bdot_command_x);
         set_pwm('y', bdot_command_y);
@@ -295,8 +294,12 @@ void manage_telemetry(void)
 {
     if (checkTimer(telem_timer))
     {
-		send_COSMOS_health_packet(); 
-		send_COSMOS_telemetry_packet();
+		void send_COSMOS_health_packet();
+		// commented out for DEBUG
+		/* 
+		void send_COSMOS_dooty_packet();
+		void send_COSMOS_meta_packet();
+		*/
         start_telem_timer(); // reset timer 
     }
 }
@@ -333,17 +336,16 @@ void turn_off_coils(void)
 
 void blink_LED(void)
 {
-	PJOUT |= BIT0|BIT1|BIT2; // debug lights 
-	_delay_cycles(50000); 
-	PJOUT &= ~(BIT0|BIT1|BIT2); // debug lights 
+	if (checkTimer(LED_timer)){
+		P3OUT ^= BIT5; // toggle LED 
+		start_LED_timer();
+	}
 }
 
 // sets the PWM duty cycles for each of the outputs based 
 // on the A3903 driver chip data sheet description for chopping mode 
 void set_pwm(char axis, int pwm_percent)  
 {
-    send_COSMOS_commands_packet();
-
 	// set duty cycles based on driver chopping mode 
 	int duty_1 = (pwm_percent >= 0) ? (100-pwm_percent) : 100;
 	int duty_2 = (pwm_percent < 0) ? (100-(-pwm_percent)): 100;
@@ -379,6 +381,8 @@ void set_pwm(char axis, int pwm_percent)
 		default: // unknown state 
 			break;
 	}
+	
+	send_COSMOS_commands_packet();
 }
 
 // outputs a (very shitty) discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
@@ -401,6 +405,15 @@ void degauss_lol(void)
 	}	
 }
 
+int is_bdot_still_alive(void)
+{
+	if (checkTimer(bdot_death_timer)){ // bdot has timed out 
+		return 0; 
+	} else {
+		return 1; 
+	}
+}
+
 //-------- CAN --------
 
 // can initialization 
@@ -414,6 +427,8 @@ void can_init(void)
 void can_packet_rx_callback(CANPacket *packet)
 {  
 	if (packet->id == CAN_ID_CMD_MTQ_BDOT && enable_command_update){
+		endPollingTimer(bdot_death_timer); // reset the bdot death timer 
+		timerPollInitializer(bdot_death_time_ms); // restart the bdot death timer 
 		cmd_mtq_bdot bdot_packet = {0};
         decodecmd_mtq_bdot(packet, &bdot_packet);
         // update global bdot command variables
@@ -436,7 +451,7 @@ void can_packet_rx_callback(CANPacket *packet)
 		cmd_ignore_fsw ignore = {0};
 	    decodecmd_ignore_fsw(packet, &ignore);
 		fsw_ignore = ignore.cmd_ignore_fsw_ignore;
-	}
+	} 
 }	
 
 void send_CAN_health_packet(void)
@@ -448,10 +463,18 @@ void send_CAN_health_packet(void)
     canSendPacket(&packet);
 }
 
-void send_CAN_ack_packet(int command_source, int coil_state)
+void send_CAN_ack_packet(int command_source, int which_phase)
 { 
 	mtq_ack ack = {0};
-	ack.mtq_ack_coils_state = coil_state;
+	// ack.mtq_ack_which_phase = which_phase; 
+	// ack.mtq_ack_command_source = command_source; 
+	// ack.mtq_ack_last_bdot_x = bdot_command_x; 
+	// ack.mtq_ack_last_bdot_y = bdot_command_y; 
+	// ack.mtq_ack_last_bdot_z = bdot_command_z;
+	// ack.mtq_ack_last_fsw_x = fsw_command_x; 
+	// ack.mtq_ack_last_fsw_y = fsw_command_y; 
+	// ack.mtq_ack_last_fsw_z = fsw_command_z; 
+	ack.mtq_ack_coils_state = which_phase;
 	ack.mtq_ack_node = command_source;
 	
 	CANPacket mtq_ack_packet; 
@@ -474,6 +497,8 @@ void cosmos_init(void)
     telem_timer = timerPollInitializer(telem_time_ms);
 }
 
+//commented out for DEBUG
+/*
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     if (mode == Mode_BinaryStreaming)
@@ -498,8 +523,9 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
     }
     return 1;
 }
+*/
 
-void send_COSMOS_health_packet(void)
+void send_COSMOS_health_packet()
 {
     healthSeg.oms = OMS_Unknown;
     healthSeg.inttemp = asensorReadIntTempC();
@@ -536,12 +562,6 @@ void send_COSMOS_dooty_packet()
 void send_COSMOS_meta_packet(void)
 {
     bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
-}
-
-void send_COSMOS_telemetry_packet()
-{
-    send_COSMOS_meta_packet();
-	send_COSMOS_dooty_packet(); 
 }
 
 //-------- special function registers config --------	

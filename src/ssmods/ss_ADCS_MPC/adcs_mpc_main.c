@@ -8,6 +8,9 @@
 #include "interfaces/canwrap.h"
 #include "core/timer.h"
 
+#include "sensors/magnetometer.h" // include for unit conversions
+#include "sensors/imu.h"
+
 #include "autocode/MSP_FSW.h"
 
 // Main status (a structure) and state and mode variables
@@ -16,24 +19,14 @@ FILE_STATIC ModuleStatus mod_status;
 
 // Autocode steps and timing
 FILE_STATIC flag_t triggerStepFlag = FALSE;
-FILE_STATIC void triggerStep();
-FILE_STATIC void rt_OneStep();
-FILE_STATIC void acceptInputs();
 
-// CAN input
-FILE_STATIC void canRxCallback(CANPacket *p);
+// CAN temporary input
 FILE_STATIC sp2fsw tmpSP2FSW;
-
-// CAN output
-FILE_STATIC void sendCANVelocityPointing();
-FILE_STATIC void sendCANOutputs();
+FILE_STATIC mtq_ack tmpMtqAck;
 
 // Backchannel telemerty
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
-
-FILE_STATIC void sendHealthSegment();
-FILE_STATIC void sendMetaSegment();
 
 /*
  * main.c
@@ -94,17 +87,19 @@ int main(void)
         while (!triggerStepFlag);
         triggerStepFlag = FALSE;
 
+        LED_OUT ^= LED_BIT;
+
         // check slow timer for non-autocode functions
         if (checkTimer(slowTimerHandle))
         {
             slowTimerHandle = timerPollInitializer(BACKCHANNEL_DELAY_MS);
 
-            LED_OUT ^= LED_BIT;
-
             // send basic subsystem telemetry
             // TODO move this to rollcall
             sendHealthSegment();
             sendMetaSegment();
+
+            sendBackchannelTelem();
         }
 
         // step autocode
@@ -116,7 +111,7 @@ int main(void)
 	return 0;
 }
 
-FILE_STATIC void triggerStep()
+void triggerStep()
 {
     triggerStepFlag = TRUE;
 }
@@ -223,7 +218,7 @@ void rt_OneStep(void)
         MSP_FSW_step1();
 
         /* Get model outputs here */
-        sendCANOutputs();
+        sendCANMtqCmd();
         break;
 
        case 2 :
@@ -266,35 +261,39 @@ void canRxCallback(CANPacket *p)
     {
     case CAN_ID_SENSORPROC_MAG:
         decodesensorproc_mag(p, &mag);
-        tmp_mag[0] = mag.sensorproc_mag_x;
-        tmp_mag[1] = mag.sensorproc_mag_y;
-        tmp_mag[2] = mag.sensorproc_mag_z;
+        tmp_mag[0] = magConvertRawToTeslas(mag.sensorproc_mag_x);
+        tmp_mag[1] = magConvertRawToTeslas(mag.sensorproc_mag_y);
+        tmp_mag[2] = magConvertRawToTeslas(mag.sensorproc_mag_z);
         tmp_mag[3] = mag.sensorproc_mag_valid;
         break;
     case CAN_ID_SENSORPROC_IMU:
         decodesensorproc_imu(p, &imu);
-        tmp_imu[0] = imu.sensorproc_imu_x;
-        tmp_imu[1] = imu.sensorproc_imu_y;
-        tmp_imu[2] = imu.sensorproc_imu_z;
+        tmp_imu[0] = imuConvertRawToRPS(imu.sensorproc_imu_x);
+        tmp_imu[1] = imuConvertRawToRPS(imu.sensorproc_imu_y);
+        tmp_imu[2] = imuConvertRawToRPS(imu.sensorproc_imu_z);
         tmp_imu[3] = imu.sensorproc_imu_valid;
         break;
     case CAN_ID_SENSORPROC_SUN:
         decodesensorproc_sun(p, &sun);
-        tmp_sun[0] = sun.sensorproc_sun_x / INT16_MAX;
+        tmp_sun[0] = sun.sensorproc_sun_x / INT16_MAX; // convert to unit vector
         tmp_sun[1] = sun.sensorproc_sun_y / INT16_MAX;
         tmp_sun[2] = sun.sensorproc_sun_z / INT16_MAX;
         tmp_sun[3] = sun.sensorproc_sun_valid;
         break;
-    // TODO get other CAN inputs
+    case CAN_ID_MTQ_ACK:
+        decodemtq_ack(p, &tmpMtqAck);
+        break;
+    // TODO get other CAN inputs (i.e. ESTIM's outputs)
     }
 }
 
-FILE_STATIC void acceptInputs()
+// copy CAN inputs from temporary storage to the autocode inputs
+void acceptInputs()
 {
     __disable_interrupt();
     /*
-     * TODO missing MT_valid, sc_in_sun, sc_above_gs, mag_eci_unit, sc2sun_unit
-     * (i.e. MT_valid and ESTIM's outputs)
+     * TODO missing sc_in_sun, sc_above_gs, mag_eci_unit, sc2sun_unit
+     * (i.e. ESTIM's outputs)
      */
 
     memcpy(rtU.mag_vec_body_T, tmpSP2FSW.mag_vec_body_T,
@@ -303,10 +302,19 @@ FILE_STATIC void acceptInputs()
            4 * sizeof(tmpSP2FSW.gyro_omega_body_radps[0]));
     memcpy(rtU.sun_vec_body_sunsensor, tmpSP2FSW.sun_vec_body_sunsensor,
            4 * sizeof(tmpSP2FSW.sun_vec_body_sunsensor[0]));
+
+    // TODO don't use magic numbers. 0 means measurement phase here
+    // TODO confirm interpretation that measurement phase == MT_valid
+    uint8_t i;
+    for (i = 0; i < 3; i++)
+    {
+        rtU.MT_valid[i] = tmpMtqAck.mtq_ack_node == 0;
+    }
+
     __enable_interrupt();
 }
 
-FILE_STATIC void sendCANVelocityPointing()
+void sendCANVelocityPointing()
 {
     CANPacket p;
     mpc_vp vp;
@@ -316,17 +324,42 @@ FILE_STATIC void sendCANVelocityPointing()
     canSendPacket(&p);
 }
 
-FILE_STATIC void sendCANOutputs()
+void sendCANMtqCmd()
 {
-    /*
-     * TODO send sc_quat, body_rates, sc_mode, sc_above_gsb, sc_modeb, and
-     * cmd_MT_fsw_dv.
-     */
+    // TODO may need to scale [-127, 128] range down to [-100, 100] if the
+    // autocode doesn't do this already
+    CANPacket p;
+    cmd_mtq_fsw cmd;
+    cmd.cmd_mtq_fsw_sc_mode = rtY.sc_mode;
+    cmd.cmd_mtq_fsw_x = rtY.cmd_MT_fsw_dv[0];
+    cmd.cmd_mtq_fsw_y = rtY.cmd_MT_fsw_dv[1];
+    cmd.cmd_mtq_fsw_z = rtY.cmd_MT_fsw_dv[2];
+    encodecmd_mtq_fsw(&cmd, &p);
+    canSendPacket(&p);
+}
+
+void sendBackchannelTelem()
+{
+    output_segment out;
+    memcpy(out.sc_quat, rtY.sc_quat, 4 * sizeof(rtY.sc_quat[0]));
+    memcpy(out.body_rates, rtY.body_rates, 3 * sizeof(rtY.body_rates[0]));
+    out.sc_mode = rtY.sc_mode; // TODO sc_mode or sc_modeb?
+    out.point_true = rtY.point_true;
+    out.sc_above_gs = rtY.sc_above_gsb;
+    bcbinPopulateHeader(&out.header, TLM_ID_OUTPUT, sizeof(out));
+    bcbinSendPacket((uint8_t *) &out, sizeof(out));
+
+    mtqcmd_segment cmd;
+    memcpy(cmd.cmd_MT_fsw_dv, rtY.cmd_MT_fsw_dv,
+           3 * sizeof(rtY.cmd_MT_fsw_dv[0]));
+    cmd.sc_mode = rtY.sc_modeb; // TODO sc_mode or sc_modeb?
+    bcbinPopulateHeader(&cmd.header, TLM_ID_MTQCMD, sizeof(cmd));
+    bcbinSendPacket((uint8_t *) &cmd, sizeof(cmd));
 }
 
 // Packetizes and sends backchannel health packet
 // also invokes uart status handler
-FILE_STATIC void sendHealthSegment()
+void sendHealthSegment()
 {
     // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
 
@@ -344,7 +377,7 @@ FILE_STATIC void sendHealthSegment()
     canSendPacket(&packet);
 }
 
-FILE_STATIC void sendMetaSegment()
+void sendMetaSegment()
 {
     bcbinPopulateMeta(&mseg, sizeof(mseg));
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
@@ -361,6 +394,9 @@ void handlePPTFiringNotification()
 // any period (in particular for testing, where we might spam the CAN bus with roll call queries)
 void handleRollCall()
 {
+    /*
+     * TODO send sc_quat, body_rates, sc_above_gs, and sc_mode
+     */
     __no_operation();
 }
 
