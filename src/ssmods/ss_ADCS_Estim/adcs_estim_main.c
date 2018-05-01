@@ -327,25 +327,25 @@ void canRxCallback(CANPacket *p)
     __enable_interrupt();
 
     cmd_rollcall rc;
+    grnd_epoch ep;
+    timeStamp t;
 
     switch (p->id)
     {
     case CAN_ID_CMD_ROLLCALL:
         decodecmd_rollcall(p, &rc);
-        timeStamp t = constructTimestamp(rc.cmd_rollcall_met,
-                                         rc.cmd_rollcall_met_overflow);
+        t = constructTimestamp(rc.cmd_rollcall_met,
+                               rc.cmd_rollcall_met_overflow);
         updateMET(t);
 
         // This is redundant if coreStartup is ever implemented
         handleRollCall();
         break;
-//    case CAN_ID_GRND_EPOCH:
-//        decodegrnd_epoch(p, &ep);
-//        timeStamp t = constructTimestamp(ep.grnd_epoch_val,
-//                                         ep.grnd_epoch_overflow);
-//        rtU.MET_epoch = metConvertToSeconds(t);
-//        break;
-        // TODO get MET epoch
+    case CAN_ID_GRND_EPOCH:
+        decodegrnd_epoch(p, &ep);
+        t = constructTimestamp(ep.grnd_epoch_val, ep.grnd_epoch_val_overflow);
+        rtU.MET_epoch = metConvertToSeconds(t);
+        break;
     }
 }
 
