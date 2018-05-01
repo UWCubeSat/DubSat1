@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'MSP_env_estim'.
  *
- * Model version                  : 1.356
+ * Model version                  : 1.361
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Wed Apr 25 18:02:39 2018
+ * C/C++ source code generated on : Mon Apr 30 18:18:31 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -62,6 +62,7 @@ typedef struct {
   real_T UnitDelay1_DSTATE_m[13];      /* '<S100>/Unit Delay1' */
   real_T RateTransition1_Buffer0[9];   /* '<S1>/Rate Transition1' */
   real_T RateTransition;               /* '<S1>/Rate Transition' */
+  real_T RateTransition4;              /* '<S1>/Rate Transition4' */
   real_T sqrt_e;                       /* '<S89>/sqrt' */
   real_T Product11;                    /* '<S129>/Product11' */
   real_T Product4;                     /* '<S130>/Product4' */
@@ -79,6 +80,7 @@ typedef struct {
   real_T UnitDelay2_DSTATE_e;          /* '<S97>/Unit Delay2' */
   real_T UnitDelay4_DSTATE;            /* '<S97>/Unit Delay4' */
   real_T RateTransition_Buffer0;       /* '<S1>/Rate Transition' */
+  real_T RateTransition4_Buffer0;      /* '<S1>/Rate Transition4' */
   real_T otime_PreviousInput;          /* '<S94>/otime' */
   real_T olon_PreviousInput;           /* '<S93>/olon' */
   real_T olat_PreviousInput;           /* '<S92>/olat' */
@@ -153,6 +155,7 @@ typedef struct {
 typedef struct {
   real_T orbit_TLE[9];                 /* '<Root>/orbit_tle' */
   real_T MET;                          /* '<Root>/MET' */
+  real_T MET_epoch;                    /* '<Root>/MET_epoch' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with auto storage) */
