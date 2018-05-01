@@ -43,50 +43,45 @@ void canBlast() {
 	encoderc_eps_gen_11(&rc_eps_gen_11_info, &rc_eps_gen_11_packet);
 	canSendPacket(&rc_eps_gen_11_packet);
 
-	__delay_cycles(10000);	CANPacket rc_eps_gen_10_packet = {0};
-	rc_eps_gen_10 rc_eps_gen_10_info = {0};
-	encoderc_eps_gen_10(&rc_eps_gen_10_info, &rc_eps_gen_10_packet);
-	canSendPacket(&rc_eps_gen_10_packet);
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_5_packet = {0};
+	rc_adcs_mtq_5 rc_adcs_mtq_5_info = {0};
+	encoderc_adcs_mtq_5(&rc_adcs_mtq_5_info, &rc_adcs_mtq_5_packet);
+	canSendPacket(&rc_adcs_mtq_5_packet);
 
-	__delay_cycles(10000);	CANPacket rc_eps_gen_19_packet = {0};
-	rc_eps_gen_19 rc_eps_gen_19_info = {0};
-	encoderc_eps_gen_19(&rc_eps_gen_19_info, &rc_eps_gen_19_packet);
-	canSendPacket(&rc_eps_gen_19_packet);
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_4_packet = {0};
+	rc_adcs_mtq_4 rc_adcs_mtq_4_info = {0};
+	encoderc_adcs_mtq_4(&rc_adcs_mtq_4_info, &rc_adcs_mtq_4_packet);
+	canSendPacket(&rc_adcs_mtq_4_packet);
 
-	__delay_cycles(10000);	CANPacket rc_eps_gen_18_packet = {0};
-	rc_eps_gen_18 rc_eps_gen_18_info = {0};
-	encoderc_eps_gen_18(&rc_eps_gen_18_info, &rc_eps_gen_18_packet);
-	canSendPacket(&rc_eps_gen_18_packet);
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_3_packet = {0};
+	rc_adcs_mtq_3 rc_adcs_mtq_3_info = {0};
+	encoderc_adcs_mtq_3(&rc_adcs_mtq_3_info, &rc_adcs_mtq_3_packet);
+	canSendPacket(&rc_adcs_mtq_3_packet);
 
-	__delay_cycles(10000);	CANPacket rc_eps_gen_17_packet = {0};
-	rc_eps_gen_17 rc_eps_gen_17_info = {0};
-	encoderc_eps_gen_17(&rc_eps_gen_17_info, &rc_eps_gen_17_packet);
-	canSendPacket(&rc_eps_gen_17_packet);
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_2_packet = {0};
+	rc_adcs_mtq_2 rc_adcs_mtq_2_info = {0};
+	encoderc_adcs_mtq_2(&rc_adcs_mtq_2_info, &rc_adcs_mtq_2_packet);
+	canSendPacket(&rc_adcs_mtq_2_packet);
 
-	__delay_cycles(10000);	CANPacket rc_eps_gen_15_packet = {0};
-	rc_eps_gen_15 rc_eps_gen_15_info = {0};
-	encoderc_eps_gen_15(&rc_eps_gen_15_info, &rc_eps_gen_15_packet);
-	canSendPacket(&rc_eps_gen_15_packet);
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_1_packet = {0};
+	rc_adcs_mtq_1 rc_adcs_mtq_1_info = {0};
+	encoderc_adcs_mtq_1(&rc_adcs_mtq_1_info, &rc_adcs_mtq_1_packet);
+	canSendPacket(&rc_adcs_mtq_1_packet);
 
-	__delay_cycles(10000);	CANPacket rc_eps_gen_16_packet = {0};
-	rc_eps_gen_16 rc_eps_gen_16_info = {0};
-	encoderc_eps_gen_16(&rc_eps_gen_16_info, &rc_eps_gen_16_packet);
-	canSendPacket(&rc_eps_gen_16_packet);
+	__delay_cycles(10000);	CANPacket rc_ppt_3_packet = {0};
+	rc_ppt_3 rc_ppt_3_info = {0};
+	encoderc_ppt_3(&rc_ppt_3_info, &rc_ppt_3_packet);
+	canSendPacket(&rc_ppt_3_packet);
 
-	__delay_cycles(10000);	CANPacket rc_eps_gen_13_packet = {0};
-	rc_eps_gen_13 rc_eps_gen_13_info = {0};
-	encoderc_eps_gen_13(&rc_eps_gen_13_info, &rc_eps_gen_13_packet);
-	canSendPacket(&rc_eps_gen_13_packet);
+	__delay_cycles(10000);	CANPacket rc_ppt_2_packet = {0};
+	rc_ppt_2 rc_ppt_2_info = {0};
+	encoderc_ppt_2(&rc_ppt_2_info, &rc_ppt_2_packet);
+	canSendPacket(&rc_ppt_2_packet);
 
-	__delay_cycles(10000);	CANPacket rc_eps_gen_14_packet = {0};
-	rc_eps_gen_14 rc_eps_gen_14_info = {0};
-	encoderc_eps_gen_14(&rc_eps_gen_14_info, &rc_eps_gen_14_packet);
-	canSendPacket(&rc_eps_gen_14_packet);
-
-	__delay_cycles(10000);	CANPacket rc_eps_gen_12_packet = {0};
-	rc_eps_gen_12 rc_eps_gen_12_info = {0};
-	encoderc_eps_gen_12(&rc_eps_gen_12_info, &rc_eps_gen_12_packet);
-	canSendPacket(&rc_eps_gen_12_packet);
+	__delay_cycles(10000);	CANPacket rc_ppt_1_packet = {0};
+	rc_ppt_1 rc_ppt_1_info = {0};
+	encoderc_ppt_1(&rc_ppt_1_info, &rc_ppt_1_packet);
+	canSendPacket(&rc_ppt_1_packet);
 
 	__delay_cycles(10000);	CANPacket rc_eps_gen_9_packet = {0};
 	rc_eps_gen_9 rc_eps_gen_9_info = {0};
