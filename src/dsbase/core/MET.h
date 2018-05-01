@@ -30,6 +30,9 @@ uint32_t getPrimaryTime();
 //returns the overflow time as an 8-bit integer
 uint8_t getOverflowTime();
 
+//returns a timestamp for the given primary and overflow time
+timeStamp constructTimestamp(uint32_t primary, uint8_t overflow);
+
 //updates MET to timeStamp and confirms
 void updateMET(timeStamp newTime);
 

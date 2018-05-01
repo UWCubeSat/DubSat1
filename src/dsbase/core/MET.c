@@ -96,6 +96,17 @@ double getTimeStampSeconds()
     return ((double) getTimeStampInt()) / 256.0;
 }
 
+timeStamp constructTimestamp(uint32_t primary, uint8_t overflow)
+{
+    timeStamp newTime = {0};
+    newTime.count1 = primary & 0xff;
+    newTime.count2 = (primary >> 8) & 0xff;
+    newTime.count3 = (primary >> 16) & 0xff;
+    newTime.count4 = (primary >> 24) & 0xff;
+    newTime.count5 = overflow;
+    return newTime;
+}
+
 #pragma vector=RTC_C_VECTOR
 __interrupt void RTC_ISR(void)
 {
