@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'MSP_env_estim'.
  *
- * Model version                  : 1.356
+ * Model version                  : 1.361
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Wed Apr 25 18:02:39 2018
+ * C/C++ source code generated on : Mon Apr 30 18:18:31 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
