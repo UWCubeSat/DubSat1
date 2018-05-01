@@ -46,24 +46,7 @@ VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ rc_eps_gen_11_pnl_1_power_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_11_pnl_1_power_max : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_19_pnl_3_temp_max : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_19_pnl_3_temp_avg : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_18_pnl_3_temp_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_18_pnl_2_temp_avg : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_17_pnl_2_temp_max : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_17_pnl_2_temp_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_15_pnl_3_power_avg : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_15_pnl_1_temp_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_16_pnl_1_temp_max : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_16_pnl_1_temp_avg : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_13_pnl_2_power_max : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_13_pnl_2_power_avg : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_14_pnl_3_power_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_14_pnl_3_power_max : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_12_pnl_2_power_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_12_pnl_1_power_avg : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
+ SG_ New_Signal_228 : 0|16@1+ (1,0) [0|20000] "mW" Vector__XXX
 
 BO_ 2452161039 rc_adcs_mtq_5: 2 Vector__XXX
  SG_ rc_adcs_mtq_5_reset_counts : 8|8@1+ (1,0) [0|0] "" Vector__XXX
@@ -122,41 +105,57 @@ BO_ 2452161032 rc_ppt_1: 7 Vector__XXX
  SG_ rc_ppt_1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
  SG_ rc_ppt_1_sysrstiv : 48|8@1+ (1,0) [0|256] "" Vector__XXX
 
-BO_ 2452161049 rc_eps_gen_10: 8 Vector__XXX
- SG_ rc_eps_gen_10_pnl_3_current_max : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_10_pnl_3_current_avg : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
-
 BO_ 2452161048 rc_eps_gen_9: 8 Vector__XXX
- SG_ rc_eps_gen_9_pnl_3_current_min : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_9_pnl_2_current_avg : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
+ SG_ rc_eps_gen_9_pnl_3_temp_min : 40|8@1- (1,0) [-128|127] "C" Vector__XXX
+ SG_ rc_eps_gen_9_pnl_3_temp_max : 48|8@1- (1,0) [-128|127] "C" Vector__XXX
+ SG_ rc_eps_gen_9_pnl_3_temp_avg : 56|8@1- (1,0) [-128|127] "C" Vector__XXX
+ SG_ rc_eps_gen_9_pnl_2_temp_min : 16|8@1- (1,0) [-128|127] "C" Vector__XXX
+ SG_ rc_eps_gen_9_pnl_2_temp_max : 24|8@1- (1,0) [-128|127] "C" Vector__XXX
+ SG_ rc_eps_gen_9_pnl_2_temp_avg : 32|8@1- (1,0) [-128|127] "C" Vector__XXX
+ SG_ rc_eps_gen_9_pnl_1_temp_max : 0|8@1- (1,0) [-128|127] "C" Vector__XXX
+ SG_ rc_eps_gen_9_pnl_1_temp_avg : 8|8@1- (1,0) [-128|127] "C" Vector__XXX
 
-BO_ 2452161047 rc_eps_gen_8: 8 Vector__XXX
- SG_ rc_eps_gen_8_pnl_2_current_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_8_pnl_2_current_max : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
+BO_ 2452161047 rc_eps_gen_8: 7 Vector__XXX
+ SG_ rc_eps_gen_8_pnl_3_power_min : 0|16@1+ (1,0) [0|20000] "mW" Vector__XXX
+ SG_ rc_eps_gen_8_pnl_3_power_max : 16|16@1+ (1,0) [0|20000] "mW" Vector__XXX
+ SG_ rc_eps_gen_8_pnl_3_power_avg : 32|16@1+ (1,0) [0|20000] "mW" Vector__XXX
+ SG_ rc_eps_gen_8_pnl_1_temp_min : 48|8@1- (1,0) [-128|127] "C" Vector__XXX
 
 BO_ 2452161046 rc_eps_gen_7: 8 Vector__XXX
- SG_ rc_eps_gen_7_pnl_1_current_max : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_7_pnl_1_current_avg : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
+ SG_ rc_eps_gen_7_pnl_2_power_min : 16|16@1+ (1,0) [0|20000] "mW" Vector__XXX
+ SG_ rc_eps_gen_7_pnl_2_power_max : 32|16@1+ (1,0) [0|20000] "mW" Vector__XXX
+ SG_ rc_eps_gen_7_pnl_2_power_avg : 48|16@1+ (1,0) [0|20000] "mW" Vector__XXX
+ SG_ rc_eps_gen_7_pnl_1_power_avg : 0|16@1+ (1,0) [0|20000] "mW" Vector__XXX
 
 BO_ 2452161045 rc_eps_gen_6: 8 Vector__XXX
- SG_ rc_eps_gen_6_pnl_3_voltage_avg : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_6_pnl_1_current_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
+ SG_ rc_eps_gen_6_pnl_3_current_max : 0|16@1+ (1,0) [0|1000] "mA" Vector__XXX
+ SG_ rc_eps_gen_6_pnl_3_current_avg : 16|16@1+ (1,0) [0|1000] "mA" Vector__XXX
+ SG_ rc_eps_gen_6_pnl_1_power_min : 32|16@1+ (1,0) [0|20000] "mW" Vector__XXX
+ SG_ rc_eps_gen_6_pnl_1_power_max : 48|16@1+ (1,0) [0|20000] "mW" Vector__XXX
 
 BO_ 2452161044 rc_eps_gen_5: 8 Vector__XXX
- SG_ rc_eps_gen_5_pnl_3_voltage_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_5_pnl_3_voltage_max : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
+ SG_ rc_eps_gen_5_pnl_3_current_min : 48|16@1+ (1,0) [0|1000] "mA" Vector__XXX
+ SG_ rc_eps_gen_5_pnl_2_current_min : 0|16@1+ (1,0) [0|1000] "mA" Vector__XXX
+ SG_ rc_eps_gen_5_pnl_2_current_max : 16|16@1+ (1,0) [0|1000] "mA" Vector__XXX
+ SG_ rc_eps_gen_5_pnl_2_current_avg : 32|16@1+ (1,0) [0|1000] "mA" Vector__XXX
 
 BO_ 2452161043 rc_eps_gen_4: 8 Vector__XXX
- SG_ rc_eps_gen_4_pnl_2_voltage_avg : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_4_pnl_2_voltage_max : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
+ SG_ rc_eps_gen_4_pnl_3_voltage_avg : 0|16@1+ (1,0) [0|20000] "mV" Vector__XXX
+ SG_ rc_eps_gen_4_pnl_1_current_min : 16|16@1- (1,0) [0|1000] "mA" Vector__XXX
+ SG_ rc_eps_gen_4_pnl_1_current_max : 32|16@1+ (1,0) [0|1000] "mA" Vector__XXX
+ SG_ rc_eps_gen_4_pnl_1_current_avg : 48|16@1+ (1,0) [0|1000] "mA" Vector__XXX
 
 BO_ 2452161042 rc_eps_gen_3: 8 Vector__XXX
- SG_ rc_eps_gen_3_pnl_1_voltage_avg : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_3_pnl_2_voltage_min : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
+ SG_ rc_eps_gen_3_pnl_3_voltage_min : 32|16@1+ (1,0) [0|20000] "mV" Vector__XXX
+ SG_ rc_eps_gen_3_pnl_3_voltage_max : 48|16@1+ (1,0) [0|20000] "mV" Vector__XXX
+ SG_ rc_eps_gen_3_pnl_2_voltage_max : 0|16@1+ (1,0) [0|20000] "mV" Vector__XXX
+ SG_ rc_eps_gen_3_pnl_2_voltage_avg : 16|16@1+ (1,0) [0|20000] "mV" Vector__XXX
 
 BO_ 2452161041 rc_eps_gen_2: 8 Vector__XXX
- SG_ rc_eps_gen_2_pnl_1_voltage_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_2_pnl_1_voltage_max : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
+ SG_ rc_eps_gen_2_pnl_2_voltage_min : 48|16@1+ (1,0) [0|20000] "mV" Vector__XXX
+ SG_ rc_eps_gen_2_pnl_1_voltage_min : 0|16@1+ (1,0) [0|20000] "mV" Vector__XXX
+ SG_ rc_eps_gen_2_pnl_1_voltage_max : 16|16@1+ (1,0) [0|20000] "mV" Vector__XXX
+ SG_ rc_eps_gen_2_pnl_1_voltage_avg : 32|16@1+ (1,0) [0|20000] "mV" Vector__XXX
 
 BO_ 2452161040 rc_eps_gen_1: 7 Vector__XXX
  SG_ rc_eps_gen_1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
@@ -429,42 +428,6 @@ VAL_ 2183266498 eps_batt_state_bal 1 "true" 0 "false" ;
 VAL_ 2183266498 eps_batt_state_heat 1 "true" 0 "false" ;
 VAL_ 2483355713 sensorproc_sun_valid 1 "true" 0 "false" ;
 VAL_ 2181496864 bdot_tumble_status_status 1 "true" 0 "false" ;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_11_pnl_1_power_min : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_11_pnl_1_power_max : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_19_pnl_3_temp_max : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_19_pnl_3_temp_avg : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_18_pnl_3_temp_min : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_18_pnl_2_temp_avg : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_17_pnl_2_temp_max : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_17_pnl_2_temp_min : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_15_pnl_3_power_avg : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_15_pnl_1_temp_min : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_16_pnl_1_temp_max : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_16_pnl_1_temp_avg : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_13_pnl_2_power_max : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_13_pnl_2_power_avg : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_14_pnl_3_power_min : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_14_pnl_3_power_max : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_12_pnl_2_power_min : 1;
-SIG_VALTYPE_ 3221225472 rc_eps_gen_12_pnl_1_power_avg : 1;
-SIG_VALTYPE_ 2452161049 rc_eps_gen_10_pnl_3_current_max : 1;
-SIG_VALTYPE_ 2452161049 rc_eps_gen_10_pnl_3_current_avg : 1;
-SIG_VALTYPE_ 2452161048 rc_eps_gen_9_pnl_3_current_min : 1;
-SIG_VALTYPE_ 2452161048 rc_eps_gen_9_pnl_2_current_avg : 1;
-SIG_VALTYPE_ 2452161047 rc_eps_gen_8_pnl_2_current_min : 1;
-SIG_VALTYPE_ 2452161047 rc_eps_gen_8_pnl_2_current_max : 1;
-SIG_VALTYPE_ 2452161046 rc_eps_gen_7_pnl_1_current_max : 1;
-SIG_VALTYPE_ 2452161046 rc_eps_gen_7_pnl_1_current_avg : 1;
-SIG_VALTYPE_ 2452161045 rc_eps_gen_6_pnl_3_voltage_avg : 1;
-SIG_VALTYPE_ 2452161045 rc_eps_gen_6_pnl_1_current_min : 1;
-SIG_VALTYPE_ 2452161044 rc_eps_gen_5_pnl_3_voltage_min : 1;
-SIG_VALTYPE_ 2452161044 rc_eps_gen_5_pnl_3_voltage_max : 1;
-SIG_VALTYPE_ 2452161043 rc_eps_gen_4_pnl_2_voltage_avg : 1;
-SIG_VALTYPE_ 2452161043 rc_eps_gen_4_pnl_2_voltage_max : 1;
-SIG_VALTYPE_ 2452161042 rc_eps_gen_3_pnl_1_voltage_avg : 1;
-SIG_VALTYPE_ 2452161042 rc_eps_gen_3_pnl_2_voltage_min : 1;
-SIG_VALTYPE_ 2452161041 rc_eps_gen_2_pnl_1_voltage_min : 1;
-SIG_VALTYPE_ 2452161041 rc_eps_gen_2_pnl_1_voltage_max : 1;
 SIG_VALTYPE_ 2457272393 tle_6_mnm : 2;
 SIG_VALTYPE_ 2457272392 tle_5_mna : 1;
 SIG_VALTYPE_ 2457272391 tle_4_aop : 1;
