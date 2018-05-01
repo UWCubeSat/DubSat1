@@ -45,6 +45,10 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2147484704 grnd_epoch: 5 Vector__XXX
+ SG_ grnd_epoch_val_overflow : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ grnd_epoch_val : 0|32@1+ (1,0) [0|4294967295] "2^-8 s" Vector__XXX
+
 BO_ 2449932980 estim_sun_unit_z: 8 Vector__XXX
  SG_ estim_sun_unit_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
 
