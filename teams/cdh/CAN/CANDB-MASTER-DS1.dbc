@@ -481,6 +481,8 @@ SIG_VALTYPE_ 2449932978 estim_sun_unit_x_val : 2;
 SIG_VALTYPE_ 2449932983 estim_mag_unit_z_val : 2;
 SIG_VALTYPE_ 2449932982 estim_mag_unit_y_val : 2;
 SIG_VALTYPE_ 2449932981 estim_mag_unit_x_val : 2;
+SIG_VALTYPE_ 2452161050 rc_eps_gen_11_pnl_1_power_min : 1;
+SIG_VALTYPE_ 2452161050 rc_eps_gen_11_pnl_1_power_max : 1;
 SIG_VALTYPE_ 2457272393 tle_6_mnm : 2;
 SIG_VALTYPE_ 2457272392 tle_5_mna : 1;
 SIG_VALTYPE_ 2457272391 tle_4_aop : 1;

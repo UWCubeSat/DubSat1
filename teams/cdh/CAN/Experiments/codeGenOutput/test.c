@@ -3,6 +3,21 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_3_packet = {0};
+	rc_adcs_bdot_3 rc_adcs_bdot_3_info = {0};
+	encoderc_adcs_bdot_3(&rc_adcs_bdot_3_info, &rc_adcs_bdot_3_packet);
+	canSendPacket(&rc_adcs_bdot_3_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_2_packet = {0};
+	rc_adcs_bdot_2 rc_adcs_bdot_2_info = {0};
+	encoderc_adcs_bdot_2(&rc_adcs_bdot_2_info, &rc_adcs_bdot_2_packet);
+	canSendPacket(&rc_adcs_bdot_2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_1_packet = {0};
+	rc_adcs_bdot_1 rc_adcs_bdot_1_info = {0};
+	encoderc_adcs_bdot_1(&rc_adcs_bdot_1_info, &rc_adcs_bdot_1_packet);
+	canSendPacket(&rc_adcs_bdot_1_packet);
+
 	__delay_cycles(10000);	CANPacket estim_sun_unit_z_packet = {0};
 	estim_sun_unit_z estim_sun_unit_z_info = {0};
 	encodeestim_sun_unit_z(&estim_sun_unit_z_info, &estim_sun_unit_z_packet);
