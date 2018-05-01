@@ -49,6 +49,7 @@ TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
     double met;
+    double epoch;
 } input_met_segment;
 
 TLM_SEGMENT {

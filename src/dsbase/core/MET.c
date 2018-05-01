@@ -80,9 +80,8 @@ timeStamp getTimeStamp()
 	return now;
 }
 
-uint64_t getTimeStampInt()
+uint64_t metConvertToInt(timeStamp t)
 {
-    timeStamp t = getTimeStamp();
     uint64_t res = (uint64_t) t.count1;
     res |= ((uint64_t) t.count2) << 8;
     res |= ((uint64_t) t.count3) << 16;
@@ -91,9 +90,9 @@ uint64_t getTimeStampInt()
     return res;
 }
 
-double getTimeStampSeconds()
+double metConvertToSeconds(timeStamp t)
 {
-    return ((double) getTimeStampInt()) / 256.0;
+    return ((double) metConvertToInt(t)) / 256.0;
 }
 
 timeStamp constructTimestamp(uint32_t primary, uint8_t overflow)

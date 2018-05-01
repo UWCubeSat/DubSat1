@@ -77,6 +77,9 @@ int main(void)
     tle.tle5.tle_5_id = 0;
     tle.tle5.tle_5_mna = 325.0288;
     tle.tle6.tle_6_mnm = 15.72125391;
+
+    // guess at the epoch
+    rtU.MET_epoch = (tle.tle1.tle_1_year * 365.24 + tle.tle2.tle_2_day) * 24 * 60 * 60;
 #endif
     tleInit(&tle, MOCK_TLE);
     canWrapInitWithFilter();
@@ -219,12 +222,7 @@ void handleRollCall()
 
 FILE_STATIC void setInputs()
 {
-    // TODO incorporate MET epoch (add J2000 of launch date to the uptime)
-    rtU.MET = getTimeStampSeconds();
-#if MOCK_TLE
-    // guess at the epoch
-    rtU.MET += ((tle.tle1.tle_1_year - 2000) * 365.24 + tle.tle2.tle_2_day) * 24 * 60 * 60;
-#endif
+    rtU.MET = metConvertToSeconds(getTimeStamp());
 
     // input the TLE unless we're in the middle of reading it from CAN
     // disable interrupts so the TLE isn't modified during read
@@ -264,6 +262,7 @@ FILE_STATIC void sendTelemOverBackchannel()
     // send MET
     input_met_segment metSeg;
     metSeg.met = rtU.MET;
+    metSeg.epoch = rtU.MET_epoch;
     bcbinPopulateHeader(&metSeg.header, TLM_ID_INPUT_MET, sizeof(metSeg));
     bcbinSendPacket((uint8_t *) &metSeg, sizeof(metSeg));
 
@@ -321,20 +320,32 @@ FILE_STATIC void sendTelemOverCAN()
     canSendPacket(&p);
 }
 
-void canRxCallback(CANPacket *packet)
+void canRxCallback(CANPacket *p)
 {
     __disable_interrupt();
-    tleUpdate(packet, &tle);
+    tleUpdate(p, &tle);
     __enable_interrupt();
 
     cmd_rollcall rc;
 
-    switch (packet->id)
+    switch (p->id)
     {
-    // TODO get MET epoch
     case CAN_ID_CMD_ROLLCALL:
-        decodecmd_rollcall(&p, &rc);
+        decodecmd_rollcall(p, &rc);
+        timeStamp t = constructTimestamp(rc.cmd_rollcall_met,
+                                         rc.cmd_rollcall_met_overflow);
+        updateMET(t);
+
+        // This is redundant if coreStartup is ever implemented
+        handleRollCall();
         break;
+//    case CAN_ID_GRND_EPOCH:
+//        decodegrnd_epoch(p, &ep);
+//        timeStamp t = constructTimestamp(ep.grnd_epoch_val,
+//                                         ep.grnd_epoch_overflow);
+//        rtU.MET_epoch = metConvertToSeconds(t);
+//        break;
+        // TODO get MET epoch
     }
 }
 
