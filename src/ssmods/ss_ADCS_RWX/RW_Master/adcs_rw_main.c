@@ -19,8 +19,8 @@ FILE_STATIC flag_t triggerState3;
 /*
  * main.c
  */
-#define ONE 1
-//#define TWO 2
+//#define ONE 1
+#define TWO 2
 void receive_packet(){
 
 }
