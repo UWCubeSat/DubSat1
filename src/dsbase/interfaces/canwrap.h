@@ -15,6 +15,9 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_RC_ADCS_BDOT_3 304677401
+#define CAN_ID_RC_ADCS_BDOT_2 304677383
+#define CAN_ID_RC_ADCS_BDOT_1 304677382
 #define CAN_ID_ESTIM_SUN_UNIT_Z 302449332
 #define CAN_ID_ESTIM_SUN_UNIT_Y 302449331
 #define CAN_ID_ESTIM_SUN_UNIT_X 302449330
@@ -155,6 +158,23 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct rc_adcs_bdot_3 {
+    uint8_t rc_adcs_bdot_3_tumble; //  (No Units)
+    int32_t rc_adcs_bdot_3_mag_avg; // nT
+} rc_adcs_bdot_3;
+
+typedef struct rc_adcs_bdot_2 {
+    int32_t rc_adcs_bdot_2_mag_min; // nT
+    int32_t rc_adcs_bdot_2_mag_max; // nT
+} rc_adcs_bdot_2;
+
+typedef struct rc_adcs_bdot_1 {
+    uint16_t rc_adcs_bdot_1_temp_min; // dK
+    uint16_t rc_adcs_bdot_1_temp_max; // dK
+    uint16_t rc_adcs_bdot_1_temp_avg; // dK
+    uint16_t rc_adcs_bdot_1_sysrstiv; //  (No Units)
+} rc_adcs_bdot_1;
+
 typedef struct estim_sun_unit_z {
     double estim_sun_unit_z_val; //  (No Units)
 } estim_sun_unit_z;
@@ -309,8 +329,8 @@ typedef struct rc_eps_gen_3 {
 
 typedef struct rc_eps_gen_2 {
     uint16_t rc_eps_gen_2_pnl_2_voltage_min; // mV
-    float rc_eps_gen_2_pnl_1_voltage_min; // mV
-    float rc_eps_gen_2_pnl_1_voltage_max; // mV
+    uint16_t rc_eps_gen_2_pnl_1_voltage_min; // mV
+    uint16_t rc_eps_gen_2_pnl_1_voltage_max; // mV
     uint16_t rc_eps_gen_2_pnl_1_voltage_avg; // mV
 } rc_eps_gen_2;
 
@@ -599,6 +619,15 @@ typedef struct sync_1 {
 typedef struct msp_temp {
     uint16_t msp_temp_temp; // dK
 } msp_temp;
+
+void encoderc_adcs_bdot_3(rc_adcs_bdot_3 *input, CANPacket* output);
+void decoderc_adcs_bdot_3(CANPacket *input, rc_adcs_bdot_3 *output);
+
+void encoderc_adcs_bdot_2(rc_adcs_bdot_2 *input, CANPacket* output);
+void decoderc_adcs_bdot_2(CANPacket *input, rc_adcs_bdot_2 *output);
+
+void encoderc_adcs_bdot_1(rc_adcs_bdot_1 *input, CANPacket* output);
+void decoderc_adcs_bdot_1(CANPacket *input, rc_adcs_bdot_1 *output);
 
 void encodeestim_sun_unit_z(estim_sun_unit_z *input, CANPacket* output);
 void decodeestim_sun_unit_z(CANPacket *input, estim_sun_unit_z *output);
