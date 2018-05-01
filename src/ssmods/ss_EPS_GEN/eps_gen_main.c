@@ -72,6 +72,8 @@ FILE_STATIC uint16_t panel1Temp;
 FILE_STATIC uint16_t panel2Temp;
 FILE_STATIC uint16_t panel3Temp;
 
+FILE_STATIC uint8_t rc_flag = 0;
+
 FILE_STATIC void genTempSensorsInit()
 {
     asensorInit(Ref_2p5V);
@@ -271,24 +273,6 @@ void handleSyncPulse2()
 
 void can_packet_rx_callback(CANPacket *packet)
 {
-    CANPacket rollcallPkt1 = {0};
-    rc_eps_gen_1 rollcallPkt1_info = {0};
-    CANPacket rollcallPkt2 = {0};
-    rc_eps_gen_2 rollcallPkt2_info = {0};
-    CANPacket rollcallPkt3 = {0};
-    rc_eps_gen_3 rollcallPkt3_info = {0};
-    CANPacket rollcallPkt4 = {0};
-    rc_eps_gen_4 rollcallPkt4_info = {0};
-    CANPacket rollcallPkt5 = {0};
-    rc_eps_gen_5 rollcallPkt5_info = {0};
-    CANPacket rollcallPkt6 = {0};
-    rc_eps_gen_6 rollcallPkt6_info = {0};
-    CANPacket rollcallPkt7 = {0};
-    rc_eps_gen_7 rollcallPkt7_info = {0};
-    CANPacket rollcallPkt8 = {0};
-    rc_eps_gen_8 rollcallPkt8_info = {0};
-    CANPacket rollcallPkt9 = {0};
-    rc_eps_gen_9 rollcallPkt9_info = {0};
     CANPacket rollcallPkt10 = {0};
     rc_eps_gen_10 rollcallPkt10_info = {0};
     CANPacket rollcallPkt11 = {0};
@@ -354,15 +338,7 @@ void can_packet_rx_callback(CANPacket *packet)
             rollcallPkt19_info.rc_eps_gen_19_pnl_3_temp_avg = getAvg_float(panel3Temp);
             rollcallPkt19_info.rc_eps_gen_19_pnl_3_temp_max = getMax_float(panel3Temp);
 
-            encoderc_eps_gen_1(&rollcallPkt1_info, &rollcallPkt1);
-            encoderc_eps_gen_2(&rollcallPkt2_info, &rollcallPkt2);
-            encoderc_eps_gen_3(&rollcallPkt3_info, &rollcallPkt3);
-            encoderc_eps_gen_4(&rollcallPkt4_info, &rollcallPkt4);
-            encoderc_eps_gen_5(&rollcallPkt5_info, &rollcallPkt5);
-            encoderc_eps_gen_6(&rollcallPkt6_info, &rollcallPkt6);
-            encoderc_eps_gen_7(&rollcallPkt7_info, &rollcallPkt7);
-            encoderc_eps_gen_8(&rollcallPkt8_info, &rollcallPkt8);
-            encoderc_eps_gen_9(&rollcallPkt9_info, &rollcallPkt9);
+
             encoderc_eps_gen_10(&rollcallPkt10_info, &rollcallPkt10);
             encoderc_eps_gen_11(&rollcallPkt11_info, &rollcallPkt11);
             encoderc_eps_gen_12(&rollcallPkt12_info, &rollcallPkt12);
@@ -500,6 +476,52 @@ int main(void)
             genBcSendHealth();
         }
         if (counter % 32 == 0) genBcSendMeta();
+    }
+    if(rcFlag)
+    {
+        CANPacket rollcallPkt1 = {0};
+        rc_eps_gen_1 rollcallPkt1_info = {0};
+        CANPacket rollcallPkt2 = {0};
+        rc_eps_gen_2 rollcallPkt2_info = {0};
+        CANPacket rollcallPkt3 = {0};
+        rc_eps_gen_3 rollcallPkt3_info = {0};
+        CANPacket rollcallPkt4 = {0};
+        rc_eps_gen_4 rollcallPkt4_info = {0};
+        CANPacket rollcallPkt5 = {0};
+        rc_eps_gen_5 rollcallPkt5_info = {0};
+        CANPacket rollcallPkt6 = {0};
+        rc_eps_gen_6 rollcallPkt6_info = {0};
+        CANPacket rollcallPkt7 = {0};
+        rc_eps_gen_7 rollcallPkt7_info = {0};
+        CANPacket rollcallPkt8 = {0};
+        rc_eps_gen_8 rollcallPkt8_info = {0};
+        CANPacket rollcallPkt9 = {0};
+        rc_eps_gen_9 rollcallPkt9_info = {0};
+        switch(rcFlag)
+        {
+            case 1:
+                //
+                encoderc_eps_gen_1(&rollcallPkt1_info, &rollcallPkt1);
+                encoderc_eps_gen_2(&rollcallPkt2_info, &rollcallPkt2);
+                encoderc_eps_gen_3(&rollcallPkt3_info, &rollcallPkt3);
+                //
+                break;
+            case 2:
+                //
+                encoderc_eps_gen_4(&rollcallPkt4_info, &rollcallPkt4);
+                encoderc_eps_gen_5(&rollcallPkt5_info, &rollcallPkt5);
+                encoderc_eps_gen_6(&rollcallPkt6_info, &rollcallPkt6);
+                //
+                break;
+            case 3:
+                //
+                encoderc_eps_gen_7(&rollcallPkt7_info, &rollcallPkt7);
+                encoderc_eps_gen_8(&rollcallPkt8_info, &rollcallPkt8);
+                encoderc_eps_gen_9(&rollcallPkt9_info, &rollcallPkt9);
+                //
+                break;
+        }
+        rcFlag--;
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
