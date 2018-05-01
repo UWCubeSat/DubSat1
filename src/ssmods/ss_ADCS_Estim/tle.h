@@ -4,14 +4,11 @@
  *  Created on: Apr 21, 2018
  *      Author: djdup
  *
- * Reads a TLE from CAN. A TLE is only recognized as complete if the last two
- * packets from each segment match.
+ * Reads a TLE from CAN. Each new TLE should flip the ID bit to reset the TLE.
  */
 
 #ifndef TLE_H_
 #define TLE_H_
-
-#define TLE_TIMEOUT_MS 500
 
 #include <stdint.h>
 #include "core/utils.h"
@@ -24,8 +21,8 @@ struct tle {
     tle_4 tle4;
     tle_5 tle5;
     tle_6 tle6;
-    uint8_t _present1;
-    uint8_t _present2;
+    uint32_t _present; // bit set for which packets are present
+    uint8_t _id;       // the ID matching between each packet
 };
 
 void tleInit(struct tle *tle, BOOL isPrepopulated);

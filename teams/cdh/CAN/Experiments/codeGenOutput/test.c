@@ -3,6 +3,146 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_3_packet = {0};
+	rc_adcs_bdot_3 rc_adcs_bdot_3_info = {0};
+	encoderc_adcs_bdot_3(&rc_adcs_bdot_3_info, &rc_adcs_bdot_3_packet);
+	canSendPacket(&rc_adcs_bdot_3_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_2_packet = {0};
+	rc_adcs_bdot_2 rc_adcs_bdot_2_info = {0};
+	encoderc_adcs_bdot_2(&rc_adcs_bdot_2_info, &rc_adcs_bdot_2_packet);
+	canSendPacket(&rc_adcs_bdot_2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_1_packet = {0};
+	rc_adcs_bdot_1 rc_adcs_bdot_1_info = {0};
+	encoderc_adcs_bdot_1(&rc_adcs_bdot_1_info, &rc_adcs_bdot_1_packet);
+	canSendPacket(&rc_adcs_bdot_1_packet);
+
+	__delay_cycles(10000);	CANPacket estim_sun_unit_z_packet = {0};
+	estim_sun_unit_z estim_sun_unit_z_info = {0};
+	encodeestim_sun_unit_z(&estim_sun_unit_z_info, &estim_sun_unit_z_packet);
+	canSendPacket(&estim_sun_unit_z_packet);
+
+	__delay_cycles(10000);	CANPacket estim_sun_unit_y_packet = {0};
+	estim_sun_unit_y estim_sun_unit_y_info = {0};
+	encodeestim_sun_unit_y(&estim_sun_unit_y_info, &estim_sun_unit_y_packet);
+	canSendPacket(&estim_sun_unit_y_packet);
+
+	__delay_cycles(10000);	CANPacket estim_sun_unit_x_packet = {0};
+	estim_sun_unit_x estim_sun_unit_x_info = {0};
+	encodeestim_sun_unit_x(&estim_sun_unit_x_info, &estim_sun_unit_x_packet);
+	canSendPacket(&estim_sun_unit_x_packet);
+
+	__delay_cycles(10000);	CANPacket estim_mag_unit_z_packet = {0};
+	estim_mag_unit_z estim_mag_unit_z_info = {0};
+	encodeestim_mag_unit_z(&estim_mag_unit_z_info, &estim_mag_unit_z_packet);
+	canSendPacket(&estim_mag_unit_z_packet);
+
+	__delay_cycles(10000);	CANPacket estim_mag_unit_y_packet = {0};
+	estim_mag_unit_y estim_mag_unit_y_info = {0};
+	encodeestim_mag_unit_y(&estim_mag_unit_y_info, &estim_mag_unit_y_packet);
+	canSendPacket(&estim_mag_unit_y_packet);
+
+	__delay_cycles(10000);	CANPacket estim_mag_unit_x_packet = {0};
+	estim_mag_unit_x estim_mag_unit_x_info = {0};
+	encodeestim_mag_unit_x(&estim_mag_unit_x_info, &estim_mag_unit_x_packet);
+	canSendPacket(&estim_mag_unit_x_packet);
+
+	__delay_cycles(10000);	CANPacket estim_state_packet = {0};
+	estim_state estim_state_info = {0};
+	encodeestim_state(&estim_state_info, &estim_state_packet);
+	canSendPacket(&estim_state_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_11_packet = {0};
+	rc_eps_gen_11 rc_eps_gen_11_info = {0};
+	encoderc_eps_gen_11(&rc_eps_gen_11_info, &rc_eps_gen_11_packet);
+	canSendPacket(&rc_eps_gen_11_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_5_packet = {0};
+	rc_adcs_mtq_5 rc_adcs_mtq_5_info = {0};
+	encoderc_adcs_mtq_5(&rc_adcs_mtq_5_info, &rc_adcs_mtq_5_packet);
+	canSendPacket(&rc_adcs_mtq_5_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_4_packet = {0};
+	rc_adcs_mtq_4 rc_adcs_mtq_4_info = {0};
+	encoderc_adcs_mtq_4(&rc_adcs_mtq_4_info, &rc_adcs_mtq_4_packet);
+	canSendPacket(&rc_adcs_mtq_4_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_3_packet = {0};
+	rc_adcs_mtq_3 rc_adcs_mtq_3_info = {0};
+	encoderc_adcs_mtq_3(&rc_adcs_mtq_3_info, &rc_adcs_mtq_3_packet);
+	canSendPacket(&rc_adcs_mtq_3_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_2_packet = {0};
+	rc_adcs_mtq_2 rc_adcs_mtq_2_info = {0};
+	encoderc_adcs_mtq_2(&rc_adcs_mtq_2_info, &rc_adcs_mtq_2_packet);
+	canSendPacket(&rc_adcs_mtq_2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_1_packet = {0};
+	rc_adcs_mtq_1 rc_adcs_mtq_1_info = {0};
+	encoderc_adcs_mtq_1(&rc_adcs_mtq_1_info, &rc_adcs_mtq_1_packet);
+	canSendPacket(&rc_adcs_mtq_1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_ppt_3_packet = {0};
+	rc_ppt_3 rc_ppt_3_info = {0};
+	encoderc_ppt_3(&rc_ppt_3_info, &rc_ppt_3_packet);
+	canSendPacket(&rc_ppt_3_packet);
+
+	__delay_cycles(10000);	CANPacket rc_ppt_2_packet = {0};
+	rc_ppt_2 rc_ppt_2_info = {0};
+	encoderc_ppt_2(&rc_ppt_2_info, &rc_ppt_2_packet);
+	canSendPacket(&rc_ppt_2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_ppt_1_packet = {0};
+	rc_ppt_1 rc_ppt_1_info = {0};
+	encoderc_ppt_1(&rc_ppt_1_info, &rc_ppt_1_packet);
+	canSendPacket(&rc_ppt_1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_9_packet = {0};
+	rc_eps_gen_9 rc_eps_gen_9_info = {0};
+	encoderc_eps_gen_9(&rc_eps_gen_9_info, &rc_eps_gen_9_packet);
+	canSendPacket(&rc_eps_gen_9_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_8_packet = {0};
+	rc_eps_gen_8 rc_eps_gen_8_info = {0};
+	encoderc_eps_gen_8(&rc_eps_gen_8_info, &rc_eps_gen_8_packet);
+	canSendPacket(&rc_eps_gen_8_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_7_packet = {0};
+	rc_eps_gen_7 rc_eps_gen_7_info = {0};
+	encoderc_eps_gen_7(&rc_eps_gen_7_info, &rc_eps_gen_7_packet);
+	canSendPacket(&rc_eps_gen_7_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_6_packet = {0};
+	rc_eps_gen_6 rc_eps_gen_6_info = {0};
+	encoderc_eps_gen_6(&rc_eps_gen_6_info, &rc_eps_gen_6_packet);
+	canSendPacket(&rc_eps_gen_6_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_5_packet = {0};
+	rc_eps_gen_5 rc_eps_gen_5_info = {0};
+	encoderc_eps_gen_5(&rc_eps_gen_5_info, &rc_eps_gen_5_packet);
+	canSendPacket(&rc_eps_gen_5_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_4_packet = {0};
+	rc_eps_gen_4 rc_eps_gen_4_info = {0};
+	encoderc_eps_gen_4(&rc_eps_gen_4_info, &rc_eps_gen_4_packet);
+	canSendPacket(&rc_eps_gen_4_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_3_packet = {0};
+	rc_eps_gen_3 rc_eps_gen_3_info = {0};
+	encoderc_eps_gen_3(&rc_eps_gen_3_info, &rc_eps_gen_3_packet);
+	canSendPacket(&rc_eps_gen_3_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_2_packet = {0};
+	rc_eps_gen_2 rc_eps_gen_2_info = {0};
+	encoderc_eps_gen_2(&rc_eps_gen_2_info, &rc_eps_gen_2_packet);
+	canSendPacket(&rc_eps_gen_2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_1_packet = {0};
+	rc_eps_gen_1 rc_eps_gen_1_info = {0};
+	encoderc_eps_gen_1(&rc_eps_gen_1_info, &rc_eps_gen_1_packet);
+	canSendPacket(&rc_eps_gen_1_packet);
+
 	__delay_cycles(10000);	CANPacket rc_eps_batt_6_packet = {0};
 	rc_eps_batt_6 rc_eps_batt_6_info = {0};
 	encoderc_eps_batt_6(&rc_eps_batt_6_info, &rc_eps_batt_6_packet);
@@ -242,6 +382,11 @@ void canBlast() {
 	msp_temp msp_temp_info = {0};
 	encodemsp_temp(&msp_temp_info, &msp_temp_packet);
 	canSendPacket(&msp_temp_packet);
+
+	__delay_cycles(10000);	CANPacket grnd_epoch_packet = {0};
+	grnd_epoch grnd_epoch_info = {0};
+	encodegrnd_epoch(&grnd_epoch_info, &grnd_epoch_packet);
+	canSendPacket(&grnd_epoch_packet);
 
 } 
 while (1) { 

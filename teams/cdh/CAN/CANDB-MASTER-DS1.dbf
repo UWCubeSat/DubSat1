@@ -5,22 +5,241 @@
 [PROTOCOL] CAN
 
 [BUSMASTER_VERSION] [1.7.2]
-[NUMBER_OF_MESSAGES] 38
+[NUMBER_OF_MESSAGES] 74
+[START_MSG] estim_sun_unit_z,302449332,8,1,1,X,Vector__XXX
+[START_SIGNALS] estim_sun_unit_z_val,64,1,0,D,1.7e+308,-1.7e+308,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] estim_sun_unit_y,302449331,8,1,1,X,Vector__XXX
+[START_SIGNALS] estim_sun_unit_y_val,64,1,0,D,1.7e+308,-1.7e+308,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] estim_sun_unit_x,302449330,8,1,1,X,Vector__XXX
+[START_SIGNALS] estim_sun_unit_x_val,64,1,0,D,1.7e+308,-1.7e+308,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] estim_mag_unit_z,302449335,8,1,1,X,Vector__XXX
+[START_SIGNALS] estim_mag_unit_z_val,64,1,0,D,1.7e+308,-1.7e+308,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] estim_mag_unit_y,302449334,8,1,1,X,Vector__XXX
+[START_SIGNALS] estim_mag_unit_y_val,64,1,0,D,1.7e+308,-1.7e+308,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] estim_mag_unit_x,302449333,8,1,1,X,Vector__XXX
+[START_SIGNALS] estim_mag_unit_x_val,64,1,0,D,1.7e+308,-1.7e+308,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] estim_state,302449336,1,2,1,X,Vector__XXX
+[START_SIGNALS] estim_state_in_sun,1,1,1,U,1.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
+[START_SIGNALS] estim_state_above_gs,1,1,0,U,1.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
+[END_MSG]
+
+[START_MSG] rc_eps_gen_11,304677402,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_11_pnl_1_power_min,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_11_pnl_1_power_max,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_10,304677401,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_10_pnl_3_current_max,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_10_pnl_3_current_avg,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_19,304677410,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_19_pnl_3_temp_max,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_19_pnl_3_temp_avg,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_18,304677409,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_18_pnl_3_temp_min,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_18_pnl_2_temp_avg,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_17,304677408,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_17_pnl_2_temp_max,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_17_pnl_2_temp_min,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_15,304677406,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_15_pnl_3_power_avg,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_15_pnl_1_temp_min,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_16,304677407,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_16_pnl_1_temp_max,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_16_pnl_1_temp_avg,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_13,304677404,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_13_pnl_2_power_max,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_13_pnl_2_power_avg,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_14,304677405,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_14_pnl_3_power_min,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_14_pnl_3_power_max,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_12,304677403,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_12_pnl_2_power_min,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_12_pnl_1_power_avg,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_9,304677400,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_9_pnl_3_current_min,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_9_pnl_2_current_avg,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_8,304677399,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_8_pnl_2_current_min,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_8_pnl_2_current_max,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_7,304677398,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_7_pnl_1_current_max,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_7_pnl_1_current_avg,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_6,304677397,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_6_pnl_3_voltage_avg,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_6_pnl_1_current_min,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_5,304677396,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_5_pnl_3_voltage_min,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_5_pnl_3_voltage_max,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_4,304677395,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_4_pnl_2_voltage_avg,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_4_pnl_2_voltage_max,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_3,304677394,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_3_pnl_1_voltage_avg,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_3_pnl_2_voltage_min,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_2,304677393,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_2_pnl_1_voltage_min,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_2_pnl_1_voltage_max,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,V,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_gen_1,304677392,7,4,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_1_temp_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_1_temp_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_1_temp_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_eps_gen_1_sysrstiv,8,7,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_batt_6,304677381,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_batt_6_soc_min,8,1,0,U,255.0,0.0,1,0.0,1.0,pct,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_6_soc_max,8,2,0,U,255.0,0.0,1,0.0,1.0,pct,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_6_soc_avg,8,3,0,U,255.0,0.0,1,0.0,1.0,pct,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_6_last_charge,40,4,0,U,1.09951162778e+12,0.0,1,0.0,1.0,2^-8 seconds,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_batt_5,304677380,8,5,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_batt_5_node_c_min,16,1,0,S,1000.0,-1000.0,1,0.0,1.0,dmA,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_5_node_c_max,16,3,0,S,1000.0,-1000.0,1,0.0,1.0,dmA,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_5_node_c_avg,16,5,0,S,1000.0,-1000.0,1,0.0,1.0,dmA,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_5_batt_temp_min,8,7,0,S,127.0,-128.0,1,0.0,1.0,deg C,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_5_batt_temp_max,8,8,0,S,127.0,-128.0,1,0.0,1.0,deg C,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_batt_4,304677379,7,5,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_4_voltage_min,16,1,0,U,10000.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_4_voltage_max,16,3,0,U,10000.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_4_voltage_avg,16,5,0,U,10000.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_4_heater_state,1,7,1,U,1.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
+[START_SIGNALS] rc_eps_batt_4_balancer_state,1,7,0,U,1.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
+[END_MSG]
+
+[START_MSG] rc_eps_batt_3,304677378,7,4,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_3_current_min,16,1,0,S,1200.0,-700.0,1,0.0,1.0,cA,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_3_current_max,16,3,0,S,1200.0,-700.0,1,0.0,1.0,cA,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_3_current_avg,16,5,0,S,1200.0,-700.0,1,0.0,1.0,cA,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_3_batt_temp_avg,8,7,0,S,127.0,-128.0,1,0.0,1.0,deg C,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_batt_2,304677377,6,3,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_2_node_v_min,16,1,0,U,10000.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_2_node_v_max,16,3,0,U,10000.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_2_node_v_avg,16,5,0,U,10000.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_batt_1,304677376,7,4,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_1_temp_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_1_temp_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_1_temp_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_1_sysrstiv,8,7,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] cmd_ppt_set_count,302252294,1,1,1,X,Vector__XXX
+[START_SIGNALS] cmd_ppt_set_count_count,8,1,0,U,30.0,0.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] cmd_ppt_time_upd,302252293,8,4,1,X,Vector__XXX
+[START_SIGNALS] cmd_ppt_time_upd_ign_charge,16,5,0,U,65535.0,0.0,1,0.0,1.0,2^-15s,,Vector__XXX
+[START_SIGNALS] cmd_ppt_time_upd_cooldown,16,7,0,U,65535.0,0.0,1,0.0,1.0,2^-15s,,Vector__XXX
+[START_SIGNALS] cmd_ppt_time_upd_ign_delay,16,3,0,U,65535.0,0.0,1,0.0,1.0,2^-15s,,Vector__XXX
+[START_SIGNALS] cmd_ppt_time_upd_charge,16,1,0,U,65535.0,0.0,1,0.0,1.0,2^-15s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] cmd_ppt_halt,285475076,1,1,1,X,Vector__XXX
+[START_SIGNALS] cmd_ppt_halt_confirm,1,1,0,U,1.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
+[END_MSG]
+
+[START_MSG] ppt_firing_result,304677104,8,6,1,X,Vector__XXX
+[START_SIGNALS] ppt_firing_result_panel_good,8,8,0,U,2.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "null",2
+[START_SIGNALS] ppt_firing_result_batt_good,8,7,0,S,2.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "null",2
+[START_SIGNALS] ppt_firing_result_coulmb_good,8,2,0,U,2.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "null",2
+[START_SIGNALS] ppt_firing_result_ign_time,16,5,0,U,65535.0,0.0,1,0.0,1.0,2^-15s,,Vector__XXX
+[START_SIGNALS] ppt_firing_result_main_time,16,3,0,U,65535.0,0.0,1,0.0,1.0,2^-15s,,Vector__XXX
+[START_SIGNALS] ppt_firing_result_code,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "fire successful",0
+[VALUE_DESCRIPTION] "fire overridden",1
+[VALUE_DESCRIPTION] "no charge",2
+[VALUE_DESCRIPTION] "no discharge",3
+[END_MSG]
+
 [START_MSG] tle_6,309788745,8,1,1,X,com_1
 [START_SIGNALS] tle_6_mnm,64,1,0,D,1.7e+308,-1.7e+308,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
-[START_MSG] tle_5,309788744,4,1,1,X,com_1
+[START_MSG] tle_5,309788744,5,2,1,X,com_1
+[START_SIGNALS] tle_5_id,1,5,0,U,1.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
 [START_SIGNALS] tle_5_mna,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
 [START_MSG] tle_4,309788743,8,2,1,X,com_1
 [START_SIGNALS] tle_4_aop,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] tle_4_ecc,32,1,0,F,1.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] tle_4_raan,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
 [START_MSG] tle_3,309788742,8,2,1,X,com_1
-[START_SIGNALS] tle_3_raan,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] tle_3_ecc,32,5,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] tle_3_inc,32,1,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
@@ -28,8 +247,11 @@
 [START_SIGNALS] tle_2_day,64,1,0,D,1.7e+308,-1.7e+308,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
-[START_MSG] tle_1,302448708,6,2,1,X,com_1
-[START_SIGNALS] tle_1_bstar,32,3,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,,,Vector__XXX
+[START_MSG] tle_1,302448708,6,3,1,X,com_1
+[START_SIGNALS] tle_1_id,1,6,0,U,1.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
+[START_SIGNALS] tle_1_bstar,32,2,0,F,3.4e+38,-3.4e+38,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] tle_1_year,8,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
@@ -153,18 +375,18 @@
 [END_MSG]
 
 [START_MSG] sensorproc_imu,335872066,7,4,1,X,adcs_sensorproc
-[START_SIGNALS] sensorproc_imu_z,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] sensorproc_imu_y,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] sensorproc_imu_x,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_imu_z,16,5,0,U,65535.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_imu_y,16,3,0,U,65535.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_imu_x,16,1,0,U,65535.0,0.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] sensorproc_imu_valid,1,7,0,U,1.0,0.0,1,0.0,1.0,bool,,Vector__XXX
 [VALUE_DESCRIPTION] "false",0
 [VALUE_DESCRIPTION] "true",1
 [END_MSG]
 
 [START_MSG] sensorproc_mag,335872067,7,4,1,X,adcs_sensorproc
-[START_SIGNALS] sensorproc_mag_z,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] sensorproc_mag_y,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] sensorproc_mag_x,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_mag_z,16,5,0,U,65535.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_mag_y,16,3,0,U,65535.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_mag_x,16,1,0,U,65535.0,0.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] sensorproc_mag_valid,1,7,0,U,1.0,0.0,1,0.0,1.0,bool,,Vector__XXX
 [VALUE_DESCRIPTION] "false",0
 [VALUE_DESCRIPTION] "true",1
@@ -174,7 +396,7 @@
 [START_SIGNALS] cmd_rollcall_type,8,7,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] cmd_rollcall_met_overflow,8,6,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] cmd_rollcall_met,32,2,0,U,4294967295.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] cmd_rollcall_state,8,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] cmd_rollcall_msp,8,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
 [VALUE_DESCRIPTION] "bad",0
 [VALUE_DESCRIPTION] "good",1
 [END_MSG]

@@ -62,6 +62,8 @@ FILE_STATIC float SOCAgArray[480] = {0};
 FILE_STATIC uint64_t lastFullChargeTime = 0;
 #pragma PERSISTENT(lastFullChargeTime);
 
+FILE_STATIC uint8_t rcFlag = 0;
+
 /* ------BATTERY BALANCER------ */
 FILE_STATIC void battInit()
 {       BATTERY_BALANCER_ENABLE_DIR |= BATTERY_BALANCER_ENABLE_BIT; //Initialize battery balancer enable register pin
@@ -191,76 +193,10 @@ void readTempSensor(){
 
 void can_packet_rx_callback(CANPacket *packet)
 {
-    CANPacket rollcallPkt1 = {0};
-    rc_eps_batt_1 rollcallPkt1_info = {0};
-    CANPacket rollcallPkt2 = {0};
-    rc_eps_batt_2 rollcallPkt2_info = {0};
-    CANPacket rollcallPkt3 = {0};
-    rc_eps_batt_3 rollcallPkt3_info = {0};
-    CANPacket rollcallPkt4 = {0};
-    rc_eps_batt_4 rollcallPkt4_info = {0};
-    CANPacket rollcallPkt5 = {0};
-    rc_eps_batt_5 rollcallPkt5_info = {0};
-    CANPacket rollcallPkt6 = {0};
-    rc_eps_batt_6 rollcallPkt6_info = {0};
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-
-            rollcallPkt1_info.rc_eps_batt_1_sysrstiv = bspGetResetCount();
-            rollcallPkt1_info.rc_eps_batt_1_temp_avg = 0;//asensorReadIntTempC(); //TODO: this
-            rollcallPkt1_info.rc_eps_batt_1_temp_max = 0;//asensorReadIntTempC(); //TODO: this
-            rollcallPkt1_info.rc_eps_batt_1_temp_min = 0;//asensorReadIntTempC(); //TODO: this
-
-            rollcallPkt2_info.rc_eps_batt_2_node_v_avg = getAvg_float(nodeVoltageAg);
-            rollcallPkt2_info.rc_eps_batt_2_node_v_max = getMax_float(nodeVoltageAg);
-            rollcallPkt2_info.rc_eps_batt_2_node_v_min = getMin_float(nodeVoltageAg);
-
-            rollcallPkt3_info.rc_eps_batt_3_batt_temp_avg = getAvg_float(tempAg);
-            rollcallPkt3_info.rc_eps_batt_3_current_avg = getAvg_float(currentAg);
-            rollcallPkt3_info.rc_eps_batt_3_current_max = getMax_float(currentAg);
-            rollcallPkt3_info.rc_eps_batt_3_current_min = getMin_float(currentAg);
-
-            rollcallPkt4_info.rc_eps_batt_4_balancer_state = (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) != 0;
-            rollcallPkt4_info.rc_eps_batt_4_heater_state = (HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) != 0;
-            rollcallPkt4_info.rc_eps_batt_4_voltage_avg = getAvg_float(voltageAg);
-            rollcallPkt4_info.rc_eps_batt_4_voltage_max = getMax_float(voltageAg);
-            rollcallPkt4_info.rc_eps_batt_4_voltage_min = getMin_float(voltageAg);
-
-            rollcallPkt5_info.rc_eps_batt_5_batt_temp_max = getMax_float(tempAg);
-            rollcallPkt5_info.rc_eps_batt_5_batt_temp_min = getMin_float(tempAg);
-            rollcallPkt5_info.rc_eps_batt_5_node_c_avg = getAvg_float(currentAg);
-            rollcallPkt5_info.rc_eps_batt_5_node_c_max = getMax_float(currentAg);
-            rollcallPkt5_info.rc_eps_batt_5_node_c_min = getMin_float(currentAg);
-
-            rollcallPkt6_info.rc_eps_batt_6_last_charge = lastFullChargeTime;
-            rollcallPkt6_info.rc_eps_batt_6_soc_avg = getAvg_float(SOCAg);
-            rollcallPkt6_info.rc_eps_batt_6_soc_max = getMax_float(SOCAg);
-            rollcallPkt6_info.rc_eps_batt_6_soc_min = getMin_float(SOCAg);
-
-            encoderc_eps_batt_1(&rollcallPkt1_info, &rollcallPkt1);
-            encoderc_eps_batt_2(&rollcallPkt2_info, &rollcallPkt2);
-            encoderc_eps_batt_3(&rollcallPkt3_info, &rollcallPkt3);
-            encoderc_eps_batt_4(&rollcallPkt4_info, &rollcallPkt4);
-            encoderc_eps_batt_5(&rollcallPkt5_info, &rollcallPkt5);
-            encoderc_eps_batt_6(&rollcallPkt6_info, &rollcallPkt6);
-            canSendPacket(&rollcallPkt1);
-            __delay_cycles(32000);
-            canSendPacket(&rollcallPkt2);
-            __delay_cycles(32000);
-            canSendPacket(&rollcallPkt3);
-            __delay_cycles(32000);
-            canSendPacket(&rollcallPkt4);
-            __delay_cycles(32000);
-            canSendPacket(&rollcallPkt5);
-            __delay_cycles(32000);
-            canSendPacket(&rollcallPkt6);
-            resetAvg_float(tempAg);
-            resetAvg_float(voltageAg);
-            resetAvg_float(currentAg);
-            resetAvg_float(nodeVoltageAg);
-            resetAvg_float(nodeCurrentAg);
-            resetAvg_float(SOCAg);
+            rcFlag = 2;
             break;
         default:
             break;
@@ -312,18 +248,19 @@ int main(void)
     battControlBalancer(Cmd_AutoEnable);
     //battControlHeater(Cmd_AutoEnable);
 
-    tempAg = init_float(tempAgArray, 1);
-    voltageAg = init_float(voltageAgArray, 1);
-    currentAg = init_float(currentAgArray, 1);
-    nodeVoltageAg = init_float(nodeVoltageAgArray, 1);
-    nodeCurrentAg = init_float(nodeCurrentAgArray, 1);
-    SOCAg = init_float(SOCAgArray, 1);
+    tempAg = init_float(tempAgArray, 480);
+    voltageAg = init_float(voltageAgArray, 480);
+    currentAg = init_float(currentAgArray, 480);
+    nodeVoltageAg = init_float(nodeVoltageAgArray, 480);
+    nodeCurrentAg = init_float(nodeCurrentAgArray, 480);
+    SOCAg = init_float(SOCAgArray, 480);
 
     previousTemp = asensorReadSingleSensorV(hTempC);
     uint16_t counter;
     while (1)
     {
         counter++;
+
         LED_OUT ^= LED_BIT;
         __delay_cycles(0.125 * SEC);
 
@@ -364,6 +301,76 @@ int main(void)
         if (counter % 32 ==0)
         {
             battBcSendMeta();
+        }
+        if(rcFlag)
+        {
+            CANPacket rollcallPkt1 = {0};
+            rc_eps_batt_1 rollcallPkt1_info = {0};
+            CANPacket rollcallPkt2 = {0};
+            rc_eps_batt_2 rollcallPkt2_info = {0};
+            CANPacket rollcallPkt3 = {0};
+            rc_eps_batt_3 rollcallPkt3_info = {0};
+            CANPacket rollcallPkt4 = {0};
+            rc_eps_batt_4 rollcallPkt4_info = {0};
+            CANPacket rollcallPkt5 = {0};
+            rc_eps_batt_5 rollcallPkt5_info = {0};
+            CANPacket rollcallPkt6 = {0};
+            rc_eps_batt_6 rollcallPkt6_info = {0};
+            switch(rcFlag)
+            {
+                case 1:
+                    rollcallPkt1_info.rc_eps_batt_1_sysrstiv = bspGetResetCount();
+                    rollcallPkt1_info.rc_eps_batt_1_temp_avg = 0;//asensorReadIntTempC(); //TODO: this
+                    rollcallPkt1_info.rc_eps_batt_1_temp_max = 0;//asensorReadIntTempC(); //TODO: this
+                    rollcallPkt1_info.rc_eps_batt_1_temp_min = 0;//asensorReadIntTempC(); //TODO: this
+                    encoderc_eps_batt_1(&rollcallPkt1_info, &rollcallPkt1);
+                    canSendPacket(&rollcallPkt1);
+
+                    rollcallPkt2_info.rc_eps_batt_2_node_v_avg = getAvg_float(nodeVoltageAg);
+                    rollcallPkt2_info.rc_eps_batt_2_node_v_max = getMax_float(nodeVoltageAg);
+                    rollcallPkt2_info.rc_eps_batt_2_node_v_min = getMin_float(nodeVoltageAg);
+                    encoderc_eps_batt_2(&rollcallPkt2_info, &rollcallPkt2);
+                    canSendPacket(&rollcallPkt2);
+                    resetAvg_float(nodeVoltageAg);
+
+                    rollcallPkt3_info.rc_eps_batt_3_batt_temp_avg = getAvg_float(tempAg);
+                    rollcallPkt3_info.rc_eps_batt_3_current_avg = getAvg_float(currentAg);
+                    rollcallPkt3_info.rc_eps_batt_3_current_max = getMax_float(currentAg);
+                    rollcallPkt3_info.rc_eps_batt_3_current_min = getMin_float(currentAg);
+                    encoderc_eps_batt_3(&rollcallPkt3_info, &rollcallPkt3);
+                    canSendPacket(&rollcallPkt3);
+                    resetAvg_float(tempAg);
+                    resetAvg_float(currentAg);
+                    resetAvg_float(nodeCurrentAg);
+                    break;
+                case 2:
+                    rollcallPkt4_info.rc_eps_batt_4_balancer_state = (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) != 0;
+                    rollcallPkt4_info.rc_eps_batt_4_heater_state = (HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) != 0;
+                    rollcallPkt4_info.rc_eps_batt_4_voltage_avg = getAvg_float(voltageAg);
+                    rollcallPkt4_info.rc_eps_batt_4_voltage_max = getMax_float(voltageAg);
+                    rollcallPkt4_info.rc_eps_batt_4_voltage_min = getMin_float(voltageAg);
+                    encoderc_eps_batt_4(&rollcallPkt4_info, &rollcallPkt4);
+                    canSendPacket(&rollcallPkt4);
+                    resetAvg_float(voltageAg);
+
+                    rollcallPkt5_info.rc_eps_batt_5_batt_temp_max = getMax_float(tempAg);
+                    rollcallPkt5_info.rc_eps_batt_5_batt_temp_min = getMin_float(tempAg);
+                    rollcallPkt5_info.rc_eps_batt_5_node_c_avg = getAvg_float(nodeVoltageAg);
+                    rollcallPkt5_info.rc_eps_batt_5_node_c_max = getMax_float(nodeVoltageAg);
+                    rollcallPkt5_info.rc_eps_batt_5_node_c_min = getMin_float(nodeVoltageAg);
+                    encoderc_eps_batt_5(&rollcallPkt5_info, &rollcallPkt5);
+                    canSendPacket(&rollcallPkt5);
+
+                    rollcallPkt6_info.rc_eps_batt_6_last_charge = lastFullChargeTime;
+                    rollcallPkt6_info.rc_eps_batt_6_soc_avg = getAvg_float(SOCAg);
+                    rollcallPkt6_info.rc_eps_batt_6_soc_max = getMax_float(SOCAg);
+                    rollcallPkt6_info.rc_eps_batt_6_soc_min = getMin_float(SOCAg);
+                    encoderc_eps_batt_6(&rollcallPkt6_info, &rollcallPkt6);
+                    canSendPacket(&rollcallPkt6);
+                    resetAvg_float(SOCAg);
+                    break;
+            }
+            rcFlag--;
         }
      }
 

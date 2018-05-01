@@ -40,6 +40,21 @@ void METInit(uint8_t _isDist)
 	    confirmed = 0;
 }
 
+uint32_t getPrimaryTime()
+{
+    timeStamp t = getTimeStamp();
+    uint32_t res = (uint32_t) RTCCNT1;
+    res |= ((uint32_t) RTCCNT2) << 8;
+    res |= ((uint32_t) RTCCNT3) << 16;
+    res |= ((uint32_t) RTCCNT4) << 24;
+    return res;
+}
+
+uint8_t getOverflowTime()
+{
+    return recentTime.count5;
+}
+
 void updateMET(timeStamp newTime)
 {
     RTCCTL13 |= RTCHOLD;
@@ -65,9 +80,8 @@ timeStamp getTimeStamp()
 	return now;
 }
 
-uint64_t getTimeStampInt()
+uint64_t metConvertToInt(timeStamp t)
 {
-    timeStamp t = getTimeStamp();
     uint64_t res = (uint64_t) t.count1;
     res |= ((uint64_t) t.count2) << 8;
     res |= ((uint64_t) t.count3) << 16;
@@ -76,9 +90,20 @@ uint64_t getTimeStampInt()
     return res;
 }
 
-double getTimeStampSeconds()
+double metConvertToSeconds(timeStamp t)
 {
-    return ((double) getTimeStampInt()) / 256.0;
+    return ((double) metConvertToInt(t)) / 256.0;
+}
+
+timeStamp constructTimestamp(uint32_t primary, uint8_t overflow)
+{
+    timeStamp newTime = {0};
+    newTime.count1 = primary & 0xff;
+    newTime.count2 = (primary >> 8) & 0xff;
+    newTime.count3 = (primary >> 16) & 0xff;
+    newTime.count4 = (primary >> 24) & 0xff;
+    newTime.count5 = overflow;
+    return newTime;
 }
 
 #pragma vector=RTC_C_VECTOR
