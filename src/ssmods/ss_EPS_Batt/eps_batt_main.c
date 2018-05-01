@@ -312,12 +312,12 @@ int main(void)
     battControlBalancer(Cmd_AutoEnable);
     //battControlHeater(Cmd_AutoEnable);
 
-    tempAg = init_float(tempAgArray, 1);
-    voltageAg = init_float(voltageAgArray, 1);
-    currentAg = init_float(currentAgArray, 1);
-    nodeVoltageAg = init_float(nodeVoltageAgArray, 1);
-    nodeCurrentAg = init_float(nodeCurrentAgArray, 1);
-    SOCAg = init_float(SOCAgArray, 1);
+    tempAg = init_float(tempAgArray, 480);
+    voltageAg = init_float(voltageAgArray, 480);
+    currentAg = init_float(currentAgArray, 480);
+    nodeVoltageAg = init_float(nodeVoltageAgArray, 480);
+    nodeCurrentAg = init_float(nodeCurrentAgArray, 480);
+    SOCAg = init_float(SOCAgArray, 480);
 
     previousTemp = asensorReadSingleSensorV(hTempC);
     uint16_t counter;

@@ -22,22 +22,7 @@ FILE_STATIC health_segment hseg;
 
 // The latest TLE from CAN is held here and passed to autocode on each step
 // TODO initialize it with a recent TLE before launch?
-#if MOCK_TLE
-// TLE taken from Wikipedia example
-FILE_STATIC struct tle tle = {
-                              2008,
-                              264.51782528,
-                              -.11606E-4,
-                              51.6416,
-                              247.4627,
-                              .0006703,
-                              130.5360,
-                              325.0288,
-                              15.72125391
-};
-#else
 FILE_STATIC struct tle tle;
-#endif /* MOCK_TLE */
 
 FILE_STATIC void setInputs();
 FILE_STATIC void sendTelemOverBackchannel();
@@ -78,6 +63,21 @@ int main(void)
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
+#if MOCK_TLE
+    // TLE taken from Wikipedia example
+    // ID = 0
+    tle.tle1.tle_1_id = 0;
+    tle.tle1.tle_1_year = 8;
+    tle.tle1.tle_1_bstar = -.11606E-4;
+    tle.tle2.tle_2_day = 264.51782528;
+    tle.tle3.tle_3_ecc = .0006703;
+    tle.tle3.tle_3_inc = 51.6416;
+    tle.tle4.tle_4_aop = 130.5360;
+    tle.tle4.tle_4_raan = 247.4627;
+    tle.tle5.tle_5_id = 0;
+    tle.tle5.tle_5_mna = 325.0288;
+    tle.tle6.tle_6_mnm = 15.72125391;
+#endif
     tleInit(&tle, MOCK_TLE);
     canWrapInitWithFilter();
     setCANPacketRxCallback(canRxCallback);
@@ -219,7 +219,7 @@ void handleRollCall()
 
 FILE_STATIC void setInputs()
 {
-    // TODO verify units
+    // TODO incorporate MET epoch (add J2000 of launch date to the uptime)
     rtU.MET = getTimeStampSeconds();
 
     // input the TLE unless we're in the middle of reading it from CAN
@@ -231,8 +231,8 @@ FILE_STATIC void setInputs()
         rtU.orbit_TLE[1] = tle.tle2.tle_2_day;
         rtU.orbit_TLE[2] = tle.tle1.tle_1_bstar;
         rtU.orbit_TLE[3] = tle.tle3.tle_3_inc;
-        rtU.orbit_TLE[4] = tle.tle3.tle_3_raan;
-        rtU.orbit_TLE[5] = tle.tle4.tle_4_ecc;
+        rtU.orbit_TLE[4] = tle.tle4.tle_4_raan;
+        rtU.orbit_TLE[5] = tle.tle3.tle_3_ecc;
         rtU.orbit_TLE[6] = tle.tle4.tle_4_aop;
         rtU.orbit_TLE[7] = tle.tle5.tle_5_mna;
         rtU.orbit_TLE[8] = tle.tle6.tle_6_mnm;
@@ -243,18 +243,19 @@ FILE_STATIC void setInputs()
 FILE_STATIC void sendTelemOverBackchannel()
 {
     // send input TLE
-    input_tle_segment tle;
-    tle.year = rtU.orbit_TLE[0];
-    tle.day = rtU.orbit_TLE[1];
-    tle.bstar = rtU.orbit_TLE[2];
-    tle.inc = rtU.orbit_TLE[3];
-    tle.raan = rtU.orbit_TLE[4];
-    tle.ecc = rtU.orbit_TLE[5];
-    tle.aop = rtU.orbit_TLE[6];
-    tle.mna = rtU.orbit_TLE[7];
-    tle.mnm = rtU.orbit_TLE[8];
-    bcbinPopulateHeader(&tle.header, TLM_ID_INPUT_TLE, sizeof(tle));
-    bcbinSendPacket((uint8_t *) &tle, sizeof(tle));
+    input_tle_segment tleSeg;
+    tleSeg.year = rtU.orbit_TLE[0];
+    tleSeg.day = rtU.orbit_TLE[1];
+    tleSeg.bstar = rtU.orbit_TLE[2];
+    tleSeg.inc = rtU.orbit_TLE[3];
+    tleSeg.raan = rtU.orbit_TLE[4];
+    tleSeg.ecc = rtU.orbit_TLE[5];
+    tleSeg.aop = rtU.orbit_TLE[6];
+    tleSeg.mna = rtU.orbit_TLE[7];
+    tleSeg.mnm = rtU.orbit_TLE[8];
+    tleSeg.id = tle._id;
+    bcbinPopulateHeader(&tleSeg.header, TLM_ID_INPUT_TLE, sizeof(tleSeg));
+    bcbinSendPacket((uint8_t *) &tleSeg, sizeof(tleSeg));
 
     // send MET
     input_met_segment metSeg;
@@ -282,7 +283,38 @@ FILE_STATIC void sendTelemOverBackchannel()
 
 FILE_STATIC void sendTelemOverCAN()
 {
-    // TODO
+    CANPacket p;
+
+    // send sc2sun_unit
+    estim_sun_unit_x sunx = { rtY.sc2sun_unit[0] };
+    encodeestim_sun_unit_x(&sunx, &p);
+    canSendPacket(&p);
+    estim_sun_unit_y suny = { rtY.sc2sun_unit[1] };
+    encodeestim_sun_unit_y(&suny, &p);
+    canSendPacket(&p);
+    estim_sun_unit_z sunz = { rtY.sc2sun_unit[2] };
+    encodeestim_sun_unit_z(&sunz, &p);
+    canSendPacket(&p);
+
+    // send mag_eci_unit
+    estim_mag_unit_x magx = { rtY.mag_eci_unit[0] };
+    encodeestim_mag_unit_x(&magx, &p);
+    canSendPacket(&p);
+    estim_mag_unit_y magy = { rtY.mag_eci_unit[1] };
+    encodeestim_mag_unit_y(&magy, &p);
+    canSendPacket(&p);
+    estim_mag_unit_z magz = { rtY.mag_eci_unit[2] };
+    encodeestim_mag_unit_z(&magz, &p);
+    canSendPacket(&p);
+
+    // send state
+    estim_state state;
+    state.estim_state_above_gs = rtY.sc_above_gs ? CAN_ENUM_BOOL_TRUE
+            : CAN_ENUM_BOOL_FALSE;
+    state.estim_state_in_sun = rtY.sc_in_sun ? CAN_ENUM_BOOL_TRUE
+            : CAN_ENUM_BOOL_FALSE;
+    encodeestim_state(&state, &p);
+    canSendPacket(&p);
 }
 
 void canRxCallback(CANPacket *packet)
@@ -293,7 +325,7 @@ void canRxCallback(CANPacket *packet)
 
     switch (packet->id)
     {
-    // TODO add MET case when available (unless bsp handles this automatically)
+    // TODO add MET case when available
     }
 }
 

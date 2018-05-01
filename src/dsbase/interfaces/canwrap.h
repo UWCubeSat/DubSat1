@@ -15,6 +15,13 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_ESTIM_SUN_UNIT_Z 302449332
+#define CAN_ID_ESTIM_SUN_UNIT_Y 302449331
+#define CAN_ID_ESTIM_SUN_UNIT_X 302449330
+#define CAN_ID_ESTIM_MAG_UNIT_Z 302449335
+#define CAN_ID_ESTIM_MAG_UNIT_Y 302449334
+#define CAN_ID_ESTIM_MAG_UNIT_X 302449333
+#define CAN_ID_ESTIM_STATE 302449336
 #define CAN_ID_RC_EPS_GEN_11 304677402
 #define CAN_ID_RC_EPS_GEN_10 304677401
 #define CAN_ID_RC_EPS_GEN_19 304677410
@@ -149,6 +156,35 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct estim_sun_unit_z {
+    double estim_sun_unit_z_val; //  (No Units)
+} estim_sun_unit_z;
+
+typedef struct estim_sun_unit_y {
+    double estim_sun_unit_y_val; //  (No Units)
+} estim_sun_unit_y;
+
+typedef struct estim_sun_unit_x {
+    double estim_sun_unit_x_val; //  (No Units)
+} estim_sun_unit_x;
+
+typedef struct estim_mag_unit_z {
+    double estim_mag_unit_z_val; //  (No Units)
+} estim_mag_unit_z;
+
+typedef struct estim_mag_unit_y {
+    double estim_mag_unit_y_val; //  (No Units)
+} estim_mag_unit_y;
+
+typedef struct estim_mag_unit_x {
+    double estim_mag_unit_x_val; //  (No Units)
+} estim_mag_unit_x;
+
+typedef struct estim_state {
+    uint8_t estim_state_in_sun; //  (No Units)
+    uint8_t estim_state_above_gs; //  (No Units)
+} estim_state;
+
 typedef struct rc_eps_gen_11 {
     float rc_eps_gen_11_pnl_1_power_min; // V
     float rc_eps_gen_11_pnl_1_power_max; // V
@@ -318,16 +354,17 @@ typedef struct tle_6 {
 } tle_6;
 
 typedef struct tle_5 {
+    uint8_t tle_5_id; //  (No Units)
     float tle_5_mna; //  (No Units)
 } tle_5;
 
 typedef struct tle_4 {
     float tle_4_aop; //  (No Units)
-    float tle_4_ecc; //  (No Units)
+    float tle_4_raan; //  (No Units)
 } tle_4;
 
 typedef struct tle_3 {
-    float tle_3_raan; //  (No Units)
+    float tle_3_ecc; //  (No Units)
     float tle_3_inc; //  (No Units)
 } tle_3;
 
@@ -336,6 +373,7 @@ typedef struct tle_2 {
 } tle_2;
 
 typedef struct tle_1 {
+    uint8_t tle_1_id; //  (No Units)
     float tle_1_bstar; //  (No Units)
     uint8_t tle_1_year; //  (No Units)
 } tle_1;
@@ -516,6 +554,27 @@ typedef struct sync_1 {
 typedef struct msp_temp {
     uint16_t msp_temp_temp; // dK
 } msp_temp;
+
+void encodeestim_sun_unit_z(estim_sun_unit_z *input, CANPacket* output);
+void decodeestim_sun_unit_z(CANPacket *input, estim_sun_unit_z *output);
+
+void encodeestim_sun_unit_y(estim_sun_unit_y *input, CANPacket* output);
+void decodeestim_sun_unit_y(CANPacket *input, estim_sun_unit_y *output);
+
+void encodeestim_sun_unit_x(estim_sun_unit_x *input, CANPacket* output);
+void decodeestim_sun_unit_x(CANPacket *input, estim_sun_unit_x *output);
+
+void encodeestim_mag_unit_z(estim_mag_unit_z *input, CANPacket* output);
+void decodeestim_mag_unit_z(CANPacket *input, estim_mag_unit_z *output);
+
+void encodeestim_mag_unit_y(estim_mag_unit_y *input, CANPacket* output);
+void decodeestim_mag_unit_y(CANPacket *input, estim_mag_unit_y *output);
+
+void encodeestim_mag_unit_x(estim_mag_unit_x *input, CANPacket* output);
+void decodeestim_mag_unit_x(CANPacket *input, estim_mag_unit_x *output);
+
+void encodeestim_state(estim_state *input, CANPacket* output);
+void decodeestim_state(CANPacket *input, estim_state *output);
 
 void encoderc_eps_gen_11(rc_eps_gen_11 *input, CANPacket* output);
 void decoderc_eps_gen_11(CANPacket *input, rc_eps_gen_11 *output);

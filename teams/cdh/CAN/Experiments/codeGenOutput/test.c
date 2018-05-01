@@ -3,6 +3,41 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket estim_sun_unit_z_packet = {0};
+	estim_sun_unit_z estim_sun_unit_z_info = {0};
+	encodeestim_sun_unit_z(&estim_sun_unit_z_info, &estim_sun_unit_z_packet);
+	canSendPacket(&estim_sun_unit_z_packet);
+
+	__delay_cycles(10000);	CANPacket estim_sun_unit_y_packet = {0};
+	estim_sun_unit_y estim_sun_unit_y_info = {0};
+	encodeestim_sun_unit_y(&estim_sun_unit_y_info, &estim_sun_unit_y_packet);
+	canSendPacket(&estim_sun_unit_y_packet);
+
+	__delay_cycles(10000);	CANPacket estim_sun_unit_x_packet = {0};
+	estim_sun_unit_x estim_sun_unit_x_info = {0};
+	encodeestim_sun_unit_x(&estim_sun_unit_x_info, &estim_sun_unit_x_packet);
+	canSendPacket(&estim_sun_unit_x_packet);
+
+	__delay_cycles(10000);	CANPacket estim_mag_unit_z_packet = {0};
+	estim_mag_unit_z estim_mag_unit_z_info = {0};
+	encodeestim_mag_unit_z(&estim_mag_unit_z_info, &estim_mag_unit_z_packet);
+	canSendPacket(&estim_mag_unit_z_packet);
+
+	__delay_cycles(10000);	CANPacket estim_mag_unit_y_packet = {0};
+	estim_mag_unit_y estim_mag_unit_y_info = {0};
+	encodeestim_mag_unit_y(&estim_mag_unit_y_info, &estim_mag_unit_y_packet);
+	canSendPacket(&estim_mag_unit_y_packet);
+
+	__delay_cycles(10000);	CANPacket estim_mag_unit_x_packet = {0};
+	estim_mag_unit_x estim_mag_unit_x_info = {0};
+	encodeestim_mag_unit_x(&estim_mag_unit_x_info, &estim_mag_unit_x_packet);
+	canSendPacket(&estim_mag_unit_x_packet);
+
+	__delay_cycles(10000);	CANPacket estim_state_packet = {0};
+	estim_state estim_state_info = {0};
+	encodeestim_state(&estim_state_info, &estim_state_packet);
+	canSendPacket(&estim_state_packet);
+
 	__delay_cycles(10000);	CANPacket rc_eps_gen_11_packet = {0};
 	rc_eps_gen_11 rc_eps_gen_11_info = {0};
 	encoderc_eps_gen_11(&rc_eps_gen_11_info, &rc_eps_gen_11_packet);
