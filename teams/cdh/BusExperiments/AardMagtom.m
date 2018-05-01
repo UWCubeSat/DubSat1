@@ -15,7 +15,6 @@ magtom = i2c('aardvark', 0, slave_addr);
 total_time = 60;   % Seconds
 period = 0.1;     % Seconds
 num_samps = floor(total_time/period);
-
 fopen(magtom);
 
 % Configure magnetometer, based on datasheet values
