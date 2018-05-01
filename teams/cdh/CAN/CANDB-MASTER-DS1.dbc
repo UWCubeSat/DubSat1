@@ -431,7 +431,7 @@ BO_ 2147549201 sync_1: 0 ppt
 BO_ 2183725075 msp_temp: 2 rahs
  SG_ msp_temp_temp : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
 
-BO_ 2147484704 grnd_epoch: 5 Vector__XXX
+BO_ 2449932985 grnd_epoch: 5 Vector__XXX
  SG_ grnd_epoch_val_overflow : 32|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ grnd_epoch_val : 0|32@1+ (1,0) [0|4294967295] "2^-8 s" Vector__XXX
 
@@ -441,9 +441,9 @@ BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2452161049 rc_adcs_bdot_3_tumble 1 "true" 0 "false" ;
 VAL_ 2449932984 estim_state_in_sun 1 "true" 0 "false" ;
 VAL_ 2449932984 estim_state_above_gs 1 "true" 0 "false" ;
-VAL_ 2452161049 rc_adcs_bdot_3_tumble 1 "true" 0 "false" ;
 VAL_ 2452161027 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
 VAL_ 2452161027 rc_eps_batt_4_balancer_state 1 "true" 0 "false" ;
 VAL_ 2432958724 cmd_ppt_halt_confirm 1 "true" 0 "false" ;
