@@ -40,6 +40,21 @@ void METInit(uint8_t _isDist)
 	    confirmed = 0;
 }
 
+uint32_t getPrimaryTime()
+{
+    timeStamp t = getTimeStamp();
+    uint32_t res = (uint32_t) RTCCNT1;
+    res |= ((uint32_t) RTCCNT2) << 8;
+    res |= ((uint32_t) RTCCNT3) << 16;
+    res |= ((uint32_t) RTCCNT4) << 24;
+    return res;
+}
+
+uint8_t getOverflowTime()
+{
+    return recentTime.count5;
+}
+
 void updateMET(timeStamp newTime)
 {
     RTCCTL13 |= RTCHOLD;

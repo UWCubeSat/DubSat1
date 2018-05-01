@@ -24,6 +24,12 @@ double getTimeStampSeconds();
 //returns if MET has been confirmed
 uint8_t isConfirmed();
 
+//returns the first four counter registers as a 32-bit integer
+uint32_t getPrimaryTime();
+
+//returns the overflow time as an 8-bit integer
+uint8_t getOverflowTime();
+
 //updates MET to timeStamp and confirms
 void updateMET(timeStamp newTime);
 
