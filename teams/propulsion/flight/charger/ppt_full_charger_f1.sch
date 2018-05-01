@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.5.0">
+<eagle version="8.7.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
+<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
@@ -4637,12 +4638,9 @@ CAP-00811- 16V 10% (EIA-3216)</description>
 <part name="U$4" library="Ferrite" deviceset="B.L1_FBMJ2125HS420-T" device=""/>
 <part name="U$7" library="Ferrite" deviceset="B.L2_FBMH1608HL121-T" device=""/>
 <part name="U$8" library="Ferrite" deviceset="I.L1_587-3855-1-ND" device=""/>
-<part name="R4" library="SparkFun-Passives" deviceset="RESISTOR" device="0805-RES"/>
 <part name="GND30" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
-<part name="GND31" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="GND32" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="C7" library="SparkFun-Capacitors" deviceset="CAP" device="0805"/>
-<part name="C8" library="SparkFun-Capacitors" deviceset="CAP" device="0805"/>
 <part name="C9" library="SparkFun-Capacitors" deviceset="CAP" device="0805"/>
 <part name="J1" library="SparkFun-Connectors" deviceset="M08" device=""/>
 <part name="U$10" library="Capacitors" deviceset="PANASONIC_16SVPG270M" device=""/>
@@ -5778,12 +5776,9 @@ CAP-00811- 16V 10% (EIA-3216)</description>
 <instance part="U$4" gate="B.L1" x="68.58" y="81.28"/>
 <instance part="U$7" gate="B.L2" x="68.58" y="73.66"/>
 <instance part="U$8" gate="I.L1" x="68.58" y="66.04"/>
-<instance part="R4" gate="G$1" x="93.98" y="55.88" rot="R90"/>
 <instance part="GND30" gate="1" x="104.14" y="45.72"/>
-<instance part="GND31" gate="1" x="93.98" y="45.72"/>
 <instance part="GND32" gate="1" x="43.18" y="48.26"/>
 <instance part="C7" gate="G$1" x="43.18" y="66.04"/>
-<instance part="C8" gate="G$1" x="93.98" y="66.04"/>
 <instance part="C9" gate="G$1" x="104.14" y="66.04"/>
 <instance part="ADUM163N" gate="A" x="48.26" y="30.48"/>
 <instance part="LDO" gate="G$1" x="40.64" y="-10.16"/>
@@ -5829,11 +5824,6 @@ CAP-00811- 16V 10% (EIA-3216)</description>
 <pinref part="C9" gate="G$1" pin="2"/>
 </segment>
 <segment>
-<pinref part="R4" gate="G$1" pin="1"/>
-<pinref part="GND31" gate="1" pin="GND"/>
-<wire x1="93.98" y1="50.8" x2="93.98" y2="48.26" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="GND32" gate="1" pin="GND"/>
 <wire x1="43.18" y1="50.8" x2="43.18" y2="63.5" width="0.1524" layer="91"/>
 <pinref part="C7" gate="G$1" pin="2"/>
@@ -5860,15 +5850,11 @@ CAP-00811- 16V 10% (EIA-3216)</description>
 <pinref part="U$7" gate="B.L2" pin="P$2"/>
 <wire x1="76.2" y1="73.66" x2="83.82" y2="73.66" width="0.1524" layer="91"/>
 <junction x="83.82" y="73.66"/>
-<wire x1="83.82" y1="73.66" x2="93.98" y2="73.66" width="0.1524" layer="91"/>
-<wire x1="93.98" y1="73.66" x2="104.14" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="73.66" x2="104.14" y2="73.66" width="0.1524" layer="91"/>
 <wire x1="104.14" y1="73.66" x2="104.14" y2="71.12" width="0.1524" layer="91"/>
-<wire x1="93.98" y1="71.12" x2="93.98" y2="73.66" width="0.1524" layer="91"/>
-<junction x="93.98" y="73.66"/>
 <wire x1="104.14" y1="73.66" x2="114.3" y2="73.66" width="0.1524" layer="91"/>
 <junction x="104.14" y="73.66"/>
 <label x="114.3" y="73.66" size="1.778" layer="95"/>
-<pinref part="C8" gate="G$1" pin="1"/>
 <pinref part="C9" gate="G$1" pin="1"/>
 </segment>
 <segment>
@@ -5911,13 +5897,6 @@ CAP-00811- 16V 10% (EIA-3216)</description>
 <junction x="43.18" y="73.66"/>
 <label x="30.48" y="73.66" size="1.778" layer="95"/>
 <pinref part="C7" gate="G$1" pin="1"/>
-</segment>
-</net>
-<net name="N$28" class="0">
-<segment>
-<pinref part="R4" gate="G$1" pin="2"/>
-<wire x1="93.98" y1="60.96" x2="93.98" y2="63.5" width="0.1524" layer="91"/>
-<pinref part="C8" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="VSIG" class="0">
