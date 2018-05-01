@@ -45,9 +45,6 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
-BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ New_Signal_228 : 0|16@1+ (1,0) [0|20000] "mW" Vector__XXX
-
 BO_ 2452161039 rc_adcs_mtq_5: 2 Vector__XXX
  SG_ rc_adcs_mtq_5_reset_counts : 8|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ rc_adcs_mtq_5_fsw_ignore : 0|8@1+ (1,0) [0|0] "" Vector__XXX
@@ -312,8 +309,14 @@ BO_ 2148597780 cmd_rollcall: 7 eps_dist
  SG_ cmd_rollcall_msp : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2181496880 mtq_ack: 2 adcs_mtq
- SG_ mtq_ack_coils_state : 8|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ mtq_ack_node : 0|8@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ mtq_ack_source : 8|8@1- (1,0) [-128|1] "" Vector__XXX
+ SG_ mtq_ack_phase : 0|8@1- (1,0) [-128|3] "" Vector__XXX
+ SG_ mtq_ack_last_fsw_z : 56|8@1- (1,0) [-128|100] "pct" Vector__XXX
+ SG_ mtq_ack_last_fsw_y : 48|8@1- (1,0) [-128|100] "pct" Vector__XXX
+ SG_ mtq_ack_last_fsw_x : 40|8@1- (1,0) [-128|100] "pct" Vector__XXX
+ SG_ mtq_ack_last_bdot_z : 32|8@1- (1,0) [-128|100] "pct" Vector__XXX
+ SG_ mtq_ack_last_bdot_y : 24|8@1- (1,0) [-128|100] "pct" Vector__XXX
+ SG_ mtq_ack_last_bdot_x : 16|8@1- (1,0) [-128|100] "pct" Vector__XXX
 
 BO_ 2183725267 gen_panel_temp: 4 eps_gen
  SG_ gen_panel_temp_agg : 24|8@1+ (1,0) [0|5] "" Vector__XXX
@@ -390,7 +393,6 @@ BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,
 BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
-CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
 VAL_ 2452161027 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
@@ -416,8 +418,6 @@ VAL_ 2451701984 eps_domain_output_oc_trip 1 "true" 0 "false" ;
 VAL_ 2451701984 eps_domain_output_num 8 "unk" 7 "com1" 6 "com2" 5 "rahs" 4 "bdot" 3 "estim" 2 "wheel" 1 "eps" 0 "ppt" ;
 VAL_ 2483355714 sensorproc_imu_valid 1 "true" 0 "false" ;
 VAL_ 2483355715 sensorproc_mag_valid 1 "true" 0 "false" ;
-VAL_ 2181496880 mtq_ack_coils_state 1 "true" 0 "false" ;
-VAL_ 2181496880 mtq_ack_node 15 "rahs" 14 "com_2" 13 "com_1" 12 "adcs_mtq" 11 "adcs_sensorproc" 10 "adcs_mpc" 9 "adcs_estim" 8 "eps_batt" 7 "eps_gen" 6 "eps_dist" 5 "ppt" 4 "adcs_rwz" 3 "adcs_rwy" 2 "adcs_rwx" 1 "adcs_bdot" 0 "test" ;
 VAL_ 2183725267 gen_panel_temp_agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_ 2182349072 cmd_gen_rst_confirm 1 "true" 0 "false" ;
 VAL_ 2182349056 cmd_ppt_single_fire_override 1 "true" 0 "false" ;
