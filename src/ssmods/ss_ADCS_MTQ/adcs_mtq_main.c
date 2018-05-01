@@ -38,6 +38,7 @@ void start_actuation_timer(void);
 void start_measurement_timer(void);
 void start_stabalize_timer(void);
 void start_telem_timer(void);
+void start_bdot_death_timer(void); 
 void start_LED_timer(void); 
 void manage_telemetry(void);
 uint8_t fsw_is_valid(void);
@@ -52,7 +53,7 @@ int is_bdot_still_alive(void);
 void can_init(void);
 void can_packet_rx_callback(CANPacket *packet);
 void send_CAN_health_packet(void);
-void send_CAN_ack_packet(int command_source, int which_phase);
+void send_CAN_ack_packet(void);
 
 //---------COSMOS functions--------------
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
@@ -78,7 +79,7 @@ FILE_STATIC volatile uint8_t fsw_ignore = OVERRIDE;
 FILE_STATIC volatile int8_t sc_mode;
 #pragma PERSISTENT(fsw_ignore) // persist value of fsw_ignore on reboot
 
-//-----------backchannel------------------
+//-----------backchannel and CAN------------------
 
 FILE_STATIC meta_segment metaSeg;
 FILE_STATIC health_segment healthSeg;
@@ -86,6 +87,7 @@ FILE_STATIC bdot_fsw_commands cosmos_commandy_commands;
 FILE_STATIC duty_percent cosmos_dooty;
 FILE_STATIC volatile uint8_t duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2 = 0; 
 FILE_STATIC volatile uint8_t last_pwm_percent_executed_x, last_pwm_percent_executed_y, last_pwm_percent_executed_z = 0;
+FILE_STATIC volatile int8_t command_source = UNKNOWN;
 
 //------------timers ----------------
 
@@ -196,11 +198,11 @@ void measurement()
 		if(sc_mode == IDLE && fsw_is_valid())
 		{
 			curr_state = FSW_ACTUATION;
-			send_CAN_ack_packet(FROM_FSW, ACTUATION_PHASE); 
+			send_CAN_ack_packet();
 		} else 
 		{
 			curr_state = BDOT_ACTUATION;
-			send_CAN_ack_packet(FROM_BDOT, ACTUATION_PHASE);
+			send_CAN_ack_packet();
 		}  
         start_actuation_timer();
     }
@@ -215,7 +217,7 @@ void fsw_actuation()
         set_pwm('z', fsw_command_z);
         if (!fsw_ack_sent) // only send acknowledgement once per interrupt
         {
-            send_CAN_ack_packet(FROM_FSW, ACTUATION_PHASE);
+            send_CAN_ack_packet();
             fsw_ack_sent = 1;
         }
     } else // invalid xyz command
@@ -239,7 +241,7 @@ void bdot_actuation()
         set_pwm('z', bdot_command_z);
         if (!bdot_ack_sent) // only send acknowledgement once per interrupt
         {
-            send_CAN_ack_packet(FROM_BDOT, ACTUATION_PHASE);
+            send_CAN_ack_packet();
             bdot_ack_sent = 1;
         }
     } else // invalid xyz command
@@ -262,7 +264,7 @@ void stabalize()
 	if(checkTimer(stabalize_timer)) // finished wait phase
 	{
 		curr_state = MEASUREMENT;
-		send_CAN_ack_packet(FROM_BDOT, MEASUREMENT_PHASE);
+		send_CAN_ack_packet();
 		start_measurement_timer();
 	}
 }
@@ -288,6 +290,11 @@ void start_telem_timer(void)
 void start_LED_timer(void)
 {
     LED_timer = timerPollInitializer(LED_time_ms);
+}
+
+void start_bdot_death_timer(void)
+{
+	bdot_death_timer = timerPollInitializer(bdot_death_time_ms);
 }
 
 void manage_telemetry(void)
@@ -419,7 +426,7 @@ int is_bdot_still_alive(void)
 // can initialization 
 void can_init(void)
 {
-	canWrapInit();
+	canWrapInitWithFilter();
 	setCANPacketRxCallback(can_packet_rx_callback);
 }
 
@@ -428,7 +435,8 @@ void can_packet_rx_callback(CANPacket *packet)
 {  
 	if (packet->id == CAN_ID_CMD_MTQ_BDOT && enable_command_update){
 		endPollingTimer(bdot_death_timer); // reset the bdot death timer 
-		timerPollInitializer(bdot_death_time_ms); // restart the bdot death timer 
+		start_bdot_death_timer();  
+		command_source = FROM_BDOT; 
 		cmd_mtq_bdot bdot_packet = {0};
         decodecmd_mtq_bdot(packet, &bdot_packet);
         // update global bdot command variables
@@ -438,6 +446,7 @@ void can_packet_rx_callback(CANPacket *packet)
         bdot_ack_sent = 0; // reset acknowledgment sent flag
 	}
 	if (packet->id == CAN_ID_CMD_MTQ_FSW && enable_command_update){
+		command_source = FROM_FSW; 
 		cmd_mtq_fsw fsw_packet = {0};
         decodecmd_mtq_fsw(packet, &fsw_packet);
         // update global fsw command variables
@@ -457,26 +466,24 @@ void can_packet_rx_callback(CANPacket *packet)
 void send_CAN_health_packet(void)
 {
     // send CAN packet of temperature (in deci-Kelvin)
-    msp_temp temp = { (healthSeg.inttemp + 273.15f) * 10 };
+    msp_temp temp = { (healthSeg.inttemp + 273.15) * 10 };
     CANPacket packet;
     encodemsp_temp(&temp, &packet);
     canSendPacket(&packet);
 }
 
-void send_CAN_ack_packet(int command_source, int which_phase)
+void send_CAN_ack_packet(void)
 { 
+    int8_t which_phase = curr_state;
 	mtq_ack ack = {0};
-	// ack.mtq_ack_which_phase = which_phase; 
-	// ack.mtq_ack_command_source = command_source; 
-	// ack.mtq_ack_last_bdot_x = bdot_command_x; 
-	// ack.mtq_ack_last_bdot_y = bdot_command_y; 
-	// ack.mtq_ack_last_bdot_z = bdot_command_z;
-	// ack.mtq_ack_last_fsw_x = fsw_command_x; 
-	// ack.mtq_ack_last_fsw_y = fsw_command_y; 
-	// ack.mtq_ack_last_fsw_z = fsw_command_z; 
-	ack.mtq_ack_coils_state = which_phase;
-	ack.mtq_ack_node = command_source;
-	
+	ack.mtq_ack_phase = which_phase;
+	ack.mtq_ack_source = command_source;
+	ack.mtq_ack_last_bdot_x = bdot_command_x;
+	ack.mtq_ack_last_bdot_y = bdot_command_y;
+	ack.mtq_ack_last_bdot_z = bdot_command_z;
+	ack.mtq_ack_last_fsw_x = fsw_command_x;
+	ack.mtq_ack_last_fsw_y = fsw_command_y;
+	ack.mtq_ack_last_fsw_z = fsw_command_z;
 	CANPacket mtq_ack_packet; 
 	encodemtq_ack(&ack, &mtq_ack_packet);
 	canSendPacket(&mtq_ack_packet);
