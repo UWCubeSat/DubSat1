@@ -15,6 +15,7 @@
 
 // BEGIN GENERATOR MACROS
 
+<<<<<<< HEAD
 #define CAN_ID_ESTIM_SUN_UNIT_Z 302449332
 #define CAN_ID_ESTIM_SUN_UNIT_Y 302449331
 #define CAN_ID_ESTIM_SUN_UNIT_X 302449330
@@ -32,6 +33,16 @@
 #define CAN_ID_RC_EPS_GEN_13 304677404
 #define CAN_ID_RC_EPS_GEN_14 304677405
 #define CAN_ID_RC_EPS_GEN_12 304677403
+=======
+#define CAN_ID_RC_ADCS_MTQ_5 304677391
+#define CAN_ID_RC_ADCS_MTQ_4 304677390
+#define CAN_ID_RC_ADCS_MTQ_3 304677389
+#define CAN_ID_RC_ADCS_MTQ_2 304677388
+#define CAN_ID_RC_ADCS_MTQ_1 304677387
+#define CAN_ID_RC_PPT_3 304677386
+#define CAN_ID_RC_PPT_2 304677385
+#define CAN_ID_RC_PPT_1 304677384
+>>>>>>> MasterDbcDev
 #define CAN_ID_RC_EPS_GEN_9 304677400
 #define CAN_ID_RC_EPS_GEN_8 304677399
 #define CAN_ID_RC_EPS_GEN_7 304677398
@@ -156,6 +167,7 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+<<<<<<< HEAD
 typedef struct estim_sun_unit_z {
     double estim_sun_unit_z_val; //  (No Units)
 } estim_sun_unit_z;
@@ -234,45 +246,131 @@ typedef struct rc_eps_gen_12 {
     float rc_eps_gen_12_pnl_2_power_min; // V
     float rc_eps_gen_12_pnl_1_power_avg; // V
 } rc_eps_gen_12;
+=======
+typedef struct rc_adcs_mtq_5 {
+    uint8_t rc_adcs_mtq_5_reset_counts; //  (No Units)
+    uint8_t rc_adcs_mtq_5_fsw_ignore; //  (No Units)
+} rc_adcs_mtq_5;
+
+typedef struct rc_adcs_mtq_4 {
+    uint8_t rc_adcs_mtq_4_fsw_z_min; //  (No Units)
+    uint8_t rc_adcs_mtq_4_fsw_y_max; //  (No Units)
+    uint8_t rc_adcs_mtq_4_duty_z2_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_4_duty_z1_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_4_duty_y2_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_4_duty_y1_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_4_duty_x2_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_4_duty_x1_avg; //  (No Units)
+} rc_adcs_mtq_4;
+
+typedef struct rc_adcs_mtq_3 {
+    uint8_t rc_adcs_mtq_3_fsw_z_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_y_min; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_y_max; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_y_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_x_min; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_x_max; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_x_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_3_bdot_z_min; //  (No Units)
+} rc_adcs_mtq_3;
+
+typedef struct rc_adcs_mtq_2 {
+    uint8_t rc_adcs_mtq_2_bdot_z_max; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_z_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_y_min; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_y_max; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_y_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_x_min; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_x_max; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_x_avg; //  (No Units)
+} rc_adcs_mtq_2;
+
+typedef struct rc_adcs_mtq_1 {
+    uint16_t rc_adcs_mtq_1_temp_min; // dK
+    uint16_t rc_adcs_mtq_1_temp_max; // dK
+    uint16_t rc_adcs_mtq_1_temp_avg; // dK
+    uint16_t rc_adcs_mtq_1_sysrstiv; //  (No Units)
+} rc_adcs_mtq_1;
+
+typedef struct rc_ppt_3 {
+    uint8_t rc_ppt_3_ign_chg_min; // 2^-15 seconds
+    uint8_t rc_ppt_3_ign_chg_max; // 2^-15 seconds
+    uint8_t rc_ppt_3_ign_chg_avg; // 2^-15 seconds
+} rc_ppt_3;
+
+typedef struct rc_ppt_2 {
+    uint8_t rc_ppt_2_total_fire_count; //  (No Units)
+    uint8_t rc_ppt_2_main_chg_min; // 2^-15 seconds
+    uint8_t rc_ppt_2_main_chg_max; // 2^-15 seconds
+    uint8_t rc_ppt_2_main_chg_avg; // 2^-15 seconds
+} rc_ppt_2;
+
+typedef struct rc_ppt_1 {
+    uint16_t rc_ppt_1_temp_min; // dK
+    uint16_t rc_ppt_1_temp_max; // dK
+    uint16_t rc_ppt_1_temp_avg; // dK
+    uint16_t rc_ppt_1_sysrstiv; //  (No Units)
+} rc_ppt_1;
+>>>>>>> MasterDbcDev
 
 typedef struct rc_eps_gen_9 {
-    float rc_eps_gen_9_pnl_3_current_min; // V
-    float rc_eps_gen_9_pnl_2_current_avg; // V
+    int8_t rc_eps_gen_9_pnl_3_temp_min; // C
+    int8_t rc_eps_gen_9_pnl_3_temp_max; // C
+    int8_t rc_eps_gen_9_pnl_3_temp_avg; // C
+    int8_t rc_eps_gen_9_pnl_2_temp_min; // C
+    int8_t rc_eps_gen_9_pnl_2_temp_max; // C
+    int8_t rc_eps_gen_9_pnl_2_temp_avg; // C
+    int8_t rc_eps_gen_9_pnl_1_temp_max; // C
+    int8_t rc_eps_gen_9_pnl_1_temp_avg; // C
 } rc_eps_gen_9;
 
 typedef struct rc_eps_gen_8 {
-    float rc_eps_gen_8_pnl_2_current_min; // V
-    float rc_eps_gen_8_pnl_2_current_max; // V
+    uint16_t rc_eps_gen_8_pnl_3_power_min; // mW
+    uint16_t rc_eps_gen_8_pnl_3_power_max; // mW
+    uint16_t rc_eps_gen_8_pnl_3_power_avg; // mW
+    int8_t rc_eps_gen_8_pnl_1_temp_min; // C
 } rc_eps_gen_8;
 
 typedef struct rc_eps_gen_7 {
-    float rc_eps_gen_7_pnl_1_current_max; // V
-    float rc_eps_gen_7_pnl_1_current_avg; // V
+    uint16_t rc_eps_gen_7_pnl_2_power_min; // mW
+    uint16_t rc_eps_gen_7_pnl_2_power_max; // mW
+    uint16_t rc_eps_gen_7_pnl_2_power_avg; // mW
+    uint16_t rc_eps_gen_7_pnl_1_power_avg; // mW
 } rc_eps_gen_7;
 
 typedef struct rc_eps_gen_6 {
-    float rc_eps_gen_6_pnl_3_voltage_avg; // V
-    float rc_eps_gen_6_pnl_1_current_min; // V
+    uint16_t rc_eps_gen_6_pnl_3_current_max; // mA
+    uint16_t rc_eps_gen_6_pnl_3_current_avg; // mA
+    uint16_t rc_eps_gen_6_pnl_1_power_min; // mW
+    uint16_t rc_eps_gen_6_pnl_1_power_max; // mW
 } rc_eps_gen_6;
 
 typedef struct rc_eps_gen_5 {
-    float rc_eps_gen_5_pnl_3_voltage_min; // V
-    float rc_eps_gen_5_pnl_3_voltage_max; // V
+    uint16_t rc_eps_gen_5_pnl_3_current_min; // mA
+    uint16_t rc_eps_gen_5_pnl_2_current_min; // mA
+    uint16_t rc_eps_gen_5_pnl_2_current_max; // mA
+    uint16_t rc_eps_gen_5_pnl_2_current_avg; // mA
 } rc_eps_gen_5;
 
 typedef struct rc_eps_gen_4 {
-    float rc_eps_gen_4_pnl_2_voltage_avg; // V
-    float rc_eps_gen_4_pnl_2_voltage_max; // V
+    uint16_t rc_eps_gen_4_pnl_3_voltage_avg; // mV
+    uint16_t rc_eps_gen_4_pnl_1_current_min; // mA
+    uint16_t rc_eps_gen_4_pnl_1_current_max; // mA
+    uint16_t rc_eps_gen_4_pnl_1_current_avg; // mA
 } rc_eps_gen_4;
 
 typedef struct rc_eps_gen_3 {
-    float rc_eps_gen_3_pnl_1_voltage_avg; // V
-    float rc_eps_gen_3_pnl_2_voltage_min; // V
+    uint16_t rc_eps_gen_3_pnl_3_voltage_min; // mV
+    uint16_t rc_eps_gen_3_pnl_3_voltage_max; // mV
+    uint16_t rc_eps_gen_3_pnl_2_voltage_max; // mV
+    uint16_t rc_eps_gen_3_pnl_2_voltage_avg; // mV
 } rc_eps_gen_3;
 
 typedef struct rc_eps_gen_2 {
-    float rc_eps_gen_2_pnl_1_voltage_min; // V
-    float rc_eps_gen_2_pnl_1_voltage_max; // V
+    uint16_t rc_eps_gen_2_pnl_2_voltage_min; // mV
+    uint16_t rc_eps_gen_2_pnl_1_voltage_min; // mV
+    uint16_t rc_eps_gen_2_pnl_1_voltage_max; // mV
+    uint16_t rc_eps_gen_2_pnl_1_voltage_avg; // mV
 } rc_eps_gen_2;
 
 typedef struct rc_eps_gen_1 {
@@ -464,8 +562,14 @@ typedef struct cmd_rollcall {
 } cmd_rollcall;
 
 typedef struct mtq_ack {
-    uint8_t mtq_ack_coils_state; //  (No Units)
-    uint8_t mtq_ack_node; //  (No Units)
+    int8_t mtq_ack_source; //  (No Units)
+    int8_t mtq_ack_phase; //  (No Units)
+    int8_t mtq_ack_last_fsw_z; // pct
+    int8_t mtq_ack_last_fsw_y; // pct
+    int8_t mtq_ack_last_fsw_x; // pct
+    int8_t mtq_ack_last_bdot_z; // pct
+    int8_t mtq_ack_last_bdot_y; // pct
+    int8_t mtq_ack_last_bdot_x; // pct
 } mtq_ack;
 
 typedef struct gen_panel_temp {
@@ -555,6 +659,7 @@ typedef struct msp_temp {
     uint16_t msp_temp_temp; // dK
 } msp_temp;
 
+<<<<<<< HEAD
 void encodeestim_sun_unit_z(estim_sun_unit_z *input, CANPacket* output);
 void decodeestim_sun_unit_z(CANPacket *input, estim_sun_unit_z *output);
 
@@ -578,33 +683,31 @@ void decodeestim_state(CANPacket *input, estim_state *output);
 
 void encoderc_eps_gen_11(rc_eps_gen_11 *input, CANPacket* output);
 void decoderc_eps_gen_11(CANPacket *input, rc_eps_gen_11 *output);
+=======
+void encoderc_adcs_mtq_5(rc_adcs_mtq_5 *input, CANPacket* output);
+void decoderc_adcs_mtq_5(CANPacket *input, rc_adcs_mtq_5 *output);
+>>>>>>> MasterDbcDev
 
-void encoderc_eps_gen_10(rc_eps_gen_10 *input, CANPacket* output);
-void decoderc_eps_gen_10(CANPacket *input, rc_eps_gen_10 *output);
+void encoderc_adcs_mtq_4(rc_adcs_mtq_4 *input, CANPacket* output);
+void decoderc_adcs_mtq_4(CANPacket *input, rc_adcs_mtq_4 *output);
 
-void encoderc_eps_gen_19(rc_eps_gen_19 *input, CANPacket* output);
-void decoderc_eps_gen_19(CANPacket *input, rc_eps_gen_19 *output);
+void encoderc_adcs_mtq_3(rc_adcs_mtq_3 *input, CANPacket* output);
+void decoderc_adcs_mtq_3(CANPacket *input, rc_adcs_mtq_3 *output);
 
-void encoderc_eps_gen_18(rc_eps_gen_18 *input, CANPacket* output);
-void decoderc_eps_gen_18(CANPacket *input, rc_eps_gen_18 *output);
+void encoderc_adcs_mtq_2(rc_adcs_mtq_2 *input, CANPacket* output);
+void decoderc_adcs_mtq_2(CANPacket *input, rc_adcs_mtq_2 *output);
 
-void encoderc_eps_gen_17(rc_eps_gen_17 *input, CANPacket* output);
-void decoderc_eps_gen_17(CANPacket *input, rc_eps_gen_17 *output);
+void encoderc_adcs_mtq_1(rc_adcs_mtq_1 *input, CANPacket* output);
+void decoderc_adcs_mtq_1(CANPacket *input, rc_adcs_mtq_1 *output);
 
-void encoderc_eps_gen_15(rc_eps_gen_15 *input, CANPacket* output);
-void decoderc_eps_gen_15(CANPacket *input, rc_eps_gen_15 *output);
+void encoderc_ppt_3(rc_ppt_3 *input, CANPacket* output);
+void decoderc_ppt_3(CANPacket *input, rc_ppt_3 *output);
 
-void encoderc_eps_gen_16(rc_eps_gen_16 *input, CANPacket* output);
-void decoderc_eps_gen_16(CANPacket *input, rc_eps_gen_16 *output);
+void encoderc_ppt_2(rc_ppt_2 *input, CANPacket* output);
+void decoderc_ppt_2(CANPacket *input, rc_ppt_2 *output);
 
-void encoderc_eps_gen_13(rc_eps_gen_13 *input, CANPacket* output);
-void decoderc_eps_gen_13(CANPacket *input, rc_eps_gen_13 *output);
-
-void encoderc_eps_gen_14(rc_eps_gen_14 *input, CANPacket* output);
-void decoderc_eps_gen_14(CANPacket *input, rc_eps_gen_14 *output);
-
-void encoderc_eps_gen_12(rc_eps_gen_12 *input, CANPacket* output);
-void decoderc_eps_gen_12(CANPacket *input, rc_eps_gen_12 *output);
+void encoderc_ppt_1(rc_ppt_1 *input, CANPacket* output);
+void decoderc_ppt_1(CANPacket *input, rc_ppt_1 *output);
 
 void encoderc_eps_gen_9(rc_eps_gen_9 *input, CANPacket* output);
 void decoderc_eps_gen_9(CANPacket *input, rc_eps_gen_9 *output);
