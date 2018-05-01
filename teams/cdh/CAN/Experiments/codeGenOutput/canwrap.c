@@ -1850,3 +1850,22 @@ void encodemsp_temp(msp_temp *input, CANPacket *output){
     reverseArray((output->data), 0, 7);
 }
 
+void decodegrnd_epoch(CANPacket *input, grnd_epoch *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> grnd_epoch_val_overflow = (uint8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
+    output -> grnd_epoch_val = (uint32_t) (((fullData & ((uint64_t) 0xffffffff << 32)) >> 32));
+}
+
+void encodegrnd_epoch(grnd_epoch *input, CANPacket *output){
+    output -> id = 302449337;
+    output -> length = 5;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> grnd_epoch_val_overflow))) & 0xff) << 24;
+    fullPacketData |= (((uint64_t)((input -> grnd_epoch_val))) & 0xffffffff) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
