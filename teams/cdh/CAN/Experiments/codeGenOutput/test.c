@@ -383,6 +383,11 @@ void canBlast() {
 	encodemsp_temp(&msp_temp_info, &msp_temp_packet);
 	canSendPacket(&msp_temp_packet);
 
+	__delay_cycles(10000);	CANPacket grnd_epoch_packet = {0};
+	grnd_epoch grnd_epoch_info = {0};
+	encodegrnd_epoch(&grnd_epoch_info, &grnd_epoch_packet);
+	canSendPacket(&grnd_epoch_packet);
+
 } 
 while (1) { 
 	canBlast(); 

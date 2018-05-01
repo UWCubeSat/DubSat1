@@ -15,11 +15,11 @@ void METInit(uint8_t _isDist);
 //returns the current MET timeStamp
 timeStamp getTimeStamp();
 
-// returns the current MET in units of 2^-8 seconds
-uint64_t getTimeStampInt();
+// convert an MET timeStamp to an int with units of 2^-8 seconds
+uint64_t metConvertToInt(timeStamp ts);
 
-// returns the current MET in seconds
-double getTimeStampSeconds();
+// convert an MET timeStamp to seconds
+double metConvertToSeconds(timeStamp ts);
 
 //returns if MET has been confirmed
 uint8_t isConfirmed();

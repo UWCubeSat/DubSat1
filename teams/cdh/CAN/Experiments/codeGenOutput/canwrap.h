@@ -91,6 +91,7 @@
 #define CAN_ID_SYNC_2 65554
 #define CAN_ID_SYNC_1 65553
 #define CAN_ID_MSP_TEMP 36241427
+#define CAN_ID_GRND_EPOCH 302449337
 
 #define CAN_ENUM_NBOOL_NULL 2
 #define CAN_ENUM_NBOOL_TRUE 1
@@ -620,6 +621,11 @@ typedef struct msp_temp {
     uint16_t msp_temp_temp; // dK
 } msp_temp;
 
+typedef struct grnd_epoch {
+    uint8_t grnd_epoch_val_overflow; //  (No Units)
+    uint32_t grnd_epoch_val; // 2^-8 s
+} grnd_epoch;
+
 void encoderc_adcs_bdot_3(rc_adcs_bdot_3 *input, CANPacket* output);
 void decoderc_adcs_bdot_3(CANPacket *input, rc_adcs_bdot_3 *output);
 
@@ -847,5 +853,8 @@ void decodesync_1(CANPacket *input, sync_1 *output);
 
 void encodemsp_temp(msp_temp *input, CANPacket* output);
 void decodemsp_temp(CANPacket *input, msp_temp *output);
+
+void encodegrnd_epoch(grnd_epoch *input, CANPacket* output);
+void decodegrnd_epoch(CANPacket *input, grnd_epoch *output);
 
 #endif /* DSBASE_INTERFACES_CANWRAP_H_ */
