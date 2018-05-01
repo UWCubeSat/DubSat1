@@ -37,7 +37,7 @@ BU_: ppt eps_batt eps_dist eps_gen adcs_rwz adcs_rwy adcs_rwx adcs_mtq rahs adcs
 VAL_TABLE_ nbool 2 "null" 1 "true" 0 "false" ;
 VAL_TABLE_ fire_state 3 "no discharge" 2 "no charge" 1 "fire overridden" 0 "fire successful" ;
 VAL_TABLE_ uv_state 1 "undervoltage" 0 "normal" ;
-VAL_TABLE_ mode 3 "not tumbling charlie" 2 "not tumbling bob" 1 "not tumbling alice" 0 "tumbling" ;
+VAL_TABLE_ mode 4 "low power" 3 "pointing" 1 "bdot" 0 "fsw off" ;
 VAL_TABLE_ pwr_domain 8 "unk" 7 "com1" 6 "com2" 5 "rahs" 4 "bdot" 3 "estim" 2 "wheel" 1 "eps" 0 "ppt" ;
 VAL_TABLE_ sat_state 1 "good" 0 "bad" ;
 VAL_TABLE_ node 15 "rahs" 14 "com_2" 13 "com_1" 12 "adcs_mtq" 11 "adcs_sensorproc" 10 "adcs_mpc" 9 "adcs_estim" 8 "eps_batt" 7 "eps_gen" 6 "eps_dist" 5 "ppt" 4 "adcs_rwz" 3 "adcs_rwy" 2 "adcs_rwx" 1 "adcs_bdot" 0 "test" ;
