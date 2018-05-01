@@ -110,10 +110,12 @@ IMUData *imuReadGyroAccelData()
 
 float imuConvertRawToRPS(int16_t raw)
 {
-    return raw * (IMU_RAW_TO_DPS * DEG_TO_RAD);
+    return 0.0;
+    // return raw * (IMU_RAW_TO_DPS * DEG_TO_RAD);
 }
 
 int16_t imuConvertRPSToRaw(float rps)
 {
-    return roundf(rps / (IMU_RAW_TO_DPS / DEG_TO_RAD));
+    return 0.0;
+    // return roundf(rps / (IMU_RAW_TO_DPS / DEG_TO_RAD));
 }

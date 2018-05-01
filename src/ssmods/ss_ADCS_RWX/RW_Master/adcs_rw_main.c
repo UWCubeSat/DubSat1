@@ -1,6 +1,7 @@
 #include <msp430.h> 
 #include "adcs_rw.h"
-
+#include "interfaces/canwrap.h"
+#include "core/can.h"
 #include "bsp/bsp.h"
 
 // Main status (a structure) and state and mode variables
@@ -69,14 +70,14 @@ int main(void)
     {
         // This assumes that some interrupt code will change the value of the triggerStaten variables
 #ifdef ONE
-        CANPacket boop ={0}
+        CANPacket boop ={0};
         boop.id = 1324235;
-        canSendPacket(boop)
+        canSendPacket(&boop);
         __delay_cycles(100000);
 #elif defined TWO
-        CANPacket boop ={0}
+        CANPacket boop ={0};
         boop.id = 1849197;
-        canSendPacket(boop)
+        canSendPacket(&boop);
         __delay_cycles(100000);
 #endif
     }
