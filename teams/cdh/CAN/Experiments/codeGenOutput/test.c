@@ -43,6 +43,11 @@ void canBlast() {
 	encoderc_eps_gen_11(&rc_eps_gen_11_info, &rc_eps_gen_11_packet);
 	canSendPacket(&rc_eps_gen_11_packet);
 
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_5_packet = {0};
+	rc_adcs_mtq_5 rc_adcs_mtq_5_info = {0};
+	encoderc_adcs_mtq_5(&rc_adcs_mtq_5_info, &rc_adcs_mtq_5_packet);
+	canSendPacket(&rc_adcs_mtq_5_packet);
+
 	__delay_cycles(10000);	CANPacket rc_adcs_mtq_4_packet = {0};
 	rc_adcs_mtq_4 rc_adcs_mtq_4_info = {0};
 	encoderc_adcs_mtq_4(&rc_adcs_mtq_4_info, &rc_adcs_mtq_4_packet);
