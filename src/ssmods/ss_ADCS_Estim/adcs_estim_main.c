@@ -221,6 +221,10 @@ FILE_STATIC void setInputs()
 {
     // TODO incorporate MET epoch (add J2000 of launch date to the uptime)
     rtU.MET = getTimeStampSeconds();
+#if MOCK_TLE
+    // guess at the epoch
+    rtU.MET += ((tle.tle1.tle_1_year - 2000) * 365.24 + tle.tle2.tle_2_day) * 24 * 60 * 60;
+#endif
 
     // input the TLE unless we're in the middle of reading it from CAN
     // disable interrupts so the TLE isn't modified during read
@@ -323,9 +327,14 @@ void canRxCallback(CANPacket *packet)
     tleUpdate(packet, &tle);
     __enable_interrupt();
 
+    cmd_rollcall rc;
+
     switch (packet->id)
     {
-    // TODO add MET case when available
+    // TODO get MET epoch
+    case CAN_ID_CMD_ROLLCALL:
+        decodecmd_rollcall(&p, &rc);
+        break;
     }
 }
 
