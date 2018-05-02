@@ -45,6 +45,20 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2452161049 rc_adcs_bdot_3: 5 Vector__XXX
+ SG_ rc_adcs_bdot_3_tumble : 32|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_adcs_bdot_3_mag_avg : 0|32@1- (1,0) [-40000|40000] "nT" Vector__XXX
+
+BO_ 2452161031 rc_adcs_bdot_2: 8 Vector__XXX
+ SG_ rc_adcs_bdot_2_mag_min : 0|32@1- (1,0) [-40000|40000] "nT" Vector__XXX
+ SG_ rc_adcs_bdot_2_mag_max : 32|32@1- (1,0) [-40000|40000] "nT" Vector__XXX
+
+BO_ 2452161030 rc_adcs_bdot_1: 7 Vector__XXX
+ SG_ rc_adcs_bdot_1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_bdot_1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_bdot_1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_bdot_1_sysrstiv : 48|8@1+ (1,0) [0|256] "" Vector__XXX
+
 BO_ 2452161039 rc_adcs_mtq_5: 2 Vector__XXX
  SG_ rc_adcs_mtq_5_reset_counts : 8|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ rc_adcs_mtq_5_fsw_ignore : 0|8@1+ (1,0) [0|0] "" Vector__XXX
@@ -395,6 +409,7 @@ BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2452161049 rc_adcs_bdot_3_tumble 1 "true" 0 "false" ;
 VAL_ 2452161027 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
 VAL_ 2452161027 rc_eps_batt_4_balancer_state 1 "true" 0 "false" ;
 VAL_ 2432958724 cmd_ppt_halt_confirm 1 "true" 0 "false" ;
