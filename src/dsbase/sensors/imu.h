@@ -12,10 +12,9 @@
 #define IMU_RAW_TO_DPS 0.004375
 
 // degrees to radians
-#define DEG_TO_RAD     (M_PI / 180.0)
+#define DEG_TO_RAD     (3.14159265358979323846 / 180.0)
 
 #include <stdint.h>
-#include <math.h>
 
 #include "../core/i2c.h"
 #include "../core/utils.h"
