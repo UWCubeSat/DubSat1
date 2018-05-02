@@ -68,7 +68,7 @@ void updateMET(timeStamp newTime)
     confirmed = 1;
 }
 
-timeStamp getTimeStamp()
+timeStamp getMETTimestamp()
 {
 	timeStamp now = {0};
 	now.count1 |= RTCCNT1; //TODO: these reads are unpredictable

@@ -22,7 +22,8 @@ FILE_STATIC health_segment hseg;
 
 // The latest TLE from CAN is held here and passed to autocode on each step
 // TODO initialize it with a recent TLE before launch?
-FILE_STATIC struct tle tle;
+#pragma PERSISTENT(tle)
+FILE_STATIC struct tle tle = { 0 };
 
 FILE_STATIC void setInputs();
 FILE_STATIC void sendTelemOverBackchannel();
@@ -171,7 +172,7 @@ void handleRollCall()
 
 FILE_STATIC void setInputs()
 {
-    rtU.MET = metConvertToSeconds(getTimeStamp());
+    rtU.MET = metConvertToSeconds(getMETTimestamp());
 
     // input the TLE unless we're in the middle of reading it from CAN
     // disable interrupts so the TLE isn't modified during read
