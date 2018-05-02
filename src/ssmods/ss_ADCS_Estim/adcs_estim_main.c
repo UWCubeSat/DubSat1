@@ -66,20 +66,17 @@ int main(void)
 #if MOCK_TLE
     // TLE taken from Wikipedia example
     // ID = 0
-    tle.tle1.tle_1_id = 0;
-    tle.tle1.tle_1_year = 8;
     tle.tle1.tle_1_bstar = -.11606E-4;
-    tle.tle2.tle_2_day = 264.51782528;
+    tle.tle1.tle_1_mna = 325.0288;
+    tle.tle2.tle_2_day = (365.24 * 8) + 264.51782528;
     tle.tle3.tle_3_ecc = .0006703;
     tle.tle3.tle_3_inc = 51.6416;
     tle.tle4.tle_4_aop = 130.5360;
     tle.tle4.tle_4_raan = 247.4627;
-    tle.tle5.tle_5_id = 0;
-    tle.tle5.tle_5_mna = 325.0288;
-    tle.tle6.tle_6_mnm = 15.72125391;
+    tle.tle5.tle_5_mnm = 15.72125391;
 
     // guess at the epoch
-    rtU.MET_epoch = (tle.tle1.tle_1_year * 365.24 + tle.tle2.tle_2_day) * 24 * 60 * 60;
+    rtU.MET_epoch = (8 * 365.24 + tle.tle2.tle_2_day) * 24 * 60 * 60;
 #endif
     tleInit(&tle, MOCK_TLE);
     canWrapInitWithFilter();
@@ -229,15 +226,16 @@ FILE_STATIC void setInputs()
     __disable_interrupt();
     if (tleIsComplete(&tle))
     {
-        rtU.orbit_TLE[0] = tle.tle1.tle_1_year + 2000;
-        rtU.orbit_TLE[1] = tle.tle2.tle_2_day;
-        rtU.orbit_TLE[2] = tle.tle1.tle_1_bstar;
-        rtU.orbit_TLE[3] = tle.tle3.tle_3_inc;
-        rtU.orbit_TLE[4] = tle.tle4.tle_4_raan;
-        rtU.orbit_TLE[5] = tle.tle3.tle_3_ecc;
-        rtU.orbit_TLE[6] = tle.tle4.tle_4_aop;
-        rtU.orbit_TLE[7] = tle.tle5.tle_5_mna;
-        rtU.orbit_TLE[8] = tle.tle6.tle_6_mnm;
+        double day = tleDay(&tle);
+        rtU.orbit_TLE[0] = 2000 + (uint8_t) (day / 365.24); // year is unused
+        rtU.orbit_TLE[1] = day;
+        rtU.orbit_TLE[2] = tleBStar(&tle);
+        rtU.orbit_TLE[3] = tleInc(&tle);
+        rtU.orbit_TLE[4] = tleRaan(&tle);
+        rtU.orbit_TLE[5] = tleEcc(&tle);
+        rtU.orbit_TLE[6] = tleAop(&tle);
+        rtU.orbit_TLE[7] = tleMna(&tle);
+        rtU.orbit_TLE[8] = tleMnm(&tle);
     }
     __enable_interrupt();
 }

@@ -193,11 +193,6 @@ void canBlast() {
 	encodeppt_firing_result(&ppt_firing_result_info, &ppt_firing_result_packet);
 	canSendPacket(&ppt_firing_result_packet);
 
-	__delay_cycles(10000);	CANPacket tle_6_packet = {0};
-	tle_6 tle_6_info = {0};
-	encodetle_6(&tle_6_info, &tle_6_packet);
-	canSendPacket(&tle_6_packet);
-
 	__delay_cycles(10000);	CANPacket tle_5_packet = {0};
 	tle_5 tle_5_info = {0};
 	encodetle_5(&tle_5_info, &tle_5_packet);

@@ -15,15 +15,14 @@ FILE_STATIC const uint32_t completeSet = CAN_ID_TLE_1
                                        | CAN_ID_TLE_2
                                        | CAN_ID_TLE_3
                                        | CAN_ID_TLE_4
-                                       | CAN_ID_TLE_5
-                                       | CAN_ID_TLE_6;
+                                       | CAN_ID_TLE_5;
 
 void tleInit(struct tle *tle, BOOL isPrepopulated)
 {
     if (isPrepopulated)
     {
         tle->_present = completeSet;
-        tle->_id = tle->tle1.tle_1_id;
+        tle->_id = signbit(tle->tle1.tle_1_mna);
     }
     else
     {
@@ -45,7 +44,8 @@ void tleUpdate(CANPacket *p, struct tle *tle)
     {
     case CAN_ID_TLE_1:
         decodetle_1(p, &tle->tle1);
-        tleId = tle->tle1.tle_1_id;
+        tleId = signbit(tle->tle1.tle_1_mna);
+        tle->tle1.tle_1_mna = fabsf(tle->tle1.tle_1_mna);
         break;
     case CAN_ID_TLE_2:
         decodetle_2(p, &tle->tle2);
@@ -64,12 +64,8 @@ void tleUpdate(CANPacket *p, struct tle *tle)
         break;
     case CAN_ID_TLE_5:
         decodetle_5(p, &tle->tle5);
-        tleId = tle->tle5.tle_5_id;
-        break;
-    case CAN_ID_TLE_6:
-        decodetle_6(p, &tle->tle6);
-        tleId = signbit(tle->tle6.tle_6_mnm);
-        tle->tle6.tle_6_mnm = fabs(tle->tle6.tle_6_mnm);
+        tleId = signbit(tle->tle5.tle_5_mnm);
+        tle->tle5.tle_5_mnm = fabs(tle->tle5.tle_5_mnm);
         break;
     default:
         // ignore non-TLE CAN packets

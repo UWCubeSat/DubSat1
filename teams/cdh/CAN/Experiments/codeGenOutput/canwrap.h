@@ -53,7 +53,6 @@
 #define CAN_ID_CMD_PPT_TIME_UPD 302252293
 #define CAN_ID_CMD_PPT_HALT 285475076
 #define CAN_ID_PPT_FIRING_RESULT 304677104
-#define CAN_ID_TLE_6 309788745
 #define CAN_ID_TLE_5 309788744
 #define CAN_ID_TLE_4 309788743
 #define CAN_ID_TLE_3 309788742
@@ -93,54 +92,54 @@
 #define CAN_ID_MSP_TEMP 36241427
 #define CAN_ID_GRND_EPOCH 302449337
 
-#define CAN_ENUM_NBOOL_NULL 2
-#define CAN_ENUM_NBOOL_TRUE 1
-#define CAN_ENUM_NBOOL_FALSE 0
-#define CAN_ENUM_FIRE_STATE_NODISCHARGE 3
-#define CAN_ENUM_FIRE_STATE_NOCHARGE 2
-#define CAN_ENUM_FIRE_STATE_FIREOVERRIDDEN 1
-#define CAN_ENUM_FIRE_STATE_FIRESUCCESSFUL 0
-#define CAN_ENUM_UV_STATE_UNDERVOLTAGE 1
-#define CAN_ENUM_UV_STATE_NORMAL 0
-#define CAN_ENUM_MODE_NOTTUMBLINGCHARLIE 3
-#define CAN_ENUM_MODE_NOTTUMBLINGBOB 2
-#define CAN_ENUM_MODE_NOTTUMBLINGALICE 1
-#define CAN_ENUM_MODE_TUMBLING 0
-#define CAN_ENUM_PWR_DOMAIN_UNK 8
-#define CAN_ENUM_PWR_DOMAIN_COM1 7
-#define CAN_ENUM_PWR_DOMAIN_COM2 6
-#define CAN_ENUM_PWR_DOMAIN_RAHS 5
-#define CAN_ENUM_PWR_DOMAIN_BDOT 4
-#define CAN_ENUM_PWR_DOMAIN_ESTIM 3
-#define CAN_ENUM_PWR_DOMAIN_WHEEL 2
-#define CAN_ENUM_PWR_DOMAIN_EPS 1
-#define CAN_ENUM_PWR_DOMAIN_PPT 0
-#define CAN_ENUM_SAT_STATE_GOOD 1
-#define CAN_ENUM_SAT_STATE_BAD 0
-#define CAN_ENUM_NODE_RAHS 15
-#define CAN_ENUM_NODE_COM_2 14
-#define CAN_ENUM_NODE_COM_1 13
-#define CAN_ENUM_NODE_ADCS_MTQ 12
-#define CAN_ENUM_NODE_ADCS_SENSORPROC 11
-#define CAN_ENUM_NODE_ADCS_MPC 10
-#define CAN_ENUM_NODE_ADCS_ESTIM 9
-#define CAN_ENUM_NODE_EPS_BATT 8
-#define CAN_ENUM_NODE_EPS_GEN 7
-#define CAN_ENUM_NODE_EPS_DIST 6
-#define CAN_ENUM_NODE_PPT 5
-#define CAN_ENUM_NODE_ADCS_RWZ 4
-#define CAN_ENUM_NODE_ADCS_RWY 3
-#define CAN_ENUM_NODE_ADCS_RWX 2
-#define CAN_ENUM_NODE_ADCS_BDOT 1
 #define CAN_ENUM_NODE_TEST 0
-#define CAN_ENUM_AGG_SUM 5
-#define CAN_ENUM_AGG_MAX 4
-#define CAN_ENUM_AGG_MIN 3
-#define CAN_ENUM_AGG_COUNT 2
-#define CAN_ENUM_AGG_AVG 1
+#define CAN_ENUM_NODE_ADCS_BDOT 1
+#define CAN_ENUM_NODE_ADCS_RWX 2
+#define CAN_ENUM_NODE_ADCS_RWY 3
+#define CAN_ENUM_NODE_ADCS_RWZ 4
+#define CAN_ENUM_NODE_PPT 5
+#define CAN_ENUM_NODE_EPS_DIST 6
+#define CAN_ENUM_NODE_EPS_GEN 7
+#define CAN_ENUM_NODE_EPS_BATT 8
+#define CAN_ENUM_NODE_ADCS_ESTIM 9
+#define CAN_ENUM_NODE_ADCS_MPC 10
+#define CAN_ENUM_NODE_ADCS_SENSORPROC 11
+#define CAN_ENUM_NODE_ADCS_MTQ 12
+#define CAN_ENUM_NODE_COM_1 13
+#define CAN_ENUM_NODE_COM_2 14
+#define CAN_ENUM_NODE_RAHS 15
+#define CAN_ENUM_UV_STATE_NORMAL 0
+#define CAN_ENUM_UV_STATE_UNDERVOLTAGE 1
 #define CAN_ENUM_AGG_NONE 0
-#define CAN_ENUM_BOOL_TRUE 1
+#define CAN_ENUM_AGG_AVG 1
+#define CAN_ENUM_AGG_COUNT 2
+#define CAN_ENUM_AGG_MIN 3
+#define CAN_ENUM_AGG_MAX 4
+#define CAN_ENUM_AGG_SUM 5
+#define CAN_ENUM_FIRE_STATE_FIRESUCCESSFUL 0
+#define CAN_ENUM_FIRE_STATE_FIREOVERRIDDEN 1
+#define CAN_ENUM_FIRE_STATE_NOCHARGE 2
+#define CAN_ENUM_FIRE_STATE_NODISCHARGE 3
+#define CAN_ENUM_SAT_STATE_BAD 0
+#define CAN_ENUM_SAT_STATE_GOOD 1
 #define CAN_ENUM_BOOL_FALSE 0
+#define CAN_ENUM_BOOL_TRUE 1
+#define CAN_ENUM_MODE_FSWOFF 0
+#define CAN_ENUM_MODE_BDOT 1
+#define CAN_ENUM_MODE_POINTING 3
+#define CAN_ENUM_MODE_LOWPOWER 4
+#define CAN_ENUM_NBOOL_FALSE 0
+#define CAN_ENUM_NBOOL_TRUE 1
+#define CAN_ENUM_NBOOL_NULL 2
+#define CAN_ENUM_PWR_DOMAIN_PPT 0
+#define CAN_ENUM_PWR_DOMAIN_EPS 1
+#define CAN_ENUM_PWR_DOMAIN_WHEEL 2
+#define CAN_ENUM_PWR_DOMAIN_ESTIM 3
+#define CAN_ENUM_PWR_DOMAIN_BDOT 4
+#define CAN_ENUM_PWR_DOMAIN_RAHS 5
+#define CAN_ENUM_PWR_DOMAIN_COM2 6
+#define CAN_ENUM_PWR_DOMAIN_COM1 7
+#define CAN_ENUM_PWR_DOMAIN_UNK 8
 
 typedef struct CANPacket {
    uint32_t id; // Actual physical ID of the packet
@@ -409,13 +408,8 @@ typedef struct ppt_firing_result {
     uint8_t ppt_firing_result_code; //  (No Units)
 } ppt_firing_result;
 
-typedef struct tle_6 {
-    double tle_6_mnm; //  (No Units)
-} tle_6;
-
 typedef struct tle_5 {
-    uint8_t tle_5_id; //  (No Units)
-    float tle_5_mna; //  (No Units)
+    double tle_5_mnm; //  (No Units)
 } tle_5;
 
 typedef struct tle_4 {
@@ -433,9 +427,8 @@ typedef struct tle_2 {
 } tle_2;
 
 typedef struct tle_1 {
-    uint8_t tle_1_id; //  (No Units)
+    float tle_1_mna; //  (No Units)
     float tle_1_bstar; //  (No Units)
-    uint8_t tle_1_year; //  (No Units)
 } tle_1;
 
 typedef struct eps_pd_undervoltage {
@@ -739,9 +732,6 @@ void decodecmd_ppt_halt(CANPacket *input, cmd_ppt_halt *output);
 
 void encodeppt_firing_result(ppt_firing_result *input, CANPacket* output);
 void decodeppt_firing_result(CANPacket *input, ppt_firing_result *output);
-
-void encodetle_6(tle_6 *input, CANPacket* output);
-void decodetle_6(CANPacket *input, tle_6 *output);
 
 void encodetle_5(tle_5 *input, CANPacket* output);
 void decodetle_5(CANPacket *input, tle_5 *output);
