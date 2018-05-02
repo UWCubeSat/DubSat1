@@ -115,7 +115,8 @@ def createCHeader(candb, cFileName, floatList):
 // what phase the mtq is in (needed by fsw and bdot)
 #define MEASUREMENT_PHASE CAN_ENUM_BOOL_FALSE 
 #define ACTUATION_PHASE CAN_ENUM_BOOL_TRUE
-
+#define FROM_FSW_IS_ZERO 0
+#define FROM_BDOT_IS_ONE 1
 
 // BEGIN GENERATOR MACROS
 
