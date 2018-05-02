@@ -117,6 +117,8 @@ def createCHeader(candb, cFileName, floatList):
 #define ACTUATION_PHASE CAN_ENUM_BOOL_TRUE
 #define FROM_FSW_IS_ZERO 0
 #define FROM_BDOT_IS_ONE 1
+#define FROM_FSW FROM_FSW_IS_ZERO
+#define FROM_BDOT FROM_BDOT_IS_ONE
 
 // BEGIN GENERATOR MACROS
 
