@@ -22,6 +22,13 @@ FILE_STATIC flag_t triggerStepFlag = FALSE;
 // CAN temporary input
 FILE_STATIC sp2fsw tmpSP2FSW;
 FILE_STATIC mtq_ack tmpMtqAck;
+FILE_STATIC estim_state tmpEstimState;
+FILE_STATIC estim_sun_unit_x tmpESunx;
+FILE_STATIC estim_sun_unit_y tmpESuny;
+FILE_STATIC estim_sun_unit_z tmpESunz;
+FILE_STATIC estim_mag_unit_x tmpEMagx;
+FILE_STATIC estim_mag_unit_y tmpEMagy;
+FILE_STATIC estim_mag_unit_z tmpEMagz;
 
 // Backchannel telemerty
 FILE_STATIC meta_segment mseg;
@@ -188,7 +195,27 @@ void canRxCallback(CANPacket *p)
     case CAN_ID_MTQ_ACK:
         decodemtq_ack(p, &tmpMtqAck);
         break;
-    // TODO get other CAN inputs (i.e. ESTIM's outputs)
+    case CAN_ID_ESTIM_STATE:
+        decodeestim_state(p, &tmpEstimState);
+        break;
+    case CAN_ID_ESTIM_MAG_UNIT_X:
+        decodeestim_mag_unit_x(p, &tmpEMagx);
+        break;
+    case CAN_ID_ESTIM_MAG_UNIT_Y:
+        decodeestim_mag_unit_y(p, &tmpEMagy);
+        break;
+    case CAN_ID_ESTIM_MAG_UNIT_Z:
+        decodeestim_mag_unit_z(p, &tmpEMagz);
+        break;
+    case CAN_ID_ESTIM_SUN_UNIT_X:
+        decodeestim_sun_unit_x(p, &tmpESunx);
+        break;
+    case CAN_ID_ESTIM_SUN_UNIT_Y:
+        decodeestim_sun_unit_y(p, &tmpESuny);
+        break;
+    case CAN_ID_ESTIM_SUN_UNIT_Z:
+        decodeestim_sun_unit_z(p, &tmpESunz);
+        break;
     }
 }
 
@@ -196,11 +223,8 @@ void canRxCallback(CANPacket *p)
 void acceptInputs()
 {
     __disable_interrupt();
-    /*
-     * TODO missing sc_in_sun, sc_above_gs, mag_eci_unit, sc2sun_unit
-     * (i.e. ESTIM's outputs)
-     */
 
+    // sensor proc outputs
     memcpy(rtU.mag_vec_body_T, tmpSP2FSW.mag_vec_body_T,
            4 * sizeof(tmpSP2FSW.mag_vec_body_T[0]));
     memcpy(rtU.gyro_omega_body_radps, tmpSP2FSW.gyro_omega_body_radps,
@@ -208,6 +232,7 @@ void acceptInputs()
     memcpy(rtU.sun_vec_body_sunsensor, tmpSP2FSW.sun_vec_body_sunsensor,
            4 * sizeof(tmpSP2FSW.sun_vec_body_sunsensor[0]));
 
+    // MTQ outputs
     // TODO don't use magic numbers. 0 means measurement phase here
     // TODO confirm interpretation that measurement phase == MT_valid
     uint8_t i;
@@ -215,6 +240,16 @@ void acceptInputs()
     {
         rtU.MT_valid[i] = tmpMtqAck.mtq_ack_phase == 0;
     }
+
+    // ESTIM outputs
+    rtU.sc_above_gs = tmpEstimState.estim_state_above_gs;
+    rtU.sc_in_sun = tmpEstimState.estim_state_in_sun;
+    rtU.sc2sun_unit[0] = tmpESunx.estim_sun_unit_x_val;
+    rtU.sc2sun_unit[1] = tmpESuny.estim_sun_unit_y_val;
+    rtU.sc2sun_unit[2] = tmpESunz.estim_sun_unit_z_val;
+    rtU.mag_eci_unit[0] = tmpEMagx.estim_mag_unit_x_val;
+    rtU.mag_eci_unit[1] = tmpEMagy.estim_mag_unit_y_val;
+    rtU.mag_eci_unit[2] = tmpEMagz.estim_mag_unit_z_val;
 
     __enable_interrupt();
 }
@@ -231,8 +266,6 @@ void sendCANVelocityPointing()
 
 void sendCANMtqCmd()
 {
-    // TODO may need to scale [-127, 128] range down to [-100, 100] if the
-    // autocode doesn't do this already
     CANPacket p;
     cmd_mtq_fsw cmd;
     cmd.cmd_mtq_fsw_sc_mode = rtY.sc_mode;
