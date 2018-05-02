@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'MSP_FSW'.
  *
- * Model version                  : 1.357
+ * Model version                  : 1.369
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Wed Apr 25 18:16:06 2018
+ * C/C++ source code generated on : Tue May  1 19:12:57 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430

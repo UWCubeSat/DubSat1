@@ -3,13 +3,13 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * File: MSP_env_estim_data.c
+ * File: MSP_env_estim0_data.c
  *
- * Code generated for Simulink model 'MSP_env_estim'.
+ * Code generated for Simulink model 'MSP_env_estim0'.
  *
- * Model version                  : 1.361
+ * Model version                  : 1.368
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Mon Apr 30 18:18:31 2018
+ * C/C++ source code generated on : Tue May  1 18:59:45 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -19,14 +19,14 @@
  * Validation result: Not run
  */
 
-#include "MSP_env_estim.h"
+#include "MSP_env_estim0.h"
 
 /* Constant parameters (auto storage) */
 const ConstP rtConstP = {
   /* Pooled Parameter (Expression: k)
    * Referenced by:
-   *   '<S114>/k[13][13]'
-   *   '<S105>/k[13][13]'
+   *   '<S115>/k[13][13]'
+   *   '<S106>/k[13][13]'
    */
   { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.0, 0.0,
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33333333333333331,
@@ -61,8 +61,8 @@ const ConstP rtConstP = {
 
   /* Pooled Parameter (Expression: snorm)
    * Referenced by:
-   *   '<S98>/snorm[169]'
-   *   '<S98>/Unit Delay1'
+   *   '<S99>/snorm[169]'
+   *   '<S99>/Unit Delay1'
    */
   { 1.0, 1.0, 1.5, 2.5, 4.375, 7.875, 14.4375, 26.8125, 50.2734375, 94.9609375,
     180.42578125, 344.44921875, 660.1943359375, 0.0, 1.0, 1.7320508075688772,
@@ -97,7 +97,7 @@ const ConstP rtConstP = {
     0.0, 0.56776801212685635 },
 
   /* Expression: c
-   * Referenced by: '<S99>/c[maxdef][maxdef]'
+   * Referenced by: '<S100>/c[maxdef][maxdef]'
    */
   { 0.0, 4796.2, -4928.7237780179967, -353.03270917862551, 1568.3316055605076,
     481.89595285185783, -391.29468215304178, -1918.905550105218, 683.71875,
@@ -153,7 +153,7 @@ const ConstP rtConstP = {
     1.8864941272538016, -2.5033354595732336, 0.0 },
 
   /* Expression: cd
-   * Referenced by: '<S99>/cd[maxdef][maxdef]'
+   * Referenced by: '<S100>/cd[maxdef][maxdef]'
    */
   { 0.0, -26.8, -46.938576885116575, 25.71964229922337, -3.3203915431767981,
     4.0666325135177877, 0.0, 24.828722459771768, -20.109375, -25.480693374853075,
@@ -198,39 +198,33 @@ const ConstP rtConstP = {
     0.0, 0.0, 0.0, 0.0 },
 
   /* Expression: fm
-   * Referenced by: '<S97>/fm'
+   * Referenced by: '<S98>/fm'
    */
   { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0 },
 
   /* Expression: fn
-   * Referenced by: '<S97>/fn'
+   * Referenced by: '<S98>/fn'
    */
   { 0.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0 },
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
-   *   '<S137>/sp[11]'
-   *   '<S137>/cp[11]'
-   *   '<S137>/Constant'
-   *   '<S137>/Constant1'
+   *   '<S138>/sp[11]'
+   *   '<S138>/cp[11]'
+   *   '<S138>/Constant'
+   *   '<S138>/Constant1'
    */
   { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0 },
 
   /* Expression: [0 0 (1:(maxdef-1))]
-   * Referenced by: '<S90>/sp[13]'
+   * Referenced by: '<S91>/sp[13]'
    */
   { 0.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0 },
 
   /* Expression: [1 1 (1:(maxdef-1))]
-   * Referenced by: '<S90>/cp[13]'
+   * Referenced by: '<S91>/cp[13]'
    */
-  { 1.0, 1.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0 },
-
-  /* Expression: fsw_params.env_estimation.ic.orbit_tle
-   * Referenced by: '<S1>/Rate Transition1'
-   */
-  { 18.0, 6848.2916666697711, 3.2923E-5, 98.5033, 67.1301, 0.0008911, 245.3514,
-    2.1593, 14.56154823 }
+  { 1.0, 1.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0 }
 };
 
 /*
