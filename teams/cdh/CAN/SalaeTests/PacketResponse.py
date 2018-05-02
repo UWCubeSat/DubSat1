@@ -2,6 +2,7 @@ from typing import List, Tuple
 import time
 import tqdm
 import sys
+import os
 import saleae
 
 # States: 0: not listening for int fall, 1: listening for int fall, 2: listening for spi flip
@@ -9,14 +10,18 @@ state: int = 0
 flip_state: int = 0
 timer: float = 0
 
+tmpcapturepath = '/tmp/'
+if os.name == 'nt':
+    tmpcapturepath = 'C:\\tmp\\'
+
 times: List = []
 
 s = saleae.Saleae()
 
 try:
     while True:
-        s.capture_to_file('/tmp/emoriessaleaedump.logicdata')
-        s.export_data2("/tmp/emoriessaleaedump.csv",
+        s.capture_to_file(tmpcapturepath + 'emoriessaleaedump.logicdata')
+        s.export_data2(tmpcapturepath + "emoriessaleaedump.csv",
                        digital_channels=[0, 1],
                        format='csv',
                        display_base="SEPARATE",
