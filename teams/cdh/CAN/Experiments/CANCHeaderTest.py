@@ -110,6 +110,12 @@ def createCHeader(candb, cFileName, floatList):
 
 #define PARAM_ADCS_STATUS_VELOCITY_RPM 0x4201;
 
+// the initial value assigned to the coils before commands are received
+#define ELOISE_UNKNOWN -128 
+// what phase the mtq is in (needed by fsw and bdot)
+#define MEASUREMENT_PHASE CAN_ENUM_BOOL_FALSE 
+#define ACTUATION_PHASE CAN_ENUM_BOOL_TRUE
+
 
 // BEGIN GENERATOR MACROS
 

@@ -215,7 +215,7 @@ void decoderc_adcs_bdot_3(CANPacket *input, rc_adcs_bdot_3 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_adcs_bdot_3_tumble = (uint8_t) (((fullData & ((uint64_t) 0x1 << 31)) >> 31));
-    output -> rc_adcs_bdot_3_mag_avg = (int32_t) (((fullData & ((uint64_t) 0xffffffffL << 32)) >> 32));
+    output -> rc_adcs_bdot_3_mag_avg = (int32_t) (((fullData & ((uint64_t) 0xffffffff << 32)) >> 32));
 }
 
 void encoderc_adcs_bdot_3(rc_adcs_bdot_3 *input, CANPacket *output){
@@ -223,7 +223,7 @@ void encoderc_adcs_bdot_3(rc_adcs_bdot_3 *input, CANPacket *output){
     output -> length = 5;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_3_tumble))) & 0x1) << 31;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_3_mag_avg))) & 0xffffffffL) << 32;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_3_mag_avg))) & 0xffffffff) << 32;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -233,16 +233,16 @@ void decoderc_adcs_bdot_2(CANPacket *input, rc_adcs_bdot_2 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_bdot_2_mag_min = (int32_t) (((fullData & ((uint64_t) 0xffffffffL << 32)) >> 32));
-    output -> rc_adcs_bdot_2_mag_max = (int32_t) (((fullData & ((uint64_t) 0xffffffffL))));
+    output -> rc_adcs_bdot_2_mag_min = (int32_t) (((fullData & ((uint64_t) 0xffffffff << 32)) >> 32));
+    output -> rc_adcs_bdot_2_mag_max = (int32_t) (((fullData & ((uint64_t) 0xffffffff))));
 }
 
 void encoderc_adcs_bdot_2(rc_adcs_bdot_2 *input, CANPacket *output){
     output -> id = 304677383;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_2_mag_min))) & 0xffffffffL) << 32;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_2_mag_max))) & 0xffffffffL);
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_2_mag_min))) & 0xffffffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_2_mag_max))) & 0xffffffff);
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -275,7 +275,7 @@ void decodeestim_sun_unit_z(CANPacket *input, estim_sun_unit_z *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t tempestim_sun_unit_z_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffffL)));
+    uint64_t tempestim_sun_unit_z_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
 output -> estim_sun_unit_z_val = (*((double *)(&(tempestim_sun_unit_z_val))));
 }
 
@@ -294,7 +294,7 @@ void decodeestim_sun_unit_y(CANPacket *input, estim_sun_unit_y *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t tempestim_sun_unit_y_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffffL)));
+    uint64_t tempestim_sun_unit_y_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
 output -> estim_sun_unit_y_val = (*((double *)(&(tempestim_sun_unit_y_val))));
 }
 
@@ -313,7 +313,7 @@ void decodeestim_sun_unit_x(CANPacket *input, estim_sun_unit_x *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t tempestim_sun_unit_x_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffffL)));
+    uint64_t tempestim_sun_unit_x_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
 output -> estim_sun_unit_x_val = (*((double *)(&(tempestim_sun_unit_x_val))));
 }
 
@@ -332,7 +332,7 @@ void decodeestim_mag_unit_z(CANPacket *input, estim_mag_unit_z *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t tempestim_mag_unit_z_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffffL)));
+    uint64_t tempestim_mag_unit_z_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
 output -> estim_mag_unit_z_val = (*((double *)(&(tempestim_mag_unit_z_val))));
 }
 
@@ -351,7 +351,7 @@ void decodeestim_mag_unit_y(CANPacket *input, estim_mag_unit_y *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t tempestim_mag_unit_y_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffffL)));
+    uint64_t tempestim_mag_unit_y_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
 output -> estim_mag_unit_y_val = (*((double *)(&(tempestim_mag_unit_y_val))));
 }
 
@@ -370,7 +370,7 @@ void decodeestim_mag_unit_x(CANPacket *input, estim_mag_unit_x *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t tempestim_mag_unit_x_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffffL)));
+    uint64_t tempestim_mag_unit_x_val = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
 output -> estim_mag_unit_x_val = (*((double *)(&(tempestim_mag_unit_x_val))));
 }
 
@@ -408,9 +408,9 @@ void decoderc_eps_gen_11(CANPacket *input, rc_eps_gen_11 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint32_t temprc_eps_gen_11_pnl_1_power_min = (uint32_t) ((fullData & ((uint64_t) 0xffffffffL << 32)) >> 32);
+    uint32_t temprc_eps_gen_11_pnl_1_power_min = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
     output -> rc_eps_gen_11_pnl_1_power_min = (*((float *)(&(temprc_eps_gen_11_pnl_1_power_min))));
-    uint32_t temprc_eps_gen_11_pnl_1_power_max = (uint32_t) ((fullData & ((uint64_t) 0xffffffffL)));
+    uint32_t temprc_eps_gen_11_pnl_1_power_max = (uint32_t) ((fullData & ((uint64_t) 0xffffffff)));
     output -> rc_eps_gen_11_pnl_1_power_max = (*((float *)(&(temprc_eps_gen_11_pnl_1_power_max))));
 }
 
@@ -851,7 +851,7 @@ void decoderc_eps_batt_6(CANPacket *input, rc_eps_batt_6 *output){
     output -> rc_eps_batt_6_soc_min = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
     output -> rc_eps_batt_6_soc_max = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
     output -> rc_eps_batt_6_soc_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
-    output -> rc_eps_batt_6_last_charge = (uint64_t) (((fullData & ((uint64_t) 0xffffffffffL))));
+    output -> rc_eps_batt_6_last_charge = (uint64_t) (((fullData & ((uint64_t) 0xffffffffff))));
 }
 
 void encoderc_eps_batt_6(rc_eps_batt_6 *input, CANPacket *output){
@@ -861,7 +861,7 @@ void encoderc_eps_batt_6(rc_eps_batt_6 *input, CANPacket *output){
     fullPacketData |= (((uint64_t)((input -> rc_eps_batt_6_soc_min))) & 0xff) << 56;
     fullPacketData |= (((uint64_t)((input -> rc_eps_batt_6_soc_max))) & 0xff) << 48;
     fullPacketData |= (((uint64_t)((input -> rc_eps_batt_6_soc_avg))) & 0xff) << 40;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_6_last_charge))) & 0xffffffffffL);
+    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_6_last_charge))) & 0xffffffffff);
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -1072,7 +1072,7 @@ void decodetle_5(CANPacket *input, tle_5 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t temptle_5_mnm = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffffL)));
+    uint64_t temptle_5_mnm = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
 output -> tle_5_mnm = (*((double *)(&(temptle_5_mnm))));
 }
 
@@ -1091,9 +1091,9 @@ void decodetle_4(CANPacket *input, tle_4 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint32_t temptle_4_aop = (uint32_t) ((fullData & ((uint64_t) 0xffffffffL)));
+    uint32_t temptle_4_aop = (uint32_t) ((fullData & ((uint64_t) 0xffffffff)));
     output -> tle_4_aop = (*((float *)(&(temptle_4_aop))));
-    uint32_t temptle_4_raan = (uint32_t) ((fullData & ((uint64_t) 0xffffffffL << 32)) >> 32);
+    uint32_t temptle_4_raan = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
     output -> tle_4_raan = (*((float *)(&(temptle_4_raan))));
 }
 
@@ -1114,9 +1114,9 @@ void decodetle_3(CANPacket *input, tle_3 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint32_t temptle_3_ecc = (uint32_t) ((fullData & ((uint64_t) 0xffffffffL)));
+    uint32_t temptle_3_ecc = (uint32_t) ((fullData & ((uint64_t) 0xffffffff)));
     output -> tle_3_ecc = (*((float *)(&(temptle_3_ecc))));
-    uint32_t temptle_3_inc = (uint32_t) ((fullData & ((uint64_t) 0xffffffffL << 32)) >> 32);
+    uint32_t temptle_3_inc = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
     output -> tle_3_inc = (*((float *)(&(temptle_3_inc))));
 }
 
@@ -1137,7 +1137,7 @@ void decodetle_2(CANPacket *input, tle_2 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t temptle_2_day = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffffL)));
+    uint64_t temptle_2_day = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
 output -> tle_2_day = (*((double *)(&(temptle_2_day))));
 }
 
@@ -1156,9 +1156,9 @@ void decodetle_1(CANPacket *input, tle_1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint32_t temptle_1_mna = (uint32_t) ((fullData & ((uint64_t) 0xffffffffL)));
+    uint32_t temptle_1_mna = (uint32_t) ((fullData & ((uint64_t) 0xffffffff)));
     output -> tle_1_mna = (*((float *)(&(temptle_1_mna))));
-    uint32_t temptle_1_bstar = (uint32_t) ((fullData & ((uint64_t) 0xffffffffL << 32)) >> 32);
+    uint32_t temptle_1_bstar = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
     output -> tle_1_bstar = (*((float *)(&(temptle_1_bstar))));
 }
 
@@ -1463,7 +1463,7 @@ void decodecmd_rollcall(CANPacket *input, cmd_rollcall *output){
     const uint64_t fullData = *thePointer;
     output -> cmd_rollcall_type = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> cmd_rollcall_met_overflow = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
-    output -> cmd_rollcall_met = (uint32_t) (((fullData & ((uint64_t) 0xffffffffL << 24)) >> 24));
+    output -> cmd_rollcall_met = (uint32_t) (((fullData & ((uint64_t) 0xffffffff << 24)) >> 24));
     output -> cmd_rollcall_msp = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
@@ -1473,7 +1473,7 @@ void encodecmd_rollcall(cmd_rollcall *input, CANPacket *output){
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> cmd_rollcall_type))) & 0xff) << 8;
     fullPacketData |= (((uint64_t)((input -> cmd_rollcall_met_overflow))) & 0xff) << 16;
-    fullPacketData |= (((uint64_t)((input -> cmd_rollcall_met))) & 0xffffffffL) << 24;
+    fullPacketData |= (((uint64_t)((input -> cmd_rollcall_met))) & 0xffffffff) << 24;
     fullPacketData |= (((uint64_t)((input -> cmd_rollcall_msp))) & 0xff) << 56;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
@@ -1834,7 +1834,7 @@ void decodegrnd_epoch(CANPacket *input, grnd_epoch *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> grnd_epoch_val_overflow = (uint8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
-    output -> grnd_epoch_val = (uint32_t) (((fullData & ((uint64_t) 0xffffffffL << 32)) >> 32));
+    output -> grnd_epoch_val = (uint32_t) (((fullData & ((uint64_t) 0xffffffff << 32)) >> 32));
 }
 
 void encodegrnd_epoch(grnd_epoch *input, CANPacket *output){
@@ -1842,7 +1842,7 @@ void encodegrnd_epoch(grnd_epoch *input, CANPacket *output){
     output -> length = 5;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> grnd_epoch_val_overflow))) & 0xff) << 24;
-    fullPacketData |= (((uint64_t)((input -> grnd_epoch_val))) & 0xffffffffL) << 32;
+    fullPacketData |= (((uint64_t)((input -> grnd_epoch_val))) & 0xffffffff) << 32;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
