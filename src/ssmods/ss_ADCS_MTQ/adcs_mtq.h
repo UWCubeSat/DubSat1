@@ -69,7 +69,6 @@ CMD_SEGMENT {
     int8_t z;
 } command_segment;
 
-
 void handlePPTFiringNotification();
 void handleRollCall();
 void sendDutyPacket();
@@ -96,19 +95,12 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 #define UNKNOWN -128 // completely arbitrary but outside the -100 - 100 range
 #define DONT_OVERRIDE CAN_ENUM_BOOL_FALSE
 #define OVERRIDE CAN_ENUM_BOOL_TRUE
-#define TUMBLING CAN_ENUM_BOOL_TRUE
-#define IDLE CAN_ENUM_BOOL_FALSE
 // --- CAN ack packet---
 #define FROM_FSW CAN_ENUM_BOOL_FALSE
 #define FROM_BDOT CAN_ENUM_BOOL_TRUE
-#define COILS_ARE_OFF CAN_ENUM_BOOL_TRUE
-#define COILS_ARE_ON CAN_ENUM_BOOL_FALSE
 // ---COSMOS-----
 #define TLM_ID_BDOT_FSW_COMMANDS 127 
 #define TLM_ID_DUTY_PERCENT 126
-// ---state machine---
-#define MEASUREMENT_PHASE CAN_ENUM_BOOL_FALSE
-#define ACTUATION_PHASE CAN_ENUM_BOOL_TRUE
 
 
 #endif /* ADCS_MTQ_H_ */

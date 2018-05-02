@@ -132,6 +132,7 @@ eMTQState curr_state;
 // add fsw timeout 
 // fix manage telem function   
 // cntrl f DEBUG to see commented out sections 
+// check sc_mode 
 //------------------------------------------------------------------
 
 int main(void)
@@ -144,7 +145,7 @@ int main(void)
     cosmos_init();                 // COSMOS backchannel initialization
     can_init();                    // CAN initialization
 
-    restartMTQ(); // restart 
+    restartMTQ();
 	
     while (1)
     {
@@ -195,7 +196,7 @@ void measurement()
     {
 		enable_command_update = 0; // stop updating commands
 		
-		if(sc_mode == IDLE && fsw_is_valid())
+		if(sc_mode == 0 || sc_mode == 1 || && fsw_is_valid())
 		{
 			curr_state = FSW_ACTUATION;
 			send_CAN_ack_packet();
