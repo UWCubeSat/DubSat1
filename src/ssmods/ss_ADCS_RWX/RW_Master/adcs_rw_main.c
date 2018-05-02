@@ -26,6 +26,7 @@ void receive_packet(){
 }
 int main(void)
 {
+    PJDIR |= 0x07;
 
     /* ----- INITIALIZATION -----*/
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
