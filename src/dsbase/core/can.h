@@ -31,6 +31,11 @@ uint8_t mcpMode;
  */
 uint8_t canInit(void);
 
+/* Check if one or more packets have been dropped, then resets to 0.
+ * Output: 0 on no packets dropped, non zero if one or more packets have been dropped.
+ */
+uint8_t canRxErrorCheck(void);
+
 /* bufNum: TxBuf to write to, from 0 to 2
  * Tech: technical details
  *  Msg: message buffer

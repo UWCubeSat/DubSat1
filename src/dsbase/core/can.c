@@ -13,6 +13,15 @@ void disableCanInterrupt(){
 void enableCanInterrupt(){
     P5IE |= BIT7;
 }
+uint8_t canRxErrorCheck(void){
+    uint8_t retval = 0;
+    disableCanInterrupt();
+    readRegister(MCP_EFLG, &retval);
+    retval = retval & (RX1OVR | RX0OVR);
+    bitModify(MCP_EFLG, RX1OVR | RX0OVR, 0x0);
+    enableCanInterrupt();
+    return retval;
+}
 // Dummy callback used in place until we set a
 // callback method
 void DummyCallback(uint8_t length, uint8_t* data, uint32_t id){}
