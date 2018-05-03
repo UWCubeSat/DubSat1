@@ -66,10 +66,9 @@ void magioUpdate1()
 #endif
 
     // set autocode inputs
-    // TODO verify units
-    rtU.mag1_vec_body_T[0] = data1->rawX;
-    rtU.mag1_vec_body_T[1] = data1->rawY;
-    rtU.mag1_vec_body_T[2] = data1->rawZ;
+    rtU.mag1_vec_body_T[0] = magConvertRawToTeslas(data1->rawX);
+    rtU.mag1_vec_body_T[1] = magConvertRawToTeslas(data1->rawY);
+    rtU.mag1_vec_body_T[2] = magConvertRawToTeslas(data1->rawZ);
     rtU.mag1_vec_body_T[3] = isValid(mag1);
 }
 
@@ -85,10 +84,9 @@ void magioUpdate2()
 #endif
 
     // set autocode inputs
-    // TODO verify units
-    rtU.mag2_vec_body_T[0] = data2->rawX;
-    rtU.mag2_vec_body_T[1] = data2->rawY;
-    rtU.mag2_vec_body_T[2] = data2->rawZ;
+    rtU.mag2_vec_body_T[0] = magConvertRawToTeslas(data2->rawX);
+    rtU.mag2_vec_body_T[1] = magConvertRawToTeslas(data2->rawY);
+    rtU.mag2_vec_body_T[2] = magConvertRawToTeslas(data2->rawZ);
     rtU.mag2_vec_body_T[3] = isValid(mag2);
 }
 
@@ -104,7 +102,6 @@ FILE_STATIC void magioSendBackchannel(MagnetometerData *data, uint8_t tlmId)
 
 void magioSendBackchannelVector()
 {
-    // TODO fix units
     sensor_vector_segment s;
     s.x = rtY.mag_body_processed_T[0];
     s.y = rtY.mag_body_processed_T[1];
@@ -127,9 +124,9 @@ void magioSendBackchannel2()
 void magioSendCAN()
 {
     sensorproc_mag mag;
-    mag.sensorproc_mag_x = rtY.mag_body_processed_T[0];
-    mag.sensorproc_mag_y = rtY.mag_body_processed_T[1];
-    mag.sensorproc_mag_z = rtY.mag_body_processed_T[2];
+    mag.sensorproc_mag_x = magConvertTeslasToRaw(rtY.mag_body_processed_T[0]);
+    mag.sensorproc_mag_y = magConvertTeslasToRaw(rtY.mag_body_processed_T[1]);
+    mag.sensorproc_mag_z = magConvertTeslasToRaw(rtY.mag_body_processed_T[2]);
     mag.sensorproc_mag_valid = rtY.mag_body_processed_T[3];
     CANPacket packet;
     encodesensorproc_mag(&mag, &packet);

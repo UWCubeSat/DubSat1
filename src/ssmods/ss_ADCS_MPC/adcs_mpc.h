@@ -8,45 +8,64 @@
 #ifndef ADCS_MPC_H_
 #define ADCS_MPC_H_
 
+// Debug LED
+#define LED_DIR PJDIR
+#define LED_OUT PJOUT
+#define LED_BIT BIT1
+
+#define TLM_ID_OUTPUT 2
+#define TLM_ID_MTQCMD 3
+
 #include <stdint.h>
 
 #include "core/utils.h"
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
-
-// Most subsystem modules should be implemented at least in part
-// as a state machine (specifically, a FSM).  Here the available states are
-// defined.
-typedef enum _subsystem_state {
-    State_FirstState,
-    State_SecondState,
-    State_ThirdState,
-} SubsystemState;
-
-// Additional, it can be helpful if states are grouped into higher level
-// "modes" in a hierarchical way for certain kinds of decision making and
-// reporting.  These are not mandatory, however.  State transitions will need
-// to explicitly transition the mode as well
-typedef enum _subsystem_mode {
-    Mode_FirstMode,
-    Mode_SecondMode,
-    Mode_ThirdMode,
-} SubsystemMode;
+#include "interfaces/canwrap.h"
 
 // A struct for storing various interesting info about the subsystem module
 typedef struct _module_status {
     StartupType startup_type;
-
-    uint16_t state_transition_errors;
-    uint16_t in_unknown_state;
 } ModuleStatus;
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+
+    double sc_quat[4];
+    double body_rates[3];
+    int8_t sc_mode;
+    uint8_t point_true;
+    uint8_t sc_above_gs;
+} output_segment;
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+
+    int8_t sc_mode;
+    int8_t cmd_MT_fsw_dv[3];
+} mtqcmd_segment;
+
+// Autocode steps and timing
+void triggerStep();
+FILE_STATIC void rt_OneStep();
+void acceptInputs();
+
+// CAN input
+void canRxCallback(CANPacket *p);
+
+// CAN output
+void sendCANVelocityPointing();
+void sendCANMtqCmd();
+
+// Backchannel telemerty
+void sendHealthSegment();
+void sendMetaSegment();
+void sendBackchannelTelem();
 
 void handlePPTFiringNotification();
 void handleRollCall();
 
-uint8_t handleDebugInfoCallback(DebugMode mode);
-uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 
 #endif /* ADCS_MPC_H_ */

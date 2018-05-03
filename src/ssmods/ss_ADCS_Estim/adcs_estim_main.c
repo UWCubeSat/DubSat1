@@ -10,7 +10,7 @@
 #include "core/debugtools.h"
 #include "tle.h"
 
-#include "autocode/env_estimation_lib.h"
+#include "autocode/MSP_env_estim0.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -22,22 +22,8 @@ FILE_STATIC health_segment hseg;
 
 // The latest TLE from CAN is held here and passed to autocode on each step
 // TODO initialize it with a recent TLE before launch?
-#if MOCK_TLE
-// TLE taken from Wikipedia example
-FILE_STATIC struct tle tle = {
-                              2008,
-                              264.51782528,
-                              -.11606E-4,
-                              51.6416,
-                              247.4627,
-                              .0006703,
-                              130.5360,
-                              325.0288,
-                              15.72125391
-};
-#else
-FILE_STATIC struct tle tle;
-#endif /* MOCK_TLE */
+#pragma PERSISTENT(tle)
+FILE_STATIC struct tle tle = { 0 };
 
 FILE_STATIC void setInputs();
 FILE_STATIC void sendTelemOverBackchannel();
@@ -45,6 +31,8 @@ FILE_STATIC void sendTelemOverCAN();
 
 FILE_STATIC void sendHealthSegment();
 FILE_STATIC void sendMetaSegment();
+
+FILE_STATIC void rt_OneStep(void);
 
 /*
  * main.c
@@ -76,6 +64,21 @@ int main(void)
 #endif  //  __DEBUG__
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
+#if MOCK_TLE
+    // TLE taken from Wikipedia example
+    // ID = 0
+    tle.tle1.tle_1_bstar = -.11606E-4;
+    tle.tle1.tle_1_mna = 325.0288;
+    tle.tle2.tle_2_day = (365.24 * 8) + 264.51782528;
+    tle.tle3.tle_3_ecc = .0006703;
+    tle.tle3.tle_3_inc = 51.6416;
+    tle.tle4.tle_4_aop = 130.5360;
+    tle.tle4.tle_4_raan = 247.4627;
+    tle.tle5.tle_5_mnm = 15.72125391;
+
+    // guess at the epoch
+    rtU.MET_epoch = (8 * 365.24 + tle.tle2.tle_2_day) * 24 * 60 * 60;
+#endif
     tleInit(&tle, MOCK_TLE);
     canWrapInitWithFilter();
     setCANPacketRxCallback(canRxCallback);
@@ -91,7 +94,7 @@ int main(void)
     asensorInit(Ref_2p5V);
 
     // init autocode
-    env_estimation_lib_initialize();
+    MSP_env_estim0_initialize();
 
     /*
      * TODO consider using a callback timer instead of a while loop. We'll
@@ -107,20 +110,50 @@ int main(void)
         sendHealthSegment();
         sendMetaSegment();
 
-        // set autocode inputs
-        setInputs();
-
         // step autocode
-        env_estimation_lib_step();
-
-        // send autocode outputs
-        sendTelemOverBackchannel();
-        sendTelemOverCAN();
+        rt_OneStep();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
 	return 0;
+}
+
+void rt_OneStep(void)
+{
+  static boolean_T OverrunFlag = false;
+
+  /* Disable interrupts here */
+  __disable_interrupt();
+
+  /* Check for overrun */
+  if (OverrunFlag) {
+    rtmSetErrorStatus(rtM, "Overrun");
+    return;
+  }
+
+  OverrunFlag = true;
+
+  /* Save FPU context here (if necessary) */
+  /* Re-enable timer or interrupt here */
+  __enable_interrupt();
+
+  /* Set model inputs here */
+  setInputs();
+
+  /* Step the model */
+  MSP_env_estim0_step();
+
+  /* Get model outputs here */
+  sendTelemOverBackchannel();
+  sendTelemOverCAN();
+
+  /* Indicate task complete */
+  OverrunFlag = false;
+
+  /* Disable interrupts here */
+  /* Restore FPU context here (if necessary) */
+  /* Enable interrupts here */
 }
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
@@ -139,23 +172,23 @@ void handleRollCall()
 
 FILE_STATIC void setInputs()
 {
-    // TODO verify units
-    rtU.MET = getTimeStampSeconds();
+    rtU.MET = metConvertToSeconds(getMETTimestamp());
 
     // input the TLE unless we're in the middle of reading it from CAN
     // disable interrupts so the TLE isn't modified during read
     __disable_interrupt();
     if (tleIsComplete(&tle))
     {
-        rtU.orbit_tle[0] = tle.year;
-        rtU.orbit_tle[1] = tle.day;
-        rtU.orbit_tle[2] = tle.bstar;
-        rtU.orbit_tle[3] = tle.inc;
-        rtU.orbit_tle[4] = tle.raan;
-        rtU.orbit_tle[5] = tle.ecc;
-        rtU.orbit_tle[6] = tle.aop;
-        rtU.orbit_tle[7] = tle.mna;
-        rtU.orbit_tle[8] = tle.mnm;
+        double day = tleDay(&tle);
+        rtU.orbit_tle[0] = 2000 + (uint8_t) (day / 365.24); // year is unused
+        rtU.orbit_tle[1] = day;
+        rtU.orbit_tle[2] = tleBStar(&tle);
+        rtU.orbit_tle[3] = tleInc(&tle);
+        rtU.orbit_tle[4] = tleRaan(&tle);
+        rtU.orbit_tle[5] = tleEcc(&tle);
+        rtU.orbit_tle[6] = tleAop(&tle);
+        rtU.orbit_tle[7] = tleMna(&tle);
+        rtU.orbit_tle[8] = tleMnm(&tle);
     }
     __enable_interrupt();
 }
@@ -163,22 +196,24 @@ FILE_STATIC void setInputs()
 FILE_STATIC void sendTelemOverBackchannel()
 {
     // send input TLE
-    input_tle_segment tle;
-    tle.year = rtU.orbit_tle[0];
-    tle.day = rtU.orbit_tle[1];
-    tle.bstar = rtU.orbit_tle[2];
-    tle.inc = rtU.orbit_tle[3];
-    tle.raan = rtU.orbit_tle[4];
-    tle.ecc = rtU.orbit_tle[5];
-    tle.aop = rtU.orbit_tle[6];
-    tle.mna = rtU.orbit_tle[7];
-    tle.mnm = rtU.orbit_tle[8];
-    bcbinPopulateHeader(&tle.header, TLM_ID_INPUT_TLE, sizeof(tle));
-    bcbinSendPacket((uint8_t *) &tle, sizeof(tle));
+    input_tle_segment tleSeg;
+    tleSeg.year = rtU.orbit_tle[0];
+    tleSeg.day = rtU.orbit_tle[1];
+    tleSeg.bstar = rtU.orbit_tle[2];
+    tleSeg.inc = rtU.orbit_tle[3];
+    tleSeg.raan = rtU.orbit_tle[4];
+    tleSeg.ecc = rtU.orbit_tle[5];
+    tleSeg.aop = rtU.orbit_tle[6];
+    tleSeg.mna = rtU.orbit_tle[7];
+    tleSeg.mnm = rtU.orbit_tle[8];
+    tleSeg.id = tle._id;
+    bcbinPopulateHeader(&tleSeg.header, TLM_ID_INPUT_TLE, sizeof(tleSeg));
+    bcbinSendPacket((uint8_t *) &tleSeg, sizeof(tleSeg));
 
     // send MET
     input_met_segment metSeg;
     metSeg.met = rtU.MET;
+    metSeg.epoch = rtU.MET_epoch;
     bcbinPopulateHeader(&metSeg.header, TLM_ID_INPUT_MET, sizeof(metSeg));
     bcbinSendPacket((uint8_t *) &metSeg, sizeof(metSeg));
 
@@ -187,15 +222,14 @@ FILE_STATIC void sendTelemOverBackchannel()
     uint8_t i = 3;
     while (i-- > 0)
     {
-        out.sc2gs_unit[i] = rtY.sc2gs_unit[i];
         out.sc2sun_unit[i] = rtY.sc2sun_unit[i];
-        out.mag_unit_vector_eci[i] = rtY.mag_unit_vector_eci[i];
-        out.mag_vector_eci[i] = rtY.mag_vector_eci[i];
+        out.mag_eci_unit[i] = rtY.mag_eci_unit[i];
+        out.pos_eci_m[i] = rtY.pos_eci_m[i];
         out.vel_eci_mps[i] = rtY.vel_eci_mps[i];
     }
-    out.sc_above_gs = rtY.sc_above_gs;
-    out.sc_in_fov = rtY.sc_in_fov;
+    out.SGP4_flag = rtY.SGP4_flag;
     out.sc_in_sun = rtY.sc_in_sun;
+    out.sc_above_gs = rtY.sc_above_gs;
     bcbinPopulateHeader(&out.header, TLM_ID_OUTPUT, sizeof(out));
     bcbinSendPacket((uint8_t *) &out, sizeof(out));
 
@@ -203,18 +237,66 @@ FILE_STATIC void sendTelemOverBackchannel()
 
 FILE_STATIC void sendTelemOverCAN()
 {
-    // TODO
+    CANPacket p;
+
+    // send sc2sun_unit
+    estim_sun_unit_x sunx = { rtY.sc2sun_unit[0] };
+    encodeestim_sun_unit_x(&sunx, &p);
+    canSendPacket(&p);
+    estim_sun_unit_y suny = { rtY.sc2sun_unit[1] };
+    encodeestim_sun_unit_y(&suny, &p);
+    canSendPacket(&p);
+    estim_sun_unit_z sunz = { rtY.sc2sun_unit[2] };
+    encodeestim_sun_unit_z(&sunz, &p);
+    canSendPacket(&p);
+
+    // send mag_eci_unit
+    estim_mag_unit_x magx = { rtY.mag_eci_unit[0] };
+    encodeestim_mag_unit_x(&magx, &p);
+    canSendPacket(&p);
+    estim_mag_unit_y magy = { rtY.mag_eci_unit[1] };
+    encodeestim_mag_unit_y(&magy, &p);
+    canSendPacket(&p);
+    estim_mag_unit_z magz = { rtY.mag_eci_unit[2] };
+    encodeestim_mag_unit_z(&magz, &p);
+    canSendPacket(&p);
+
+    // send state
+    estim_state state;
+    state.estim_state_above_gs = rtY.sc_above_gs ? CAN_ENUM_BOOL_TRUE
+            : CAN_ENUM_BOOL_FALSE;
+    state.estim_state_in_sun = rtY.sc_in_sun ? CAN_ENUM_BOOL_TRUE
+            : CAN_ENUM_BOOL_FALSE;
+    encodeestim_state(&state, &p);
+    canSendPacket(&p);
 }
 
-void canRxCallback(CANPacket *packet)
+void canRxCallback(CANPacket *p)
 {
     __disable_interrupt();
-    tleUpdate(packet, &tle);
+    tleUpdate(p, &tle);
     __enable_interrupt();
 
-    switch (packet->id)
+    cmd_rollcall rc;
+    grnd_epoch ep;
+    timeStamp t;
+
+    switch (p->id)
     {
-    // TODO add MET case when available (unless bsp handles this automatically)
+    case CAN_ID_CMD_ROLLCALL:
+        decodecmd_rollcall(p, &rc);
+        t = constructTimestamp(rc.cmd_rollcall_met,
+                               rc.cmd_rollcall_met_overflow);
+        updateMET(t);
+
+        // This is redundant if coreStartup is ever implemented
+        handleRollCall();
+        break;
+    case CAN_ID_GRND_EPOCH:
+        decodegrnd_epoch(p, &ep);
+        t = constructTimestamp(ep.grnd_epoch_val, ep.grnd_epoch_val_overflow);
+        rtU.MET_epoch = metConvertToSeconds(t);
+        break;
     }
 }
 

@@ -37,7 +37,9 @@ void stabalize();
 void start_actuation_timer(void);
 void start_measurement_timer(void);
 void start_stabalize_timer(void);
-void start_telem_timer(void); 
+void start_telem_timer(void);
+void start_bdot_death_timer(void); 
+void start_LED_timer(void); 
 void manage_telemetry(void);
 uint8_t fsw_is_valid(void);
 uint8_t command_dipole_valid(int command_x, int command_y, int command_z);
@@ -45,12 +47,13 @@ void turn_off_coils(void);
 void blink_LED(void);
 void set_pwm(char axis, int pwm_percent);
 void degauss_lol(void);
+int is_bdot_still_alive(void); 
 
 //--------CAN functions---------------
 void can_init(void);
 void can_packet_rx_callback(CANPacket *packet);
 void send_CAN_health_packet(void);
-void send_CAN_ack_packet(int command_source, int coil_state);
+void send_CAN_ack_packet(void);
 
 //---------COSMOS functions--------------
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
@@ -58,7 +61,6 @@ void cosmos_init(void);
 void send_COSMOS_health_packet(void); 
 void send_COSMOS_meta_packet(void);
 void send_COSMOS_commands_packet(void);
-void send_COSMOS_telemetry_packet(void);
 void send_COSMOS_dooty_packet(void);
 
 //--------SFR initialization------
@@ -77,7 +79,7 @@ FILE_STATIC volatile uint8_t fsw_ignore = OVERRIDE;
 FILE_STATIC volatile int8_t sc_mode;
 #pragma PERSISTENT(fsw_ignore) // persist value of fsw_ignore on reboot
 
-//-----------backchannel------------------
+//-----------backchannel and CAN------------------
 
 FILE_STATIC meta_segment metaSeg;
 FILE_STATIC health_segment healthSeg;
@@ -85,6 +87,7 @@ FILE_STATIC bdot_fsw_commands cosmos_commandy_commands;
 FILE_STATIC duty_percent cosmos_dooty;
 FILE_STATIC volatile uint8_t duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2 = 0; 
 FILE_STATIC volatile uint8_t last_pwm_percent_executed_x, last_pwm_percent_executed_y, last_pwm_percent_executed_z = 0;
+FILE_STATIC volatile int8_t command_source = UNKNOWN;
 
 //------------timers ----------------
 
@@ -100,6 +103,10 @@ FILE_STATIC int measurement_time_ms = 2000;
 FILE_STATIC int stabalize_timer = 0;
 FILE_STATIC int stabalize_time_ms = 100;
 #pragma PERSISTENT(stabalize_time_ms)
+FILE_STATIC int LED_timer = 500;
+FILE_STATIC int LED_time_ms = 500;
+FILE_STATIC int bdot_death_timer = 0;
+FILE_STATIC int bdot_death_time_ms = 4000; // 4 second timeout 
 
 //-------state machine-----------
 
@@ -112,7 +119,7 @@ typedef enum MTQState {
 } eMTQState;
 
 // This table contains a pointer to the function to call in each state 
-void (*state_table[])() = {measurement, fsw_actuation, bdot_actuation, stabalize};
+void (* const state_table[])() = {measurement, fsw_actuation, bdot_actuation, stabalize};
 
 // camera state declaration  
 eMTQState curr_state; 
@@ -122,9 +129,10 @@ eMTQState curr_state;
 // Main 
 // TODO 
 // add dipole to CAN ack packet
-// add bdot timeout? 
-// fix fsw timeout 
-// fix blink LED function   
+// add fsw timeout 
+// fix manage telem function   
+// cntrl f DEBUG to see commented out sections 
+// check sc_mode 
 //------------------------------------------------------------------
 
 int main(void)
@@ -137,10 +145,12 @@ int main(void)
     cosmos_init();                 // COSMOS backchannel initialization
     can_init();                    // CAN initialization
 
-    restartMTQ(); // restart 
+    restartMTQ();
 	
     while (1)
     {
+		blink_LED(); 
+		
         // mtq control loop
         state_table[curr_state]();
 		
@@ -186,14 +196,14 @@ void measurement()
     {
 		enable_command_update = 0; // stop updating commands
 		
-		if(sc_mode == IDLE && fsw_is_valid())
+		if(sc_mode == 0 || sc_mode == 1 || && fsw_is_valid())
 		{
 			curr_state = FSW_ACTUATION;
-			send_CAN_ack_packet(FROM_FSW, ACTUATION_PHASE); 
+			send_CAN_ack_packet();
 		} else 
 		{
 			curr_state = BDOT_ACTUATION;
-			send_CAN_ack_packet(FROM_BDOT, ACTUATION_PHASE);
+			send_CAN_ack_packet();
 		}  
         start_actuation_timer();
     }
@@ -208,7 +218,7 @@ void fsw_actuation()
         set_pwm('z', fsw_command_z);
         if (!fsw_ack_sent) // only send acknowledgement once per interrupt
         {
-            send_CAN_ack_packet(FROM_FSW, ACTUATION_PHASE);
+            send_CAN_ack_packet();
             fsw_ack_sent = 1;
         }
     } else // invalid xyz command
@@ -225,14 +235,14 @@ void fsw_actuation()
 
 void bdot_actuation() 
 {
-    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z))
+    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z) && is_bdot_still_alive())
     {
         set_pwm('x', bdot_command_x);
         set_pwm('y', bdot_command_y);
         set_pwm('z', bdot_command_z);
         if (!bdot_ack_sent) // only send acknowledgement once per interrupt
         {
-            send_CAN_ack_packet(FROM_BDOT, ACTUATION_PHASE);
+            send_CAN_ack_packet();
             bdot_ack_sent = 1;
         }
     } else // invalid xyz command
@@ -255,7 +265,7 @@ void stabalize()
 	if(checkTimer(stabalize_timer)) // finished wait phase
 	{
 		curr_state = MEASUREMENT;
-		send_CAN_ack_packet(FROM_BDOT, MEASUREMENT_PHASE);
+		send_CAN_ack_packet();
 		start_measurement_timer();
 	}
 }
@@ -278,13 +288,26 @@ void start_telem_timer(void)
 {
     telem_timer = timerPollInitializer(telem_time_ms);
 }
+void start_LED_timer(void)
+{
+    LED_timer = timerPollInitializer(LED_time_ms);
+}
+
+void start_bdot_death_timer(void)
+{
+	bdot_death_timer = timerPollInitializer(bdot_death_time_ms);
+}
 
 void manage_telemetry(void)
 {
     if (checkTimer(telem_timer))
     {
-		send_COSMOS_health_packet(); 
-		send_COSMOS_telemetry_packet();
+		void send_COSMOS_health_packet();
+		// commented out for DEBUG
+		/* 
+		void send_COSMOS_dooty_packet();
+		void send_COSMOS_meta_packet();
+		*/
         start_telem_timer(); // reset timer 
     }
 }
@@ -321,17 +344,16 @@ void turn_off_coils(void)
 
 void blink_LED(void)
 {
-	PJOUT |= BIT0|BIT1|BIT2; // debug lights 
-	_delay_cycles(50000); 
-	PJOUT &= ~(BIT0|BIT1|BIT2); // debug lights 
+	if (checkTimer(LED_timer)){
+		P3OUT ^= BIT5; // toggle LED 
+		start_LED_timer();
+	}
 }
 
 // sets the PWM duty cycles for each of the outputs based 
 // on the A3903 driver chip data sheet description for chopping mode 
 void set_pwm(char axis, int pwm_percent)  
 {
-    send_COSMOS_commands_packet();
-
 	// set duty cycles based on driver chopping mode 
 	int duty_1 = (pwm_percent >= 0) ? (100-pwm_percent) : 100;
 	int duty_2 = (pwm_percent < 0) ? (100-(-pwm_percent)): 100;
@@ -367,6 +389,8 @@ void set_pwm(char axis, int pwm_percent)
 		default: // unknown state 
 			break;
 	}
+	
+	send_COSMOS_commands_packet();
 }
 
 // outputs a (very shitty) discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
@@ -389,12 +413,21 @@ void degauss_lol(void)
 	}	
 }
 
+int is_bdot_still_alive(void)
+{
+	if (checkTimer(bdot_death_timer)){ // bdot has timed out 
+		return 0; 
+	} else {
+		return 1; 
+	}
+}
+
 //-------- CAN --------
 
 // can initialization 
 void can_init(void)
 {
-	canWrapInit();
+	canWrapInitWithFilter();
 	setCANPacketRxCallback(can_packet_rx_callback);
 }
 
@@ -402,6 +435,9 @@ void can_init(void)
 void can_packet_rx_callback(CANPacket *packet)
 {  
 	if (packet->id == CAN_ID_CMD_MTQ_BDOT && enable_command_update){
+		endPollingTimer(bdot_death_timer); // reset the bdot death timer 
+		start_bdot_death_timer();  
+		command_source = FROM_BDOT; 
 		cmd_mtq_bdot bdot_packet = {0};
         decodecmd_mtq_bdot(packet, &bdot_packet);
         // update global bdot command variables
@@ -411,6 +447,7 @@ void can_packet_rx_callback(CANPacket *packet)
         bdot_ack_sent = 0; // reset acknowledgment sent flag
 	}
 	if (packet->id == CAN_ID_CMD_MTQ_FSW && enable_command_update){
+		command_source = FROM_FSW; 
 		cmd_mtq_fsw fsw_packet = {0};
         decodecmd_mtq_fsw(packet, &fsw_packet);
         // update global fsw command variables
@@ -424,24 +461,30 @@ void can_packet_rx_callback(CANPacket *packet)
 		cmd_ignore_fsw ignore = {0};
 	    decodecmd_ignore_fsw(packet, &ignore);
 		fsw_ignore = ignore.cmd_ignore_fsw_ignore;
-	}
+	} 
 }	
 
 void send_CAN_health_packet(void)
 {
     // send CAN packet of temperature (in deci-Kelvin)
-    msp_temp temp = { (healthSeg.inttemp + 273.15f) * 10 };
+    msp_temp temp = { (healthSeg.inttemp + 273.15) * 10 };
     CANPacket packet;
     encodemsp_temp(&temp, &packet);
     canSendPacket(&packet);
 }
 
-void send_CAN_ack_packet(int command_source, int coil_state)
+void send_CAN_ack_packet(void)
 { 
+    int8_t which_phase = curr_state;
 	mtq_ack ack = {0};
-	ack.mtq_ack_coils_state = coil_state;
-	ack.mtq_ack_node = command_source;
-	
+	ack.mtq_ack_phase = which_phase;
+	ack.mtq_ack_source = command_source;
+	ack.mtq_ack_last_bdot_x = bdot_command_x;
+	ack.mtq_ack_last_bdot_y = bdot_command_y;
+	ack.mtq_ack_last_bdot_z = bdot_command_z;
+	ack.mtq_ack_last_fsw_x = fsw_command_x;
+	ack.mtq_ack_last_fsw_y = fsw_command_y;
+	ack.mtq_ack_last_fsw_z = fsw_command_z;
 	CANPacket mtq_ack_packet; 
 	encodemtq_ack(&ack, &mtq_ack_packet);
 	canSendPacket(&mtq_ack_packet);
@@ -462,6 +505,8 @@ void cosmos_init(void)
     telem_timer = timerPollInitializer(telem_time_ms);
 }
 
+//commented out for DEBUG
+/*
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     if (mode == Mode_BinaryStreaming)
@@ -486,8 +531,9 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
     }
     return 1;
 }
+*/
 
-void send_COSMOS_health_packet(void)
+void send_COSMOS_health_packet()
 {
     healthSeg.oms = OMS_Unknown;
     healthSeg.inttemp = asensorReadIntTempC();
@@ -526,12 +572,6 @@ void send_COSMOS_meta_packet(void)
     bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
 }
 
-void send_COSMOS_telemetry_packet()
-{
-    send_COSMOS_meta_packet();
-	send_COSMOS_dooty_packet(); 
-}
-
 //-------- special function registers config --------	
 		
 // used to configure SFRs for mtq
@@ -539,10 +579,17 @@ void mtq_sfr_init(void)
 {	
 	//---------GPIO initialization--------------------------
 	// PJ.0,1,2 - gpio - board leds 
+	/*
 	PJOUT &= ~(BIT0|BIT1|BIT2); // power on state
 	PJDIR |= BIT0|BIT1|BIT2;
 	PJSEL0 &= ~(BIT0|BIT1|BIT2);
 	PJSEL1 &= ~(BIT0|BIT1|BIT2);
+	*/
+	// P3.5 - LED - board leds 
+	P3OUT &= ~BIT5; // power on state
+	P3DIR |= BIT5;
+	P3SEL0 &= ~BIT5;
+	P3SEL1 &= ~BIT5;
 	// P1.7 - TB0.4 - x1
 	P1DIR |= BIT7;
     P1SEL0 |= BIT7;

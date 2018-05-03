@@ -79,4 +79,14 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode mode);
 void selfTestConfig(hMag handle);
 void normalOperationConfig(hMag handle);
 
+/**
+ * Convert a raw mag reading to Teslas
+ */
+float magConvertRawToTeslas(int16_t raw);
+
+/**
+ * Convert Teslas to the same units that the raw readings use
+ */
+int16_t magConvertTeslasToRaw(float teslas);
+
 #endif /* MAGNETOMETER_H_ */

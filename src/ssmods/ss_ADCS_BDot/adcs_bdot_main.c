@@ -201,7 +201,7 @@ void performNormalOp()
 
 void simulink_compute()
 {
-    P3DIR |= BIT5;
+    P3DIR ^= BIT5;
     getMagnetometerData();
     rtU.B_body_in_T[0] = magData->convertedX;
     rtU.B_body_in_T[1] = magData->convertedY;

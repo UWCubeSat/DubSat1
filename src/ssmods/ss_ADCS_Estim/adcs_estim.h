@@ -42,25 +42,26 @@ TLM_SEGMENT {
     float aop;
     float mna;
     float mnm;
+    uint8_t id;
 } input_tle_segment;
 
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
     double met;
+    double epoch;
 } input_met_segment;
 
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
-    float sc2gs_unit[3];
-    float sc2sun_unit[3];
-    float mag_unit_vector_eci[3];
-    float mag_vector_eci[3];
-    float vel_eci_mps[3];
-    uint8_t sc_above_gs;
-    uint8_t sc_in_fov;
+    double sc2sun_unit[3];
+    double mag_eci_unit[3];
+    double pos_eci_m[3];
+    double vel_eci_mps[3];
+    int8_t SGP4_flag;
     uint8_t sc_in_sun;
+    uint8_t sc_above_gs;
 } output_segment;
 
 void handlePPTFiringNotification();

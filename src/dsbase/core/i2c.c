@@ -10,6 +10,7 @@
 FILE_STATIC status_i2c i2c_status;
 FILE_STATIC bus_context_i2c buses[CONFIGM_i2c_maxperipheralinstances];
 FILE_STATIC device_context_i2c devices[CONFIGM_i2c_maxdevices];
+FILE_STATIC uint8_t numDevices = 0;
 
 bus_registers_i2c busregs[CONFIGM_i2c_maxperipheralinstances];
 
@@ -72,7 +73,8 @@ hDev i2cInit(bus_instance_i2c bus, uint8_t slaveaddr)
     }
 
     // Now setup the actual individual device
-    uint8_t currindex = pBus->num_devices;
+    uint8_t currindex = numDevices;
+    numDevices++;
     pBus->num_devices++;
 
     devices[currindex].bus = bus;

@@ -62,7 +62,7 @@ MEMORY
     INFOC                   : origin = 0x1880, length = 0x80
     INFOB                   : origin = 0x1900, length = 0x80
     INFOA                   : origin = 0x1980, length = 0x80
-    RAM                     : origin = 0x1C00, length = 0x1000
+    RAM                     : origin = 0x1C00, length = 0x2000
     FRAM                    : origin = 0x4000, length = 0xBF80
     FRAM2                   : origin = 0x10000,length = 0x34000
     JTAGSIGNATURE           : origin = 0xFF80, length = 0x0004, fill = 0xFFFF
@@ -124,18 +124,6 @@ MEMORY
     INT53                   : origin = 0xFFFA, length = 0x0002
     INT54                   : origin = 0xFFFC, length = 0x0002
     RESET                   : origin = 0xFFFE, length = 0x0002
-}
-
-/****************************************************************************/
-/* Specify the LEA memory map                                               */
-/****************************************************************************/
-
-#define LEASTACK_SIZE   0x138
-
-MEMORY
-{
-    LEARAM                  : origin = 0x2C00, length = 0x1000 - LEASTACK_SIZE
-    LEASTACK                : origin = 0x3C00 - LEASTACK_SIZE, length = LEASTACK_SIZE
 }
 
 /****************************************************************************/
@@ -217,10 +205,6 @@ SECTIONS
     .infoB : type = NOINIT{} > INFOB
     .infoC : type = NOINIT{} > INFOC
     .infoD : type = NOINIT{} > INFOD
-
-
-    .leaRAM      : {} > LEARAM               /* LEA RAM                           */
-    .leaStack    : {} > LEASTACK (HIGH)      /* LEA STACK                         */
 
     /* MSP430 interrupt vectors */
 

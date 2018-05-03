@@ -5,11 +5,11 @@
  *
  * File: ert_main.c
  *
- * Code generated for Simulink model 'env_estimation_lib'.
+ * Code generated for Simulink model 'MSP_env_estim0'.
  *
- * Model version                  : 1.329
+ * Model version                  : 1.368
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Mon Apr  9 09:46:58 2018
+ * C/C++ source code generated on : Tue May  1 18:59:45 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -21,7 +21,7 @@
 
 #include <stddef.h>
 #include <stdio.h>                     /* This ert_main.c example uses printf/fflush */
-#include "env_estimation_lib.h"        /* Model's header file */
+#include "MSP_env_estim0.h"            /* Model's header file */
 #include "rtwtypes.h"
 
 /*
@@ -55,7 +55,7 @@ void rt_OneStep(void)
   /* Set model inputs here */
 
   /* Step the model */
-  env_estimation_lib_step();
+  MSP_env_estim0_step();
 
   /* Get model outputs here */
 
@@ -80,7 +80,7 @@ int_T automain(int_T argc, const char *argv[])
   (void)(argv);
 
   /* Initialize model */
-  env_estimation_lib_initialize();
+  MSP_env_estim0_initialize();
 
   /* Attach rt_OneStep to a timer or interrupt service routine with
    * period 0.1 seconds (the model's base sample time) here.  The
@@ -99,7 +99,7 @@ int_T automain(int_T argc, const char *argv[])
   /* Disable rt_OneStep() here */
 
   /* Terminate model */
-  env_estimation_lib_terminate();
+  MSP_env_estim0_terminate();
   return 0;
 }
 

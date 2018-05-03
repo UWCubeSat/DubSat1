@@ -5,6 +5,8 @@
  *      Author: jeffc
  */
 
+#include <math.h>
+
 #include "imu.h"
 
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
@@ -15,7 +17,7 @@ IMUData idata;
 
 
 
-void imuInit(bus_instance_i2c i2cbus)
+void imuInit(bus_instance_i2c i2cbus, IMUUpdateRate rate)
 {
     if (imuInitialized != 0)
         return;
@@ -38,8 +40,28 @@ void imuInit(bus_instance_i2c i2cbus)
 
 #elif defined(__BSP_HW_IMU_LSM6DSM__)
 
+    uint8_t rateVal;
+    switch (rate)
+    {
+    case IMUUpdateRate_12p5Hz:
+        rateVal = IMU_LSM6DSM_ODR_12p5_FS125;
+        break;
+    case IMUUpdateRate_26Hz:
+        rateVal = IMU_LSM6DSM_ODR_26_FS125;
+        break;
+    case IMUUpdateRate_52Hz:
+        rateVal = IMU_LSM6DSM_ODR_52_FS125;
+        break;
+    case IMUUpdateRate_104Hz:
+        rateVal = IMU_LSM6DSM_ODR_104_FS125;
+        break;
+    default:
+        rateVal = IMU_LSM6DSM_ODR_26_FS125;
+        break;
+    }
+
     i2cBuff[0] = IMU_LSM6DSM_CTRL2_G;
-    i2cBuff[1] = IMU_LSM6DSM_ODR_26_FS125;
+    i2cBuff[1] = rateVal;
     i2cBuff[2] = IMU_LSM6DSM_CTRL7_G;
     i2cBuff[3] = IMU_LSM6DSM_HIGH_PERF_ON;
     i2cMasterWrite(hSensor, i2cBuff, 4);
@@ -88,3 +110,12 @@ IMUData *imuReadGyroAccelData()
     return &idata;
 }
 
+float imuConvertRawToRPS(int16_t raw)
+{
+    return raw * (IMU_RAW_TO_DPS * DEG_TO_RAD);
+}
+
+int16_t imuConvertRPSToRaw(float rps)
+{
+    return roundf(rps / (IMU_RAW_TO_DPS / DEG_TO_RAD));
+}
