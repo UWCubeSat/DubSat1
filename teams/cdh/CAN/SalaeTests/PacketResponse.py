@@ -54,7 +54,7 @@ try:
                         print(" New Max: " + str(x[0] - timer));
                         currentmax = x[0] - timer
         print("Buffer: " + str(len(times)))
-except KeyboardInterrupt:
+except:
     print("Max delay: " + str(max(times)))
     print("Min delay: " + str(min(times)))
     print("Avg delay: " + str(sum(times)/len(times)))
