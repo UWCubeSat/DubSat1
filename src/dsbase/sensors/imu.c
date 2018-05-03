@@ -5,6 +5,8 @@
  *      Author: jeffc
  */
 
+#include <math.h>
+
 #include "imu.h"
 
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
