@@ -18,6 +18,9 @@
 #define CS_2                                  0x02
 #define CS_3                                  0x04
 
+uint8_t spiWriteInProgress;
+
+void (*spiCallback)(void);
 /**
  * @brief Initialize SPI registers required to start transceiving.
  * @details Sets up the control block to reset the device.
