@@ -50,7 +50,7 @@ try:
                     state = 0
                     times.append(x[0] - timer)
         print("Buffer: " + str(len(times)))
-except KeyboardInterrupt:
+except:
     print("Max delay: " + str(max(times)))
     print("Min delay: " + str(min(times)))
     print("Avg delay: " + str(sum(times)/len(times)))
