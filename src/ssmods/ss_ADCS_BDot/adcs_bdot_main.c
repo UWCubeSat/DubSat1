@@ -8,7 +8,6 @@
 #include "bdot_controller_lib.h"
 
 /******************COSMOS Telemetry******************************/
-FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 FILE_STATIC magnetometer_segment myTelemMagnetometer;
 FILE_STATIC mtq_info_segment myTelemMtqInfo;
@@ -120,38 +119,6 @@ int main(void)
 
     return 0;
 }
-
-
-//        if(checkTimer(telem_timer))
-//        {
-//            sendTelemetry();
-//            start_telem_timer();
-//        }
-
-//        switch (mag_data)
-//        {
-//        case mag_invalid:
-//            if(mtq_state == MTQ_MEASUREMENT_PHASE)
-//            {
-//                mag_data = mag_valid;
-//                lastKnownState.xDipole = 0;
-//                lastKnownState.yDipole = 0;
-//                lastKnownState.zDipole = 0;
-//                sendMtqInfoSegment();
-//
-//            }
-//            break;
-//        case mag_valid:
-//            if(mtq_state == MTQ_ACTUATION_PHASE)
-//            {
-//                lastKnownState.xDipole = mtqInfo.xDipole;
-//                lastKnownState.yDipole = mtqInfo.yDipole;
-//                lastKnownState.zDipole = mtqInfo.zDipole;
-//                sendMtqInfoSegment();
-//                mag_data = mag_invalid;
-//            }
-//            break;
-//        }
 
 
 void initial_setup()
@@ -328,7 +295,7 @@ void receive_packet(CANPacket *packet)
         // actuation_phase = 1;
         mtq_ack ack = {0};
         decodemtq_ack(packet, &ack);
-        if(!ack.mtq_ack_coils_state)
+        if(!ack.mtq_ack_phase)
         {
             mtq_state = MTQ_MEASUREMENT_PHASE;
         } else

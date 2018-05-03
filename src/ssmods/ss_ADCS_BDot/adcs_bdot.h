@@ -31,14 +31,6 @@
 #define MTQ_ACTUATION_PHASE  1
 
 
-TLM_SEGMENT {
-    BcTlmHeader header; // All COSMOS TLM packets must have this
-
-    float alpha;
-    float beta;
-    uint8_t status;
-} my_telem;
-
 CMD_SEGMENT {
     uint8_t enable;
 } enable_segment;

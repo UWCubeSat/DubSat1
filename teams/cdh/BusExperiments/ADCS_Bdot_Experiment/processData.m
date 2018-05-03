@@ -3,7 +3,7 @@ MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR = 73.0;
 
 
 % Will have header so add offset.
-overall_bdot_data = csvread('test_bdot_30-Apr-2018.csv', 1);
+overall_bdot_data = csvread('test_bdot_02-May-2018.csv', 1);
 time = overall_bdot_data(:, 1);
 
 env_xMag = overall_bdot_data(:, 5);
@@ -26,7 +26,7 @@ for i = 1:length(xMagDec_nT)
     [xMagTwos(i), xMagMsb(i), xMagLsb(i)] = dec2twos(xMagDec_nT(i), 16);
     [yMagTwos(i), yMagMsb(i), yMagLsb(i)] = dec2twos(yMagDec_nT(i), 16);
     [zMagTwos(i), zMagMsb(i), zMagLsb(i)] = dec2twos(zMagDec_nT(i), 16);
-%    count = count + 1
+    count = count + 1
 end
 
 xMagTwos = xMagTwos.';
