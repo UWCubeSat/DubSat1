@@ -2,6 +2,7 @@ from typing import List, Tuple
 import time
 import tqdm
 import sys
+import os
 import saleae
 
 # States: 0: not listening for int fall, 1: listening for int fall, 2: listening for spi flip
