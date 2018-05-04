@@ -75,7 +75,7 @@ FILE_STATIC volatile uint8_t enable_command_update = 0;
 //-----------inputs-----------------
 FILE_STATIC volatile int8_t bdot_command_x, bdot_command_y, bdot_command_z; 
 FILE_STATIC volatile int8_t fsw_command_x, fsw_command_y, fsw_command_z;  
-FILE_STATIC volatile uint8_t fsw_ignore = OVERRIDE;
+FILE_STATIC volatile uint8_t fsw_ignore = CAN_ENUM_BOOL_TRUE; // ignore flight software flag 
 FILE_STATIC volatile int8_t sc_mode;
 #pragma PERSISTENT(fsw_ignore) // persist value of fsw_ignore on reboot
 
@@ -87,7 +87,7 @@ FILE_STATIC bdot_fsw_commands cosmos_commandy_commands;
 FILE_STATIC duty_percent cosmos_dooty;
 FILE_STATIC volatile uint8_t duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2 = 0; 
 FILE_STATIC volatile uint8_t last_pwm_percent_executed_x, last_pwm_percent_executed_y, last_pwm_percent_executed_z = 0;
-FILE_STATIC volatile int8_t command_source = UNKNOWN;
+FILE_STATIC volatile int8_t command_source = ELOISE_UNKNOWN;
 
 //------------timers ----------------
 
@@ -111,7 +111,7 @@ FILE_STATIC int bdot_death_time_ms = 4000; // 4 second timeout
 //-------state machine-----------
 
 // index of states 
-typedef enum MTQState {
+typedef enum _mtq_state {
 	MEASUREMENT = 0,
 	FSW_ACTUATION,
 	BDOT_ACTUATION,
@@ -128,11 +128,11 @@ eMTQState curr_state;
 //------------------------------------------------------------------
 // Main 
 // TODO 
-// add dipole to CAN ack packet
 // add fsw timeout 
 // fix manage telem function   
 // cntrl f DEBUG to see commented out sections 
 // check sc_mode 
+// add macros to ack pack 
 //------------------------------------------------------------------
 
 int main(void)
@@ -173,13 +173,13 @@ void restartMTQ()
 	turn_off_coils();
 	
 	// set input signals to unknown
-	sc_mode = UNKNOWN;
-	bdot_command_x = UNKNOWN; 
-	bdot_command_y = UNKNOWN; 
-	bdot_command_z = UNKNOWN; 
-	fsw_command_x = UNKNOWN; 
-	fsw_command_y = UNKNOWN; 
-	fsw_command_z = UNKNOWN;
+	sc_mode = ELOISE_UNKNOWN;
+	bdot_command_x = ELOISE_UNKNOWN; 
+	bdot_command_y = ELOISE_UNKNOWN; 
+	bdot_command_z = ELOISE_UNKNOWN; 
+	fsw_command_x = ELOISE_UNKNOWN; 
+	fsw_command_y = ELOISE_UNKNOWN; 
+	fsw_command_z = ELOISE_UNKNOWN;
 	
 	// reset state 
 	curr_state = MEASUREMENT;
@@ -196,7 +196,7 @@ void measurement()
     {
 		enable_command_update = 0; // stop updating commands
 		
-		if(sc_mode == 0 || sc_mode == 1 || && fsw_is_valid())
+		if((sc_mode == 0 && sc_mode == 1) && fsw_is_valid()) 
 		{
 			curr_state = FSW_ACTUATION;
 			send_CAN_ack_packet();
@@ -314,7 +314,7 @@ void manage_telemetry(void)
 
 uint8_t fsw_is_valid(void)
 {
-	if(fsw_ignore == OVERRIDE)
+	if(fsw_ignore == CAN_ENUM_BOOL_TRUE)
 	{
 		return 0; 
 	} else 
@@ -475,7 +475,25 @@ void send_CAN_health_packet(void)
 
 void send_CAN_ack_packet(void)
 { 
-    int8_t which_phase = curr_state;
+	int8_t which_phase; 
+	switch(curr_state)
+	{
+		case MEASUREMENT: 
+			which_phase = MEASUREMENT_PHASE; 
+			break; 
+		case FSW_ACTUATION: 
+			which_phase = ACTUATION_PHASE; 
+			break; 
+		case BDOT_ACTUATION: 
+			which_phase = ACTUATION_PHASE; 
+			break;
+		case STABALIZE: 
+			which_phase = ACTUATION_PHASE; 
+			break; 
+		default: 
+			which_phase = ELOISE_UNKNOWN; // other phase 
+			break; 
+	}
 	mtq_ack ack = {0};
 	ack.mtq_ack_phase = which_phase;
 	ack.mtq_ack_source = command_source;
@@ -500,38 +518,9 @@ void cosmos_init(void)
     bcbinPopulateHeader(&(healthSeg.header), TLM_ID_SHARED_HEALTH, sizeof(healthSeg));
 	bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
 	bcbinPopulateHeader(&cosmos_dooty.header, TLM_ID_DUTY_PERCENT, sizeof(duty_percent));
-    debugRegisterEntity(Entity_NONE, NULL, NULL, handleDebugActionCallback);
     asensorInit(Ref_2p5V); // initialize temperature sensor
     telem_timer = timerPollInitializer(telem_time_ms);
 }
-
-//commented out for DEBUG
-/*
-uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
-{
-    if (mode == Mode_BinaryStreaming)
-    {
-        command_segment *myCmdSegment;
-
-        uint8_t opcode = cmdstr[0];
-        switch(opcode)
-        {
-            case 1:
-                // cast the payload to our command segment
-                myCmdSegment = (command_segment *) (cmdstr + 1);
-                set_pwm('x' , myCmdSegment->x);
-				set_pwm('y' , myCmdSegment->x);
-				set_pwm('z' , myCmdSegment->x);
-                // TODO do something based on the command segment
-            case OPCODE_COMMONCMD:
-                break;
-            default:
-                break;
-        }
-    }
-    return 1;
-}
-*/
 
 void send_COSMOS_health_packet()
 {
