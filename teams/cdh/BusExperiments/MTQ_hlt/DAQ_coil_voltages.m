@@ -50,7 +50,26 @@ legend(DAQ_1.Properties.VariableNames)
 %% Generate csv file 
 % TODO build outputM matrix 
 %csvwrite('csv_voltages.dat,'outputM)
+header = {
+    'Time (ms)',
+    'X1 (V)',
+    'X2 (V)',
+    'Y1 (V)',
+    'Y2 (V)',
+    'Z1 (V)',
+    'Z2 (V)'
+};
+header = string(header)';
+fid = fopen('hil_vals.csv','w');
+[~, cols] = size(header);
+for i = 1:(cols - 1)
+    fprintf(fid, '%s', header(i));
+end
+fprintf(fid,'%s/n',header(cols));
+fclose(fid);
+dlmwrite('hil_vals.csv',data,'delimiter',',','precision',9,'-append');
 
+    
 %% Clean Up
 % Clear the session and channels, if any.
 clear s
