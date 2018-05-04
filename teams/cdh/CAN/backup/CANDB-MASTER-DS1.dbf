@@ -199,7 +199,7 @@
 [START_SIGNALS] rc_eps_batt_6_soc_min,8,1,0,U,255.0,0.0,1,0.0,1.0,pct,,Vector__XXX
 [START_SIGNALS] rc_eps_batt_6_soc_max,8,2,0,U,255.0,0.0,1,0.0,1.0,pct,,Vector__XXX
 [START_SIGNALS] rc_eps_batt_6_soc_avg,8,3,0,U,255.0,0.0,1,0.0,1.0,pct,,Vector__XXX
-[START_SIGNALS] rc_eps_batt_6_last_charge,40,4,0,U,1099511627775.0,0.0,1,0.0,1.0,2^-8 seconds,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_6_last_charge,40,4,0,U,1.09951162778e+12,0.0,1,0.0,1.0,2^-8 seconds,,Vector__XXX
 [END_MSG]
 
 [START_MSG] rc_eps_batt_5,304677380,8,5,1,X,Vector__XXX
