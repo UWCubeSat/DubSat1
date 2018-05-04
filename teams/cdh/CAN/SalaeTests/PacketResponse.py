@@ -44,6 +44,9 @@ try:
                 if not x[2] == flip_state:
                     state = 0
                     times.append(x[0] - timer)
+                    if x[0] - timer > currentmax:
+                        print(" New Max: " + str(x[0] - timer));
+                        currentmax = x[0] - timer
         print("Buffer: " + str(len(times)))
 except KeyboardInterrupt:
     print("Max delay: " + str(max(times)))
