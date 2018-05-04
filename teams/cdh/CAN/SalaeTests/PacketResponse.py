@@ -40,7 +40,7 @@ try:
 
         state = 0
         timer = 0.
-
+        counter += 1
         # for x in tqdm.tqdm(content, file=sys.stdout):
         for x in content:
             if state == 0:
