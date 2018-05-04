@@ -49,7 +49,9 @@ while 1
             calllib(lib, 'c_aa_i2c_slave_set_response', hdev, length(thisout), thisout);
             
             % read just so the read buffer doesn't fill up
-            calllib(lib, 'c_aa_i2c_slave_read', hdev, inAddr, DUMP_BUFFER_SIZE, dump);
+            if calllib(lib, 'c_aa_async_poll', hdev, 0) == 1
+                calllib(lib, 'c_aa_i2c_slave_read', hdev, inAddr, DUMP_BUFFER_SIZE, dump);
+            end
             
             index = index + 1;
         end
