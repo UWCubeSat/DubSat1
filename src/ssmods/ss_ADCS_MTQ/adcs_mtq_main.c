@@ -40,6 +40,7 @@ void start_stabalize_timer(void);
 void start_telem_timer(void);
 void start_bdot_death_timer(void); 
 void start_LED_timer(void); 
+void start_cosmos_commands_timer(void); 
 void manage_telemetry(void);
 uint8_t fsw_is_valid(void);
 uint8_t command_dipole_valid(int command_x, int command_y, int command_z);
@@ -61,6 +62,7 @@ void cosmos_init(void);
 void send_COSMOS_health_packet(void); 
 void send_COSMOS_meta_packet(void);
 void send_COSMOS_commands_packet(void);
+void send_COSMOS_commands(void); 
 void send_COSMOS_dooty_packet(void);
 
 //--------SFR initialization------
@@ -75,7 +77,7 @@ FILE_STATIC volatile uint8_t enable_command_update = 0;
 //-----------inputs-----------------
 FILE_STATIC volatile int8_t bdot_command_x, bdot_command_y, bdot_command_z; 
 FILE_STATIC volatile int8_t fsw_command_x, fsw_command_y, fsw_command_z;  
-FILE_STATIC volatile uint8_t fsw_ignore = OVERRIDE;
+FILE_STATIC volatile uint8_t fsw_ignore = 1;
 FILE_STATIC volatile int8_t sc_mode;
 #pragma PERSISTENT(fsw_ignore) // persist value of fsw_ignore on reboot
 
@@ -87,7 +89,7 @@ FILE_STATIC bdot_fsw_commands cosmos_commandy_commands;
 FILE_STATIC duty_percent cosmos_dooty;
 FILE_STATIC volatile uint8_t duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2 = 0; 
 FILE_STATIC volatile uint8_t last_pwm_percent_executed_x, last_pwm_percent_executed_y, last_pwm_percent_executed_z = 0;
-FILE_STATIC volatile int8_t command_source = UNKNOWN;
+FILE_STATIC volatile int8_t command_source = ELOISE_UNKNOWN;
 
 //------------timers ----------------
 
@@ -103,10 +105,13 @@ FILE_STATIC int measurement_time_ms = 2000;
 FILE_STATIC int stabalize_timer = 0;
 FILE_STATIC int stabalize_time_ms = 100;
 #pragma PERSISTENT(stabalize_time_ms)
-FILE_STATIC int LED_timer = 500;
-FILE_STATIC int LED_time_ms = 500;
 FILE_STATIC int bdot_death_timer = 0;
 FILE_STATIC int bdot_death_time_ms = 4000; // 4 second timeout 
+#pragma PERSISTENT(bdot_death_time_ms)
+FILE_STATIC int LED_timer = 500;
+FILE_STATIC int LED_time_ms = 500;
+FILE_STATIC int cosmos_commands_timer = 100; 
+FILE_STATIC int cosmos_commands_time_ms = 100; 
 
 //-------state machine-----------
 
@@ -149,6 +154,7 @@ int main(void)
     while (1)
     {
 		blink_LED(); 
+		send_COSMOS_commands(); 
 		
         // mtq control loop
         state_table[curr_state]();
@@ -172,13 +178,13 @@ void restartMTQ()
 	turn_off_coils();
 	
 	// set input signals to unknown
-	sc_mode = UNKNOWN;
-	bdot_command_x = UNKNOWN; 
-	bdot_command_y = UNKNOWN; 
-	bdot_command_z = UNKNOWN; 
-	fsw_command_x = UNKNOWN; 
-	fsw_command_y = UNKNOWN; 
-	fsw_command_z = UNKNOWN;
+	sc_mode = ELOISE_UNKNOWN;
+	bdot_command_x = ELOISE_UNKNOWN; 
+	bdot_command_y = ELOISE_UNKNOWN; 
+	bdot_command_z = ELOISE_UNKNOWN; 
+	fsw_command_x = ELOISE_UNKNOWN; 
+	fsw_command_y = ELOISE_UNKNOWN; 
+	fsw_command_z = ELOISE_UNKNOWN;
 	
 	// reset state 
 	curr_state = MEASUREMENT;
@@ -195,7 +201,7 @@ void measurement()
     {
 		enable_command_update = 0; // stop updating commands
 		
-		if(sc_mode == IDLE && fsw_is_valid())
+		if((sc_mode ==0||sc_mode ==1) && fsw_is_valid())
 		{
 			curr_state = FSW_ACTUATION;
 			send_CAN_ack_packet();
@@ -297,6 +303,11 @@ void start_bdot_death_timer(void)
 	bdot_death_timer = timerPollInitializer(bdot_death_time_ms);
 }
 
+void start_cosmos_commands_timer(void)
+{
+	cosmos_commands_timer = timerPollInitializer(cosmos_commands_time_ms);
+}
+
 void manage_telemetry(void)
 {
     if (checkTimer(telem_timer))
@@ -313,7 +324,7 @@ void manage_telemetry(void)
 
 uint8_t fsw_is_valid(void)
 {
-	if(fsw_ignore == OVERRIDE)
+	if(fsw_ignore == 1)
 	{
 		return 0; 
 	} else 
@@ -388,8 +399,6 @@ void set_pwm(char axis, int pwm_percent)
 		default: // unknown state 
 			break;
 	}
-	
-	send_COSMOS_commands_packet();
 }
 
 // outputs a (very shitty) discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
@@ -499,38 +508,9 @@ void cosmos_init(void)
     bcbinPopulateHeader(&(healthSeg.header), TLM_ID_SHARED_HEALTH, sizeof(healthSeg));
 	bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
 	bcbinPopulateHeader(&cosmos_dooty.header, TLM_ID_DUTY_PERCENT, sizeof(duty_percent));
-    debugRegisterEntity(Entity_NONE, NULL, NULL, handleDebugActionCallback);
     asensorInit(Ref_2p5V); // initialize temperature sensor
     telem_timer = timerPollInitializer(telem_time_ms);
 }
-
-//commented out for DEBUG
-
-uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
-{
-    if (mode == Mode_BinaryStreaming)
-    {
-        command_segment *myCmdSegment;
-
-        uint8_t opcode = cmdstr[0];
-        switch(opcode)
-        {
-            case 1:
-                // cast the payload to our command segment
-                myCmdSegment = (command_segment *) (cmdstr + 1);
-                set_pwm('x' , myCmdSegment->x);
-				set_pwm('y' , myCmdSegment->x);
-				set_pwm('z' , myCmdSegment->x);
-                // TODO do something based on the command segment
-            case OPCODE_COMMONCMD:
-                break;
-            default:
-                break;
-        }
-    }
-    return 1;
-}
-
 
 void send_COSMOS_health_packet()
 {
@@ -555,6 +535,14 @@ void send_COSMOS_commands_packet()
     bcbinSendPacket((uint8_t *) &cosmos_commandy_commands, sizeof(cosmos_commandy_commands));
 }
 
+void send_COSMOS_commands(void)
+{
+	if (checkTimer(cosmos_commands_timer)){
+		send_COSMOS_commands_packet(); 
+		start_cosmos_commands_timer(); 
+	}
+} 
+
 void send_COSMOS_dooty_packet()
 {
     cosmos_dooty.x1 = duty_x1;
@@ -577,13 +565,6 @@ void send_COSMOS_meta_packet(void)
 void mtq_sfr_init(void)
 {	
 	//---------GPIO initialization--------------------------
-	// PJ.0,1,2 - gpio - board leds 
-	/*
-	PJOUT &= ~(BIT0|BIT1|BIT2); // power on state
-	PJDIR |= BIT0|BIT1|BIT2;
-	PJSEL0 &= ~(BIT0|BIT1|BIT2);
-	PJSEL1 &= ~(BIT0|BIT1|BIT2);
-	*/
 	// P3.5 - LED - board leds 
 	P3OUT &= ~BIT5; // power on state
 	P3DIR |= BIT5;
