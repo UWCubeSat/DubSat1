@@ -23,8 +23,9 @@ periods: List = []
 s = saleae.Saleae()
 
 try:
+    counter: int = 0
     while True:
-        s.capture_to_file('/tmp/emoriessaleaedump.logicdata')
+        s.capture_to_file('/tmp/emoriessaleaedump' + str(counter) + '.logicdata')
         s.export_data2("/tmp/emoriessaleaedump.csv",
                        digital_channels=[0, 1],
                        format='csv',
