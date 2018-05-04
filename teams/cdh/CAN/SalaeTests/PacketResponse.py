@@ -38,6 +38,7 @@ try:
         content: List[Tuple[float, bool, bool]] = [[float(x[0]), bool(int(x[1])), bool(int(x[2]))] for x in content]
 
         state = 0
+        timer = 0.
 
         # for x in tqdm.tqdm(content, file=sys.stdout):
         for x in content:
