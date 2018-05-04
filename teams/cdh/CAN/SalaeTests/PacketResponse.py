@@ -39,21 +39,21 @@ try:
         content: List[Tuple[float, bool, bool]] = [[float(x[0]), bool(int(x[1])), bool(int(x[2]))] for x in content]
 
         state = 0
-        timer = 0.
+        # timer = 0.
         counter += 1
         # for x in tqdm.tqdm(content, file=sys.stdout):
         for x in content:
             if state == 0:
                 if x[1]:
                     state = 1
-                    if timer > 0.:
-                        periods.append(x[0] - timer)
-                        if x[0] - timer > currentmaxperiod:
-                            print(" New Max Service Period: " + str(x[0] - timer))
-                            currentmaxperiod = x[0] - timer
+                    # if timer > 0.:
+                    #     periods.append(x[0] - timer)
+                    #     if x[0] - timer > currentmaxperiod:
+                    #         print(" New Max Service Period: " + str(x[0] - timer))
+                    #         currentmaxperiod = x[0] - timer
             if state == 1:
                 if not x[1]:
-                    pstate = 1
+                    # pstate = 1
                     state = 2
                     flip_state = x[2]
                     timer = x[0]
@@ -69,6 +69,6 @@ except:
     print("Max delay: " + str(max(times)))
     print("Min delay: " + str(min(times)))
     print("Avg delay: " + str(sum(times)/len(times)))
-    print("Max service period: " + str(max(periods)))
-    print("Min service period: " + str(min(periods)))
-    print("Avg service period: " + str(sum(periods)/len(periods)))
+    # print("Max service period: " + str(max(periods)))
+    # print("Min service period: " + str(min(periods)))
+    # print("Avg service period: " + str(sum(periods)/len(periods)))
