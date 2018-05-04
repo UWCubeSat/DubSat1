@@ -49,19 +49,29 @@ slaveaddr = hex2dec('1E');
 index = 1;
 
 
-outstr = [xMagMsb xMagLsb zMagMsb zMagLsb yMagMsb yMagLsb];
+outstr = [xMagMsb(index) xMagLsb(index) zMagMsb(index) zMagLsb(index) yMagMsb(index) yMagLsb(index)];
 outstr = uint8(outstr);
 
 calllib(lib, 'c_aa_i2c_slave_set_response', hdev, length(outstr), outstr);
 calllib(lib, 'c_aa_i2c_slave_enable', hdev, slaveaddr, 0, 0);
 
+dataLength = length(time);
+thuCount = 0;
 tic
 while 1
-   if (toc >= time(index + 1))
+   if (toc >= time(index))
         calllib(lib, 'c_aa_i2c_slave_set_response', hdev, length(outstr), outstr);
-        num2bin(outstr, 8);
+  %      num2bin(outstr, 8);
         index = index + 1;
+        outstr = [xMagMsb(index) xMagLsb(index) zMagMsb(index) zMagLsb(index) yMagMsb(index) yMagLsb(index)]
+   else
+       %thuCount = thuCount + 1;
    end
+   if(index >= dataLength)
+        index = 1;
+        tic
+   end
+
 end
 
 
