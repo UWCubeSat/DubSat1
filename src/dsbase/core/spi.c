@@ -3,8 +3,13 @@
 #include <stdint.h>
 #include "spi.h"
 
+void dummyFn(void){}
+
 void spiInit(uint8_t csPins)
 {
+	// This prevents CAN interrupt from screwing up SPI.
+	spiWriteInProgress = 0;
+	spiCallback = dummyFn;
 	/******************************************** UCB0CTLW0 ************************************************ 
 	/  [15]   UCCKPH:  0b = Data is changed on the first UCLK edge and captured on the following edge.
 	/  [14]   UCCKPL:  0b = The inactive state is low.
@@ -69,7 +74,6 @@ void spiInit(uint8_t csPins)
     }
 }
 void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
-
 	// Clear the MSP430's rxBuffer of any junk data left over from previous transactions.
 	//*pRxBuf = UCB1RXBUF;
 
@@ -77,11 +81,15 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
 
 	// TX all data from the provided register over the SPI bus by adding it to the txbuffer one byte at a time.
 	// Store all data received from the slave in pRxBuf.
+	spiWriteInProgress = 1;
 	uint8_t i;
 	for(i = 0; i < num; i++) {
+		uint16_t timeout = 65535;
 
 		// Wait for any previous tx to finish.
-		while (!(UCA2IFG & UCTXIFG));
+		while (!(UCA2IFG & UCTXIFG)){
+			timeout--;
+		}
 
 		// Drop CS Pin if it hasn't been dropped yet.
 		if (i == 0){
@@ -95,7 +103,6 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
                 P4OUT &= ~0x20;
             }
 		}
-
 		// Write to tx buffer.
 		UCA2TXBUF = *pTxBuf;
 
@@ -111,16 +118,22 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
                 P4OUT |= 0x20;
             }
 		}
+		timeout = 65535;
 
 		// Wait for any previous rx to finish rx-ing.
-		while (!(UCA2IFG & UCRXIFG));
-
+		while (!(UCA2IFG & UCRXIFG) && timeout){
+			timeout--;
+		}
 		// Store data transmitted from the slave.
 		*pRxBuf = UCA2RXBUF;
 
 		// Increment the pointer to send and store the next byte.
 		pTxBuf++;
 		pRxBuf++;
-
 	}
+	spiWriteInProgress = 0;
+	// Now go to callback if a spi write was interrupted.
+	void (*runThis)(void) = spiCallback;
+	spiCallback = dummyFn;
+	runThis();
 }

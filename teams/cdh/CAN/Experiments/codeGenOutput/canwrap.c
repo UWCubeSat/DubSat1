@@ -1068,41 +1068,20 @@ void encodeppt_firing_result(ppt_firing_result *input, CANPacket *output){
     reverseArray((output->data), 0, 7);
 }
 
-void decodetle_6(CANPacket *input, tle_6 *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    uint64_t temptle_6_mnm = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
-output -> tle_6_mnm = (*((double *)(&(temptle_6_mnm))));
-}
-
-void encodetle_6(tle_6 *input, CANPacket *output){
-    output -> id = 309788745;
-    output -> length = 8;
-    uint64_t fullPacketData = 0x0000000000000000;
-    const double temptle_6_mnm = ((input -> tle_6_mnm));
-    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temptle_6_mnm)))));
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
 void decodetle_5(CANPacket *input, tle_5 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> tle_5_id = (uint8_t) (((fullData & ((uint64_t) 0x1 << 31)) >> 31));
-    uint32_t temptle_5_mna = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
-    output -> tle_5_mna = (*((float *)(&(temptle_5_mna))));
+    uint64_t temptle_5_mnm = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> tle_5_mnm = (*((double *)(&(temptle_5_mnm))));
 }
 
 void encodetle_5(tle_5 *input, CANPacket *output){
     output -> id = 309788744;
-    output -> length = 5;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> tle_5_id))) & 0x1) << 31;
-    const float temptle_5_mna = ((input -> tle_5_mna));
-    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(temptle_5_mna))))) << 32;
+    const double temptle_5_mnm = ((input -> tle_5_mnm));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temptle_5_mnm)))));
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -1177,20 +1156,20 @@ void decodetle_1(CANPacket *input, tle_1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> tle_1_id = (uint8_t) (((fullData & ((uint64_t) 0x1 << 23)) >> 23));
-    uint32_t temptle_1_bstar = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 24)) >> 24);
+    uint32_t temptle_1_mna = (uint32_t) ((fullData & ((uint64_t) 0xffffffff)));
+    output -> tle_1_mna = (*((float *)(&(temptle_1_mna))));
+    uint32_t temptle_1_bstar = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
     output -> tle_1_bstar = (*((float *)(&(temptle_1_bstar))));
-    output -> tle_1_year = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
 void encodetle_1(tle_1 *input, CANPacket *output){
     output -> id = 302448708;
-    output -> length = 6;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> tle_1_id))) & 0x1) << 23;
+    const float temptle_1_mna = ((input -> tle_1_mna));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(temptle_1_mna)))));
     const float temptle_1_bstar = ((input -> tle_1_bstar));
-    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(temptle_1_bstar))))) << 24;
-    fullPacketData |= (((uint64_t)((input -> tle_1_year))) & 0xff) << 56;
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(temptle_1_bstar))))) << 32;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);

@@ -40,9 +40,9 @@ void METInit(uint8_t _isDist)
 	    confirmed = 0;
 }
 
-uint32_t getPrimaryTime()
+uint32_t getMETPrimaryTime()
 {
-    timeStamp t = getTimeStamp();
+    timeStamp t = getMETTimestamp();
     uint32_t res = (uint32_t) RTCCNT1;
     res |= ((uint32_t) RTCCNT2) << 8;
     res |= ((uint32_t) RTCCNT3) << 16;
@@ -50,7 +50,7 @@ uint32_t getPrimaryTime()
     return res;
 }
 
-uint8_t getOverflowTime()
+uint8_t getMETOverflow()
 {
     return recentTime.count5;
 }
@@ -68,7 +68,7 @@ void updateMET(timeStamp newTime)
     confirmed = 1;
 }
 
-timeStamp getTimeStamp()
+timeStamp getMETTimestamp()
 {
 	timeStamp now = {0};
 	now.count1 |= RTCCNT1; //TODO: these reads are unpredictable

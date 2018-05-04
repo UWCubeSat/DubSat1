@@ -12,6 +12,15 @@
 
 #define PARAM_ADCS_STATUS_VELOCITY_RPM 0x4201;
 
+// the initial value assigned to the coils before commands are received
+#define ELOISE_UNKNOWN -128 
+// what phase the mtq is in (needed by fsw and bdot)
+#define MEASUREMENT_PHASE CAN_ENUM_BOOL_FALSE 
+#define ACTUATION_PHASE CAN_ENUM_BOOL_TRUE
+#define FROM_FSW_IS_ZERO 0
+#define FROM_BDOT_IS_ONE 1
+#define FROM_FSW FROM_FSW_IS_ZERO
+#define FROM_BDOT FROM_BDOT_IS_ONE
 
 // BEGIN GENERATOR MACROS
 
@@ -53,7 +62,6 @@
 #define CAN_ID_CMD_PPT_TIME_UPD 302252293
 #define CAN_ID_CMD_PPT_HALT 285475076
 #define CAN_ID_PPT_FIRING_RESULT 304677104
-#define CAN_ID_TLE_6 309788745
 #define CAN_ID_TLE_5 309788744
 #define CAN_ID_TLE_4 309788743
 #define CAN_ID_TLE_3 309788742
@@ -102,10 +110,10 @@
 #define CAN_ENUM_FIRE_STATE_FIRESUCCESSFUL 0
 #define CAN_ENUM_UV_STATE_UNDERVOLTAGE 1
 #define CAN_ENUM_UV_STATE_NORMAL 0
-#define CAN_ENUM_MODE_NOTTUMBLINGCHARLIE 3
-#define CAN_ENUM_MODE_NOTTUMBLINGBOB 2
-#define CAN_ENUM_MODE_NOTTUMBLINGALICE 1
-#define CAN_ENUM_MODE_TUMBLING 0
+#define CAN_ENUM_MODE_LOWPOWER 4
+#define CAN_ENUM_MODE_POINTING 3
+#define CAN_ENUM_MODE_BDOT 1
+#define CAN_ENUM_MODE_FSWOFF 0
 #define CAN_ENUM_PWR_DOMAIN_UNK 8
 #define CAN_ENUM_PWR_DOMAIN_COM1 7
 #define CAN_ENUM_PWR_DOMAIN_COM2 6
@@ -409,13 +417,8 @@ typedef struct ppt_firing_result {
     uint8_t ppt_firing_result_code; //  (No Units)
 } ppt_firing_result;
 
-typedef struct tle_6 {
-    double tle_6_mnm; //  (No Units)
-} tle_6;
-
 typedef struct tle_5 {
-    uint8_t tle_5_id; //  (No Units)
-    float tle_5_mna; //  (No Units)
+    double tle_5_mnm; //  (No Units)
 } tle_5;
 
 typedef struct tle_4 {
@@ -433,9 +436,8 @@ typedef struct tle_2 {
 } tle_2;
 
 typedef struct tle_1 {
-    uint8_t tle_1_id; //  (No Units)
+    float tle_1_mna; //  (No Units)
     float tle_1_bstar; //  (No Units)
-    uint8_t tle_1_year; //  (No Units)
 } tle_1;
 
 typedef struct eps_pd_undervoltage {
@@ -739,9 +741,6 @@ void decodecmd_ppt_halt(CANPacket *input, cmd_ppt_halt *output);
 
 void encodeppt_firing_result(ppt_firing_result *input, CANPacket* output);
 void decodeppt_firing_result(CANPacket *input, ppt_firing_result *output);
-
-void encodetle_6(tle_6 *input, CANPacket* output);
-void decodetle_6(CANPacket *input, tle_6 *output);
 
 void encodetle_5(tle_5 *input, CANPacket* output);
 void decodetle_5(CANPacket *input, tle_5 *output);

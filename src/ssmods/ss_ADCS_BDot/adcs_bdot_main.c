@@ -8,7 +8,6 @@
 #include "bdot_controller_lib.h"
 
 /******************COSMOS Telemetry******************************/
-FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 FILE_STATIC magnetometer_segment myTelemMagnetometer;
 FILE_STATIC mtq_info_segment myTelemMtqInfo;
@@ -84,8 +83,8 @@ int main(void)
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
 
     initial_setup();
-    rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
-    startCallback(rtOneStep_timer);
+//    rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
+//    startCallback(rtOneStep_timer);
     /* Attach rt_OneStep to a timer or interrupt service routine with
      * period 0.1 seconds (the model's base sample time) here.  The
      * call syntax for rt_OneStep is
@@ -103,6 +102,7 @@ int main(void)
         {
             sendTelemetry();
             start_telem_timer();
+            simulink_compute();
         }
         if(send_dipole && mtq_state == mag_valid)
         {
@@ -122,42 +122,9 @@ int main(void)
 }
 
 
-//        if(checkTimer(telem_timer))
-//        {
-//            sendTelemetry();
-//            start_telem_timer();
-//        }
-
-//        switch (mag_data)
-//        {
-//        case mag_invalid:
-//            if(mtq_state == MTQ_MEASUREMENT_PHASE)
-//            {
-//                mag_data = mag_valid;
-//                lastKnownState.xDipole = 0;
-//                lastKnownState.yDipole = 0;
-//                lastKnownState.zDipole = 0;
-//                sendMtqInfoSegment();
-//
-//            }
-//            break;
-//        case mag_valid:
-//            if(mtq_state == MTQ_ACTUATION_PHASE)
-//            {
-//                lastKnownState.xDipole = mtqInfo.xDipole;
-//                lastKnownState.yDipole = mtqInfo.yDipole;
-//                lastKnownState.zDipole = mtqInfo.zDipole;
-//                sendMtqInfoSegment();
-//                mag_data = mag_invalid;
-//            }
-//            break;
-//        }
-
-
 void initial_setup()
 {
     P3DIR |= BIT5;
-    P3OUT |= BIT5;
 
     canWrapInit();
     setCANPacketRxCallback(receive_packet);
@@ -201,7 +168,7 @@ void performNormalOp()
 
 void simulink_compute()
 {
-    P3DIR ^= BIT5;
+//    P3DIR ^= BIT5;
     getMagnetometerData();
     rtU.B_body_in_T[0] = magData->convertedX;
     rtU.B_body_in_T[1] = magData->convertedY;
@@ -328,7 +295,7 @@ void receive_packet(CANPacket *packet)
         // actuation_phase = 1;
         mtq_ack ack = {0};
         decodemtq_ack(packet, &ack);
-        if(!ack.mtq_ack_coils_state)
+        if(!ack.mtq_ack_phase)
         {
             mtq_state = MTQ_MEASUREMENT_PHASE;
         } else

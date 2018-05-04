@@ -10,7 +10,7 @@
 #include "core/debugtools.h"
 #include "tle.h"
 
-#include "autocode/MSP_env_estim.h"
+#include "autocode/MSP_env_estim0.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -22,7 +22,8 @@ FILE_STATIC health_segment hseg;
 
 // The latest TLE from CAN is held here and passed to autocode on each step
 // TODO initialize it with a recent TLE before launch?
-FILE_STATIC struct tle tle;
+#pragma PERSISTENT(tle)
+FILE_STATIC struct tle tle = { 0 };
 
 FILE_STATIC void setInputs();
 FILE_STATIC void sendTelemOverBackchannel();
@@ -66,20 +67,17 @@ int main(void)
 #if MOCK_TLE
     // TLE taken from Wikipedia example
     // ID = 0
-    tle.tle1.tle_1_id = 0;
-    tle.tle1.tle_1_year = 8;
     tle.tle1.tle_1_bstar = -.11606E-4;
-    tle.tle2.tle_2_day = 264.51782528;
+    tle.tle1.tle_1_mna = 325.0288;
+    tle.tle2.tle_2_day = (365.24 * 8) + 264.51782528;
     tle.tle3.tle_3_ecc = .0006703;
     tle.tle3.tle_3_inc = 51.6416;
     tle.tle4.tle_4_aop = 130.5360;
     tle.tle4.tle_4_raan = 247.4627;
-    tle.tle5.tle_5_id = 0;
-    tle.tle5.tle_5_mna = 325.0288;
-    tle.tle6.tle_6_mnm = 15.72125391;
+    tle.tle5.tle_5_mnm = 15.72125391;
 
     // guess at the epoch
-    rtU.MET_epoch = (tle.tle1.tle_1_year * 365.24 + tle.tle2.tle_2_day) * 24 * 60 * 60;
+    rtU.MET_epoch = (8 * 365.24 + tle.tle2.tle_2_day) * 24 * 60 * 60;
 #endif
     tleInit(&tle, MOCK_TLE);
     canWrapInitWithFilter();
@@ -96,7 +94,7 @@ int main(void)
     asensorInit(Ref_2p5V);
 
     // init autocode
-    MSP_env_estim_initialize();
+    MSP_env_estim0_initialize();
 
     /*
      * TODO consider using a callback timer instead of a while loop. We'll
@@ -123,83 +121,35 @@ int main(void)
 
 void rt_OneStep(void)
 {
-  static boolean_T OverrunFlags[2] = { 0, 0 };
-
-  static boolean_T eventFlags[2] = { 0, 0 };/* Model has 2 rates */
-
-  static int_T taskCounter[2] = { 0, 0 };
+  static boolean_T OverrunFlag = false;
 
   /* Disable interrupts here */
   __disable_interrupt();
 
-  /* Check base rate for overrun */
-  if (OverrunFlags[0]) {
+  /* Check for overrun */
+  if (OverrunFlag) {
     rtmSetErrorStatus(rtM, "Overrun");
     return;
   }
 
-  OverrunFlags[0] = true;
+  OverrunFlag = true;
 
   /* Save FPU context here (if necessary) */
   /* Re-enable timer or interrupt here */
   __enable_interrupt();
 
-  /*
-   * For a bare-board target (i.e., no operating system), the
-   * following code checks whether any subrate overruns,
-   * and also sets the rates that need to run this time step.
-   */
-  if (taskCounter[1] == 0) {
-    if (eventFlags[1]) {
-      OverrunFlags[0] = false;
-      OverrunFlags[1] = true;
+  /* Set model inputs here */
+  setInputs();
 
-      /* Sampling too fast */
-      rtmSetErrorStatus(rtM, "Overrun");
-      return;
-    }
-
-    eventFlags[1] = true;
-  }
-
-  taskCounter[1]++;
-  if (taskCounter[1] == 2) {
-    taskCounter[1]= 0;
-  }
-
-  /* Set model inputs associated with base rate here */
-
-  /* Step the model for base rate */
-  MSP_env_estim_step0();
+  /* Step the model */
+  MSP_env_estim0_step();
 
   /* Get model outputs here */
   sendTelemOverBackchannel();
   sendTelemOverCAN();
 
-  /* Indicate task for base rate complete */
-  OverrunFlags[0] = false;
-
-  /* If task 1 is running, don't run any lower priority task */
-  if (OverrunFlags[1]) {
-    return;
-  }
-
-  /* Step the model for subrate */
-  if (eventFlags[1]) {
-    OverrunFlags[1] = true;
-
-    /* Set model inputs associated with subrates here */
-    setInputs();
-
-    /* Step the model for subrate 1 */
-    MSP_env_estim_step1();
-
-    /* Get model outputs here */
-
-    /* Indicate task complete for subrate */
-    OverrunFlags[1] = false;
-    eventFlags[1] = false;
-  }
+  /* Indicate task complete */
+  OverrunFlag = false;
 
   /* Disable interrupts here */
   /* Restore FPU context here (if necessary) */
@@ -222,22 +172,23 @@ void handleRollCall()
 
 FILE_STATIC void setInputs()
 {
-    rtU.MET = metConvertToSeconds(getTimeStamp());
+    rtU.MET = metConvertToSeconds(getMETTimestamp());
 
     // input the TLE unless we're in the middle of reading it from CAN
     // disable interrupts so the TLE isn't modified during read
     __disable_interrupt();
     if (tleIsComplete(&tle))
     {
-        rtU.orbit_TLE[0] = tle.tle1.tle_1_year + 2000;
-        rtU.orbit_TLE[1] = tle.tle2.tle_2_day;
-        rtU.orbit_TLE[2] = tle.tle1.tle_1_bstar;
-        rtU.orbit_TLE[3] = tle.tle3.tle_3_inc;
-        rtU.orbit_TLE[4] = tle.tle4.tle_4_raan;
-        rtU.orbit_TLE[5] = tle.tle3.tle_3_ecc;
-        rtU.orbit_TLE[6] = tle.tle4.tle_4_aop;
-        rtU.orbit_TLE[7] = tle.tle5.tle_5_mna;
-        rtU.orbit_TLE[8] = tle.tle6.tle_6_mnm;
+        double day = tleDay(&tle);
+        rtU.orbit_tle[0] = 2000 + (uint8_t) (day / 365.24); // year is unused
+        rtU.orbit_tle[1] = day;
+        rtU.orbit_tle[2] = tleBStar(&tle);
+        rtU.orbit_tle[3] = tleInc(&tle);
+        rtU.orbit_tle[4] = tleRaan(&tle);
+        rtU.orbit_tle[5] = tleEcc(&tle);
+        rtU.orbit_tle[6] = tleAop(&tle);
+        rtU.orbit_tle[7] = tleMna(&tle);
+        rtU.orbit_tle[8] = tleMnm(&tle);
     }
     __enable_interrupt();
 }
@@ -246,15 +197,15 @@ FILE_STATIC void sendTelemOverBackchannel()
 {
     // send input TLE
     input_tle_segment tleSeg;
-    tleSeg.year = rtU.orbit_TLE[0];
-    tleSeg.day = rtU.orbit_TLE[1];
-    tleSeg.bstar = rtU.orbit_TLE[2];
-    tleSeg.inc = rtU.orbit_TLE[3];
-    tleSeg.raan = rtU.orbit_TLE[4];
-    tleSeg.ecc = rtU.orbit_TLE[5];
-    tleSeg.aop = rtU.orbit_TLE[6];
-    tleSeg.mna = rtU.orbit_TLE[7];
-    tleSeg.mnm = rtU.orbit_TLE[8];
+    tleSeg.year = rtU.orbit_tle[0];
+    tleSeg.day = rtU.orbit_tle[1];
+    tleSeg.bstar = rtU.orbit_tle[2];
+    tleSeg.inc = rtU.orbit_tle[3];
+    tleSeg.raan = rtU.orbit_tle[4];
+    tleSeg.ecc = rtU.orbit_tle[5];
+    tleSeg.aop = rtU.orbit_tle[6];
+    tleSeg.mna = rtU.orbit_tle[7];
+    tleSeg.mnm = rtU.orbit_tle[8];
     tleSeg.id = tle._id;
     bcbinPopulateHeader(&tleSeg.header, TLM_ID_INPUT_TLE, sizeof(tleSeg));
     bcbinSendPacket((uint8_t *) &tleSeg, sizeof(tleSeg));
