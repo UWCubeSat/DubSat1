@@ -50,7 +50,7 @@ try:
                 if not x[1]:
                     state = 2
                     timer = x[0]
-            if state == 1:
+            if state == 2:
                 if x[1]:
                     state = 1
                     times.append(x[0] - timer)
