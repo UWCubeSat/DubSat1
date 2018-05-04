@@ -43,13 +43,13 @@ calllib(lib, 'c_aa_i2c_slave_enable', hdev, slaveaddr, 0, 0);
 while 1
     tic
     index = 1;
-    while index <= length(outstr)
+    while index < length(outstr)
         if (toc >= time(index + 1))
             thisout = outstr(index, :);
             calllib(lib, 'c_aa_i2c_slave_set_response', hdev, length(thisout), thisout);
             
             % read just so the read buffer doesn't fill up
-            if calllib(lib, 'c_aa_async_poll', hdev, 0) == 1
+            if bitand(calllib(lib, 'c_aa_async_poll', hdev, 0), 1)
                 calllib(lib, 'c_aa_i2c_slave_read', hdev, inAddr, DUMP_BUFFER_SIZE, dump);
             end
             
