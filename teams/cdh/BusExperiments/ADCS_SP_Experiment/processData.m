@@ -19,7 +19,7 @@ in_mag2 = round(data(:, 15:17) * 10e9 / MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FAC
 in_mag2valid = data(:, 18);
 
 % Read imu inputs and convert them to the raw units
-in_imu = round(data(:, 19:21) / (IMU_RAW_TO_DPS / DEG_TO_RAD));
+in_imu = round(data(:, 19:21) / (IMU_RAW_TO_DPS * DEG_TO_RAD));
 in_imuvalid = data(:, 22);
 
 % Read sun sensor. Already in proper units.

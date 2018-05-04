@@ -117,5 +117,5 @@ float imuConvertRawToRPS(int16_t raw)
 
 int16_t imuConvertRPSToRaw(float rps)
 {
-    return roundf(rps / (IMU_RAW_TO_DPS / DEG_TO_RAD));
+    return roundf(rps / (IMU_RAW_TO_DPS * DEG_TO_RAD));
 }
