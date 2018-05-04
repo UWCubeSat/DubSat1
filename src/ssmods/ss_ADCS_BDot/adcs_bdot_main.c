@@ -83,8 +83,8 @@ int main(void)
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
 
     initial_setup();
-    rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
-    startCallback(rtOneStep_timer);
+//    rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
+//    startCallback(rtOneStep_timer);
     /* Attach rt_OneStep to a timer or interrupt service routine with
      * period 0.1 seconds (the model's base sample time) here.  The
      * call syntax for rt_OneStep is
@@ -102,6 +102,7 @@ int main(void)
         {
             sendTelemetry();
             start_telem_timer();
+            simulink_compute();
         }
         if(send_dipole && mtq_state == mag_valid)
         {
@@ -124,7 +125,6 @@ int main(void)
 void initial_setup()
 {
     P3DIR |= BIT5;
-    P3OUT |= BIT5;
 
     canWrapInit();
     setCANPacketRxCallback(receive_packet);
@@ -168,7 +168,7 @@ void performNormalOp()
 
 void simulink_compute()
 {
-    P3DIR ^= BIT5;
+//    P3DIR ^= BIT5;
     getMagnetometerData();
     rtU.B_body_in_T[0] = magData->convertedX;
     rtU.B_body_in_T[1] = magData->convertedY;
