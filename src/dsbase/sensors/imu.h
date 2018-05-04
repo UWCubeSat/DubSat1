@@ -8,13 +8,14 @@
 #ifndef SENSORS_IMU_H_
 #define SENSORS_IMU_H_
 
+#include <stdint.h>
+
 // assuming FS = +-125
 #define IMU_RAW_TO_DPS 0.004375
 
 // degrees to radians
 #define DEG_TO_RAD     (3.14159265358979323846 / 180.0)
 
-#include <stdint.h>
 
 #include "../core/i2c.h"
 #include "../core/utils.h"

@@ -8,6 +8,7 @@
 #include "bdot_controller_lib.h"
 
 /******************COSMOS Telemetry******************************/
+FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 FILE_STATIC magnetometer_segment myTelemMagnetometer;
 FILE_STATIC mtq_info_segment myTelemMtqInfo;
@@ -34,6 +35,7 @@ FILE_STATIC uint8_t send_dipole = 0;
 FILE_STATIC int telem_timer;
 FILE_STATIC uint16_t telem_timer_ms = 200; // 1 s
 
+FILE_STATIC int update_rt = 0;
 
 FILE_STATIC int rtOneStep_timer;
 FILE_STATIC uint32_t rtOneStep_us = 100000;
@@ -83,8 +85,8 @@ int main(void)
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
 
     initial_setup();
-//    rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
-//    startCallback(rtOneStep_timer);
+    rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
+    startCallback(rtOneStep_timer);
     /* Attach rt_OneStep to a timer or interrupt service routine with
      * period 0.1 seconds (the model's base sample time) here.  The
      * call syntax for rt_OneStep is
@@ -102,10 +104,24 @@ int main(void)
         {
             sendTelemetry();
             start_telem_timer();
-            simulink_compute();
+        }
+        if(update_rt)
+        {
+//            P3DIR ^= BIT5;
+            getMagnetometerData();
+            rtU.B_body_in_T[0] = magData->convertedX;
+            rtU.B_body_in_T[1] = magData->convertedY;
+            rtU.B_body_in_T[2] = magData->convertedZ;
+            rtU.B_meas_valid = normalOperation;
+            rtU.MT_on = 0;
+            rt_OneStep();
+            updateMtqInfo();
+            sendTelemetry();
+            update_rt = 0;
         }
         if(send_dipole && mtq_state == mag_valid)
         {
+
             sendDipolePacket(mtqInfo.xDipole, mtqInfo.yDipole, mtqInfo.zDipole);
             lastKnownState.xDipole = mtqInfo.xDipole;
             lastKnownState.yDipole = mtqInfo.yDipole;
@@ -125,6 +141,7 @@ int main(void)
 void initial_setup()
 {
     P3DIR |= BIT5;
+//    P3OUT |= BIT5;
 
     canWrapInit();
     setCANPacketRxCallback(receive_packet);
@@ -151,7 +168,7 @@ void start_telem_timer()
 
 void getMagnetometerData()
 {
-    magData = magReadXYZData(magNum, ConvertToTeslas);
+    magData = testing_magReadXYZData(magNum, ConvertToTeslas);
 }
 
 void performSelfTest()
@@ -168,19 +185,7 @@ void performNormalOp()
 
 void simulink_compute()
 {
-//    P3DIR ^= BIT5;
-    getMagnetometerData();
-    rtU.B_body_in_T[0] = magData->convertedX;
-    rtU.B_body_in_T[1] = magData->convertedY;
-    rtU.B_body_in_T[2] = magData->convertedZ;
-    rtU.B_meas_valid = normalOperation;
-    rtU.MT_on = 0;
-    rt_OneStep();
-    updateMtqInfo();
-//    lastKnownState.xDipole = mtqInfo.xDipole;
-//    lastKnownState.yDipole = mtqInfo.yDipole;
-//    lastKnown_State.zDipole = mtqInfo.zDipole;
-//    sendMtqInfoSegment();
+    update_rt = 1;
     send_dipole = 1;
 }
 
@@ -189,7 +194,7 @@ void sendTelemetry()
 {
     sendHealthSegment();
     sendMagReadingSegment();
-//    sendMtqInfoSegment();
+ //   sendMtqInfoSegment();
     sendSimulinkSegment();
 }
 

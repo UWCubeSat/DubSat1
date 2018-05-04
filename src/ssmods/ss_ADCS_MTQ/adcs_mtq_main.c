@@ -62,7 +62,6 @@ void send_COSMOS_health_packet(void);
 void send_COSMOS_meta_packet(void);
 void send_COSMOS_commands_packet(void);
 void send_COSMOS_dooty_packet(void);
-void send_cosmos_commands(void);
 
 //--------SFR initialization------
 void mtq_sfr_init(void);
@@ -76,7 +75,7 @@ FILE_STATIC volatile uint8_t enable_command_update = 0;
 //-----------inputs-----------------
 FILE_STATIC volatile int8_t bdot_command_x, bdot_command_y, bdot_command_z; 
 FILE_STATIC volatile int8_t fsw_command_x, fsw_command_y, fsw_command_z;  
-FILE_STATIC volatile uint8_t fsw_ignore = CAN_ENUM_BOOL_TRUE; // ignore flight software flag 
+FILE_STATIC volatile uint8_t fsw_ignore = OVERRIDE;
 FILE_STATIC volatile int8_t sc_mode;
 #pragma PERSISTENT(fsw_ignore) // persist value of fsw_ignore on reboot
 
@@ -88,7 +87,7 @@ FILE_STATIC bdot_fsw_commands cosmos_commandy_commands;
 FILE_STATIC duty_percent cosmos_dooty;
 FILE_STATIC volatile uint8_t duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2 = 0; 
 FILE_STATIC volatile uint8_t last_pwm_percent_executed_x, last_pwm_percent_executed_y, last_pwm_percent_executed_z = 0;
-FILE_STATIC volatile int8_t command_source = ELOISE_UNKNOWN;
+FILE_STATIC volatile int8_t command_source = UNKNOWN;
 
 //------------timers ----------------
 
@@ -99,7 +98,7 @@ FILE_STATIC int actuation_timer = 0;
 FILE_STATIC int actuation_time_ms = 2000;
 #pragma PERSISTENT(actuation_time_ms)
 FILE_STATIC int measurement_timer = 0;
-FILE_STATIC int measurement_time_ms = 5000;
+FILE_STATIC int measurement_time_ms = 2000;
 #pragma PERSISTENT(measurement_time_ms)
 FILE_STATIC int stabalize_timer = 0;
 FILE_STATIC int stabalize_time_ms = 100;
@@ -108,14 +107,11 @@ FILE_STATIC int LED_timer = 500;
 FILE_STATIC int LED_time_ms = 500;
 FILE_STATIC int bdot_death_timer = 0;
 FILE_STATIC int bdot_death_time_ms = 4000; // 4 second timeout 
-#pragma PERSISTENT(bdot_death_time_ms)
-FILE_STATIC int cosmos_commands_timer = 50;
-FILE_STATIC int cosmos_commands_time_ms = 50;
 
 //-------state machine-----------
 
 // index of states 
-typedef enum _mtq_state {
+typedef enum MTQState {
 	MEASUREMENT = 0,
 	FSW_ACTUATION,
 	BDOT_ACTUATION,
@@ -132,12 +128,10 @@ eMTQState curr_state;
 //------------------------------------------------------------------
 // Main 
 // TODO 
+// add dipole to CAN ack packet
 // add fsw timeout 
 // fix manage telem function   
 // cntrl f DEBUG to see commented out sections 
-// check sc_mode 
-// add macros to ack pack 
-// check that initializing timer to time_ms is ok (under .5 seconds not working)
 //------------------------------------------------------------------
 
 int main(void)
@@ -150,12 +144,11 @@ int main(void)
     cosmos_init();                 // COSMOS backchannel initialization
     can_init();                    // CAN initialization
 
-    restartMTQ();
+    restartMTQ(); // restart 
 	
     while (1)
     {
 		blink_LED(); 
-		send_cosmos_commands();
 		
         // mtq control loop
         state_table[curr_state]();
@@ -179,13 +172,13 @@ void restartMTQ()
 	turn_off_coils();
 	
 	// set input signals to unknown
-	sc_mode = ELOISE_UNKNOWN;
-	bdot_command_x = ELOISE_UNKNOWN; 
-	bdot_command_y = ELOISE_UNKNOWN; 
-	bdot_command_z = ELOISE_UNKNOWN; 
-	fsw_command_x = ELOISE_UNKNOWN; 
-	fsw_command_y = ELOISE_UNKNOWN; 
-	fsw_command_z = ELOISE_UNKNOWN;
+	sc_mode = UNKNOWN;
+	bdot_command_x = UNKNOWN; 
+	bdot_command_y = UNKNOWN; 
+	bdot_command_z = UNKNOWN; 
+	fsw_command_x = UNKNOWN; 
+	fsw_command_y = UNKNOWN; 
+	fsw_command_z = UNKNOWN;
 	
 	// reset state 
 	curr_state = MEASUREMENT;
@@ -202,7 +195,7 @@ void measurement()
     {
 		enable_command_update = 0; // stop updating commands
 		
-		if((sc_mode == 0 && sc_mode == 1) && fsw_is_valid()) 
+		if(sc_mode == IDLE && fsw_is_valid())
 		{
 			curr_state = FSW_ACTUATION;
 			send_CAN_ack_packet();
@@ -303,17 +296,7 @@ void start_bdot_death_timer(void)
 {
 	bdot_death_timer = timerPollInitializer(bdot_death_time_ms);
 }
-void start_cosmos_commands_timer(void)
-{
-    cosmos_commands_timer = timerPollInitializer(cosmos_commands_time_ms);
-}
-void blink_LED(void)
-{
-    if (checkTimer(LED_timer)){
-        P3OUT ^= BIT5; // toggle LED
-        start_LED_timer();
-    }
-}
+
 void manage_telemetry(void)
 {
     if (checkTimer(telem_timer))
@@ -330,7 +313,7 @@ void manage_telemetry(void)
 
 uint8_t fsw_is_valid(void)
 {
-	if(fsw_ignore == CAN_ENUM_BOOL_TRUE)
+	if(fsw_ignore == OVERRIDE)
 	{
 		return 0; 
 	} else 
@@ -356,6 +339,14 @@ void turn_off_coils(void)
 	set_pwm('x', 0); 
 	set_pwm('y', 0); 
 	set_pwm('z', 0); 
+}
+
+void blink_LED(void)
+{
+	if (checkTimer(LED_timer)){
+		P3OUT ^= BIT5; // toggle LED 
+		start_LED_timer();
+	}
 }
 
 // sets the PWM duty cycles for each of the outputs based 
@@ -397,6 +388,8 @@ void set_pwm(char axis, int pwm_percent)
 		default: // unknown state 
 			break;
 	}
+	
+	send_COSMOS_commands_packet();
 }
 
 // outputs a (very shitty) discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
@@ -433,8 +426,7 @@ int is_bdot_still_alive(void)
 // can initialization 
 void can_init(void)
 {
-	//canWrapInitWithFilter();
-    canWrapInit();
+	canWrapInitWithFilter();
 	setCANPacketRxCallback(can_packet_rx_callback);
 }
 
@@ -482,25 +474,7 @@ void send_CAN_health_packet(void)
 
 void send_CAN_ack_packet(void)
 { 
-	int8_t which_phase; 
-	switch(curr_state)
-	{
-		case MEASUREMENT: 
-			which_phase = MEASUREMENT_PHASE; 
-			break; 
-		case FSW_ACTUATION: 
-			which_phase = ACTUATION_PHASE; 
-			break; 
-		case BDOT_ACTUATION: 
-			which_phase = ACTUATION_PHASE; 
-			break;
-		case STABALIZE: 
-			which_phase = ACTUATION_PHASE; 
-			break; 
-		default: 
-			which_phase = ELOISE_UNKNOWN; // other phase 
-			break; 
-	}
+    int8_t which_phase = curr_state;
 	mtq_ack ack = {0};
 	ack.mtq_ack_phase = which_phase;
 	ack.mtq_ack_source = command_source;
@@ -525,11 +499,40 @@ void cosmos_init(void)
     bcbinPopulateHeader(&(healthSeg.header), TLM_ID_SHARED_HEALTH, sizeof(healthSeg));
 	bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
 	bcbinPopulateHeader(&cosmos_dooty.header, TLM_ID_DUTY_PERCENT, sizeof(duty_percent));
+    debugRegisterEntity(Entity_NONE, NULL, NULL, handleDebugActionCallback);
     asensorInit(Ref_2p5V); // initialize temperature sensor
     telem_timer = timerPollInitializer(telem_time_ms);
 }
 
-void send_COSMOS_health_packet(void)
+//commented out for DEBUG
+
+uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
+{
+    if (mode == Mode_BinaryStreaming)
+    {
+        command_segment *myCmdSegment;
+
+        uint8_t opcode = cmdstr[0];
+        switch(opcode)
+        {
+            case 1:
+                // cast the payload to our command segment
+                myCmdSegment = (command_segment *) (cmdstr + 1);
+                set_pwm('x' , myCmdSegment->x);
+				set_pwm('y' , myCmdSegment->x);
+				set_pwm('z' , myCmdSegment->x);
+                // TODO do something based on the command segment
+            case OPCODE_COMMONCMD:
+                break;
+            default:
+                break;
+        }
+    }
+    return 1;
+}
+
+
+void send_COSMOS_health_packet()
 {
     healthSeg.oms = OMS_Unknown;
     healthSeg.inttemp = asensorReadIntTempC();
@@ -538,7 +541,7 @@ void send_COSMOS_health_packet(void)
     debugInvokeStatusHandler(Entity_UART); // send uart bus status over backchannel
 }
 
-void send_COSMOS_commands_packet(void)
+void send_COSMOS_commands_packet()
 {
     cosmos_commandy_commands.last_bdot_x = bdot_command_x;
     cosmos_commandy_commands.last_bdot_y = bdot_command_y;
@@ -551,14 +554,8 @@ void send_COSMOS_commands_packet(void)
 	cosmos_commandy_commands.last_mtq_executed_z = last_pwm_percent_executed_z;
     bcbinSendPacket((uint8_t *) &cosmos_commandy_commands, sizeof(cosmos_commandy_commands));
 }
-void send_cosmos_commands(void)
-{
-    if(checkTimer(cosmos_commands_timer)){
-        send_COSMOS_commands_packet();
-    }
-}
 
-void send_COSMOS_dooty_packet(void)
+void send_COSMOS_dooty_packet()
 {
     cosmos_dooty.x1 = duty_x1;
     cosmos_dooty.x2 = duty_x2;
