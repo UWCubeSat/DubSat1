@@ -62,6 +62,7 @@ void send_COSMOS_health_packet(void);
 void send_COSMOS_meta_packet(void);
 void send_COSMOS_commands_packet(void);
 void send_COSMOS_dooty_packet(void);
+void send_cosmos_commands(void);
 
 //--------SFR initialization------
 void mtq_sfr_init(void);
@@ -98,7 +99,7 @@ FILE_STATIC int actuation_timer = 0;
 FILE_STATIC int actuation_time_ms = 2000;
 #pragma PERSISTENT(actuation_time_ms)
 FILE_STATIC int measurement_timer = 0;
-FILE_STATIC int measurement_time_ms = 2000;
+FILE_STATIC int measurement_time_ms = 5000;
 #pragma PERSISTENT(measurement_time_ms)
 FILE_STATIC int stabalize_timer = 0;
 FILE_STATIC int stabalize_time_ms = 100;
@@ -107,6 +108,9 @@ FILE_STATIC int LED_timer = 500;
 FILE_STATIC int LED_time_ms = 500;
 FILE_STATIC int bdot_death_timer = 0;
 FILE_STATIC int bdot_death_time_ms = 4000; // 4 second timeout 
+#pragma PERSISTENT(bdot_death_time_ms)
+FILE_STATIC int cosmos_commands_timer = 50;
+FILE_STATIC int cosmos_commands_time_ms = 50;
 
 //-------state machine-----------
 
@@ -133,6 +137,7 @@ eMTQState curr_state;
 // cntrl f DEBUG to see commented out sections 
 // check sc_mode 
 // add macros to ack pack 
+// check that initializing timer to time_ms is ok (under .5 seconds not working)
 //------------------------------------------------------------------
 
 int main(void)
@@ -150,6 +155,7 @@ int main(void)
     while (1)
     {
 		blink_LED(); 
+		send_cosmos_commands();
 		
         // mtq control loop
         state_table[curr_state]();
@@ -297,7 +303,17 @@ void start_bdot_death_timer(void)
 {
 	bdot_death_timer = timerPollInitializer(bdot_death_time_ms);
 }
-
+void start_cosmos_commands_timer(void)
+{
+    cosmos_commands_timer = timerPollInitializer(cosmos_commands_time_ms);
+}
+void blink_LED(void)
+{
+    if (checkTimer(LED_timer)){
+        P3OUT ^= BIT5; // toggle LED
+        start_LED_timer();
+    }
+}
 void manage_telemetry(void)
 {
     if (checkTimer(telem_timer))
@@ -342,14 +358,6 @@ void turn_off_coils(void)
 	set_pwm('z', 0); 
 }
 
-void blink_LED(void)
-{
-	if (checkTimer(LED_timer)){
-		P3OUT ^= BIT5; // toggle LED 
-		start_LED_timer();
-	}
-}
-
 // sets the PWM duty cycles for each of the outputs based 
 // on the A3903 driver chip data sheet description for chopping mode 
 void set_pwm(char axis, int pwm_percent)  
@@ -389,8 +397,6 @@ void set_pwm(char axis, int pwm_percent)
 		default: // unknown state 
 			break;
 	}
-	
-	send_COSMOS_commands_packet();
 }
 
 // outputs a (very shitty) discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
@@ -427,7 +433,8 @@ int is_bdot_still_alive(void)
 // can initialization 
 void can_init(void)
 {
-	canWrapInitWithFilter();
+	//canWrapInitWithFilter();
+    canWrapInit();
 	setCANPacketRxCallback(can_packet_rx_callback);
 }
 
@@ -522,7 +529,7 @@ void cosmos_init(void)
     telem_timer = timerPollInitializer(telem_time_ms);
 }
 
-void send_COSMOS_health_packet()
+void send_COSMOS_health_packet(void)
 {
     healthSeg.oms = OMS_Unknown;
     healthSeg.inttemp = asensorReadIntTempC();
@@ -531,7 +538,7 @@ void send_COSMOS_health_packet()
     debugInvokeStatusHandler(Entity_UART); // send uart bus status over backchannel
 }
 
-void send_COSMOS_commands_packet()
+void send_COSMOS_commands_packet(void)
 {
     cosmos_commandy_commands.last_bdot_x = bdot_command_x;
     cosmos_commandy_commands.last_bdot_y = bdot_command_y;
@@ -544,8 +551,14 @@ void send_COSMOS_commands_packet()
 	cosmos_commandy_commands.last_mtq_executed_z = last_pwm_percent_executed_z;
     bcbinSendPacket((uint8_t *) &cosmos_commandy_commands, sizeof(cosmos_commandy_commands));
 }
+void send_cosmos_commands(void)
+{
+    if(checkTimer(cosmos_commands_timer)){
+        send_COSMOS_commands_packet();
+    }
+}
 
-void send_COSMOS_dooty_packet()
+void send_COSMOS_dooty_packet(void)
 {
     cosmos_dooty.x1 = duty_x1;
     cosmos_dooty.x2 = duty_x2;
