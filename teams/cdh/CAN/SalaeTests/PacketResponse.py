@@ -9,6 +9,12 @@ state: int = 0
 flip_state: int = 0
 timer: float = 0
 
+tmpcapturepath = '/tmp/'
+if os.name == 'nt':
+    tmpcapturepath = 'C:\\tmp\\'
+
+currentmax: float = 0.
+
 times: List = []
 
 s = saleae.Saleae()
