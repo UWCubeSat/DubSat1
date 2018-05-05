@@ -210,20 +210,43 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decoderc_adcs_bdot_4(CANPacket *input, rc_adcs_bdot_4 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rc_adcs_bdot_4_mag_z_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_adcs_bdot_4_tumble = (uint8_t) (((fullData & ((uint64_t) 0x1 << 47)) >> 47));
+}
+
+void encoderc_adcs_bdot_4(rc_adcs_bdot_4 *input, CANPacket *output){
+    output -> id = 304677402;
+    output -> length = 3;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_4_mag_z_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_4_tumble))) & 0x1) << 47;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decoderc_adcs_bdot_3(CANPacket *input, rc_adcs_bdot_3 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_bdot_3_tumble = (uint8_t) (((fullData & ((uint64_t) 0x1 << 31)) >> 31));
-    output -> rc_adcs_bdot_3_mag_avg = (int32_t) (((fullData & ((uint64_t) 0xffffffff << 32)) >> 32));
+    output -> rc_adcs_bdot_3_mag_z_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_bdot_3_mag_z_max = (int16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> rc_adcs_bdot_3_mag_y_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_adcs_bdot_3_mag_y_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
 }
 
 void encoderc_adcs_bdot_3(rc_adcs_bdot_3 *input, CANPacket *output){
     output -> id = 304677401;
-    output -> length = 5;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_3_tumble))) & 0x1) << 31;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_3_mag_avg))) & 0xffffffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_3_mag_z_min))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_3_mag_z_max))) & 0xffff);
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_3_mag_y_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_3_mag_y_avg))) & 0xffff) << 32;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -233,16 +256,20 @@ void decoderc_adcs_bdot_2(CANPacket *input, rc_adcs_bdot_2 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_bdot_2_mag_min = (int32_t) (((fullData & ((uint64_t) 0xffffffff << 32)) >> 32));
-    output -> rc_adcs_bdot_2_mag_max = (int32_t) (((fullData & ((uint64_t) 0xffffffff))));
+    output -> rc_adcs_bdot_2_mag_y_min = (int16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> rc_adcs_bdot_2_mag_x_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_bdot_2_mag_x_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_adcs_bdot_2_mag_x_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
 }
 
 void encoderc_adcs_bdot_2(rc_adcs_bdot_2 *input, CANPacket *output){
     output -> id = 304677383;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_2_mag_min))) & 0xffffffff) << 32;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_2_mag_max))) & 0xffffffff);
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_2_mag_y_min))) & 0xffff);
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_2_mag_x_avg))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_2_mag_x_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_2_mag_x_max))) & 0xffff) << 32;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -399,29 +426,6 @@ void encodeestim_state(estim_state *input, CANPacket *output){
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> estim_state_in_sun))) & 0x1) << 62;
     fullPacketData |= (((uint64_t)((input -> estim_state_above_gs))) & 0x1) << 63;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
-void decoderc_eps_gen_11(CANPacket *input, rc_eps_gen_11 *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    uint32_t temprc_eps_gen_11_pnl_1_power_min = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
-    output -> rc_eps_gen_11_pnl_1_power_min = (*((float *)(&(temprc_eps_gen_11_pnl_1_power_min))));
-    uint32_t temprc_eps_gen_11_pnl_1_power_max = (uint32_t) ((fullData & ((uint64_t) 0xffffffff)));
-    output -> rc_eps_gen_11_pnl_1_power_max = (*((float *)(&(temprc_eps_gen_11_pnl_1_power_max))));
-}
-
-void encoderc_eps_gen_11(rc_eps_gen_11 *input, CANPacket *output){
-    output -> id = 304677402;
-    output -> length = 8;
-    uint64_t fullPacketData = 0x0000000000000000;
-    const float temprc_eps_gen_11_pnl_1_power_min = ((input -> rc_eps_gen_11_pnl_1_power_min));
-    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(temprc_eps_gen_11_pnl_1_power_min))))) << 32;
-    const float temprc_eps_gen_11_pnl_1_power_max = ((input -> rc_eps_gen_11_pnl_1_power_max));
-    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(temprc_eps_gen_11_pnl_1_power_max)))));
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);

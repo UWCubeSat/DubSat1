@@ -24,6 +24,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_RC_ADCS_BDOT_4 304677402
 #define CAN_ID_RC_ADCS_BDOT_3 304677401
 #define CAN_ID_RC_ADCS_BDOT_2 304677383
 #define CAN_ID_RC_ADCS_BDOT_1 304677382
@@ -34,7 +35,6 @@
 #define CAN_ID_ESTIM_MAG_UNIT_Y 302449334
 #define CAN_ID_ESTIM_MAG_UNIT_X 302449333
 #define CAN_ID_ESTIM_STATE 302449336
-#define CAN_ID_RC_EPS_GEN_11 304677402
 #define CAN_ID_RC_ADCS_MTQ_5 304677391
 #define CAN_ID_RC_ADCS_MTQ_4 304677390
 #define CAN_ID_RC_ADCS_MTQ_3 304677389
@@ -167,14 +167,23 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct rc_adcs_bdot_4 {
+    int16_t rc_adcs_bdot_4_mag_z_avg; // 1/73 nT
+    uint8_t rc_adcs_bdot_4_tumble; //  (No Units)
+} rc_adcs_bdot_4;
+
 typedef struct rc_adcs_bdot_3 {
-    uint8_t rc_adcs_bdot_3_tumble; //  (No Units)
-    int32_t rc_adcs_bdot_3_mag_avg; // nT
+    int16_t rc_adcs_bdot_3_mag_z_min; // 1/73 nT
+    int16_t rc_adcs_bdot_3_mag_z_max; // 1/73 nT
+    int16_t rc_adcs_bdot_3_mag_y_max; // 1/73 nT
+    int16_t rc_adcs_bdot_3_mag_y_avg; // 1/73 nT
 } rc_adcs_bdot_3;
 
 typedef struct rc_adcs_bdot_2 {
-    int32_t rc_adcs_bdot_2_mag_min; // nT
-    int32_t rc_adcs_bdot_2_mag_max; // nT
+    int16_t rc_adcs_bdot_2_mag_y_min; // 1/73 nT
+    int16_t rc_adcs_bdot_2_mag_x_avg; // 1/73 nT
+    int16_t rc_adcs_bdot_2_mag_x_min; // 1/73 nT
+    int16_t rc_adcs_bdot_2_mag_x_max; // 1/73 nT
 } rc_adcs_bdot_2;
 
 typedef struct rc_adcs_bdot_1 {
@@ -212,11 +221,6 @@ typedef struct estim_state {
     uint8_t estim_state_in_sun; //  (No Units)
     uint8_t estim_state_above_gs; //  (No Units)
 } estim_state;
-
-typedef struct rc_eps_gen_11 {
-    float rc_eps_gen_11_pnl_1_power_min; // V
-    float rc_eps_gen_11_pnl_1_power_max; // V
-} rc_eps_gen_11;
 
 typedef struct rc_adcs_mtq_5 {
     uint8_t rc_adcs_mtq_5_reset_counts; //  (No Units)
@@ -628,6 +632,9 @@ typedef struct grnd_epoch {
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
 
+void encoderc_adcs_bdot_4(rc_adcs_bdot_4 *input, CANPacket* output);
+void decoderc_adcs_bdot_4(CANPacket *input, rc_adcs_bdot_4 *output);
+
 void encoderc_adcs_bdot_3(rc_adcs_bdot_3 *input, CANPacket* output);
 void decoderc_adcs_bdot_3(CANPacket *input, rc_adcs_bdot_3 *output);
 
@@ -657,9 +664,6 @@ void decodeestim_mag_unit_x(CANPacket *input, estim_mag_unit_x *output);
 
 void encodeestim_state(estim_state *input, CANPacket* output);
 void decodeestim_state(CANPacket *input, estim_state *output);
-
-void encoderc_eps_gen_11(rc_eps_gen_11 *input, CANPacket* output);
-void decoderc_eps_gen_11(CANPacket *input, rc_eps_gen_11 *output);
 
 void encoderc_adcs_mtq_5(rc_adcs_mtq_5 *input, CANPacket* output);
 void decoderc_adcs_mtq_5(CANPacket *input, rc_adcs_mtq_5 *output);
