@@ -78,8 +78,12 @@ sun_sensor_voltage *sunSensorReadFiltered()
 
 SunSensorAngle *sunSensorReadAngle()
 {
+#ifdef __I2C_DONT_WRITE_SUN__
+    i2cMasterRead(hSensor, i2cBuff, RESPONSE_LENGTH_ANGULAR_POSITION);
+#else
     i2cMasterRegisterRead(hSensor, CMD_CODE_ANGULAR_POSITION, i2cBuff,
                           RESPONSE_LENGTH_ANGULAR_POSITION);
+#endif /* __I2C_DONT_WRITE_SUN__ */
     if (checkSize(RESPONSE_LENGTH_ANGULAR_POSITION))
     {
         return NULLP;
