@@ -40,7 +40,7 @@ void METInit(uint8_t _isDist)
 	    confirmed = 0;
 }
 
-uint32_t getMETPrimaryTime()
+uint32_t getMETPrimary()
 {
     timeStamp t = getMETTimestamp();
     uint32_t res = (uint32_t) RTCCNT1;
