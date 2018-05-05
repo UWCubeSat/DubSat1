@@ -108,8 +108,8 @@ FILE_STATIC int stabalize_time_ms = 100;
 FILE_STATIC int bdot_death_timer = 0;
 FILE_STATIC int bdot_death_time_ms = 4000; // 4 second timeout 
 #pragma PERSISTENT(bdot_death_time_ms)
-FILE_STATIC int LED_timer = 500;
-FILE_STATIC int LED_time_ms = 500;
+FILE_STATIC int LED_timer = -1;
+FILE_STATIC int LED_time_ms = 200;
 FILE_STATIC int cosmos_commands_timer = 100; 
 FILE_STATIC int cosmos_commands_time_ms = 100; 
 
@@ -150,7 +150,7 @@ int main(void)
     can_init();                    // CAN initialization
 
     restartMTQ(); // restart 
-	
+    LED_timer = timerPollInitializer(LED_time_ms);
     while (1)
     {
 		blink_LED(); 
