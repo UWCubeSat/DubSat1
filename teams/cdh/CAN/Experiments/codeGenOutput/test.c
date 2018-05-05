@@ -3,6 +3,26 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_4_packet = {0};
+	rc_adcs_bdot_4 rc_adcs_bdot_4_info = {0};
+	encoderc_adcs_bdot_4(&rc_adcs_bdot_4_info, &rc_adcs_bdot_4_packet);
+	canSendPacket(&rc_adcs_bdot_4_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_3_packet = {0};
+	rc_adcs_bdot_3 rc_adcs_bdot_3_info = {0};
+	encoderc_adcs_bdot_3(&rc_adcs_bdot_3_info, &rc_adcs_bdot_3_packet);
+	canSendPacket(&rc_adcs_bdot_3_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_2_packet = {0};
+	rc_adcs_bdot_2 rc_adcs_bdot_2_info = {0};
+	encoderc_adcs_bdot_2(&rc_adcs_bdot_2_info, &rc_adcs_bdot_2_packet);
+	canSendPacket(&rc_adcs_bdot_2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_1_packet = {0};
+	rc_adcs_bdot_1 rc_adcs_bdot_1_info = {0};
+	encoderc_adcs_bdot_1(&rc_adcs_bdot_1_info, &rc_adcs_bdot_1_packet);
+	canSendPacket(&rc_adcs_bdot_1_packet);
+
 	__delay_cycles(10000);	CANPacket rc_adcs_mtq_5_packet = {0};
 	rc_adcs_mtq_5 rc_adcs_mtq_5_info = {0};
 	encoderc_adcs_mtq_5(&rc_adcs_mtq_5_info, &rc_adcs_mtq_5_packet);

@@ -15,6 +15,10 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_RC_ADCS_BDOT_4 304677402
+#define CAN_ID_RC_ADCS_BDOT_3 304677401
+#define CAN_ID_RC_ADCS_BDOT_2 304677383
+#define CAN_ID_RC_ADCS_BDOT_1 304677382
 #define CAN_ID_RC_ADCS_MTQ_5 304677391
 #define CAN_ID_RC_ADCS_MTQ_4 304677390
 #define CAN_ID_RC_ADCS_MTQ_3 304677389
@@ -147,6 +151,32 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct rc_adcs_bdot_4 {
+    int16_t rc_adcs_bdot_4_mag_z_avg; // 1/73 nT
+    uint8_t rc_adcs_bdot_4_tumble; //  (No Units)
+} rc_adcs_bdot_4;
+
+typedef struct rc_adcs_bdot_3 {
+    int16_t rc_adcs_bdot_3_mag_z_min; // 1/73 nT
+    int16_t rc_adcs_bdot_3_mag_z_max; // 1/73 nT
+    int16_t rc_adcs_bdot_3_mag_y_max; // 1/73 nT
+    int16_t rc_adcs_bdot_3_mag_y_avg; // 1/73 nT
+} rc_adcs_bdot_3;
+
+typedef struct rc_adcs_bdot_2 {
+    int16_t rc_adcs_bdot_2_mag_y_min; // 1/73 nT
+    int16_t rc_adcs_bdot_2_mag_x_avg; // 1/73 nT
+    int16_t rc_adcs_bdot_2_mag_x_min; // 1/73 nT
+    int16_t rc_adcs_bdot_2_mag_x_max; // 1/73 nT
+} rc_adcs_bdot_2;
+
+typedef struct rc_adcs_bdot_1 {
+    uint16_t rc_adcs_bdot_1_temp_min; // dK
+    uint16_t rc_adcs_bdot_1_temp_max; // dK
+    uint16_t rc_adcs_bdot_1_temp_avg; // dK
+    uint16_t rc_adcs_bdot_1_sysrstiv; //  (No Units)
+} rc_adcs_bdot_1;
+
 typedef struct rc_adcs_mtq_5 {
     uint8_t rc_adcs_mtq_5_reset_counts; //  (No Units)
     uint8_t rc_adcs_mtq_5_fsw_ignore; //  (No Units)
@@ -555,6 +585,18 @@ typedef struct sync_1 {
 typedef struct msp_temp {
     uint16_t msp_temp_temp; // dK
 } msp_temp;
+
+void encoderc_adcs_bdot_4(rc_adcs_bdot_4 *input, CANPacket* output);
+void decoderc_adcs_bdot_4(CANPacket *input, rc_adcs_bdot_4 *output);
+
+void encoderc_adcs_bdot_3(rc_adcs_bdot_3 *input, CANPacket* output);
+void decoderc_adcs_bdot_3(CANPacket *input, rc_adcs_bdot_3 *output);
+
+void encoderc_adcs_bdot_2(rc_adcs_bdot_2 *input, CANPacket* output);
+void decoderc_adcs_bdot_2(CANPacket *input, rc_adcs_bdot_2 *output);
+
+void encoderc_adcs_bdot_1(rc_adcs_bdot_1 *input, CANPacket* output);
+void decoderc_adcs_bdot_1(CANPacket *input, rc_adcs_bdot_1 *output);
 
 void encoderc_adcs_mtq_5(rc_adcs_mtq_5 *input, CANPacket* output);
 void decoderc_adcs_mtq_5(CANPacket *input, rc_adcs_mtq_5 *output);
