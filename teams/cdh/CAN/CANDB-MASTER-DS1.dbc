@@ -89,10 +89,6 @@ BO_ 2449932984 estim_state: 1 Vector__XXX
  SG_ estim_state_in_sun : 1|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ estim_state_above_gs : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 2452161050 rc_eps_gen_11: 8 Vector__XXX
- SG_ rc_eps_gen_11_pnl_1_power_min : 0|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
- SG_ rc_eps_gen_11_pnl_1_power_max : 32|32@1- (1,0) [-3.4E+038|3.4E+038] "V" Vector__XXX
-
 BO_ 2452161039 rc_adcs_mtq_5: 2 Vector__XXX
  SG_ rc_adcs_mtq_5_reset_counts : 8|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ rc_adcs_mtq_5_fsw_ignore : 0|8@1+ (1,0) [0|0] "" Vector__XXX
@@ -486,8 +482,6 @@ SIG_VALTYPE_ 2449932978 estim_sun_unit_x_val : 2;
 SIG_VALTYPE_ 2449932983 estim_mag_unit_z_val : 2;
 SIG_VALTYPE_ 2449932982 estim_mag_unit_y_val : 2;
 SIG_VALTYPE_ 2449932981 estim_mag_unit_x_val : 2;
-SIG_VALTYPE_ 2452161050 rc_eps_gen_11_pnl_1_power_min : 1;
-SIG_VALTYPE_ 2452161050 rc_eps_gen_11_pnl_1_power_max : 1;
 SIG_VALTYPE_ 2457272392 tle_5_mnm : 2;
 SIG_VALTYPE_ 2457272391 tle_4_aop : 1;
 SIG_VALTYPE_ 2457272391 tle_4_raan : 1;
