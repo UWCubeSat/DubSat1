@@ -156,7 +156,7 @@ FILE_STATIC void genMonitorPanels()
     addData_float(panel2Temp, asensorGetLastValueV(hTempSensors[1]));
 
     pdata = pcvsensorRead(panels[2].hpcvsensor, Read_CurrentA | Read_BusV | Read_PowerW);
-    addData_float(panel3Voltage, pdata->busVoltageV);
+    addData_uint16_t(panel3Voltage, pdata->busVoltageV);
     addData_float(panel3Current, pdata->calcdCurrentA);
     addData_float(panel3Pwr, pdata->calcdPowerW);
     addData_float(panel3Temp, asensorGetLastValueV(hTempSensors[2]));
