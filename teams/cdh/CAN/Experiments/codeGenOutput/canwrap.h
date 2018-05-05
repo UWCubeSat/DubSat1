@@ -12,13 +12,29 @@
 
 #define PARAM_ADCS_STATUS_VELOCITY_RPM 0x4201;
 
+// the initial value assigned to the coils before commands are received
+#define ELOISE_UNKNOWN -128 
+// what phase the mtq is in (needed by fsw and bdot)
+#define MEASUREMENT_PHASE CAN_ENUM_BOOL_FALSE 
+#define ACTUATION_PHASE CAN_ENUM_BOOL_TRUE
+#define FROM_FSW_IS_ZERO 0
+#define FROM_BDOT_IS_ONE 1
+#define FROM_FSW FROM_FSW_IS_ZERO
+#define FROM_BDOT FROM_BDOT_IS_ONE
 
 // BEGIN GENERATOR MACROS
 
-#define CAN_ID_RC_ADCS_BDOT_4 304677402
 #define CAN_ID_RC_ADCS_BDOT_3 304677401
 #define CAN_ID_RC_ADCS_BDOT_2 304677383
 #define CAN_ID_RC_ADCS_BDOT_1 304677382
+#define CAN_ID_ESTIM_SUN_UNIT_Z 302449332
+#define CAN_ID_ESTIM_SUN_UNIT_Y 302449331
+#define CAN_ID_ESTIM_SUN_UNIT_X 302449330
+#define CAN_ID_ESTIM_MAG_UNIT_Z 302449335
+#define CAN_ID_ESTIM_MAG_UNIT_Y 302449334
+#define CAN_ID_ESTIM_MAG_UNIT_X 302449333
+#define CAN_ID_ESTIM_STATE 302449336
+#define CAN_ID_RC_EPS_GEN_11 304677402
 #define CAN_ID_RC_ADCS_MTQ_5 304677391
 #define CAN_ID_RC_ADCS_MTQ_4 304677390
 #define CAN_ID_RC_ADCS_MTQ_3 304677389
@@ -46,7 +62,6 @@
 #define CAN_ID_CMD_PPT_TIME_UPD 302252293
 #define CAN_ID_CMD_PPT_HALT 285475076
 #define CAN_ID_PPT_FIRING_RESULT 304677104
-#define CAN_ID_TLE_6 309788745
 #define CAN_ID_TLE_5 309788744
 #define CAN_ID_TLE_4 309788743
 #define CAN_ID_TLE_3 309788742
@@ -84,6 +99,7 @@
 #define CAN_ID_SYNC_2 65554
 #define CAN_ID_SYNC_1 65553
 #define CAN_ID_MSP_TEMP 36241427
+#define CAN_ID_GRND_EPOCH 302449337
 
 #define CAN_ENUM_NBOOL_NULL 2
 #define CAN_ENUM_NBOOL_TRUE 1
@@ -94,10 +110,10 @@
 #define CAN_ENUM_FIRE_STATE_FIRESUCCESSFUL 0
 #define CAN_ENUM_UV_STATE_UNDERVOLTAGE 1
 #define CAN_ENUM_UV_STATE_NORMAL 0
-#define CAN_ENUM_MODE_NOTTUMBLINGCHARLIE 3
-#define CAN_ENUM_MODE_NOTTUMBLINGBOB 2
-#define CAN_ENUM_MODE_NOTTUMBLINGALICE 1
-#define CAN_ENUM_MODE_TUMBLING 0
+#define CAN_ENUM_MODE_LOWPOWER 4
+#define CAN_ENUM_MODE_POINTING 3
+#define CAN_ENUM_MODE_BDOT 1
+#define CAN_ENUM_MODE_FSWOFF 0
 #define CAN_ENUM_PWR_DOMAIN_UNK 8
 #define CAN_ENUM_PWR_DOMAIN_COM1 7
 #define CAN_ENUM_PWR_DOMAIN_COM2 6
@@ -151,23 +167,14 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
-typedef struct rc_adcs_bdot_4 {
-    int16_t rc_adcs_bdot_4_mag_z_avg; // 1/73 nT
-    uint8_t rc_adcs_bdot_4_tumble; //  (No Units)
-} rc_adcs_bdot_4;
-
 typedef struct rc_adcs_bdot_3 {
-    int16_t rc_adcs_bdot_3_mag_z_min; // 1/73 nT
-    int16_t rc_adcs_bdot_3_mag_z_max; // 1/73 nT
-    int16_t rc_adcs_bdot_3_mag_y_max; // 1/73 nT
-    int16_t rc_adcs_bdot_3_mag_y_avg; // 1/73 nT
+    uint8_t rc_adcs_bdot_3_tumble; //  (No Units)
+    int32_t rc_adcs_bdot_3_mag_avg; // nT
 } rc_adcs_bdot_3;
 
 typedef struct rc_adcs_bdot_2 {
-    int16_t rc_adcs_bdot_2_mag_y_min; // 1/73 nT
-    int16_t rc_adcs_bdot_2_mag_x_avg; // 1/73 nT
-    int16_t rc_adcs_bdot_2_mag_x_min; // 1/73 nT
-    int16_t rc_adcs_bdot_2_mag_x_max; // 1/73 nT
+    int32_t rc_adcs_bdot_2_mag_min; // nT
+    int32_t rc_adcs_bdot_2_mag_max; // nT
 } rc_adcs_bdot_2;
 
 typedef struct rc_adcs_bdot_1 {
@@ -176,6 +183,40 @@ typedef struct rc_adcs_bdot_1 {
     uint16_t rc_adcs_bdot_1_temp_avg; // dK
     uint16_t rc_adcs_bdot_1_sysrstiv; //  (No Units)
 } rc_adcs_bdot_1;
+
+typedef struct estim_sun_unit_z {
+    double estim_sun_unit_z_val; //  (No Units)
+} estim_sun_unit_z;
+
+typedef struct estim_sun_unit_y {
+    double estim_sun_unit_y_val; //  (No Units)
+} estim_sun_unit_y;
+
+typedef struct estim_sun_unit_x {
+    double estim_sun_unit_x_val; //  (No Units)
+} estim_sun_unit_x;
+
+typedef struct estim_mag_unit_z {
+    double estim_mag_unit_z_val; //  (No Units)
+} estim_mag_unit_z;
+
+typedef struct estim_mag_unit_y {
+    double estim_mag_unit_y_val; //  (No Units)
+} estim_mag_unit_y;
+
+typedef struct estim_mag_unit_x {
+    double estim_mag_unit_x_val; //  (No Units)
+} estim_mag_unit_x;
+
+typedef struct estim_state {
+    uint8_t estim_state_in_sun; //  (No Units)
+    uint8_t estim_state_above_gs; //  (No Units)
+} estim_state;
+
+typedef struct rc_eps_gen_11 {
+    float rc_eps_gen_11_pnl_1_power_min; // V
+    float rc_eps_gen_11_pnl_1_power_max; // V
+} rc_eps_gen_11;
 
 typedef struct rc_adcs_mtq_5 {
     uint8_t rc_adcs_mtq_5_reset_counts; //  (No Units)
@@ -376,21 +417,17 @@ typedef struct ppt_firing_result {
     uint8_t ppt_firing_result_code; //  (No Units)
 } ppt_firing_result;
 
-typedef struct tle_6 {
-    double tle_6_mnm; //  (No Units)
-} tle_6;
-
 typedef struct tle_5 {
-    float tle_5_mna; //  (No Units)
+    double tle_5_mnm; //  (No Units)
 } tle_5;
 
 typedef struct tle_4 {
     float tle_4_aop; //  (No Units)
-    float tle_4_ecc; //  (No Units)
+    float tle_4_raan; //  (No Units)
 } tle_4;
 
 typedef struct tle_3 {
-    float tle_3_raan; //  (No Units)
+    float tle_3_ecc; //  (No Units)
     float tle_3_inc; //  (No Units)
 } tle_3;
 
@@ -399,8 +436,8 @@ typedef struct tle_2 {
 } tle_2;
 
 typedef struct tle_1 {
+    float tle_1_mna; //  (No Units)
     float tle_1_bstar; //  (No Units)
-    uint8_t tle_1_year; //  (No Units)
 } tle_1;
 
 typedef struct eps_pd_undervoltage {
@@ -586,8 +623,10 @@ typedef struct msp_temp {
     uint16_t msp_temp_temp; // dK
 } msp_temp;
 
-void encoderc_adcs_bdot_4(rc_adcs_bdot_4 *input, CANPacket* output);
-void decoderc_adcs_bdot_4(CANPacket *input, rc_adcs_bdot_4 *output);
+typedef struct grnd_epoch {
+    uint8_t grnd_epoch_val_overflow; //  (No Units)
+    uint32_t grnd_epoch_val; // 2^-8 s
+} grnd_epoch;
 
 void encoderc_adcs_bdot_3(rc_adcs_bdot_3 *input, CANPacket* output);
 void decoderc_adcs_bdot_3(CANPacket *input, rc_adcs_bdot_3 *output);
@@ -597,6 +636,30 @@ void decoderc_adcs_bdot_2(CANPacket *input, rc_adcs_bdot_2 *output);
 
 void encoderc_adcs_bdot_1(rc_adcs_bdot_1 *input, CANPacket* output);
 void decoderc_adcs_bdot_1(CANPacket *input, rc_adcs_bdot_1 *output);
+
+void encodeestim_sun_unit_z(estim_sun_unit_z *input, CANPacket* output);
+void decodeestim_sun_unit_z(CANPacket *input, estim_sun_unit_z *output);
+
+void encodeestim_sun_unit_y(estim_sun_unit_y *input, CANPacket* output);
+void decodeestim_sun_unit_y(CANPacket *input, estim_sun_unit_y *output);
+
+void encodeestim_sun_unit_x(estim_sun_unit_x *input, CANPacket* output);
+void decodeestim_sun_unit_x(CANPacket *input, estim_sun_unit_x *output);
+
+void encodeestim_mag_unit_z(estim_mag_unit_z *input, CANPacket* output);
+void decodeestim_mag_unit_z(CANPacket *input, estim_mag_unit_z *output);
+
+void encodeestim_mag_unit_y(estim_mag_unit_y *input, CANPacket* output);
+void decodeestim_mag_unit_y(CANPacket *input, estim_mag_unit_y *output);
+
+void encodeestim_mag_unit_x(estim_mag_unit_x *input, CANPacket* output);
+void decodeestim_mag_unit_x(CANPacket *input, estim_mag_unit_x *output);
+
+void encodeestim_state(estim_state *input, CANPacket* output);
+void decodeestim_state(CANPacket *input, estim_state *output);
+
+void encoderc_eps_gen_11(rc_eps_gen_11 *input, CANPacket* output);
+void decoderc_eps_gen_11(CANPacket *input, rc_eps_gen_11 *output);
 
 void encoderc_adcs_mtq_5(rc_adcs_mtq_5 *input, CANPacket* output);
 void decoderc_adcs_mtq_5(CANPacket *input, rc_adcs_mtq_5 *output);
@@ -678,9 +741,6 @@ void decodecmd_ppt_halt(CANPacket *input, cmd_ppt_halt *output);
 
 void encodeppt_firing_result(ppt_firing_result *input, CANPacket* output);
 void decodeppt_firing_result(CANPacket *input, ppt_firing_result *output);
-
-void encodetle_6(tle_6 *input, CANPacket* output);
-void decodetle_6(CANPacket *input, tle_6 *output);
 
 void encodetle_5(tle_5 *input, CANPacket* output);
 void decodetle_5(CANPacket *input, tle_5 *output);
@@ -792,5 +852,8 @@ void decodesync_1(CANPacket *input, sync_1 *output);
 
 void encodemsp_temp(msp_temp *input, CANPacket* output);
 void decodemsp_temp(CANPacket *input, msp_temp *output);
+
+void encodegrnd_epoch(grnd_epoch *input, CANPacket* output);
+void decodegrnd_epoch(CANPacket *input, grnd_epoch *output);
 
 #endif /* DSBASE_INTERFACES_CANWRAP_H_ */

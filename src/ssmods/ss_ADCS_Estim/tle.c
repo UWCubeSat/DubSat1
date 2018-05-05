@@ -5,107 +5,85 @@
  *      Author: djdup
  */
 
-#define MAKE_FLAG(N) (((uint8_t) 1) << N)
-#define TLE_BIT_1 MAKE_FLAG(0)
-#define TLE_BIT_2 MAKE_FLAG(1)
-#define TLE_BIT_3 MAKE_FLAG(2)
-#define TLE_BIT_4 MAKE_FLAG(3)
-#define TLE_BIT_5 MAKE_FLAG(4)
-#define TLE_BIT_6 MAKE_FLAG(5)
-
 #include <string.h>
+#include <math.h>
 
 #include "tle.h"
 #include "interfaces/canwrap.h"
 
-FILE_STATIC const uint8_t completeSet = TLE_BIT_1
-                                      | TLE_BIT_2
-                                      | TLE_BIT_3
-                                      | TLE_BIT_4
-                                      | TLE_BIT_5
-                                      | TLE_BIT_6;
+FILE_STATIC const uint32_t completeSet = CAN_ID_TLE_1
+                                       | CAN_ID_TLE_2
+                                       | CAN_ID_TLE_3
+                                       | CAN_ID_TLE_4
+                                       | CAN_ID_TLE_5;
 
 void tleInit(struct tle *tle, BOOL isPrepopulated)
 {
     if (isPrepopulated)
     {
-        tle->_present1 = completeSet;
-        tle->_present2 = completeSet;
+        tle->_present = completeSet;
+        tle->_id = signbit(tle->tle1.tle_1_mna);
     }
     else
     {
-        tle->_present1 = 0;
-        tle->_present2 = 0;
+        tle->_present = 0;
     }
-}
-
-FILE_STATIC void updateSegment(struct tle *tle, uint8_t bit, uint8_t *storedTLE,
-                               uint8_t *canTLE, uint8_t size)
-{
-    // check if this TLE segment has been seen already
-    if (tle->_present1 | bit)
-    {
-        // check if this TLE segment matches the last one recorded
-        if (memcmp(storedTLE, canTLE, size) == 0)
-        {
-            // if they match, indicate the second pass and return
-            tle->_present2 |= bit;
-            return;
-        }
-        else
-        {
-            // if they don't match, this is a brand new TLE. Reset the entire
-            // TLE state and allow the new segment to be copied in
-            tle->_present1 = 0;
-            tle->_present2 = 0;
-        }
-    }
-
-    // mark this segment as present and save the data
-    tle->_present1 |= bit;
-    memcpy(storedTLE, canTLE, size);
 }
 
 void tleUpdate(CANPacket *p, struct tle *tle)
 {
-    tle_1 tle1;
-    tle_2 tle2;
-    tle_3 tle3;
-    tle_4 tle4;
-    tle_5 tle5;
-    tle_6 tle6;
+    /*
+     * tleId is a boolean that helps identify new and old TLEs. The ID should
+     * flip on each new TLE sent. For some packets the ID is explicit. In others
+     * the TLE is encoded as the sign bit of an unsigned floating point number.
+     * In this second case `signbit` is used to extract the ID.
+     */
+    uint8_t tleId;
 
     switch (p->id)
     {
     case CAN_ID_TLE_1:
-        decodetle_1(p, &tle1);
-        updateSegment(tle, TLE_BIT_1, (uint8_t *) &tle->tle1, (uint8_t *) &tle1, sizeof(tle1));
+        decodetle_1(p, &tle->tle1);
+        tleId = signbit(tle->tle1.tle_1_mna);
+        tle->tle1.tle_1_mna = fabsf(tle->tle1.tle_1_mna);
         break;
     case CAN_ID_TLE_2:
-        decodetle_2(p, &tle2);
-        updateSegment(tle, TLE_BIT_2, (uint8_t *) &tle->tle2, (uint8_t *) &tle2, sizeof(tle2));
+        decodetle_2(p, &tle->tle2);
+        tleId = signbit(tle->tle2.tle_2_day);
+        tle->tle2.tle_2_day = fabs(tle->tle2.tle_2_day);
         break;
     case CAN_ID_TLE_3:
-        decodetle_3(p, &tle3);
-        updateSegment(tle, TLE_BIT_3, (uint8_t *) &tle->tle3, (uint8_t *) &tle3, sizeof(tle3));
+        decodetle_3(p, &tle->tle3);
+        tleId = signbit(tle->tle3.tle_3_ecc);
+        tle->tle3.tle_3_ecc = fabsf(tle->tle3.tle_3_ecc);
         break;
     case CAN_ID_TLE_4:
-        decodetle_4(p, &tle4);
-        updateSegment(tle, TLE_BIT_4, (uint8_t *) &tle->tle4, (uint8_t *) &tle4, sizeof(tle4));
+        decodetle_4(p, &tle->tle4);
+        tleId = signbit(tle->tle4.tle_4_aop);
+        tle->tle4.tle_4_aop = fabsf(tle->tle4.tle_4_aop);
         break;
     case CAN_ID_TLE_5:
-        decodetle_5(p, &tle5);
-        updateSegment(tle, TLE_BIT_5, (uint8_t *) &tle->tle5, (uint8_t *) &tle5, sizeof(tle5));
+        decodetle_5(p, &tle->tle5);
+        tleId = signbit(tle->tle5.tle_5_mnm);
+        tle->tle5.tle_5_mnm = fabs(tle->tle5.tle_5_mnm);
         break;
-    case CAN_ID_TLE_6:
-        decodetle_6(p, &tle6);
-        updateSegment(tle, TLE_BIT_6, (uint8_t *) &tle->tle6, (uint8_t *) &tle6, sizeof(tle6));
-        break;
+    default:
+        // ignore non-TLE CAN packets
+        return;
     }
+
+    if (tle->_id != tleId)
+    {
+        // this is the start of a new TLE. Reset the TLE state.
+        tle->_present = 0;
+    }
+
+    // mark this segment as present
+    tle->_present |= p->id;
+    tle->_id = tleId;
 }
 
 BOOL tleIsComplete(struct tle *tle)
 {
-    // only recognize it as complete if each segment has been seen twice
-    return tle->_present1 == completeSet && tle->_present2 == completeSet;
+    return tle->_present == completeSet;
 }

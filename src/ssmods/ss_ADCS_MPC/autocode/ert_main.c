@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'MSP_FSW'.
  *
- * Model version                  : 1.357
+ * Model version                  : 1.369
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Wed Apr 25 18:16:06 2018
+ * C/C++ source code generated on : Tue May  1 19:12:57 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -38,102 +38,29 @@
 void rt_OneStep(void);
 void rt_OneStep(void)
 {
-  static boolean_T OverrunFlags[3] = { 0, 0, 0 };
-
-  static boolean_T eventFlags[3] = { 0, 0, 0 };/* Model has 3 rates */
-
-  static int_T taskCounter[3] = { 0, 0, 0 };
-
-  int_T i;
+  static boolean_T OverrunFlag = false;
 
   /* Disable interrupts here */
 
-  /* Check base rate for overrun */
-  if (OverrunFlags[0]) {
+  /* Check for overrun */
+  if (OverrunFlag) {
     rtmSetErrorStatus(rtM, "Overrun");
     return;
   }
 
-  OverrunFlags[0] = true;
+  OverrunFlag = true;
 
   /* Save FPU context here (if necessary) */
   /* Re-enable timer or interrupt here */
+  /* Set model inputs here */
 
-  /*
-   * For a bare-board target (i.e., no operating system), the
-   * following code checks whether any subrate overruns,
-   * and also sets the rates that need to run this time step.
-   */
-  for (i = 1; i < 3; i++) {
-    if (taskCounter[i] == 0) {
-      if (eventFlags[i]) {
-        OverrunFlags[0] = false;
-        OverrunFlags[i] = true;
-
-        /* Sampling too fast */
-        rtmSetErrorStatus(rtM, "Overrun");
-        return;
-      }
-
-      eventFlags[i] = true;
-    }
-  }
-
-  taskCounter[1]++;
-  if (taskCounter[1] == 25) {
-    taskCounter[1]= 0;
-  }
-
-  taskCounter[2]++;
-  if (taskCounter[2] == 50) {
-    taskCounter[2]= 0;
-  }
-
-  /* Set model inputs associated with base rate here */
-
-  /* Step the model for base rate */
-  MSP_FSW_step0();
+  /* Step the model */
+  MSP_FSW_step();
 
   /* Get model outputs here */
 
-  /* Indicate task for base rate complete */
-  OverrunFlags[0] = false;
-
-  /* Step the model for any subrate */
-  for (i = 1; i < 3; i++) {
-    /* If task "i" is running, don't run any lower priority task */
-    if (OverrunFlags[i]) {
-      return;
-    }
-
-    if (eventFlags[i]) {
-      OverrunFlags[i] = true;
-
-      /* Set model inputs associated with subrates here */
-
-      /* Step the model for subrate "i" */
-      switch (i) {
-       case 1 :
-        MSP_FSW_step1();
-
-        /* Get model outputs here */
-        break;
-
-       case 2 :
-        MSP_FSW_step2();
-
-        /* Get model outputs here */
-        break;
-
-       default :
-        break;
-      }
-
-      /* Indicate task complete for sample time "i" */
-      OverrunFlags[i] = false;
-      eventFlags[i] = false;
-    }
-  }
+  /* Indicate task complete */
+  OverrunFlag = false;
 
   /* Disable interrupts here */
   /* Restore FPU context here (if necessary) */
@@ -156,7 +83,7 @@ int_T automain(int_T argc, const char *argv[])
   MSP_FSW_initialize();
 
   /* Attach rt_OneStep to a timer or interrupt service routine with
-   * period 0.004 seconds (the model's base sample time) here.  The
+   * period 0.1 seconds (the model's base sample time) here.  The
    * call syntax for rt_OneStep is
    *
    *  rt_OneStep();

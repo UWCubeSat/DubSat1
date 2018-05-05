@@ -3,11 +3,6 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
-	__delay_cycles(10000);	CANPacket rc_adcs_bdot_4_packet = {0};
-	rc_adcs_bdot_4 rc_adcs_bdot_4_info = {0};
-	encoderc_adcs_bdot_4(&rc_adcs_bdot_4_info, &rc_adcs_bdot_4_packet);
-	canSendPacket(&rc_adcs_bdot_4_packet);
-
 	__delay_cycles(10000);	CANPacket rc_adcs_bdot_3_packet = {0};
 	rc_adcs_bdot_3 rc_adcs_bdot_3_info = {0};
 	encoderc_adcs_bdot_3(&rc_adcs_bdot_3_info, &rc_adcs_bdot_3_packet);
@@ -22,6 +17,46 @@ void canBlast() {
 	rc_adcs_bdot_1 rc_adcs_bdot_1_info = {0};
 	encoderc_adcs_bdot_1(&rc_adcs_bdot_1_info, &rc_adcs_bdot_1_packet);
 	canSendPacket(&rc_adcs_bdot_1_packet);
+
+	__delay_cycles(10000);	CANPacket estim_sun_unit_z_packet = {0};
+	estim_sun_unit_z estim_sun_unit_z_info = {0};
+	encodeestim_sun_unit_z(&estim_sun_unit_z_info, &estim_sun_unit_z_packet);
+	canSendPacket(&estim_sun_unit_z_packet);
+
+	__delay_cycles(10000);	CANPacket estim_sun_unit_y_packet = {0};
+	estim_sun_unit_y estim_sun_unit_y_info = {0};
+	encodeestim_sun_unit_y(&estim_sun_unit_y_info, &estim_sun_unit_y_packet);
+	canSendPacket(&estim_sun_unit_y_packet);
+
+	__delay_cycles(10000);	CANPacket estim_sun_unit_x_packet = {0};
+	estim_sun_unit_x estim_sun_unit_x_info = {0};
+	encodeestim_sun_unit_x(&estim_sun_unit_x_info, &estim_sun_unit_x_packet);
+	canSendPacket(&estim_sun_unit_x_packet);
+
+	__delay_cycles(10000);	CANPacket estim_mag_unit_z_packet = {0};
+	estim_mag_unit_z estim_mag_unit_z_info = {0};
+	encodeestim_mag_unit_z(&estim_mag_unit_z_info, &estim_mag_unit_z_packet);
+	canSendPacket(&estim_mag_unit_z_packet);
+
+	__delay_cycles(10000);	CANPacket estim_mag_unit_y_packet = {0};
+	estim_mag_unit_y estim_mag_unit_y_info = {0};
+	encodeestim_mag_unit_y(&estim_mag_unit_y_info, &estim_mag_unit_y_packet);
+	canSendPacket(&estim_mag_unit_y_packet);
+
+	__delay_cycles(10000);	CANPacket estim_mag_unit_x_packet = {0};
+	estim_mag_unit_x estim_mag_unit_x_info = {0};
+	encodeestim_mag_unit_x(&estim_mag_unit_x_info, &estim_mag_unit_x_packet);
+	canSendPacket(&estim_mag_unit_x_packet);
+
+	__delay_cycles(10000);	CANPacket estim_state_packet = {0};
+	estim_state estim_state_info = {0};
+	encodeestim_state(&estim_state_info, &estim_state_packet);
+	canSendPacket(&estim_state_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_11_packet = {0};
+	rc_eps_gen_11 rc_eps_gen_11_info = {0};
+	encoderc_eps_gen_11(&rc_eps_gen_11_info, &rc_eps_gen_11_packet);
+	canSendPacket(&rc_eps_gen_11_packet);
 
 	__delay_cycles(10000);	CANPacket rc_adcs_mtq_5_packet = {0};
 	rc_adcs_mtq_5 rc_adcs_mtq_5_info = {0};
@@ -157,11 +192,6 @@ void canBlast() {
 	ppt_firing_result ppt_firing_result_info = {0};
 	encodeppt_firing_result(&ppt_firing_result_info, &ppt_firing_result_packet);
 	canSendPacket(&ppt_firing_result_packet);
-
-	__delay_cycles(10000);	CANPacket tle_6_packet = {0};
-	tle_6 tle_6_info = {0};
-	encodetle_6(&tle_6_info, &tle_6_packet);
-	canSendPacket(&tle_6_packet);
 
 	__delay_cycles(10000);	CANPacket tle_5_packet = {0};
 	tle_5 tle_5_info = {0};
@@ -347,6 +377,11 @@ void canBlast() {
 	msp_temp msp_temp_info = {0};
 	encodemsp_temp(&msp_temp_info, &msp_temp_packet);
 	canSendPacket(&msp_temp_packet);
+
+	__delay_cycles(10000);	CANPacket grnd_epoch_packet = {0};
+	grnd_epoch grnd_epoch_info = {0};
+	encodegrnd_epoch(&grnd_epoch_info, &grnd_epoch_packet);
+	canSendPacket(&grnd_epoch_packet);
 
 } 
 while (1) { 

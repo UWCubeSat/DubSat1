@@ -35,6 +35,7 @@ FILE_STATIC uint8_t send_dipole = 0;
 FILE_STATIC int telem_timer;
 FILE_STATIC uint16_t telem_timer_ms = 200; // 1 s
 
+FILE_STATIC int update_rt = 0;
 
 FILE_STATIC int rtOneStep_timer;
 FILE_STATIC uint32_t rtOneStep_us = 100000;
@@ -104,8 +105,23 @@ int main(void)
             sendTelemetry();
             start_telem_timer();
         }
+        if(update_rt)
+        {
+//            P3DIR ^= BIT5;
+            getMagnetometerData();
+            rtU.B_body_in_T[0] = magData->convertedX;
+            rtU.B_body_in_T[1] = magData->convertedY;
+            rtU.B_body_in_T[2] = magData->convertedZ;
+            rtU.B_meas_valid = normalOperation;
+            rtU.MT_on = 0;
+            rt_OneStep();
+            updateMtqInfo();
+            sendTelemetry();
+            update_rt = 0;
+        }
         if(send_dipole && mtq_state == mag_valid)
         {
+
             sendDipolePacket(mtqInfo.xDipole, mtqInfo.yDipole, mtqInfo.zDipole);
             lastKnownState.xDipole = mtqInfo.xDipole;
             lastKnownState.yDipole = mtqInfo.yDipole;
@@ -122,42 +138,10 @@ int main(void)
 }
 
 
-//        if(checkTimer(telem_timer))
-//        {
-//            sendTelemetry();
-//            start_telem_timer();
-//        }
-
-//        switch (mag_data)
-//        {
-//        case mag_invalid:
-//            if(mtq_state == MTQ_MEASUREMENT_PHASE)
-//            {
-//                mag_data = mag_valid;
-//                lastKnownState.xDipole = 0;
-//                lastKnownState.yDipole = 0;
-//                lastKnownState.zDipole = 0;
-//                sendMtqInfoSegment();
-//
-//            }
-//            break;
-//        case mag_valid:
-//            if(mtq_state == MTQ_ACTUATION_PHASE)
-//            {
-//                lastKnownState.xDipole = mtqInfo.xDipole;
-//                lastKnownState.yDipole = mtqInfo.yDipole;
-//                lastKnownState.zDipole = mtqInfo.zDipole;
-//                sendMtqInfoSegment();
-//                mag_data = mag_invalid;
-//            }
-//            break;
-//        }
-
-
 void initial_setup()
 {
     P3DIR |= BIT5;
-    P3OUT |= BIT5;
+//    P3OUT |= BIT5;
 
     canWrapInit();
     setCANPacketRxCallback(receive_packet);
@@ -184,7 +168,7 @@ void start_telem_timer()
 
 void getMagnetometerData()
 {
-    magData = magReadXYZData(magNum, ConvertToTeslas);
+    magData = testing_magReadXYZData(magNum, ConvertToTeslas);
 }
 
 void performSelfTest()
@@ -201,19 +185,7 @@ void performNormalOp()
 
 void simulink_compute()
 {
-    P3DIR |= BIT5;
-    getMagnetometerData();
-    rtU.B_body_in_T[0] = magData->convertedX;
-    rtU.B_body_in_T[1] = magData->convertedY;
-    rtU.B_body_in_T[2] = magData->convertedZ;
-    rtU.B_meas_valid = normalOperation;
-    rtU.MT_on = 0;
-    rt_OneStep();
-    updateMtqInfo();
-//    lastKnownState.xDipole = mtqInfo.xDipole;
-//    lastKnownState.yDipole = mtqInfo.yDipole;
-//    lastKnown_State.zDipole = mtqInfo.zDipole;
-//    sendMtqInfoSegment();
+    update_rt = 1;
     send_dipole = 1;
 }
 
@@ -222,7 +194,7 @@ void sendTelemetry()
 {
     sendHealthSegment();
     sendMagReadingSegment();
-//    sendMtqInfoSegment();
+ //   sendMtqInfoSegment();
     sendSimulinkSegment();
 }
 
@@ -328,7 +300,7 @@ void receive_packet(CANPacket *packet)
         // actuation_phase = 1;
         mtq_ack ack = {0};
         decodemtq_ack(packet, &ack);
-        if(!ack.mtq_ack_coils_state)
+        if(!ack.mtq_ack_phase)
         {
             mtq_state = MTQ_MEASUREMENT_PHASE;
         } else

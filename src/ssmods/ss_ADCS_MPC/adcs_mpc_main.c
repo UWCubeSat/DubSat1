@@ -1,5 +1,4 @@
-#define AUTOCODE_UPDATE_DELAY_US 4000 // 250 Hz (wow)
-#define BACKCHANNEL_DELAY_MS 1000
+#define AUTOCODE_UPDATE_DELAY_US 100000
 
 #include <adcs_mpc.h>
 #include <msp430.h> 
@@ -23,6 +22,13 @@ FILE_STATIC flag_t triggerStepFlag = FALSE;
 // CAN temporary input
 FILE_STATIC sp2fsw tmpSP2FSW;
 FILE_STATIC mtq_ack tmpMtqAck;
+FILE_STATIC estim_state tmpEstimState;
+FILE_STATIC estim_sun_unit_x tmpESunx;
+FILE_STATIC estim_sun_unit_y tmpESuny;
+FILE_STATIC estim_sun_unit_z tmpESunz;
+FILE_STATIC estim_mag_unit_x tmpEMagx;
+FILE_STATIC estim_mag_unit_y tmpEMagy;
+FILE_STATIC estim_mag_unit_z tmpEMagz;
 
 // Backchannel telemerty
 FILE_STATIC meta_segment mseg;
@@ -79,7 +85,6 @@ int main(void)
     int timerHandle = timerCallbackInitializer(&triggerStep,
                                                AUTOCODE_UPDATE_DELAY_US);
     startCallback(timerHandle);
-    int slowTimerHandle = timerPollInitializer(BACKCHANNEL_DELAY_MS);
 
     while (1)
     {
@@ -89,10 +94,11 @@ int main(void)
 
         LED_OUT ^= LED_BIT;
 
-        // check slow timer for non-autocode functions
-        if (checkTimer(slowTimerHandle))
+        // do non-autocode functions at 1 Hz (every 10 steps)
+        static uint8_t i = 0;
+        if (i++ == 10)
         {
-            slowTimerHandle = timerPollInitializer(BACKCHANNEL_DELAY_MS);
+            i = 0;
 
             // send basic subsystem telemetry
             // TODO move this to rollcall
@@ -118,129 +124,35 @@ void triggerStep()
 
 void rt_OneStep(void)
 {
-  static boolean_T OverrunFlags[3] = { 0, 0, 0 };
-
-  static boolean_T eventFlags[3] = { 0, 0, 0 };/* Model has 3 rates */
-
-  static int_T taskCounter[3] = { 0, 0, 0 };
-
-  int_T i;
+  static boolean_T OverrunFlag = false;
 
   /* Disable interrupts here */
   __disable_interrupt();
 
-  /* Check base rate for overrun */
-  if (OverrunFlags[0]) {
+  /* Check for overrun */
+  if (OverrunFlag) {
     rtmSetErrorStatus(rtM, "Overrun");
     return;
   }
 
-  OverrunFlags[0] = true;
+  OverrunFlag = true;
 
   /* Save FPU context here (if necessary) */
   /* Re-enable timer or interrupt here */
   __enable_interrupt();
 
-  /*
-   * For a bare-board target (i.e., no operating system), the
-   * following code checks whether any subrate overruns,
-   * and also sets the rates that need to run this time step.
-   */
-  for (i = 1; i < 3; i++) {
-    if (taskCounter[i] == 0) {
-      if (eventFlags[i]) {
-        OverrunFlags[0] = false;
-        OverrunFlags[i] = true;
+  /* Set model inputs here */
+  acceptInputs();
 
-        /* Sampling too fast */
-        rtmSetErrorStatus(rtM, "Overrun");
-        return;
-      }
-
-      eventFlags[i] = true;
-    }
-  }
-
-  taskCounter[1]++;
-  if (taskCounter[1] == 25) {
-    taskCounter[1]= 0;
-  }
-
-  taskCounter[2]++;
-  if (taskCounter[2] == 50) {
-    taskCounter[2]= 0;
-  }
-
-  /* Set model inputs associated with base rate here */
-  // (base rate has no inputs other than in substep)
-
-  /* Step the model for base rate */
-  /*
-   * rate: 250 Hz
-   * outputs: point_true
-   *
-   * substep:
-   *    rate: 10 Hz
-   *    outputs: sc_quat, body_rates, sc_mode, sc_above_gsb, sc_modeb,
-   *             cmd_MT_fsw_dv
-   *    inputs:  MT_valid
-   */
-  MSP_FSW_step0();
+  /* Step the model */
+  MSP_FSW_step();
 
   /* Get model outputs here */
   sendCANVelocityPointing();
+  sendCANMtqCmd();
 
-  /* Indicate task for base rate complete */
-  OverrunFlags[0] = false;
-
-  /* Step the model for any subrate */
-  for (i = 1; i < 3; i++) {
-    /* If task "i" is running, don't run any lower priority task */
-    if (OverrunFlags[i]) {
-      return;
-    }
-
-    if (eventFlags[i]) {
-      OverrunFlags[i] = true;
-
-      /* Set model inputs associated with subrates here */
-      acceptInputs();
-
-      /* Step the model for subrate "i" */
-      switch (i) {
-       case 1 :
-       /*
-        * rate: 10 Hz
-        * inputs: mag_vec_body_T, sun_vec_body_sunsensor, sc_in_sun,
-        *         mag_eci_unit, sc2sun_unit, gyro_omega_body_radps, sc_above_gs
-        * outputs: the outputs from the base rate's substep
-        */
-        MSP_FSW_step1();
-
-        /* Get model outputs here */
-        sendCANMtqCmd();
-        break;
-
-       case 2 :
-       /*
-        * rate: 5 Hz
-        * inputs: CAN
-        */
-        MSP_FSW_step2();
-
-        /* Get model outputs here */
-        // (none)
-        break;
-
-       default :
-        break;
-      }
-
-      /* Indicate task complete for sample time "i" */
-      OverrunFlags[i] = false;
-      eventFlags[i] = false;
-    }
-  }
+  /* Indicate task complete */
+  OverrunFlag = false;
 
   /* Disable interrupts here */
   /* Restore FPU context here (if necessary) */
@@ -283,7 +195,27 @@ void canRxCallback(CANPacket *p)
     case CAN_ID_MTQ_ACK:
         decodemtq_ack(p, &tmpMtqAck);
         break;
-    // TODO get other CAN inputs (i.e. ESTIM's outputs)
+    case CAN_ID_ESTIM_STATE:
+        decodeestim_state(p, &tmpEstimState);
+        break;
+    case CAN_ID_ESTIM_MAG_UNIT_X:
+        decodeestim_mag_unit_x(p, &tmpEMagx);
+        break;
+    case CAN_ID_ESTIM_MAG_UNIT_Y:
+        decodeestim_mag_unit_y(p, &tmpEMagy);
+        break;
+    case CAN_ID_ESTIM_MAG_UNIT_Z:
+        decodeestim_mag_unit_z(p, &tmpEMagz);
+        break;
+    case CAN_ID_ESTIM_SUN_UNIT_X:
+        decodeestim_sun_unit_x(p, &tmpESunx);
+        break;
+    case CAN_ID_ESTIM_SUN_UNIT_Y:
+        decodeestim_sun_unit_y(p, &tmpESuny);
+        break;
+    case CAN_ID_ESTIM_SUN_UNIT_Z:
+        decodeestim_sun_unit_z(p, &tmpESunz);
+        break;
     }
 }
 
@@ -291,11 +223,8 @@ void canRxCallback(CANPacket *p)
 void acceptInputs()
 {
     __disable_interrupt();
-    /*
-     * TODO missing sc_in_sun, sc_above_gs, mag_eci_unit, sc2sun_unit
-     * (i.e. ESTIM's outputs)
-     */
 
+    // sensor proc outputs
     memcpy(rtU.mag_vec_body_T, tmpSP2FSW.mag_vec_body_T,
            4 * sizeof(tmpSP2FSW.mag_vec_body_T[0]));
     memcpy(rtU.gyro_omega_body_radps, tmpSP2FSW.gyro_omega_body_radps,
@@ -303,13 +232,24 @@ void acceptInputs()
     memcpy(rtU.sun_vec_body_sunsensor, tmpSP2FSW.sun_vec_body_sunsensor,
            4 * sizeof(tmpSP2FSW.sun_vec_body_sunsensor[0]));
 
+    // MTQ outputs
     // TODO don't use magic numbers. 0 means measurement phase here
     // TODO confirm interpretation that measurement phase == MT_valid
     uint8_t i;
     for (i = 0; i < 3; i++)
     {
-        rtU.MT_valid[i] = tmpMtqAck.mtq_ack_node == 0;
+        rtU.MT_valid[i] = tmpMtqAck.mtq_ack_phase == 0;
     }
+
+    // ESTIM outputs
+    rtU.sc_above_gs = tmpEstimState.estim_state_above_gs;
+    rtU.sc_in_sun = tmpEstimState.estim_state_in_sun;
+    rtU.sc2sun_unit[0] = tmpESunx.estim_sun_unit_x_val;
+    rtU.sc2sun_unit[1] = tmpESuny.estim_sun_unit_y_val;
+    rtU.sc2sun_unit[2] = tmpESunz.estim_sun_unit_z_val;
+    rtU.mag_eci_unit[0] = tmpEMagx.estim_mag_unit_x_val;
+    rtU.mag_eci_unit[1] = tmpEMagy.estim_mag_unit_y_val;
+    rtU.mag_eci_unit[2] = tmpEMagz.estim_mag_unit_z_val;
 
     __enable_interrupt();
 }
@@ -326,8 +266,6 @@ void sendCANVelocityPointing()
 
 void sendCANMtqCmd()
 {
-    // TODO may need to scale [-127, 128] range down to [-100, 100] if the
-    // autocode doesn't do this already
     CANPacket p;
     cmd_mtq_fsw cmd;
     cmd.cmd_mtq_fsw_sc_mode = rtY.sc_mode;
