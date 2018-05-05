@@ -105,6 +105,7 @@ int main(void)
     mag_x = init_uint16_t(mag_xArray, 600);
     mag_y = init_uint16_t(mag_yArray, 600);
     mag_z = init_uint16_t(mag_zArray, 600);
+    initial_setup();
 
     rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
     startCallback(rtOneStep_timer);
@@ -117,7 +118,7 @@ int main(void)
     // Disable rt_OneStep() here
     // Terminate model
     fflush((NULL));
-
+    P3DIR |= BIT5;
     start_telem_timer();
     while (rtmGetErrorStatus(rtM) == (NULL) || 1)
     {
