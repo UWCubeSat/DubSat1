@@ -262,6 +262,10 @@ int checkTimerOverflow(uint16_t timerNumber, uint16_t end_counter, uint16_t end_
 
 int checkTimer(uint16_t timerNumber)
 {
+    if(!checkValidPollingID(timerNumber))
+    {
+        return 0;
+    }
     uint16_t end_counter = timer_counter;
     uint16_t end_TAR = TA0R;
 
@@ -301,6 +305,33 @@ void endPollingTimer(uint16_t timerNumber)
 {
     polling[timerNumber].inUse = 0;
 }
+
+int checkValidPollingID(uint16_t timerNumber)
+{
+    if(timerNumber > NUM_SUPPORTED_DURATIONS_POLLING || timerNumber < 0)
+    {
+        return 0;
+    }
+    if(!polling[timerNumber].inUse)
+    {
+        return 0;
+    }
+    return 1;
+}
+
+int checkValidCallbackID(uint16_t timerNumber)
+{
+    if (timerNumber > NUM_SUPPORTED_DURATIONS_CALLBACK || timerNumber < 0)
+    {
+        return 0;
+    }
+    if (!callback[timerNumber].inUse)
+    {
+        return 0;
+    }
+    return 1;
+}
+
 
 #pragma vector = TIMER0_A1_VECTOR
 __interrupt void Timer0_A1_ISR(void)

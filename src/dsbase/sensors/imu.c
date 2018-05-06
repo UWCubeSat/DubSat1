@@ -95,7 +95,11 @@ IMUData *imuReadGyroAccelData()
 
 #elif defined(__BSP_HW_IMU_LSM6DSM__)
 
+#ifdef __I2C_DONT_WRITE_IMU__
+    i2cMasterRead(hSensor, i2cBuff, IMU_LSM6DSM_DATA_NUM_BYTES);
+#else
     i2cMasterRegisterRead(hSensor, IMU_LSM6DSM_OUTPUT_DATA_REGS, i2cBuff, IMU_LSM6DSM_DATA_NUM_BYTES);
+#endif /* __I2C_DONT_WRITE_IMU__ */
 
     idata.rawGyroX = (int16_t)(i2cBuff[0] | ((int16_t)i2cBuff[1] << 8));
     idata.rawGyroY = (int16_t)(i2cBuff[2] | ((int16_t)i2cBuff[3] << 8));
