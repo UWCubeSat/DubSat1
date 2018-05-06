@@ -426,7 +426,6 @@ void rt_OneStep(void)
 void respondToRollCall (){
     if(rcFlag>0){
             if(rcFlag == 2){
-                rcFlag=1;
                 CANPacket rollcallPkt1 = {0};
                 rc_adcs_bdot_1 rollcallPkt1_info = {0};
                 CANPacket rollcallPkt2 = {0};
@@ -459,8 +458,8 @@ void respondToRollCall (){
                 rollcallPkt4_info.rc_adcs_bdot_4_tumble = rtY.tumble;
                 encoderc_adcs_bdot_4(&rollcallPkt4_info, &rollcallPkt4);
                 canSendPacket(&rollcallPkt4);
-                rcFlag=0;
             }
+            rcFlag--;
         }
 
 }

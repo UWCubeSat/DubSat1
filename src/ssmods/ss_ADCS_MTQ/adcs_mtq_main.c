@@ -685,7 +685,6 @@ void mtq_sfr_init(void)
 void rollCall () {
     if(rcFlag>0){
         if(rcFlag == 2){
-            rcFlag=1;
             CANPacket rollcallPkt1 = {0};
             rc_adcs_mtq_1 rollcallPkt1_info = {0};
             CANPacket rollcallPkt2 = {0};
@@ -704,7 +703,7 @@ void rollCall () {
             rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_avg = getAvg_uint8_t(bdot_y);
             rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_max = getMax_uint8_t(bdot_z);
             rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_avg = getAvg_uint8_t(bdot_z);
-            rollcallPkt3_info.rc_adcs_mtq_3_bdot_z_min =  getMin_uint8_t(bdot_z);
+
             rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_min = getMin_uint8_t(fsw_x);
             rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_max = getMax_uint8_t(fsw_x);
             rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_avg = getAvg_uint8_t(fsw_x);
@@ -738,8 +737,8 @@ void rollCall () {
             encoderc_adcs_mtq_5(&rollcallPkt5_info, &rollcallPkt5);
             canSendPacket(&rollcallPkt4);
             canSendPacket(&rollcallPkt5);
-            rcFlag=0;
         }
+        rcFlag--;
     }
 
 }
