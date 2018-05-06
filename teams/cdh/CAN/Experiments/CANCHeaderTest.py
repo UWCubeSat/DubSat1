@@ -458,7 +458,7 @@ void canWrapInitWithFilter(){
    	setTheFilter(CAN_FILTER_0, (uint32_t) 0x00);
    	setTheFilter(CAN_FILTER_1, (uint32_t) 0x00);
 
-   	setTheFilter(CAN_MASK_1, filter_one);
+   	setTheFilter(CAN_MASK_1, (uint32_t) 0xf0000);
    	setTheFilter(CAN_FILTER_2, (uint32_t) filter_one << 16);
     setTheFilter(CAN_FILTER_3, (uint32_t) filter_two << 16);
     setTheFilter(CAN_FILTER_4, (uint32_t) filter_three << 16);

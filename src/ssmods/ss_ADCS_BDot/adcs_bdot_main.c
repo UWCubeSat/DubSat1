@@ -109,7 +109,7 @@ int main(void)
         }
         if(update_rt)
         {
-//            P3DIR ^= BIT5;
+            P3OUT ^= BIT5;
             getMagnetometerData();
             rtU.B_body_in_T[0] = magData->convertedX;
             rtU.B_body_in_T[1] = magData->convertedY;
@@ -272,7 +272,6 @@ void sendMtqInfoSegment()
     myTelemMtqInfo.xDipole = lastKnownState.xDipole;
     myTelemMtqInfo.yDipole = lastKnownState.yDipole;
     myTelemMtqInfo.zDipole = lastKnownState.zDipole;
-    myTelemMtqInfo.tumble_status = lastKnownState.tumble_status;
 
     bcbinSendPacket((uint8_t *) &myTelemMtqInfo, sizeof(myTelemMtqInfo));
 }

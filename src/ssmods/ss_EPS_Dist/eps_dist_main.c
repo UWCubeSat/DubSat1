@@ -398,22 +398,12 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
     return 1;
 }
 
-uint32_t constructPrimaryTime(timeStamp* currTime)
-{
-    uint32_t baseStuff = (uint32_t) currTime->count1;
-    baseStuff |= ((uint32_t) currTime->count2) << 8;
-    baseStuff |= ((uint32_t) currTime->count3) << 16;
-    baseStuff |= ((uint32_t) currTime->count4) << 24;
-    return baseStuff;
-}
-
 void sendSubsystemRollCall(uint8_t ssID)
 {
     CANPacket rcPkt = {0};
     cmd_rollcall rc_info = {0};
-    timeStamp currTime = getTimeStamp();
-    rc_info.cmd_rollcall_met = constructPrimaryTime(&currTime);
-    rc_info.cmd_rollcall_met_overflow = currTime.count5;
+    rc_info.cmd_rollcall_met = getPrimaryTime();
+    rc_info.cmd_rollcall_met_overflow = getOverflowTime();
     rc_info.cmd_rollcall_msp = ssID;
     encodecmd_rollcall(&rc_info, &rcPkt);
     canSendPacket(&rcPkt);

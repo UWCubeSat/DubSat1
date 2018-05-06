@@ -49,7 +49,6 @@ TLM_SEGMENT {
     int8_t xDipole;
     int8_t yDipole;
     int8_t zDipole;
-    uint8_t tumble_status;
 } mtq_info_segment;
 
 TLM_SEGMENT {
