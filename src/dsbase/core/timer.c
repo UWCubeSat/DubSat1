@@ -260,6 +260,19 @@ int checkTimerOverflow(uint16_t timerNumber, uint16_t end_counter, uint16_t end_
     return 0;
 }
 
+int checkValidPollingID(uint16_t timerNumber)
+{
+    if(timerNumber > NUM_SUPPORTED_DURATIONS_POLLING || timerNumber < 0)
+    {
+        return 0;
+    }
+    if(!polling[timerNumber].inUse)
+    {
+        return 0;
+    }
+    return 1;
+}
+
 int checkTimer(uint16_t timerNumber)
 {
     if(!checkValidPollingID(timerNumber))
@@ -304,19 +317,6 @@ int checkTimer(uint16_t timerNumber)
 void endPollingTimer(uint16_t timerNumber)
 {
     polling[timerNumber].inUse = 0;
-}
-
-int checkValidPollingID(uint16_t timerNumber)
-{
-    if(timerNumber > NUM_SUPPORTED_DURATIONS_POLLING || timerNumber < 0)
-    {
-        return 0;
-    }
-    if(!polling[timerNumber].inUse)
-    {
-        return 0;
-    }
-    return 1;
 }
 
 int checkValidCallbackID(uint16_t timerNumber)
