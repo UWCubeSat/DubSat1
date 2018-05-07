@@ -262,7 +262,7 @@ int checkTimerOverflow(uint16_t timerNumber, uint16_t end_counter, uint16_t end_
 
 int checkValidPollingID(uint16_t timerNumber)
 {
-    if(timerNumber > NUM_SUPPORTED_DURATIONS_POLLING || timerNumber < 0)
+    if(timerNumber >= NUM_SUPPORTED_DURATIONS_POLLING)
     {
         return 0;
     }
@@ -321,7 +321,7 @@ void endPollingTimer(uint16_t timerNumber)
 
 int checkValidCallbackID(uint16_t timerNumber)
 {
-    if (timerNumber > NUM_SUPPORTED_DURATIONS_CALLBACK || timerNumber < 0)
+    if (timerNumber >= NUM_SUPPORTED_DURATIONS_CALLBACK)
     {
         return 0;
     }
