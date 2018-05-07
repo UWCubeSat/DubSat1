@@ -261,7 +261,7 @@ int checkTimerOverflow(TIMER_HANDLE timerNumber, uint16_t end_counter, uint16_t 
 
 int checkValidPollingID(TIMER_HANDLE timerNumber)
 {
-    if(timerNumber >= NUM_SUPPORTED_DURATIONS_POLLING)
+    if(timerNumber >= NUM_SUPPORTED_DURATIONS_POLLING || timerNumber < 0)
     {
         return 0;
     }

@@ -9,7 +9,7 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
-typedef uint8_t TIMER_HANDLE;
+typedef int8_t TIMER_HANDLE;
 
 void initializeTimer();
 TIMER_HANDLE timerPollInitializer(uint16_t ms);
