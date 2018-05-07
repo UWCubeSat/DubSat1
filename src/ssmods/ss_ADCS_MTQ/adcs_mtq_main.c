@@ -57,6 +57,8 @@ void can_init(void);
 void can_packet_rx_callback(CANPacket *packet);
 void send_CAN_health_packet(void);
 void send_CAN_ack_packet(void);
+void send_CAN_rollCall(); 
+void rollCall_init(); 
 
 //---------COSMOS functions--------------
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
@@ -64,16 +66,13 @@ void cosmos_init(void);
 void send_COSMOS_health_packet(void); 
 void send_COSMOS_meta_packet(void);
 void send_COSMOS_commands_packet(void);
-void send_COSMOS_commands(void); 
 void send_COSMOS_dooty_packet(void);
 
 //--------SFR initialization------
 void mtq_sfr_init(void);
 
 
-FILE_STATIC ModuleStatus mod_status;
-FILE_STATIC volatile uint8_t bdot_ack_sent = 1;
-FILE_STATIC volatile uint8_t fsw_ack_sent = 0; 
+//FILE_STATIC ModuleStatus mod_status;
 FILE_STATIC volatile uint8_t enable_command_update = 0;
 
 //-----------inputs-----------------
@@ -85,59 +84,20 @@ FILE_STATIC volatile int8_t sc_mode;
 
 //-----------backchannel and CAN------------------
 
+// CAN health packet 
 FILE_STATIC meta_segment metaSeg;
 FILE_STATIC health_segment healthSeg;
-FILE_STATIC bdot_fsw_commands cosmos_commandy_commands;
+// cosmos 
+FILE_STATIC volatile uint8_t last_pwm_percent_executed_x, last_pwm_percent_executed_y, last_pwm_percent_executed_z = 0;
 FILE_STATIC duty_percent cosmos_dooty;
 FILE_STATIC volatile uint8_t duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z2 = 0; 
-FILE_STATIC volatile uint8_t last_pwm_percent_executed_x, last_pwm_percent_executed_y, last_pwm_percent_executed_z = 0;
-FILE_STATIC volatile int8_t command_source = ELOISE_UNKNOWN;
-
-//------------timers ----------------
-
-FILE_STATIC int telem_timer; 
-FILE_STATIC int telem_time_ms = 1000;
-#pragma PERSISTENT(telem_time_ms)
-FILE_STATIC int actuation_timer = 0;
-FILE_STATIC int actuation_time_ms = 2000;
-#pragma PERSISTENT(actuation_time_ms)
-FILE_STATIC int measurement_timer = 0;
-FILE_STATIC int measurement_time_ms = 2000;
-#pragma PERSISTENT(measurement_time_ms)
-FILE_STATIC int stabalize_timer = 0;
-FILE_STATIC int stabalize_time_ms = 100;
-#pragma PERSISTENT(stabalize_time_ms)
-FILE_STATIC int bdot_death_timer = 0;
-FILE_STATIC int bdot_death_time_ms = 4000; // 4 second timeout 
-#pragma PERSISTENT(bdot_death_time_ms)
-FILE_STATIC int LED_timer = -1;
-FILE_STATIC int LED_time_ms = 200;
-FILE_STATIC int cosmos_commands_timer = 100; 
-FILE_STATIC int cosmos_commands_time_ms = 100; 
-
-
-#pragma PERSISTENT(mspTempArray);
-#pragma PERSISTENT(mag_xArray);
-#pragma PERSISTENT(mag_yArray);
-#pragma PERSISTENT(mag_zArray);
-FILE_STATIC int rcFlag=0;
-
-//-------state machine-----------
-
-// index of states 
-typedef enum MTQState {
-	MEASUREMENT = 0,
-	FSW_ACTUATION,
-	BDOT_ACTUATION,
-	STABALIZE,
-} eMTQState;
-
-// This table contains a pointer to the function to call in each state 
-void (* const state_table[])() = {measurement, fsw_actuation, bdot_actuation, stabalize};
-
-// camera state declaration  
-eMTQState curr_state; 
+// CAN ack packet 
+FILE_STATIC bdot_fsw_commands cosmos_commandy_commands; // commands 
+FILE_STATIC volatile int8_t command_source = ELOISE_UNKNOWN; // source 
+FILE_STATIC volatile int8_t which_phase = ELOISE_UNKNOWN; // phase 
+// CAN roll call 
 FILE_STATIC uint16_t mspTempArray[60] = {0};
+#pragma PERSISTENT(mspTempArray);
 FILE_STATIC uint8_t bdot_xArray[60] = {0};
 FILE_STATIC uint8_t bdot_yArray[60] = {0};
 FILE_STATIC uint8_t bdot_zArray[60] = {0};
@@ -163,6 +123,46 @@ FILE_STATIC uint16_t duty_y1Handle;
 FILE_STATIC uint16_t duty_y2Handle;
 FILE_STATIC uint16_t duty_z1Handle;
 FILE_STATIC uint16_t duty_z2Handle;
+FILE_STATIC int rcFlag = 0;
+
+//------------timers ----------------
+
+FILE_STATIC int telem_timer; 
+FILE_STATIC int telem_time_ms = 1000;
+#pragma PERSISTENT(telem_time_ms)
+FILE_STATIC int actuation_timer = 0;
+FILE_STATIC int actuation_time_ms = 2000;
+#pragma PERSISTENT(actuation_time_ms)
+FILE_STATIC int measurement_timer = 0;
+FILE_STATIC int measurement_time_ms = 2000;
+#pragma PERSISTENT(measurement_time_ms)
+FILE_STATIC int stabalize_timer = 0;
+FILE_STATIC int stabalize_time_ms = 100;
+#pragma PERSISTENT(stabalize_time_ms)
+FILE_STATIC int bdot_death_timer = 0;
+FILE_STATIC int bdot_death_time_ms = 4000; // 4 second timeout 
+#pragma PERSISTENT(bdot_death_time_ms)
+FILE_STATIC int LED_timer = 0;
+FILE_STATIC int LED_time_ms = 200;
+FILE_STATIC int cosmos_commands_timer = 0; 
+FILE_STATIC int cosmos_commands_time_ms = 100; 
+
+//-------state machine-----------
+
+// index of states 
+typedef enum MTQState {
+	MEASUREMENT = 0,
+	FSW_ACTUATION,
+	BDOT_ACTUATION,
+	STABALIZE,
+} eMTQState;
+
+// This table contains a pointer to the function to call in each state 
+void (* const state_table[])() = {measurement, fsw_actuation, bdot_actuation, stabalize};
+
+// camera state declaration  
+eMTQState curr_state; 
+
 //------------------------------------------------------------------
 // Main 
 // TODO 
@@ -170,6 +170,7 @@ FILE_STATIC uint16_t duty_z2Handle;
 // add fsw timeout 
 // fix manage telem function   
 // cntrl f DEBUG to see commented out sections 
+// add error messages for invalid commands 
 //------------------------------------------------------------------
 
 int main(void)
@@ -181,34 +182,19 @@ int main(void)
     initializeTimer();             // timer A initialization
     cosmos_init();                 // COSMOS backchannel initialization
     can_init();                    // CAN initialization
+	rollCall_init(); 			   // roll call initialization 
 
     restartMTQ(); // restart 
-    LED_timer = timerPollInitializer(LED_time_ms);
 
-    mspTemp = init_uint16_t(mspTempArray, 60);
-    bdot_x = init_uint8_t(bdot_xArray, 60);
-    bdot_y = init_uint8_t(bdot_yArray, 60);
-    bdot_z = init_uint8_t(bdot_zArray, 60);
-    fsw_x = init_uint8_t(fsw_xArray, 60);
-    fsw_y = init_uint8_t(fsw_yArray, 60);
-    fsw_z = init_uint8_t(fsw_zArray, 60);
-    duty_x1Handle = init_uint8_t(duty_x1Array, 60);
-    duty_x2Handle = init_uint8_t(duty_x2Array, 60);
-    duty_y1Handle = init_uint8_t(duty_y1Array, 60);
-    duty_y2Handle = init_uint8_t(duty_y2Array, 60);
-    duty_z1Handle = init_uint8_t(duty_z1Array, 60);
-    duty_z2Handle = init_uint8_t(duty_z2Array, 60);
     while (1)
     {
 		blink_LED(); 
-		send_COSMOS_commands(); 
 		
         // mtq control loop
         state_table[curr_state]();
 		
 		// send periodic telemetry
 		manage_telemetry(); 
-		rollCall();
     }
 		
 	return 0;
@@ -220,27 +206,6 @@ int main(void)
 
 //---------- state machine ------------------
 
-void restartMTQ()
-{ 
-	// turn off coils 
-	turn_off_coils();
-	
-	// set input signals to unknown
-	sc_mode = ELOISE_UNKNOWN;
-	bdot_command_x = ELOISE_UNKNOWN; 
-	bdot_command_y = ELOISE_UNKNOWN; 
-	bdot_command_z = ELOISE_UNKNOWN; 
-	fsw_command_x = ELOISE_UNKNOWN; 
-	fsw_command_y = ELOISE_UNKNOWN; 
-	fsw_command_z = ELOISE_UNKNOWN;
-	
-	// reset state 
-	curr_state = MEASUREMENT;
-	
-	// kick off the measurement timer 
-	start_measurement_timer(); 
-}
-
 void measurement()
 {
 	enable_command_update = 1;
@@ -248,16 +213,15 @@ void measurement()
     if(checkTimer(measurement_timer)) // finished measurement phase
     {
 		enable_command_update = 0; // stop updating commands
-		
+
 		if((sc_mode ==0||sc_mode ==1) && fsw_is_valid())
 		{
 			curr_state = FSW_ACTUATION;
-			send_CAN_ack_packet();
 		} else 
 		{
 			curr_state = BDOT_ACTUATION;
-			send_CAN_ack_packet();
 		}  
+		send_CAN_ack_packet();
         start_actuation_timer();
     }
 }
@@ -269,19 +233,14 @@ void fsw_actuation()
         set_pwm('x', fsw_command_x);
         set_pwm('y', fsw_command_y);
         set_pwm('z', fsw_command_z);
-        if (!fsw_ack_sent) // only send acknowledgement once per interrupt
-        {
-            send_CAN_ack_packet();
-            fsw_ack_sent = 1;
-        }
     } else // invalid xyz command
     {
 		turn_off_coils(); 
     }
-	
     if(checkTimer(actuation_timer)) // finished actuation phase
     {
         curr_state = STABALIZE;
+		send_CAN_ack_packet();
         start_stabalize_timer();
     }
 }
@@ -293,19 +252,14 @@ void bdot_actuation()
         set_pwm('x', bdot_command_x);
         set_pwm('y', bdot_command_y);
         set_pwm('z', bdot_command_z);
-        if (!bdot_ack_sent) // only send acknowledgement once per interrupt
-        {
-            send_CAN_ack_packet();
-            bdot_ack_sent = 1;
-        }
     } else // invalid xyz command
     {
 		turn_off_coils(); 
     }
-	
     if(checkTimer(actuation_timer)) // finished actuation phase
     {
         curr_state = STABALIZE;
+		send_CAN_ack_packet();
         start_stabalize_timer();
     }
 }
@@ -323,7 +277,28 @@ void stabalize()
 	}
 }
 
-//-------- helper functions --------
+//------------- helper functions --------------
+
+void restartMTQ()
+{ 
+	// turn off coils 
+	turn_off_coils();
+	// set input signals to unknown
+	sc_mode = ELOISE_UNKNOWN;
+	bdot_command_x = ELOISE_UNKNOWN; 
+	bdot_command_y = ELOISE_UNKNOWN; 
+	bdot_command_z = ELOISE_UNKNOWN; 
+	fsw_command_x = ELOISE_UNKNOWN; 
+	fsw_command_y = ELOISE_UNKNOWN; 
+	fsw_command_z = ELOISE_UNKNOWN;
+	// reset state 
+	curr_state = MEASUREMENT;
+	// kick off all the timers 
+	start_LED_timer();
+	start_cosmos_commands_timer(); 
+	start_measurement_timer(); 
+	start_bdot_death_timer(); 
+}
 
 void start_actuation_timer(void)
 {
@@ -357,7 +332,14 @@ void start_cosmos_commands_timer(void)
 }
 
 void manage_telemetry(void)
-{
+{ 
+	send_CAN_rollCall();
+	
+	if (checkTimer(cosmos_commands_timer)){
+		send_COSMOS_commands_packet(); 
+		start_cosmos_commands_timer(); 
+	}
+	
     if (checkTimer(telem_timer))
     {
 		void send_COSMOS_health_packet();
@@ -500,16 +482,15 @@ void can_packet_rx_callback(CANPacket *packet)
 		endPollingTimer(bdot_death_timer); // reset the bdot death timer 
 		start_bdot_death_timer();  
 		command_source = FROM_BDOT; 
+		// update global bdot command variables
 		cmd_mtq_bdot bdot_packet = {0};
         decodecmd_mtq_bdot(packet, &bdot_packet);
-        // update global bdot command variables
         bdot_command_x = bdot_packet.cmd_mtq_bdot_x;
         addData_uint8_t(bdot_x, bdot_command_x);
         bdot_command_y = bdot_packet.cmd_mtq_bdot_y;
         addData_uint8_t(bdot_y, bdot_command_y);
         bdot_command_z = bdot_packet.cmd_mtq_bdot_z;
         addData_uint8_t(bdot_z, bdot_command_z);
-        bdot_ack_sent = 0; // reset acknowledgment sent flag
 	}
 	if (packet->id == CAN_ID_CMD_MTQ_FSW && enable_command_update){
 		command_source = FROM_FSW; 
@@ -523,7 +504,6 @@ void can_packet_rx_callback(CANPacket *packet)
         fsw_command_z = fsw_packet.cmd_mtq_fsw_z;
         addData_uint8_t(fsw_z, fsw_command_z);
         sc_mode = fsw_packet.cmd_mtq_fsw_sc_mode;
-        fsw_ack_sent = 0; // reset acknowledgment sent flag
 	}
 	if (packet->id == CAN_ID_CMD_IGNORE_FSW){
 		cmd_ignore_fsw ignore = {0};
@@ -547,7 +527,11 @@ void send_CAN_health_packet(void)
 
 void send_CAN_ack_packet(void)
 { 
-    int8_t which_phase = curr_state;
+	if (curr_state == MEASUREMENT){
+		which_phase = MEASUREMENT_PHASE; 
+	} else {
+		which_phase = ACTUATION_PHASE; 
+	}
 	mtq_ack ack = {0};
 	ack.mtq_ack_phase = which_phase;
 	ack.mtq_ack_source = command_source;
@@ -562,6 +546,86 @@ void send_CAN_ack_packet(void)
 	canSendPacket(&mtq_ack_packet);
 }
 
+void rollCall_init()
+{
+    mspTemp = init_uint16_t(mspTempArray, 60);
+    bdot_x = init_uint8_t(bdot_xArray, 60);
+    bdot_y = init_uint8_t(bdot_yArray, 60);
+    bdot_z = init_uint8_t(bdot_zArray, 60);
+    fsw_x = init_uint8_t(fsw_xArray, 60);
+    fsw_y = init_uint8_t(fsw_yArray, 60);
+    fsw_z = init_uint8_t(fsw_zArray, 60);
+    duty_x1Handle = init_uint8_t(duty_x1Array, 60);
+    duty_x2Handle = init_uint8_t(duty_x2Array, 60);
+    duty_y1Handle = init_uint8_t(duty_y1Array, 60);
+    duty_y2Handle = init_uint8_t(duty_y2Array, 60);
+    duty_z1Handle = init_uint8_t(duty_z1Array, 60);
+    duty_z2Handle = init_uint8_t(duty_z2Array, 60);
+}
+
+void send_CAN_rollCall() 
+{
+    if(rcFlag>0)
+	{
+        if(rcFlag == 2)
+		{
+            CANPacket rollcallPkt1 = {0};
+            rc_adcs_mtq_1 rollcallPkt1_info = {0};
+            CANPacket rollcallPkt2 = {0};
+            rc_adcs_mtq_2 rollcallPkt2_info = {0};
+            CANPacket rollcallPkt3 = {0};
+            rc_adcs_mtq_3 rollcallPkt3_info = {0};
+            rollcallPkt1_info.rc_adcs_mtq_1_sysrstiv = bspGetResetCount();
+            rollcallPkt1_info.rc_adcs_mtq_1_temp_avg =0;//asensorReadIntTempC(); //TODO: this
+            rollcallPkt1_info.rc_adcs_mtq_1_temp_max =0;//asensorReadIntTempC(); //TODO: this
+            rollcallPkt1_info.rc_adcs_mtq_1_temp_min =0;//asensorReadIntTempC(); //TODO: this
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_min =getMin_uint8_t(bdot_x);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_max =getMax_uint8_t(bdot_x);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_avg =getAvg_uint8_t(bdot_x);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_min = getMin_uint8_t(bdot_y);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_max = getMax_uint8_t(bdot_y);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_avg = getAvg_uint8_t(bdot_y);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_max = getMax_uint8_t(bdot_z);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_avg = getAvg_uint8_t(bdot_z);
+
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_min = getMin_uint8_t(fsw_x);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_max = getMax_uint8_t(fsw_x);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_avg = getAvg_uint8_t(fsw_x);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_min = getMin_uint8_t(fsw_y);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_max = getMax_uint8_t(fsw_y);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_avg = getAvg_uint8_t(fsw_y);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_z_avg = getAvg_uint8_t(fsw_z);
+            encoderc_adcs_mtq_1(&rollcallPkt1_info, &rollcallPkt1);
+            canSendPacket(&rollcallPkt1);
+            encoderc_adcs_mtq_2(&rollcallPkt2_info, &rollcallPkt2);
+            canSendPacket(&rollcallPkt2);
+            encoderc_adcs_mtq_3(&rollcallPkt3_info, &rollcallPkt3);
+            canSendPacket(&rollcallPkt3);
+        }
+        if(rcFlag ==1)
+		{
+            CANPacket rollcallPkt4 = {0};
+            rc_adcs_mtq_4 rollcallPkt4_info = {0};
+            CANPacket rollcallPkt5 = {0};
+            rc_adcs_mtq_5 rollcallPkt5_info = {0};
+            rollcallPkt4_info.rc_adcs_mtq_4_fsw_z_min = getMin_uint8_t(fsw_z);
+            rollcallPkt4_info.rc_adcs_mtq_4_fsw_y_max = getMax_uint8_t(fsw_z);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_x1_avg = getAvg_uint8_t(duty_x1Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_x2_avg = getAvg_uint8_t(duty_x2Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_y1_avg = getAvg_uint8_t(duty_y1Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_y2_avg = getAvg_uint8_t(duty_y2Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_z1_avg = getAvg_uint8_t(duty_z1Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_z2_avg = getAvg_uint8_t(duty_z2Handle);
+            rollcallPkt5_info.rc_adcs_mtq_5_fsw_ignore=0;
+            rollcallPkt5_info.rc_adcs_mtq_5_reset_counts=0;
+            encoderc_adcs_mtq_4(&rollcallPkt4_info, &rollcallPkt4);
+            encoderc_adcs_mtq_5(&rollcallPkt5_info, &rollcallPkt5);
+            canSendPacket(&rollcallPkt4);
+            canSendPacket(&rollcallPkt5);
+        }
+        rcFlag--;
+    }
+}
 //-------- COSMOS backchannel --------
 
 // cosmos initialization 
@@ -598,14 +662,6 @@ void send_COSMOS_commands_packet()
 	cosmos_commandy_commands.last_mtq_executed_z = last_pwm_percent_executed_z;
     bcbinSendPacket((uint8_t *) &cosmos_commandy_commands, sizeof(cosmos_commandy_commands));
 }
-
-void send_COSMOS_commands(void)
-{
-	if (checkTimer(cosmos_commands_timer)){
-		send_COSMOS_commands_packet(); 
-		start_cosmos_commands_timer(); 
-	}
-} 
 
 void send_COSMOS_dooty_packet()
 {
@@ -680,67 +736,6 @@ void mtq_sfr_init(void)
 	TB0CCTL1 = OUTMOD_7;
 	// TB0 control 
 	TB0CTL = TBSSEL__SMCLK | MC__UP | TBCLR; 
-}
-
-void rollCall () {
-    if(rcFlag>0){
-        if(rcFlag == 2){
-            CANPacket rollcallPkt1 = {0};
-            rc_adcs_mtq_1 rollcallPkt1_info = {0};
-            CANPacket rollcallPkt2 = {0};
-            rc_adcs_mtq_2 rollcallPkt2_info = {0};
-            CANPacket rollcallPkt3 = {0};
-            rc_adcs_mtq_3 rollcallPkt3_info = {0};
-            rollcallPkt1_info.rc_adcs_mtq_1_sysrstiv = bspGetResetCount();
-            rollcallPkt1_info.rc_adcs_mtq_1_temp_avg =0;//asensorReadIntTempC(); //TODO: this
-            rollcallPkt1_info.rc_adcs_mtq_1_temp_max =0;//asensorReadIntTempC(); //TODO: this
-            rollcallPkt1_info.rc_adcs_mtq_1_temp_min =0;//asensorReadIntTempC(); //TODO: this
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_min =getMin_uint8_t(bdot_x);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_max =getMax_uint8_t(bdot_x);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_avg =getAvg_uint8_t(bdot_x);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_min = getMin_uint8_t(bdot_y);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_max = getMax_uint8_t(bdot_y);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_avg = getAvg_uint8_t(bdot_y);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_max = getMax_uint8_t(bdot_z);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_avg = getAvg_uint8_t(bdot_z);
-
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_min = getMin_uint8_t(fsw_x);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_max = getMax_uint8_t(fsw_x);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_avg = getAvg_uint8_t(fsw_x);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_min = getMin_uint8_t(fsw_y);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_max = getMax_uint8_t(fsw_y);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_avg = getAvg_uint8_t(fsw_y);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_z_avg = getAvg_uint8_t(fsw_z);
-            encoderc_adcs_mtq_1(&rollcallPkt1_info, &rollcallPkt1);
-            canSendPacket(&rollcallPkt1);
-            encoderc_adcs_mtq_2(&rollcallPkt2_info, &rollcallPkt2);
-            canSendPacket(&rollcallPkt2);
-            encoderc_adcs_mtq_3(&rollcallPkt3_info, &rollcallPkt3);
-            canSendPacket(&rollcallPkt3);
-        }
-        if(rcFlag ==1){
-            CANPacket rollcallPkt4 = {0};
-            rc_adcs_mtq_4 rollcallPkt4_info = {0};
-            CANPacket rollcallPkt5 = {0};
-            rc_adcs_mtq_5 rollcallPkt5_info = {0};
-            rollcallPkt4_info.rc_adcs_mtq_4_fsw_z_min = getMin_uint8_t(fsw_z);
-            rollcallPkt4_info.rc_adcs_mtq_4_fsw_y_max = getMax_uint8_t(fsw_z);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_x1_avg = getAvg_uint8_t(duty_x1Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_x2_avg = getAvg_uint8_t(duty_x2Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_y1_avg = getAvg_uint8_t(duty_y1Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_y2_avg = getAvg_uint8_t(duty_y2Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_z1_avg = getAvg_uint8_t(duty_z1Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_z2_avg = getAvg_uint8_t(duty_z2Handle);
-            rollcallPkt5_info.rc_adcs_mtq_5_fsw_ignore=0;
-            rollcallPkt5_info.rc_adcs_mtq_5_reset_counts=0;
-            encoderc_adcs_mtq_4(&rollcallPkt4_info, &rollcallPkt4);
-            encoderc_adcs_mtq_5(&rollcallPkt5_info, &rollcallPkt5);
-            canSendPacket(&rollcallPkt4);
-            canSendPacket(&rollcallPkt5);
-        }
-        rcFlag--;
-    }
-
 }
 
 
