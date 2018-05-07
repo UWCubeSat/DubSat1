@@ -37,7 +37,7 @@ TLM_SEGMENT {
 } duty_percent;
 
 void handlePPTFiringNotification();
-void handleRollCall();
+void rollCall();
 
 //---------------------
 // MTQ specific 

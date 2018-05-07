@@ -108,6 +108,7 @@ void updateMtqInfo();
 void start_telem_timer();
 void start_packet_timer();
 void sendTelemetry();
+void rollCall();
 int map(int val);
 int mapGeneral(int x, int in_min, int in_max, int out_min, int out_max);
 

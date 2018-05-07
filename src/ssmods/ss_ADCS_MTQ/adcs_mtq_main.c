@@ -25,6 +25,8 @@ Z2 - P2_6 - TB0.1
 #include "core/debugtools.h"
 #include "sensors/analogsensor.h"
 #include "adcs_mtq.h"
+#include "core/dataArray.h"
+
 
 //--------state functions----------------
 void restartMTQ();
@@ -113,6 +115,13 @@ FILE_STATIC int LED_time_ms = 200;
 FILE_STATIC int cosmos_commands_timer = 100; 
 FILE_STATIC int cosmos_commands_time_ms = 100; 
 
+
+#pragma PERSISTENT(mspTempArray);
+#pragma PERSISTENT(mag_xArray);
+#pragma PERSISTENT(mag_yArray);
+#pragma PERSISTENT(mag_zArray);
+FILE_STATIC int rcFlag=0;
+
 //-------state machine-----------
 
 // index of states 
@@ -128,8 +137,32 @@ void (* const state_table[])() = {measurement, fsw_actuation, bdot_actuation, st
 
 // camera state declaration  
 eMTQState curr_state; 
-
- 
+FILE_STATIC uint16_t mspTempArray[60] = {0};
+FILE_STATIC uint8_t bdot_xArray[60] = {0};
+FILE_STATIC uint8_t bdot_yArray[60] = {0};
+FILE_STATIC uint8_t bdot_zArray[60] = {0};
+FILE_STATIC uint8_t fsw_xArray[60] = {0};
+FILE_STATIC uint8_t fsw_yArray[60] = {0};
+FILE_STATIC uint8_t fsw_zArray[60] = {0};
+FILE_STATIC uint8_t duty_x1Array[60] = {0};
+FILE_STATIC uint8_t duty_x2Array[60] = {0};
+FILE_STATIC uint8_t duty_y1Array[60] = {0};
+FILE_STATIC uint8_t duty_y2Array[60] = {0};
+FILE_STATIC uint8_t duty_z1Array[60] = {0};
+FILE_STATIC uint8_t duty_z2Array[60] = {0};
+FILE_STATIC uint16_t mspTemp;
+FILE_STATIC uint16_t bdot_x;
+FILE_STATIC uint16_t bdot_y;
+FILE_STATIC uint16_t bdot_z;
+FILE_STATIC uint16_t fsw_x;
+FILE_STATIC uint16_t fsw_y;
+FILE_STATIC uint16_t fsw_z;
+FILE_STATIC uint16_t duty_x1Handle;
+FILE_STATIC uint16_t duty_x2Handle;
+FILE_STATIC uint16_t duty_y1Handle;
+FILE_STATIC uint16_t duty_y2Handle;
+FILE_STATIC uint16_t duty_z1Handle;
+FILE_STATIC uint16_t duty_z2Handle;
 //------------------------------------------------------------------
 // Main 
 // TODO 
@@ -151,6 +184,20 @@ int main(void)
 
     restartMTQ(); // restart 
     LED_timer = timerPollInitializer(LED_time_ms);
+
+    mspTemp = init_uint16_t(mspTempArray, 60);
+    bdot_x = init_uint8_t(bdot_xArray, 60);
+    bdot_y = init_uint8_t(bdot_yArray, 60);
+    bdot_z = init_uint8_t(bdot_zArray, 60);
+    fsw_x = init_uint8_t(fsw_xArray, 60);
+    fsw_y = init_uint8_t(fsw_yArray, 60);
+    fsw_z = init_uint8_t(fsw_zArray, 60);
+    duty_x1Handle = init_uint8_t(duty_x1Array, 60);
+    duty_x2Handle = init_uint8_t(duty_x2Array, 60);
+    duty_y1Handle = init_uint8_t(duty_y1Array, 60);
+    duty_y2Handle = init_uint8_t(duty_y2Array, 60);
+    duty_z1Handle = init_uint8_t(duty_z1Array, 60);
+    duty_z2Handle = init_uint8_t(duty_z2Array, 60);
     while (1)
     {
 		blink_LED(); 
@@ -161,6 +208,7 @@ int main(void)
 		
 		// send periodic telemetry
 		manage_telemetry(); 
+		rollCall();
     }
 		
 	return 0;
@@ -379,21 +427,27 @@ void set_pwm(char axis, int pwm_percent)
 			SET_X1_PWM ccr_value_1; // P1_7
 			SET_X2_PWM ccr_value_2; // P1_6
 			duty_x1 = duty_1; // for COSMOS
+			addData_uint8_t(duty_x1Handle, duty_x1);
 			duty_x2 = duty_2;
+			addData_uint8_t(duty_x2Handle, duty_x2);
 			last_pwm_percent_executed_x = pwm_percent;
 			break;
 		case 'y': 
 			SET_Y1_PWM ccr_value_1; // P3_7
 			SET_Y2_PWM ccr_value_2; // P3_6
 			duty_y1 = duty_1;
+			addData_uint8_t(duty_y1Handle, duty_y1);
 			duty_y2 = duty_2;
+			addData_uint8_t(duty_y2Handle, duty_y2);
 			last_pwm_percent_executed_y = pwm_percent;
 			break;	
 		case 'z': 
 			SET_Z1_PWM ccr_value_1; // P2_2
 			SET_Z2_PWM ccr_value_2; // P2_6
 			duty_z1 = duty_1;
+			addData_uint8_t(duty_z1Handle, duty_z1);
 			duty_z2 = duty_2;
+			addData_uint8_t(duty_z2Handle, duty_z2);
 			last_pwm_percent_executed_z = pwm_percent;
 			break;
 		default: // unknown state 
@@ -450,8 +504,11 @@ void can_packet_rx_callback(CANPacket *packet)
         decodecmd_mtq_bdot(packet, &bdot_packet);
         // update global bdot command variables
         bdot_command_x = bdot_packet.cmd_mtq_bdot_x;
+        addData_uint8_t(bdot_x, bdot_command_x);
         bdot_command_y = bdot_packet.cmd_mtq_bdot_y;
+        addData_uint8_t(bdot_y, bdot_command_y);
         bdot_command_z = bdot_packet.cmd_mtq_bdot_z;
+        addData_uint8_t(bdot_z, bdot_command_z);
         bdot_ack_sent = 0; // reset acknowledgment sent flag
 	}
 	if (packet->id == CAN_ID_CMD_MTQ_FSW && enable_command_update){
@@ -460,8 +517,11 @@ void can_packet_rx_callback(CANPacket *packet)
         decodecmd_mtq_fsw(packet, &fsw_packet);
         // update global fsw command variables
         fsw_command_x = fsw_packet.cmd_mtq_fsw_x;
+        addData_uint8_t(fsw_x, fsw_command_x);
         fsw_command_y = fsw_packet.cmd_mtq_fsw_y;
+        addData_uint8_t(fsw_y,  fsw_command_y);
         fsw_command_z = fsw_packet.cmd_mtq_fsw_z;
+        addData_uint8_t(fsw_z, fsw_command_z);
         sc_mode = fsw_packet.cmd_mtq_fsw_sc_mode;
         fsw_ack_sent = 0; // reset acknowledgment sent flag
 	}
@@ -470,6 +530,10 @@ void can_packet_rx_callback(CANPacket *packet)
 	    decodecmd_ignore_fsw(packet, &ignore);
 		fsw_ignore = ignore.cmd_ignore_fsw_ignore;
 	} 
+	if(packet->id == CAN_ID_CMD_ROLLCALL)
+    {
+        rcFlag = 2;
+    }
 }	
 
 void send_CAN_health_packet(void)
@@ -616,6 +680,68 @@ void mtq_sfr_init(void)
 	TB0CCTL1 = OUTMOD_7;
 	// TB0 control 
 	TB0CTL = TBSSEL__SMCLK | MC__UP | TBCLR; 
+}
+
+void rollCall () {
+    if(rcFlag>0){
+        if(rcFlag == 2){
+            rcFlag=1;
+            CANPacket rollcallPkt1 = {0};
+            rc_adcs_mtq_1 rollcallPkt1_info = {0};
+            CANPacket rollcallPkt2 = {0};
+            rc_adcs_mtq_2 rollcallPkt2_info = {0};
+            CANPacket rollcallPkt3 = {0};
+            rc_adcs_mtq_3 rollcallPkt3_info = {0};
+            rollcallPkt1_info.rc_adcs_mtq_1_sysrstiv = bspGetResetCount();
+            rollcallPkt1_info.rc_adcs_mtq_1_temp_avg =0;//asensorReadIntTempC(); //TODO: this
+            rollcallPkt1_info.rc_adcs_mtq_1_temp_max =0;//asensorReadIntTempC(); //TODO: this
+            rollcallPkt1_info.rc_adcs_mtq_1_temp_min =0;//asensorReadIntTempC(); //TODO: this
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_min =getMin_uint8_t(bdot_x);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_max =getMax_uint8_t(bdot_x);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_avg =getAvg_uint8_t(bdot_x);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_min = getMin_uint8_t(bdot_y);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_max = getMax_uint8_t(bdot_y);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_avg = getAvg_uint8_t(bdot_y);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_max = getMax_uint8_t(bdot_z);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_avg = getAvg_uint8_t(bdot_z);
+            rollcallPkt3_info.rc_adcs_mtq_3_bdot_z_min =  getMin_uint8_t(bdot_z);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_min = getMin_uint8_t(fsw_x);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_max = getMax_uint8_t(fsw_x);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_avg = getAvg_uint8_t(fsw_x);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_min = getMin_uint8_t(fsw_y);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_max = getMax_uint8_t(fsw_y);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_avg = getAvg_uint8_t(fsw_y);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_z_avg = getAvg_uint8_t(fsw_z);
+            encoderc_adcs_mtq_1(&rollcallPkt1_info, &rollcallPkt1);
+            canSendPacket(&rollcallPkt1);
+            encoderc_adcs_mtq_2(&rollcallPkt2_info, &rollcallPkt2);
+            canSendPacket(&rollcallPkt2);
+            encoderc_adcs_mtq_3(&rollcallPkt3_info, &rollcallPkt3);
+            canSendPacket(&rollcallPkt3);
+        }
+        if(rcFlag ==1){
+            CANPacket rollcallPkt4 = {0};
+            rc_adcs_mtq_4 rollcallPkt4_info = {0};
+            CANPacket rollcallPkt5 = {0};
+            rc_adcs_mtq_5 rollcallPkt5_info = {0};
+            rollcallPkt4_info.rc_adcs_mtq_4_fsw_z_min = getMin_uint8_t(fsw_z);
+            rollcallPkt4_info.rc_adcs_mtq_4_fsw_y_max = getMax_uint8_t(fsw_z);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_x1_avg = getAvg_uint8_t(duty_x1Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_x2_avg = getAvg_uint8_t(duty_x2Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_y1_avg = getAvg_uint8_t(duty_y1Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_y2_avg = getAvg_uint8_t(duty_y2Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_z1_avg = getAvg_uint8_t(duty_z1Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_z2_avg = getAvg_uint8_t(duty_z2Handle);
+            rollcallPkt5_info.rc_adcs_mtq_5_fsw_ignore=0;
+            rollcallPkt5_info.rc_adcs_mtq_5_reset_counts=0;
+            encoderc_adcs_mtq_4(&rollcallPkt4_info, &rollcallPkt4);
+            encoderc_adcs_mtq_5(&rollcallPkt5_info, &rollcallPkt5);
+            canSendPacket(&rollcallPkt4);
+            canSendPacket(&rollcallPkt5);
+            rcFlag=0;
+        }
+    }
+
 }
 
 
