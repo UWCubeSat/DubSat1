@@ -131,7 +131,7 @@ desired_time convertTime(uint16_t ms)
     return convert;
 }
 
-int timerPollInitializer(uint16_t ms)
+TIMER_HANDLE timerPollInitializer(uint16_t ms)
 {
     desired_time convert = convertTime(ms);
     uint16_t start_counter = timer_counter;
@@ -152,7 +152,7 @@ int timerPollInitializer(uint16_t ms)
     return -1;
 }
 
-int timerCallbackInitializer(void (*waitFunc)(), uint32_t us)
+TIMER_HANDLE timerCallbackInitializer(void (*waitFunc)(), uint32_t us)
 {
     uint32_t newTime = us / 30.517578125;           //(ms * 1.00150225338) - 40; //TODO: check this factor
     uint16_t overflows = 0;

@@ -12,12 +12,11 @@
 typedef uint8_t TIMER_HANDLE;
 
 void initializeTimer();
-int timerPollInitializer(uint16_t ms);
+TIMER_HANDLE timerPollInitializer(uint16_t ms);
 int checkTimer(TIMER_HANDLE timerNumber);
 void endPollingTimer(TIMER_HANDLE timerNumber);
 
-int timerCallbackInitializer(void (*waitFunc)(), uint32_t us);
-int timerCallbackInitializer2(uint16_t ms);
+TIMER_HANDLE timerCallbackInitializer(void (*waitFunc)(), uint32_t us);
 void startCallback(TIMER_HANDLE n);
 void stopCallback(TIMER_HANDLE n);
 
