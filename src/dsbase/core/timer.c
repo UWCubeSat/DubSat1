@@ -47,8 +47,10 @@
 #include "timer.h"
 #include <stdint.h>
 
-static const int NUM_SUPPORTED_DURATIONS_POLLING = 8;
-static const int NUM_SUPPORTED_DURATIONS_CALLBACK = 2;
+/*static const int NUM_SUPPORTED_DURATIONS_POLLING = 8;
+static const int NUM_SUPPORTED_DURATIONS_CALLBACK = 2;*/
+#define NUM_SUPPORTED_DURATIONS_POLLING   8
+#define NUM_SUPPORTED_DURATIONS_CALLBACK  2
 
 
 typedef struct
