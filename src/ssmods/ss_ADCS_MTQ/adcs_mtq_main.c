@@ -72,7 +72,7 @@ void send_COSMOS_dooty_packet(void);
 void mtq_sfr_init(void);
 
 
-//FILE_STATIC ModuleStatus mod_status;
+
 FILE_STATIC volatile uint8_t enable_command_update = 0;
 
 //-----------inputs-----------------
@@ -267,7 +267,6 @@ void bdot_actuation()
 void stabalize()
 {
 	turn_off_coils();
-	enable_command_update = 0;
 	
 	if(checkTimer(stabalize_timer)) // finished wait phase
 	{
@@ -402,35 +401,35 @@ void set_pwm(char axis, int pwm_percent)
     int ccr_value_1 = duty_1*CCR_PERIOD;
 	int ccr_value_2 = duty_2*CCR_PERIOD;
 	
-	// set SFRs 
+	// set SFRs and update globals
 	switch(axis)
 	{
 		case 'x':
-			SET_X1_PWM ccr_value_1; // P1_7
-			SET_X2_PWM ccr_value_2; // P1_6
+			SET_X1_PWM ccr_value_1; 
+			SET_X2_PWM ccr_value_2; 
 			duty_x1 = duty_1; // for COSMOS
-			addData_uint8_t(duty_x1Handle, duty_x1);
 			duty_x2 = duty_2;
+			last_pwm_percent_executed_x = pwm_percent; // for CAN ack 
+			addData_uint8_t(duty_x1Handle, duty_x1); // for CAN rollcall 
 			addData_uint8_t(duty_x2Handle, duty_x2);
-			last_pwm_percent_executed_x = pwm_percent;
 			break;
 		case 'y': 
-			SET_Y1_PWM ccr_value_1; // P3_7
-			SET_Y2_PWM ccr_value_2; // P3_6
+			SET_Y1_PWM ccr_value_1; 
+			SET_Y2_PWM ccr_value_2; 
 			duty_y1 = duty_1;
-			addData_uint8_t(duty_y1Handle, duty_y1);
 			duty_y2 = duty_2;
-			addData_uint8_t(duty_y2Handle, duty_y2);
 			last_pwm_percent_executed_y = pwm_percent;
+			addData_uint8_t(duty_y1Handle, duty_y1);
+			addData_uint8_t(duty_y2Handle, duty_y2);
 			break;	
 		case 'z': 
-			SET_Z1_PWM ccr_value_1; // P2_2
-			SET_Z2_PWM ccr_value_2; // P2_6
+			SET_Z1_PWM ccr_value_1; 
+			SET_Z2_PWM ccr_value_2; 
 			duty_z1 = duty_1;
-			addData_uint8_t(duty_z1Handle, duty_z1);
 			duty_z2 = duty_2;
-			addData_uint8_t(duty_z2Handle, duty_z2);
 			last_pwm_percent_executed_z = pwm_percent;
+			addData_uint8_t(duty_z1Handle, duty_z1);
+			addData_uint8_t(duty_z2Handle, duty_z2);
 			break;
 		default: // unknown state 
 			break;
@@ -486,24 +485,26 @@ void can_packet_rx_callback(CANPacket *packet)
 		cmd_mtq_bdot bdot_packet = {0};
         decodecmd_mtq_bdot(packet, &bdot_packet);
         bdot_command_x = bdot_packet.cmd_mtq_bdot_x;
-        addData_uint8_t(bdot_x, bdot_command_x);
         bdot_command_y = bdot_packet.cmd_mtq_bdot_y;
-        addData_uint8_t(bdot_y, bdot_command_y);
         bdot_command_z = bdot_packet.cmd_mtq_bdot_z;
-        addData_uint8_t(bdot_z, bdot_command_z);
+		// for rollcall 
+		addData_uint8_t(bdot_x, bdot_command_x);
+		addData_uint8_t(bdot_y, bdot_command_y);
+		addData_uint8_t(bdot_z, bdot_command_z);
 	}
 	if (packet->id == CAN_ID_CMD_MTQ_FSW && enable_command_update){
 		command_source = FROM_FSW; 
+		// update global fsw command variables
 		cmd_mtq_fsw fsw_packet = {0};
         decodecmd_mtq_fsw(packet, &fsw_packet);
-        // update global fsw command variables
         fsw_command_x = fsw_packet.cmd_mtq_fsw_x;
-        addData_uint8_t(fsw_x, fsw_command_x);
         fsw_command_y = fsw_packet.cmd_mtq_fsw_y;
-        addData_uint8_t(fsw_y,  fsw_command_y);
         fsw_command_z = fsw_packet.cmd_mtq_fsw_z;
-        addData_uint8_t(fsw_z, fsw_command_z);
         sc_mode = fsw_packet.cmd_mtq_fsw_sc_mode;
+		// for rollcall 
+		addData_uint8_t(fsw_x, fsw_command_x);
+		addData_uint8_t(fsw_y,  fsw_command_y);
+		addData_uint8_t(fsw_z, fsw_command_z);
 	}
 	if (packet->id == CAN_ID_CMD_IGNORE_FSW){
 		cmd_ignore_fsw ignore = {0};
