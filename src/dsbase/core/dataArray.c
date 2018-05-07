@@ -41,26 +41,6 @@ uint16_t init_uint16_t(uint16_t *userBuffer, uint16_t size) {
 	myBuffer->resetAvgFlag = 0;
 	return handleNumber++;
 }
-
-void printArray_uint16_t(uint16_t handle) {
-	buffer_uint16_t *theirBuffer = &bufferContainer[handle];
-	for (int i = 0; i < theirBuffer->maxSize; i++) {
-		uint16_t number = theirBuffer->bufferPt[i];
-		printf("Position %d: %u\n", i, number);
-	}
-}
-
-void printAllStats_uint16_t(uint16_t handle) {
-	buffer_uint16_t *theirBuffer = &bufferContainer[handle];
-	uint32_t sum = getSum_uint16_t(handle);
-	printf("Sum: %u\n", sum);
-	uint16_t min = theirBuffer->min;
-	uint16_t max = theirBuffer->max;
-	printf("Min: %hu, Max: %hu\n", min, max);
-	uint16_t avg = getAvg_uint16_t(handle);
-	printf("Avg: %u\n", avg);
-}
-
 /**
  * Function: addData
  * Adds a data value to the buffer. If the buffer is full, data will be added at the beginning of the buffer and
@@ -272,24 +252,6 @@ uint16_t init_float(float *userBuffer, uint16_t size) {
 	return handleNumber++;
 }
 
-void printArray_float(uint16_t handle) {
-	buffer_float *theirBuffer = &bufferContainer_float[handle];
-	for (int i = 0; i < theirBuffer->maxSize; i++) {
-		float number = theirBuffer->bufferPt[i];
-		printf("Position %d: %f\n", i, number);
-	}
-}
-
-void printAllStats_float(uint16_t handle) {
-	buffer_float *theirBuffer = &bufferContainer_float[handle];
-	float sum = getSum_float(handle);
-	printf("Sum: %f\n", sum);
-	float min = theirBuffer->min;
-	float max = theirBuffer->max;
-	printf("Min: %f, Max: %f\n", min, max);
-	float avg = getAvg_float(handle);
-	printf("Avg: %f\n", avg);
-}
 
 /**
  * Function: addData
@@ -475,7 +437,7 @@ typedef struct buffer_uint8_t {
 	uint16_t resetAvgFlag;
 } buffer_uint8_t;
 
-uint16_t handleNumber = 0;
+
 buffer_uint8_t bufferContainer_uint8_t[10];
 
 /**
@@ -503,26 +465,6 @@ uint16_t init_uint8_t(uint8_t *userBuffer, uint16_t size) {
 	myBuffer->resetAvgFlag = 0;
 	return handleNumber++;
 }
-
-void printArray_uint8_t(uint16_t handle) {
-	buffer_uint8_t *theirBuffer = &bufferContainer_uint8_t[handle];
-	for (int i = 0; i < theirBuffer->maxSize; i++) {
-		uint8_t number = theirBuffer->bufferPt[i];
-		printf("Position %d: %u\n", i, number);
-	}
-}
-
-void printAllStats_uint8_t(uint16_t handle) {
-	buffer_uint8_t *theirBuffer = &bufferContainer_uint8_t[handle];
-	NEXT_uint8_t sum = getSum_uint8_t(handle);
-	printf("Sum: %u\n", sum);
-	uint8_t min = theirBuffer->min;
-	uint8_t max = theirBuffer->max;
-	printf("Min: %hu, Max: %hu\n", min, max);
-	uint8_t avg = getAvg_uint8_t(handle);
-	printf("Avg: %u\n", avg);
-}
-
 /**
  * Function: addData
  * Adds a data value to the buffer. If the buffer is full, data will be added at the beginning of the buffer and
@@ -588,7 +530,7 @@ void addData_uint8_t(uint16_t handle, uint8_t data) {
  */
 void resetAll_uint8_t(uint16_t handle) {
 	/* Resets*/
-	buffer *theirBuffer = &bufferContainer_uint8_t[handle];
+	buffer_uint8_t *theirBuffer = &bufferContainer_uint8_t[handle];
 	theirBuffer->currPt = theirBuffer->startPt;
 	theirBuffer->endPt = theirBuffer->startPt;
 	theirBuffer->currentSize = 0;
@@ -605,7 +547,7 @@ void resetAll_uint8_t(uint16_t handle) {
  *
  */
 void resetAvg_uint8_t(uint16_t handle) {
-    buffer *theirBuffer = &bufferContainer_uint8_t[handle];
+    buffer_uint8_t *theirBuffer = &bufferContainer_uint8_t[handle];
     theirBuffer->currPt = theirBuffer->startPt;
 	 theirBuffer->endPt = theirBuffer->startPt;
     theirBuffer->currentSize = 0;
@@ -625,7 +567,7 @@ void resetAvg_uint8_t(uint16_t handle) {
  *
  */
 void resetMinMax_uint8_t(uint16_t handle) {
-    buffer *theirBuffer = &bufferContainer_uint8_t[handle];
+    buffer_uint8_t *theirBuffer = &bufferContainer_uint8_t[handle];
     theirBuffer->min = (uint8_t)0;
     theirBuffer->max = (uint8_t)0;
     theirBuffer->resetMinMaxFlag = 1;
@@ -641,7 +583,7 @@ void resetMinMax_uint8_t(uint16_t handle) {
  */
 uint8_t getSum_uint8_t(uint16_t handle) {
 	uint8_t sum = (uint8_t)0;
-	buffer *theirBuffer = &bufferContainer_uint8_t[handle];
+	buffer_uint8_t *theirBuffer = &bufferContainer_uint8_t[handle];
 	uint8_t *curr = theirBuffer->startPt;
 	while (curr != theirBuffer->endPt) {
 		uint8_t number = *curr;
