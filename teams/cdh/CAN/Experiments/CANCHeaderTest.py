@@ -152,7 +152,9 @@ void canWrapInitWithFilter();
 // when a packet is received through CAN
 void (*CANPacketReceived)(CANPacket *);
 
-void canSendPacket(CANPacket *packet);
+// Returns 0 if sending was successful
+// Returns not zero if it couldn't right now.
+uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
 ''')
@@ -293,21 +295,6 @@ def createCMain(candb, cFileName, floatList):
 #include "canwrap.h"
 #include "../core/can.h"
 #include "../bsp/bsp.h"
-
-
-//void canPacketInit(uint8_t boardNum){
-//    canInit();
-//    setTheFilter(CAN_MASK_0, 0x01 << boardNum);
-//    setTheFilter(CAN_FILTER_0, 0x01 << boardNum);
-//    setTheFilter(CAN_FILTER_1, 0x01 << boardNum);
-//    setTheFilter(CAN_MASK_1, 0x01 << boardNum);
-//    setTheFilter(CAN_FILTER_2, 0x01 << boardNum);
-//    setTheFilter(CAN_FILTER_3, 0x01 << boardNum);
-//    setTheFilter(CAN_FILTER_4, 0x01 << boardNum);
-//    setTheFilter(CAN_FILTER_5, 0x01 << boardNum);
-//}
-
-uint8_t CAN_WRAP_BUFFER_KEEPER_TRACKER;
 
 void setMaskOrFilter(uint8_t addr, uint32_t filter){
     setTheFilter(addr, filter);
@@ -466,8 +453,7 @@ void canWrapInitWithFilter(){
 }
 
 
-void reverseArray(uint8_t arr[], uint8_t start, uint8_t end)
-{
+void reverseArray(uint8_t arr[], uint8_t start, uint8_t end) {
     uint8_t temp;
     if (start >= end)
         return;
@@ -477,7 +463,7 @@ void reverseArray(uint8_t arr[], uint8_t start, uint8_t end)
     reverseArray(arr, start+1, end-1);
 }
 
-void canSendPacket(CANPacket *packet){
+uint8_t canSendPacket(CANPacket *packet){
     uint8_t tech[5] = {
        (uint8_t) (packet->id >> 21),
        (uint8_t) (packet->id >> 16) & 0x03 | (uint8_t) (packet->id >> 13) & 0xE0 | 0x08,
@@ -485,8 +471,21 @@ void canSendPacket(CANPacket *packet){
        (uint8_t) packet->id,
        packet->length
     };
-    CAN_WRAP_BUFFER_KEEPER_TRACKER = (CAN_WRAP_BUFFER_KEEPER_TRACKER + 1) % 3;
-    canSend(CAN_WRAP_BUFFER_KEEPER_TRACKER,tech, packet->data);
+
+    const uint8_t bufferAvailability = canTxCheck();
+    if (!(canTxCheck() & 0x01)){
+        canSend(0, tech, packet->data);
+        return 0;
+    }
+    if (!(canTxCheck() & 0x02)){
+        canSend(1, tech, packet->data);
+        return 0;
+    }
+    if (!(canTxCheck() & 0x04)){
+        canSend(2, tech, packet->data);
+        return 0;
+    }
+    return 1;
 }
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {

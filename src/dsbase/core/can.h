@@ -36,6 +36,11 @@ uint8_t canInit(void);
  */
 uint8_t canRxErrorCheck(void);
 
+/* Check if there are any buffers with a request to send in progress (We shouldn't overwrite these)
+ * Output: 0 if we're ready to send, otherwise 1 2 or 4 if TxB 0 1 or 2 are still waiting to send.
+ */
+uint8_t canTxCheck(void);
+
 /* bufNum: TxBuf to write to, from 0 to 2
  * Tech: technical details
  *  Msg: message buffer
