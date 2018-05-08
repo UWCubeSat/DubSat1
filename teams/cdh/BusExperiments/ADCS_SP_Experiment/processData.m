@@ -13,13 +13,13 @@ data = csvread(sprintf('%s\\%s', sourceDataFile.folder, sourceDataFile.name), 1)
 time = data(:, 1);
 
 % Read mag inputs and convert them to the raw units
-in_mag1 = round(data(:, 11:13) * 10e9 / MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR);
+in_mag1 = int16(data(:, 11:13) * 10e9 / MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR);
 in_mag1valid = data(:, 14);
-in_mag2 = round(data(:, 15:17) * 10e9 / MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR);
+in_mag2 = int16(data(:, 15:17) * 10e9 / MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR);
 in_mag2valid = data(:, 18);
 
 % Read imu inputs and convert them to the raw units
-in_imu = round(data(:, 19:21) / (IMU_RAW_TO_DPS * DEG_TO_RAD));
+in_imu = int16(data(:, 19:21) / (IMU_RAW_TO_DPS * DEG_TO_RAD));
 in_imuvalid = data(:, 22);
 
 % Read sun sensor. Already in proper units.
@@ -30,6 +30,20 @@ in_sunvalid = data(:, 25);
 out_mag = data(:, 26:28);
 out_imu = data(:, 29:31);
 out_sun = data(:, 32:34);
+
+% figure
+% plot(time, data(:, 19:21));
+% title('IMU readings (raw)');
+% xlabel('time (s)');
+% ylabel('angular rate');
+% legend('x', 'y', 'z');
+
+figure
+plot(time, data(:, 11:13));
+title('MAG1 readings (raw)');
+xlabel('time (s)');
+ylabel('???');
+legend('x', 'y', 'z');
 
 disp('saving mag1');
 saveAsShort(in_mag1(:, 1), strcat(dataDir, 'in_mag1x'));

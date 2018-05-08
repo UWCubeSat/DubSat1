@@ -176,7 +176,7 @@ FILE_STATIC void step()
     static uint16_t i = 0;
     i++;
 
-    if (i % 40 == 0) // 1 Hz
+    if (i % 4 == 0) // 10 Hz
     {
         // blink LED
         LED_OUT ^= LED_BIT;
