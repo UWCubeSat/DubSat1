@@ -237,18 +237,15 @@ void can_packet_rx_callback(CANPacket *packet)
     {
         case CAN_ID_CMD_ROLLCALL:
             decodecmd_rollcall(packet, &rcPkt);
-            if(__SUBSYSTEM_MODULE__ == rcPkt.cmd_rollcall_msp)
-            {
-                updateMET(constructTimestamp(rcPkt.cmd_rollcall_met, rcPkt.cmd_rollcall_met_overflow));
-                rcFlag = 3;
-            }
+            updateMET(constructTimestamp(rcPkt.cmd_rollcall_met, rcPkt.cmd_rollcall_met_overflow));
+            rcFlag = 3;
             break;
         default:
             break;
     }
 }
 
-void sendRC()
+void sendRC() //TODO: use if'else for each and do rc while once implemented on CAN
 {
             CANPacket rollcallPkt1 = {0};
             rc_eps_gen_1 rollcallPkt1_info = {0};
@@ -330,7 +327,7 @@ void sendRC()
                     rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_avg = getAvg_uint16_t(panel2Temp);
                     rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_max = getMax_uint16_t(panel2Temp);
                     rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_min = getMin_uint16_t(panel2Temp);
-                    //rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_avg = getAvg_uint16_t(panel3Temp); //this one
+                    rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_avg = getAvg_uint16_t(panel3Temp);
                     rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_max = getMax_uint16_t(panel3Temp);
                     rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_min = getMin_uint16_t(panel3Temp);
                     encoderc_eps_gen_7(&rollcallPkt7_info, &rollcallPkt7);
@@ -384,7 +381,8 @@ int main(void)
     panel2Temp = init_uint16_t(panel2TempArray, 480);
     panel3Temp = init_uint16_t(panel3TempArray, 480);
 
-    canWrapInitWithFilter();
+    //canWrapInitWithFilter();
+    canWrapInit();
     setCANPacketRxCallback(can_packet_rx_callback);
 
 #if defined(__DEBUG__)
