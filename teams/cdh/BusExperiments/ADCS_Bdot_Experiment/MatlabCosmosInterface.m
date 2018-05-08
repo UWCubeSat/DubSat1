@@ -18,14 +18,14 @@ load('angular_velocity_z.dat');
 load('env_xMag.dat');
 load('env_yMag.dat');
 load('env_zMag.dat');
-
+dataLength = length(time);
 tic
 while (1)
     if (toc >= time(index))
         fwrite(u, [STATUS_OPCODE abs(floor(255 * sin(i)))]);
-        ang_v = [angular_velocity_x(index) angular_velocity_y(index) angular_velocity_x(index)];
+        ang_v = [angular_velocity_x(index) angular_velocity_y(index) angular_velocity_x(index)]
         fwrite(u, [ANG_V_OPCODE ang_v]);
-        env_mag = [env_xMag(index) env_yMag(index) env_zMag(index)];
+        env_mag = [env_xMag(index) env_yMag(index) env_zMag(index)]
         fwrite(u, [ENV_MAG env_mag]);
         i = i + .05;
     end
