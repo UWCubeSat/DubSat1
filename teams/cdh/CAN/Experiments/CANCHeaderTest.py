@@ -104,6 +104,8 @@ def createCHeader(candb, cFileName, floatList):
  */
 
 #include <inttypes.h>
+#include "../core/can.h"
+
 
 #ifndef DSBASE_INTERFACES_CANWRAP_H_
 #define DSBASE_INTERFACES_CANWRAP_H_
@@ -293,7 +295,6 @@ def createCMain(candb, cFileName, floatList):
  */
 
 #include "canwrap.h"
-#include "../core/can.h"
 #include "../bsp/bsp.h"
 
 void setMaskOrFilter(uint8_t addr, uint32_t filter){
@@ -328,7 +329,6 @@ void canWrapInit(){
     canInit();
     setReceiveCallback0(wrapCB0);
     setReceiveCallback1(wrapCB1);
-    CAN_WRAP_BUFFER_KEEPER_TRACKER = 0;
 }
 
 void canWrapInitWithFilter(){

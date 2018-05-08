@@ -6,6 +6,8 @@
  */
 
 #include <inttypes.h>
+#include "../core/can.h"
+
 
 #ifndef DSBASE_INTERFACES_CANWRAP_H_
 #define DSBASE_INTERFACES_CANWRAP_H_

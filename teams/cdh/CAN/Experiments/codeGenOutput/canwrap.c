@@ -6,7 +6,6 @@
  */
 
 #include "canwrap.h"
-#include "../core/can.h"
 #include "../bsp/bsp.h"
 
 void setMaskOrFilter(uint8_t addr, uint32_t filter){
@@ -41,7 +40,6 @@ void canWrapInit(){
     canInit();
     setReceiveCallback0(wrapCB0);
     setReceiveCallback1(wrapCB1);
-    CAN_WRAP_BUFFER_KEEPER_TRACKER = 0;
 }
 
 void canWrapInitWithFilter(){
