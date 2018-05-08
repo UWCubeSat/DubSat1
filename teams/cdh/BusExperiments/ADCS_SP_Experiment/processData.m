@@ -38,12 +38,19 @@ out_sun = data(:, 32:34);
 % ylabel('angular rate');
 % legend('x', 'y', 'z');
 
+% figure
+% plot(time, data(:, 11:13));
+% title('MAG1 readings (raw)');
+% xlabel('time (s)');
+% ylabel('???');
+% legend('x', 'y', 'z');
+
 figure
-plot(time, data(:, 11:13));
-title('MAG1 readings (raw)');
+plot(time, [in_sunalpha, in_sunbeta]);
+title('Sun');
 xlabel('time (s)');
-ylabel('???');
-legend('x', 'y', 'z');
+ylabel('degrees');
+legend('alpha', 'beta');
 
 disp('saving mag1');
 saveAsShort(in_mag1(:, 1), strcat(dataDir, 'in_mag1x'));

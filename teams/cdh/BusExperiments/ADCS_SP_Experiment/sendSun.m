@@ -5,12 +5,8 @@ libhdr = 'aardvark.h';
 
 dataDir = 'C:\dubsat_data\sp2\';
 
-inAddr = hex2dec('04'); % address that the master writes to
-DUMP_BUFFER_SIZE = uint16(64);
-dump = uint8(zeros(DUMP_BUFFER_SIZE));
-
 if ~libisloaded(lib)
-    [load_notfounderrors load_warnings] = loadlibrary(lib, libhdr);
+    [load_notfounderrors, load_warnings] = loadlibrary(lib, libhdr);
 end
 
 disp('loading .dat files');
@@ -48,11 +44,6 @@ while 1
             errorCode = typecast(errorCode, 'uint8');
             thisout = [ 10 alphaBytes betaBytes errorCode ];
             calllib(lib, 'c_aa_i2c_slave_set_response', hdev, length(thisout), thisout);
-            
-            % read just so the read buffer doesn't fill up
-            if bitand(calllib(lib, 'c_aa_async_poll', hdev, 0), 1)
-                calllib(lib, 'c_aa_i2c_slave_read', hdev, inAddr, DUMP_BUFFER_SIZE, dump);
-            end
             
             index = index + 1;
         end
