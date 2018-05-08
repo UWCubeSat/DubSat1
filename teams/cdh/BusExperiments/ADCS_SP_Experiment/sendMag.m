@@ -9,7 +9,7 @@ libhdr = 'aardvark.h';
 dataDir = 'C:\dubsat_data\sp2\';
 
 if ~libisloaded(lib)
-    [load_notfounderrors load_warnings] = loadlibrary(lib, libhdr);
+    [load_notfounderrors, load_warnings] = loadlibrary(lib, libhdr);
 end
 
 disp('loading .dat files');
@@ -23,9 +23,11 @@ load(sprintf('%sin_mag%sz_lsb.dat', dataDir, bus));
 load(sprintf('%sin_mag%svalid.dat', dataDir, bus));
 
 if (bus == '1')
-    outstr = [in_mag1x_msb in_mag1x_lsb in_mag1z_msb in_mag1z_lsb in_mag1y_msb in_mag1y_lsb];
+    disp('using bus 1');
+    outstr = [in_mag1x_lsb in_mag1x_msb in_mag1z_lsb in_mag1z_msb in_mag1y_lsb in_mag1y_msb];
 else
-    outstr = [in_mag2x_msb in_mag2x_lsb in_mag2z_msb in_mag2z_lsb in_mag2y_msb in_mag2y_lsb];
+    disp('using bus 2');
+    outstr = [in_mag2x_lsb in_mag2x_msb in_mag2z_lsb in_mag2z_msb in_mag2y_lsb in_mag2y_msb];
 end
 outstr = uint8(outstr);
 
