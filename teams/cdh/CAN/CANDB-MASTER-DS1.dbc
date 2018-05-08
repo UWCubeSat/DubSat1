@@ -332,15 +332,15 @@ BO_ 2451701984 eps_domain_output: 8 eps_dist
  SG_ eps_domain_output_num : 0|8@1+ (1,0) [0|8] "" Vector__XXX
 
 BO_ 2483355714 sensorproc_imu: 7 adcs_sensorproc
- SG_ sensorproc_imu_z : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ sensorproc_imu_y : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ sensorproc_imu_x : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ sensorproc_imu_z : 32|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_imu_y : 16|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_imu_x : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ sensorproc_imu_valid : 48|1@1+ (1,0) [0|1] "bool" Vector__XXX
 
 BO_ 2483355715 sensorproc_mag: 7 adcs_sensorproc
- SG_ sensorproc_mag_z : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ sensorproc_mag_y : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ sensorproc_mag_x : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ sensorproc_mag_z : 32|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_mag_y : 16|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ sensorproc_mag_x : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ sensorproc_mag_valid : 48|1@1+ (1,0) [0|1] "bool" Vector__XXX
 
 BO_ 2148597780 cmd_rollcall: 7 eps_dist
