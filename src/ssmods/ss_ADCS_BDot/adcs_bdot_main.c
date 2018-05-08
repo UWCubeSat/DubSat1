@@ -344,30 +344,28 @@ void rollCall()
     if (rcFlag == 2)
     {
         rcFlag=1;
-        CANPacket rollcallPkt1 = {0};
+        CANPacket rollcallPkt = {0};
         rc_adcs_bdot_1 rollcallPkt1_info = {0};
-        CANPacket rollcallPkt2 = {0};
-        rc_adcs_bdot_2 rollcallPkt2_info = {0};
-        CANPacket rollcallPkt3 = {0};
-        rc_adcs_bdot_3 rollcallPkt3_info = {0};
         rollcallPkt1_info.rc_adcs_bdot_1_sysrstiv = bspGetResetCount();
         rollcallPkt1_info.rc_adcs_bdot_1_temp_avg = getAvg_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
         rollcallPkt1_info.rc_adcs_bdot_1_temp_max = getMax_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
         rollcallPkt1_info.rc_adcs_bdot_1_temp_min = getMin_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
+        encoderc_adcs_bdot_1(&rollcallPkt1_info, &rollcallPkt);
+        canSendPacket(&rollcallPkt);
+        rc_adcs_bdot_2 rollcallPkt2_info = {0};
         rollcallPkt2_info.rc_adcs_bdot_2_mag_x_min = getMin_uint16_t(mag_x);
         rollcallPkt2_info.rc_adcs_bdot_2_mag_x_max = getMax_uint16_t(mag_x);
         rollcallPkt2_info.rc_adcs_bdot_2_mag_x_avg = getAvg_uint16_t(mag_x);
         rollcallPkt2_info.rc_adcs_bdot_2_mag_y_min = getMin_uint16_t(mag_y);
+        encoderc_adcs_bdot_2(&rollcallPkt2_info, &rollcallPkt);
+        canSendPacket(&rollcallPkt);
+        rc_adcs_bdot_3 rollcallPkt3_info = {0};
         rollcallPkt3_info.rc_adcs_bdot_3_mag_y_max = getMax_uint16_t(mag_y);
         rollcallPkt3_info.rc_adcs_bdot_3_mag_y_avg = getAvg_uint16_t(mag_y);
         rollcallPkt3_info.rc_adcs_bdot_3_mag_z_min = getMin_uint16_t(mag_z);
         rollcallPkt3_info.rc_adcs_bdot_3_mag_z_max = getMax_uint16_t(mag_y);
-        encoderc_adcs_bdot_1(&rollcallPkt1_info, &rollcallPkt1);
-        canSendPacket(&rollcallPkt1);
-        encoderc_adcs_bdot_2(&rollcallPkt2_info, &rollcallPkt2);
-        canSendPacket(&rollcallPkt2);
-        encoderc_adcs_bdot_3(&rollcallPkt3_info, &rollcallPkt3);
-        canSendPacket(&rollcallPkt3);
+        encoderc_adcs_bdot_3(&rollcallPkt3_info, &rollcallPkt);
+        canSendPacket(&rollcallPkt);
     }
     if(rcFlag == 1)
     {
