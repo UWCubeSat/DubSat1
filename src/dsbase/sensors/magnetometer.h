@@ -89,4 +89,6 @@ float magConvertRawToTeslas(int16_t raw);
  */
 int16_t magConvertTeslasToRaw(float teslas);
 
+MagnetometerData* testing_magReadXYZData(hMag handle, UnitConversionMode desiredConversion);
+
 #endif /* MAGNETOMETER_H_ */
