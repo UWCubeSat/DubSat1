@@ -62,10 +62,16 @@ FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 FILE_STATIC uint16_t startupDelay = 1800;
 #pragma PERSISTENT(startupDelay)
 
-FILE_STATIC uint8_t rcFlag = 0;
+FILE_STATIC uint8_t rcFlag = 0; //use this one for sending own rollcall
+FILE_STATIC uint8_t rcSendFlag = 0;  //use this one for sending rcCmd
 
 FILE_STATIC uint8_t subSystemsToToggle[16] = {0};
 FILE_STATIC int rcTimerID = 0;
+
+FILE_STATIC uint16_t mspTempArray[480] = {0};
+
+FILE_STATIC uint16_t mspTemp;
+
 
 void distDeployInit()
 {
@@ -406,21 +412,9 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
     return 1;
 }
 
-void sendSubsystemRollCall(uint8_t ssID)
-{
-    CANPacket rcPkt = {0};
-    cmd_rollcall rc_info = {0};
-    rc_info.cmd_rollcall_met = getMETPrimary();
-    rc_info.cmd_rollcall_met_overflow = getMETOverflow();
-    rc_info.cmd_rollcall_msp = ssID;
-    encodecmd_rollcall(&rc_info, &rcPkt);
-    canSendPacket(&rcPkt);
-}
-
 void sendRollCall()
 {
-    rcFlag = 1;
-    //TODO: but not 2,3,4 (those are RWs
+    rcSendFlag = 1;
 }
 
 void can_packet_rx_callback(CANPacket *packet)
@@ -428,16 +422,11 @@ void can_packet_rx_callback(CANPacket *packet)
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            rcFlag = 2;
+            rcSendFlag = 2;
             break;
         default:
             break;
     }
-}
-
-void sendRCHandler()
-{
-
 }
 
 /*
@@ -545,52 +534,15 @@ int main(void)
                 mod_status.in_unknown_state++;
                 break;
         }
-        if(rcFlag)
+        if(rcSendFlag)
         {
-            int i;
-            uint8_t pdState;
-            uint8_t toToggleCount = 0;
-            for(i = NUM_POWER_DOMAINS; i; i--)
-            {
-                pdState = (uint8_t)distQueryDomainSwitch((PowerDomainID)i);
-                if(pdState)
-                {
-                    switch((PowerDomainID)i)
-                    {
-                        case PD_COM2:
-                            subSystemsToToggle[Module_COM2] = 1;
-                            toToggleCount++;
-                            break;
-                        case PD_RAHS:
-                            subSystemsToToggle[Module_RAHS] = 1;
-                            toToggleCount++;
-                            break;
-                        case PD_BDOT:
-                            subSystemsToToggle[Module_ADCS_BDot] = 1;
-                            subSystemsToToggle[Module_ADCS_MTQ] = 1;
-                            toToggleCount += 2;
-                            break;
-                        case PD_ESTIM:
-                            subSystemsToToggle[Module_ADCS_Estim] = 1;
-                            subSystemsToToggle[Module_ADCS_SensorProc] = 1;
-                            toToggleCount += 2;
-                            break;
-                        case PD_EPS:
-                            subSystemsToToggle[Module_EPS_Batt] = 1;
-                            subSystemsToToggle[Module_EPS_Gen] = 1;
-                            toToggleCount++;
-                            break;
-                        case PD_PPT:
-                            subSystemsToToggle[Module_PPT] = 1;
-                            toToggleCount++;
-                            break;
-                    }
-                }
-            }
-            //TODO: start the chin here
-            rcTimerID =
-
-            rcFlag = 0;
+            CANPacket rcPkt = {0};
+            cmd_rollcall rc_info = {0};
+            rc_info.cmd_rollcall_met = getMETPrimary();
+            rc_info.cmd_rollcall_met_overflow = getMETOverflow();
+            encodecmd_rollcall(&rc_info, &rcPkt);
+            canSendPacket(&rcPkt);
+            rcSendFlag = 0;
         }
     }
 

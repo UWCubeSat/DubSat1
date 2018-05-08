@@ -238,7 +238,7 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_CMD_ROLLCALL:
             decodecmd_rollcall(packet, &rcPkt);
             updateMET(constructTimestamp(rcPkt.cmd_rollcall_met, rcPkt.cmd_rollcall_met_overflow));
-            rcFlag = 3;
+            rcFlag = 9;
             break;
         default:
             break;
@@ -247,104 +247,110 @@ void can_packet_rx_callback(CANPacket *packet)
 
 void sendRC() //TODO: use if'else for each and do rc while once implemented on CAN
 {
-            CANPacket rollcallPkt1 = {0};
+    while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
+    {
+        CANPacket rollcallPkt = {0};
+        if(rcFlag == 9)
+        {
             rc_eps_gen_1 rollcallPkt1_info = {0};
-            CANPacket rollcallPkt2 = {0};
+            rollcallPkt1_info.rc_eps_gen_1_sysrstiv = bspGetResetCount();
+            rollcallPkt1_info.rc_eps_gen_1_temp_avg = getAvg_uint16_t(mspTemp);
+            rollcallPkt1_info.rc_eps_gen_1_temp_max = getMax_uint16_t(mspTemp);
+            rollcallPkt1_info.rc_eps_gen_1_temp_min = getMin_uint16_t(mspTemp);
+            encoderc_eps_gen_1(&rollcallPkt1_info, &rollcallPkt);
+            resetAvg_uint16_t(mspTemp);
+        }
+        else if(rcFlag == 8)
+        {
             rc_eps_gen_2 rollcallPkt2_info = {0};
-            CANPacket rollcallPkt3 = {0};
+            rollcallPkt2_info.rc_eps_gen_2_pnl_1_voltage_avg = getAvg_uint16_t(panel1Voltage);
+            rollcallPkt2_info.rc_eps_gen_2_pnl_1_voltage_max = getMax_uint16_t(panel1Voltage);
+            rollcallPkt2_info.rc_eps_gen_2_pnl_1_voltage_min = getMin_uint16_t(panel1Voltage);
+            rollcallPkt2_info.rc_eps_gen_2_pnl_2_voltage_min = getMin_uint16_t(panel2Voltage);
+            encoderc_eps_gen_2(&rollcallPkt2_info, &rollcallPkt);
+            resetAvg_uint16_t(panel1Voltage);
+        }
+        else if(rcFlag == 7)
+        {
             rc_eps_gen_3 rollcallPkt3_info = {0};
-            CANPacket rollcallPkt4 = {0};
+            rollcallPkt3_info.rc_eps_gen_3_pnl_2_voltage_avg = getAvg_uint16_t(panel2Voltage);
+            rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_max = getMax_uint16_t(panel2Voltage);
+            rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_max = getMax_uint16_t(panel3Voltage);
+            rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_min = getMin_uint16_t(panel3Voltage);
+            encoderc_eps_gen_3(&rollcallPkt3_info, &rollcallPkt);
+            resetAvg_uint16_t(panel2Voltage);
+        }
+        else if(rcFlag == 6)
+        {
             rc_eps_gen_4 rollcallPkt4_info = {0};
-            CANPacket rollcallPkt5 = {0};
+            rollcallPkt4_info.rc_eps_gen_4_pnl_1_current_avg = getAvg_uint16_t(panel1Current);
+            rollcallPkt4_info.rc_eps_gen_4_pnl_1_current_max = getMax_uint16_t(panel1Current);
+            rollcallPkt4_info.rc_eps_gen_4_pnl_1_current_min = getMin_uint16_t(panel1Current);
+            rollcallPkt4_info.rc_eps_gen_4_pnl_3_voltage_avg = getAvg_uint16_t(panel3Voltage);
+            encoderc_eps_gen_4(&rollcallPkt4_info, &rollcallPkt);
+            resetAvg_uint16_t(panel1Current);
+            resetAvg_uint16_t(panel3Voltage);
+        }
+        else if(rcFlag == 5)
+        {
             rc_eps_gen_5 rollcallPkt5_info = {0};
-            CANPacket rollcallPkt6 = {0};
+            rollcallPkt5_info.rc_eps_gen_5_pnl_2_current_avg = getAvg_uint16_t(panel2Current);
+            rollcallPkt5_info.rc_eps_gen_5_pnl_2_current_max = getMax_uint16_t(panel2Current);
+            rollcallPkt5_info.rc_eps_gen_5_pnl_2_current_min = getMin_uint16_t(panel2Current);
+            rollcallPkt5_info.rc_eps_gen_5_pnl_3_current_min = getMin_uint16_t(panel3Current);
+            encoderc_eps_gen_5(&rollcallPkt5_info, &rollcallPkt);
+            resetAvg_uint16_t(panel2Current);
+        }
+        else if(rcFlag == 4)
+        {
             rc_eps_gen_6 rollcallPkt6_info = {0};
-            CANPacket rollcallPkt7 = {0};
+            rollcallPkt6_info.rc_eps_gen_6_pnl_1_power_max = getMax_uint16_t(panel1Pwr);
+            rollcallPkt6_info.rc_eps_gen_6_pnl_1_power_min = getMin_uint16_t(panel1Pwr);
+            rollcallPkt6_info.rc_eps_gen_6_pnl_3_current_avg = getAvg_uint16_t(panel3Current);
+            rollcallPkt6_info.rc_eps_gen_6_pnl_3_current_max = getMax_uint16_t(panel3Current);
+            encoderc_eps_gen_6(&rollcallPkt6_info, &rollcallPkt);
+            resetAvg_uint16_t(panel3Current);
+        }
+        else if(rcFlag == 3)
+        {
             rc_eps_gen_7 rollcallPkt7_info = {0};
-            CANPacket rollcallPkt8 = {0};
+            rollcallPkt7_info.rc_eps_gen_7_pnl_1_power_avg = getAvg_uint16_t(panel1Pwr);
+            rollcallPkt7_info.rc_eps_gen_7_pnl_2_power_avg = getAvg_uint16_t(panel2Pwr);
+            rollcallPkt7_info.rc_eps_gen_7_pnl_2_power_max = getMax_uint16_t(panel2Pwr);
+            rollcallPkt7_info.rc_eps_gen_7_pnl_2_power_min = getMin_uint16_t(panel2Pwr);
+            encoderc_eps_gen_7(&rollcallPkt7_info, &rollcallPkt);
+            resetAvg_uint16_t(panel1Pwr);
+            resetAvg_uint16_t(panel2Pwr);
+        }
+        else if(rcFlag == 2)
+        {
             rc_eps_gen_8 rollcallPkt8_info = {0};
-            CANPacket rollcallPkt9 = {0};
+            rollcallPkt8_info.rc_eps_gen_8_pnl_1_temp_min = getMin_uint16_t(panel1Temp);
+            rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_avg = getAvg_uint16_t(panel3Pwr);
+            rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_max = getMax_uint16_t(panel3Pwr);
+            rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_min = getMin_uint16_t(panel3Pwr);
+            encoderc_eps_gen_8(&rollcallPkt8_info, &rollcallPkt);
+            resetAvg_uint16_t(panel3Pwr);
+        }
+        else if(rcFlag == 1)
+        {
             rc_eps_gen_9 rollcallPkt9_info = {0};
-            switch(rcFlag)
-            {
-                case 1:
-                    rollcallPkt1_info.rc_eps_gen_1_sysrstiv = bspGetResetCount();
-                    rollcallPkt1_info.rc_eps_gen_1_temp_avg = getAvg_uint16_t(mspTemp);
-                    rollcallPkt1_info.rc_eps_gen_1_temp_max = getMax_uint16_t(mspTemp);
-                    rollcallPkt1_info.rc_eps_gen_1_temp_min = getMin_uint16_t(mspTemp);
-                    rollcallPkt2_info.rc_eps_gen_2_pnl_1_voltage_avg = getAvg_uint16_t(panel1Voltage);
-                    rollcallPkt2_info.rc_eps_gen_2_pnl_1_voltage_max = getMax_uint16_t(panel1Voltage);
-                    rollcallPkt2_info.rc_eps_gen_2_pnl_1_voltage_min = getMin_uint16_t(panel1Voltage);
-                    rollcallPkt2_info.rc_eps_gen_2_pnl_2_voltage_min = getMin_uint16_t(panel2Voltage);
-                    rollcallPkt3_info.rc_eps_gen_3_pnl_2_voltage_avg = getAvg_uint16_t(panel2Voltage);
-                    rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_max = getMax_uint16_t(panel2Voltage);
-                    rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_max = getMax_uint16_t(panel3Voltage);
-                    rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_min = getMin_uint16_t(panel3Voltage);
-                    encoderc_eps_gen_1(&rollcallPkt1_info, &rollcallPkt1);
-                    encoderc_eps_gen_2(&rollcallPkt2_info, &rollcallPkt2);
-                    encoderc_eps_gen_3(&rollcallPkt3_info, &rollcallPkt3);
-                    canSendPacket(&rollcallPkt1);
-                    canSendPacket(&rollcallPkt2);
-                    canSendPacket(&rollcallPkt3);
-                    resetAvg_uint16_t(mspTemp);
-                    resetAvg_uint16_t(panel1Voltage);
-                    break;
-                case 2:
-                    rollcallPkt4_info.rc_eps_gen_4_pnl_1_current_avg = getAvg_uint16_t(panel1Current);
-                    rollcallPkt4_info.rc_eps_gen_4_pnl_1_current_max = getMax_uint16_t(panel1Current);
-                    rollcallPkt4_info.rc_eps_gen_4_pnl_1_current_min = getMin_uint16_t(panel1Current);
-                    rollcallPkt4_info.rc_eps_gen_4_pnl_3_voltage_avg = getAvg_uint16_t(panel3Voltage);
-                    rollcallPkt5_info.rc_eps_gen_5_pnl_2_current_avg = getAvg_uint16_t(panel2Current);
-                    rollcallPkt5_info.rc_eps_gen_5_pnl_2_current_max = getMax_uint16_t(panel2Current);
-                    rollcallPkt5_info.rc_eps_gen_5_pnl_2_current_min = getMin_uint16_t(panel2Current);
-                    rollcallPkt5_info.rc_eps_gen_5_pnl_3_current_min = getMin_uint16_t(panel3Current);
-                    rollcallPkt6_info.rc_eps_gen_6_pnl_1_power_max = getMax_uint16_t(panel1Pwr);
-                    rollcallPkt6_info.rc_eps_gen_6_pnl_1_power_min = getMin_uint16_t(panel1Pwr);
-                    rollcallPkt6_info.rc_eps_gen_6_pnl_3_current_avg = getAvg_uint16_t(panel3Current);
-                    rollcallPkt6_info.rc_eps_gen_6_pnl_3_current_max = getMax_uint16_t(panel3Current);
-                    encoderc_eps_gen_4(&rollcallPkt4_info, &rollcallPkt4);
-                    encoderc_eps_gen_5(&rollcallPkt5_info, &rollcallPkt5);
-                    encoderc_eps_gen_6(&rollcallPkt6_info, &rollcallPkt6);
-                    canSendPacket(&rollcallPkt4);
-                    canSendPacket(&rollcallPkt5);
-                    canSendPacket(&rollcallPkt6);
-                    resetAvg_uint16_t(panel1Current);
-                    resetAvg_uint16_t(panel3Voltage);
-                    resetAvg_uint16_t(panel2Current);
-                    resetAvg_uint16_t(panel3Current);
-                    break;
-                case 3:
-                    rollcallPkt7_info.rc_eps_gen_7_pnl_1_power_avg = getAvg_uint16_t(panel1Pwr);
-                    rollcallPkt7_info.rc_eps_gen_7_pnl_2_power_avg = getAvg_uint16_t(panel2Pwr);
-                    rollcallPkt7_info.rc_eps_gen_7_pnl_2_power_max = getMax_uint16_t(panel2Pwr);
-                    rollcallPkt7_info.rc_eps_gen_7_pnl_2_power_min = getMin_uint16_t(panel2Pwr);
-                    rollcallPkt8_info.rc_eps_gen_8_pnl_1_temp_min = getMin_uint16_t(panel1Temp);
-                    rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_avg = getAvg_uint16_t(panel3Pwr);
-                    rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_max = getMax_uint16_t(panel3Pwr);
-                    rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_min = getMin_uint16_t(panel3Pwr);
-                    rollcallPkt9_info.rc_eps_gen_9_pnl_1_temp_avg = getAvg_uint16_t(panel1Temp);
-                    rollcallPkt9_info.rc_eps_gen_9_pnl_1_temp_max = getMax_uint16_t(panel1Temp);
-                    rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_avg = getAvg_uint16_t(panel2Temp);
-                    rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_max = getMax_uint16_t(panel2Temp);
-                    rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_min = getMin_uint16_t(panel2Temp);
-                    rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_avg = getAvg_uint16_t(panel3Temp);
-                    rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_max = getMax_uint16_t(panel3Temp);
-                    rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_min = getMin_uint16_t(panel3Temp);
-                    encoderc_eps_gen_7(&rollcallPkt7_info, &rollcallPkt7);
-                    encoderc_eps_gen_8(&rollcallPkt8_info, &rollcallPkt8);
-                    encoderc_eps_gen_9(&rollcallPkt9_info, &rollcallPkt9);
-                    canSendPacket(&rollcallPkt7);
-                    canSendPacket(&rollcallPkt8);
-                    canSendPacket(&rollcallPkt9);
-                    resetAvg_uint16_t(panel1Pwr);
-                    resetAvg_uint16_t(panel2Pwr);
-                    resetAvg_uint16_t(panel3Pwr);
-                    resetAvg_uint16_t(panel1Temp);
-                    resetAvg_uint16_t(panel2Temp);
-                    resetAvg_uint16_t(panel3Temp);
-                    break;
-            }
-            rcFlag--;
+            rollcallPkt9_info.rc_eps_gen_9_pnl_1_temp_avg = getAvg_uint16_t(panel1Temp);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_1_temp_max = getMax_uint16_t(panel1Temp);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_avg = getAvg_uint16_t(panel2Temp);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_max = getMax_uint16_t(panel2Temp);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_min = getMin_uint16_t(panel2Temp);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_avg = getAvg_uint16_t(panel3Temp);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_max = getMax_uint16_t(panel3Temp);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_min = getMin_uint16_t(panel3Temp);
+            encoderc_eps_gen_9(&rollcallPkt9_info, &rollcallPkt);
+            resetAvg_uint16_t(panel1Temp);
+            resetAvg_uint16_t(panel2Temp);
+            resetAvg_uint16_t(panel3Temp);
+        }
+        canSendPacket(&rollcallPkt);
+        rcFlag--;
+    }
 }
 
 /*
@@ -359,6 +365,10 @@ int main(void)
     genTempSensorsInit();
     genPCVSensorsInit();
     genPanelsTrackersInit();
+
+    //canWrapInitWithFilter();
+    canWrapInit();
+    setCANPacketRxCallback(can_packet_rx_callback);
 
     LED_DIR |= LED_BIT;
 
@@ -380,10 +390,6 @@ int main(void)
     panel1Temp = init_uint16_t(panel1TempArray, 480);
     panel2Temp = init_uint16_t(panel2TempArray, 480);
     panel3Temp = init_uint16_t(panel3TempArray, 480);
-
-    //canWrapInitWithFilter();
-    canWrapInit();
-    setCANPacketRxCallback(can_packet_rx_callback);
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
