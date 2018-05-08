@@ -5,6 +5,7 @@
 #include "core/timer.h"
 #include "core/MET.h"
 #include "interfaces/canwrap.h"
+#include "core/dataArray.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -47,9 +48,11 @@ hDev i2cdev, hSensor;
 
 // Segment instances - used both to store information and as a structure for sending as telemetry/commands
 FILE_STATIC meta_segment mseg;
-FILE_STATIC general_segment gseg;
+FILE_STATIC general_segment gseg = {0};
 FILE_STATIC sensordat_segment sseg;
 FILE_STATIC health_segment hseg;
+
+#pragma PERSISTENT(gseg)
 
 FILE_STATIC hDev hBattV;
 
@@ -60,6 +63,9 @@ FILE_STATIC uint16_t startupDelay = 1800;
 #pragma PERSISTENT(startupDelay)
 
 FILE_STATIC uint8_t rcFlag = 0;
+
+FILE_STATIC uint8_t subSystemsToToggle[16] = {0};
+FILE_STATIC int rcTimerID = 0;
 
 void distDeployInit()
 {
@@ -268,6 +274,7 @@ FILE_STATIC void distMonitorDomains()
 FILE_STATIC void distMonitorBattery()
 {
     int i;
+    uint16_t rawVoltage = asensorReadSingleSensorRaw(hSensor); //TODO: add this to
     float predivV = asensorReadSingleSensorV(hBattV);
     float newbattV = BATTV_CONV_FACTOR * predivV;
     float prevBattV = gseg.battV;
@@ -283,7 +290,8 @@ FILE_STATIC void distMonitorBattery()
     //shut down everything (COM1 is hard-wired to never shut down)
     if (gseg.uvmode != (uint8_t)UV_InRange && prevMode == (uint8_t)UV_InRange)
         for (i = NUM_POWER_DOMAINS; i; i--)
-            distDomainSwitch((PowerDomainID)(i - 1), PD_CMD_BattVLow);
+            if(i != PD_COM1)
+                distDomainSwitch((PowerDomainID)(i - 1), PD_CMD_BattVLow);
 }
 
 // Packetizes and sends backchannel GENERAL packet
@@ -402,8 +410,8 @@ void sendSubsystemRollCall(uint8_t ssID)
 {
     CANPacket rcPkt = {0};
     cmd_rollcall rc_info = {0};
-    rc_info.cmd_rollcall_met = getPrimaryTime();
-    rc_info.cmd_rollcall_met_overflow = getOverflowTime();
+    rc_info.cmd_rollcall_met = getMETPrimary();
+    rc_info.cmd_rollcall_met_overflow = getMETOverflow();
     rc_info.cmd_rollcall_msp = ssID;
     encodecmd_rollcall(&rc_info, &rcPkt);
     canSendPacket(&rcPkt);
@@ -417,7 +425,19 @@ void sendRollCall()
 
 void can_packet_rx_callback(CANPacket *packet)
 {
-    //Nothing
+    switch(packet->id)
+    {
+        case CAN_ID_CMD_ROLLCALL:
+            rcFlag = 2;
+            break;
+        default:
+            break;
+    }
+}
+
+void sendRCHandler()
+{
+
 }
 
 /*
@@ -527,13 +547,49 @@ int main(void)
         }
         if(rcFlag)
         {
-            /*uint8_t ssID;
-            for(ssID = 15; ssID - 1; ssID--)
+            int i;
+            uint8_t pdState;
+            uint8_t toToggleCount = 0;
+            for(i = NUM_POWER_DOMAINS; i; i--)
             {
-                sendSubsystemRollCall(ssID);
-            }*/
-            sendSubsystemRollCall(8);
-            sendSubsystemRollCall(7);
+                pdState = (uint8_t)distQueryDomainSwitch((PowerDomainID)i);
+                if(pdState)
+                {
+                    switch((PowerDomainID)i)
+                    {
+                        case PD_COM2:
+                            subSystemsToToggle[Module_COM2] = 1;
+                            toToggleCount++;
+                            break;
+                        case PD_RAHS:
+                            subSystemsToToggle[Module_RAHS] = 1;
+                            toToggleCount++;
+                            break;
+                        case PD_BDOT:
+                            subSystemsToToggle[Module_ADCS_BDot] = 1;
+                            subSystemsToToggle[Module_ADCS_MTQ] = 1;
+                            toToggleCount += 2;
+                            break;
+                        case PD_ESTIM:
+                            subSystemsToToggle[Module_ADCS_Estim] = 1;
+                            subSystemsToToggle[Module_ADCS_SensorProc] = 1;
+                            toToggleCount += 2;
+                            break;
+                        case PD_EPS:
+                            subSystemsToToggle[Module_EPS_Batt] = 1;
+                            subSystemsToToggle[Module_EPS_Gen] = 1;
+                            toToggleCount++;
+                            break;
+                        case PD_PPT:
+                            subSystemsToToggle[Module_PPT] = 1;
+                            toToggleCount++;
+                            break;
+                    }
+                }
+            }
+            //TODO: start the chin here
+            rcTimerID =
+
             rcFlag = 0;
         }
     }

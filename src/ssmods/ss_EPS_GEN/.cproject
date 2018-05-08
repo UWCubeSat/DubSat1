@@ -35,6 +35,7 @@
 									<listOptionValue builtIn="false" value="__MSP430FR5994__"/>
 									<listOptionValue builtIn="false" value="__SS_EPS_GEN__"/>
 									<listOptionValue builtIn="false" value="__DEBUG_UART_SPEED_9600__"/>
+									<listOptionValue builtIn="false" value="__DATA_ARRAYS_COUNT__=13"/>
 									<listOptionValue builtIn="false" value="__INITIAL_DEBUG_MODE__=2"/>
 									<listOptionValue builtIn="false" value="__INITIAL_TRACE_LEVEL__=1"/>
 									<listOptionValue builtIn="false" value="__BSP_HW_IMU_LSM6DSM__"/>
