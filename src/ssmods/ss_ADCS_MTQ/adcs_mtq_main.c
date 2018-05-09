@@ -169,6 +169,7 @@ eMTQState curr_state;
 // fix manage telem function   
 // cntrl f DEBUG to see commented out sections 
 // add error messages for invalid commands 
+// ack packet not sending commands properly 
 //------------------------------------------------------------------
 
 int main(void)
@@ -341,10 +342,8 @@ void manage_telemetry(void)
     {
 		send_COSMOS_health_packet();
 		// commented out for DEBUG
-		/* 
-		void send_COSMOS_dooty_packet();
-		void send_COSMOS_meta_packet();
-		*/
+		//send_COSMOS_dooty_packet();
+		send_COSMOS_meta_packet();
         start_telem_timer(); // reset timer 
     }
 }
