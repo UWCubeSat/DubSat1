@@ -46,7 +46,61 @@ VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ temp_orphan : 0|8@1- (1,0) [0|0] "" Vector__XXX
+ SG_ rc_eps_dist_met : 0|32@1+ (1,0) [0,255] "" Vector__XXX
+ SG_ rc_eps_dist_met_overflow : 0|8@1+ (1,0) [0,4294967295] "" Vector__XXX
+ SG_ rc_eps_dist_batt_v_min : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_batt_v_max : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_batt_v_avg : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_uv_state : 0|8@1+ (1,0) [0,3] "" Vector__XXX
+ SG_ rc_eps_dist_com1_state : 0|8@1+ (1,0) [0,3] "" Vector__XXX
+ SG_ rc_eps_dist_com1_c_min : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_com1_c_max : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_com1_c_avg : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_com1_v_min : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_com1_v_max : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_com1_v_avg : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_com2_state : 0|8@1+ (1,0) [0,3] "" Vector__XXX
+ SG_ rc_eps_dist_com2_c_min : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_com2_c_max : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_com2_c_avg : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_com2_v_min : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_com2_v_max : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_com2_v_avg : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_rahs_state : 0|8@1+ (1,0) [0,3] "" Vector__XXX
+ SG_ rc_eps_dist_rahs_c_min : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_rahs_c_max : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_rahs_c_avg : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_rahs_v_min : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_rahs_v_max : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_rahs_v_avg : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_bdot_state : 0|8@1+ (1,0) [0,3] "" Vector__XXX
+ SG_ rc_eps_dist_bdot_c_min : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_bdot_c_max : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_bdot_c_avg : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_bdot_v_min : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_bdot_v_max : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_bdot_v_avg : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_estim_state : 0|8@1+ (1,0) [0,3] "" Vector__XXX
+ SG_ rc_eps_dist_estim_c_min : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_estim_c_max : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_estim_c_avg : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_estim_v_min : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_estim_v_max : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_estim_v_avg : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_eps_state : 0|8@1+ (1,0) [0,3] "" Vector__XXX
+ SG_ rc_eps_dist_eps_c_min : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_eps_c_max : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_eps_c_avg : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_eps_v_min : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_eps_v_max : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_eps_v_avg : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_ppt_state : 0|8@1+ (1,0) [0,3] "" Vector__XXX
+ SG_ rc_eps_dist_ppt_c_min : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_ppt_c_max : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_ppt_c_avg : 0|16@1+ (1,0) [0,65535] "mA" Vector__XXX
+ SG_ rc_eps_dist_ppt_v_min : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_ppt_v_max : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
+ SG_ rc_eps_dist_ppt_v_avg : 0|16@1+ (1,0) [0,65535] "mV" Vector__XXX
 
 BO_ 2452161062 rc_adcs_sp_12: 8 Vector__XXX
  SG_ rc_adcs_sp_12_mag2_z_min : 32|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
