@@ -33,12 +33,12 @@ void restartMTQ();
 void measurement();
 void fsw_actuation();
 void bdot_actuation();
-void stabalize();
+void stabilize();
 
 //--------helper functions---------------
 void start_actuation_timer(void);
 void start_measurement_timer(void);
-void start_stabalize_timer(void);
+void start_stabilize_timer(void);
 void start_telem_timer(void);
 void start_bdot_death_timer(void); 
 void start_LED_timer(void); 
@@ -71,19 +71,17 @@ void send_COSMOS_dooty_packet(void);
 //--------SFR initialization------
 void mtq_sfr_init(void);
 
-
-
-FILE_STATIC volatile uint8_t enable_command_update = 0;
-
 //-----------inputs-----------------
 FILE_STATIC volatile int8_t bdot_command_x, bdot_command_y, bdot_command_z; 
 FILE_STATIC volatile int8_t fsw_command_x, fsw_command_y, fsw_command_z;  
 FILE_STATIC volatile uint8_t fsw_ignore = 1;
-FILE_STATIC volatile int8_t sc_mode;
 #pragma PERSISTENT(fsw_ignore) // persist value of fsw_ignore on reboot
+FILE_STATIC volatile int8_t sc_mode;
+
+// ----------- internal control --------------------
+FILE_STATIC volatile uint8_t enable_command_update = 0;
 
 //-----------backchannel and CAN------------------
-
 // CAN health packet 
 FILE_STATIC meta_segment metaSeg;
 FILE_STATIC health_segment healthSeg;
@@ -125,7 +123,7 @@ FILE_STATIC uint16_t duty_z1Handle;
 FILE_STATIC uint16_t duty_z2Handle;
 FILE_STATIC int rcFlag = 0;
 
-//------------timers ----------------
+//------------ timers ----------------
 
 FILE_STATIC int telem_timer; 
 FILE_STATIC int telem_time_ms = 1000;
@@ -136,9 +134,9 @@ FILE_STATIC int actuation_time_ms = 2000;
 FILE_STATIC int measurement_timer = 0;
 FILE_STATIC int measurement_time_ms = 2000;
 #pragma PERSISTENT(measurement_time_ms)
-FILE_STATIC int stabalize_timer = 0;
-FILE_STATIC int stabalize_time_ms = 100;
-#pragma PERSISTENT(stabalize_time_ms)
+FILE_STATIC int stabilize_timer = 0;
+FILE_STATIC int stabilize_time_ms = 100;
+#pragma PERSISTENT(stabilize_time_ms)
 FILE_STATIC int bdot_death_timer = 0;
 FILE_STATIC int bdot_death_time_ms = 4000; // 4 second timeout 
 #pragma PERSISTENT(bdot_death_time_ms)
@@ -147,18 +145,18 @@ FILE_STATIC int LED_time_ms = 200;
 FILE_STATIC int cosmos_commands_timer = 0; 
 FILE_STATIC int cosmos_commands_time_ms = 100; 
 
-//-------state machine-----------
+//------- state machine -----------
 
 // index of states 
 typedef enum MTQState {
 	MEASUREMENT = 0,
 	FSW_ACTUATION,
 	BDOT_ACTUATION,
-	STABALIZE,
+	STABILIZE,
 } eMTQState;
 
 // This table contains a pointer to the function to call in each state 
-void (* const state_table[])() = {measurement, fsw_actuation, bdot_actuation, stabalize};
+void (* const state_table[])() = {measurement, fsw_actuation, bdot_actuation, stabilize};
 
 // camera state declaration  
 eMTQState curr_state; 
@@ -239,9 +237,9 @@ void fsw_actuation()
     }
     if(checkTimer(actuation_timer)) // finished actuation phase
     {
-        curr_state = STABALIZE;
+        curr_state = STABILIZE;
 		send_CAN_ack_packet();
-        start_stabalize_timer();
+        start_stabilize_timer();
     }
 }
 
@@ -258,17 +256,17 @@ void bdot_actuation()
     }
     if(checkTimer(actuation_timer)) // finished actuation phase
     {
-        curr_state = STABALIZE;
+        curr_state = STABILIZE;
 		send_CAN_ack_packet();
-        start_stabalize_timer();
+        start_stabilize_timer();
     }
 }
 
-void stabalize()
+void stabilize()
 {
 	turn_off_coils();
 	
-	if(checkTimer(stabalize_timer)) // finished wait phase
+	if(checkTimer(stabilize_timer)) // finished wait phase
 	{
 		curr_state = MEASUREMENT;
 		send_CAN_ack_packet();
@@ -307,9 +305,9 @@ void start_measurement_timer(void)
 {
     measurement_timer = timerPollInitializer(measurement_time_ms);
 }
-void start_stabalize_timer(void)
+void start_stabilize_timer(void)
 {
-    stabalize_timer = timerPollInitializer(stabalize_time_ms);
+    stabilize_timer = timerPollInitializer(stabilize_time_ms);
 }
 void start_telem_timer(void)
 {
@@ -332,7 +330,7 @@ void start_cosmos_commands_timer(void)
 
 void manage_telemetry(void)
 { 
-	send_CAN_rollCall();
+	// send_CAN_rollCall(); commented out because of potential memory leaks 
 	
 	if (checkTimer(cosmos_commands_timer)){
 		send_COSMOS_commands_packet(); 
