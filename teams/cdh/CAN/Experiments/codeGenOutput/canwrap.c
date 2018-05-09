@@ -6,23 +6,7 @@
  */
 
 #include "canwrap.h"
-#include "../core/can.h"
 #include "../bsp/bsp.h"
-
-
-//void canPacketInit(uint8_t boardNum){
-//    canInit();
-//    setTheFilter(CAN_MASK_0, 0x01 << boardNum);
-//    setTheFilter(CAN_FILTER_0, 0x01 << boardNum);
-//    setTheFilter(CAN_FILTER_1, 0x01 << boardNum);
-//    setTheFilter(CAN_MASK_1, 0x01 << boardNum);
-//    setTheFilter(CAN_FILTER_2, 0x01 << boardNum);
-//    setTheFilter(CAN_FILTER_3, 0x01 << boardNum);
-//    setTheFilter(CAN_FILTER_4, 0x01 << boardNum);
-//    setTheFilter(CAN_FILTER_5, 0x01 << boardNum);
-//}
-
-uint8_t CAN_WRAP_BUFFER_KEEPER_TRACKER;
 
 void setMaskOrFilter(uint8_t addr, uint32_t filter){
     setTheFilter(addr, filter);
@@ -56,7 +40,6 @@ void canWrapInit(){
     canInit();
     setReceiveCallback0(wrapCB0);
     setReceiveCallback1(wrapCB1);
-    CAN_WRAP_BUFFER_KEEPER_TRACKER = 0;
 }
 
 void canWrapInitWithFilter(){
@@ -181,8 +164,7 @@ void canWrapInitWithFilter(){
 }
 
 
-void reverseArray(uint8_t arr[], uint8_t start, uint8_t end)
-{
+void reverseArray(uint8_t arr[], uint8_t start, uint8_t end) {
     uint8_t temp;
     if (start >= end)
         return;
@@ -192,7 +174,7 @@ void reverseArray(uint8_t arr[], uint8_t start, uint8_t end)
     reverseArray(arr, start+1, end-1);
 }
 
-void canSendPacket(CANPacket *packet){
+uint8_t canSendPacket(CANPacket *packet){
     uint8_t tech[5] = {
        (uint8_t) (packet->id >> 21),
        (uint8_t) (packet->id >> 16) & 0x03 | (uint8_t) (packet->id >> 13) & 0xE0 | 0x08,
@@ -200,8 +182,21 @@ void canSendPacket(CANPacket *packet){
        (uint8_t) packet->id,
        packet->length
     };
-    CAN_WRAP_BUFFER_KEEPER_TRACKER = (CAN_WRAP_BUFFER_KEEPER_TRACKER + 1) % 3;
-    canSend(CAN_WRAP_BUFFER_KEEPER_TRACKER,tech, packet->data);
+
+    const uint8_t bufferAvailability = canTxCheck();
+    if (!(canTxCheck() & 0x01)){
+        canSend(0, tech, packet->data);
+        return 0;
+    }
+    if (!(canTxCheck() & 0x02)){
+        canSend(1, tech, packet->data);
+        return 0;
+    }
+    if (!(canTxCheck() & 0x04)){
+        canSend(2, tech, packet->data);
+        return 0;
+    }
+    return 1;
 }
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
@@ -1419,9 +1414,9 @@ void decodesensorproc_imu(CANPacket *input, sensorproc_imu *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> sensorproc_imu_z = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> sensorproc_imu_y = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> sensorproc_imu_x = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> sensorproc_imu_z = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> sensorproc_imu_y = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> sensorproc_imu_x = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> sensorproc_imu_valid = (uint8_t) (((fullData & ((uint64_t) 0x1 << 15)) >> 15));
 }
 
@@ -1442,9 +1437,9 @@ void decodesensorproc_mag(CANPacket *input, sensorproc_mag *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> sensorproc_mag_z = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> sensorproc_mag_y = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> sensorproc_mag_x = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> sensorproc_mag_z = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> sensorproc_mag_y = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> sensorproc_mag_x = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> sensorproc_mag_valid = (uint8_t) (((fullData & ((uint64_t) 0x1 << 15)) >> 15));
 }
 

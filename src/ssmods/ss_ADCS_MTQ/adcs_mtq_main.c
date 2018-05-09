@@ -339,7 +339,7 @@ void manage_telemetry(void)
 	
     if (checkTimer(telem_timer))
     {
-		void send_COSMOS_health_packet();
+		send_COSMOS_health_packet();
 		// commented out for DEBUG
 		/* 
 		void send_COSMOS_dooty_packet();

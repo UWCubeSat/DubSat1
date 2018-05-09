@@ -57,7 +57,7 @@ FILE_STATIC uint8_t isValid(hMag handle)
 void magioUpdate1()
 {
 #if ENABLE_MAG1
-#ifdef I2C_DONT_WRITE_MAG1
+#ifdef __I2C_DONT_WRITE_MAG1__
     data1 = testing_magReadXYZData(mag1, ConvertToNone);
 #else
     data1 = magReadXYZData(mag1, ConvertToNone);

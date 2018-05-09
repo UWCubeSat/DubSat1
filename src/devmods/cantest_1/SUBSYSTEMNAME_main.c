@@ -80,28 +80,30 @@ int main(void) {
 
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
     bspInit(Module_Test);
+    setCANPacketRxCallback(testBIGetPacket);
 //    testBIInit();
 //    testTimerInit();
 //    canWrapInit();
 //     testFilter();
     canWrapInit();
+
     PJDIR |= 0x07;
-    PJOUT |= 0x01;
     while(1){
-        canWrapInit();
         CANPacket p = {0};
-        p.id = 0x1BADA555;
-        p.data[0] = 0x01;
-        p.data[1] = 0x23;
-        p.data[2] = 0x45;
-        p.data[3] = 0x67;
-        p.data[4] = 0x89;
-        p.data[5] = 0xAB;
-        p.data[6] = 0xCD;
-        p.data[7] = 0xEF;
-        p.length = 8;
+        p.id = 0x01;
+        p.length = 0;
         canSendPacket(&p);
-        PJOUT |= 0x04;
+        p.id = 0x02;
+        canSendPacket(&p);
+        p.id = 0x03;
+        canSendPacket(&p);
+        p.id = 0x04;
+        PJOUT ^= canSendPacket(&p);
+        p.id = 0x05;
+        PJOUT ^= canSendPacket(&p);
+        p.id = 0x06;
+        PJOUT ^= canSendPacket(&p);
+        __delay_cycles(100000);
 //        CANPacket p = {0};
 //        p.length = 7;
 //        canSendPacket(&p);

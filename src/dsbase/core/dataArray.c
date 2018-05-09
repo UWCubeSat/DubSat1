@@ -14,7 +14,14 @@ typedef struct buffer_uint16_t {
 } buffer_uint16_t;
 
 uint16_t handleNumber = 0;
-buffer_uint16_t bufferContainer[10];
+#ifndef __DATA_ARRAYS_COUNT__
+#warning need to define how many data arrays you are using
+buffer_uint16_t bufferContainer[100];
+const uint8_t bufferContainerLength = 100;
+#else
+buffer_uint16_t bufferContainer[__DATA_ARRAYS_COUNT__];
+const uint8_t bufferContainerLength = __DATA_ARRAYS_COUNT__;
+#endif
 
 /**
  * Function: init
@@ -28,6 +35,8 @@ buffer_uint16_t bufferContainer[10];
  */
 uint16_t init_uint16_t(uint16_t *userBuffer, uint16_t size) {
                           /* MSP430 */
+    if(handleNumber >= bufferContainerLength)
+        return 0;
 	buffer_uint16_t *myBuffer = &bufferContainer[handleNumber];
 	myBuffer->bufferPt = userBuffer;
 	myBuffer->maxSize = size;
@@ -238,6 +247,8 @@ buffer_float bufferContainer_float[10];
  */
 uint16_t init_float(float *userBuffer, uint16_t size) {
                           /* MSP430 */
+    if(handleNumber >= bufferContainerLength)
+        return 0;
 	buffer_float *myBuffer = &bufferContainer_float[handleNumber];
 	myBuffer->bufferPt = userBuffer;
 	myBuffer->maxSize = size;
@@ -452,6 +463,8 @@ buffer_uint8_t bufferContainer_uint8_t[10];
  */
 uint16_t init_uint8_t(uint8_t *userBuffer, uint16_t size) {
                           /* MSP430 */
+    if(handleNumber >= bufferContainerLength)
+        return 0;
 	buffer_uint8_t *myBuffer = &bufferContainer_uint8_t[handleNumber];
 	myBuffer->bufferPt = userBuffer;
 	myBuffer->maxSize = size;

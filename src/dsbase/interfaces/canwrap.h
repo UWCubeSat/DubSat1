@@ -6,6 +6,8 @@
  */
 
 #include <inttypes.h>
+#include "../core/can.h"
+
 
 #ifndef DSBASE_INTERFACES_CANWRAP_H_
 #define DSBASE_INTERFACES_CANWRAP_H_
@@ -164,7 +166,9 @@ void canWrapInitWithFilter();
 // when a packet is received through CAN
 void (*CANPacketReceived)(CANPacket *);
 
-void canSendPacket(CANPacket *packet);
+// Returns 0 if sending was successful
+// Returns not zero if it couldn't right now.
+uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
 typedef struct rc_adcs_bdot_4 {
@@ -509,16 +513,16 @@ typedef struct eps_domain_output {
 } eps_domain_output;
 
 typedef struct sensorproc_imu {
-    uint16_t sensorproc_imu_z; //  (No Units)
-    uint16_t sensorproc_imu_y; //  (No Units)
-    uint16_t sensorproc_imu_x; //  (No Units)
+    int16_t sensorproc_imu_z; //  (No Units)
+    int16_t sensorproc_imu_y; //  (No Units)
+    int16_t sensorproc_imu_x; //  (No Units)
     uint8_t sensorproc_imu_valid; // bool
 } sensorproc_imu;
 
 typedef struct sensorproc_mag {
-    uint16_t sensorproc_mag_z; //  (No Units)
-    uint16_t sensorproc_mag_y; //  (No Units)
-    uint16_t sensorproc_mag_x; //  (No Units)
+    int16_t sensorproc_mag_z; //  (No Units)
+    int16_t sensorproc_mag_y; //  (No Units)
+    int16_t sensorproc_mag_x; //  (No Units)
     uint8_t sensorproc_mag_valid; // bool
 } sensorproc_mag;
 

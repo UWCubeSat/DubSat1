@@ -22,6 +22,24 @@ uint8_t canRxErrorCheck(void){
     enableCanInterrupt();
     return retval;
 }
+
+uint8_t canTxCheck(void){
+    uint8_t retval = 0;
+    uint8_t bufferstatus = 0;
+    disableCanInterrupt();
+    readRegister(MCP_TXB0CTRL, &bufferstatus);
+    retval |= (bufferstatus & 0x08) >> 3;
+    bufferstatus = 0;
+    readRegister(MCP_TXB1CTRL, &bufferstatus);
+    retval |= (bufferstatus & 0x08) >> 2;
+    bufferstatus = 0;
+    readRegister(MCP_TXB2CTRL, &bufferstatus);
+    enableCanInterrupt();
+    retval |= (bufferstatus & 0x08) >> 1;
+    return retval;
+}
+
+
 // Dummy callback used in place until we set a
 // callback method
 void DummyCallback(uint8_t length, uint8_t* data, uint32_t id){}

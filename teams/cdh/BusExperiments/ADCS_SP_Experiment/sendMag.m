@@ -8,13 +8,8 @@ libhdr = 'aardvark.h';
 
 dataDir = 'C:\dubsat_data\sp2\';
 
-inAddr1 = 3; % address that the master writes to
-inAddr2 = 49;
-DUMP_BUFFER_SIZE = uint16(64);
-dump = uint8(zeros(DUMP_BUFFER_SIZE));
-
 if ~libisloaded(lib)
-    [load_notfounderrors load_warnings] = loadlibrary(lib, libhdr);
+    [load_notfounderrors, load_warnings] = loadlibrary(lib, libhdr);
 end
 
 disp('loading .dat files');
@@ -28,9 +23,11 @@ load(sprintf('%sin_mag%sz_lsb.dat', dataDir, bus));
 load(sprintf('%sin_mag%svalid.dat', dataDir, bus));
 
 if (bus == '1')
-    outstr = [in_mag1x_msb in_mag1x_lsb in_mag1z_msb in_mag1z_lsb in_mag1y_msb in_mag1y_lsb];
+    disp('using bus 1');
+    outstr = [in_mag1x_lsb in_mag1x_msb in_mag1z_lsb in_mag1z_msb in_mag1y_lsb in_mag1y_msb];
 else
-    outstr = [in_mag2x_msb in_mag2x_lsb in_mag2z_msb in_mag2z_lsb in_mag2y_msb in_mag2y_lsb];
+    disp('using bus 2');
+    outstr = [in_mag2x_lsb in_mag2x_msb in_mag2z_lsb in_mag2z_msb in_mag2y_lsb in_mag2y_msb];
 end
 outstr = uint8(outstr);
 
@@ -55,13 +52,6 @@ while 1
         if (toc >= time(index + 1))
             thisout = outstr(index, :);
             calllib(lib, 'c_aa_i2c_slave_set_response', hdev, length(thisout), thisout);
-            
-            % read just so the read buffer doesn't fill up
-            if bitand(calllib(lib, 'c_aa_async_poll', hdev, 0), 1)
-                calllib(lib, 'c_aa_i2c_slave_read', hdev, inAddr1, DUMP_BUFFER_SIZE, dump);
-                calllib(lib, 'c_aa_i2c_slave_read', hdev, inAddr2, DUMP_BUFFER_SIZE, dump);
-            end
-            
             index = index + 1;
         end
     end
