@@ -428,18 +428,18 @@
 [END_MSG]
 
 [START_MSG] sensorproc_imu,335872066,7,4,1,X,adcs_sensorproc
-[START_SIGNALS] sensorproc_imu_z,16,5,0,U,65535.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] sensorproc_imu_y,16,3,0,U,65535.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] sensorproc_imu_x,16,1,0,U,65535.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_imu_z,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_imu_y,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_imu_x,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] sensorproc_imu_valid,1,7,0,U,1.0,0.0,1,0.0,1.0,bool,,Vector__XXX
 [VALUE_DESCRIPTION] "false",0
 [VALUE_DESCRIPTION] "true",1
 [END_MSG]
 
 [START_MSG] sensorproc_mag,335872067,7,4,1,X,adcs_sensorproc
-[START_SIGNALS] sensorproc_mag_z,16,5,0,U,65535.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] sensorproc_mag_y,16,3,0,U,65535.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] sensorproc_mag_x,16,1,0,U,65535.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_mag_z,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_mag_y,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_mag_x,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] sensorproc_mag_valid,1,7,0,U,1.0,0.0,1,0.0,1.0,bool,,Vector__XXX
 [VALUE_DESCRIPTION] "false",0
 [VALUE_DESCRIPTION] "true",1
@@ -452,7 +452,7 @@
 [START_SIGNALS] cmd_rollcall_msp,8,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
-[START_MSG] mtq_ack,34013232,2,8,1,X,adcs_mtq
+[START_MSG] mtq_ack,34013232,8,8,1,X,adcs_mtq
 [START_SIGNALS] mtq_ack_source,8,2,0,S,1.0,-128.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] mtq_ack_phase,8,1,0,S,3.0,-128.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] mtq_ack_last_fsw_z,8,8,0,S,100.0,-128.0,1,0.0,1.0,pct,,Vector__XXX
