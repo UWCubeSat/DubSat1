@@ -3,11 +3,6 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
-	__delay_cycles(10000);	CANPacket VECTOR__INDEPENDENT_SIG_MSG_packet = {0};
-	VECTOR__INDEPENDENT_SIG_MSG VECTOR__INDEPENDENT_SIG_MSG_info = {0};
-	encodeVECTOR__INDEPENDENT_SIG_MSG(&VECTOR__INDEPENDENT_SIG_MSG_info, &VECTOR__INDEPENDENT_SIG_MSG_packet);
-	canSendPacket(&VECTOR__INDEPENDENT_SIG_MSG_packet);
-
 	__delay_cycles(10000);	CANPacket rc_adcs_sp_12_packet = {0};
 	rc_adcs_sp_12 rc_adcs_sp_12_info = {0};
 	encoderc_adcs_sp_12(&rc_adcs_sp_12_info, &rc_adcs_sp_12_packet);

@@ -26,7 +26,6 @@
 
 // BEGIN GENERATOR MACROS
 
-#define CAN_ID_VECTOR__INDEPENDENT_SIG_MSG 1073741824
 #define CAN_ID_RC_ADCS_SP_12 304677414
 #define CAN_ID_RC_ADCS_SP_11 304677413
 #define CAN_ID_RC_ADCS_SP_7 304677409
@@ -189,10 +188,6 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
-typedef struct VECTOR__INDEPENDENT_SIG_MSG {
-    uint16_t rc_eps_gen_1_reset_count; //  (No Units)
-} VECTOR__INDEPENDENT_SIG_MSG;
-
 typedef struct rc_adcs_sp_12 {
     uint8_t rc_adcs_sp_12_mag2_z_min; // 1/73 nanoTeslas
     uint8_t rc_adcs_sp_12_mag2_z_max; // 1/73 nanoTeslas
@@ -496,6 +491,7 @@ typedef struct rc_eps_gen_2 {
 } rc_eps_gen_2;
 
 typedef struct rc_eps_gen_1 {
+    uint16_t rc_eps_gen_1_reset_count; //  (No Units)
     uint16_t rc_eps_gen_1_temp_min; // dK
     uint16_t rc_eps_gen_1_temp_max; // dK
     uint16_t rc_eps_gen_1_temp_avg; // dK
@@ -780,9 +776,6 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
-
-void encodeVECTOR__INDEPENDENT_SIG_MSG(VECTOR__INDEPENDENT_SIG_MSG *input, CANPacket* output);
-void decodeVECTOR__INDEPENDENT_SIG_MSG(CANPacket *input, VECTOR__INDEPENDENT_SIG_MSG *output);
 
 void encoderc_adcs_sp_12(rc_adcs_sp_12 *input, CANPacket* output);
 void decoderc_adcs_sp_12(CANPacket *input, rc_adcs_sp_12 *output);
