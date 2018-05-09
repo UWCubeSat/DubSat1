@@ -94,20 +94,20 @@ FILE_STATIC bdot_fsw_commands cosmos_commandy_commands; // commands
 FILE_STATIC volatile int8_t command_source = ELOISE_UNKNOWN; // source 
 FILE_STATIC volatile int8_t which_phase = ELOISE_UNKNOWN; // phase 
 // CAN roll call 
-FILE_STATIC uint16_t mspTempArray[60] = {0};
+FILE_STATIC uint16_t mspTempArray[30] = {0};
 #pragma PERSISTENT(mspTempArray);
-FILE_STATIC uint8_t bdot_xArray[60] = {0};
-FILE_STATIC uint8_t bdot_yArray[60] = {0};
-FILE_STATIC uint8_t bdot_zArray[60] = {0};
-FILE_STATIC uint8_t fsw_xArray[60] = {0};
-FILE_STATIC uint8_t fsw_yArray[60] = {0};
-FILE_STATIC uint8_t fsw_zArray[60] = {0};
-FILE_STATIC uint8_t duty_x1Array[60] = {0};
-FILE_STATIC uint8_t duty_x2Array[60] = {0};
-FILE_STATIC uint8_t duty_y1Array[60] = {0};
-FILE_STATIC uint8_t duty_y2Array[60] = {0};
-FILE_STATIC uint8_t duty_z1Array[60] = {0};
-FILE_STATIC uint8_t duty_z2Array[60] = {0};
+FILE_STATIC uint8_t bdot_xArray[30] = {0};
+FILE_STATIC uint8_t bdot_yArray[30] = {0};
+FILE_STATIC uint8_t bdot_zArray[30] = {0};
+FILE_STATIC uint8_t fsw_xArray[30] = {0};
+FILE_STATIC uint8_t fsw_yArray[30] = {0};
+FILE_STATIC uint8_t fsw_zArray[30] = {0};
+FILE_STATIC uint8_t duty_x1Array[30] = {0};
+FILE_STATIC uint8_t duty_x2Array[30] = {0};
+FILE_STATIC uint8_t duty_y1Array[30] = {0};
+FILE_STATIC uint8_t duty_y2Array[30] = {0};
+FILE_STATIC uint8_t duty_z1Array[30] = {0};
+FILE_STATIC uint8_t duty_z2Array[30] = {0};
 FILE_STATIC uint16_t mspTemp;
 FILE_STATIC uint16_t bdot_x;
 FILE_STATIC uint16_t bdot_y;
@@ -510,7 +510,7 @@ void can_packet_rx_callback(CANPacket *packet)
 	} 
 	if(packet->id == CAN_ID_CMD_ROLLCALL)
     {
-        rcFlag = 2;
+        rcFlag = 5;
     }
 }	
 
@@ -559,70 +559,6 @@ void rollCall_init()
     duty_y2Handle = init_uint8_t(duty_y2Array, 60);
     duty_z1Handle = init_uint8_t(duty_z1Array, 60);
     duty_z2Handle = init_uint8_t(duty_z2Array, 60);
-}
-
-void send_CAN_rollCall() 
-{
-    if(rcFlag>0)
-	{
-        if(rcFlag == 2)
-		{
-            CANPacket rollcallPkt1 = {0};
-            rc_adcs_mtq_1 rollcallPkt1_info = {0};
-            CANPacket rollcallPkt2 = {0};
-            rc_adcs_mtq_2 rollcallPkt2_info = {0};
-            CANPacket rollcallPkt3 = {0};
-            rc_adcs_mtq_3 rollcallPkt3_info = {0};
-            rollcallPkt1_info.rc_adcs_mtq_1_sysrstiv = bspGetResetCount();
-            rollcallPkt1_info.rc_adcs_mtq_1_temp_avg =0;//asensorReadIntTempC(); //TODO: this
-            rollcallPkt1_info.rc_adcs_mtq_1_temp_max =0;//asensorReadIntTempC(); //TODO: this
-            rollcallPkt1_info.rc_adcs_mtq_1_temp_min =0;//asensorReadIntTempC(); //TODO: this
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_min =getMin_uint8_t(bdot_x);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_max =getMax_uint8_t(bdot_x);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_avg =getAvg_uint8_t(bdot_x);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_min = getMin_uint8_t(bdot_y);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_max = getMax_uint8_t(bdot_y);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_avg = getAvg_uint8_t(bdot_y);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_max = getMax_uint8_t(bdot_z);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_avg = getAvg_uint8_t(bdot_z);
-
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_min = getMin_uint8_t(fsw_x);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_max = getMax_uint8_t(fsw_x);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_avg = getAvg_uint8_t(fsw_x);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_min = getMin_uint8_t(fsw_y);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_max = getMax_uint8_t(fsw_y);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_avg = getAvg_uint8_t(fsw_y);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_z_avg = getAvg_uint8_t(fsw_z);
-            encoderc_adcs_mtq_1(&rollcallPkt1_info, &rollcallPkt1);
-            canSendPacket(&rollcallPkt1);
-            encoderc_adcs_mtq_2(&rollcallPkt2_info, &rollcallPkt2);
-            canSendPacket(&rollcallPkt2);
-            encoderc_adcs_mtq_3(&rollcallPkt3_info, &rollcallPkt3);
-            canSendPacket(&rollcallPkt3);
-        }
-        if(rcFlag ==1)
-		{
-            CANPacket rollcallPkt4 = {0};
-            rc_adcs_mtq_4 rollcallPkt4_info = {0};
-            CANPacket rollcallPkt5 = {0};
-            rc_adcs_mtq_5 rollcallPkt5_info = {0};
-            rollcallPkt4_info.rc_adcs_mtq_4_fsw_z_min = getMin_uint8_t(fsw_z);
-            rollcallPkt4_info.rc_adcs_mtq_4_fsw_y_max = getMax_uint8_t(fsw_z);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_x1_avg = getAvg_uint8_t(duty_x1Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_x2_avg = getAvg_uint8_t(duty_x2Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_y1_avg = getAvg_uint8_t(duty_y1Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_y2_avg = getAvg_uint8_t(duty_y2Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_z1_avg = getAvg_uint8_t(duty_z1Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_z2_avg = getAvg_uint8_t(duty_z2Handle);
-            rollcallPkt5_info.rc_adcs_mtq_5_fsw_ignore=0;
-            rollcallPkt5_info.rc_adcs_mtq_5_reset_counts=0;
-            encoderc_adcs_mtq_4(&rollcallPkt4_info, &rollcallPkt4);
-            encoderc_adcs_mtq_5(&rollcallPkt5_info, &rollcallPkt5);
-            canSendPacket(&rollcallPkt4);
-            canSendPacket(&rollcallPkt5);
-        }
-        rcFlag--;
-    }
 }
 //-------- COSMOS backchannel --------
 
@@ -738,6 +674,73 @@ void mtq_sfr_init(void)
 
 
 
+void sendRC()
+{
+    while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
+    {
+        CANPacket rollcallPkt = {0};
+        if (rcFlag == 5)
+        {
+            rc_adcs_mtq_1 rollcallPkt1_info = {0};
+            rollcallPkt1_info.rc_adcs_mtq_1_sysrstiv = bspGetResetCount();
+            rollcallPkt1_info.rc_adcs_mtq_1_temp_avg =0;//asensorReadIntTempC(); //TODO: this
+            rollcallPkt1_info.rc_adcs_mtq_1_temp_max =0;//asensorReadIntTempC(); //TODO: this
+            rollcallPkt1_info.rc_adcs_mtq_1_temp_min =0;//asensorReadIntTempC(); //TODO: this
+            encoderc_adcs_mtq_1(&rollcallPkt1_info, &rollcallPkt);
+            canSendPacket(&rollcallPkt);
+        }
+        if (rcFlag == 4)
+        {
+            rc_adcs_mtq_2 rollcallPkt2_info = {0};
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_min =getMin_uint8_t(bdot_x);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_max =getMax_uint8_t(bdot_x);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_avg =getAvg_uint8_t(bdot_x);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_min = getMin_uint8_t(bdot_y);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_max = getMax_uint8_t(bdot_y);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_avg = getAvg_uint8_t(bdot_y);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_max = getMax_uint8_t(bdot_z);
+            rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_avg = getAvg_uint8_t(bdot_z);
+            encoderc_adcs_mtq_2(&rollcallPkt2_info, &rollcallPkt);
+            canSendPacket(&rollcallPkt);
+        }
+        else if(rcFlag == 3)
+        {
+            rc_adcs_mtq_3 rollcallPkt3_info = {0};
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_min = getMin_uint8_t(fsw_x);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_max = getMax_uint8_t(fsw_x);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_avg = getAvg_uint8_t(fsw_x);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_min = getMin_uint8_t(fsw_y);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_max = getMax_uint8_t(fsw_y);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_avg = getAvg_uint8_t(fsw_y);
+            rollcallPkt3_info.rc_adcs_mtq_3_fsw_z_avg = getAvg_uint8_t(fsw_z);
+            encoderc_adcs_mtq_3(&rollcallPkt3_info, &rollcallPkt);
+            canSendPacket(&rollcallPkt);
+        }
+        else if(rcFlag == 2)
+        {
+            rc_adcs_mtq_4 rollcallPkt4_info = {0};
+            rollcallPkt4_info.rc_adcs_mtq_4_fsw_z_min = getMin_uint8_t(fsw_z);
+            rollcallPkt4_info.rc_adcs_mtq_4_fsw_y_max = getMax_uint8_t(fsw_z);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_x1_avg = getAvg_uint8_t(duty_x1Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_x2_avg = getAvg_uint8_t(duty_x2Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_y1_avg = getAvg_uint8_t(duty_y1Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_y2_avg = getAvg_uint8_t(duty_y2Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_z1_avg = getAvg_uint8_t(duty_z1Handle);
+            rollcallPkt4_info.rc_adcs_mtq_4_duty_z2_avg = getAvg_uint8_t(duty_z2Handle);
+            encoderc_adcs_mtq_4(&rollcallPkt4_info, &rollcallPkt);
+            canSendPacket(&rollcallPkt);
+        }
+        else if(rcFlag == 1)
+        {
+           rc_adcs_mtq_5 rollcallPkt5_info = {0};
+           rollcallPkt5_info.rc_adcs_mtq_5_fsw_ignore=0;
+           rollcallPkt5_info.rc_adcs_mtq_5_reset_counts=0;
+           encoderc_adcs_mtq_5(&rollcallPkt5_info, &rollcallPkt);
+           canSendPacket(&rollcallPkt);
+        }
+        rcFlag--;
+    }
+}
 
 
 

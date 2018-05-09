@@ -347,7 +347,6 @@ void sendRC()
         CANPacket rollcallPkt = {0};
         if (rcFlag == 4)
         {
-            rcFlag=1;
             rc_adcs_bdot_1 rollcallPkt1_info = {0};
             rollcallPkt1_info.rc_adcs_bdot_1_sysrstiv = bspGetResetCount();
             rollcallPkt1_info.rc_adcs_bdot_1_temp_avg = getAvg_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
@@ -378,12 +377,11 @@ void sendRC()
         }
         else if(rcFlag == 1)
         {
-            CANPacket rollcallPkt4 = {0};
            rc_adcs_bdot_4 rollcallPkt4_info = {0};
            rollcallPkt4_info.rc_adcs_bdot_4_mag_z_avg = getAvg_uint16_t(mag_z);
            rollcallPkt4_info.rc_adcs_bdot_4_tumble = rtY.tumble;
-           encoderc_adcs_bdot_4(&rollcallPkt4_info, &rollcallPkt4);
-           canSendPacket(&rollcallPkt4);
+           encoderc_adcs_bdot_4(&rollcallPkt4_info, &rollcallPkt);
+           canSendPacket(&rollcallPkt);
         }
         rcFlag--;
     }
