@@ -126,7 +126,7 @@ void addData_TYPE(uint16_t handle, TYPE data) {
  */
 void resetAll_TYPE(uint16_t handle) {
 	/* Resets*/
-	buffer *theirBuffer = &bufferContainer_TYPE[handle];
+	buffer_TYPE *theirBuffer = &bufferContainer_TYPE[handle];
 	theirBuffer->currPt = theirBuffer->startPt;
 	theirBuffer->endPt = theirBuffer->startPt;
 	theirBuffer->currentSize = 0;
@@ -143,7 +143,7 @@ void resetAll_TYPE(uint16_t handle) {
  *
  */
 void resetAvg_TYPE(uint16_t handle) {
-    buffer *theirBuffer = &bufferContainer_TYPE[handle];
+    buffer_TYPE *theirBuffer = &bufferContainer_TYPE[handle];
     theirBuffer->currPt = theirBuffer->startPt;
 	 theirBuffer->endPt = theirBuffer->startPt;
     theirBuffer->currentSize = 0;
@@ -163,7 +163,7 @@ void resetAvg_TYPE(uint16_t handle) {
  *
  */
 void resetMinMax_TYPE(uint16_t handle) {
-    buffer *theirBuffer = &bufferContainer_TYPE[handle];
+    buffer_TYPE *theirBuffer = &bufferContainer_TYPE[handle];
     theirBuffer->min = (TYPE)0;
     theirBuffer->max = (TYPE)0;
     theirBuffer->resetMinMaxFlag = 1;
@@ -179,7 +179,7 @@ void resetMinMax_TYPE(uint16_t handle) {
  */
 TYPE getSum_TYPE(uint16_t handle) {
 	TYPE sum = (TYPE)0;
-	buffer *theirBuffer = &bufferContainer_TYPE[handle];
+	buffer_TYPE *theirBuffer = &bufferContainer_TYPE[handle];
 	TYPE *curr = theirBuffer->startPt;
 	while (curr != theirBuffer->endPt) {
 		TYPE number = *curr;
