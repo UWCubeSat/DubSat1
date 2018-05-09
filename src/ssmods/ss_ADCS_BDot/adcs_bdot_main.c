@@ -9,39 +9,30 @@
 #include "core/dataArray.h"
 
 /******************COSMOS Telemetry******************************/
-FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 FILE_STATIC magnetometer_segment myTelemMagnetometer;
 FILE_STATIC mtq_info_segment myTelemMtqInfo;
 FILE_STATIC simulink_segment mySimulink;
 /****************************************************************/
 
-
+FILE_STATIC uint8_t mtq_state = MTQ_MEASUREMENT_PHASE;
 FILE_STATIC mtq_info mtqInfo;
 FILE_STATIC mtq_info lastKnownState;
 
 FILE_STATIC MagnetometerData* magData;
 FILE_STATIC hMag magNum;
 
-// Main status (a structure) and state and mode variables
-// Make sure state and mode variables are declared as volatile
+
 FILE_STATIC ModuleStatus mod_status;
-FILE_STATIC volatile SubsystemMode ss_mode      = Mode_FirstMode;
 FILE_STATIC volatile magDataStatus mag_data     = mag_invalid;
 
-FILE_STATIC uint8_t mtq_state = MTQ_MEASUREMENT_PHASE;
+FILE_STATIC uint8_t send_dipole_flag = 0;
+FILE_STATIC uint8_t update_rt_flag = 0;
 
-FILE_STATIC uint8_t send_dipole = 0;
-
-FILE_STATIC int telem_timer;
-FILE_STATIC uint16_t telem_timer_ms = 200; // 1 s
-
-FILE_STATIC int update_rt = 0;
-
-FILE_STATIC int rtOneStep_timer;
+FILE_STATIC TIMER_HANDLE rtOneStep_timer;
 FILE_STATIC uint32_t rtOneStep_us = 100000;
 
-FILE_STATIC int normalOperation = 1;
+FILE_STATIC uint8_t normalOperation = 1;
 
 FILE_STATIC int rcFlag =0;
 FILE_STATIC uint16_t mspTempArray[600] = {0};
@@ -57,7 +48,6 @@ FILE_STATIC uint16_t mag_x;
 FILE_STATIC uint16_t mag_y;
 FILE_STATIC uint16_t mag_z;
 
-void sendRC();
 /*
  * main.c
  */
@@ -102,9 +92,10 @@ int main(void)
 
 
     initial_setup();
-
     rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
     startCallback(rtOneStep_timer);
+
+
     /* Attach rt_OneStep to a timer or interrupt service routine with
      * period 0.1 seconds (the model's base sample time) here.  The
      * call syntax for rt_OneStep is
@@ -114,22 +105,13 @@ int main(void)
     // Disable rt_OneStep() here
     // Terminate model
     fflush((NULL));
-    P3DIR |= BIT5;
-    start_telem_timer();
     while (rtmGetErrorStatus(rtM) == (NULL) || 1)
     {
-        if(checkTimer(telem_timer))
-        {
-            sendTelemetry();
-            start_telem_timer();
-        }
-        if(update_rt)
+
+        if(update_rt_flag)
         {
             P3OUT ^= BIT5;
             getMagnetometerData();
-            addData_uint16_t(mag_x, magData->rawX);
-            addData_uint16_t(mag_y, magData->rawY);
-            addData_uint16_t(mag_z, magData->rawZ);
             rtU.B_body_in_T[0] = magData->convertedX;
             rtU.B_body_in_T[1] = magData->convertedY;
             rtU.B_body_in_T[2] = magData->convertedZ;
@@ -138,19 +120,20 @@ int main(void)
             rt_OneStep();
             updateMtqInfo();
             sendTelemetry();
-            update_rt = 0;
+            updateRCData();
+            update_rt_flag = 0;
         }
-        if(send_dipole && mtq_state == mag_valid)
-        {
 
+        if(send_dipole_flag && mtq_state == mag_valid)
+        {
             sendDipolePacket(mtqInfo.xDipole, mtqInfo.yDipole, mtqInfo.zDipole);
             lastKnownState.xDipole = mtqInfo.xDipole;
             lastKnownState.yDipole = mtqInfo.yDipole;
             lastKnownState.zDipole = mtqInfo.zDipole;
-            send_dipole = 0;
+            send_dipole_flag = 0;
         }
-        if(rcFlag)
-            sendRC();
+
+        rollCall();
 
     }
 
@@ -168,7 +151,7 @@ void initial_setup()
     canWrapInit();
     setCANPacketRxCallback(receive_packet);
 
-    magNum = magInit(1); // I2C bus 1
+    magNum = magInit(I2CBus1); // I2C bus 1
 
     asensorInit(Ref_2p5V);
 
@@ -186,12 +169,6 @@ void initial_setup()
 
     initializeTimer();
 }
-
-void start_telem_timer()
-{
-    telem_timer = timerPollInitializer(telem_timer_ms);
-}
-
 
 void getMagnetometerData()
 {
@@ -212,8 +189,8 @@ void performNormalOp()
 
 void simulink_compute()
 {
-    update_rt = 1;
-    send_dipole = 1;
+    update_rt_flag = 1;
+    send_dipole_flag = 1;
 }
 
 
@@ -340,53 +317,72 @@ void receive_packet(CANPacket *packet)
     }
 }
 
+
+void updateRCData()
+{
+    addData_uint16_t(mag_x, magData->rawX);
+    addData_uint16_t(mag_y, magData->rawY);
+    addData_uint16_t(mag_z, magData->rawZ);
+}
+
+
+void rollCall()
+{
+    if(rcFlag)
+    {
+        while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
+        {
+            CANPacket rollcallPkt = {0};
+            if (rcFlag == 4)
+            {
+                rcFlag=1;
+                rc_adcs_bdot_1 rollcallPkt1_info = {0};
+                rollcallPkt1_info.rc_adcs_bdot_1_sysrstiv = bspGetResetCount();
+                rollcallPkt1_info.rc_adcs_bdot_1_temp_avg = getAvg_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
+                rollcallPkt1_info.rc_adcs_bdot_1_temp_max = getMax_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
+                rollcallPkt1_info.rc_adcs_bdot_1_temp_min = getMin_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
+                encoderc_adcs_bdot_1(&rollcallPkt1_info, &rollcallPkt);
+                canSendPacket(&rollcallPkt);
+            }
+            else if(rcFlag == 3)
+            {
+                rc_adcs_bdot_2 rollcallPkt2_info = {0};
+                rollcallPkt2_info.rc_adcs_bdot_2_mag_x_min = getMin_uint16_t(mag_x);
+                rollcallPkt2_info.rc_adcs_bdot_2_mag_x_max = getMax_uint16_t(mag_x);
+                rollcallPkt2_info.rc_adcs_bdot_2_mag_x_avg = getAvg_uint16_t(mag_x);
+                rollcallPkt2_info.rc_adcs_bdot_2_mag_y_min = getMin_uint16_t(mag_y);
+                encoderc_adcs_bdot_2(&rollcallPkt2_info, &rollcallPkt);
+                canSendPacket(&rollcallPkt);
+            }
+            else if(rcFlag == 2)
+            {
+                rc_adcs_bdot_3 rollcallPkt3_info = {0};
+                rollcallPkt3_info.rc_adcs_bdot_3_mag_y_max = getMax_uint16_t(mag_y);
+                rollcallPkt3_info.rc_adcs_bdot_3_mag_y_avg = getAvg_uint16_t(mag_y);
+                rollcallPkt3_info.rc_adcs_bdot_3_mag_z_min = getMin_uint16_t(mag_z);
+                rollcallPkt3_info.rc_adcs_bdot_3_mag_z_max = getMax_uint16_t(mag_y);
+                encoderc_adcs_bdot_3(&rollcallPkt3_info, &rollcallPkt);
+                canSendPacket(&rollcallPkt);
+            }
+            else if(rcFlag == 1)
+            {
+                CANPacket rollcallPkt4 = {0};
+               rc_adcs_bdot_4 rollcallPkt4_info = {0};
+               rollcallPkt4_info.rc_adcs_bdot_4_mag_z_avg = getAvg_uint16_t(mag_z);
+               rollcallPkt4_info.rc_adcs_bdot_4_tumble = rtY.tumble;
+               encoderc_adcs_bdot_4(&rollcallPkt4_info, &rollcallPkt4);
+               canSendPacket(&rollcallPkt4);
+            }
+            rcFlag--;
+        }
+    }
+
+}
+
+
+
 void sendRC()
 {
-    while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
-    {
-        CANPacket rollcallPkt = {0};
-        if (rcFlag == 4)
-        {
-            rcFlag=1;
-            rc_adcs_bdot_1 rollcallPkt1_info = {0};
-            rollcallPkt1_info.rc_adcs_bdot_1_sysrstiv = bspGetResetCount();
-            rollcallPkt1_info.rc_adcs_bdot_1_temp_avg = getAvg_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
-            rollcallPkt1_info.rc_adcs_bdot_1_temp_max = getMax_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
-            rollcallPkt1_info.rc_adcs_bdot_1_temp_min = getMin_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
-            encoderc_adcs_bdot_1(&rollcallPkt1_info, &rollcallPkt);
-            canSendPacket(&rollcallPkt);
-        }
-        else if(rcFlag == 3)
-        {
-            rc_adcs_bdot_2 rollcallPkt2_info = {0};
-            rollcallPkt2_info.rc_adcs_bdot_2_mag_x_min = getMin_uint16_t(mag_x);
-            rollcallPkt2_info.rc_adcs_bdot_2_mag_x_max = getMax_uint16_t(mag_x);
-            rollcallPkt2_info.rc_adcs_bdot_2_mag_x_avg = getAvg_uint16_t(mag_x);
-            rollcallPkt2_info.rc_adcs_bdot_2_mag_y_min = getMin_uint16_t(mag_y);
-            encoderc_adcs_bdot_2(&rollcallPkt2_info, &rollcallPkt);
-            canSendPacket(&rollcallPkt);
-        }
-        else if(rcFlag == 2)
-        {
-            rc_adcs_bdot_3 rollcallPkt3_info = {0};
-            rollcallPkt3_info.rc_adcs_bdot_3_mag_y_max = getMax_uint16_t(mag_y);
-            rollcallPkt3_info.rc_adcs_bdot_3_mag_y_avg = getAvg_uint16_t(mag_y);
-            rollcallPkt3_info.rc_adcs_bdot_3_mag_z_min = getMin_uint16_t(mag_z);
-            rollcallPkt3_info.rc_adcs_bdot_3_mag_z_max = getMax_uint16_t(mag_y);
-            encoderc_adcs_bdot_3(&rollcallPkt3_info, &rollcallPkt);
-            canSendPacket(&rollcallPkt);
-        }
-        else if(rcFlag == 1)
-        {
-            CANPacket rollcallPkt4 = {0};
-           rc_adcs_bdot_4 rollcallPkt4_info = {0};
-           rollcallPkt4_info.rc_adcs_bdot_4_mag_z_avg = getAvg_uint16_t(mag_z);
-           rollcallPkt4_info.rc_adcs_bdot_4_tumble = rtY.tumble;
-           encoderc_adcs_bdot_4(&rollcallPkt4_info, &rollcallPkt4);
-           canSendPacket(&rollcallPkt4);
-        }
-        rcFlag--;
-    }
 }
 
 
@@ -446,3 +442,12 @@ void handleRollCall()
 {
     __no_operation();
 }
+
+
+//void start_telem_timer()
+//{
+//    telem_timer = timerPollInitializer(telem_timer_ms);
+//}
+
+//FILE_STATIC int telem_timer;
+//FILE_STATIC uint16_t telem_timer_ms = 200; // 1 s

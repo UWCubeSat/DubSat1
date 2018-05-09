@@ -42,6 +42,8 @@
  *          {
  *              blink the LED;
  *          }
+ * PRECAUTION:
+ *     1. If
  */
 #include <msp430.h>
 #include "timer.h"
@@ -162,7 +164,7 @@ TIMER_HANDLE timerCallbackInitializer(void (*waitFunc)(), uint32_t us)
         overflows++;
     }
     uint16_t i;
-    for (i = 0; i < 2; i++)
+    for (i = 0; i < NUM_SUPPORTED_DURATIONS_CALLBACK; i++)
     {
         if (!callback[i].inUse)
         {

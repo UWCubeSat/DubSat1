@@ -98,6 +98,8 @@ typedef struct _module_status {
 void initial_setup();
 void receive_packet();
 void sendDipolePacket(int8_t x, int8_t y, int8_t z);
+void getMagnetometerData();
+void updateRCData();
 void simulink_compute();
 void sendHealthSegment();
 void sendMagReadingSegment();
@@ -105,8 +107,6 @@ void sendMtqInfoSegment();
 void sendSimulinkSegment();
 void sendMtqState();
 void updateMtqInfo();
-void start_telem_timer();
-void start_packet_timer();
 void sendTelemetry();
 void rollCall();
 int map(int val);
