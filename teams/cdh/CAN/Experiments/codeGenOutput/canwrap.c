@@ -1495,7 +1495,7 @@ void decodemtq_ack(CANPacket *input, mtq_ack *output){
 
 void encodemtq_ack(mtq_ack *input, CANPacket *output){
     output -> id = 34013232;
-    output -> length = 2;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> mtq_ack_source))) & 0xff) << 48;
     fullPacketData |= (((uint64_t)((input -> mtq_ack_phase))) & 0xff) << 56;
