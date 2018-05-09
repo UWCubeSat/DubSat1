@@ -35,7 +35,6 @@ slaveaddr = hex2dec('1E');
 %Z(1) = [];
 
 %% CAN setup
-dbc = canDatabase('CANDB-MASTER-DS1.dbc');
 global bdot_cmd_data;
 bdot_cmd_data = [0 0 0];
 global can_index;
@@ -44,9 +43,10 @@ can_index = 1;
 can_id = 304545825;
 rxChannel = canChannel('Kvaser','Leaf Light v2 1',1);
 configBusSpeed(rxChannel, 125000);
+dbc = canDatabase('E:\Repos\DubSat1\teams\cdh\CAN\CANDB-MASTER-DS1.dbc');
 rxChannel.Database = dbc;
-rxChannel.MessageReceivedFcn = @receivingFcn;
 filterAllowOnly(rxChannel, can_id, 'Extended');
+rxChannel.MessageReceivedFcn = @receivingFcn;
 start(rxChannel);
 
 
@@ -93,7 +93,7 @@ function receivingFcn(rxChannel)
     %rxMsg.Data;
     global bdot_cmd_data;
     global can_index;
-    bdot_cmd_data(can_index, :) = rxMsg.Data;
+    bdot_cmd_data(can_index, :) = rxMsg.Data
     can_index = can_index + 1;
 end
 
