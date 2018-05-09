@@ -349,7 +349,7 @@ BO_ 2148597780 cmd_rollcall: 7 eps_dist
  SG_ cmd_rollcall_met : 8|32@1+ (1,0) [0|4294967295] "" Vector__XXX
  SG_ cmd_rollcall_msp : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
-BO_ 2181496880 mtq_ack: 2 adcs_mtq
+BO_ 2181496880 mtq_ack: 8 adcs_mtq
  SG_ mtq_ack_source : 8|8@1- (1,0) [-128|1] "" Vector__XXX
  SG_ mtq_ack_phase : 0|8@1- (1,0) [-128|3] "" Vector__XXX
  SG_ mtq_ack_last_fsw_z : 56|8@1- (1,0) [-128|100] "pct" Vector__XXX
