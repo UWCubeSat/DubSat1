@@ -45,6 +45,9 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ temp_orphan : 0|8@1- (1,0) [0|0] "" Vector__XXX
+
 BO_ 2452161062 rc_adcs_sp_12: 8 Vector__XXX
  SG_ rc_adcs_sp_12_mag2_z_min : 32|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
  SG_ rc_adcs_sp_12_mag2_z_max : 48|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
@@ -545,6 +548,7 @@ BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,
 BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
 VAL_ 2452161050 rc_adcs_bdot_4_tumble 1 "true" 0 "false" ;
