@@ -189,114 +189,114 @@ uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
 typedef struct rc_adcs_sp_12 {
-    uint8_t rc_adcs_sp_12_mag2_z_min; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_12_mag2_z_max; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_12_mag2_y_max; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_12_mag2_y_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_12_mag2_z_min; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_12_mag2_z_max; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_12_mag2_y_max; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_12_mag2_y_avg; // 1/73 nanoTeslas
 } rc_adcs_sp_12;
 
 typedef struct rc_adcs_sp_11 {
-    uint8_t rc_adcs_sp_11_mag2_x_avg; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_11_mag2_x_max; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_11_mag2_x_min; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_11_mag2_y_min; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_11_mag2_x_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_11_mag2_x_max; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_11_mag2_x_min; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_11_mag2_y_min; // 1/73 nanoTeslas
 } rc_adcs_sp_11;
 
 typedef struct rc_adcs_sp_7 {
-    uint8_t rc_adcs_sp_7_magp_y_min; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_7_magp_y_max; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_7_magp_y_avg; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_7_magp_x_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_7_magp_y_min; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_7_magp_y_max; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_7_magp_y_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_7_magp_x_avg; // 1/73 nanoTeslas
 } rc_adcs_sp_7;
 
 typedef struct rc_adcs_sp_6 {
-    uint8_t rc_adcs_sp_6_sun_z_max; // 1/32768 units
-    uint8_t rc_adcs_sp_6_sun_z_avg; // 1/32768 units
-    uint8_t rc_adcs_sp_6_magp_x_min; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_6_magp_x_max; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_6_sun_z_max; // 1/32768 units
+    int16_t rc_adcs_sp_6_sun_z_avg; // 1/32768 units
+    int16_t rc_adcs_sp_6_magp_x_min; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_6_magp_x_max; // 1/73 nanoTeslas
 } rc_adcs_sp_6;
 
 typedef struct rc_adcs_sp_17 {
-    uint8_t rc_adcs_sp_17_imu_z_max; // 0.004375 deg/s
-    uint8_t rc_adcs_sp_17_imu_z_avg; // 0.004375 deg/s
+    int16_t rc_adcs_sp_17_imu_z_max; // 0.004375 deg/s
+    int16_t rc_adcs_sp_17_imu_z_avg; // 0.004375 deg/s
 } rc_adcs_sp_17;
 
 typedef struct rc_adcs_sp_16 {
-    uint8_t rc_adcs_sp_16_imu_z_min; // 0.004375 deg/s
-    uint8_t rc_adcs_sp_16_imu_y_min; // 0.004375 deg/s
-    uint8_t rc_adcs_sp_16_imu_y_max; // 0.004375 deg/s
-    uint8_t rc_adcs_sp_16_imu_y_avg; // 0.004375 deg/s
+    int16_t rc_adcs_sp_16_imu_z_min; // 0.004375 deg/s
+    int16_t rc_adcs_sp_16_imu_y_min; // 0.004375 deg/s
+    int16_t rc_adcs_sp_16_imu_y_max; // 0.004375 deg/s
+    int16_t rc_adcs_sp_16_imu_y_avg; // 0.004375 deg/s
 } rc_adcs_sp_16;
 
 typedef struct rc_adcs_sp_10 {
-    uint8_t rc_adcs_sp_10_mag1_z_min; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_10_mag1_z_max; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_10_mag1_z_avg; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_10_mag1_y_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_10_mag1_z_min; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_10_mag1_z_max; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_10_mag1_z_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_10_mag1_y_avg; // 1/73 nanoTeslas
 } rc_adcs_sp_10;
 
 typedef struct rc_adcs_sp_8 {
-    uint8_t rc_adcs_sp_8_magp_z_min; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_8_magp_z_max; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_8_magp_z_avg; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_8_mag1_x_min; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_8_magp_z_min; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_8_magp_z_max; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_8_magp_z_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_8_mag1_x_min; // 1/73 nanoTeslas
 } rc_adcs_sp_8;
 
 typedef struct rc_adcs_sp_9 {
-    uint8_t rc_adcs_sp_9_mag1_y_min; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_9_mag1_y_max; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_9_mag1_x_max; // 1/73 nanoTeslas
-    uint8_t rc_adcs_sp_9_mag1_x_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_9_mag1_y_min; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_9_mag1_y_max; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_9_mag1_x_max; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_9_mag1_x_avg; // 1/73 nanoTeslas
 } rc_adcs_sp_9;
 
 typedef struct rc_adcs_sp_13 {
-    uint8_t rc_adcs_sp_13_suna_min; // 60/32767 degrees
-    uint8_t rc_adcs_sp_13_suna_max; // 60/32767 degrees
-    uint8_t rc_adcs_sp_13_suna_avg; // 60/32767 degrees
-    uint8_t rc_adcs_sp_13_mag2_z_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_13_suna_min; // 60/32767 degrees
+    int16_t rc_adcs_sp_13_suna_max; // 60/32767 degrees
+    int16_t rc_adcs_sp_13_suna_avg; // 60/32767 degrees
+    int16_t rc_adcs_sp_13_mag2_z_avg; // 1/73 nanoTeslas
 } rc_adcs_sp_13;
 
 typedef struct rc_adcs_sp_15 {
-    uint8_t rc_adcs_sp_15_imu_x_min; // 0.004375 deg/s
-    uint8_t rc_adcs_sp_15_imu_x_max; // 0.004375 deg/s
-    uint8_t rc_adcs_sp_15_imu_x_avg; // 0.004375 deg/s
+    int16_t rc_adcs_sp_15_imu_x_min; // 0.004375 deg/s
+    int16_t rc_adcs_sp_15_imu_x_max; // 0.004375 deg/s
+    int16_t rc_adcs_sp_15_imu_x_avg; // 0.004375 deg/s
     uint8_t rc_adcs_sp_15_imu_valid; //  (No Units)
 } rc_adcs_sp_15;
 
 typedef struct rc_adcs_sp_14 {
-    uint8_t rc_adcs_sp_14_sunb_min; // 60/32767 degrees
-    uint8_t rc_adcs_sp_14_sunb_max; // 60/32767 degrees
-    uint8_t rc_adcs_sp_14_sunb_avg; // 60/32767 degrees
+    int16_t rc_adcs_sp_14_sunb_min; // 60/32767 degrees
+    int16_t rc_adcs_sp_14_sunb_max; // 60/32767 degrees
+    int16_t rc_adcs_sp_14_sunb_avg; // 60/32767 degrees
     uint8_t rc_adcs_sp_14_sun_valid; //  (No Units)
     uint8_t rc_adcs_sp_14_magp_valid; //  (No Units)
 } rc_adcs_sp_14;
 
 typedef struct rc_adcs_sp_5 {
-    uint8_t rc_adcs_sp_5_sun_z_min; // 1/32768 units
-    uint8_t rc_adcs_sp_5_sun_y_min; // 1/32768 units
-    uint8_t rc_adcs_sp_5_sun_y_max; // 1/32768 units
-    uint8_t rc_adcs_sp_5_sun_y_avg; // 1/32768 units
+    int16_t rc_adcs_sp_5_sun_z_min; // 1/32768 units
+    int16_t rc_adcs_sp_5_sun_y_min; // 1/32768 units
+    int16_t rc_adcs_sp_5_sun_y_max; // 1/32768 units
+    int16_t rc_adcs_sp_5_sun_y_avg; // 1/32768 units
 } rc_adcs_sp_5;
 
 typedef struct rc_adcs_sp_4 {
-    uint8_t rc_adcs_sp_4_sun_x_min; // 1/32768 units
-    uint8_t rc_adcs_sp_4_sun_x_max; // 1/32768 units
-    uint8_t rc_adcs_sp_4_sun_x_avg; // 1/32768 units
-    uint8_t rc_adcs_sp_4_imup_z_avg; // 0.004375 deg/s
+    int16_t rc_adcs_sp_4_sun_x_min; // 1/32768 units
+    int16_t rc_adcs_sp_4_sun_x_max; // 1/32768 units
+    int16_t rc_adcs_sp_4_sun_x_avg; // 1/32768 units
+    int16_t rc_adcs_sp_4_imup_z_avg; // 0.004375 deg/s
 } rc_adcs_sp_4;
 
 typedef struct rc_adcs_sp_3 {
-    uint8_t rc_adcs_sp_3_imup_z_min; // 0.004375 deg/s
-    uint8_t rc_adcs_sp_3_imup_z_max; // 0.004375 deg/s
-    uint8_t rc_adcs_sp_3_imup_y_max; // 0.004375 deg/s
-    uint8_t rc_adcs_sp_3_imup_y_avg; // 0.004375 deg/s
+    int16_t rc_adcs_sp_3_imup_z_min; // 0.004375 deg/s
+    int16_t rc_adcs_sp_3_imup_z_max; // 0.004375 deg/s
+    int16_t rc_adcs_sp_3_imup_y_max; // 0.004375 deg/s
+    int16_t rc_adcs_sp_3_imup_y_avg; // 0.004375 deg/s
 } rc_adcs_sp_3;
 
 typedef struct rc_adcs_sp_2 {
-    uint8_t rc_adcs_sp_2_imup_y_min; // 0.004375 deg/s
-    uint8_t rc_adcs_sp_2_imup_x_min; // 0.004375 deg/s
-    uint8_t rc_adcs_sp_2_imup_x_max; // 0.004375 deg/s
-    uint8_t rc_adcs_sp_2_imup_x_avg; // 0.004375 deg/s
+    int16_t rc_adcs_sp_2_imup_y_min; // 0.004375 deg/s
+    int16_t rc_adcs_sp_2_imup_x_min; // 0.004375 deg/s
+    int16_t rc_adcs_sp_2_imup_x_max; // 0.004375 deg/s
+    int16_t rc_adcs_sp_2_imup_x_avg; // 0.004375 deg/s
 } rc_adcs_sp_2;
 
 typedef struct rc_adcs_sp_1 {
@@ -364,41 +364,41 @@ typedef struct estim_state {
 } estim_state;
 
 typedef struct rc_adcs_mtq_5 {
-    uint8_t rc_adcs_mtq_5_reset_counts; //  (No Units)
-    uint8_t rc_adcs_mtq_5_fsw_ignore; //  (No Units)
+    int16_t rc_adcs_mtq_5_reset_counts; //  (No Units)
+    int16_t rc_adcs_mtq_5_fsw_ignore; //  (No Units)
 } rc_adcs_mtq_5;
 
 typedef struct rc_adcs_mtq_4 {
-    uint8_t rc_adcs_mtq_4_fsw_z_min; //  (No Units)
-    uint8_t rc_adcs_mtq_4_fsw_y_max; //  (No Units)
-    uint8_t rc_adcs_mtq_4_duty_z2_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_4_duty_z1_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_4_duty_y2_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_4_duty_y1_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_4_duty_x2_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_4_duty_x1_avg; //  (No Units)
+    int16_t rc_adcs_mtq_4_fsw_z_min; //  (No Units)
+    int16_t rc_adcs_mtq_4_fsw_y_max; //  (No Units)
+    int16_t rc_adcs_mtq_4_duty_z2_avg; //  (No Units)
+    int16_t rc_adcs_mtq_4_duty_z1_avg; //  (No Units)
+    int16_t rc_adcs_mtq_4_duty_y2_avg; //  (No Units)
+    int16_t rc_adcs_mtq_4_duty_y1_avg; //  (No Units)
+    int16_t rc_adcs_mtq_4_duty_x2_avg; //  (No Units)
+    int16_t rc_adcs_mtq_4_duty_x1_avg; //  (No Units)
 } rc_adcs_mtq_4;
 
 typedef struct rc_adcs_mtq_3 {
-    uint8_t rc_adcs_mtq_3_fsw_z_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_3_fsw_y_min; //  (No Units)
-    uint8_t rc_adcs_mtq_3_fsw_y_max; //  (No Units)
-    uint8_t rc_adcs_mtq_3_fsw_y_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_3_fsw_x_min; //  (No Units)
-    uint8_t rc_adcs_mtq_3_fsw_x_max; //  (No Units)
-    uint8_t rc_adcs_mtq_3_fsw_x_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_3_bdot_z_min; //  (No Units)
+    int16_t rc_adcs_mtq_3_fsw_z_avg; //  (No Units)
+    int16_t rc_adcs_mtq_3_fsw_y_min; //  (No Units)
+    int16_t rc_adcs_mtq_3_fsw_y_max; //  (No Units)
+    int16_t rc_adcs_mtq_3_fsw_y_avg; //  (No Units)
+    int16_t rc_adcs_mtq_3_fsw_x_min; //  (No Units)
+    int16_t rc_adcs_mtq_3_fsw_x_max; //  (No Units)
+    int16_t rc_adcs_mtq_3_fsw_x_avg; //  (No Units)
+    int16_t rc_adcs_mtq_3_bdot_z_min; //  (No Units)
 } rc_adcs_mtq_3;
 
 typedef struct rc_adcs_mtq_2 {
-    uint8_t rc_adcs_mtq_2_bdot_z_max; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_z_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_y_min; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_y_max; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_y_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_x_min; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_x_max; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_x_avg; //  (No Units)
+    int16_t rc_adcs_mtq_2_bdot_z_max; //  (No Units)
+    int16_t rc_adcs_mtq_2_bdot_z_avg; //  (No Units)
+    int16_t rc_adcs_mtq_2_bdot_y_min; //  (No Units)
+    int16_t rc_adcs_mtq_2_bdot_y_max; //  (No Units)
+    int16_t rc_adcs_mtq_2_bdot_y_avg; //  (No Units)
+    int16_t rc_adcs_mtq_2_bdot_x_min; //  (No Units)
+    int16_t rc_adcs_mtq_2_bdot_x_max; //  (No Units)
+    int16_t rc_adcs_mtq_2_bdot_x_avg; //  (No Units)
 } rc_adcs_mtq_2;
 
 typedef struct rc_adcs_mtq_1 {
@@ -410,16 +410,16 @@ typedef struct rc_adcs_mtq_1 {
 } rc_adcs_mtq_1;
 
 typedef struct rc_ppt_3 {
-    uint8_t rc_ppt_3_ign_chg_min; // 2^-15 seconds
-    uint8_t rc_ppt_3_ign_chg_max; // 2^-15 seconds
-    uint8_t rc_ppt_3_ign_chg_avg; // 2^-15 seconds
+    int16_t rc_ppt_3_ign_chg_min; // 2^-15 seconds
+    int16_t rc_ppt_3_ign_chg_max; // 2^-15 seconds
+    int16_t rc_ppt_3_ign_chg_avg; // 2^-15 seconds
 } rc_ppt_3;
 
 typedef struct rc_ppt_2 {
-    uint8_t rc_ppt_2_total_fire_count; //  (No Units)
-    uint8_t rc_ppt_2_main_chg_min; // 2^-15 seconds
-    uint8_t rc_ppt_2_main_chg_max; // 2^-15 seconds
-    uint8_t rc_ppt_2_main_chg_avg; // 2^-15 seconds
+    int16_t rc_ppt_2_total_fire_count; //  (No Units)
+    int16_t rc_ppt_2_main_chg_min; // 2^-15 seconds
+    int16_t rc_ppt_2_main_chg_max; // 2^-15 seconds
+    int16_t rc_ppt_2_main_chg_avg; // 2^-15 seconds
 } rc_ppt_2;
 
 typedef struct rc_ppt_1 {
@@ -759,7 +759,7 @@ typedef struct cmd_mtq_bdot {
 } cmd_mtq_bdot;
 
 typedef struct bdot_tumble_status {
-    uint8_t bdot_tumble_status_status; // bool
+    int16_t bdot_tumble_status_status; // bool
 } bdot_tumble_status;
 
 typedef struct sync_2 {
