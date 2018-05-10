@@ -818,7 +818,7 @@ typedef struct cmd_mtq_bdot {
 } cmd_mtq_bdot;
 
 typedef struct bdot_tumble_status {
-    int16_t bdot_tumble_status_status; // bool
+    uint8_t bdot_tumble_status_status; // bool
 } bdot_tumble_status;
 
 typedef struct sync_2 {

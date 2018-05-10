@@ -585,7 +585,7 @@ BO_ 2452029473 cmd_mtq_bdot: 3 adcs_bdot
  SG_ cmd_mtq_bdot_x : 0|8@1- (1,0) [-100|100] "pct doodie" Vector__XXX
 
 BO_ 2181496864 bdot_tumble_status: 1 adcs_bdot
- SG_ bdot_tumble_status_status : 0|1@1+ (1,0) [-32768|32767] "bool" Vector__XXX
+ SG_ bdot_tumble_status_status : 0|1@1+ (1,0) [0|1] "bool" Vector__XXX
 
 BO_ 2147549202 sync_2: 0 eps_gen
 

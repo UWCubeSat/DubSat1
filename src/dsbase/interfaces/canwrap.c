@@ -2294,7 +2294,7 @@ void decodebdot_tumble_status(CANPacket *input, bdot_tumble_status *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> bdot_tumble_status_status = (int16_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
+    output -> bdot_tumble_status_status = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
 }
 
 void encodebdot_tumble_status(bdot_tumble_status *input, CANPacket *output){
