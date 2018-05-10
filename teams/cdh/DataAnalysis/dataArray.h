@@ -33,7 +33,7 @@ void resetMinMax_uint16_t(uint16_t handle);
 
 /* return uint16_t sum of data in the given buffer
 */
-uint32_t getSum_uint16_t(uint16_t handle);
+NEXT_uint16_t getSum_uint16_t(uint16_t handle);
 
 /* return uint16_t average of data in the given buffer
 */
@@ -50,6 +50,7 @@ uint16_t getMax_uint16_t(uint16_t handle);
 
 /* Prints out given buffer
 */
+#define NEXT_float float
 
 
 /**
@@ -79,7 +80,7 @@ void resetMinMax_float(uint16_t handle);
 
 /* return uint16_t sum of data in the given buffer
 */
-float getSum_float(uint16_t handle);
+NEXT_float getSum_float(uint16_t handle);
 
 /* return uint16_t average of data in the given buffer
 */
@@ -159,7 +160,7 @@ void resetMinMax_int16_t(uint16_t handle);
 
 /* return uint16_t sum of data in the given buffer
 */
-int16_t getSum_int16_t(uint16_t handle);
+NEXT_int16_t getSum_int16_t(uint16_t handle);
 
 /* return uint16_t average of data in the given buffer
 */

@@ -13,9 +13,15 @@ typedef struct buffer_TYPE {
 	uint16_t resetAvgFlag;
 } buffer_TYPE;
 
-uint16_t handleNumber = 0;
-buffer_TYPE bufferContainer_TYPE[10];
-
+uint16_t handleNumber_TYPE = 0;
+#ifdef __DATA_ARRAYS_COUNT__
+	buffer_TYPE bufferContainer_TYPE[__DATA_ARRAYS_COUNT__];
+	const uint8_t bufferContainerLength = __DATA_ARRAYS_COUNT__;
+#else
+	#warning need to define how many data arrays you are using 20 is default
+	buffer_TYPE bufferContainer_TYPE[20];
+	const uint8_t bufferContainerLength = 20;
+#endif
 /**
  * Function: init
  * Initializes a buffer and fills the buffer with as many numbers as it can handle.
@@ -28,7 +34,7 @@ buffer_TYPE bufferContainer_TYPE[10];
  */
 uint16_t init_TYPE(TYPE *userBuffer, uint16_t size) {
                           /* MSP430 */
-	buffer_TYPE *myBuffer = &bufferContainer_TYPE[handleNumber];
+	buffer_TYPE *myBuffer = &bufferContainer_TYPE[handleNumber_TYPE];
 	myBuffer->bufferPt = userBuffer;
 	myBuffer->maxSize = size;
 	myBuffer->startPt = userBuffer;
@@ -39,7 +45,7 @@ uint16_t init_TYPE(TYPE *userBuffer, uint16_t size) {
 	myBuffer->max = (TYPE)0;
 	myBuffer->resetMinMaxFlag = 0;
 	myBuffer->resetAvgFlag = 0;
-	return handleNumber++;
+	return handleNumber_TYPE++;
 }
 
 void printArray_TYPE(uint16_t handle) {
@@ -177,8 +183,8 @@ void resetMinMax_TYPE(uint16_t handle) {
  * @param handle the identifier for the buffer that will be manipulated.
  * @return TYPE sum of the values within
  */
-TYPE getSum_TYPE(uint16_t handle) {
-	TYPE sum = (TYPE)0;
+NEXT_TYPE getSum_TYPE(uint16_t handle) {
+	NEXT_TYPE sum = (TYPE)0;
 	buffer_TYPE *theirBuffer = &bufferContainer_TYPE[handle];
 	TYPE *curr = theirBuffer->startPt;
 	while (curr != theirBuffer->endPt) {
@@ -188,9 +194,7 @@ TYPE getSum_TYPE(uint16_t handle) {
    }
 
     /* handles overflow */
-	if (sum < getMax_TYPE(handle)) {
-		sum = (TYPE)0;
-	}
+
 	return sum;
 }
 
@@ -205,7 +209,7 @@ TYPE getAvg_TYPE(uint16_t handle) {
     if (theirBuffer->currentSize == 0) {
         return 0;
     }
-    TYPE sum = getSum_TYPE(handle);
+    NEXT_TYPE sum = getSum_TYPE(handle);
     TYPE avg = sum / theirBuffer->currentSize;
     return avg;
 }
