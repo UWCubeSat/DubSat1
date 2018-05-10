@@ -6,6 +6,8 @@
  */
 
 #include <inttypes.h>
+#include "../core/can.h"
+
 
 #ifndef DSBASE_INTERFACES_CANWRAP_H_
 #define DSBASE_INTERFACES_CANWRAP_H_
@@ -182,7 +184,9 @@ void canWrapInitWithFilter();
 // when a packet is received through CAN
 void (*CANPacketReceived)(CANPacket *);
 
-void canSendPacket(CANPacket *packet);
+// Returns 0 if sending was successful
+// Returns not zero if it couldn't right now.
+uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
 typedef struct VECTOR__INDEPENDENT_SIG_MSG {
