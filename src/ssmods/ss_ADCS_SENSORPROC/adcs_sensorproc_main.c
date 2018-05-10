@@ -424,111 +424,115 @@ void rcPopulate1(CANPacket *out)
 void rcPopulate2(CANPacket *out)
 {
     rc_adcs_sp_2 rc;
-    // TODO
+    imuioRcPopulate2(&rc);
     encoderc_adcs_sp_2(&rc, out);
 }
 
 void rcPopulate3(CANPacket *out)
 {
     rc_adcs_sp_3 rc;
-    // TODO
+    imuioRcPopulate3(&rc);
     encoderc_adcs_sp_3(&rc, out);
 }
 
 void rcPopulate4(CANPacket *out)
 {
     rc_adcs_sp_4 rc;
-    // TODO
+    imuioRcPopulate4(&rc);
+    sunsensorioRcPopulate4(&rc);
     encoderc_adcs_sp_4(&rc, out);
 }
 
 void rcPopulate5(CANPacket *out)
 {
     rc_adcs_sp_5 rc;
-    // TODO
+    sunsensorioRcPopulate5(&rc);
     encoderc_adcs_sp_5(&rc, out);
 }
 
 void rcPopulate6(CANPacket *out)
 {
     rc_adcs_sp_6 rc;
-    // TODO
+    sunsensorioRcPopulate6(&rc);
+    magioRcPopulate6(&rc);
     encoderc_adcs_sp_6(&rc, out);
 }
 
 void rcPopulate7(CANPacket *out)
 {
     rc_adcs_sp_7 rc;
-    // TODO
+    magioRcPopulate7(&rc);
     encoderc_adcs_sp_7(&rc, out);
 }
 
 void rcPopulate8(CANPacket *out)
 {
     rc_adcs_sp_8 rc;
-    // TODO
+    magioRcPopulate8(&rc);
     encoderc_adcs_sp_8(&rc, out);
 }
 
 void rcPopulate9(CANPacket *out)
 {
     rc_adcs_sp_9 rc;
-    // TODO
+    magioRcPopulate9(&rc);
     encoderc_adcs_sp_9(&rc, out);
 }
 
 void rcPopulate10(CANPacket *out)
 {
     rc_adcs_sp_10 rc;
-    // TODO
+    magioRcPopulate10(&rc);
     encoderc_adcs_sp_10(&rc, out);
 }
 
 void rcPopulate11(CANPacket *out)
 {
     rc_adcs_sp_11 rc;
-    // TODO
+    magioRcPopulate11(&rc);
     encoderc_adcs_sp_11(&rc, out);
 }
 
 void rcPopulate12(CANPacket *out)
 {
     rc_adcs_sp_12 rc;
-    // TODO
+    magioRcPopulate12(&rc);
     encoderc_adcs_sp_12(&rc, out);
 }
 
 void rcPopulate13(CANPacket *out)
 {
     rc_adcs_sp_13 rc;
-    // TODO
+    sunsensorioRcPopulate13(&rc);
+    magioRcPopulate13(&rc);
     encoderc_adcs_sp_13(&rc, out);
 }
 
 void rcPopulate14(CANPacket *out)
 {
     rc_adcs_sp_14 rc;
-    // TODO
+    sunsensorioRcPopulate14(&rc);
+    magioRcPopulate14(&rc);
     encoderc_adcs_sp_14(&rc, out);
 }
 
 void rcPopulate15(CANPacket *out)
 {
     rc_adcs_sp_15 rc;
-    // TODO
+    imuioRcPopulate15(&rc);
     encoderc_adcs_sp_15(&rc, out);
 }
 
 void rcPopulate16(CANPacket *out)
 {
     rc_adcs_sp_16 rc;
-    // TODO
+    imuioRcPopulate16(&rc);
     encoderc_adcs_sp_16(&rc, out);
 }
 
 void rcPopulate17(CANPacket *out)
 {
     rc_adcs_sp_17 rc;
-    // TODO
+    imuioRcPopulate17(&rc);
     encoderc_adcs_sp_17(&rc, out);
 }
