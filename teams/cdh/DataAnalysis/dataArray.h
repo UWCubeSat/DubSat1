@@ -33,7 +33,7 @@ void resetMinMax_uint16_t(uint16_t handle);
 
 /* return uint16_t sum of data in the given buffer
 */
-uint32_t getSum_uint16_t(uint16_t handle);
+NEXT_uint16_t getSum_uint16_t(uint16_t handle);
 
 /* return uint16_t average of data in the given buffer
 */
@@ -50,13 +50,12 @@ uint16_t getMax_uint16_t(uint16_t handle);
 
 /* Prints out given buffer
 */
-void printArray_uint16_t(uint16_t handle);
+#define NEXT_float float
 
 
 /**
  * Prints out statistics of the buffer.
  */
-void printAllStats_uint16_t(uint16_t handle);
 
 struct buffer_float;
 
@@ -81,7 +80,7 @@ void resetMinMax_float(uint16_t handle);
 
 /* return uint16_t sum of data in the given buffer
 */
-float getSum_float(uint16_t handle);
+NEXT_float getSum_float(uint16_t handle);
 
 /* return uint16_t average of data in the given buffer
 */
@@ -95,17 +94,6 @@ float getMin_float(uint16_t handle);
 /* return uint16_t max of data in the given buffer
 No matter how many values are loaded into the array, max value stays until user call reset function */
 float getMax_float(uint16_t handle);
-
-/* Prints out given buffer
-*/
-void printArray_float(uint16_t handle);
-
-
-/**
- * Prints out statistics of the buffer.
- */
-void printAllStats_float(uint16_t handle);
-
 
 
 #define NEXT_uint8_t uint16_t
@@ -148,14 +136,44 @@ uint8_t getMin_uint8_t(uint16_t handle);
 No matter how many values are loaded into the array, max value stays until user call reset function */
 uint8_t getMax_uint8_t(uint16_t handle);
 
-/* Prints out given buffer
+
+struct buffer_int16_t;
+
+ /*initialize buffer struct*/
+uint16_t init_int16_t(int16_t *userBuffer, uint16_t size);
+
+/* Add new data to given buffer
 */
-void printArray_uint8_t(uint16_t handle);
+void addData_int16_t(uint16_t handle, int16_t data);
 
+/* reset all data in the given buffer including min, max, and average
+*/
+void resetAll_int16_t(uint16_t handle);
 
-/**
- * Prints out statistics of the buffer.
- */
-void printAllStats_uint8_t(uint16_t handle);
+/* reset only average
+*/
+void resetAvg_int16_t(uint16_t handle);
+
+/* reset only min and max
+*/
+void resetMinMax_int16_t(uint16_t handle);
+
+/* return uint16_t sum of data in the given buffer
+*/
+NEXT_int16_t getSum_int16_t(uint16_t handle);
+
+/* return uint16_t average of data in the given buffer
+*/
+int16_t getAvg_int16_t(uint16_t handle);
+
+/* return uint16_t min of data in the given buffer
+No matter how many values are loaded into the array, min value stays until user call reset function
+*/
+int16_t getMin_int16_t(uint16_t handle);
+
+/* return uint16_t max of data in the given buffer
+No matter how many values are loaded into the array, max value stays until user call reset function */
+int16_t getMax_int16_t(uint16_t handle);
+
 
 #endif /*DATAARRAY_H*/

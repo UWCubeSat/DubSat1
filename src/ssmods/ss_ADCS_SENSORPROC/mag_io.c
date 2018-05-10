@@ -11,10 +11,38 @@
 
 #include "core/i2c.h"
 #include "core/utils.h"
+#include "core/dataArray.h"
 #include "interfaces/canwrap.h"
 
 #include "autocode/MSP_SP.h"
 #include "autocode/rtwtypes.h"
+
+// rollcall arrays
+typedef struct {
+    int16_t mag1xData[RC_BUFFER_SIZE];
+    int16_t mag1yData[RC_BUFFER_SIZE];
+    int16_t mag1zData[RC_BUFFER_SIZE];
+    int16_t mag2xData[RC_BUFFER_SIZE];
+    int16_t mag2yData[RC_BUFFER_SIZE];
+    int16_t mag2zData[RC_BUFFER_SIZE];
+    int16_t magpxData[RC_BUFFER_SIZE];
+    int16_t magpyData[RC_BUFFER_SIZE];
+    int16_t magpzData[RC_BUFFER_SIZE];
+    uint8_t magValidData[RC_BUFFER_SIZE];
+    uint16_t mag1xHandle;
+    uint16_t mag1yHandle;
+    uint16_t mag1zHandle;
+    uint16_t mag2xHandle;
+    uint16_t mag2yHandle;
+    uint16_t mag2zHandle;
+    uint16_t magpxHandle;
+    uint16_t magpyHandle;
+    uint16_t magpzHandle;
+    uint16_t magValidHandle;
+} mag_rc;
+
+#pragma NOINIT(rc)
+FILE_STATIC mag_rc rc;
 
 FILE_STATIC hMag mag1;
 FILE_STATIC hMag mag2;
@@ -28,24 +56,24 @@ FILE_STATIC MagnetometerData *data2;
     MagnetometerData mockData2;
 #endif
 
-FILE_STATIC hMag magioInit(bus_instance_i2c bus)
-{
-    hMag handle = magInit(bus);
-    return handle;
-}
-
-void magioInit1()
+void magioInit()
 {
 #if ENABLE_MAG1
-    mag1 = magioInit(MAG1_I2CBUS);
+    mag1 = magInit(MAG1_I2CBUS);
 #endif
-}
-
-void magioInit2()
-{
 #if ENABLE_MAG2
-    mag2 = magioInit(MAG2_I2CBUS);
+    mag2 = magInit(MAG2_I2CBUS);
 #endif
+    rc.mag1xHandle = init_int16_t(rc.mag1xData, RC_BUFFER_SIZE);
+    rc.mag1yHandle = init_int16_t(rc.mag1yData, RC_BUFFER_SIZE);
+    rc.mag1zHandle = init_int16_t(rc.mag1zData, RC_BUFFER_SIZE);
+    rc.mag2xHandle = init_int16_t(rc.mag2xData, RC_BUFFER_SIZE);
+    rc.mag2yHandle = init_int16_t(rc.mag2yData, RC_BUFFER_SIZE);
+    rc.mag2zHandle = init_int16_t(rc.mag2zData, RC_BUFFER_SIZE);
+    rc.magpxHandle = init_int16_t(rc.magpxData, RC_BUFFER_SIZE);
+    rc.magpyHandle = init_int16_t(rc.magpyData, RC_BUFFER_SIZE);
+    rc.magpzHandle = init_int16_t(rc.magpzData, RC_BUFFER_SIZE);
+    rc.magValidHandle = init_uint8_t(rc.magValidData, RC_BUFFER_SIZE);
 }
 
 FILE_STATIC uint8_t isValid(hMag handle)
@@ -54,7 +82,16 @@ FILE_STATIC uint8_t isValid(hMag handle)
     return 1;
 }
 
-void magioUpdate1()
+FILE_STATIC void setOutput(hMag mag, MagnetometerData *input, real32_T *output)
+{
+    // set autocode inputs
+    output[0] = magConvertRawToTeslas(input->rawX);
+    output[1] = magConvertRawToTeslas(input->rawY);
+    output[2] = magConvertRawToTeslas(input->rawZ);
+    output[3] = isValid(mag);
+}
+
+FILE_STATIC void update1()
 {
 #if ENABLE_MAG1
 #ifdef __I2C_DONT_WRITE_MAG1__
@@ -69,14 +106,15 @@ void magioUpdate1()
     data1 = &mockData1;
 #endif
 
-    // set autocode inputs
-    rtU.mag1_vec_body_T[0] = magConvertRawToTeslas(data1->rawX);
-    rtU.mag1_vec_body_T[1] = magConvertRawToTeslas(data1->rawY);
-    rtU.mag1_vec_body_T[2] = magConvertRawToTeslas(data1->rawZ);
-    rtU.mag1_vec_body_T[3] = isValid(mag1);
+    setOutput(mag1, data1, rtU.mag1_vec_body_T);
+
+    // update rollcall array
+    addData_int16_t(rc.mag1xHandle, data1->rawX);
+    addData_int16_t(rc.mag1yHandle, data1->rawY);
+    addData_int16_t(rc.mag1zHandle, data1->rawZ);
 }
 
-void magioUpdate2()
+FILE_STATIC void update2()
 {
 #if ENABLE_MAG2
 #ifdef __I2C_DONT_WRITE_MAG2__
@@ -91,21 +129,18 @@ void magioUpdate2()
     data2 = &mockData2;
 #endif /* ENABLE_MAG2 */
 
-    // set autocode inputs
-    rtU.mag2_vec_body_T[0] = magConvertRawToTeslas(data2->rawX);
-    rtU.mag2_vec_body_T[1] = magConvertRawToTeslas(data2->rawY);
-    rtU.mag2_vec_body_T[2] = magConvertRawToTeslas(data2->rawZ);
-    rtU.mag2_vec_body_T[3] = isValid(mag2);
+    setOutput(mag2, data2, rtU.mag2_vec_body_T);
+
+    // update rollcall array
+    addData_int16_t(rc.mag2xHandle, data2->rawX);
+    addData_int16_t(rc.mag2yHandle, data2->rawY);
+    addData_int16_t(rc.mag2zHandle, data2->rawZ);
 }
 
-FILE_STATIC void magioSendBackchannel(MagnetometerData *data, uint8_t tlmId)
+void magioUpdate()
 {
-    mag_segment seg;
-    seg.x = data->rawX;
-    seg.y = data->rawY;
-    seg.z = data->rawZ;
-    bcbinPopulateHeader(&seg.header, tlmId, sizeof(seg));
-    bcbinSendPacket((uint8_t *) &seg, sizeof(seg));
+    update1();
+    update2();
 }
 
 void magioSendBackchannelVector()
@@ -119,18 +154,35 @@ void magioSendBackchannelVector()
     bcbinSendPacket((uint8_t *) &s, sizeof(s));
 }
 
-void magioSendBackchannel1()
+FILE_STATIC void sendBackchannel(MagnetometerData *data, uint8_t tlmId)
 {
-    magioSendBackchannel(data1, TLM_ID_MAG1_RAW);
+    mag_segment seg;
+    seg.x = data->rawX;
+    seg.y = data->rawY;
+    seg.z = data->rawZ;
+    bcbinPopulateHeader(&seg.header, tlmId, sizeof(seg));
+    bcbinSendPacket((uint8_t *) &seg, sizeof(seg));
 }
 
-void magioSendBackchannel2()
+FILE_STATIC void magioSendBackchannel1()
 {
-    magioSendBackchannel(data2, TLM_ID_MAG2_RAW);
+    sendBackchannel(data1, TLM_ID_MAG1_RAW);
+}
+
+FILE_STATIC void magioSendBackchannel2()
+{
+    sendBackchannel(data2, TLM_ID_MAG2_RAW);
+}
+
+void magioSendBackchannel()
+{
+    magioSendBackchannel1();
+    magioSendBackchannel2();
 }
 
 void magioSendCAN()
 {
+    // send packet
     sensorproc_mag mag;
     mag.sensorproc_mag_x = magConvertTeslasToRaw(rtY.mag_body_processed_T[0]);
     mag.sensorproc_mag_y = magConvertTeslasToRaw(rtY.mag_body_processed_T[1]);
@@ -139,4 +191,74 @@ void magioSendCAN()
     CANPacket packet;
     encodesensorproc_mag(&mag, &packet);
     canSendPacket(&packet);
+
+    // update rollcall arrays
+    addData_int16_t(rc.magpxHandle, mag.sensorproc_mag_x);
+    addData_int16_t(rc.magpyHandle, mag.sensorproc_mag_y);
+    addData_int16_t(rc.magpzHandle, mag.sensorproc_mag_z);
+    addData_uint8_t(rc.magValidHandle, mag.sensorproc_mag_valid);
+}
+
+void magioRcPopulate6(rc_adcs_sp_6 *r)
+{
+    r->rc_adcs_sp_6_magp_x_min = getMin_int16_t(rc.magpxHandle);
+    r->rc_adcs_sp_6_magp_x_max = getMax_int16_t(rc.magpxHandle);
+}
+
+void magioRcPopulate7(rc_adcs_sp_7 *r)
+{
+    r->rc_adcs_sp_7_magp_x_avg = getAvg_int16_t(rc.magpxHandle);
+    r->rc_adcs_sp_7_magp_y_min = getMin_int16_t(rc.magpyHandle);
+    r->rc_adcs_sp_7_magp_y_max = getMax_int16_t(rc.magpyHandle);
+    r->rc_adcs_sp_7_magp_y_avg = getAvg_int16_t(rc.magpyHandle);
+}
+
+void magioRcPopulate8(rc_adcs_sp_8 *r)
+{
+    r->rc_adcs_sp_8_magp_z_min = getMin_int16_t(rc.magpzHandle);
+    r->rc_adcs_sp_8_magp_z_max = getMax_int16_t(rc.magpzHandle);
+    r->rc_adcs_sp_8_magp_z_avg = getAvg_int16_t(rc.magpzHandle);
+    r->rc_adcs_sp_8_mag1_x_min = getMin_int16_t(rc.mag1xHandle);
+}
+
+void magioRcPopulate9(rc_adcs_sp_9 *r)
+{
+    r->rc_adcs_sp_9_mag1_x_max = getMax_int16_t(rc.mag1xHandle);
+    r->rc_adcs_sp_9_mag1_x_avg = getAvg_int16_t(rc.mag1xHandle);
+    r->rc_adcs_sp_9_mag1_y_min = getMin_int16_t(rc.mag1yHandle);
+    r->rc_adcs_sp_9_mag1_y_max = getMax_int16_t(rc.mag1yHandle);
+}
+
+void magioRcPopulate10(rc_adcs_sp_10 *r)
+{
+    r->rc_adcs_sp_10_mag1_y_avg = getAvg_int16_t(rc.mag1yHandle);
+    r->rc_adcs_sp_10_mag1_z_min = getMin_int16_t(rc.mag1zHandle);
+    r->rc_adcs_sp_10_mag1_z_max = getMax_int16_t(rc.mag1zHandle);
+    r->rc_adcs_sp_10_mag1_z_avg = getAvg_int16_t(rc.mag1zHandle);
+}
+
+void magioRcPopulate11(rc_adcs_sp_11 *r)
+{
+    r->rc_adcs_sp_11_mag2_x_min = getMin_int16_t(rc.mag2xHandle);
+    r->rc_adcs_sp_11_mag2_x_max = getMax_int16_t(rc.mag2xHandle);
+    r->rc_adcs_sp_11_mag2_x_avg = getAvg_int16_t(rc.mag2xHandle);
+    r->rc_adcs_sp_11_mag2_y_min = getMin_int16_t(rc.mag2yHandle);
+}
+
+void magioRcPopulate12(rc_adcs_sp_12 *r)
+{
+    r->rc_adcs_sp_12_mag2_y_max = getMax_int16_t(rc.mag2yHandle);
+    r->rc_adcs_sp_12_mag2_y_avg = getAvg_int16_t(rc.mag2yHandle);
+    r->rc_adcs_sp_12_mag2_z_min = getMin_int16_t(rc.mag2zHandle);
+    r->rc_adcs_sp_12_mag2_z_max = getMax_int16_t(rc.mag2zHandle);
+}
+
+void magioRcPopulate13(rc_adcs_sp_13 *r)
+{
+    r->rc_adcs_sp_13_mag2_z_avg = getAvg_int16_t(rc.mag2zHandle);
+}
+
+void magioRcPopulate14(rc_adcs_sp_14 *r)
+{
+    r->rc_adcs_sp_14_magp_valid = getSum_uint8_t(rc.magValidHandle);
 }
