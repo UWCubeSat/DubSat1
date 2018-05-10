@@ -250,38 +250,38 @@ BO_ 2449932984 estim_state: 1 Vector__XXX
  SG_ estim_state_above_gs : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2452161039 rc_adcs_mtq_5: 2 Vector__XXX
- SG_ rc_adcs_mtq_5_reset_counts : 8|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_5_fsw_ignore : 0|8@1+ (1,0) [-32768|32767] "" Vector__XXX
+ SG_ rc_adcs_mtq_5_reset_counts : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_5_fsw_ignore : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161038 rc_adcs_mtq_4: 8 Vector__XXX
- SG_ rc_adcs_mtq_4_fsw_z_min : 8|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_4_fsw_y_max : 0|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_4_duty_z2_avg : 56|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_4_duty_z1_avg : 48|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_4_duty_y2_avg : 40|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_4_duty_y1_avg : 32|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_4_duty_x2_avg : 24|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_4_duty_x1_avg : 16|8@1+ (1,0) [-32768|32767] "" Vector__XXX
+ SG_ rc_adcs_mtq_4_fsw_z_min : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_4_fsw_y_max : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_4_duty_z2_avg : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_4_duty_z1_avg : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_4_duty_y2_avg : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_4_duty_y1_avg : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_4_duty_x2_avg : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_4_duty_x1_avg : 16|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161037 rc_adcs_mtq_3: 8 Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_z_avg : 56|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_y_min : 48|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_y_max : 40|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_y_avg : 32|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_x_min : 24|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_x_max : 16|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_x_avg : 8|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_3_bdot_z_min : 0|8@1+ (1,0) [-32768|32767] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_z_avg : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_y_min : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_y_max : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_y_avg : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_x_min : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_x_max : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_x_avg : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_bdot_z_min : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161036 rc_adcs_mtq_2: 8 Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_z_max : 56|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_z_avg : 48|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_y_min : 40|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_y_max : 32|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_y_avg : 24|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_x_min : 16|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_x_max : 8|8@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_x_avg : 0|8@1+ (1,0) [-32768|32767] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_z_max : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_z_avg : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_y_min : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_y_max : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_y_avg : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_x_min : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_x_max : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_x_avg : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161035 rc_adcs_mtq_1: 8 Vector__XXX
  SG_ rc_adcs_mtq_1_reset_count : 56|8@1+ (1,0) [0|256] "" Vector__XXX

@@ -26,6 +26,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_VECTOR__INDEPENDENT_SIG_MSG 1073741824
 #define CAN_ID_RC_ADCS_SP_12 304677414
 #define CAN_ID_RC_ADCS_SP_11 304677413
 #define CAN_ID_RC_ADCS_SP_7 304677409
@@ -188,6 +189,64 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct VECTOR__INDEPENDENT_SIG_MSG {
+    uint8_t rc_eps_dist_met; //  (No Units)
+    uint32_t rc_eps_dist_met_overflow; //  (No Units)
+    uint16_t rc_eps_dist_batt_v_min; // mV
+    uint16_t rc_eps_dist_batt_v_max; // mV
+    uint16_t rc_eps_dist_batt_v_avg; // mV
+    uint8_t rc_eps_dist_uv_state; //  (No Units)
+    uint8_t rc_eps_dist_com1_state; //  (No Units)
+    uint16_t rc_eps_dist_com1_c_min; // mA
+    uint16_t rc_eps_dist_com1_c_max; // mA
+    uint16_t rc_eps_dist_com1_c_avg; // mA
+    uint16_t rc_eps_dist_com1_v_min; // mV
+    uint16_t rc_eps_dist_com1_v_max; // mV
+    uint16_t rc_eps_dist_com1_v_avg; // mV
+    uint8_t rc_eps_dist_com2_state; //  (No Units)
+    uint16_t rc_eps_dist_com2_c_min; // mA
+    uint16_t rc_eps_dist_com2_c_max; // mA
+    uint16_t rc_eps_dist_com2_c_avg; // mA
+    uint16_t rc_eps_dist_com2_v_min; // mV
+    uint16_t rc_eps_dist_com2_v_max; // mV
+    uint16_t rc_eps_dist_com2_v_avg; // mV
+    uint8_t rc_eps_dist_rahs_state; //  (No Units)
+    uint16_t rc_eps_dist_rahs_c_min; // mA
+    uint16_t rc_eps_dist_rahs_c_max; // mA
+    uint16_t rc_eps_dist_rahs_c_avg; // mA
+    uint16_t rc_eps_dist_rahs_v_min; // mV
+    uint16_t rc_eps_dist_rahs_v_max; // mV
+    uint16_t rc_eps_dist_rahs_v_avg; // mV
+    uint8_t rc_eps_dist_bdot_state; //  (No Units)
+    uint16_t rc_eps_dist_bdot_c_min; // mA
+    uint16_t rc_eps_dist_bdot_c_max; // mA
+    uint16_t rc_eps_dist_bdot_c_avg; // mA
+    uint16_t rc_eps_dist_bdot_v_min; // mV
+    uint16_t rc_eps_dist_bdot_v_max; // mV
+    uint16_t rc_eps_dist_bdot_v_avg; // mV
+    uint8_t rc_eps_dist_estim_state; //  (No Units)
+    uint16_t rc_eps_dist_estim_c_min; // mA
+    uint16_t rc_eps_dist_estim_c_max; // mA
+    uint16_t rc_eps_dist_estim_c_avg; // mA
+    uint16_t rc_eps_dist_estim_v_min; // mV
+    uint16_t rc_eps_dist_estim_v_max; // mV
+    uint16_t rc_eps_dist_estim_v_avg; // mV
+    uint8_t rc_eps_dist_eps_state; //  (No Units)
+    uint16_t rc_eps_dist_eps_c_min; // mA
+    uint16_t rc_eps_dist_eps_c_max; // mA
+    uint16_t rc_eps_dist_eps_c_avg; // mA
+    uint16_t rc_eps_dist_eps_v_min; // mV
+    uint16_t rc_eps_dist_eps_v_max; // mV
+    uint16_t rc_eps_dist_eps_v_avg; // mV
+    uint8_t rc_eps_dist_ppt_state; //  (No Units)
+    uint16_t rc_eps_dist_ppt_c_min; // mA
+    uint16_t rc_eps_dist_ppt_c_max; // mA
+    uint16_t rc_eps_dist_ppt_c_avg; // mA
+    uint16_t rc_eps_dist_ppt_v_min; // mV
+    uint16_t rc_eps_dist_ppt_v_max; // mV
+    uint16_t rc_eps_dist_ppt_v_avg; // mV
+} VECTOR__INDEPENDENT_SIG_MSG;
+
 typedef struct rc_adcs_sp_12 {
     int16_t rc_adcs_sp_12_mag2_z_min; // 1/73 nanoTeslas
     int16_t rc_adcs_sp_12_mag2_z_max; // 1/73 nanoTeslas
@@ -364,41 +423,41 @@ typedef struct estim_state {
 } estim_state;
 
 typedef struct rc_adcs_mtq_5 {
-    int16_t rc_adcs_mtq_5_reset_counts; //  (No Units)
-    int16_t rc_adcs_mtq_5_fsw_ignore; //  (No Units)
+    uint8_t rc_adcs_mtq_5_reset_counts; //  (No Units)
+    uint8_t rc_adcs_mtq_5_fsw_ignore; //  (No Units)
 } rc_adcs_mtq_5;
 
 typedef struct rc_adcs_mtq_4 {
-    int16_t rc_adcs_mtq_4_fsw_z_min; //  (No Units)
-    int16_t rc_adcs_mtq_4_fsw_y_max; //  (No Units)
-    int16_t rc_adcs_mtq_4_duty_z2_avg; //  (No Units)
-    int16_t rc_adcs_mtq_4_duty_z1_avg; //  (No Units)
-    int16_t rc_adcs_mtq_4_duty_y2_avg; //  (No Units)
-    int16_t rc_adcs_mtq_4_duty_y1_avg; //  (No Units)
-    int16_t rc_adcs_mtq_4_duty_x2_avg; //  (No Units)
-    int16_t rc_adcs_mtq_4_duty_x1_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_4_fsw_z_min; //  (No Units)
+    uint8_t rc_adcs_mtq_4_fsw_y_max; //  (No Units)
+    uint8_t rc_adcs_mtq_4_duty_z2_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_4_duty_z1_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_4_duty_y2_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_4_duty_y1_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_4_duty_x2_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_4_duty_x1_avg; //  (No Units)
 } rc_adcs_mtq_4;
 
 typedef struct rc_adcs_mtq_3 {
-    int16_t rc_adcs_mtq_3_fsw_z_avg; //  (No Units)
-    int16_t rc_adcs_mtq_3_fsw_y_min; //  (No Units)
-    int16_t rc_adcs_mtq_3_fsw_y_max; //  (No Units)
-    int16_t rc_adcs_mtq_3_fsw_y_avg; //  (No Units)
-    int16_t rc_adcs_mtq_3_fsw_x_min; //  (No Units)
-    int16_t rc_adcs_mtq_3_fsw_x_max; //  (No Units)
-    int16_t rc_adcs_mtq_3_fsw_x_avg; //  (No Units)
-    int16_t rc_adcs_mtq_3_bdot_z_min; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_z_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_y_min; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_y_max; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_y_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_x_min; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_x_max; //  (No Units)
+    uint8_t rc_adcs_mtq_3_fsw_x_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_3_bdot_z_min; //  (No Units)
 } rc_adcs_mtq_3;
 
 typedef struct rc_adcs_mtq_2 {
-    int16_t rc_adcs_mtq_2_bdot_z_max; //  (No Units)
-    int16_t rc_adcs_mtq_2_bdot_z_avg; //  (No Units)
-    int16_t rc_adcs_mtq_2_bdot_y_min; //  (No Units)
-    int16_t rc_adcs_mtq_2_bdot_y_max; //  (No Units)
-    int16_t rc_adcs_mtq_2_bdot_y_avg; //  (No Units)
-    int16_t rc_adcs_mtq_2_bdot_x_min; //  (No Units)
-    int16_t rc_adcs_mtq_2_bdot_x_max; //  (No Units)
-    int16_t rc_adcs_mtq_2_bdot_x_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_z_max; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_z_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_y_min; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_y_max; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_y_avg; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_x_min; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_x_max; //  (No Units)
+    uint8_t rc_adcs_mtq_2_bdot_x_avg; //  (No Units)
 } rc_adcs_mtq_2;
 
 typedef struct rc_adcs_mtq_1 {
@@ -776,6 +835,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodeVECTOR__INDEPENDENT_SIG_MSG(VECTOR__INDEPENDENT_SIG_MSG *input, CANPacket* output);
+void decodeVECTOR__INDEPENDENT_SIG_MSG(CANPacket *input, VECTOR__INDEPENDENT_SIG_MSG *output);
 
 void encoderc_adcs_sp_12(rc_adcs_sp_12 *input, CANPacket* output);
 void decoderc_adcs_sp_12(CANPacket *input, rc_adcs_sp_12 *output);

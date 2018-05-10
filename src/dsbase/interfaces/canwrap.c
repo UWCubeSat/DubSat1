@@ -205,6 +205,131 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodeVECTOR__INDEPENDENT_SIG_MSG(CANPacket *input, VECTOR__INDEPENDENT_SIG_MSG *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rc_eps_dist_met = (uint8_t) (((fullData & ((uint64_t) 0xffffffff << 32)) >> 32));
+    output -> rc_eps_dist_met_overflow = (uint32_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_eps_dist_batt_v_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_batt_v_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_batt_v_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_uv_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_eps_dist_com1_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_eps_dist_com1_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_com1_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_com1_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_com1_v_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_com1_v_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_com1_v_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_com2_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_eps_dist_com2_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_com2_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_com2_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_com2_v_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_com2_v_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_com2_v_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_rahs_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_eps_dist_rahs_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_rahs_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_rahs_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_rahs_v_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_rahs_v_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_rahs_v_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_bdot_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_eps_dist_bdot_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_bdot_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_bdot_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_bdot_v_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_bdot_v_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_bdot_v_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_estim_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_eps_dist_estim_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_estim_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_estim_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_estim_v_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_estim_v_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_estim_v_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_eps_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_eps_dist_eps_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_eps_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_eps_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_eps_v_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_eps_v_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_eps_v_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_ppt_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_eps_dist_ppt_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_ppt_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_ppt_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_ppt_v_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_ppt_v_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_ppt_v_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+}
+
+void encodeVECTOR__INDEPENDENT_SIG_MSG(VECTOR__INDEPENDENT_SIG_MSG *input, CANPacket *output){
+    output -> id = 1073741824;
+    output -> length = 0;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_met))) & 0xffffffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_met_overflow))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_batt_v_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_batt_v_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_batt_v_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_uv_state))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com1_state))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com1_c_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com1_c_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com1_c_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com1_v_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com1_v_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com1_v_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com2_state))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com2_c_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com2_c_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com2_c_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com2_v_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com2_v_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_com2_v_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_rahs_state))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_rahs_c_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_rahs_c_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_rahs_c_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_rahs_v_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_rahs_v_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_rahs_v_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_bdot_state))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_bdot_c_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_bdot_c_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_bdot_c_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_bdot_v_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_bdot_v_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_bdot_v_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_estim_state))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_estim_c_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_estim_c_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_estim_c_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_estim_v_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_estim_v_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_estim_v_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_eps_state))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_eps_c_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_eps_c_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_eps_c_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_eps_v_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_eps_v_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_eps_v_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_ppt_state))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_ppt_c_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_ppt_c_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_ppt_c_avg))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_ppt_v_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_ppt_v_max))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_ppt_v_avg))) & 0xffff) << 48;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decoderc_adcs_sp_12(CANPacket *input, rc_adcs_sp_12 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -823,8 +948,8 @@ void decoderc_adcs_mtq_5(CANPacket *input, rc_adcs_mtq_5 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_mtq_5_reset_counts = (int16_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
-    output -> rc_adcs_mtq_5_fsw_ignore = (int16_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_adcs_mtq_5_reset_counts = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> rc_adcs_mtq_5_fsw_ignore = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
 void encoderc_adcs_mtq_5(rc_adcs_mtq_5 *input, CANPacket *output){
@@ -842,14 +967,14 @@ void decoderc_adcs_mtq_4(CANPacket *input, rc_adcs_mtq_4 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_mtq_4_fsw_z_min = (int16_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
-    output -> rc_adcs_mtq_4_fsw_y_max = (int16_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-    output -> rc_adcs_mtq_4_duty_z2_avg = (int16_t) (((fullData & ((uint64_t) 0xff))));
-    output -> rc_adcs_mtq_4_duty_z1_avg = (int16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
-    output -> rc_adcs_mtq_4_duty_y2_avg = (int16_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
-    output -> rc_adcs_mtq_4_duty_y1_avg = (int16_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
-    output -> rc_adcs_mtq_4_duty_x2_avg = (int16_t) (((fullData & ((uint64_t) 0xff << 32)) >> 32));
-    output -> rc_adcs_mtq_4_duty_x1_avg = (int16_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
+    output -> rc_adcs_mtq_4_fsw_z_min = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> rc_adcs_mtq_4_fsw_y_max = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_adcs_mtq_4_duty_z2_avg = (uint8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_adcs_mtq_4_duty_z1_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_adcs_mtq_4_duty_y2_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+    output -> rc_adcs_mtq_4_duty_y1_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
+    output -> rc_adcs_mtq_4_duty_x2_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 32)) >> 32));
+    output -> rc_adcs_mtq_4_duty_x1_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
 }
 
 void encoderc_adcs_mtq_4(rc_adcs_mtq_4 *input, CANPacket *output){
@@ -873,14 +998,14 @@ void decoderc_adcs_mtq_3(CANPacket *input, rc_adcs_mtq_3 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_mtq_3_fsw_z_avg = (int16_t) (((fullData & ((uint64_t) 0xff))));
-    output -> rc_adcs_mtq_3_fsw_y_min = (int16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
-    output -> rc_adcs_mtq_3_fsw_y_max = (int16_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
-    output -> rc_adcs_mtq_3_fsw_y_avg = (int16_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
-    output -> rc_adcs_mtq_3_fsw_x_min = (int16_t) (((fullData & ((uint64_t) 0xff << 32)) >> 32));
-    output -> rc_adcs_mtq_3_fsw_x_max = (int16_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
-    output -> rc_adcs_mtq_3_fsw_x_avg = (int16_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
-    output -> rc_adcs_mtq_3_bdot_z_min = (int16_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_adcs_mtq_3_fsw_z_avg = (uint8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_adcs_mtq_3_fsw_y_min = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_adcs_mtq_3_fsw_y_max = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+    output -> rc_adcs_mtq_3_fsw_y_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
+    output -> rc_adcs_mtq_3_fsw_x_min = (uint8_t) (((fullData & ((uint64_t) 0xff << 32)) >> 32));
+    output -> rc_adcs_mtq_3_fsw_x_max = (uint8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
+    output -> rc_adcs_mtq_3_fsw_x_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> rc_adcs_mtq_3_bdot_z_min = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
 void encoderc_adcs_mtq_3(rc_adcs_mtq_3 *input, CANPacket *output){
@@ -904,14 +1029,14 @@ void decoderc_adcs_mtq_2(CANPacket *input, rc_adcs_mtq_2 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_mtq_2_bdot_z_max = (int16_t) (((fullData & ((uint64_t) 0xff))));
-    output -> rc_adcs_mtq_2_bdot_z_avg = (int16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
-    output -> rc_adcs_mtq_2_bdot_y_min = (int16_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
-    output -> rc_adcs_mtq_2_bdot_y_max = (int16_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
-    output -> rc_adcs_mtq_2_bdot_y_avg = (int16_t) (((fullData & ((uint64_t) 0xff << 32)) >> 32));
-    output -> rc_adcs_mtq_2_bdot_x_min = (int16_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
-    output -> rc_adcs_mtq_2_bdot_x_max = (int16_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
-    output -> rc_adcs_mtq_2_bdot_x_avg = (int16_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_adcs_mtq_2_bdot_z_max = (uint8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_adcs_mtq_2_bdot_z_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_adcs_mtq_2_bdot_y_min = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+    output -> rc_adcs_mtq_2_bdot_y_max = (uint8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
+    output -> rc_adcs_mtq_2_bdot_y_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 32)) >> 32));
+    output -> rc_adcs_mtq_2_bdot_x_min = (uint8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
+    output -> rc_adcs_mtq_2_bdot_x_max = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> rc_adcs_mtq_2_bdot_x_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
 void encoderc_adcs_mtq_2(rc_adcs_mtq_2 *input, CANPacket *output){
