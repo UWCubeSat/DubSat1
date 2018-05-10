@@ -6,33 +6,35 @@ close all;
 % Create a session for the specified vendor.
 s = daq.createSession('ni');
 
-%% Set Session Properties
-% Set properties that are not using default values.
-
-% Read in the Simulink-generated CSV
+%% Read in the Simulink-generated CSV
 filename = 'test_bdot_02-May-2018.csv';
 expected_results = csvread(filename, 1, 0);
 
+%% Set Session Properties
+% Set properties that are not using default values.
 % The rate is the reciprocal of the difference of the first two points in
 % the generated CSV (indices 9 and 8 are used because the first few
 % timesteps of the output are of irregular separation
-s.Rate = 8000; % 1 / ( expected_results( 9, 1 ) - expected_results( 8, 1 ) );
+s.Rate = 1.666667e+04; % 1 / ( expected_results( 9, 1 ) - expected_results( 8, 1 ) );
 % and the duration is the last data point from the CSV
 s.DurationInSeconds = expected_results( end, 1 );
 
 %% Add Channels to Session
 % Add channels and set channel properties, if any.
-addAnalogInputChannel(s,'Dev1','ai0','Voltage');
+channel1 = addAnalogInputChannel(s,'Dev1','ai0','Voltage');
+channel1.TerminalConfig = 'SingleEnded';
 
-addAnalogInputChannel(s,'Dev1','ai1','Voltage');
+channel2 = addAnalogInputChannel(s,'Dev1','ai1','Voltage');
+channel2.TerminalConfig = 'SingleEnded';
+
+channel3 = addAnalogInputChannel(s,'Dev1','ai2','Voltage');
+channel3.TerminalConfig = 'SingleEnded';
 
 addAnalogInputChannel(s,'Dev1','ai4','Voltage');
 
 addAnalogInputChannel(s,'Dev1','ai5','Voltage');
 
 addAnalogInputChannel(s,'Dev1','ai6','Voltage');
-
-addAnalogInputChannel(s,'Dev1','ai2','Voltage');
 
 %% Acquire Data
 % Start the session in foreground.
@@ -46,6 +48,7 @@ ai4 = data(:,3);
 ai5 = data(:,4);
 ai6 = data(:,5);
 ai2 = data(:,6);
+
 DAQ_1 = timetable(seconds(timestamps),ai0,ai1,ai4,ai5,ai6,ai2);
 
 %% Compare against expected 
@@ -115,4 +118,19 @@ dlmwrite( 'output_voltages.csv', [timestamps data], 'delimiter', ',' ,'precision
 % % (I'm not going to do this here, instead, I'm going to do this at the
 % % beginning of the file)
 % clear s
+
+%% Additional Stuff
+% Creates charming differential results for the single-ended inputs (for
+% just the z-axisfor now)
+figure();
+mtq_z_voltage_diff = mtq_voltages_expected(:,5) - mtq_voltages_expected(:,6);
+plot(expected_results_times, mtq_z_voltage_diff);
+title("Differential Voltage - Z-Axis");
+
+
+
+
+
+
+
 
