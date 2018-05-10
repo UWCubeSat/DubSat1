@@ -6,6 +6,10 @@ MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR = 73.0;
 overall_bdot_data = csvread('test_bdot_02-May-2018.csv', 1);
 time = overall_bdot_data(:, 1);
 
+angular_velocity_x = overall_bdot_data(:, 2);
+angular_velocity_y = overall_bdot_data(:, 3);
+angular_velocity_z = overall_bdot_data(:, 4);
+
 env_xMag = overall_bdot_data(:, 5);
 env_yMag = overall_bdot_data(:, 6);
 env_zMag = overall_bdot_data(:, 7);
@@ -54,6 +58,15 @@ save('zMagMsb.dat', 'zMagMsb', '-ascii');
 save('zMagLsb.dat', 'zMagLsb', '-ascii');
 
 save('time.dat', 'time', '-ascii');
+
+save('angular_velocity_x.dat', 'angular_velocity_x', '-ascii');
+save('angular_velocity_y.dat', 'angular_velocity_y', '-ascii');
+save('angular_velocity_z.dat', 'angular_velocity_z', '-ascii');
+
+save('env_xMag.dat', 'env_xMag', '-ascii');
+save('env_yMag.dat', 'env_yMag', '-ascii');
+save('env_zMag.dat', 'env_zMag', '-ascii');
+
 
 
 

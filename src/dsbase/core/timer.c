@@ -42,18 +42,19 @@
  *          {
  *              blink the LED;
  *          }
+ * PRECAUTION:
+ *     1. If
  */
 #include <msp430.h>
 #include "timer.h"
 #include <stdint.h>
 
-static const int NUM_SUPPORTED_DURATIONS_POLLING = 8;
-static const int NUM_SUPPORTED_DURATIONS_CALLBACK = 2;
-
+#define NUM_SUPPORTED_DURATIONS_POLLING   8
+#define NUM_SUPPORTED_DURATIONS_CALLBACK  2
 
 typedef struct
 {
-    uint16_t inUse;
+    uint8_t inUse;
     uint16_t durationMS;   // Always indicate what the units are in struct names
     uint16_t start_timer_counter;
     uint16_t start_TAR;
@@ -63,7 +64,7 @@ typedef struct
 
 typedef struct
 {
-    uint16_t inUse;
+    uint8_t inUse;
     uint16_t count;
     uint16_t current_count;
     uint16_t tar;
@@ -132,7 +133,7 @@ desired_time convertTime(uint16_t ms)
     return convert;
 }
 
-int timerPollInitializer(uint16_t ms)
+TIMER_HANDLE timerPollInitializer(uint16_t ms)
 {
     desired_time convert = convertTime(ms);
     uint16_t start_counter = timer_counter;
@@ -153,7 +154,7 @@ int timerPollInitializer(uint16_t ms)
     return -1;
 }
 
-int timerCallbackInitializer(void (*waitFunc)(), uint32_t us)
+TIMER_HANDLE timerCallbackInitializer(void (*waitFunc)(), uint32_t us)
 {
     uint32_t newTime = us / 30.517578125;           //(ms * 1.00150225338) - 40; //TODO: check this factor
     uint16_t overflows = 0;
@@ -163,7 +164,7 @@ int timerCallbackInitializer(void (*waitFunc)(), uint32_t us)
         overflows++;
     }
     uint16_t i;
-    for (i = 0; i < 2; i++)
+    for (i = 0; i < NUM_SUPPORTED_DURATIONS_CALLBACK; i++)
     {
         if (!callback[i].inUse)
         {
@@ -182,7 +183,7 @@ int timerCallbackInitializer(void (*waitFunc)(), uint32_t us)
  * \param n the interrupt to start
  * \return 1 if interrupt is used, otherwise 0; if interrupt is used, does not override previously set value
  */
-void startCallback(unsigned int n)
+void startCallback(TIMER_HANDLE n)
 {
     uint16_t tarDiff = 0;
     if(65535 - callback[n].tar < TA0R)
@@ -211,7 +212,7 @@ void startCallback(unsigned int n)
  * \param n the interrupt to stop
  * also clears the callback values set in setCallback
  */
-void stopCallback(unsigned int n)
+void stopCallback(TIMER_HANDLE n)
 {
 
     //TODO: don't enable CCIE if it is already disabled
@@ -231,7 +232,7 @@ void stopCallback(unsigned int n)
 }
 
 
-int checkTimerOverflow(uint16_t timerNumber, uint16_t end_counter, uint16_t end_TAR)
+int checkTimerOverflow(TIMER_HANDLE timerNumber, uint16_t end_counter, uint16_t end_TAR)
 {
     uint16_t calc_tar;
     uint16_t calc_counter = 65535 - polling[timerNumber].start_timer_counter + end_counter;
@@ -260,8 +261,25 @@ int checkTimerOverflow(uint16_t timerNumber, uint16_t end_counter, uint16_t end_
     return 0;
 }
 
-int checkTimer(uint16_t timerNumber)
+int checkValidPollingID(TIMER_HANDLE timerNumber)
 {
+    if(timerNumber >= NUM_SUPPORTED_DURATIONS_POLLING || timerNumber < 0)
+    {
+        return 0;
+    }
+    if(!polling[timerNumber].inUse)
+    {
+        return 0;
+    }
+    return 1;
+}
+
+int checkTimer(TIMER_HANDLE timerNumber)
+{
+    if(!checkValidPollingID(timerNumber))
+    {
+        return 0;
+    }
     uint16_t end_counter = timer_counter;
     uint16_t end_TAR = TA0R;
 
@@ -297,10 +315,24 @@ int checkTimer(uint16_t timerNumber)
     return 0;
 }
 
-void endPollingTimer(uint16_t timerNumber)
+void endPollingTimer(TIMER_HANDLE timerNumber)
 {
     polling[timerNumber].inUse = 0;
 }
+
+int checkValidCallbackID(TIMER_HANDLE timerNumber)
+{
+    if (timerNumber >= NUM_SUPPORTED_DURATIONS_CALLBACK)
+    {
+        return 0;
+    }
+    if (!callback[timerNumber].inUse)
+    {
+        return 0;
+    }
+    return 1;
+}
+
 
 #pragma vector = TIMER0_A1_VECTOR
 __interrupt void Timer0_A1_ISR(void)

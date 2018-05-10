@@ -36,12 +36,7 @@ TLM_SEGMENT {
     uint8_t z2;
 } duty_percent;
 
-void handlePPTFiringNotification();
-void handleRollCall();
 
-//---------------------
-// MTQ specific 
-//---------------------
 // ---PWM stuff----
 #define PWM_PERIOD 10000-1 //(10000-1) // pwm period = 1000 us
 #define CCR_PERIOD 100

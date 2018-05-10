@@ -233,12 +233,11 @@ void acceptInputs()
            4 * sizeof(tmpSP2FSW.sun_vec_body_sunsensor[0]));
 
     // MTQ outputs
-    // TODO don't use magic numbers. 0 means measurement phase here
     // TODO confirm interpretation that measurement phase == MT_valid
     uint8_t i;
     for (i = 0; i < 3; i++)
     {
-        rtU.MT_valid[i] = tmpMtqAck.mtq_ack_phase == 0;
+        rtU.MT_valid[i] = tmpMtqAck.mtq_ack_phase != MEASUREMENT_PHASE;
     }
 
     // ESTIM outputs

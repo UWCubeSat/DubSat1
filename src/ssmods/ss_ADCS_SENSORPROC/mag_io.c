@@ -57,7 +57,11 @@ FILE_STATIC uint8_t isValid(hMag handle)
 void magioUpdate1()
 {
 #if ENABLE_MAG1
+#ifdef __I2C_DONT_WRITE_MAG1__
+    data1 = testing_magReadXYZData(mag1, ConvertToNone);
+#else
     data1 = magReadXYZData(mag1, ConvertToNone);
+#endif /* __I2C_DONT_WRITE_MAG1__ */
 #else
     mockData1.rawX = 100;
     mockData1.rawY = 100;
@@ -75,13 +79,17 @@ void magioUpdate1()
 void magioUpdate2()
 {
 #if ENABLE_MAG2
+#ifdef __I2C_DONT_WRITE_MAG2__
+    data2 = testing_magReadXYZData(mag2, ConvertToNone);
+#else
     data2 = magReadXYZData(mag2, ConvertToNone);
+#endif /* __I2C_DONT_WRITE_MAG2__ */
 #else
     mockData2.rawX = 300;
     mockData2.rawY = 300;
     mockData2.rawZ = 300;
     data2 = &mockData2;
-#endif
+#endif /* ENABLE_MAG2 */
 
     // set autocode inputs
     rtU.mag2_vec_body_T[0] = magConvertRawToTeslas(data2->rawX);

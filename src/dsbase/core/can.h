@@ -17,6 +17,8 @@
 #include <inttypes.h>
 #include "spi.h"
 
+
+#define CAN_TX_BUSY 0x07
 // Global function pointer to point to the function
 // when data is received through CAN
 void (*ReceiveCallback0)(uint8_t, uint8_t*, uint32_t);
@@ -35,6 +37,11 @@ uint8_t canInit(void);
  * Output: 0 on no packets dropped, non zero if one or more packets have been dropped.
  */
 uint8_t canRxErrorCheck(void);
+
+/* Check if there are any buffers with a request to send in progress (We shouldn't overwrite these)
+ * Output: 0 if all buffers are empty, otherwise 1 || 2 || 4 if TxB 0 1 and/or 2 are still waiting to send.
+ */
+uint8_t canTxCheck(void);
 
 /* bufNum: TxBuf to write to, from 0 to 2
  * Tech: technical details
