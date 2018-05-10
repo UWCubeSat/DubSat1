@@ -15,25 +15,32 @@ FILE_STATIC mtq_info_segment myTelemMtqInfo;
 FILE_STATIC simulink_segment mySimulink;
 /****************************************************************/
 
+
+/************ MTQ Info From Bdot Perspective*********************/
 FILE_STATIC uint8_t mtq_state = MTQ_MEASUREMENT_PHASE;
 FILE_STATIC mtq_info mtqInfo;
 FILE_STATIC mtq_info lastKnownState;
+FILE_STATIC volatile magDataStatus mag_data = mag_invalid;
+/****************************************************************/
 
+
+/****************Magnetometer Variables*************************/
 FILE_STATIC MagnetometerData* magData;
 FILE_STATIC hMag magNum;
+FILE_STATIC uint8_t MagNormalOperation = 1;
+/***************************************************************/
 
-
-FILE_STATIC ModuleStatus mod_status;
-FILE_STATIC volatile magDataStatus mag_data     = mag_invalid;
-
+/******************Simulink Flags and Information***************/
 FILE_STATIC uint8_t send_dipole_flag = 0;
 FILE_STATIC uint8_t update_rt_flag = 0;
+/***************************************************************/
 
+/******************Timer Information***************************/
 FILE_STATIC TIMER_HANDLE rtOneStep_timer;
 FILE_STATIC uint32_t rtOneStep_us = 100000;
+/***************************************************************/
 
-FILE_STATIC uint8_t normalOperation = 1;
-
+/*******************RollCall***********************************/
 FILE_STATIC int rcFlag =0;
 FILE_STATIC uint16_t mspTempArray[600] = {0};
 FILE_STATIC uint16_t mag_xArray[600] = {0};
@@ -47,10 +54,13 @@ FILE_STATIC uint16_t mspTemp;
 FILE_STATIC uint16_t mag_x;
 FILE_STATIC uint16_t mag_y;
 FILE_STATIC uint16_t mag_z;
+/***************************************************************/
 
-/*
- * main.c
- */
+/*******************Miscellaneous*******************************/
+FILE_STATIC ModuleStatus mod_status;
+/***************************************************************/
+
+
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
@@ -64,7 +74,6 @@ int main(void)
     // firing state structures before calling the provided handler function pointers.
     mod_status.startup_type = coreStartup(handlePPTFiringNotification, handleRollCall);  // <<DO NOT DELETE or MOVE>>
 
-
 #if defined(__DEBUG__)
 
     // Insert debug-build-only things here, like status/info/command handlers for the debug
@@ -76,18 +85,7 @@ int main(void)
 
 #endif  //  __DEBUG__
 
-    /* ----- CAN BUS/MESSAGE CONFIG -----*/
-    // TODO:  Add the correct bus filters and register CAN message receive handlers
-
     debugTraceF(1, "CAN message bus configured.\r\n");
-
-    /* ----- SUBSYSTEM LOGIC -----*/
-    // TODO:  Finally ... NOW, implement the actual subsystem logic!
-    // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
-    // and then control is returned to this main loop
-
-    // See ss_EPS_Dist for ideas on how to structure creating telemetry and command packets, etc.
-
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
 
 
@@ -95,15 +93,6 @@ int main(void)
     rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
     startCallback(rtOneStep_timer);
 
-
-    /* Attach rt_OneStep to a timer or interrupt service routine with
-     * period 0.1 seconds (the model's base sample time) here.  The
-     * call syntax for rt_OneStep is
-     *
-     *  rt_OneStep();
-    */
-    // Disable rt_OneStep() here
-    // Terminate model
     fflush((NULL));
     while (rtmGetErrorStatus(rtM) == (NULL) || 1)
     {
@@ -115,7 +104,7 @@ int main(void)
             rtU.B_body_in_T[0] = magData->convertedX;
             rtU.B_body_in_T[1] = magData->convertedY;
             rtU.B_body_in_T[2] = magData->convertedZ;
-            rtU.B_meas_valid = normalOperation;
+            rtU.B_meas_valid = magNormalOperation;
             rtU.MT_on = 0;
             rt_OneStep();
             updateMtqInfo();
@@ -178,13 +167,13 @@ void getMagnetometerData()
 void performSelfTest()
 {
     selfTestConfig(magNum);
-    normalOperation = 0;
+    magNormalOperation = 0;
 }
 
 void performNormalOp()
 {
     normalOperationConfig(magNum);
-    normalOperation = 1;
+    magNormalOperation = 1;
 }
 
 void simulink_compute()
@@ -378,13 +367,6 @@ void rollCall()
     }
 
 }
-
-
-
-void sendRC()
-{
-}
-
 
 /*
  * Associating rt_OneStep with a real-time clock or interrupt service routine

@@ -7,13 +7,16 @@
  * IDs to interface with COSMOS backchannel
  */
 
+#ifndef ADCS_SENSORPROC_IDS_H_
+#define ADCS_SENSORPROC_IDS_H_
+
 #define ENABLE_SUNSENSOR   0
 #define ENABLE_MAG1        0
 #define ENABLE_MAG2        0
 #define ENABLE_IMU         0
 
-#ifndef ADCS_SENSORPROC_IDS_H_
-#define ADCS_SENSORPROC_IDS_H_
+// size of rollcall buffers for min/max/averaging
+#define RC_BUFFER_SIZE 60
 
 // COSMOS telemetry IDs
 #define TLM_ID_SUNSENSOR_RAW    121
