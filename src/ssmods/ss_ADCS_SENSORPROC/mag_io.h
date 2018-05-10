@@ -24,12 +24,9 @@ TLM_SEGMENT {
     int16_t z;
 } mag_segment;
 
-void magioInit1();
-void magioInit2();
-void magioUpdate1();
-void magioUpdate2();
-void magioSendBackchannel1();
-void magioSendBackchannel2();
+void magioInit();
+void magioUpdate();
+void magioSendBackchannel();
 void magioSendBackchannelVector(); // send processed vector
 void magioSendCAN();
 

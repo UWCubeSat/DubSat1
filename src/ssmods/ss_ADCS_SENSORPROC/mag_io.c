@@ -28,23 +28,13 @@ FILE_STATIC MagnetometerData *data2;
     MagnetometerData mockData2;
 #endif
 
-FILE_STATIC hMag magioInit(bus_instance_i2c bus)
-{
-    hMag handle = magInit(bus);
-    return handle;
-}
-
-void magioInit1()
+void magioInit()
 {
 #if ENABLE_MAG1
-    mag1 = magioInit(MAG1_I2CBUS);
+    mag1 = magInit(MAG1_I2CBUS);
 #endif
-}
-
-void magioInit2()
-{
 #if ENABLE_MAG2
-    mag2 = magioInit(MAG2_I2CBUS);
+    mag2 = magInit(MAG2_I2CBUS);
 #endif
 }
 
@@ -54,7 +44,7 @@ FILE_STATIC uint8_t isValid(hMag handle)
     return 1;
 }
 
-void magioUpdate1()
+FILE_STATIC void update1()
 {
 #if ENABLE_MAG1
 #ifdef __I2C_DONT_WRITE_MAG1__
@@ -76,7 +66,7 @@ void magioUpdate1()
     rtU.mag1_vec_body_T[3] = isValid(mag1);
 }
 
-void magioUpdate2()
+FILE_STATIC void update2()
 {
 #if ENABLE_MAG2
 #ifdef __I2C_DONT_WRITE_MAG2__
@@ -98,14 +88,10 @@ void magioUpdate2()
     rtU.mag2_vec_body_T[3] = isValid(mag2);
 }
 
-FILE_STATIC void magioSendBackchannel(MagnetometerData *data, uint8_t tlmId)
+void magioUpdate()
 {
-    mag_segment seg;
-    seg.x = data->rawX;
-    seg.y = data->rawY;
-    seg.z = data->rawZ;
-    bcbinPopulateHeader(&seg.header, tlmId, sizeof(seg));
-    bcbinSendPacket((uint8_t *) &seg, sizeof(seg));
+    update1();
+    update2();
 }
 
 void magioSendBackchannelVector()
@@ -119,14 +105,30 @@ void magioSendBackchannelVector()
     bcbinSendPacket((uint8_t *) &s, sizeof(s));
 }
 
-void magioSendBackchannel1()
+FILE_STATIC void sendBackchannel(MagnetometerData *data, uint8_t tlmId)
 {
-    magioSendBackchannel(data1, TLM_ID_MAG1_RAW);
+    mag_segment seg;
+    seg.x = data->rawX;
+    seg.y = data->rawY;
+    seg.z = data->rawZ;
+    bcbinPopulateHeader(&seg.header, tlmId, sizeof(seg));
+    bcbinSendPacket((uint8_t *) &seg, sizeof(seg));
 }
 
-void magioSendBackchannel2()
+FILE_STATIC void magioSendBackchannel1()
 {
-    magioSendBackchannel(data2, TLM_ID_MAG2_RAW);
+    sendBackchannel(data1, TLM_ID_MAG1_RAW);
+}
+
+FILE_STATIC void magioSendBackchannel2()
+{
+    sendBackchannel(data2, TLM_ID_MAG2_RAW);
+}
+
+void magioSendBackchannel()
+{
+    magioSendBackchannel1();
+    magioSendBackchannel2();
 }
 
 void magioSendCAN()
