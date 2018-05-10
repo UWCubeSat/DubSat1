@@ -77,9 +77,13 @@ void sunsensorioUpdate()
 
     // set autocode inputs
     uint8_t valid = isValid();
-    rtU.sun_vec_body_sunsensor[0] = angle->alpha;
-    rtU.sun_vec_body_sunsensor[1] = angle->beta;
-    rtU.sun_vec_body_sunsensor[2] = valid;
+    if (valid)
+    {
+        // only update if the angle is valid
+        rtU.sun_vec_body_sunsensor[0] = angle->alpha;
+        rtU.sun_vec_body_sunsensor[1] = angle->beta;
+        rtU.sun_vec_body_sunsensor[2] = valid;
+    }
 
     // update rollcall arrays
     addData_int16_t(rc_sunaHandle, rawToShort(angle->alpha));

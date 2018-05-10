@@ -168,17 +168,14 @@ FILE_STATIC void step()
     static uint16_t i = 0;
     i++;
 
+    // send periodic backchannel telemetry and blink LED
     if (i % 40 == 0) // 10 Hz
     {
         // blink LED
         LED_OUT ^= LED_BIT;
 
-        // send a health and meta segments every 1 second
-        // TODO move to rollcall when it is implemented
         sendHealthSegment();
         sendMetaSegment();
-
-        // send backchannel telemetry
         sendSensorBackchannel();
         magioSendBackchannelVector();
     }
@@ -383,10 +380,7 @@ FILE_STATIC void sendSensorBackchannel()
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
     {
-        if (sensorInterfaces[i].sendBackchannel)
-        {
-            sensorInterfaces[i].sendBackchannel();
-        }
+        sensorInterfaces[i].sendBackchannel();
     }
 }
 
@@ -395,10 +389,7 @@ FILE_STATIC void sendSensorCAN()
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
     {
-        if (sensorInterfaces[i].sendCan)
-        {
-            sensorInterfaces[i].sendCan();
-        }
+        sensorInterfaces[i].sendCan();
     }
 }
 
