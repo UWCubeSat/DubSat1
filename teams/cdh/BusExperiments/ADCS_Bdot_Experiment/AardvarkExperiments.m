@@ -1,5 +1,5 @@
  clear all; close all; clc;
-
+data_path = '..\ADCS_Bdot_Experiment\data_file\';
 %% Setting up Aardvark 
 lib = 'aardvark';
 libhdr = 'aardvark.h';
@@ -8,6 +8,7 @@ if ~libisloaded(lib)
 end
 
 hport = 0;
+calllib(lib, 'c_aa_close', hport);
 hdev = calllib(lib, 'c_aa_open', hport);
 if (hdev < 0)
     error('Unable to open port 0.');
@@ -16,23 +17,7 @@ end
 %% Slave Setup
 % Configures Aardvark to listen as a slave, using native API wrapper
 slaveaddr = hex2dec('1E');
-% outstr = [222 173 190 239];
-% outstr = uint8(outstr);
-% calllib(lib, 'c_aa_i2c_slave_set_response', hdev, length(outstr), outstr);
-% calllib(lib, 'c_aa_i2c_slave_enable', hdev, slaveaddr, 0, 0);
-% 
-% disp('Device set to slave.  Hit any key to continue ...');
-% pause();
-% 
 % calllib(lib, 'c_aa_close', hport);
-%read data example: Import columns as column vectors 
-
-%[X Y Z] = csvimport('vectors.csv', 'columns', {'X, 'Y', 'Z'});
-
-%remove headers
-%X(1) = [];
-%Y(1) = [];
-%Z(1) = [];
 
 %% CAN setup
 global bdot_cmd_data;
@@ -51,13 +36,13 @@ start(rxChannel);
 
 
 %% Loading data in
-load('time.dat');
-load('xMagMsb.dat');
-load('xMagLsb.dat');
-load('yMagMsb.dat');
-load('yMagLsb.dat');
-load('zMagMsb.dat');
-load('zMagLsb.dat');
+time = dlmread(strcat(data_path, 'time.dat'));
+xMagMsb = uint8(dlmread(strcat(data_path, 'xMagMsb.dat')));
+yMagMsb = uint8(dlmread(strcat(data_path, 'yMagMsb.dat')));
+zMagMsb = uint8(dlmread(strcat(data_path, 'zMagMsb.dat')));
+xMagLsb = uint8(dlmread(strcat(data_path, 'xMagLsb.dat')));
+yMagLsb = uint8(dlmread(strcat(data_path, 'yMagLsb.dat')));
+zMagLsb = uint8(dlmread(strcat(data_path, 'zMagLsb.dat')));
 
 %% Main Loop to Send and Receive Data
 
