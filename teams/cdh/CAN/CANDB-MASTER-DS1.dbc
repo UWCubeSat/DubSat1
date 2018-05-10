@@ -45,6 +45,111 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ rc_eps_gen_1_reset_count : 0|8@1+ (1,0) [0|256] "" Vector__XXX
+
+BO_ 2452161062 rc_adcs_sp_12: 8 Vector__XXX
+ SG_ rc_adcs_sp_12_mag2_z_min : 32|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_12_mag2_z_max : 48|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_12_mag2_y_max : 0|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_12_mag2_y_avg : 16|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+
+BO_ 2452161061 rc_adcs_sp_11: 8 Vector__XXX
+ SG_ rc_adcs_sp_11_mag2_x_avg : 32|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_11_mag2_x_max : 16|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_11_mag2_x_min : 0|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_11_mag2_y_min : 48|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+
+BO_ 2452161057 rc_adcs_sp_7: 8 Vector__XXX
+ SG_ rc_adcs_sp_7_magp_y_min : 16|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_7_magp_y_max : 32|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_7_magp_y_avg : 48|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_7_magp_x_avg : 0|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+
+BO_ 2452161056 rc_adcs_sp_6: 8 Vector__XXX
+ SG_ rc_adcs_sp_6_sun_z_max : 0|16@1- (1,0) [0|0] "1/32768 units" Vector__XXX
+ SG_ rc_adcs_sp_6_sun_z_avg : 16|16@1- (1,0) [0|0] "1/32768 units" Vector__XXX
+ SG_ rc_adcs_sp_6_magp_x_min : 32|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_6_magp_x_max : 48|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+
+BO_ 2452161067 rc_adcs_sp_17: 8 Vector__XXX
+ SG_ rc_adcs_sp_17_imu_z_max : 0|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_17_imu_z_avg : 16|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+
+BO_ 2452161066 rc_adcs_sp_16: 8 Vector__XXX
+ SG_ rc_adcs_sp_16_imu_z_min : 48|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_16_imu_y_min : 0|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_16_imu_y_max : 16|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_16_imu_y_avg : 32|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+
+BO_ 2452161060 rc_adcs_sp_10: 8 Vector__XXX
+ SG_ rc_adcs_sp_10_mag1_z_min : 16|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_10_mag1_z_max : 32|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_10_mag1_z_avg : 48|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_10_mag1_y_avg : 0|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+
+BO_ 2452161058 rc_adcs_sp_8: 8 Vector__XXX
+ SG_ rc_adcs_sp_8_magp_z_min : 0|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_8_magp_z_max : 16|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_8_magp_z_avg : 32|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_8_mag1_x_min : 48|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+
+BO_ 2452161059 rc_adcs_sp_9: 8 Vector__XXX
+ SG_ rc_adcs_sp_9_mag1_y_min : 32|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_9_mag1_y_max : 48|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_9_mag1_x_max : 0|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+ SG_ rc_adcs_sp_9_mag1_x_avg : 16|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+
+BO_ 2452161063 rc_adcs_sp_13: 8 Vector__XXX
+ SG_ rc_adcs_sp_13_suna_min : 16|16@1- (1,0) [0|0] "60/32767 degrees" Vector__XXX
+ SG_ rc_adcs_sp_13_suna_max : 32|16@1- (1,0) [0|0] "60/32767 degrees" Vector__XXX
+ SG_ rc_adcs_sp_13_suna_avg : 48|16@1- (1,0) [0|0] "60/32767 degrees" Vector__XXX
+ SG_ rc_adcs_sp_13_mag2_z_avg : 0|16@1- (1,0) [0|0] "1/73 nanoTeslas" Vector__XXX
+
+BO_ 2452161065 rc_adcs_sp_15: 8 Vector__XXX
+ SG_ rc_adcs_sp_15_imu_x_min : 8|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_15_imu_x_max : 24|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_15_imu_x_avg : 40|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_15_imu_valid : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 2452161064 rc_adcs_sp_14: 8 Vector__XXX
+ SG_ rc_adcs_sp_14_sunb_min : 0|16@1- (1,0) [0|0] "60/32767 degrees" Vector__XXX
+ SG_ rc_adcs_sp_14_sunb_max : 16|16@1- (1,0) [0|0] "60/32767 degrees" Vector__XXX
+ SG_ rc_adcs_sp_14_sunb_avg : 32|16@1- (1,0) [0|0] "60/32767 degrees" Vector__XXX
+ SG_ rc_adcs_sp_14_sun_valid : 56|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ rc_adcs_sp_14_magp_valid : 48|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 2452161055 rc_adcs_sp_5: 8 Vector__XXX
+ SG_ rc_adcs_sp_5_sun_z_min : 48|16@1- (1,0) [0|0] "1/32768 units" Vector__XXX
+ SG_ rc_adcs_sp_5_sun_y_min : 0|16@1- (1,0) [0|0] "1/32768 units" Vector__XXX
+ SG_ rc_adcs_sp_5_sun_y_max : 16|16@1- (1,0) [0|0] "1/32768 units" Vector__XXX
+ SG_ rc_adcs_sp_5_sun_y_avg : 32|16@1- (1,0) [0|0] "1/32768 units" Vector__XXX
+
+BO_ 2452161054 rc_adcs_sp_4: 8 Vector__XXX
+ SG_ rc_adcs_sp_4_sun_x_min : 16|16@1- (1,0) [0|0] "1/32768 units" Vector__XXX
+ SG_ rc_adcs_sp_4_sun_x_max : 32|16@1- (1,0) [0|0] "1/32768 units" Vector__XXX
+ SG_ rc_adcs_sp_4_sun_x_avg : 48|16@1- (1,0) [0|0] "1/32768 units" Vector__XXX
+ SG_ rc_adcs_sp_4_imup_z_avg : 0|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+
+BO_ 2452161053 rc_adcs_sp_3: 8 Vector__XXX
+ SG_ rc_adcs_sp_3_imup_z_min : 32|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_3_imup_z_max : 48|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_3_imup_y_max : 0|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_3_imup_y_avg : 16|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+
+BO_ 2452161052 rc_adcs_sp_2: 8 Vector__XXX
+ SG_ rc_adcs_sp_2_imup_y_min : 48|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_2_imup_x_min : 0|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_2_imup_x_max : 16|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+ SG_ rc_adcs_sp_2_imup_x_avg : 32|16@1- (1,0) [0|0] "0.004375 deg/s" Vector__XXX
+
+BO_ 2452161051 rc_adcs_sp_1: 8 Vector__XXX
+ SG_ rc_adcs_sp_1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_sp_1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_sp_1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_sp_1_sysrstiv : 48|8@1+ (1,0) [0|256] "" Vector__XXX
+ SG_ rc_adcs_sp_1_reset_count : 56|8@1+ (1,0) [0|256] "" Vector__XXX
+
 BO_ 2452161050 rc_adcs_bdot_4: 3 Vector__XXX
  SG_ rc_adcs_bdot_4_mag_z_avg : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_4_tumble : 16|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -61,7 +166,8 @@ BO_ 2452161031 rc_adcs_bdot_2: 8 Vector__XXX
  SG_ rc_adcs_bdot_2_mag_x_min : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_2_mag_x_max : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
 
-BO_ 2452161030 rc_adcs_bdot_1: 7 Vector__XXX
+BO_ 2452161030 rc_adcs_bdot_1: 8 Vector__XXX
+ SG_ rc_adcs_bdot_1_reset_count : 56|8@1+ (1,0) [0|256] "" Vector__XXX
  SG_ rc_adcs_bdot_1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
  SG_ rc_adcs_bdot_1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
  SG_ rc_adcs_bdot_1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
@@ -123,7 +229,8 @@ BO_ 2452161036 rc_adcs_mtq_2: 8 Vector__XXX
  SG_ rc_adcs_mtq_2_bdot_x_max : 8|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ rc_adcs_mtq_2_bdot_x_avg : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 2452161035 rc_adcs_mtq_1: 7 Vector__XXX
+BO_ 2452161035 rc_adcs_mtq_1: 8 Vector__XXX
+ SG_ rc_adcs_mtq_1_reset_count : 56|8@1+ (1,0) [0|256] "" Vector__XXX
  SG_ rc_adcs_mtq_1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
  SG_ rc_adcs_mtq_1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
  SG_ rc_adcs_mtq_1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
@@ -140,7 +247,8 @@ BO_ 2452161033 rc_ppt_2: 8 Vector__XXX
  SG_ rc_ppt_2_main_chg_max : 16|16@1+ (1,0) [0|0] "2^-15 seconds" Vector__XXX
  SG_ rc_ppt_2_main_chg_avg : 32|16@1+ (1,0) [0|0] "2^-15 seconds" Vector__XXX
 
-BO_ 2452161032 rc_ppt_1: 7 Vector__XXX
+BO_ 2452161032 rc_ppt_1: 8 Vector__XXX
+ SG_ rc_ppt_1_reset_count : 56|8@1+ (1,0) [0|256] "" Vector__XXX
  SG_ rc_ppt_1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
  SG_ rc_ppt_1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
  SG_ rc_ppt_1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
@@ -235,7 +343,8 @@ BO_ 2452161025 rc_eps_batt_2: 6 eps_batt
  SG_ rc_eps_batt_2_node_v_max : 16|16@1+ (1,0) [0|10000] "mV" Vector__XXX
  SG_ rc_eps_batt_2_node_v_avg : 32|16@1+ (1,0) [0|10000] "mV" Vector__XXX
 
-BO_ 2452161024 rc_eps_batt_1: 7 eps_batt
+BO_ 2452161024 rc_eps_batt_1: 8 eps_batt
+ SG_ rc_eps_batt_1_reset_count : 56|8@1+ (1,0) [0|256] "" Vector__XXX
  SG_ rc_eps_batt_1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
  SG_ rc_eps_batt_1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
  SG_ rc_eps_batt_1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
@@ -349,7 +458,7 @@ BO_ 2148597780 cmd_rollcall: 7 eps_dist
  SG_ cmd_rollcall_met : 8|32@1+ (1,0) [0|4294967295] "" Vector__XXX
  SG_ cmd_rollcall_msp : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
-BO_ 2181496880 mtq_ack: 2 adcs_mtq
+BO_ 2181496880 mtq_ack: 8 adcs_mtq
  SG_ mtq_ack_source : 8|8@1- (1,0) [-128|1] "" Vector__XXX
  SG_ mtq_ack_phase : 0|8@1- (1,0) [-128|3] "" Vector__XXX
  SG_ mtq_ack_last_fsw_z : 56|8@1- (1,0) [-128|100] "pct" Vector__XXX
@@ -438,6 +547,7 @@ BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,
 BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
 VAL_ 2452161050 rc_adcs_bdot_4_tumble 1 "true" 0 "false" ;

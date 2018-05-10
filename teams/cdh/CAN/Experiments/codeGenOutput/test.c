@@ -3,6 +3,101 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket VECTOR__INDEPENDENT_SIG_MSG_packet = {0};
+	VECTOR__INDEPENDENT_SIG_MSG VECTOR__INDEPENDENT_SIG_MSG_info = {0};
+	encodeVECTOR__INDEPENDENT_SIG_MSG(&VECTOR__INDEPENDENT_SIG_MSG_info, &VECTOR__INDEPENDENT_SIG_MSG_packet);
+	canSendPacket(&VECTOR__INDEPENDENT_SIG_MSG_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_12_packet = {0};
+	rc_adcs_sp_12 rc_adcs_sp_12_info = {0};
+	encoderc_adcs_sp_12(&rc_adcs_sp_12_info, &rc_adcs_sp_12_packet);
+	canSendPacket(&rc_adcs_sp_12_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_11_packet = {0};
+	rc_adcs_sp_11 rc_adcs_sp_11_info = {0};
+	encoderc_adcs_sp_11(&rc_adcs_sp_11_info, &rc_adcs_sp_11_packet);
+	canSendPacket(&rc_adcs_sp_11_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_7_packet = {0};
+	rc_adcs_sp_7 rc_adcs_sp_7_info = {0};
+	encoderc_adcs_sp_7(&rc_adcs_sp_7_info, &rc_adcs_sp_7_packet);
+	canSendPacket(&rc_adcs_sp_7_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_6_packet = {0};
+	rc_adcs_sp_6 rc_adcs_sp_6_info = {0};
+	encoderc_adcs_sp_6(&rc_adcs_sp_6_info, &rc_adcs_sp_6_packet);
+	canSendPacket(&rc_adcs_sp_6_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_17_packet = {0};
+	rc_adcs_sp_17 rc_adcs_sp_17_info = {0};
+	encoderc_adcs_sp_17(&rc_adcs_sp_17_info, &rc_adcs_sp_17_packet);
+	canSendPacket(&rc_adcs_sp_17_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_16_packet = {0};
+	rc_adcs_sp_16 rc_adcs_sp_16_info = {0};
+	encoderc_adcs_sp_16(&rc_adcs_sp_16_info, &rc_adcs_sp_16_packet);
+	canSendPacket(&rc_adcs_sp_16_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_10_packet = {0};
+	rc_adcs_sp_10 rc_adcs_sp_10_info = {0};
+	encoderc_adcs_sp_10(&rc_adcs_sp_10_info, &rc_adcs_sp_10_packet);
+	canSendPacket(&rc_adcs_sp_10_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_8_packet = {0};
+	rc_adcs_sp_8 rc_adcs_sp_8_info = {0};
+	encoderc_adcs_sp_8(&rc_adcs_sp_8_info, &rc_adcs_sp_8_packet);
+	canSendPacket(&rc_adcs_sp_8_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_9_packet = {0};
+	rc_adcs_sp_9 rc_adcs_sp_9_info = {0};
+	encoderc_adcs_sp_9(&rc_adcs_sp_9_info, &rc_adcs_sp_9_packet);
+	canSendPacket(&rc_adcs_sp_9_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_13_packet = {0};
+	rc_adcs_sp_13 rc_adcs_sp_13_info = {0};
+	encoderc_adcs_sp_13(&rc_adcs_sp_13_info, &rc_adcs_sp_13_packet);
+	canSendPacket(&rc_adcs_sp_13_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_15_packet = {0};
+	rc_adcs_sp_15 rc_adcs_sp_15_info = {0};
+	encoderc_adcs_sp_15(&rc_adcs_sp_15_info, &rc_adcs_sp_15_packet);
+	canSendPacket(&rc_adcs_sp_15_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_14_packet = {0};
+	rc_adcs_sp_14 rc_adcs_sp_14_info = {0};
+	encoderc_adcs_sp_14(&rc_adcs_sp_14_info, &rc_adcs_sp_14_packet);
+	canSendPacket(&rc_adcs_sp_14_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_5_packet = {0};
+	rc_adcs_sp_5 rc_adcs_sp_5_info = {0};
+	encoderc_adcs_sp_5(&rc_adcs_sp_5_info, &rc_adcs_sp_5_packet);
+	canSendPacket(&rc_adcs_sp_5_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_4_packet = {0};
+	rc_adcs_sp_4 rc_adcs_sp_4_info = {0};
+	encoderc_adcs_sp_4(&rc_adcs_sp_4_info, &rc_adcs_sp_4_packet);
+	canSendPacket(&rc_adcs_sp_4_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_3_packet = {0};
+	rc_adcs_sp_3 rc_adcs_sp_3_info = {0};
+	encoderc_adcs_sp_3(&rc_adcs_sp_3_info, &rc_adcs_sp_3_packet);
+	canSendPacket(&rc_adcs_sp_3_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_2_packet = {0};
+	rc_adcs_sp_2 rc_adcs_sp_2_info = {0};
+	encoderc_adcs_sp_2(&rc_adcs_sp_2_info, &rc_adcs_sp_2_packet);
+	canSendPacket(&rc_adcs_sp_2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_1_packet = {0};
+	rc_adcs_sp_1 rc_adcs_sp_1_info = {0};
+	encoderc_adcs_sp_1(&rc_adcs_sp_1_info, &rc_adcs_sp_1_packet);
+	canSendPacket(&rc_adcs_sp_1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_4_packet = {0};
+	rc_adcs_bdot_4 rc_adcs_bdot_4_info = {0};
+	encoderc_adcs_bdot_4(&rc_adcs_bdot_4_info, &rc_adcs_bdot_4_packet);
+	canSendPacket(&rc_adcs_bdot_4_packet);
+
 	__delay_cycles(10000);	CANPacket rc_adcs_bdot_3_packet = {0};
 	rc_adcs_bdot_3 rc_adcs_bdot_3_info = {0};
 	encoderc_adcs_bdot_3(&rc_adcs_bdot_3_info, &rc_adcs_bdot_3_packet);
@@ -52,11 +147,6 @@ void canBlast() {
 	estim_state estim_state_info = {0};
 	encodeestim_state(&estim_state_info, &estim_state_packet);
 	canSendPacket(&estim_state_packet);
-
-	__delay_cycles(10000);	CANPacket rc_eps_gen_11_packet = {0};
-	rc_eps_gen_11 rc_eps_gen_11_info = {0};
-	encoderc_eps_gen_11(&rc_eps_gen_11_info, &rc_eps_gen_11_packet);
-	canSendPacket(&rc_eps_gen_11_packet);
 
 	__delay_cycles(10000);	CANPacket rc_adcs_mtq_5_packet = {0};
 	rc_adcs_mtq_5 rc_adcs_mtq_5_info = {0};

@@ -24,6 +24,25 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_VECTOR__INDEPENDENT_SIG_MSG 1073741824
+#define CAN_ID_RC_ADCS_SP_12 304677414
+#define CAN_ID_RC_ADCS_SP_11 304677413
+#define CAN_ID_RC_ADCS_SP_7 304677409
+#define CAN_ID_RC_ADCS_SP_6 304677408
+#define CAN_ID_RC_ADCS_SP_17 304677419
+#define CAN_ID_RC_ADCS_SP_16 304677418
+#define CAN_ID_RC_ADCS_SP_10 304677412
+#define CAN_ID_RC_ADCS_SP_8 304677410
+#define CAN_ID_RC_ADCS_SP_9 304677411
+#define CAN_ID_RC_ADCS_SP_13 304677415
+#define CAN_ID_RC_ADCS_SP_15 304677417
+#define CAN_ID_RC_ADCS_SP_14 304677416
+#define CAN_ID_RC_ADCS_SP_5 304677407
+#define CAN_ID_RC_ADCS_SP_4 304677406
+#define CAN_ID_RC_ADCS_SP_3 304677405
+#define CAN_ID_RC_ADCS_SP_2 304677404
+#define CAN_ID_RC_ADCS_SP_1 304677403
+#define CAN_ID_RC_ADCS_BDOT_4 304677402
 #define CAN_ID_RC_ADCS_BDOT_3 304677401
 #define CAN_ID_RC_ADCS_BDOT_2 304677383
 #define CAN_ID_RC_ADCS_BDOT_1 304677382
@@ -34,7 +53,6 @@
 #define CAN_ID_ESTIM_MAG_UNIT_Y 302449334
 #define CAN_ID_ESTIM_MAG_UNIT_X 302449333
 #define CAN_ID_ESTIM_STATE 302449336
-#define CAN_ID_RC_EPS_GEN_11 304677402
 #define CAN_ID_RC_ADCS_MTQ_5 304677391
 #define CAN_ID_RC_ADCS_MTQ_4 304677390
 #define CAN_ID_RC_ADCS_MTQ_3 304677389
@@ -167,17 +185,150 @@ void (*CANPacketReceived)(CANPacket *);
 void canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct VECTOR__INDEPENDENT_SIG_MSG {
+    uint16_t rc_eps_gen_1_reset_count; //  (No Units)
+} VECTOR__INDEPENDENT_SIG_MSG;
+
+typedef struct rc_adcs_sp_12 {
+    uint8_t rc_adcs_sp_12_mag2_z_min; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_12_mag2_z_max; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_12_mag2_y_max; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_12_mag2_y_avg; // 1/73 nanoTeslas
+} rc_adcs_sp_12;
+
+typedef struct rc_adcs_sp_11 {
+    uint8_t rc_adcs_sp_11_mag2_x_avg; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_11_mag2_x_max; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_11_mag2_x_min; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_11_mag2_y_min; // 1/73 nanoTeslas
+} rc_adcs_sp_11;
+
+typedef struct rc_adcs_sp_7 {
+    uint8_t rc_adcs_sp_7_magp_y_min; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_7_magp_y_max; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_7_magp_y_avg; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_7_magp_x_avg; // 1/73 nanoTeslas
+} rc_adcs_sp_7;
+
+typedef struct rc_adcs_sp_6 {
+    uint8_t rc_adcs_sp_6_sun_z_max; // 1/32768 units
+    uint8_t rc_adcs_sp_6_sun_z_avg; // 1/32768 units
+    uint8_t rc_adcs_sp_6_magp_x_min; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_6_magp_x_max; // 1/73 nanoTeslas
+} rc_adcs_sp_6;
+
+typedef struct rc_adcs_sp_17 {
+    uint8_t rc_adcs_sp_17_imu_z_max; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_17_imu_z_avg; // 0.004375 deg/s
+} rc_adcs_sp_17;
+
+typedef struct rc_adcs_sp_16 {
+    uint8_t rc_adcs_sp_16_imu_z_min; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_16_imu_y_min; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_16_imu_y_max; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_16_imu_y_avg; // 0.004375 deg/s
+} rc_adcs_sp_16;
+
+typedef struct rc_adcs_sp_10 {
+    uint8_t rc_adcs_sp_10_mag1_z_min; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_10_mag1_z_max; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_10_mag1_z_avg; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_10_mag1_y_avg; // 1/73 nanoTeslas
+} rc_adcs_sp_10;
+
+typedef struct rc_adcs_sp_8 {
+    uint8_t rc_adcs_sp_8_magp_z_min; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_8_magp_z_max; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_8_magp_z_avg; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_8_mag1_x_min; // 1/73 nanoTeslas
+} rc_adcs_sp_8;
+
+typedef struct rc_adcs_sp_9 {
+    uint8_t rc_adcs_sp_9_mag1_y_min; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_9_mag1_y_max; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_9_mag1_x_max; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_9_mag1_x_avg; // 1/73 nanoTeslas
+} rc_adcs_sp_9;
+
+typedef struct rc_adcs_sp_13 {
+    uint8_t rc_adcs_sp_13_suna_min; // 60/32767 degrees
+    uint8_t rc_adcs_sp_13_suna_max; // 60/32767 degrees
+    uint8_t rc_adcs_sp_13_suna_avg; // 60/32767 degrees
+    uint8_t rc_adcs_sp_13_mag2_z_avg; // 1/73 nanoTeslas
+} rc_adcs_sp_13;
+
+typedef struct rc_adcs_sp_15 {
+    uint8_t rc_adcs_sp_15_imu_x_min; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_15_imu_x_max; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_15_imu_x_avg; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_15_imu_valid; //  (No Units)
+} rc_adcs_sp_15;
+
+typedef struct rc_adcs_sp_14 {
+    uint8_t rc_adcs_sp_14_sunb_min; // 60/32767 degrees
+    uint8_t rc_adcs_sp_14_sunb_max; // 60/32767 degrees
+    uint8_t rc_adcs_sp_14_sunb_avg; // 60/32767 degrees
+    uint8_t rc_adcs_sp_14_sun_valid; //  (No Units)
+    uint8_t rc_adcs_sp_14_magp_valid; //  (No Units)
+} rc_adcs_sp_14;
+
+typedef struct rc_adcs_sp_5 {
+    uint8_t rc_adcs_sp_5_sun_z_min; // 1/32768 units
+    uint8_t rc_adcs_sp_5_sun_y_min; // 1/32768 units
+    uint8_t rc_adcs_sp_5_sun_y_max; // 1/32768 units
+    uint8_t rc_adcs_sp_5_sun_y_avg; // 1/32768 units
+} rc_adcs_sp_5;
+
+typedef struct rc_adcs_sp_4 {
+    uint8_t rc_adcs_sp_4_sun_x_min; // 1/32768 units
+    uint8_t rc_adcs_sp_4_sun_x_max; // 1/32768 units
+    uint8_t rc_adcs_sp_4_sun_x_avg; // 1/32768 units
+    uint8_t rc_adcs_sp_4_imup_z_avg; // 0.004375 deg/s
+} rc_adcs_sp_4;
+
+typedef struct rc_adcs_sp_3 {
+    uint8_t rc_adcs_sp_3_imup_z_min; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_3_imup_z_max; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_3_imup_y_max; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_3_imup_y_avg; // 0.004375 deg/s
+} rc_adcs_sp_3;
+
+typedef struct rc_adcs_sp_2 {
+    uint8_t rc_adcs_sp_2_imup_y_min; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_2_imup_x_min; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_2_imup_x_max; // 0.004375 deg/s
+    uint8_t rc_adcs_sp_2_imup_x_avg; // 0.004375 deg/s
+} rc_adcs_sp_2;
+
+typedef struct rc_adcs_sp_1 {
+    uint16_t rc_adcs_sp_1_temp_min; // dK
+    uint16_t rc_adcs_sp_1_temp_max; // dK
+    uint16_t rc_adcs_sp_1_temp_avg; // dK
+    uint16_t rc_adcs_sp_1_sysrstiv; //  (No Units)
+    uint16_t rc_adcs_sp_1_reset_count; //  (No Units)
+} rc_adcs_sp_1;
+
+typedef struct rc_adcs_bdot_4 {
+    int16_t rc_adcs_bdot_4_mag_z_avg; // 1/73 nT
+    uint8_t rc_adcs_bdot_4_tumble; //  (No Units)
+} rc_adcs_bdot_4;
+
 typedef struct rc_adcs_bdot_3 {
-    uint8_t rc_adcs_bdot_3_tumble; //  (No Units)
-    int32_t rc_adcs_bdot_3_mag_avg; // nT
+    int16_t rc_adcs_bdot_3_mag_z_min; // 1/73 nT
+    int16_t rc_adcs_bdot_3_mag_z_max; // 1/73 nT
+    int16_t rc_adcs_bdot_3_mag_y_max; // 1/73 nT
+    int16_t rc_adcs_bdot_3_mag_y_avg; // 1/73 nT
 } rc_adcs_bdot_3;
 
 typedef struct rc_adcs_bdot_2 {
-    int32_t rc_adcs_bdot_2_mag_min; // nT
-    int32_t rc_adcs_bdot_2_mag_max; // nT
+    int16_t rc_adcs_bdot_2_mag_y_min; // 1/73 nT
+    int16_t rc_adcs_bdot_2_mag_x_avg; // 1/73 nT
+    int16_t rc_adcs_bdot_2_mag_x_min; // 1/73 nT
+    int16_t rc_adcs_bdot_2_mag_x_max; // 1/73 nT
 } rc_adcs_bdot_2;
 
 typedef struct rc_adcs_bdot_1 {
+    uint16_t rc_adcs_bdot_1_reset_count; //  (No Units)
     uint16_t rc_adcs_bdot_1_temp_min; // dK
     uint16_t rc_adcs_bdot_1_temp_max; // dK
     uint16_t rc_adcs_bdot_1_temp_avg; // dK
@@ -212,11 +363,6 @@ typedef struct estim_state {
     uint8_t estim_state_in_sun; //  (No Units)
     uint8_t estim_state_above_gs; //  (No Units)
 } estim_state;
-
-typedef struct rc_eps_gen_11 {
-    float rc_eps_gen_11_pnl_1_power_min; // V
-    float rc_eps_gen_11_pnl_1_power_max; // V
-} rc_eps_gen_11;
 
 typedef struct rc_adcs_mtq_5 {
     uint8_t rc_adcs_mtq_5_reset_counts; //  (No Units)
@@ -257,6 +403,7 @@ typedef struct rc_adcs_mtq_2 {
 } rc_adcs_mtq_2;
 
 typedef struct rc_adcs_mtq_1 {
+    uint16_t rc_adcs_mtq_1_reset_count; //  (No Units)
     uint16_t rc_adcs_mtq_1_temp_min; // dK
     uint16_t rc_adcs_mtq_1_temp_max; // dK
     uint16_t rc_adcs_mtq_1_temp_avg; // dK
@@ -277,6 +424,7 @@ typedef struct rc_ppt_2 {
 } rc_ppt_2;
 
 typedef struct rc_ppt_1 {
+    uint16_t rc_ppt_1_reset_count; //  (No Units)
     uint16_t rc_ppt_1_temp_min; // dK
     uint16_t rc_ppt_1_temp_max; // dK
     uint16_t rc_ppt_1_temp_avg; // dK
@@ -387,6 +535,7 @@ typedef struct rc_eps_batt_2 {
 } rc_eps_batt_2;
 
 typedef struct rc_eps_batt_1 {
+    uint16_t rc_eps_batt_1_reset_count; //  (No Units)
     uint16_t rc_eps_batt_1_temp_min; // dK
     uint16_t rc_eps_batt_1_temp_max; // dK
     uint16_t rc_eps_batt_1_temp_avg; // dK
@@ -505,16 +654,16 @@ typedef struct eps_domain_output {
 } eps_domain_output;
 
 typedef struct sensorproc_imu {
-    uint16_t sensorproc_imu_z; //  (No Units)
-    uint16_t sensorproc_imu_y; //  (No Units)
-    uint16_t sensorproc_imu_x; //  (No Units)
+    int16_t sensorproc_imu_z; //  (No Units)
+    int16_t sensorproc_imu_y; //  (No Units)
+    int16_t sensorproc_imu_x; //  (No Units)
     uint8_t sensorproc_imu_valid; // bool
 } sensorproc_imu;
 
 typedef struct sensorproc_mag {
-    uint16_t sensorproc_mag_z; //  (No Units)
-    uint16_t sensorproc_mag_y; //  (No Units)
-    uint16_t sensorproc_mag_x; //  (No Units)
+    int16_t sensorproc_mag_z; //  (No Units)
+    int16_t sensorproc_mag_y; //  (No Units)
+    int16_t sensorproc_mag_x; //  (No Units)
     uint8_t sensorproc_mag_valid; // bool
 } sensorproc_mag;
 
@@ -628,6 +777,63 @@ typedef struct grnd_epoch {
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
 
+void encodeVECTOR__INDEPENDENT_SIG_MSG(VECTOR__INDEPENDENT_SIG_MSG *input, CANPacket* output);
+void decodeVECTOR__INDEPENDENT_SIG_MSG(CANPacket *input, VECTOR__INDEPENDENT_SIG_MSG *output);
+
+void encoderc_adcs_sp_12(rc_adcs_sp_12 *input, CANPacket* output);
+void decoderc_adcs_sp_12(CANPacket *input, rc_adcs_sp_12 *output);
+
+void encoderc_adcs_sp_11(rc_adcs_sp_11 *input, CANPacket* output);
+void decoderc_adcs_sp_11(CANPacket *input, rc_adcs_sp_11 *output);
+
+void encoderc_adcs_sp_7(rc_adcs_sp_7 *input, CANPacket* output);
+void decoderc_adcs_sp_7(CANPacket *input, rc_adcs_sp_7 *output);
+
+void encoderc_adcs_sp_6(rc_adcs_sp_6 *input, CANPacket* output);
+void decoderc_adcs_sp_6(CANPacket *input, rc_adcs_sp_6 *output);
+
+void encoderc_adcs_sp_17(rc_adcs_sp_17 *input, CANPacket* output);
+void decoderc_adcs_sp_17(CANPacket *input, rc_adcs_sp_17 *output);
+
+void encoderc_adcs_sp_16(rc_adcs_sp_16 *input, CANPacket* output);
+void decoderc_adcs_sp_16(CANPacket *input, rc_adcs_sp_16 *output);
+
+void encoderc_adcs_sp_10(rc_adcs_sp_10 *input, CANPacket* output);
+void decoderc_adcs_sp_10(CANPacket *input, rc_adcs_sp_10 *output);
+
+void encoderc_adcs_sp_8(rc_adcs_sp_8 *input, CANPacket* output);
+void decoderc_adcs_sp_8(CANPacket *input, rc_adcs_sp_8 *output);
+
+void encoderc_adcs_sp_9(rc_adcs_sp_9 *input, CANPacket* output);
+void decoderc_adcs_sp_9(CANPacket *input, rc_adcs_sp_9 *output);
+
+void encoderc_adcs_sp_13(rc_adcs_sp_13 *input, CANPacket* output);
+void decoderc_adcs_sp_13(CANPacket *input, rc_adcs_sp_13 *output);
+
+void encoderc_adcs_sp_15(rc_adcs_sp_15 *input, CANPacket* output);
+void decoderc_adcs_sp_15(CANPacket *input, rc_adcs_sp_15 *output);
+
+void encoderc_adcs_sp_14(rc_adcs_sp_14 *input, CANPacket* output);
+void decoderc_adcs_sp_14(CANPacket *input, rc_adcs_sp_14 *output);
+
+void encoderc_adcs_sp_5(rc_adcs_sp_5 *input, CANPacket* output);
+void decoderc_adcs_sp_5(CANPacket *input, rc_adcs_sp_5 *output);
+
+void encoderc_adcs_sp_4(rc_adcs_sp_4 *input, CANPacket* output);
+void decoderc_adcs_sp_4(CANPacket *input, rc_adcs_sp_4 *output);
+
+void encoderc_adcs_sp_3(rc_adcs_sp_3 *input, CANPacket* output);
+void decoderc_adcs_sp_3(CANPacket *input, rc_adcs_sp_3 *output);
+
+void encoderc_adcs_sp_2(rc_adcs_sp_2 *input, CANPacket* output);
+void decoderc_adcs_sp_2(CANPacket *input, rc_adcs_sp_2 *output);
+
+void encoderc_adcs_sp_1(rc_adcs_sp_1 *input, CANPacket* output);
+void decoderc_adcs_sp_1(CANPacket *input, rc_adcs_sp_1 *output);
+
+void encoderc_adcs_bdot_4(rc_adcs_bdot_4 *input, CANPacket* output);
+void decoderc_adcs_bdot_4(CANPacket *input, rc_adcs_bdot_4 *output);
+
 void encoderc_adcs_bdot_3(rc_adcs_bdot_3 *input, CANPacket* output);
 void decoderc_adcs_bdot_3(CANPacket *input, rc_adcs_bdot_3 *output);
 
@@ -657,9 +863,6 @@ void decodeestim_mag_unit_x(CANPacket *input, estim_mag_unit_x *output);
 
 void encodeestim_state(estim_state *input, CANPacket* output);
 void decodeestim_state(CANPacket *input, estim_state *output);
-
-void encoderc_eps_gen_11(rc_eps_gen_11 *input, CANPacket* output);
-void decoderc_eps_gen_11(CANPacket *input, rc_eps_gen_11 *output);
 
 void encoderc_adcs_mtq_5(rc_adcs_mtq_5 *input, CANPacket* output);
 void decoderc_adcs_mtq_5(CANPacket *input, rc_adcs_mtq_5 *output);
