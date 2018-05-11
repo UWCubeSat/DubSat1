@@ -12,24 +12,18 @@
 #include "sunsensor_io.h"
 #include "sensors/sun_sensor.h"
 #include "interfaces/canwrap.h"
-#include "core/dataArray.h"
+#include "core/agglib.h"
 #include "adcs_sensorproc_ids.h"
 
 #include "autocode/MSP_SP.h"
 
-// rollcall arrays
-FILE_STATIC int16_t rc_sunaData[RC_BUFFER_SIZE];
-FILE_STATIC int16_t rc_sunbData[RC_BUFFER_SIZE];
-FILE_STATIC int16_t rc_sunxData[RC_BUFFER_SIZE];
-FILE_STATIC int16_t rc_sunyData[RC_BUFFER_SIZE];
-FILE_STATIC int16_t rc_sunzData[RC_BUFFER_SIZE];
-FILE_STATIC uint8_t rc_sunValidData[RC_BUFFER_SIZE];
-FILE_STATIC uint16_t rc_sunaHandle;
-FILE_STATIC uint16_t rc_sunbHandle;
-FILE_STATIC uint16_t rc_sunxHandle;
-FILE_STATIC uint16_t rc_sunyHandle;
-FILE_STATIC uint16_t rc_sunzHandle;
-FILE_STATIC uint16_t rc_sunValidHandle;
+// rollcall
+FILE_STATIC aggVec_i rc_suna;
+FILE_STATIC aggVec_i rc_sunb;
+FILE_STATIC aggVec_i rc_sunx;
+FILE_STATIC aggVec_i rc_suny;
+FILE_STATIC aggVec_i rc_sunz;
+FILE_STATIC aggVec_i rc_sunValid;
 
 FILE_STATIC SunSensorAngle *angle;
 #if !ENABLE_SUNSENSOR
@@ -56,12 +50,12 @@ void sunsensorioInit()
 #if ENABLE_SUNSENSOR
     sunSensorInit(I2C_BUS_SUNSENSOR);
 #endif
-    rc_sunaHandle = init_int16_t(rc_sunaData, RC_BUFFER_SIZE);
-    rc_sunbHandle = init_int16_t(rc_sunbData, RC_BUFFER_SIZE);
-    rc_sunxHandle = init_int16_t(rc_sunxData, RC_BUFFER_SIZE);
-    rc_sunyHandle = init_int16_t(rc_sunyData, RC_BUFFER_SIZE);
-    rc_sunzHandle = init_int16_t(rc_sunzData, RC_BUFFER_SIZE);
-    rc_sunValidHandle = init_uint8_t(rc_sunValidData, RC_BUFFER_SIZE);
+    aggVec_init(&rc_suna);
+    aggVec_init(&rc_sunb);
+    aggVec_init(&rc_sunx);
+    aggVec_init(&rc_suny);
+    aggVec_init(&rc_sunz);
+    aggVec_init(&rc_sunValid);
 }
 
 void sunsensorioUpdate()
@@ -86,8 +80,8 @@ void sunsensorioUpdate()
     }
 
     // update rollcall arrays
-    addData_int16_t(rc_sunaHandle, rawToShort(angle->alpha));
-    addData_int16_t(rc_sunbHandle, rawToShort(angle->beta));
+    aggVec_i_push(&rc_suna, rawToShort(angle->alpha));
+    aggVec_i_push(&rc_sunb, rawToShort(angle->beta));
 }
 
 void sunsensorioSendBackchannel()
@@ -127,45 +121,53 @@ void sunsensorioSendCAN()
     encodesensorproc_sun(&sun, &packet);
     canSendPacket(&packet);
 
-    // update rollcall arrays
-    addData_int16_t(rc_sunxHandle, sun.sensorproc_sun_x);
-    addData_int16_t(rc_sunyHandle, sun.sensorproc_sun_y);
-    addData_int16_t(rc_sunzHandle, sun.sensorproc_sun_z);
-    addData_uint8_t(rc_sunValidHandle, sun.sensorproc_sun_valid);
+    // update rollcall data
+    aggVec_i_push(&rc_sunx, sun.sensorproc_sun_x);
+    aggVec_i_push(&rc_suny, sun.sensorproc_sun_y);
+    aggVec_i_push(&rc_sunz, sun.sensorproc_sun_z);
+    aggVec_i_push(&rc_sunValid, sun.sensorproc_sun_valid);
 }
 
 void sunsensorioRcPopulate4(rc_adcs_sp_4 *rc)
 {
-    rc->rc_adcs_sp_4_sun_x_min = getMin_int16_t(rc_sunxHandle);
-    rc->rc_adcs_sp_4_sun_x_max = getMax_int16_t(rc_sunxHandle);
-    rc->rc_adcs_sp_4_sun_x_avg = getAvg_int16_t(rc_sunxHandle);
+    rc->rc_adcs_sp_4_sun_x_min = aggVec_i_min(&rc_sunx);
+    rc->rc_adcs_sp_4_sun_x_max = aggVec_i_max(&rc_sunx);
+    rc->rc_adcs_sp_4_sun_x_avg = aggVec_i_avg_i(&rc_sunx);
+    aggVec_reset(&rc_sunx);
 }
 
 void sunsensorioRcPopulate5(rc_adcs_sp_5 *rc)
 {
-    rc->rc_adcs_sp_5_sun_z_min = getMin_int16_t(rc_sunzHandle);
-    rc->rc_adcs_sp_5_sun_y_min = getMin_int16_t(rc_sunyHandle);
-    rc->rc_adcs_sp_5_sun_y_max = getMax_int16_t(rc_sunyHandle);
-    rc->rc_adcs_sp_5_sun_y_avg = getAvg_int16_t(rc_sunyHandle);
+    rc->rc_adcs_sp_5_sun_z_min = aggVec_i_min(&rc_sunz);
+    aggVec_min_reset(&rc_sunz);
+    rc->rc_adcs_sp_5_sun_y_min = aggVec_i_min(&rc_suny);
+    rc->rc_adcs_sp_5_sun_y_max = aggVec_i_max(&rc_suny);
+    rc->rc_adcs_sp_5_sun_y_avg = aggVec_i_avg_i(&rc_suny);
+    aggVec_reset(&rc_suny);
 }
 
 void sunsensorioRcPopulate6(rc_adcs_sp_6 *rc)
 {
-    rc->rc_adcs_sp_6_sun_z_max = getMax_int16_t(rc_sunzHandle);
-    rc->rc_adcs_sp_6_sun_z_avg = getAvg_int16_t(rc_sunzHandle);
+    rc->rc_adcs_sp_6_sun_z_max = aggVec_i_max(&rc_sunz);
+    aggVec_max_reset(&rc_sunz);
+    rc->rc_adcs_sp_6_sun_z_avg = aggVec_i_avg_i(&rc_sunz);
+    aggVec_as_reset(&rc_sunz);
 }
 
 void sunsensorioRcPopulate13(rc_adcs_sp_13 *rc)
 {
-    rc->rc_adcs_sp_13_suna_min = getMin_int16_t(rc_sunaHandle);
-    rc->rc_adcs_sp_13_suna_max = getMax_int16_t(rc_sunaHandle);
-    rc->rc_adcs_sp_13_suna_avg = getAvg_int16_t(rc_sunaHandle);
+    rc->rc_adcs_sp_13_suna_min = aggVec_i_min(&rc_suna);
+    rc->rc_adcs_sp_13_suna_max = aggVec_i_max(&rc_suna);
+    rc->rc_adcs_sp_13_suna_avg = aggVec_i_avg_i(&rc_suna);
+    aggVec_reset(&rc_suna);
 }
 
 void sunsensorioRcPopulate14(rc_adcs_sp_14 *rc)
 {
-    rc->rc_adcs_sp_14_sunb_min = getMin_int16_t(rc_sunbHandle);
-    rc->rc_adcs_sp_14_sunb_max = getMax_int16_t(rc_sunbHandle);
-    rc->rc_adcs_sp_14_sunb_avg = getAvg_int16_t(rc_sunbHandle);
-    rc->rc_adcs_sp_14_sun_valid = getSum_uint8_t(rc_sunValidHandle);
+    rc->rc_adcs_sp_14_sunb_min = aggVec_i_min(&rc_sunb);
+    rc->rc_adcs_sp_14_sunb_max = aggVec_i_max(&rc_sunb);
+    rc->rc_adcs_sp_14_sunb_avg = aggVec_i_avg_i(&rc_sunb);
+    aggVec_reset(&rc_sunb);
+    rc->rc_adcs_sp_14_sun_valid = aggVec_i_sum(&rc_sunValid);
+    aggVec_reset(&rc_sunValid);
 }

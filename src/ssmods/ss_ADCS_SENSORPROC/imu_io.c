@@ -11,26 +11,19 @@
 
 #include "core/i2c.h"
 #include "core/utils.h"
-#include "core/dataArray.h"
+#include "core/agglib.h"
 #include "interfaces/canwrap.h"
 
 #include "autocode/MSP_SP.h"
 
 // rollcall arrays
-FILE_STATIC int16_t rc_imuxData[RC_BUFFER_SIZE];
-FILE_STATIC int16_t rc_imuyData[RC_BUFFER_SIZE];
-FILE_STATIC int16_t rc_imuzData[RC_BUFFER_SIZE];
-FILE_STATIC int16_t rc_imupxData[RC_BUFFER_SIZE];
-FILE_STATIC int16_t rc_imupyData[RC_BUFFER_SIZE];
-FILE_STATIC int16_t rc_imupzData[RC_BUFFER_SIZE];
-FILE_STATIC uint8_t rc_imupValidData[RC_BUFFER_SIZE];
-FILE_STATIC uint16_t rc_imuyHandle;
-FILE_STATIC uint16_t rc_imuxHandle;
-FILE_STATIC uint16_t rc_imuzHandle;
-FILE_STATIC uint16_t rc_imupxHandle;
-FILE_STATIC uint16_t rc_imupyHandle;
-FILE_STATIC uint16_t rc_imupzHandle;
-FILE_STATIC uint16_t rc_imupValidHandle;
+FILE_STATIC aggVec_i rc_imux;
+FILE_STATIC aggVec_i rc_imuy;
+FILE_STATIC aggVec_i rc_imuz;
+FILE_STATIC aggVec_i rc_imupx;
+FILE_STATIC aggVec_i rc_imupy;
+FILE_STATIC aggVec_i rc_imupz;
+FILE_STATIC aggVec_i rc_imuValid;
 
 FILE_STATIC IMUData *data;
 
@@ -43,13 +36,13 @@ void imuioInit()
 #if ENABLE_IMU
     imuInit(IMU_I2CBUS, IMUUpdateRate_52Hz);
 #endif
-    rc_imuxHandle = init_int16_t(rc_imuxData, RC_BUFFER_SIZE);
-    rc_imuyHandle = init_int16_t(rc_imuyData, RC_BUFFER_SIZE);
-    rc_imuzHandle = init_int16_t(rc_imuzData, RC_BUFFER_SIZE);
-    rc_imupxHandle = init_int16_t(rc_imupxData, RC_BUFFER_SIZE);
-    rc_imupyHandle = init_int16_t(rc_imupyData, RC_BUFFER_SIZE);
-    rc_imupzHandle = init_int16_t(rc_imupzData, RC_BUFFER_SIZE);
-    rc_imupValidHandle = init_uint8_t(rc_imupValidData, RC_BUFFER_SIZE);
+    aggVec_init(&rc_imux);
+    aggVec_init(&rc_imuy);
+    aggVec_init(&rc_imuz);
+    aggVec_init(&rc_imupx);
+    aggVec_init(&rc_imupy);
+    aggVec_init(&rc_imupz);
+    aggVec_init(&rc_imuValid);
 }
 
 void imuioUpdate()
@@ -72,10 +65,10 @@ void imuioUpdate()
     rtU.omega_body_radps_gyro[2] = imuConvertRawToRPS(data->rawGyroZ);
     rtU.omega_body_radps_gyro[3] = valid;
 
-    // update rollcall arrays
-    addData_int16_t(rc_imuxHandle, data->rawGyroX);
-    addData_int16_t(rc_imuyHandle, data->rawGyroY);
-    addData_int16_t(rc_imuzHandle, data->rawGyroZ);
+    // update rollcall data
+    aggVec_i_push(&rc_imux, data->rawGyroX);
+    aggVec_i_push(&rc_imuy, data->rawGyroY);
+    aggVec_i_push(&rc_imuz, data->rawGyroZ);
 }
 
 void imuioSendBackchannel()
@@ -110,52 +103,65 @@ void imuioSendCAN()
     encodesensorproc_imu(&gyro, &packet);
     canSendPacket(&packet);
 
-    // update rollcall arrays
-    addData_int16_t(rc_imupxHandle, gyro.sensorproc_imu_x);
-    addData_int16_t(rc_imupyHandle, gyro.sensorproc_imu_y);
-    addData_int16_t(rc_imupzHandle, gyro.sensorproc_imu_z);
-    addData_uint8_t(rc_imupValidHandle, gyro.sensorproc_imu_valid);
+    // update rollcall data
+    aggVec_i_push(&rc_imupx, gyro.sensorproc_imu_x);
+    aggVec_i_push(&rc_imupy, gyro.sensorproc_imu_y);
+    aggVec_i_push(&rc_imupz, gyro.sensorproc_imu_z);
+    aggVec_i_push(&rc_imuValid, gyro.sensorproc_imu_valid);
 }
 
 void imuioRcPopulate2(rc_adcs_sp_2 *rc)
 {
-    rc->rc_adcs_sp_2_imup_x_min = getMin_int16_t(rc_imupxHandle);
-    rc->rc_adcs_sp_2_imup_x_max = getMax_int16_t(rc_imupxHandle);
-    rc->rc_adcs_sp_2_imup_x_avg = getAvg_int16_t(rc_imupxHandle);
-    rc->rc_adcs_sp_2_imup_y_min = getMin_int16_t(rc_imupyHandle);
+    rc->rc_adcs_sp_2_imup_x_min = aggVec_i_min(&rc_imupx);
+    rc->rc_adcs_sp_2_imup_x_max = aggVec_i_max(&rc_imupx);
+    rc->rc_adcs_sp_2_imup_x_avg = aggVec_i_avg_i(&rc_imupx);
+    aggVec_reset(&rc_imupx);
+    rc->rc_adcs_sp_2_imup_y_min = aggVec_i_min(&rc_imupy);
+    aggVec_min_reset(&rc_imupy);
 }
 
 void imuioRcPopulate3(rc_adcs_sp_3 *rc)
 {
-    rc->rc_adcs_sp_3_imup_y_max = getMax_int16_t(rc_imupyHandle);
-    rc->rc_adcs_sp_3_imup_y_avg = getAvg_int16_t(rc_imupyHandle);
-    rc->rc_adcs_sp_3_imup_z_min = getMin_int16_t(rc_imupzHandle);
-    rc->rc_adcs_sp_3_imup_z_max = getMax_int16_t(rc_imupzHandle);
+    rc->rc_adcs_sp_3_imup_y_max = aggVec_i_max(&rc_imupy);
+    aggVec_max_reset(&rc_imupy);
+    rc->rc_adcs_sp_3_imup_y_avg = aggVec_i_avg_i(&rc_imupy);
+    aggVec_as_reset(&rc_imupy);
+    rc->rc_adcs_sp_3_imup_z_min = aggVec_i_min(&rc_imupz);
+    aggVec_min_reset(&rc_imupz);
+    rc->rc_adcs_sp_3_imup_z_max = aggVec_i_max(&rc_imupz);
+    aggVec_max_reset(&rc_imupz);
 }
 
 void imuioRcPopulate4(rc_adcs_sp_4 *rc)
 {
-    rc->rc_adcs_sp_4_imup_z_avg = getAvg_int16_t(rc_imupzHandle);
+    rc->rc_adcs_sp_4_imup_z_avg = aggVec_i_avg_i(&rc_imupz);
+    aggVec_as_reset(&rc_imupz);
 }
 
 void imuioRcPopulate15(rc_adcs_sp_15 *rc)
 {
-    rc->rc_adcs_sp_15_imu_x_min = getMin_int16_t(rc_imuxHandle);
-    rc->rc_adcs_sp_15_imu_x_max = getMax_int16_t(rc_imuxHandle);
-    rc->rc_adcs_sp_15_imu_x_avg = getAvg_int16_t(rc_imuxHandle);
-    rc->rc_adcs_sp_15_imu_valid = getSum_uint8_t(rc_imupValidHandle);
+    rc->rc_adcs_sp_15_imu_x_min = aggVec_i_min(&rc_imux);
+    rc->rc_adcs_sp_15_imu_x_max = aggVec_i_max(&rc_imux);
+    rc->rc_adcs_sp_15_imu_x_avg = aggVec_i_avg_i(&rc_imux);
+    aggVec_reset(&rc_imux);
+    rc->rc_adcs_sp_15_imu_valid = aggVec_i_sum(&rc_imuValid);
+    aggVec_reset(&rc_imuValid);
 }
 
 void imuioRcPopulate16(rc_adcs_sp_16 *rc)
 {
-    rc->rc_adcs_sp_16_imu_y_min = getMin_int16_t(rc_imuyHandle);
-    rc->rc_adcs_sp_16_imu_y_max = getMax_int16_t(rc_imuyHandle);
-    rc->rc_adcs_sp_16_imu_y_avg = getAvg_int16_t(rc_imuyHandle);
-    rc->rc_adcs_sp_16_imu_z_min = getMin_int16_t(rc_imuzHandle);
+    rc->rc_adcs_sp_16_imu_y_min = aggVec_i_min(&rc_imuy);
+    rc->rc_adcs_sp_16_imu_y_max = aggVec_i_max(&rc_imuy);
+    rc->rc_adcs_sp_16_imu_y_avg = aggVec_i_avg_i(&rc_imuy);
+    aggVec_reset(&rc_imuy);
+    rc->rc_adcs_sp_16_imu_z_min = aggVec_i_min(&rc_imuz);
+    aggVec_min_reset(&rc_imuz);
 }
 
 void imuioRcPopulate17(rc_adcs_sp_17 *rc)
 {
-    rc->rc_adcs_sp_17_imu_z_max = getMax_int16_t(rc_imuzHandle);
-    rc->rc_adcs_sp_17_imu_z_avg = getAvg_int16_t(rc_imuzHandle);
+    rc->rc_adcs_sp_17_imu_z_max = aggVec_i_max(&rc_imuz);
+    aggVec_max_reset(&rc_imuz);
+    rc->rc_adcs_sp_17_imu_z_avg = aggVec_i_avg_i(&rc_imuz);
+    aggVec_as_reset(&rc_imuz);
 }
