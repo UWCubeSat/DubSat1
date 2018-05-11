@@ -453,7 +453,8 @@ void sendRCCmd()
     encodecmd_rollcall(&rc_info, &rcPkt);
     canSendPacket(&rcPkt);
 
-    if(rcResponseFlag)
+    //TODO: uncomment this when automatic shutoff is ready to go!
+    /*if(rcResponseFlag)
     {
         if(rcResponseFlag & PD_COM1_FLAG)
         {
@@ -490,7 +491,7 @@ void sendRCCmd()
             distDomainSwitch(PD_PPT, PD_CMD_Disable);
             rcResponseFlag &= ~PD_PPT_FLAG;
         }
-    }
+    }*/
 
     if(distQueryDomainSwitch(PD_COM1))
         rcResponseFlag |= PD_COM1_FLAG;
