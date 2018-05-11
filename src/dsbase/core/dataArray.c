@@ -15,11 +15,11 @@ typedef struct buffer_float {
 uint16_t handleNumber_float = 0;
 #ifdef __DATA_ARRAYS_COUNT__
 	buffer_float bufferContainer_float[__DATA_ARRAYS_COUNT__];
-	const uint8_t bufferContainerLength = __DATA_ARRAYS_COUNT__;
+	const uint8_t bufferContainerLength_float = __DATA_ARRAYS_COUNT__;
 #else
 	#warning need to define how many data arrays you are using 20 is default
 	buffer_float bufferContainer_float[20];
-	const uint8_t bufferContainerLength = 20;
+	const uint8_t bufferContainerLength_float = 20;
 #endif
 /**
  * Function: init
@@ -447,7 +447,7 @@ typedef struct buffer_uint16_t {
 uint16_t handleNumber_uint16_t = 0;
 #ifdef __DATA_ARRAYS_COUNT__
 	buffer_uint16_t bufferContainer_uint16_t[__DATA_ARRAYS_COUNT__];
-	const uint8_t bufferContainerLength = __DATA_ARRAYS_COUNT__;
+	const uint8_t bufferContainerLength_uint16_t = __DATA_ARRAYS_COUNT__;
 #else
 	#warning need to define how many data arrays you are using 20 is default
 	buffer_uint16_t bufferContainer_uint16_t[20];
@@ -661,7 +661,7 @@ typedef struct buffer_uint8_t {
 uint16_t handleNumber_uint8_t = 0;
 #ifdef __DATA_ARRAYS_COUNT__
 	buffer_uint8_t bufferContainer_uint8_t[__DATA_ARRAYS_COUNT__];
-	const uint8_t bufferContainerLength = __DATA_ARRAYS_COUNT__;
+	const uint8_t bufferContainerLength_uint8_t = __DATA_ARRAYS_COUNT__;
 #else
 	#warning need to define how many data arrays you are using 20 is default
 	buffer_uint8_t bufferContainer_uint8_t[20];
