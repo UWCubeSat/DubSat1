@@ -4,6 +4,7 @@
 #include "bsp/bsp.h"
 #include "core/can.h"
 #include "interfaces/canwrap.h"
+#include "core/agglib.h"
 
 
 // Directives for timer stuff.
@@ -89,21 +90,29 @@ int main(void) {
 
     PJDIR |= 0x07;
     while(1){
-        CANPacket p = {0};
-        p.id = 0x01;
-        p.length = 0;
-        canSendPacket(&p);
-        p.id = 0x02;
-        canSendPacket(&p);
-        p.id = 0x03;
-        canSendPacket(&p);
-        p.id = 0x04;
-        PJOUT ^= canSendPacket(&p);
-        p.id = 0x05;
-        PJOUT ^= canSendPacket(&p);
-        p.id = 0x06;
-        PJOUT ^= canSendPacket(&p);
-        __delay_cycles(100000);
+        uint8_t a = 69;
+        uint8_t b = 96;
+        aggVec_i yolo;
+        aggVec_init(&yolo);
+        aggVec_i_push(&yolo, a);
+        aggVec_i_push(&yolo, b);
+        float avg = aggVec_i_avg_f(&yolo);
+        PJOUT |= (uint8_t) avg & 0x07;
+//        CANPacket p = {0};
+//        p.id = 0x01;
+//        p.length = 0;
+//        canSendPacket(&p);
+//        p.id = 0x02;
+//        canSendPacket(&p);
+//        p.id = 0x03;
+//        canSendPacket(&p);
+//        p.id = 0x04;
+//        PJOUT ^= canSendPacket(&p);
+//        p.id = 0x05;
+//        PJOUT ^= canSendPacket(&p);
+//        p.id = 0x06;
+//        PJOUT ^= canSendPacket(&p);
+//        __delay_cycles(100000);
 //        CANPacket p = {0};
 //        p.length = 7;
 //        canSendPacket(&p);
