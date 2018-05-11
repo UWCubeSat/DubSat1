@@ -362,13 +362,13 @@ int main(void)
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     //mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
 
-    genTempSensorsInit();
-    genPCVSensorsInit();
-    genPanelsTrackersInit();
-
     //canWrapInitWithFilter();
     canWrapInit();
     setCANPacketRxCallback(can_packet_rx_callback);
+
+    genTempSensorsInit();
+    genPCVSensorsInit();
+    genPanelsTrackersInit();
 
     LED_DIR |= LED_BIT;
 
@@ -416,11 +416,6 @@ int main(void)
 //    genSetPowerTracker(PowerTracker1, FALSE);
 //    genSetPowerTracker(PowerTracker2, FALSE);
 //    genSetPowerTracker(PowerTracker3, FALSE);
-
-    CANPacket rcPktTest = {0};
-    cmd_rollcall rc_info = {0};
-    encodecmd_rollcall(&rc_info, &rcPktTest);
-    canSendPacket(&rcPktTest);
 
     uint16_t counter = 0;
     while (1)

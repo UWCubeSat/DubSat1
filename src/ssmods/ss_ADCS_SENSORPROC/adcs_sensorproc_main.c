@@ -7,7 +7,7 @@
 #include "bsp/bsp.h"
 #include "core/debugtools.h"
 #include "core/timer.h"
-#include "core/dataArray.h"
+#include "core/agglib.h"
 #include "interfaces/canwrap.h"
 
 #include "adcs_sensorproc_ids.h"
@@ -77,8 +77,7 @@ FILE_STATIC const rollcall_fn rollcallFunctions[] =
  rcPopulate17
 };
 
-FILE_STATIC float rc_tempData[RC_BUFFER_SIZE];
-FILE_STATIC uint16_t rc_tempHandle;
+FILE_STATIC aggVec_f rc_temp;
 
 /* Backchannel */
 
@@ -123,7 +122,7 @@ int main(void)
     // initialize sensors
     initSensorInterfaces();
     asensorInit(Ref_2p5V); // temperature sensor
-    rc_tempHandle = init_float(rc_tempData, RC_BUFFER_SIZE);
+    aggVec_init(&rc_temp);
 
     // initialize rollcall
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
@@ -348,7 +347,7 @@ void sendHealthSegment()
     debugInvokeStatusHandler(Entity_UART);
 
     // update rollcall temperature (in deci-Kelvin)
-    addData_float(rc_tempHandle, (hseg.inttemp + 273.15f) * 10);
+    aggVec_f_push(&rc_temp, (hseg.inttemp + 273.15f) * 10);
 }
 
 void sendMetaSegment()
@@ -406,9 +405,10 @@ void rcPopulate1(CANPacket *out)
     rc_adcs_sp_1 rc;
     rc.rc_adcs_sp_1_reset_count = bspGetResetCount();
     rc.rc_adcs_sp_1_sysrstiv = SYSRSTIV;
-    rc.rc_adcs_sp_1_temp_avg = getAvg_float(rc_tempHandle);
-    rc.rc_adcs_sp_1_temp_max = getMax_float(rc_tempHandle);
-    rc.rc_adcs_sp_1_temp_min = getMin_float(rc_tempHandle);
+    rc.rc_adcs_sp_1_temp_avg = aggVec_f_avg_f(&rc_temp);
+    rc.rc_adcs_sp_1_temp_max = aggVec_f_max(&rc_temp);
+    rc.rc_adcs_sp_1_temp_min = aggVec_f_min(&rc_temp);
+    aggVec_reset(&rc_temp);
     encoderc_adcs_sp_1(&rc, out);
 }
 

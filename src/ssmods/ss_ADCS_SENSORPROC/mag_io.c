@@ -11,38 +11,23 @@
 
 #include "core/i2c.h"
 #include "core/utils.h"
-#include "core/dataArray.h"
+#include "core/agglib.h"
 #include "interfaces/canwrap.h"
 
 #include "autocode/MSP_SP.h"
 #include "autocode/rtwtypes.h"
 
-// rollcall arrays
-typedef struct {
-    int16_t mag1xData[RC_BUFFER_SIZE];
-    int16_t mag1yData[RC_BUFFER_SIZE];
-    int16_t mag1zData[RC_BUFFER_SIZE];
-    int16_t mag2xData[RC_BUFFER_SIZE];
-    int16_t mag2yData[RC_BUFFER_SIZE];
-    int16_t mag2zData[RC_BUFFER_SIZE];
-    int16_t magpxData[RC_BUFFER_SIZE];
-    int16_t magpyData[RC_BUFFER_SIZE];
-    int16_t magpzData[RC_BUFFER_SIZE];
-    uint8_t magValidData[RC_BUFFER_SIZE];
-    uint16_t mag1xHandle;
-    uint16_t mag1yHandle;
-    uint16_t mag1zHandle;
-    uint16_t mag2xHandle;
-    uint16_t mag2yHandle;
-    uint16_t mag2zHandle;
-    uint16_t magpxHandle;
-    uint16_t magpyHandle;
-    uint16_t magpzHandle;
-    uint16_t magValidHandle;
-} mag_rc;
-
-#pragma NOINIT(rc)
-FILE_STATIC mag_rc rc;
+// rollcall
+FILE_STATIC aggVec_i rc_mag1x;
+FILE_STATIC aggVec_i rc_mag1y;
+FILE_STATIC aggVec_i rc_mag1z;
+FILE_STATIC aggVec_i rc_mag2x;
+FILE_STATIC aggVec_i rc_mag2y;
+FILE_STATIC aggVec_i rc_mag2z;
+FILE_STATIC aggVec_i rc_magpx;
+FILE_STATIC aggVec_i rc_magpy;
+FILE_STATIC aggVec_i rc_magpz;
+FILE_STATIC aggVec_i rc_magValid;
 
 FILE_STATIC hMag mag1;
 FILE_STATIC hMag mag2;
@@ -64,16 +49,16 @@ void magioInit()
 #if ENABLE_MAG2
     mag2 = magInit(MAG2_I2CBUS);
 #endif
-    rc.mag1xHandle = init_int16_t(rc.mag1xData, RC_BUFFER_SIZE);
-    rc.mag1yHandle = init_int16_t(rc.mag1yData, RC_BUFFER_SIZE);
-    rc.mag1zHandle = init_int16_t(rc.mag1zData, RC_BUFFER_SIZE);
-    rc.mag2xHandle = init_int16_t(rc.mag2xData, RC_BUFFER_SIZE);
-    rc.mag2yHandle = init_int16_t(rc.mag2yData, RC_BUFFER_SIZE);
-    rc.mag2zHandle = init_int16_t(rc.mag2zData, RC_BUFFER_SIZE);
-    rc.magpxHandle = init_int16_t(rc.magpxData, RC_BUFFER_SIZE);
-    rc.magpyHandle = init_int16_t(rc.magpyData, RC_BUFFER_SIZE);
-    rc.magpzHandle = init_int16_t(rc.magpzData, RC_BUFFER_SIZE);
-    rc.magValidHandle = init_uint8_t(rc.magValidData, RC_BUFFER_SIZE);
+    aggVec_init(&rc_mag1x);
+    aggVec_init(&rc_mag1y);
+    aggVec_init(&rc_mag1z);
+    aggVec_init(&rc_mag2x);
+    aggVec_init(&rc_mag2y);
+    aggVec_init(&rc_mag2z);
+    aggVec_init(&rc_magpx);
+    aggVec_init(&rc_magpy);
+    aggVec_init(&rc_magpz);
+    aggVec_init(&rc_magValid);
 }
 
 FILE_STATIC uint8_t isValid(hMag handle)
@@ -108,10 +93,10 @@ FILE_STATIC void update1()
 
     setOutput(mag1, data1, rtU.mag1_vec_body_T);
 
-    // update rollcall array
-    addData_int16_t(rc.mag1xHandle, data1->rawX);
-    addData_int16_t(rc.mag1yHandle, data1->rawY);
-    addData_int16_t(rc.mag1zHandle, data1->rawZ);
+    // update rollcall data
+    aggVec_i_push(&rc_mag1x, data1->rawX);
+    aggVec_i_push(&rc_mag1y, data1->rawY);
+    aggVec_i_push(&rc_mag1z, data1->rawZ);
 }
 
 FILE_STATIC void update2()
@@ -132,9 +117,9 @@ FILE_STATIC void update2()
     setOutput(mag2, data2, rtU.mag2_vec_body_T);
 
     // update rollcall array
-    addData_int16_t(rc.mag2xHandle, data2->rawX);
-    addData_int16_t(rc.mag2yHandle, data2->rawY);
-    addData_int16_t(rc.mag2zHandle, data2->rawZ);
+    aggVec_i_push(&rc_mag2x, data2->rawX);
+    aggVec_i_push(&rc_mag2y, data2->rawY);
+    aggVec_i_push(&rc_mag2z, data2->rawZ);
 }
 
 void magioUpdate()
@@ -193,72 +178,89 @@ void magioSendCAN()
     canSendPacket(&packet);
 
     // update rollcall arrays
-    addData_int16_t(rc.magpxHandle, mag.sensorproc_mag_x);
-    addData_int16_t(rc.magpyHandle, mag.sensorproc_mag_y);
-    addData_int16_t(rc.magpzHandle, mag.sensorproc_mag_z);
-    addData_uint8_t(rc.magValidHandle, mag.sensorproc_mag_valid);
+    aggVec_i_push(&rc_magpx, mag.sensorproc_mag_x);
+    aggVec_i_push(&rc_magpy, mag.sensorproc_mag_y);
+    aggVec_i_push(&rc_magpz, mag.sensorproc_mag_z);
+    aggVec_i_push(&rc_magValid, mag.sensorproc_mag_valid);
 }
 
 void magioRcPopulate6(rc_adcs_sp_6 *r)
 {
-    r->rc_adcs_sp_6_magp_x_min = getMin_int16_t(rc.magpxHandle);
-    r->rc_adcs_sp_6_magp_x_max = getMax_int16_t(rc.magpxHandle);
+    r->rc_adcs_sp_6_magp_x_min = aggVec_i_min(&rc_magpx);
+    r->rc_adcs_sp_6_magp_x_max = aggVec_i_max(&rc_magpx);
+    aggVec_mm_reset(&rc_magpx);
 }
 
 void magioRcPopulate7(rc_adcs_sp_7 *r)
 {
-    r->rc_adcs_sp_7_magp_x_avg = getAvg_int16_t(rc.magpxHandle);
-    r->rc_adcs_sp_7_magp_y_min = getMin_int16_t(rc.magpyHandle);
-    r->rc_adcs_sp_7_magp_y_max = getMax_int16_t(rc.magpyHandle);
-    r->rc_adcs_sp_7_magp_y_avg = getAvg_int16_t(rc.magpyHandle);
+    r->rc_adcs_sp_7_magp_x_avg = aggVec_i_avg_i(&rc_magpx);
+    aggVec_as_reset(&rc_magpx);
+    r->rc_adcs_sp_7_magp_y_min = aggVec_i_min(&rc_magpy);
+    r->rc_adcs_sp_7_magp_y_max = aggVec_i_max(&rc_magpy);
+    r->rc_adcs_sp_7_magp_y_avg = aggVec_i_avg_i(&rc_magpy);
+    aggVec_reset(&rc_magpx);
 }
 
 void magioRcPopulate8(rc_adcs_sp_8 *r)
 {
-    r->rc_adcs_sp_8_magp_z_min = getMin_int16_t(rc.magpzHandle);
-    r->rc_adcs_sp_8_magp_z_max = getMax_int16_t(rc.magpzHandle);
-    r->rc_adcs_sp_8_magp_z_avg = getAvg_int16_t(rc.magpzHandle);
-    r->rc_adcs_sp_8_mag1_x_min = getMin_int16_t(rc.mag1xHandle);
+    r->rc_adcs_sp_8_magp_z_min = aggVec_i_min(&rc_magpz);
+    r->rc_adcs_sp_8_magp_z_max = aggVec_i_max(&rc_magpz);
+    r->rc_adcs_sp_8_magp_z_avg = aggVec_i_avg_i(&rc_magpz);
+    aggVec_reset(&rc_magpz);
+    r->rc_adcs_sp_8_mag1_x_min = aggVec_i_min(&rc_mag1x);
+    aggVec_min_reset(&rc_mag1x);
 }
 
 void magioRcPopulate9(rc_adcs_sp_9 *r)
 {
-    r->rc_adcs_sp_9_mag1_x_max = getMax_int16_t(rc.mag1xHandle);
-    r->rc_adcs_sp_9_mag1_x_avg = getAvg_int16_t(rc.mag1xHandle);
-    r->rc_adcs_sp_9_mag1_y_min = getMin_int16_t(rc.mag1yHandle);
-    r->rc_adcs_sp_9_mag1_y_max = getMax_int16_t(rc.mag1yHandle);
+    r->rc_adcs_sp_9_mag1_x_max = aggVec_i_max(&rc_mag1x);
+    aggVec_max_reset(&rc_mag1x);
+    r->rc_adcs_sp_9_mag1_x_avg = aggVec_i_avg_i(&rc_mag1x);
+    aggVec_as_reset(&rc_mag1x);
+    r->rc_adcs_sp_9_mag1_y_min = aggVec_i_min(&rc_mag1y);
+    r->rc_adcs_sp_9_mag1_y_max = aggVec_i_max(&rc_mag1y);
+    aggVec_mm_reset(&rc_mag1y);
 }
 
 void magioRcPopulate10(rc_adcs_sp_10 *r)
 {
-    r->rc_adcs_sp_10_mag1_y_avg = getAvg_int16_t(rc.mag1yHandle);
-    r->rc_adcs_sp_10_mag1_z_min = getMin_int16_t(rc.mag1zHandle);
-    r->rc_adcs_sp_10_mag1_z_max = getMax_int16_t(rc.mag1zHandle);
-    r->rc_adcs_sp_10_mag1_z_avg = getAvg_int16_t(rc.mag1zHandle);
+    r->rc_adcs_sp_10_mag1_y_avg = aggVec_i_avg_i(&rc_mag1y);
+    aggVec_as_reset(&rc_mag1y);
+    r->rc_adcs_sp_10_mag1_z_min = aggVec_i_min(&rc_mag1z);
+    r->rc_adcs_sp_10_mag1_z_max = aggVec_i_max(&rc_mag1z);
+    r->rc_adcs_sp_10_mag1_z_avg = aggVec_i_avg_i(&rc_mag1z);
+    aggVec_reset(&rc_mag1z);
 }
 
 void magioRcPopulate11(rc_adcs_sp_11 *r)
 {
-    r->rc_adcs_sp_11_mag2_x_min = getMin_int16_t(rc.mag2xHandle);
-    r->rc_adcs_sp_11_mag2_x_max = getMax_int16_t(rc.mag2xHandle);
-    r->rc_adcs_sp_11_mag2_x_avg = getAvg_int16_t(rc.mag2xHandle);
-    r->rc_adcs_sp_11_mag2_y_min = getMin_int16_t(rc.mag2yHandle);
+    r->rc_adcs_sp_11_mag2_x_min = aggVec_i_min(&rc_mag2x);
+    r->rc_adcs_sp_11_mag2_x_max = aggVec_i_max(&rc_mag2x);
+    r->rc_adcs_sp_11_mag2_x_avg = aggVec_i_avg_i(&rc_mag2x);
+    aggVec_reset(&rc_mag2x);
+    r->rc_adcs_sp_11_mag2_y_min = aggVec_i_min(&rc_mag2y);
+    aggVec_min_reset(&rc_mag2y);
 }
 
 void magioRcPopulate12(rc_adcs_sp_12 *r)
 {
-    r->rc_adcs_sp_12_mag2_y_max = getMax_int16_t(rc.mag2yHandle);
-    r->rc_adcs_sp_12_mag2_y_avg = getAvg_int16_t(rc.mag2yHandle);
-    r->rc_adcs_sp_12_mag2_z_min = getMin_int16_t(rc.mag2zHandle);
-    r->rc_adcs_sp_12_mag2_z_max = getMax_int16_t(rc.mag2zHandle);
+    r->rc_adcs_sp_12_mag2_y_max = aggVec_i_max(&rc_mag2y);
+    aggVec_max_reset(&rc_mag2y);
+    r->rc_adcs_sp_12_mag2_y_avg = aggVec_i_avg_i(&rc_mag2y);
+    aggVec_as_reset(&rc_mag2y);
+    r->rc_adcs_sp_12_mag2_z_min = aggVec_i_min(&rc_mag2z);
+    r->rc_adcs_sp_12_mag2_z_max = aggVec_i_max(&rc_mag2z);
+    aggVec_mm_reset(&rc_mag2z);
 }
 
 void magioRcPopulate13(rc_adcs_sp_13 *r)
 {
-    r->rc_adcs_sp_13_mag2_z_avg = getAvg_int16_t(rc.mag2zHandle);
+    r->rc_adcs_sp_13_mag2_z_avg = aggVec_i_avg_i(&rc_mag2z);
+    aggVec_as_reset(&rc_mag2z);
 }
 
 void magioRcPopulate14(rc_adcs_sp_14 *r)
 {
-    r->rc_adcs_sp_14_magp_valid = getSum_uint8_t(rc.magValidHandle);
+    r->rc_adcs_sp_14_magp_valid = aggVec_i_sum(&rc_magValid);
+    aggVec_reset(&rc_magValid);
 }
