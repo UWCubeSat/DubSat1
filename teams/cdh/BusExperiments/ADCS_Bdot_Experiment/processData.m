@@ -26,19 +26,25 @@ xMagDec_nT_conv = xMagDec_nT / MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR;
 yMagDec_nT_conv = yMagDec_nT / MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR;
 zMagDec_nT_conv = zMagDec_nT / MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR;
 
-% tic
-% dlmwrite(strcat(data_path, 'time.dat'), 'time');
-% saveData(xMagDec_nT_conv, 'xMag_to', data_path);
-% saveData(yMagDec_nT_conv, 'yMag_to', data_path);
-% saveData(zMagDec_nT_conv, 'zMag_to', data_path);
-% saveData(angular_velocity_x, 'angular_velocity_x_to', data_path);
-% saveData(angular_velocity_y, 'angular_velocity_y_to', data_path);
-% saveData(angular_velocity_z, 'angular_velocity_z_to', data_path);
-% saveData(env_xMag_nT, 'env_xMag_to', data_path);
-% saveData(env_xMag_nT, 'env_yMag_to', data_path);
-% saveData(env_xMag_nT, 'env_zMag_to', data_path);
+
+dlmwrite(strcat(data_path, 'xMag_nT_to.dat'), xMagDec_nT);
+dlmwrite(strcat(data_path, 'yMag_nT_to.dat'), yMagDec_nT);
+dlmwrite(strcat(data_path, 'zMag_nT_to.dat'), zMagDec_nT);
+
+dlmwrite(strcat(data_path, 'env_xMag_nT_to.dat'), env_xMag_nT);
+dlmwrite(strcat(data_path, 'env_yMag_nT_to.dat'), env_yMag_nT);
+dlmwrite(strcat(data_path, 'env_zMag_nT_to.dat'), env_zMag_nT);
+
+dlmwrite(strcat(data_path, 'angular_velocity_x_to.dat'), angular_velocity_x);
+dlmwrite(strcat(data_path, 'angular_velocity_y_to.dat'), angular_velocity_y);
+dlmwrite(strcat(data_path, 'angular_velocity_z_to.dat'), angular_velocity_z);
+
+
 dataLength = length(time)
 count = 0
+
+
+
 for i = 1:dataLength
     [xMagMsb(i), xMagLsb(i)] = dec2twos(xMagDec_nT_conv(i));
     [yMagMsb(i), yMagLsb(i)] = dec2twos(yMagDec_nT_conv(i));
@@ -77,7 +83,7 @@ env_yMag_lsb = uint8(env_yMag_lsb).';
 env_zMag_lsb = uint8(env_zMag_lsb).';
 
 
-
+tic
 dlmwrite(strcat(data_path, 'time.dat'), time);
 
 dlmwrite(strcat(data_path, 'xMagMsb_to.dat'), xMagMsb);
@@ -104,3 +110,17 @@ dlmwrite(strcat(data_path, 'env_xMag_lsb_to.dat'), env_xMag_lsb);
 dlmwrite(strcat(data_path, 'env_yMag_lsb_to.dat'), env_yMag_lsb);
 dlmwrite(strcat(data_path, 'env_zMag_lsb_to.dat'), env_zMag_lsb);
 toc
+
+
+
+% tic
+% dlmwrite(strcat(data_path, 'time.dat'), 'time');
+% saveData(xMagDec_nT_conv, 'xMag_to', data_path);
+% saveData(yMagDec_nT_conv, 'yMag_to', data_path);
+% saveData(zMagDec_nT_conv, 'zMag_to', data_path);
+% saveData(angular_velocity_x, 'angular_velocity_x_to', data_path);
+% saveData(angular_velocity_y, 'angular_velocity_y_to', data_path);
+% saveData(angular_velocity_z, 'angular_velocity_z_to', data_path);
+% saveData(env_xMag_nT, 'env_xMag_to', data_path);
+% saveData(env_xMag_nT, 'env_yMag_to', data_path);
+% saveData(env_xMag_nT, 'env_zMag_to', data_path);
