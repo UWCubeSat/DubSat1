@@ -8,11 +8,11 @@
 #include "core/debugtools.h"
 #include "core/timer.h"
 #include "core/agglib.h"
+#include "core/rollcall.h"
 #include "interfaces/canwrap.h"
 
 #include "adcs_sensorproc_ids.h"
 #include "sensorInterface.h"
-#include "rollcall.h"
 #include "sunsensor_io.h"
 #include "mag_io.h"
 #include "imu_io.h"
