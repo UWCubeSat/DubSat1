@@ -13,7 +13,7 @@ void aggVec_init(void* vector) {
 
 uint8_t aggVec_f_push(aggVec_f* vector, float val) {
 	// Check to make sure we have enough space
-	if (vector->avgSumCount == 65535 || vector->minMaxCount == 65535) return 1;
+	if (vector->avgSumCount == UINT16_MAX || vector->minMaxCount == UINT16_MAX) return 1;
 
 	// Update sum
 	vector->sum += val;
@@ -32,7 +32,7 @@ uint8_t aggVec_f_push(aggVec_f* vector, float val) {
 	return 0;
 }
 uint8_t aggVec_i_push(aggVec_i* vector, int32_t val) {
-	if (vector->avgSumCount == 65535 || vector->minMaxCount == 65535) return 1;
+	if (vector->avgSumCount == UINT16_MAX || vector->minMaxCount == UINT16_MAX) return 1;
 	vector->sum += val;
 	if (val < vector->min || vector->minMaxCount == 0) vector->min = val;
 	if (vector->max < val || vector->minMaxCount == 0) vector->max = val;
