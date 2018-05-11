@@ -254,6 +254,7 @@ void bdot_actuation()
     }
     if(checkTimer(actuation_timer)) // finished actuation phase
     {
+		bdot_interrupt_received = 0;
         curr_state = STABILIZE;
 		send_CAN_ack_packet();
         start_stabilize_timer();
@@ -446,8 +447,7 @@ void degauss_lol(void)
 
 int is_bdot_still_alive(void)
 {
-	if (bdot_interrupt_received){  
-		bdot_interrupt_received = 0; 
+	if (bdot_interrupt_received){   
 		return 1; 
 	} else {
 		return 0; 
