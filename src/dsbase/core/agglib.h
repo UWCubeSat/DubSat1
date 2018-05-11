@@ -36,7 +36,7 @@
  /**
   * Initialize a new vector struct.
   * Takes a pointer to a vector struct as an argument.
-  * Use AGGVEC_F or AGGVEC_I for a float vector or int vector respectively
+  * Allocate aggVec_f or aggVec_i and pass in it's pointer to initialize.
   */
  void aggVec_init(void* vector);
 
