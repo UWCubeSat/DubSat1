@@ -115,11 +115,14 @@ int32_t aggVec_i_sum(aggVec_i* vector) {
 }
 
 float aggVec_f_avg_f(aggVec_f* vector){
+	if (vector->avgSumCount == 0) return FLT_MAX;
 	return vector->sum / vector->avgSumCount;
 }
 float aggVec_i_avg_f(aggVec_i* vector){
+		if (vector->avgSumCount == 0) return FLT_MAX;
 		return (float) (vector->sum) / vector->avgSumCount;
 }
 int32_t aggVec_i_avg_i(aggVec_i* vector){
+		if (vector->avgSumCount == 0) return INT32_MAX;
 			return vector->sum / vector->avgSumCount;
 }
