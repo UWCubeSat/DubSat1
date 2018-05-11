@@ -8,7 +8,7 @@
 #include "core/debugtools.h"
 #include "core/timer.h"
 #include "core/agglib.h"
-#include "core/rollcall.h"
+#include "interfaces/rollcall.h"
 #include "interfaces/canwrap.h"
 
 #include "adcs_sensorproc_ids.h"
