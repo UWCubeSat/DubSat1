@@ -13,31 +13,34 @@ void aggVec_init(void* vector) {
 
 uint8_t aggVec_f_push(aggVec_f* vector, float val) {
 	// Check to make sure we have enough space
-	if (vector->avgSumCount == UINT16_MAX || vector->minMaxCount == UINT16_MAX) return 1;
+	if (vector->avgSumCount == UINT16_MAX || vector->minCount == UINT16_MAX) return 1;
 
 	// Update sum
 	vector->sum += val;
 
 	// Update min if val is less than the min, or if its the first val
-	if (val < vector->min || vector->minMaxCount == 0) vector->min = val;
+	if (val < vector->min || vector->minCount == 0) vector->min = val;
 
 	// Update max if the max is less than val, or if its the first val
-	if (vector->max < val || vector->minMaxCount == 0) vector->max = val;
+	if (vector->max < val || vector->minCount == 0) vector->max = val;
 
     // Increment the counts
     vector->avgSumCount++;
-    vector->minMaxCount++;
+    vector->minCount++;
+    vector->maxCount++;
+
 
 	// Return success:
 	return 0;
 }
 uint8_t aggVec_i_push(aggVec_i* vector, int32_t val) {
-	if (vector->avgSumCount == UINT16_MAX || vector->minMaxCount == UINT16_MAX) return 1;
+	if (vector->avgSumCount == UINT16_MAX || vector->minCount == UINT16_MAX) return 1;
 	vector->sum += val;
-	if (val < vector->min || vector->minMaxCount == 0) vector->min = val;
-	if (vector->max < val || vector->minMaxCount == 0) vector->max = val;
+	if (val < vector->min || vector->minCount == 0) vector->min = val;
+	if (vector->max < val || vector->minCount == 0) vector->max = val;
     vector->avgSumCount++;
-    vector->minMaxCount++;
+    vector->minCount++;
+    vector->maxCount++;
 	return 0;
 }
 
@@ -46,15 +49,25 @@ void aggVec_reset(void* vector) {
 	aggVec_as_reset(vector);
 }
 
-void aggVec_mm_reset(void* vector) {
-    aggVec_i *vec = (aggVec_i *) vector;
+void aggVec_min_reset(void* vector) {
+  aggVec_i *vec = (aggVec_i *) vector;
 	vec->min = 0;
+	vec->minCount = 0;
+}
+
+void aggVec_max_reset(void* vector) {
+  aggVec_i *vec = (aggVec_i *) vector;
 	vec->max = 0;
-	vec->minMaxCount = 0;
+	vec->maxCount = 0;
+}
+
+void aggVec_mm_reset(void* vector) {
+  aggVec_min_reset(vector);
+  aggVec_max_reset(vector);
 }
 
 void aggVec_as_reset(void* vector) {
-    aggVec_i *vec = (aggVec_i *) vector;
+  aggVec_i *vec = (aggVec_i *) vector;
 	vec->sum = 0;
 	vec->avgSumCount = 0;
 }
@@ -73,11 +86,18 @@ int32_t aggVec_i_max(aggVec_i* vector) {
 	return vector->max;
 }
 
-float aggVec_f_mm_count(aggVec_f* vector) {
-	return vector->minMaxCount;
+float aggVec_f_min_count(aggVec_f* vector) {
+	return vector->minCount;
 }
-int32_t aggVec_i_mm_count(aggVec_i* vector) {
-	return vector->minMaxCount;
+int32_t aggVec_i_min_count(aggVec_i* vector) {
+	return vector->minCount;
+}
+
+float aggVec_f_max_count(aggVec_f* vector) {
+	return vector->maxCount;
+}
+int32_t aggVec_i_max_count(aggVec_i* vector) {
+	return vector->maxCount;
 }
 
 float aggVec_f_as_count(aggVec_f* vector) {

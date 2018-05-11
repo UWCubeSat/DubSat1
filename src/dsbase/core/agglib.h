@@ -22,7 +22,8 @@
  	float max;
  	float sum;
  	uint16_t avgSumCount;
- 	uint16_t minMaxCount;
+ 	uint16_t minCount;
+ 	uint16_t maxCount;
  } aggVec_f;
 
  typedef struct {
@@ -30,7 +31,8 @@
  	int32_t max;
  	int32_t sum;
  	uint16_t avgSumCount;
- 	uint16_t minMaxCount;
+ 	uint16_t minCount;
+ 	uint16_t maxCount;
  } aggVec_i;
 
  /**
@@ -53,6 +55,18 @@
   * Takes in a pointer the vector as an argument.
   */
  void aggVec_reset(void* vector);
+
+  /**
+  * Reset min aggregates.
+  * Takes in a pointer to the vector as an argument.
+  */
+ void aggVec_min_reset(void* vector);
+
+ /**
+  * Reset max aggregates.
+  * Takes in a pointer to the vector as an argument.
+  */
+ void aggVec_max_reset(void* vector);
 
  /**
   * Reset min and max aggregates.
@@ -81,10 +95,16 @@
  int32_t aggVec_i_max(aggVec_i* vector);
 
  /**
-  * Get the count of pushes since last min/max reset.
+  * Get the count of pushes since last min reset.
   */
- float aggVec_f_mm_count(aggVec_f* vector);
- int32_t aggVec_i_mm_count(aggVec_i* vector);
+ float aggVec_f_min_count(aggVec_f* vector);
+ int32_t aggVec_i_min_count(aggVec_i* vector);
+
+  /**
+  * Get the count of pushes since last max reset.
+  */
+ float aggVec_f_max_count(aggVec_f* vector);
+ int32_t aggVec_i_max_count(aggVec_i* vector);
 
  /**
   * Get the count of pushes since last avg/sum reset.
