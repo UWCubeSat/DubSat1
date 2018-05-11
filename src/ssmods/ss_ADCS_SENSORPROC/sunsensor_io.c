@@ -76,8 +76,8 @@ void sunsensorioUpdate()
         // only update if the angle is valid
         rtU.sun_vec_body_sunsensor[0] = angle->alpha;
         rtU.sun_vec_body_sunsensor[1] = angle->beta;
-        rtU.sun_vec_body_sunsensor[2] = valid;
     }
+    rtU.sun_vec_body_sunsensor[2] = valid;
 
     // update rollcall arrays
     aggVec_i_push(&rc_suna, rawToShort(angle->alpha));
