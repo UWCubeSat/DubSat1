@@ -102,6 +102,56 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ rc_eps_dist_ppt_v_max : 0|16@1+ (1,0) [0|65535] "mV" Vector__XXX
  SG_ rc_eps_dist_ppt_v_avg : 0|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 
+BO_ 2452161086 rc_adcs_mpc_11: 8 Vector__XXX
+ SG_ rc_adcs_mpc_11_omega_y_avg : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+
+BO_ 2452161082 rc_adcs_mpc_7: 8 Vector__XXX
+ SG_ rc_adcs_mpc_7_omega_x_max : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+
+BO_ 2452161083 rc_adcs_mpc_8: 8 Vector__XXX
+ SG_ rc_adcs_mpc_8_omega_x_avg : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+
+BO_ 2452161084 rc_adcs_mpc_9: 8 Vector__XXX
+ SG_ rc_adcs_mpc_9_omega_y_min : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+
+BO_ 2452161080 rc_adcs_mpc_5: 8 Vector__XXX
+ SG_ rc_adcs_mpc_5_sc_quat_4 : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+
+BO_ 2452161081 rc_adcs_mpc_6: 8 Vector__XXX
+ SG_ rc_adcs_mpc_6_omega_x_min : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+
+BO_ 2452161079 rc_adcs_mpc_4: 8 Vector__XXX
+ SG_ rc_adcs_mpc_4_sc_quat_3 : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+
+BO_ 2452161078 rc_adcs_mpc_3: 8 Vector__XXX
+ SG_ rc_adcs_mpc_3_sc_quat_2 : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+
+BO_ 2452161090 rc_adcs_mpc_15: 2 Vector__XXX
+ SG_ rc_adcs_mpc_15_sc_mode : 0|8@1+ (1,0) [0|32] "" Vector__XXX
+ SG_ rc_adcs_mpc_15_point_true : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2452161087 rc_adcs_mpc_12: 8 Vector__XXX
+ SG_ rc_adcs_mpc_12_omega_z_min : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+
+BO_ 2452161088 rc_adcs_mpc_13: 8 Vector__XXX
+ SG_ rc_adcs_mpc_13_omega_z_max : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+
+BO_ 2452161089 rc_adcs_mpc_14: 8 Vector__XXX
+ SG_ rc_adcs_mpc_14_omega_z_avg : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+
+BO_ 2452161085 rc_adcs_mpc_10: 8 Vector__XXX
+ SG_ rc_adcs_mpc_10_omega_y_max : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+
+BO_ 2452161077 rc_adcs_mpc_2: 8 Vector__XXX
+ SG_ rc_adcs_mpc_2_sc_quat_1 : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+
+BO_ 2452161076 rc_adcs_mpc_1: 8 Vector__XXX
+ SG_ rc_adcs_mpc_1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_mpc_1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_mpc_1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_mpc_1_sysrstiv : 48|8@1+ (1,0) [0|256] "" Vector__XXX
+ SG_ rc_adcs_mpc_1_reset_count : 56|8@1+ (1,0) [0|256] "" Vector__XXX
+
 BO_ 2452161075 rc_adcs_estim_8: 7 Vector__XXX
  SG_ rc_adcs_estim_8_sgp4_flag : 40|8@1- (1,0) [-1|1] "" Vector__XXX
  SG_ rc_adcs_estim_8_sc_in_sun : 48|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -675,6 +725,19 @@ VAL_ 2183266498 eps_batt_state_bal 1 "true" 0 "false" ;
 VAL_ 2183266498 eps_batt_state_heat 1 "true" 0 "false" ;
 VAL_ 2483355713 sensorproc_sun_valid 1 "true" 0 "false" ;
 VAL_ 2181496864 bdot_tumble_status_status 1 "true" 0 "false" ;
+SIG_VALTYPE_ 2452161086 rc_adcs_mpc_11_omega_y_avg : 2;
+SIG_VALTYPE_ 2452161082 rc_adcs_mpc_7_omega_x_max : 2;
+SIG_VALTYPE_ 2452161083 rc_adcs_mpc_8_omega_x_avg : 2;
+SIG_VALTYPE_ 2452161084 rc_adcs_mpc_9_omega_y_min : 2;
+SIG_VALTYPE_ 2452161080 rc_adcs_mpc_5_sc_quat_4 : 2;
+SIG_VALTYPE_ 2452161081 rc_adcs_mpc_6_omega_x_min : 2;
+SIG_VALTYPE_ 2452161079 rc_adcs_mpc_4_sc_quat_3 : 2;
+SIG_VALTYPE_ 2452161078 rc_adcs_mpc_3_sc_quat_2 : 2;
+SIG_VALTYPE_ 2452161087 rc_adcs_mpc_12_omega_z_min : 2;
+SIG_VALTYPE_ 2452161088 rc_adcs_mpc_13_omega_z_max : 2;
+SIG_VALTYPE_ 2452161089 rc_adcs_mpc_14_omega_z_avg : 2;
+SIG_VALTYPE_ 2452161085 rc_adcs_mpc_10_omega_y_max : 2;
+SIG_VALTYPE_ 2452161077 rc_adcs_mpc_2_sc_quat_1 : 2;
 SIG_VALTYPE_ 2452161074 rc_adcs_estim_7_vel_z : 2;
 SIG_VALTYPE_ 2452161073 rc_adcs_estim_6_vel_y : 2;
 SIG_VALTYPE_ 2452161072 rc_adcs_estim_5_vel_x : 2;
