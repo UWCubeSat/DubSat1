@@ -5,7 +5,184 @@
 [PROTOCOL] CAN
 
 [BUSMASTER_VERSION] [1.7.2]
-[NUMBER_OF_MESSAGES] 76
+[NUMBER_OF_MESSAGES] 94
+[START_MSG] VECTOR__INDEPENDENT_SIG_MSG,1073741824,0,55,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_met,32,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_met_overflow,8,1,0,U,4294967295.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_batt_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_batt_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_batt_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_uv_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com1_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com1_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com1_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com1_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com1_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com1_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com1_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com2_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com2_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com2_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com2_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com2_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com2_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_com2_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_rahs_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_rahs_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_rahs_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_rahs_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_rahs_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_rahs_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_rahs_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_bdot_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_bdot_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_bdot_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_bdot_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_bdot_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_bdot_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_bdot_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_estim_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_estim_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_estim_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_estim_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_estim_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_estim_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_estim_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_eps_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_eps_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_eps_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_eps_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_eps_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_eps_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_eps_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_ppt_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_ppt_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_ppt_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_ppt_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_ppt_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_ppt_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_ppt_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_12,304677414,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_12_mag2_z_min,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_12_mag2_z_max,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_12_mag2_y_max,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_12_mag2_y_avg,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_11,304677413,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_11_mag2_x_avg,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_11_mag2_x_max,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_11_mag2_x_min,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_11_mag2_y_min,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_7,304677409,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_7_magp_y_min,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_7_magp_y_max,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_7_magp_y_avg,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_7_magp_x_avg,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_6,304677408,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_6_sun_z_max,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,1/32768 units,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_6_sun_z_avg,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,1/32768 units,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_6_magp_x_min,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_6_magp_x_max,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_17,304677419,8,2,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_17_imu_z_max,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_17_imu_z_avg,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_16,304677418,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_16_imu_z_min,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_16_imu_y_min,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_16_imu_y_max,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_16_imu_y_avg,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_10,304677412,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_10_mag1_z_min,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_10_mag1_z_max,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_10_mag1_z_avg,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_10_mag1_y_avg,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_8,304677410,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_8_magp_z_min,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_8_magp_z_max,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_8_magp_z_avg,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_8_mag1_x_min,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_9,304677411,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_9_mag1_y_min,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_9_mag1_y_max,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_9_mag1_x_max,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_9_mag1_x_avg,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_13,304677415,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_13_suna_min,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,60/32767 degrees,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_13_suna_max,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,60/32767 degrees,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_13_suna_avg,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,60/32767 degrees,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_13_mag2_z_avg,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nanoTeslas,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_15,304677417,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_15_imu_x_min,16,2,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_15_imu_x_max,16,4,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_15_imu_x_avg,16,6,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_15_imu_valid,8,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_14,304677416,8,5,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_14_sunb_min,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,60/32767 degrees,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_14_sunb_max,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,60/32767 degrees,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_14_sunb_avg,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,60/32767 degrees,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_14_sun_valid,8,8,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_14_magp_valid,8,7,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_5,304677407,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_5_sun_z_min,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,1/32768 units,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_5_sun_y_min,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,1/32768 units,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_5_sun_y_max,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,1/32768 units,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_5_sun_y_avg,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,1/32768 units,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_4,304677406,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_4_sun_x_min,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,1/32768 units,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_4_sun_x_max,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,1/32768 units,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_4_sun_x_avg,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,1/32768 units,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_4_imup_z_avg,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_3,304677405,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_3_imup_z_min,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_3_imup_z_max,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_3_imup_y_max,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_3_imup_y_avg,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_2,304677404,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_2_imup_y_min,16,7,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_2_imup_x_min,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_2_imup_x_max,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_2_imup_x_avg,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,0.004375 deg/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_1,304677403,8,5,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_1_temp_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_1_temp_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_1_temp_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_1_sysrstiv,8,7,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_sp_1_reset_count,8,8,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
 [START_MSG] rc_adcs_bdot_4,304677402,3,2,1,X,Vector__XXX
 [START_SIGNALS] rc_adcs_bdot_4_mag_z_avg,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nT,,Vector__XXX
 [START_SIGNALS] rc_adcs_bdot_4_tumble,1,3,0,U,1.0,0.0,1,0.0,1.0,,,Vector__XXX
@@ -27,7 +204,8 @@
 [START_SIGNALS] rc_adcs_bdot_2_mag_x_max,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,1/73 nT,,Vector__XXX
 [END_MSG]
 
-[START_MSG] rc_adcs_bdot_1,304677382,7,4,1,X,Vector__XXX
+[START_MSG] rc_adcs_bdot_1,304677382,8,5,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_bdot_1_reset_count,8,8,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] rc_adcs_bdot_1_temp_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
 [START_SIGNALS] rc_adcs_bdot_1_temp_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
 [START_SIGNALS] rc_adcs_bdot_1_temp_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
@@ -68,44 +246,45 @@
 [END_MSG]
 
 [START_MSG] rc_adcs_mtq_5,304677391,2,2,1,X,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_5_reset_counts,8,2,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_5_fsw_ignore,8,1,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_5_reset_counts,8,2,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_5_fsw_ignore,8,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
 [START_MSG] rc_adcs_mtq_4,304677390,8,8,1,X,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_4_fsw_z_min,8,2,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_4_fsw_y_max,8,1,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_4_duty_z2_avg,8,8,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_4_duty_z1_avg,8,7,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_4_duty_y2_avg,8,6,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_4_duty_y1_avg,8,5,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_4_duty_x2_avg,8,4,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_4_duty_x1_avg,8,3,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_4_fsw_z_min,8,2,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_4_fsw_y_max,8,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_4_duty_z2_avg,8,8,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_4_duty_z1_avg,8,7,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_4_duty_y2_avg,8,6,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_4_duty_y1_avg,8,5,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_4_duty_x2_avg,8,4,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_4_duty_x1_avg,8,3,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
 [START_MSG] rc_adcs_mtq_3,304677389,8,8,1,X,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_3_fsw_z_avg,8,8,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_3_fsw_y_min,8,7,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_3_fsw_y_max,8,6,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_3_fsw_y_avg,8,5,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_3_fsw_x_min,8,4,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_3_fsw_x_max,8,3,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_3_fsw_x_avg,8,2,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_3_bdot_z_min,8,1,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_3_fsw_z_avg,8,8,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_3_fsw_y_min,8,7,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_3_fsw_y_max,8,6,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_3_fsw_y_avg,8,5,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_3_fsw_x_min,8,4,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_3_fsw_x_max,8,3,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_3_fsw_x_avg,8,2,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_3_bdot_z_min,8,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
 [START_MSG] rc_adcs_mtq_2,304677388,8,8,1,X,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_2_bdot_z_max,8,8,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_2_bdot_z_avg,8,7,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_2_bdot_y_min,8,6,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_2_bdot_y_max,8,5,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_2_bdot_y_avg,8,4,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_2_bdot_x_min,8,3,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_2_bdot_x_max,8,2,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_adcs_mtq_2_bdot_x_avg,8,1,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_2_bdot_z_max,8,8,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_2_bdot_z_avg,8,7,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_2_bdot_y_min,8,6,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_2_bdot_y_max,8,5,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_2_bdot_y_avg,8,4,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_2_bdot_x_min,8,3,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_2_bdot_x_max,8,2,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_2_bdot_x_avg,8,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
-[START_MSG] rc_adcs_mtq_1,304677387,7,4,1,X,Vector__XXX
+[START_MSG] rc_adcs_mtq_1,304677387,8,5,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mtq_1_reset_count,8,8,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] rc_adcs_mtq_1_temp_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
 [START_SIGNALS] rc_adcs_mtq_1_temp_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
 [START_SIGNALS] rc_adcs_mtq_1_temp_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
@@ -113,19 +292,20 @@
 [END_MSG]
 
 [START_MSG] rc_ppt_3,304677386,6,3,1,X,Vector__XXX
-[START_SIGNALS] rc_ppt_3_ign_chg_min,16,1,0,U,0.0,0.0,1,0.0,1.0,2^-15 seconds,,Vector__XXX
-[START_SIGNALS] rc_ppt_3_ign_chg_max,16,3,0,U,0.0,0.0,1,0.0,1.0,2^-15 seconds,,Vector__XXX
-[START_SIGNALS] rc_ppt_3_ign_chg_avg,16,5,0,U,0.0,0.0,1,0.0,1.0,2^-15 seconds,,Vector__XXX
+[START_SIGNALS] rc_ppt_3_ign_chg_min,16,1,0,U,32767.0,-32768.0,1,0.0,1.0,2^-15 seconds,,Vector__XXX
+[START_SIGNALS] rc_ppt_3_ign_chg_max,16,3,0,U,32767.0,-32768.0,1,0.0,1.0,2^-15 seconds,,Vector__XXX
+[START_SIGNALS] rc_ppt_3_ign_chg_avg,16,5,0,U,32767.0,-32768.0,1,0.0,1.0,2^-15 seconds,,Vector__XXX
 [END_MSG]
 
 [START_MSG] rc_ppt_2,304677385,8,4,1,X,Vector__XXX
-[START_SIGNALS] rc_ppt_2_total_fire_count,16,7,0,U,0.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_ppt_2_main_chg_min,16,1,0,U,0.0,0.0,1,0.0,1.0,2^-15 seconds,,Vector__XXX
-[START_SIGNALS] rc_ppt_2_main_chg_max,16,3,0,U,0.0,0.0,1,0.0,1.0,2^-15 seconds,,Vector__XXX
-[START_SIGNALS] rc_ppt_2_main_chg_avg,16,5,0,U,0.0,0.0,1,0.0,1.0,2^-15 seconds,,Vector__XXX
+[START_SIGNALS] rc_ppt_2_total_fire_count,16,7,0,U,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_ppt_2_main_chg_min,16,1,0,U,32767.0,-32768.0,1,0.0,1.0,2^-15 seconds,,Vector__XXX
+[START_SIGNALS] rc_ppt_2_main_chg_max,16,3,0,U,32767.0,-32768.0,1,0.0,1.0,2^-15 seconds,,Vector__XXX
+[START_SIGNALS] rc_ppt_2_main_chg_avg,16,5,0,U,32767.0,-32768.0,1,0.0,1.0,2^-15 seconds,,Vector__XXX
 [END_MSG]
 
-[START_MSG] rc_ppt_1,304677384,7,4,1,X,Vector__XXX
+[START_MSG] rc_ppt_1,304677384,8,5,1,X,Vector__XXX
+[START_SIGNALS] rc_ppt_1_reset_count,8,8,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] rc_ppt_1_temp_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
 [START_SIGNALS] rc_ppt_1_temp_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
 [START_SIGNALS] rc_ppt_1_temp_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
@@ -192,7 +372,8 @@
 [START_SIGNALS] rc_eps_gen_2_pnl_1_voltage_avg,16,5,0,U,20000.0,0.0,1,0.0,1.0,mV,,Vector__XXX
 [END_MSG]
 
-[START_MSG] rc_eps_gen_1,304677392,7,4,1,X,Vector__XXX
+[START_MSG] rc_eps_gen_1,304677392,8,5,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_gen_1_reset_count,8,8,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] rc_eps_gen_1_temp_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
 [START_SIGNALS] rc_eps_gen_1_temp_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
 [START_SIGNALS] rc_eps_gen_1_temp_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
@@ -203,7 +384,7 @@
 [START_SIGNALS] rc_eps_batt_6_soc_min,8,1,0,U,255.0,0.0,1,0.0,1.0,pct,,Vector__XXX
 [START_SIGNALS] rc_eps_batt_6_soc_max,8,2,0,U,255.0,0.0,1,0.0,1.0,pct,,Vector__XXX
 [START_SIGNALS] rc_eps_batt_6_soc_avg,8,3,0,U,255.0,0.0,1,0.0,1.0,pct,,Vector__XXX
-[START_SIGNALS] rc_eps_batt_6_last_charge,40,4,0,U,1099511627775.0,0.0,1,0.0,1.0,2^-8 seconds,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_6_last_charge,40,4,0,U,1.09951162778e+12,0.0,1,0.0,1.0,2^-8 seconds,,Vector__XXX
 [END_MSG]
 
 [START_MSG] rc_eps_batt_5,304677380,8,5,1,X,Vector__XXX
@@ -239,7 +420,8 @@
 [START_SIGNALS] rc_eps_batt_2_node_v_avg,16,5,0,U,10000.0,0.0,1,0.0,1.0,mV,,Vector__XXX
 [END_MSG]
 
-[START_MSG] rc_eps_batt_1,304677376,7,4,1,X,eps_batt
+[START_MSG] rc_eps_batt_1,304677376,8,5,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_1_reset_count,8,8,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] rc_eps_batt_1_temp_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
 [START_SIGNALS] rc_eps_batt_1_temp_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
 [START_SIGNALS] rc_eps_batt_1_temp_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
@@ -563,7 +745,7 @@
 [END_MSG]
 
 [START_MSG] bdot_tumble_status,34013216,1,1,1,X,adcs_bdot
-[START_SIGNALS] bdot_tumble_status_status,1,1,0,U,0.0,0.0,1,0.0,1.0,bool,,Vector__XXX
+[START_SIGNALS] bdot_tumble_status_status,1,1,0,U,1.0,0.0,1,0.0,1.0,bool,,Vector__XXX
 [VALUE_DESCRIPTION] "false",0
 [VALUE_DESCRIPTION] "true",1
 [END_MSG]
@@ -587,6 +769,7 @@
 [START_DESC]
 
 [START_DESC_MSG]
+1073741824 S "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 [END_DESC_MSG]
 [START_DESC_NODE]
 [END_DESC_NODE]

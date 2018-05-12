@@ -66,6 +66,29 @@
 #define CAN_ID_RC_ADCS_ESTIM_2 304677421
 #define CAN_ID_RC_ADCS_ESTIM_3 304677422
 #define CAN_ID_RC_ADCS_ESTIM_1 304677420
+#define CAN_ID_RC_ADCS_MPC_11 304677438
+#define CAN_ID_RC_ADCS_MPC_7 304677434
+#define CAN_ID_RC_ADCS_MPC_8 304677435
+#define CAN_ID_RC_ADCS_MPC_9 304677436
+#define CAN_ID_RC_ADCS_MPC_5 304677432
+#define CAN_ID_RC_ADCS_MPC_6 304677433
+#define CAN_ID_RC_ADCS_MPC_4 304677431
+#define CAN_ID_RC_ADCS_MPC_3 304677430
+#define CAN_ID_RC_ADCS_MPC_15 304677442
+#define CAN_ID_RC_ADCS_MPC_12 304677439
+#define CAN_ID_RC_ADCS_MPC_13 304677440
+#define CAN_ID_RC_ADCS_MPC_14 304677441
+#define CAN_ID_RC_ADCS_MPC_10 304677437
+#define CAN_ID_RC_ADCS_MPC_2 304677429
+#define CAN_ID_RC_ADCS_MPC_1 304677428
+#define CAN_ID_RC_ADCS_ESTIM_8 304677427
+#define CAN_ID_RC_ADCS_ESTIM_7 304677426
+#define CAN_ID_RC_ADCS_ESTIM_6 304677425
+#define CAN_ID_RC_ADCS_ESTIM_5 304677424
+#define CAN_ID_RC_ADCS_ESTIM_4 304677423
+#define CAN_ID_RC_ADCS_ESTIM_2 304677421
+#define CAN_ID_RC_ADCS_ESTIM_3 304677422
+#define CAN_ID_RC_ADCS_ESTIM_1 304677420
 #define CAN_ID_RC_ADCS_SP_12 304677414
 #define CAN_ID_RC_ADCS_SP_11 304677413
 #define CAN_ID_RC_ADCS_SP_7 304677409
@@ -342,6 +365,111 @@ typedef struct rc_eps_dist_1 {
     uint16_t rc_eps_dist_1_sysrstiv; //  (No Units)
     uint16_t rc_eps_dist_1_reset_count; //  (No Units)
 } rc_eps_dist_1;
+
+typedef struct rc_adcs_mpc_11 {
+    double rc_adcs_mpc_11_omega_y_avg; // r/s
+} rc_adcs_mpc_11;
+
+typedef struct rc_adcs_mpc_7 {
+    double rc_adcs_mpc_7_omega_x_max; // r/s
+} rc_adcs_mpc_7;
+
+typedef struct rc_adcs_mpc_8 {
+    double rc_adcs_mpc_8_omega_x_avg; // r/s
+} rc_adcs_mpc_8;
+
+typedef struct rc_adcs_mpc_9 {
+    double rc_adcs_mpc_9_omega_y_min; // r/s
+} rc_adcs_mpc_9;
+
+typedef struct rc_adcs_mpc_5 {
+    double rc_adcs_mpc_5_sc_quat_4; //  (No Units)
+} rc_adcs_mpc_5;
+
+typedef struct rc_adcs_mpc_6 {
+    double rc_adcs_mpc_6_omega_x_min; // r/s
+} rc_adcs_mpc_6;
+
+typedef struct rc_adcs_mpc_4 {
+    double rc_adcs_mpc_4_sc_quat_3; //  (No Units)
+} rc_adcs_mpc_4;
+
+typedef struct rc_adcs_mpc_3 {
+    double rc_adcs_mpc_3_sc_quat_2; //  (No Units)
+} rc_adcs_mpc_3;
+
+typedef struct rc_adcs_mpc_15 {
+    uint8_t rc_adcs_mpc_15_sc_mode; //  (No Units)
+    uint8_t rc_adcs_mpc_15_point_true; //  (No Units)
+} rc_adcs_mpc_15;
+
+typedef struct rc_adcs_mpc_12 {
+    double rc_adcs_mpc_12_omega_z_min; // r/s
+} rc_adcs_mpc_12;
+
+typedef struct rc_adcs_mpc_13 {
+    double rc_adcs_mpc_13_omega_z_max; // r/s
+} rc_adcs_mpc_13;
+
+typedef struct rc_adcs_mpc_14 {
+    double rc_adcs_mpc_14_omega_z_avg; // r/s
+} rc_adcs_mpc_14;
+
+typedef struct rc_adcs_mpc_10 {
+    double rc_adcs_mpc_10_omega_y_max; // r/s
+} rc_adcs_mpc_10;
+
+typedef struct rc_adcs_mpc_2 {
+    double rc_adcs_mpc_2_sc_quat_1; //  (No Units)
+} rc_adcs_mpc_2;
+
+typedef struct rc_adcs_mpc_1 {
+    uint16_t rc_adcs_mpc_1_temp_min; // dK
+    uint16_t rc_adcs_mpc_1_temp_max; // dK
+    uint16_t rc_adcs_mpc_1_temp_avg; // dK
+    uint16_t rc_adcs_mpc_1_sysrstiv; //  (No Units)
+    uint16_t rc_adcs_mpc_1_reset_count; //  (No Units)
+} rc_adcs_mpc_1;
+
+typedef struct rc_adcs_estim_8 {
+    int8_t rc_adcs_estim_8_sgp4_flag; //  (No Units)
+    uint8_t rc_adcs_estim_8_sc_in_sun; //  (No Units)
+    uint8_t rc_adcs_estim_8_sc_above_gs; //  (No Units)
+    uint16_t rc_adcs_estim_8_epoch_overflow; // s^-8 since J2000 
+    uint32_t rc_adcs_estim_8_epoch; // s^-8 since J2000 
+} rc_adcs_estim_8;
+
+typedef struct rc_adcs_estim_7 {
+    double rc_adcs_estim_7_vel_z; // m/s
+} rc_adcs_estim_7;
+
+typedef struct rc_adcs_estim_6 {
+    double rc_adcs_estim_6_vel_y; // m/s
+} rc_adcs_estim_6;
+
+typedef struct rc_adcs_estim_5 {
+    double rc_adcs_estim_5_vel_x; // m/s
+} rc_adcs_estim_5;
+
+typedef struct rc_adcs_estim_4 {
+    double rc_adcs_estim_4_pos_z; // m
+} rc_adcs_estim_4;
+
+typedef struct rc_adcs_estim_2 {
+    double rc_adcs_estim_2_pos_x; // m
+} rc_adcs_estim_2;
+
+typedef struct rc_adcs_estim_3 {
+    double rc_adcs_estim_3_pos_y; // m
+} rc_adcs_estim_3;
+
+typedef struct rc_adcs_estim_1 {
+    uint16_t rc_adcs_estim_1_temp_min; // dK
+    uint16_t rc_adcs_estim_1_temp_max; // dK
+    uint16_t rc_adcs_estim_1_temp_avg; // dK
+    uint16_t rc_adcs_estim_1_sysrstiv; //  (No Units)
+    uint16_t rc_adcs_estim_1_reset_count; //  (No Units)
+} rc_adcs_estim_1;
 
 typedef struct rc_adcs_mpc_11 {
     double rc_adcs_mpc_11_omega_y_avg; // r/s
@@ -1087,6 +1215,75 @@ void decoderc_eps_dist_4(CANPacket *input, rc_eps_dist_4 *output);
 
 void encoderc_eps_dist_1(rc_eps_dist_1 *input, CANPacket* output);
 void decoderc_eps_dist_1(CANPacket *input, rc_eps_dist_1 *output);
+
+void encoderc_adcs_mpc_11(rc_adcs_mpc_11 *input, CANPacket* output);
+void decoderc_adcs_mpc_11(CANPacket *input, rc_adcs_mpc_11 *output);
+
+void encoderc_adcs_mpc_7(rc_adcs_mpc_7 *input, CANPacket* output);
+void decoderc_adcs_mpc_7(CANPacket *input, rc_adcs_mpc_7 *output);
+
+void encoderc_adcs_mpc_8(rc_adcs_mpc_8 *input, CANPacket* output);
+void decoderc_adcs_mpc_8(CANPacket *input, rc_adcs_mpc_8 *output);
+
+void encoderc_adcs_mpc_9(rc_adcs_mpc_9 *input, CANPacket* output);
+void decoderc_adcs_mpc_9(CANPacket *input, rc_adcs_mpc_9 *output);
+
+void encoderc_adcs_mpc_5(rc_adcs_mpc_5 *input, CANPacket* output);
+void decoderc_adcs_mpc_5(CANPacket *input, rc_adcs_mpc_5 *output);
+
+void encoderc_adcs_mpc_6(rc_adcs_mpc_6 *input, CANPacket* output);
+void decoderc_adcs_mpc_6(CANPacket *input, rc_adcs_mpc_6 *output);
+
+void encoderc_adcs_mpc_4(rc_adcs_mpc_4 *input, CANPacket* output);
+void decoderc_adcs_mpc_4(CANPacket *input, rc_adcs_mpc_4 *output);
+
+void encoderc_adcs_mpc_3(rc_adcs_mpc_3 *input, CANPacket* output);
+void decoderc_adcs_mpc_3(CANPacket *input, rc_adcs_mpc_3 *output);
+
+void encoderc_adcs_mpc_15(rc_adcs_mpc_15 *input, CANPacket* output);
+void decoderc_adcs_mpc_15(CANPacket *input, rc_adcs_mpc_15 *output);
+
+void encoderc_adcs_mpc_12(rc_adcs_mpc_12 *input, CANPacket* output);
+void decoderc_adcs_mpc_12(CANPacket *input, rc_adcs_mpc_12 *output);
+
+void encoderc_adcs_mpc_13(rc_adcs_mpc_13 *input, CANPacket* output);
+void decoderc_adcs_mpc_13(CANPacket *input, rc_adcs_mpc_13 *output);
+
+void encoderc_adcs_mpc_14(rc_adcs_mpc_14 *input, CANPacket* output);
+void decoderc_adcs_mpc_14(CANPacket *input, rc_adcs_mpc_14 *output);
+
+void encoderc_adcs_mpc_10(rc_adcs_mpc_10 *input, CANPacket* output);
+void decoderc_adcs_mpc_10(CANPacket *input, rc_adcs_mpc_10 *output);
+
+void encoderc_adcs_mpc_2(rc_adcs_mpc_2 *input, CANPacket* output);
+void decoderc_adcs_mpc_2(CANPacket *input, rc_adcs_mpc_2 *output);
+
+void encoderc_adcs_mpc_1(rc_adcs_mpc_1 *input, CANPacket* output);
+void decoderc_adcs_mpc_1(CANPacket *input, rc_adcs_mpc_1 *output);
+
+void encoderc_adcs_estim_8(rc_adcs_estim_8 *input, CANPacket* output);
+void decoderc_adcs_estim_8(CANPacket *input, rc_adcs_estim_8 *output);
+
+void encoderc_adcs_estim_7(rc_adcs_estim_7 *input, CANPacket* output);
+void decoderc_adcs_estim_7(CANPacket *input, rc_adcs_estim_7 *output);
+
+void encoderc_adcs_estim_6(rc_adcs_estim_6 *input, CANPacket* output);
+void decoderc_adcs_estim_6(CANPacket *input, rc_adcs_estim_6 *output);
+
+void encoderc_adcs_estim_5(rc_adcs_estim_5 *input, CANPacket* output);
+void decoderc_adcs_estim_5(CANPacket *input, rc_adcs_estim_5 *output);
+
+void encoderc_adcs_estim_4(rc_adcs_estim_4 *input, CANPacket* output);
+void decoderc_adcs_estim_4(CANPacket *input, rc_adcs_estim_4 *output);
+
+void encoderc_adcs_estim_2(rc_adcs_estim_2 *input, CANPacket* output);
+void decoderc_adcs_estim_2(CANPacket *input, rc_adcs_estim_2 *output);
+
+void encoderc_adcs_estim_3(rc_adcs_estim_3 *input, CANPacket* output);
+void decoderc_adcs_estim_3(CANPacket *input, rc_adcs_estim_3 *output);
+
+void encoderc_adcs_estim_1(rc_adcs_estim_1 *input, CANPacket* output);
+void decoderc_adcs_estim_1(CANPacket *input, rc_adcs_estim_1 *output);
 
 void encoderc_adcs_mpc_11(rc_adcs_mpc_11 *input, CANPacket* output);
 void decoderc_adcs_mpc_11(CANPacket *input, rc_adcs_mpc_11 *output);

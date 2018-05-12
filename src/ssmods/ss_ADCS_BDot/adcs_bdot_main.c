@@ -222,9 +222,9 @@ void sendHealthSegment()
 
 void sendMagReadingSegment()
 {
-    myTelemMagnetometer.xMag = magData->convertedX * 10e9;
-    myTelemMagnetometer.yMag = magData->convertedY * 10e9;
-    myTelemMagnetometer.zMag = magData->convertedZ * 10e9;
+    myTelemMagnetometer.xMag = magData->convertedX * 1e9;
+    myTelemMagnetometer.yMag = magData->convertedY * 1e9;
+    myTelemMagnetometer.zMag = magData->convertedZ * 1e9;
     myTelemMagnetometer.tempMag = magData->convertedTemp;
 
     bcbinSendPacket((uint8_t *) &myTelemMagnetometer, sizeof(myTelemMagnetometer));
@@ -356,11 +356,11 @@ void rollCall()
             else if(rcFlag == 1)
             {
                 CANPacket rollcallPkt4 = {0};
-               rc_adcs_bdot_4 rollcallPkt4_info = {0};
-               rollcallPkt4_info.rc_adcs_bdot_4_mag_z_avg = getAvg_uint16_t(mag_z);
-               rollcallPkt4_info.rc_adcs_bdot_4_tumble = rtY.tumble;
-               encoderc_adcs_bdot_4(&rollcallPkt4_info, &rollcallPkt4);
-               canSendPacket(&rollcallPkt4);
+                rc_adcs_bdot_4 rollcallPkt4_info = {0};
+                rollcallPkt4_info.rc_adcs_bdot_4_mag_z_avg = getAvg_uint16_t(mag_z);
+                rollcallPkt4_info.rc_adcs_bdot_4_tumble = rtY.tumble;
+                encoderc_adcs_bdot_4(&rollcallPkt4_info, &rollcallPkt4);
+                canSendPacket(&rollcallPkt4);
             }
             rcFlag--;
         }

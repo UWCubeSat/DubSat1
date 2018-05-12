@@ -68,10 +68,37 @@ FILE_STATIC uint8_t rcSendFlag = 0;  //use this one for sending rcCmd
 FILE_STATIC uint8_t subSystemsToToggle[16] = {0};
 FILE_STATIC int rcTimerID = 0;
 
+
+//**********Data Stuff**********************
 FILE_STATIC uint16_t mspTempArray[480] = {0};
+FILE_STATIC uint16_t battVArray[480] = {0};
+
+#pragma PERSISTENT(mspTempArray)
+#pragma PERSISTENT(battVArray)
 
 FILE_STATIC uint16_t mspTemp;
+FILE_STATIC uint16_t battV;
 
+#define PD_COM1_FLAG 1
+#define PD_COM2_FLAG 2
+#define PD_RAHS_FLAG 4
+
+#define MOD_BDOT_FLAG 8
+#define MOD_MTQ_FLAG 16
+#define PD_BDOT_FLAG 24
+
+#define MOD_ESTIM_FLAG 32
+#define MOD_MPC_FLAG 64
+#define MOD_SENSORPROC_FLAG 128
+#define PD_ESTIM_FLAG 224
+
+#define MOD_GEN_FLAG 256
+#define MOD_BATT_FLAG 512
+#define PD_EPS_FLAG 768
+
+#define PD_PPT_FLAG 1024
+
+FILE_STATIC uint16_t rcResponseFlag = 0; //this is zero when no responses are pending
 
 void distDeployInit()
 {
@@ -280,7 +307,7 @@ FILE_STATIC void distMonitorDomains()
 FILE_STATIC void distMonitorBattery()
 {
     int i;
-    uint16_t rawVoltage = asensorReadSingleSensorRaw(hSensor); //TODO: add this to
+    addData_uint16_t(battV, asensorReadSingleSensorRaw(hSensor)); //adds raw voltage to battV array
     float predivV = asensorReadSingleSensorV(hBattV);
     float newbattV = BATTV_CONV_FACTOR * predivV;
     float prevBattV = gseg.battV;
@@ -412,9 +439,84 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
     return 1;
 }
 
-void sendRollCall()
+void sendRollCallHandler()
 {
     rcSendFlag = 1;
+}
+
+void sendRCCmd()
+{
+    CANPacket rcPkt = {0};
+    cmd_rollcall rc_info = {0};
+    rc_info.cmd_rollcall_met = getMETPrimary();
+    rc_info.cmd_rollcall_met_overflow = getMETOverflow();
+    encodecmd_rollcall(&rc_info, &rcPkt);
+    canSendPacket(&rcPkt);
+
+    //TODO: uncomment this when automatic shutoff is ready to go!
+    /*if(rcResponseFlag)
+    {
+        if(rcResponseFlag & PD_COM1_FLAG)
+        {
+            distDomainSwitch(PD_COM1, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_COM1_FLAG;
+        }
+        if(rcResponseFlag & PD_COM2_FLAG)
+        {
+            distDomainSwitch(PD_COM2, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_COM2_FLAG;
+        }
+        if(rcResponseFlag & PD_RAHS_FLAG)
+        {
+            distDomainSwitch(PD_RAHS, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_RAHS_FLAG;
+        }
+        if(rcResponseFlag & PD_BDOT_FLAG)
+        {
+            distDomainSwitch(PD_BDOT, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_BDOT_FLAG;
+        }
+        if(rcResponseFlag & PD_ESTIM_FLAG)
+        {
+            distDomainSwitch(PD_ESTIM, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_ESTIM_FLAG;
+        }
+        if(rcResponseFlag & PD_EPS_FLAG)
+        {
+            distDomainSwitch(PD_EPS, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_EPS_FLAG;
+        }
+        if(rcResponseFlag & PD_PPT_FLAG)
+        {
+            distDomainSwitch(PD_PPT, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_PPT_FLAG;
+        }
+    }*/
+
+    if(distQueryDomainSwitch(PD_COM1))
+        rcResponseFlag |= PD_COM1_FLAG;
+    if(distQueryDomainSwitch(PD_COM2))
+        rcResponseFlag |= PD_COM2_FLAG;
+    if(distQueryDomainSwitch(PD_RAHS))
+        rcResponseFlag |= PD_RAHS_FLAG;
+    if(distQueryDomainSwitch(PD_BDOT))
+        rcResponseFlag |= PD_BDOT_FLAG;
+    if(distQueryDomainSwitch(PD_ESTIM))
+        rcResponseFlag |= PD_ESTIM_FLAG;
+    if(distQueryDomainSwitch(PD_EPS))
+        rcResponseFlag |= PD_EPS_FLAG;
+    if(distQueryDomainSwitch(PD_PPT))
+        rcResponseFlag |= PD_PPT_FLAG;
+    rcSendFlag = 0;
+}
+
+void sendRC()
+{
+    while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
+    {
+        //TODO: send RC w/ if/else if structure here
+        rcFlag--;
+    }
 }
 
 void can_packet_rx_callback(CANPacket *packet)
@@ -422,11 +524,56 @@ void can_packet_rx_callback(CANPacket *packet)
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            rcSendFlag = 2;
             break;
+        /*case CAN_ID_CMD_GRNDROLLCALL:
+            //start the same process for usual rollcall (shutoff)
+            break;*/
+        case CAN_ID_RC_ADCS_BDOT_1:
+            rcResponseFlag &= ~MOD_BDOT_FLAG;
+            break;
+        case CAN_ID_RC_ADCS_MTQ_1:
+            rcResponseFlag &= ~MOD_MTQ_FLAG;
+            break;
+        case CAN_ID_RC_ADCS_SP_1:
+            rcResponseFlag &= ~MOD_SENSORPROC_FLAG;
+            break;
+        case CAN_ID_RC_EPS_BATT_1:
+            rcResponseFlag &= ~MOD_BATT_FLAG;
+            break;
+        case CAN_ID_RC_EPS_GEN_1:
+            rcResponseFlag &= ~MOD_GEN_FLAG;
+            break;
+        case CAN_ID_RC_PPT_1:
+            rcResponseFlag &= ~PD_PPT_FLAG;
         default:
             break;
     }
+}
+
+void autoStart()
+{
+    __delay_cycles(2 * SEC);
+    distDomainSwitch(PD_EPS, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_BDOT, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_COM1, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_COM2, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_ESTIM, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_RAHS, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_WHEELS, PD_CMD_AutoStart);
+    __delay_cycles(0.5 * SEC);
+    distDomainSwitch(PD_PPT, PD_CMD_AutoStart);
+}
+
+void initData()
+{
+    mspTemp = init_uint16_t(mspTempArray, 480);
+    battV = init_uint16_t(battVArray, 480);
 }
 
 /*
@@ -478,26 +625,12 @@ int main(void)
     // and then control is returned to this main loop
 
     // Autostart the EPS power domain for now
-    __delay_cycles(2 * SEC);
-    distDomainSwitch(PD_EPS, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_BDOT, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_COM1, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_COM2, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_ESTIM, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_RAHS, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_WHEELS, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_PPT, PD_CMD_AutoStart);
+    autoStart();
+
+    initData();
 
     initializeTimer();
-    startCallback(timerCallbackInitializer(&sendRollCall, 6000000));
-
+    startCallback(timerCallbackInitializer(&sendRollCallHandler, 6000000));
 
     uint16_t counter = 0;
     while (1)
@@ -534,16 +667,10 @@ int main(void)
                 mod_status.in_unknown_state++;
                 break;
         }
-        if(rcSendFlag)
-        {
-            CANPacket rcPkt = {0};
-            cmd_rollcall rc_info = {0};
-            rc_info.cmd_rollcall_met = getMETPrimary();
-            rc_info.cmd_rollcall_met_overflow = getMETOverflow();
-            encodecmd_rollcall(&rc_info, &rcPkt);
-            canSendPacket(&rcPkt);
-            rcSendFlag = 0;
-        }
+        if(rcSendFlag && (canTxCheck() != CAN_TX_BUSY))
+            sendRCCmd();
+        if(rcFlag)
+            sendRC();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!

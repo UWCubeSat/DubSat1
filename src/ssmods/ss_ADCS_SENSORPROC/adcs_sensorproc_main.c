@@ -7,12 +7,12 @@
 #include "bsp/bsp.h"
 #include "core/debugtools.h"
 #include "core/timer.h"
-#include "core/dataArray.h"
+#include "core/agglib.h"
+#include "interfaces/rollcall.h"
 #include "interfaces/canwrap.h"
 
 #include "adcs_sensorproc_ids.h"
 #include "sensorInterface.h"
-#include "rollcall.h"
 #include "sunsensor_io.h"
 #include "mag_io.h"
 #include "imu_io.h"
@@ -77,8 +77,7 @@ FILE_STATIC const rollcall_fn rollcallFunctions[] =
  rcPopulate17
 };
 
-FILE_STATIC float rc_tempData[RC_BUFFER_SIZE];
-FILE_STATIC uint16_t rc_tempHandle;
+FILE_STATIC aggVec_f rc_temp;
 
 /* Backchannel */
 
@@ -123,7 +122,7 @@ int main(void)
     // initialize sensors
     initSensorInterfaces();
     asensorInit(Ref_2p5V); // temperature sensor
-    rc_tempHandle = init_float(rc_tempData, RC_BUFFER_SIZE);
+    aggVec_init(&rc_temp);
 
     // initialize rollcall
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
@@ -168,17 +167,14 @@ FILE_STATIC void step()
     static uint16_t i = 0;
     i++;
 
+    // send periodic backchannel telemetry and blink LED
     if (i % 40 == 0) // 10 Hz
     {
         // blink LED
         LED_OUT ^= LED_BIT;
 
-        // send a health and meta segments every 1 second
-        // TODO move to rollcall when it is implemented
         sendHealthSegment();
         sendMetaSegment();
-
-        // send backchannel telemetry
         sendSensorBackchannel();
         magioSendBackchannelVector();
     }
@@ -351,7 +347,7 @@ void sendHealthSegment()
     debugInvokeStatusHandler(Entity_UART);
 
     // update rollcall temperature (in deci-Kelvin)
-    addData_float(rc_tempHandle, (hseg.inttemp + 273.15f) * 10);
+    aggVec_f_push(&rc_temp, (hseg.inttemp + 273.15f) * 10);
 }
 
 void sendMetaSegment()
@@ -383,10 +379,7 @@ FILE_STATIC void sendSensorBackchannel()
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
     {
-        if (sensorInterfaces[i].sendBackchannel)
-        {
-            sensorInterfaces[i].sendBackchannel();
-        }
+        sensorInterfaces[i].sendBackchannel();
     }
 }
 
@@ -395,10 +388,7 @@ FILE_STATIC void sendSensorCAN()
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
     {
-        if (sensorInterfaces[i].sendCan)
-        {
-            sensorInterfaces[i].sendCan();
-        }
+        sensorInterfaces[i].sendCan();
     }
 }
 
@@ -415,120 +405,125 @@ void rcPopulate1(CANPacket *out)
     rc_adcs_sp_1 rc;
     rc.rc_adcs_sp_1_reset_count = bspGetResetCount();
     rc.rc_adcs_sp_1_sysrstiv = SYSRSTIV;
-    rc.rc_adcs_sp_1_temp_avg = getAvg_float(rc_tempHandle);
-    rc.rc_adcs_sp_1_temp_max = getMax_float(rc_tempHandle);
-    rc.rc_adcs_sp_1_temp_min = getMin_float(rc_tempHandle);
+    rc.rc_adcs_sp_1_temp_avg = aggVec_f_avg_f(&rc_temp);
+    rc.rc_adcs_sp_1_temp_max = aggVec_f_max(&rc_temp);
+    rc.rc_adcs_sp_1_temp_min = aggVec_f_min(&rc_temp);
+    aggVec_reset(&rc_temp);
     encoderc_adcs_sp_1(&rc, out);
 }
 
 void rcPopulate2(CANPacket *out)
 {
     rc_adcs_sp_2 rc;
-    // TODO
+    imuioRcPopulate2(&rc);
     encoderc_adcs_sp_2(&rc, out);
 }
 
 void rcPopulate3(CANPacket *out)
 {
     rc_adcs_sp_3 rc;
-    // TODO
+    imuioRcPopulate3(&rc);
     encoderc_adcs_sp_3(&rc, out);
 }
 
 void rcPopulate4(CANPacket *out)
 {
     rc_adcs_sp_4 rc;
-    // TODO
+    imuioRcPopulate4(&rc);
+    sunsensorioRcPopulate4(&rc);
     encoderc_adcs_sp_4(&rc, out);
 }
 
 void rcPopulate5(CANPacket *out)
 {
     rc_adcs_sp_5 rc;
-    // TODO
+    sunsensorioRcPopulate5(&rc);
     encoderc_adcs_sp_5(&rc, out);
 }
 
 void rcPopulate6(CANPacket *out)
 {
     rc_adcs_sp_6 rc;
-    // TODO
+    sunsensorioRcPopulate6(&rc);
+    magioRcPopulate6(&rc);
     encoderc_adcs_sp_6(&rc, out);
 }
 
 void rcPopulate7(CANPacket *out)
 {
     rc_adcs_sp_7 rc;
-    // TODO
+    magioRcPopulate7(&rc);
     encoderc_adcs_sp_7(&rc, out);
 }
 
 void rcPopulate8(CANPacket *out)
 {
     rc_adcs_sp_8 rc;
-    // TODO
+    magioRcPopulate8(&rc);
     encoderc_adcs_sp_8(&rc, out);
 }
 
 void rcPopulate9(CANPacket *out)
 {
     rc_adcs_sp_9 rc;
-    // TODO
+    magioRcPopulate9(&rc);
     encoderc_adcs_sp_9(&rc, out);
 }
 
 void rcPopulate10(CANPacket *out)
 {
     rc_adcs_sp_10 rc;
-    // TODO
+    magioRcPopulate10(&rc);
     encoderc_adcs_sp_10(&rc, out);
 }
 
 void rcPopulate11(CANPacket *out)
 {
     rc_adcs_sp_11 rc;
-    // TODO
+    magioRcPopulate11(&rc);
     encoderc_adcs_sp_11(&rc, out);
 }
 
 void rcPopulate12(CANPacket *out)
 {
     rc_adcs_sp_12 rc;
-    // TODO
+    magioRcPopulate12(&rc);
     encoderc_adcs_sp_12(&rc, out);
 }
 
 void rcPopulate13(CANPacket *out)
 {
     rc_adcs_sp_13 rc;
-    // TODO
+    sunsensorioRcPopulate13(&rc);
+    magioRcPopulate13(&rc);
     encoderc_adcs_sp_13(&rc, out);
 }
 
 void rcPopulate14(CANPacket *out)
 {
     rc_adcs_sp_14 rc;
-    // TODO
+    sunsensorioRcPopulate14(&rc);
+    magioRcPopulate14(&rc);
     encoderc_adcs_sp_14(&rc, out);
 }
 
 void rcPopulate15(CANPacket *out)
 {
     rc_adcs_sp_15 rc;
-    // TODO
+    imuioRcPopulate15(&rc);
     encoderc_adcs_sp_15(&rc, out);
 }
 
 void rcPopulate16(CANPacket *out)
 {
     rc_adcs_sp_16 rc;
-    // TODO
+    imuioRcPopulate16(&rc);
     encoderc_adcs_sp_16(&rc, out);
 }
 
 void rcPopulate17(CANPacket *out)
 {
     rc_adcs_sp_17 rc;
-    // TODO
+    imuioRcPopulate17(&rc);
     encoderc_adcs_sp_17(&rc, out);
 }

@@ -78,8 +78,8 @@ FILE_STATIC volatile uint8_t fsw_ignore = 1;
 #pragma PERSISTENT(fsw_ignore) // persist value of fsw_ignore on reboot
 FILE_STATIC volatile int8_t sc_mode;
 
-// ----------- internal control --------------------
-FILE_STATIC volatile uint8_t enable_command_update = 0;
+//-----------internal control -------------
+FILE_STATIC uint8_t bdot_interrupt_received = 0; 
 
 //-----------backchannel and CAN------------------
 // CAN health packet 
@@ -137,9 +137,6 @@ FILE_STATIC int measurement_time_ms = 2000;
 FILE_STATIC int stabilize_timer = 0;
 FILE_STATIC int stabilize_time_ms = 100;
 #pragma PERSISTENT(stabilize_time_ms)
-FILE_STATIC int bdot_death_timer = 0;
-FILE_STATIC int bdot_death_time_ms = 4000; // 4 second timeout 
-#pragma PERSISTENT(bdot_death_time_ms)
 FILE_STATIC int LED_timer = 0;
 FILE_STATIC int LED_time_ms = 200;
 FILE_STATIC int cosmos_commands_timer = 0; 
@@ -170,6 +167,8 @@ eMTQState curr_state;
 // cntrl f DEBUG to see commented out sections 
 // add error messages for invalid commands 
 // ack packet not sending commands properly 
+// get rid of enable command update flag 
+// take out timer stuff from rx handler 
 //------------------------------------------------------------------
 
 int main(void)
@@ -207,11 +206,9 @@ int main(void)
 
 void measurement()
 {
-	enable_command_update = 1;
 	
     if(checkTimer(measurement_timer)) // finished measurement phase
     {
-		enable_command_update = 0; // stop updating commands
 
 		if((sc_mode ==0||sc_mode ==1) && fsw_is_valid())
 		{
@@ -257,6 +254,7 @@ void bdot_actuation()
     }
     if(checkTimer(actuation_timer)) // finished actuation phase
     {
+		bdot_interrupt_received = 0;
         curr_state = STABILIZE;
 		send_CAN_ack_packet();
         start_stabilize_timer();
@@ -295,7 +293,6 @@ void restartMTQ()
 	start_LED_timer();
 	start_cosmos_commands_timer(); 
 	start_measurement_timer(); 
-	start_bdot_death_timer(); 
 }
 
 void start_actuation_timer(void)
@@ -317,11 +314,6 @@ void start_telem_timer(void)
 void start_LED_timer(void)
 {
     LED_timer = timerPollInitializer(LED_time_ms);
-}
-
-void start_bdot_death_timer(void)
-{
-	bdot_death_timer = timerPollInitializer(bdot_death_time_ms);
 }
 
 void start_cosmos_commands_timer(void)
@@ -455,10 +447,10 @@ void degauss_lol(void)
 
 int is_bdot_still_alive(void)
 {
-	if (checkTimer(bdot_death_timer)){ // bdot has timed out 
-		return 0; 
-	} else {
+	if (bdot_interrupt_received){   
 		return 1; 
+	} else {
+		return 0; 
 	}
 }
 
@@ -474,9 +466,8 @@ void can_init(void)
 // Interrupt service routine callback 
 void can_packet_rx_callback(CANPacket *packet)
 {  
-	if (packet->id == CAN_ID_CMD_MTQ_BDOT && enable_command_update){
-		endPollingTimer(bdot_death_timer); // reset the bdot death timer 
-		start_bdot_death_timer();  
+	if (packet->id == CAN_ID_CMD_MTQ_BDOT){
+		bdot_interrupt_received = 1; 
 		command_source = FROM_BDOT; 
 		// update global bdot command variables
 		cmd_mtq_bdot bdot_packet = {0};
@@ -489,7 +480,7 @@ void can_packet_rx_callback(CANPacket *packet)
 		addData_uint8_t(bdot_y, bdot_command_y);
 		addData_uint8_t(bdot_z, bdot_command_z);
 	}
-	if (packet->id == CAN_ID_CMD_MTQ_FSW && enable_command_update){
+	if (packet->id == CAN_ID_CMD_MTQ_FSW){
 		command_source = FROM_FSW; 
 		// update global fsw command variables
 		cmd_mtq_fsw fsw_packet = {0};

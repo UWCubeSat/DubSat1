@@ -13,9 +13,9 @@ data = csvread(sprintf('%s\\%s', sourceDataFile.folder, sourceDataFile.name), 1)
 time = data(:, 1);
 
 % Read mag inputs and convert them to the raw units
-in_mag1 = int16(data(:, 11:13) * 10e9 / MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR);
+in_mag1 = int16(data(:, 11:13) * 1e9 / MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR);
 in_mag1valid = data(:, 14);
-in_mag2 = int16(data(:, 15:17) * 10e9 / MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR);
+in_mag2 = int16(data(:, 15:17) * 1e9 / MAG_HMC5883L_GAIN_1370_NT_CONVERSION_FACTOR);
 in_mag2valid = data(:, 18);
 
 % Read imu inputs and convert them to the raw units
