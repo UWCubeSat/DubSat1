@@ -5,6 +5,8 @@
 
 #include "bsp/bsp.h"
 #include "interfaces/canwrap.h"
+#include "interfaces/rollcall.h"
+#include "core/agglib.h"
 #include "core/timer.h"
 
 #include "sensors/magnetometer.h" // include for unit conversions
@@ -30,6 +32,15 @@ FILE_STATIC estim_mag_unit_x tmpEMagx;
 FILE_STATIC estim_mag_unit_y tmpEMagy;
 FILE_STATIC estim_mag_unit_z tmpEMagz;
 
+// rollcall
+FILE_STATIC aggVec_i rc_pointTrue;
+FILE_STATIC aggVec_f rc_mspTemp;
+
+FILE_STATIC const rollcall_fn rollcallFunctions[] =
+{
+ // TODO
+};
+
 // Backchannel telemerty
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
@@ -50,7 +61,7 @@ int main(void)
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
     // Also hooks up special notification handlers.  Note that actual pulse interrupt handlers will update the
     // firing state structures before calling the provided handler function pointers.
-    mod_status.startup_type = coreStartup(handlePPTFiringNotification, handleRollCall);  // <<DO NOT DELETE or MOVE>>
+    mod_status.startup_type = coreStartup(handlePPTFiringNotification, NULL);  // <<DO NOT DELETE or MOVE>>
 
 #if defined(__DEBUG__)
 
@@ -76,6 +87,9 @@ int main(void)
 
     // init temperature sensor
     asensorInit(Ref_2p5V);
+
+    // init rollcall
+    rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
 
     // init autocode
     MSP_FSW_initialize();
@@ -107,6 +121,8 @@ int main(void)
 
             sendBackchannelTelem();
         }
+
+        rollcallUpdate();
 
         // step autocode
         rt_OneStep();
@@ -171,6 +187,9 @@ void canRxCallback(CANPacket *p)
 
     switch (p->id)
     {
+    case CAN_ID_CMD_ROLLCALL:
+        rollcallStart();
+        break;
     case CAN_ID_SENSORPROC_MAG:
         decodesensorproc_mag(p, &mag);
         tmp_mag[0] = magConvertRawToTeslas(mag.sensorproc_mag_x);
@@ -255,12 +274,16 @@ void acceptInputs()
 
 void sendCANVelocityPointing()
 {
+    // send CAN packet
     CANPacket p;
     mpc_vp vp;
     vp.mpc_vp_status = rtY.point_true
             ? CAN_ENUM_BOOL_TRUE : CAN_ENUM_BOOL_FALSE;
     encodempc_vp(&vp, &p);
     canSendPacket(&p);
+
+    // update rollcall data
+    aggVec_i_push(&rc_pointTrue, rtY.point_true);
 }
 
 void sendCANMtqCmd()
@@ -307,11 +330,8 @@ void sendHealthSegment()
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
-    // send CAN packet of temperature (in deci-Kelvin)
-    msp_temp temp = { (hseg.inttemp + 273.15f) * 10 };
-    CANPacket packet;
-    encodemsp_temp(&temp, &packet);
-    canSendPacket(&packet);
+    // update temperature (in deci-Kelvin)
+    aggVec_f_push(&rc_mspTemp, (hseg.inttemp + 273.15f) * 10);
 }
 
 void sendMetaSegment()
@@ -325,15 +345,3 @@ void handlePPTFiringNotification()
 {
     __no_operation();
 }
-
-// Will be called when the subsystem gets the distribution board's CAN message that asks for check-in
-// Likely calling frequency is probably once every couple of minutes, but the code shouldn't work with
-// any period (in particular for testing, where we might spam the CAN bus with roll call queries)
-void handleRollCall()
-{
-    /*
-     * TODO send sc_quat, body_rates, sc_above_gs, and sc_mode
-     */
-    __no_operation();
-}
-
