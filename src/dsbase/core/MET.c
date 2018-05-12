@@ -92,7 +92,18 @@ uint64_t metConvertToInt(timeStamp t)
 
 double metConvertToSeconds(timeStamp t)
 {
-    return ((double) metConvertToInt(t)) / 256.0;
+    return metConvertFromIntToSeconds(metConvertToInt(t));
+}
+
+double metConvertFromIntToSeconds(int64_t t)
+{
+    return ((double) t) / 256.0;
+}
+
+void metFromInt(int64_t t, uint32_t *primary, uint8_t *overflow)
+{
+    *primary = t;
+    *overflow = t >> 32;
 }
 
 timeStamp constructTimestamp(uint32_t primary, uint8_t overflow)
