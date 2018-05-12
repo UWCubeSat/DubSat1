@@ -507,6 +507,7 @@ void sendRCCmd()
         rcResponseFlag |= PD_EPS_FLAG;
     if(distQueryDomainSwitch(PD_PPT))
         rcResponseFlag |= PD_PPT_FLAG;
+    rcSendFlag = 0;
 }
 
 void sendRC()
@@ -523,7 +524,6 @@ void can_packet_rx_callback(CANPacket *packet)
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            rcSendFlag = 2;
             break;
         /*case CAN_ID_CMD_GRNDROLLCALL:
             //start the same process for usual rollcall (shutoff)
