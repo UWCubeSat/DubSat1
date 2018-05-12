@@ -330,6 +330,90 @@ void encodeVECTOR__INDEPENDENT_SIG_MSG(VECTOR__INDEPENDENT_SIG_MSG *input, CANPa
     reverseArray((output->data), 0, 7);
 }
 
+void decoderc_adcs_estim_4(CANPacket *input, rc_adcs_estim_4 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rc_adcs_estim_4_sgp4_flag = (int8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+    output -> rc_adcs_estim_4_sc_in_sun = (uint8_t) (((fullData & ((uint64_t) 0x1 << 15)) >> 15));
+    output -> rc_adcs_estim_4_sc_above_gs = (uint8_t) (((fullData & ((uint64_t) 0x1 << 14)) >> 14));
+    output -> rc_adcs_estim_4_epoch_overflow = (uint16_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
+    output -> rc_adcs_estim_4_epoch = (uint32_t) (((fullData & ((uint64_t) 0xffffffff << 32)) >> 32));
+}
+
+void encoderc_adcs_estim_4(rc_adcs_estim_4 *input, CANPacket *output){
+    output -> id = 304677423;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_4_sgp4_flag))) & 0xff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_4_sc_in_sun))) & 0x1) << 15;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_4_sc_above_gs))) & 0x1) << 14;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_4_epoch_overflow))) & 0xff) << 24;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_4_epoch))) & 0xffffffff) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decoderc_adcs_estim_2(CANPacket *input, rc_adcs_estim_2 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rc_adcs_estim_2_pos_eci_m = (int32_t) (((fullData & ((uint64_t) 0xffffffffffffffff))));
+}
+
+void encoderc_adcs_estim_2(rc_adcs_estim_2 *input, CANPacket *output){
+    output -> id = 304677421;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_2_pos_eci_m))) & 0xffffffffffffffff);
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decoderc_adcs_estim_3(CANPacket *input, rc_adcs_estim_3 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rc_adcs_estim_3_vel_eci_mps = (int16_t) (((fullData & ((uint64_t) 0xffffffffffffffff))));
+}
+
+void encoderc_adcs_estim_3(rc_adcs_estim_3 *input, CANPacket *output){
+    output -> id = 304677422;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_3_vel_eci_mps))) & 0xffffffffffffffff);
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decoderc_adcs_estim_1(CANPacket *input, rc_adcs_estim_1 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rc_adcs_estim_1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_adcs_estim_1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_adcs_estim_1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_estim_1_sysrstiv = (uint16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_adcs_estim_1_reset_count = (uint16_t) (((fullData & ((uint64_t) 0xff))));
+}
+
+void encoderc_adcs_estim_1(rc_adcs_estim_1 *input, CANPacket *output){
+    output -> id = 304677420;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_1_temp_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_1_temp_max))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_1_temp_avg))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_1_sysrstiv))) & 0xff) << 8;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_1_reset_count))) & 0xff);
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decoderc_adcs_sp_12(CANPacket *input, rc_adcs_sp_12 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
