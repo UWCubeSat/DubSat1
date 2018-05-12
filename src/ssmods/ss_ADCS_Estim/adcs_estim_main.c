@@ -128,6 +128,7 @@ int main(void)
 
     // init rollcall
     rollcallInitWithBuffer(rollcallFunctions, rcCANPackets, NUM_ROLLCALL_PACKETS);
+    aggVec_init_f(&rc_mspTemp);
 
     // init autocode
     MSP_env_estim0_initialize();
