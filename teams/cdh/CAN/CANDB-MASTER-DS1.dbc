@@ -103,7 +103,7 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ rc_eps_dist_ppt_v_avg : 0|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 
 BO_ 2452161071 rc_adcs_estim_4: 8 Vector__XXX
- SG_ rc_adcs_estim_4_sgp4_flag : 40|8@1+ (1,0) [-1|1] "" Vector__XXX
+ SG_ rc_adcs_estim_4_sgp4_flag : 40|8@1- (1,0) [-1|1] "" Vector__XXX
  SG_ rc_adcs_estim_4_sc_in_sun : 48|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_adcs_estim_4_sc_above_gs : 49|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_adcs_estim_4_epoch_overflow : 32|8@1+ (1,0) [0|256] "s^-8 since J2000 " Vector__XXX
