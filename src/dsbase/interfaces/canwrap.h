@@ -194,6 +194,12 @@ uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
 typedef struct VECTOR__INDEPENDENT_SIG_MSG {
+    double rc_adcs_estim_7_vel_z; // m/s
+    double rc_adcs_estim_6_vel_y; // m/s
+    double rc_adcs_estim_5_vel_x; // m/s
+    double rc_adcs_estim_4_pos_z; // m
+    double rc_adcs_estim_3_pos_y; // m
+    double rc_adcs_estim_2_pos_x; // m
     uint8_t rc_eps_dist_met; //  (No Units)
     uint32_t rc_eps_dist_met_overflow; //  (No Units)
     uint16_t rc_eps_dist_batt_v_min; // mV
@@ -249,22 +255,20 @@ typedef struct VECTOR__INDEPENDENT_SIG_MSG {
     uint16_t rc_eps_dist_ppt_v_min; // mV
     uint16_t rc_eps_dist_ppt_v_max; // mV
     uint16_t rc_eps_dist_ppt_v_avg; // mV
+    int8_t rc_adcs_estim_8_sgp4_flag; //  (No Units)
+    uint8_t rc_adcs_estim_8_sc_in_sun; //  (No Units)
+    uint8_t rc_adcs_estim_8_sc_above_gs; //  (No Units)
+    uint16_t rc_adcs_estim_8_epoch_overflow; // s^-8 since J2000 
+    uint32_t rc_adcs_estim_8_epoch; // s^-8 since J2000 
 } VECTOR__INDEPENDENT_SIG_MSG;
 
 typedef struct rc_adcs_estim_4 {
-    int8_t rc_adcs_estim_4_sgp4_flag; //  (No Units)
-    uint8_t rc_adcs_estim_4_sc_in_sun; //  (No Units)
-    uint8_t rc_adcs_estim_4_sc_above_gs; //  (No Units)
-    uint16_t rc_adcs_estim_4_epoch_overflow; // s^-8 since J2000 
-    uint32_t rc_adcs_estim_4_epoch; // s^-8 since J2000 
 } rc_adcs_estim_4;
 
 typedef struct rc_adcs_estim_2 {
-    int32_t rc_adcs_estim_2_pos_eci_m; // m
 } rc_adcs_estim_2;
 
 typedef struct rc_adcs_estim_3 {
-    int16_t rc_adcs_estim_3_vel_eci_mps; // m/s
 } rc_adcs_estim_3;
 
 typedef struct rc_adcs_estim_1 {
