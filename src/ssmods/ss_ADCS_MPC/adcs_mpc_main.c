@@ -35,10 +35,31 @@ FILE_STATIC estim_mag_unit_z tmpEMagz;
 // rollcall
 FILE_STATIC aggVec_i rc_pointTrue;
 FILE_STATIC aggVec_f rc_mspTemp;
+FILE_STATIC aggVec_d rc_omegax;
+FILE_STATIC aggVec_d rc_omegay;
+FILE_STATIC aggVec_d rc_omegaz;
+
+FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulate2(CANPacket *out);
+FILE_STATIC void rcPopulate3(CANPacket *out);
+FILE_STATIC void rcPopulate4(CANPacket *out);
+FILE_STATIC void rcPopulate5(CANPacket *out);
+FILE_STATIC void rcPopulate6(CANPacket *out);
+FILE_STATIC void rcPopulate7(CANPacket *out);
+FILE_STATIC void rcPopulate8(CANPacket *out);
+FILE_STATIC void rcPopulate9(CANPacket *out);
+FILE_STATIC void rcPopulate10(CANPacket *out);
+FILE_STATIC void rcPopulate11(CANPacket *out);
+FILE_STATIC void rcPopulate12(CANPacket *out);
+FILE_STATIC void rcPopulate13(CANPacket *out);
+FILE_STATIC void rcPopulate14(CANPacket *out);
+FILE_STATIC void rcPopulate15(CANPacket *out);
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- // TODO
+ rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
+ rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10,
+ rcPopulate11, rcPopulate12,rcPopulate13, rcPopulate14, rcPopulate15
 };
 
 // Backchannel telemerty
@@ -90,6 +111,11 @@ int main(void)
 
     // init rollcall
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
+    aggVec_init_i(&rc_pointTrue);
+    aggVec_init_f(&rc_mspTemp);
+    aggVec_init_d(&rc_omegax);
+    aggVec_init_d(&rc_omegay);
+    aggVec_init_d(&rc_omegaz);
 
     // init autocode
     MSP_FSW_initialize();
@@ -164,8 +190,7 @@ void rt_OneStep(void)
   MSP_FSW_step();
 
   /* Get model outputs here */
-  sendCANVelocityPointing();
-  sendCANMtqCmd();
+  useOutputs();
 
   /* Indicate task complete */
   OverrunFlag = false;
@@ -274,16 +299,12 @@ void acceptInputs()
 
 void sendCANVelocityPointing()
 {
-    // send CAN packet
     CANPacket p;
     mpc_vp vp;
     vp.mpc_vp_status = rtY.point_true
             ? CAN_ENUM_BOOL_TRUE : CAN_ENUM_BOOL_FALSE;
     encodempc_vp(&vp, &p);
     canSendPacket(&p);
-
-    // update rollcall data
-    aggVec_i_push(&rc_pointTrue, rtY.point_true);
 }
 
 void sendCANMtqCmd()
@@ -296,6 +317,19 @@ void sendCANMtqCmd()
     cmd.cmd_mtq_fsw_z = rtY.cmd_MT_fsw_dv[2];
     encodecmd_mtq_fsw(&cmd, &p);
     canSendPacket(&p);
+}
+
+void useOutputs()
+{
+    // send CAN packets
+    sendCANVelocityPointing();
+    sendCANMtqCmd();
+
+    // update rollcall data
+    aggVec_push_i(&rc_pointTrue, rtY.point_true);
+    aggVec_push_d(&rc_omegax, rtY.body_rates[0]);
+    aggVec_push_d(&rc_omegay, rtY.body_rates[1]);
+    aggVec_push_d(&rc_omegaz, rtY.body_rates[2]);
 }
 
 void sendBackchannelTelem()
@@ -331,7 +365,7 @@ void sendHealthSegment()
     debugInvokeStatusHandler(Entity_UART);
 
     // update temperature (in deci-Kelvin)
-    aggVec_f_push(&rc_mspTemp, (hseg.inttemp + 273.15f) * 10);
+    aggVec_push_f(&rc_mspTemp, (hseg.inttemp + 273.15f) * 10);
 }
 
 void sendMetaSegment()
@@ -344,4 +378,137 @@ void sendMetaSegment()
 void handlePPTFiringNotification()
 {
     __no_operation();
+}
+
+FILE_STATIC void rcPopulate1(CANPacket *out)
+{
+    rc_adcs_mpc_1 rc;
+    rc.rc_adcs_mpc_1_reset_count = bspGetResetCount();
+    rc.rc_adcs_mpc_1_sysrstiv = SYSRSTIV;
+    rc.rc_adcs_mpc_1_temp_min = aggVec_min_f(&rc_mspTemp);
+    rc.rc_adcs_mpc_1_temp_max = aggVec_max_f(&rc_mspTemp);
+    rc.rc_adcs_mpc_1_temp_avg = aggVec_avg_f(&rc_mspTemp);
+    aggVec_reset((aggVec *) &rc_mspTemp);
+    encoderc_adcs_mpc_1(&rc, out);
+}
+
+FILE_STATIC void rcPopulate2(CANPacket *out)
+{
+    rc_adcs_mpc_2 rc;
+    rc.rc_adcs_mpc_2_sc_quat_1 = rtY.sc_quat[0];
+    encoderc_adcs_mpc_2(&rc, out);
+}
+
+FILE_STATIC void rcPopulate3(CANPacket *out)
+{
+    rc_adcs_mpc_3 rc;
+    rc.rc_adcs_mpc_3_sc_quat_2 = rtY.sc_quat[1];
+    encoderc_adcs_mpc_3(&rc, out);
+}
+
+FILE_STATIC void rcPopulate4(CANPacket *out)
+{
+    rc_adcs_mpc_4 rc;
+    rc.rc_adcs_mpc_4_sc_quat_3 = rtY.sc_quat[2];
+    encoderc_adcs_mpc_4(&rc, out);
+}
+
+FILE_STATIC void rcPopulate5(CANPacket *out)
+{
+    rc_adcs_mpc_5 rc;
+    rc.rc_adcs_mpc_5_sc_quat_4 = rtY.sc_quat[3];
+    encoderc_adcs_mpc_5(&rc, out);
+}
+
+FILE_STATIC void rcPopulate6(CANPacket *out)
+{
+    rc_adcs_mpc_6 rc;
+    rc.rc_adcs_mpc_6_omega_x_min = aggVec_min_d(&rc_omegax);
+    aggVec_min_reset((aggVec *) &rc_omegax);
+    encoderc_adcs_mpc_6(&rc, out);
+}
+
+FILE_STATIC void rcPopulate7(CANPacket *out)
+{
+    rc_adcs_mpc_7 rc;
+    rc.rc_adcs_mpc_7_omega_x_max = aggVec_max_d(&rc_omegax);
+    aggVec_max_reset((aggVec *) &rc_omegax);
+    encoderc_adcs_mpc_7(&rc, out);
+}
+
+FILE_STATIC void rcPopulate8(CANPacket *out)
+{
+    rc_adcs_mpc_8 rc;
+    rc.rc_adcs_mpc_8_omega_x_avg = aggVec_avg_d(&rc_omegax);
+    aggVec_as_reset((aggVec *) &rc_omegax);
+    encoderc_adcs_mpc_8(&rc, out);
+}
+
+FILE_STATIC void rcPopulate9(CANPacket *out)
+{
+    rc_adcs_mpc_9 rc;
+    rc.rc_adcs_mpc_9_omega_y_min = aggVec_min_d(&rc_omegay);
+    aggVec_min_reset((aggVec *) &rc_omegay);
+    encoderc_adcs_mpc_9(&rc, out);
+}
+
+FILE_STATIC void rcPopulate10(CANPacket *out)
+{
+    rc_adcs_mpc_10 rc;
+    rc.rc_adcs_mpc_10_omega_y_max = aggVec_max_d(&rc_omegay);
+    aggVec_max_reset((aggVec *) &rc_omegay);
+    encoderc_adcs_mpc_10(&rc, out);
+}
+
+FILE_STATIC void rcPopulate11(CANPacket *out)
+{
+    rc_adcs_mpc_11 rc;
+    rc.rc_adcs_mpc_11_omega_y_avg = aggVec_avg_d(&rc_omegay);
+    aggVec_as_reset((aggVec *) &rc_omegay);
+    encoderc_adcs_mpc_11(&rc, out);
+}
+
+FILE_STATIC void rcPopulate12(CANPacket *out)
+{
+    rc_adcs_mpc_12 rc;
+    rc.rc_adcs_mpc_12_omega_z_min = aggVec_min_d(&rc_omegaz);
+    aggVec_min_reset((aggVec *) &rc_omegaz);
+    encoderc_adcs_mpc_12(&rc, out);
+}
+
+FILE_STATIC void rcPopulate13(CANPacket *out)
+{
+    rc_adcs_mpc_13 rc;
+    rc.rc_adcs_mpc_13_omega_z_max = aggVec_max_d(&rc_omegaz);
+    aggVec_max_reset((aggVec *) &rc_omegaz);
+    encoderc_adcs_mpc_13(&rc, out);
+}
+
+FILE_STATIC void rcPopulate14(CANPacket *out)
+{
+    rc_adcs_mpc_14 rc;
+    rc.rc_adcs_mpc_14_omega_z_avg = aggVec_avg_d(&rc_omegaz);
+    aggVec_as_reset((aggVec *) &rc_omegaz);
+    encoderc_adcs_mpc_14(&rc, out);
+}
+
+FILE_STATIC void rcPopulate15(CANPacket *out)
+{
+    rc_adcs_mpc_15 rc;
+
+    // update point_true as the percent of the time point_true is true
+    uint32_t ptCount = aggVec_as_count((aggVec *) &rc_pointTrue);
+    if (ptCount != 0)
+    {
+        float percentPointing = aggVec_sum_i(&rc_pointTrue) / ptCount;
+        rc.rc_adcs_mpc_15_point_true = percentPointing * 255;
+    }
+    else
+    {
+        rc.rc_adcs_mpc_15_point_true = 0;
+    }
+    aggVec_reset((aggVec *) &rc_pointTrue);
+
+    rc.rc_adcs_mpc_15_sc_mode = rtY.sc_mode;
+    encoderc_adcs_mpc_15(&rc, out);
 }
