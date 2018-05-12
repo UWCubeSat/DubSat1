@@ -90,8 +90,6 @@ MagnetometerData* testing_magReadXYZData(hMag handle, UnitConversionMode desired
 
     mdata->conversionMode = desiredConversion;
     i2cMasterRead(hSensor, i2cBuff, 6 );
-    i2cMasterRead(hSensor, i2cBuff, 6 );
-    i2cMasterRead(hSensor, &i2cBuff[6], 2 );
     i2cMasterRead(hSensor, &i2cBuff[6], 2 );
 
     mdata->rawX = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));

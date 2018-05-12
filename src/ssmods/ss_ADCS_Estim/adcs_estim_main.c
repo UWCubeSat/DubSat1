@@ -7,7 +7,10 @@
 #include "core/timer.h"
 #include "core/MET.h"
 #include "interfaces/canwrap.h"
+#include "interfaces/rollcall.h"
+#include "core/agglib.h"
 #include "core/debugtools.h"
+
 #include "tle.h"
 
 #include "autocode/MSP_env_estim0.h"
@@ -15,6 +18,14 @@
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
 FILE_STATIC ModuleStatus mod_status;
+
+// rollcall
+FILE_STATIC aggVec_f rc_mspTemp;
+
+FILE_STATIC rollcall_fn rollcallFunctions[] =
+{
+ // TODO
+};
 
 // backchannel telemetry segments
 FILE_STATIC meta_segment mseg;
@@ -50,7 +61,7 @@ int main(void)
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
     // Also hooks up special notification handlers.  Note that actual pulse interrupt handlers will update the
     // firing state structures before calling the provided handler function pointers.
-    mod_status.startup_type = coreStartup(handlePPTFiringNotification, handleRollCall);  // <<DO NOT DELETE or MOVE>>
+    mod_status.startup_type = coreStartup(handlePPTFiringNotification, NULL);  // <<DO NOT DELETE or MOVE>>
 
 #if defined(__DEBUG__)
 
@@ -93,6 +104,9 @@ int main(void)
     // init temperature sensor
     asensorInit(Ref_2p5V);
 
+    // init rollcall
+    rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
+
     // init autocode
     MSP_env_estim0_initialize();
 
@@ -109,6 +123,8 @@ int main(void)
         // TODO move this to rollcall
         sendHealthSegment();
         sendMetaSegment();
+
+        rollcallUpdate();
 
         // step autocode
         rt_OneStep();
@@ -158,14 +174,6 @@ void rt_OneStep(void)
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
 void handlePPTFiringNotification()
-{
-    __no_operation();
-}
-
-// Will be called when the subsystem gets the distribution board's CAN message that asks for check-in
-// Likely calling frequency is probably once every couple of minutes, but the code shouldn't work with
-// any period (in particular for testing, where we might spam the CAN bus with roll call queries)
-void handleRollCall()
 {
     __no_operation();
 }
@@ -288,9 +296,7 @@ void canRxCallback(CANPacket *p)
         t = constructTimestamp(rc.cmd_rollcall_met,
                                rc.cmd_rollcall_met_overflow);
         updateMET(t);
-
-        // This is redundant if coreStartup is ever implemented
-        handleRollCall();
+        rollcallStart();
         break;
     case CAN_ID_GRND_EPOCH:
         decodegrnd_epoch(p, &ep);
@@ -313,11 +319,8 @@ FILE_STATIC void sendHealthSegment()
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
-    // send CAN packet of temperature (in deci-Kelvin)
-    msp_temp temp = { (hseg.inttemp + 273.15f) * 10 };
-    CANPacket packet;
-    encodemsp_temp(&temp, &packet);
-    canSendPacket(&packet);
+    // update temperature (in deci-Kelvin)
+    aggVec_f_push(&rc_mspTemp, (hseg.inttemp + 273.15f) * 10);
 }
 
 FILE_STATIC void sendMetaSegment()

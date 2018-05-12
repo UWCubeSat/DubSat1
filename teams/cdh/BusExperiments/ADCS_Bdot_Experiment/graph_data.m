@@ -8,8 +8,8 @@ choose_graph = ANG_VEC;
 data_path = '..\ADCS_Bdot_Experiment\data_file\';
 
 time = dlmread(strcat(data_path, 'time.dat'));
-angular_velocity_x_csv = dlmread(strcat(data_path, 'angular_velocity_x.dat'));
-angular_velocity_y_csv = dlmread(strcat(data_path, 'angular_velocity_y.dat'));
+angular_velocity_x_csv = dlmread(strcat(data_path, 'angular_velocity_x_to.dat'));
+angular_velocity_y_csv = dlmread(strcat(data_path, 'angular_velocity_y_to.dat'));
 angular_velocity_z_csv = dlmread(strcat(data_path, 'angular_velocity_z.dat'));
 env_xMag_csv = dlmread(strcat(data_path, 'env_xMag_nT.dat'));
 env_yMag_csv = dlmread(strcat(data_path, 'env_yMag_nT.dat'));

@@ -453,7 +453,8 @@ void sendRCCmd()
     encodecmd_rollcall(&rc_info, &rcPkt);
     canSendPacket(&rcPkt);
 
-    if(rcResponseFlag)
+    //TODO: uncomment this when automatic shutoff is ready to go!
+    /*if(rcResponseFlag)
     {
         if(rcResponseFlag & PD_COM1_FLAG)
         {
@@ -490,7 +491,7 @@ void sendRCCmd()
             distDomainSwitch(PD_PPT, PD_CMD_Disable);
             rcResponseFlag &= ~PD_PPT_FLAG;
         }
-    }
+    }*/
 
     if(distQueryDomainSwitch(PD_COM1))
         rcResponseFlag |= PD_COM1_FLAG;
@@ -506,6 +507,7 @@ void sendRCCmd()
         rcResponseFlag |= PD_EPS_FLAG;
     if(distQueryDomainSwitch(PD_PPT))
         rcResponseFlag |= PD_PPT_FLAG;
+    rcSendFlag = 0;
 }
 
 void sendRC()
@@ -522,7 +524,6 @@ void can_packet_rx_callback(CANPacket *packet)
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            rcSendFlag = 2;
             break;
         /*case CAN_ID_CMD_GRNDROLLCALL:
             //start the same process for usual rollcall (shutoff)
