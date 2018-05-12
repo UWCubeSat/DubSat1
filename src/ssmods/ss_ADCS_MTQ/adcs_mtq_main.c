@@ -25,7 +25,6 @@ Z2 - P2_6 - TB0.1
 #include "core/debugtools.h"
 #include "sensors/analogsensor.h"
 #include "adcs_mtq.h"
-#include "core/dataArray.h"
 
 
 //--------state functions----------------
@@ -58,7 +57,6 @@ void can_packet_rx_callback(CANPacket *packet);
 void send_CAN_health_packet(void);
 void send_CAN_ack_packet(void);
 void send_CAN_rollCall(); 
-void rollCall_init(); 
 
 //---------COSMOS functions--------------
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
@@ -93,37 +91,6 @@ FILE_STATIC volatile uint8_t duty_x1, duty_x2, duty_y1, duty_y2, duty_z1, duty_z
 FILE_STATIC bdot_fsw_commands cosmos_commandy_commands; // commands 
 FILE_STATIC volatile int8_t command_source = ELOISE_UNKNOWN; // source 
 FILE_STATIC volatile int8_t which_phase = ELOISE_UNKNOWN; // phase 
-// CAN roll call 
-FILE_STATIC uint16_t mspTempArray[60] = {0};
-#pragma PERSISTENT(mspTempArray);
-FILE_STATIC uint8_t bdot_xArray[60] = {0};
-FILE_STATIC uint8_t bdot_yArray[60] = {0};
-FILE_STATIC uint8_t bdot_zArray[60] = {0};
-FILE_STATIC uint8_t fsw_xArray[60] = {0};
-FILE_STATIC uint8_t fsw_yArray[60] = {0};
-FILE_STATIC uint8_t fsw_zArray[60] = {0};
-FILE_STATIC uint8_t duty_x1Array[60] = {0};
-FILE_STATIC uint8_t duty_x2Array[60] = {0};
-FILE_STATIC uint8_t duty_y1Array[60] = {0};
-FILE_STATIC uint8_t duty_y2Array[60] = {0};
-FILE_STATIC uint8_t duty_z1Array[60] = {0};
-FILE_STATIC uint8_t duty_z2Array[60] = {0};
-FILE_STATIC uint16_t mspTemp;
-FILE_STATIC uint16_t bdot_x;
-FILE_STATIC uint16_t bdot_y;
-FILE_STATIC uint16_t bdot_z;
-FILE_STATIC uint16_t fsw_x;
-FILE_STATIC uint16_t fsw_y;
-FILE_STATIC uint16_t fsw_z;
-FILE_STATIC uint16_t duty_x1Handle;
-FILE_STATIC uint16_t duty_x2Handle;
-FILE_STATIC uint16_t duty_y1Handle;
-FILE_STATIC uint16_t duty_y2Handle;
-FILE_STATIC uint16_t duty_z1Handle;
-FILE_STATIC uint16_t duty_z2Handle;
-FILE_STATIC int rcFlag = 0;
-
-//------------ timers ----------------
 
 FILE_STATIC int telem_timer; 
 FILE_STATIC int telem_time_ms = 1000;
@@ -180,7 +147,6 @@ int main(void)
     initializeTimer();             // timer A initialization
     cosmos_init();                 // COSMOS backchannel initialization
     can_init();                    // CAN initialization
-	rollCall_init(); 			   // roll call initialization 
 
     restartMTQ(); // restart 
 
@@ -399,8 +365,6 @@ void set_pwm(char axis, int pwm_percent)
 			duty_x1 = duty_1; // for COSMOS
 			duty_x2 = duty_2;
 			last_pwm_percent_executed_x = pwm_percent; // for CAN ack 
-			addData_uint8_t(duty_x1Handle, duty_x1); // for CAN rollcall 
-			addData_uint8_t(duty_x2Handle, duty_x2);
 			break;
 		case 'y': 
 			SET_Y1_PWM ccr_value_1; 
@@ -408,8 +372,6 @@ void set_pwm(char axis, int pwm_percent)
 			duty_y1 = duty_1;
 			duty_y2 = duty_2;
 			last_pwm_percent_executed_y = pwm_percent;
-			addData_uint8_t(duty_y1Handle, duty_y1);
-			addData_uint8_t(duty_y2Handle, duty_y2);
 			break;	
 		case 'z': 
 			SET_Z1_PWM ccr_value_1; 
@@ -417,8 +379,6 @@ void set_pwm(char axis, int pwm_percent)
 			duty_z1 = duty_1;
 			duty_z2 = duty_2;
 			last_pwm_percent_executed_z = pwm_percent;
-			addData_uint8_t(duty_z1Handle, duty_z1);
-			addData_uint8_t(duty_z2Handle, duty_z2);
 			break;
 		default: // unknown state 
 			break;
@@ -476,9 +436,6 @@ void can_packet_rx_callback(CANPacket *packet)
         bdot_command_y = bdot_packet.cmd_mtq_bdot_y;
         bdot_command_z = bdot_packet.cmd_mtq_bdot_z;
 		// for rollcall 
-		addData_uint8_t(bdot_x, bdot_command_x);
-		addData_uint8_t(bdot_y, bdot_command_y);
-		addData_uint8_t(bdot_z, bdot_command_z);
 	}
 	if (packet->id == CAN_ID_CMD_MTQ_FSW){
 		command_source = FROM_FSW; 
@@ -490,9 +447,6 @@ void can_packet_rx_callback(CANPacket *packet)
         fsw_command_z = fsw_packet.cmd_mtq_fsw_z;
         sc_mode = fsw_packet.cmd_mtq_fsw_sc_mode;
 		// for rollcall 
-		addData_uint8_t(fsw_x, fsw_command_x);
-		addData_uint8_t(fsw_y,  fsw_command_y);
-		addData_uint8_t(fsw_z, fsw_command_z);
 	}
 	if (packet->id == CAN_ID_CMD_IGNORE_FSW){
 		cmd_ignore_fsw ignore = {0};
@@ -501,7 +455,6 @@ void can_packet_rx_callback(CANPacket *packet)
 	} 
 	if(packet->id == CAN_ID_CMD_ROLLCALL)
     {
-        rcFlag = 2;
     }
 }	
 
@@ -535,85 +488,8 @@ void send_CAN_ack_packet(void)
 	canSendPacket(&mtq_ack_packet);
 }
 
-void rollCall_init()
-{
-    mspTemp = init_uint16_t(mspTempArray, 60);
-    bdot_x = init_uint8_t(bdot_xArray, 60);
-    bdot_y = init_uint8_t(bdot_yArray, 60);
-    bdot_z = init_uint8_t(bdot_zArray, 60);
-    fsw_x = init_uint8_t(fsw_xArray, 60);
-    fsw_y = init_uint8_t(fsw_yArray, 60);
-    fsw_z = init_uint8_t(fsw_zArray, 60);
-    duty_x1Handle = init_uint8_t(duty_x1Array, 60);
-    duty_x2Handle = init_uint8_t(duty_x2Array, 60);
-    duty_y1Handle = init_uint8_t(duty_y1Array, 60);
-    duty_y2Handle = init_uint8_t(duty_y2Array, 60);
-    duty_z1Handle = init_uint8_t(duty_z1Array, 60);
-    duty_z2Handle = init_uint8_t(duty_z2Array, 60);
-}
-
 void send_CAN_rollCall() 
 {
-    if(rcFlag>0)
-	{
-        if(rcFlag == 2)
-		{
-            CANPacket rollcallPkt1 = {0};
-            rc_adcs_mtq_1 rollcallPkt1_info = {0};
-            CANPacket rollcallPkt2 = {0};
-            rc_adcs_mtq_2 rollcallPkt2_info = {0};
-            CANPacket rollcallPkt3 = {0};
-            rc_adcs_mtq_3 rollcallPkt3_info = {0};
-            rollcallPkt1_info.rc_adcs_mtq_1_sysrstiv = bspGetResetCount();
-            rollcallPkt1_info.rc_adcs_mtq_1_temp_avg =0;//asensorReadIntTempC(); //TODO: this
-            rollcallPkt1_info.rc_adcs_mtq_1_temp_max =0;//asensorReadIntTempC(); //TODO: this
-            rollcallPkt1_info.rc_adcs_mtq_1_temp_min =0;//asensorReadIntTempC(); //TODO: this
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_min =getMin_uint8_t(bdot_x);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_max =getMax_uint8_t(bdot_x);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_x_avg =getAvg_uint8_t(bdot_x);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_min = getMin_uint8_t(bdot_y);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_max = getMax_uint8_t(bdot_y);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_y_avg = getAvg_uint8_t(bdot_y);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_max = getMax_uint8_t(bdot_z);
-            rollcallPkt2_info.rc_adcs_mtq_2_bdot_z_avg = getAvg_uint8_t(bdot_z);
-
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_min = getMin_uint8_t(fsw_x);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_max = getMax_uint8_t(fsw_x);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_x_avg = getAvg_uint8_t(fsw_x);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_min = getMin_uint8_t(fsw_y);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_max = getMax_uint8_t(fsw_y);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_y_avg = getAvg_uint8_t(fsw_y);
-            rollcallPkt3_info.rc_adcs_mtq_3_fsw_z_avg = getAvg_uint8_t(fsw_z);
-            encoderc_adcs_mtq_1(&rollcallPkt1_info, &rollcallPkt1);
-            canSendPacket(&rollcallPkt1);
-            encoderc_adcs_mtq_2(&rollcallPkt2_info, &rollcallPkt2);
-            canSendPacket(&rollcallPkt2);
-            encoderc_adcs_mtq_3(&rollcallPkt3_info, &rollcallPkt3);
-            canSendPacket(&rollcallPkt3);
-        }
-        if(rcFlag ==1)
-		{
-            CANPacket rollcallPkt4 = {0};
-            rc_adcs_mtq_4 rollcallPkt4_info = {0};
-            CANPacket rollcallPkt5 = {0};
-            rc_adcs_mtq_5 rollcallPkt5_info = {0};
-            rollcallPkt4_info.rc_adcs_mtq_4_fsw_z_min = getMin_uint8_t(fsw_z);
-            rollcallPkt4_info.rc_adcs_mtq_4_fsw_y_max = getMax_uint8_t(fsw_z);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_x1_avg = getAvg_uint8_t(duty_x1Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_x2_avg = getAvg_uint8_t(duty_x2Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_y1_avg = getAvg_uint8_t(duty_y1Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_y2_avg = getAvg_uint8_t(duty_y2Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_z1_avg = getAvg_uint8_t(duty_z1Handle);
-            rollcallPkt4_info.rc_adcs_mtq_4_duty_z2_avg = getAvg_uint8_t(duty_z2Handle);
-            rollcallPkt5_info.rc_adcs_mtq_5_fsw_ignore=0;
-            rollcallPkt5_info.rc_adcs_mtq_5_reset_counts=0;
-            encoderc_adcs_mtq_4(&rollcallPkt4_info, &rollcallPkt4);
-            encoderc_adcs_mtq_5(&rollcallPkt5_info, &rollcallPkt5);
-            canSendPacket(&rollcallPkt4);
-            canSendPacket(&rollcallPkt5);
-        }
-        rcFlag--;
-    }
 }
 //-------- COSMOS backchannel --------
 
@@ -673,58 +549,58 @@ void send_COSMOS_meta_packet(void)
 // used to configure SFRs for mtq
 void mtq_sfr_init(void)
 {	
-	//---------GPIO initialization--------------------------
-	// P3.5 - LED - board leds 
-	P3OUT &= ~BIT5; // power on state
-	P3DIR |= BIT5;
-	P3SEL0 &= ~BIT5;
-	P3SEL1 &= ~BIT5;
-	// P1.7 - TB0.4 - x1
-	P1DIR |= BIT7;
-    P1SEL0 |= BIT7;
-    P1SEL1 &= ~BIT7;
-	// P1.6 - TB0.3 - x2
-	P1DIR |= BIT6;
-    P1SEL0 |= BIT6;
-    P1SEL1 &= ~BIT6;
-	// P3.7 - TB0.6 - y1
-	P3DIR |= BIT7;
-    P3SEL0 |= BIT7;
-    P3SEL1 &= ~BIT7;
-	// P3.6 - TB0.5 - y2
-	P3DIR |= BIT6;
-    P3SEL0 |= BIT6;
-    P3SEL1 &= ~BIT6;
-	// P2.2 - TB0.2 - z1
-	P2DIR |= BIT2;
-    P2SEL0 |= BIT2;
-    P2SEL1 &= ~BIT2;
-	// P2.6 - TB0.1 - z2
-	P2DIR |= BIT6;
-    P2SEL0 |= BIT6;
-    P2SEL1 &= ~BIT6;
-	// Disable the GPIO power-on default high-impedance 
-	// mode to activate previously configured port settings 
-	PM5CTL0 &= ~LOCKLPM5;  
-	//---------Timer B initialization--------------------------
-	// capture control 0 (to define PWM period)
-    TB0CCR0 = PWM_PERIOD; 
-  	// capture control value (to define PWM duty cycles)
-	TB0CCR4 = 0; // P1.7 - TB0.4 - x1
-	TB0CCR3 = 0; // P1.6 - TB0.3 - x2
-	TB0CCR6 = 0; // P3.7 - TB0.6 - y1
-	TB0CCR5 = 0; // P3.6 - TB0.5 - y2 
-	TB0CCR2 = 0; // P2.2 - TB0.2 - z1
-	TB0CCR1 = 0; // P2.6 - TB0.1 - z2
-	// capture control mode 
-	TB0CCTL4 = OUTMOD_7;
-	TB0CCTL3 = OUTMOD_7;
-	TB0CCTL6 = OUTMOD_7;
-	TB0CCTL5 = OUTMOD_7;
-	TB0CCTL2 = OUTMOD_7;
-	TB0CCTL1 = OUTMOD_7;
-	// TB0 control 
-	TB0CTL = TBSSEL__SMCLK | MC__UP | TBCLR; 
+//	//---------GPIO initialization--------------------------
+//	// P3.5 - LED - board leds
+//	P3OUT &= ~BIT5; // power on state
+//	P3DIR |= BIT5;
+//	P3SEL0 &= ~BIT5;
+//	P3SEL1 &= ~BIT5;
+//	// P1.7 - TB0.4 - x1
+//	P1DIR |= BIT7;
+//    P1SEL0 |= BIT7;
+//    P1SEL1 &= ~BIT7;
+//	// P1.6 - TB0.3 - x2
+//	P1DIR |= BIT6;
+//    P1SEL0 |= BIT6;
+//    P1SEL1 &= ~BIT6;
+//	// P3.7 - TB0.6 - y1
+//	P3DIR |= BIT7;
+//    P3SEL0 |= BIT7;
+//    P3SEL1 &= ~BIT7;
+//	// P3.6 - TB0.5 - y2
+//	P3DIR |= BIT6;
+//    P3SEL0 |= BIT6;
+//    P3SEL1 &= ~BIT6;
+//	// P2.2 - TB0.2 - z1
+//	P2DIR |= BIT2;
+//    P2SEL0 |= BIT2;
+//    P2SEL1 &= ~BIT2;
+//	// P2.6 - TB0.1 - z2
+//	P2DIR |= BIT6;
+//    P2SEL0 |= BIT6;
+//    P2SEL1 &= ~BIT6;
+//	// Disable the GPIO power-on default high-impedance
+//	// mode to activate previously configured port settings
+//	PM5CTL0 &= ~LOCKLPM5;
+//	//---------Timer B initialization--------------------------
+//	// capture control 0 (to define PWM period)
+//    TB0CCR0 = PWM_PERIOD;
+//  	// capture control value (to define PWM duty cycles)
+//	TB0CCR4 = 0; // P1.7 - TB0.4 - x1
+//	TB0CCR3 = 0; // P1.6 - TB0.3 - x2
+//	TB0CCR6 = 0; // P3.7 - TB0.6 - y1
+//	TB0CCR5 = 0; // P3.6 - TB0.5 - y2
+//	TB0CCR2 = 0; // P2.2 - TB0.2 - z1
+//	TB0CCR1 = 0; // P2.6 - TB0.1 - z2
+//	// capture control mode
+//	TB0CCTL4 = OUTMOD_7;
+//	TB0CCTL3 = OUTMOD_7;
+//	TB0CCTL6 = OUTMOD_7;
+//	TB0CCTL5 = OUTMOD_7;
+//	TB0CCTL2 = OUTMOD_7;
+//	TB0CCTL1 = OUTMOD_7;
+//	// TB0 control
+//	TB0CTL = TBSSEL__SMCLK | MC__UP | TBCLR;
 }
 
 

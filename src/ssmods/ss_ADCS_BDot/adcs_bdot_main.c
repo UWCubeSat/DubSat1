@@ -3,10 +3,10 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 #include "bsp/bsp.h"
-#include "sensors/magnetometer.h"
 #include "core/timer.h"
-#include "bdot_controller_lib.h"
 #include "core/dataArray.h"
+#include "core/agglib.h"
+
 
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
@@ -25,8 +25,6 @@ FILE_STATIC volatile magDataStatus mag_data = mag_invalid;
 
 
 /****************Magnetometer Variables*************************/
-FILE_STATIC MagnetometerData* magData;
-FILE_STATIC hMag magNum;
 FILE_STATIC uint8_t MagNormalOperation = 1;
 /***************************************************************/
 
@@ -41,19 +39,9 @@ FILE_STATIC uint32_t rtOneStep_us = 100000;
 /***************************************************************/
 
 /*******************RollCall***********************************/
-FILE_STATIC int rcFlag =0;
-FILE_STATIC uint16_t mspTempArray[600] = {0};
-FILE_STATIC uint16_t mag_xArray[600] = {0};
-FILE_STATIC uint16_t mag_yArray[600] = {0};
-FILE_STATIC uint16_t mag_zArray[600] = {0};
-#pragma PERSISTENT(mspTempArray);
-#pragma PERSISTENT(mag_xArray);
-#pragma PERSISTENT(mag_yArray);
-#pragma PERSISTENT(mag_zArray);
-FILE_STATIC uint16_t mspTemp;
-FILE_STATIC uint16_t mag_x;
-FILE_STATIC uint16_t mag_y;
-FILE_STATIC uint16_t mag_z;
+FILE_STATIC aggVec_i agga;
+FILE_STATIC aggVec_i aggb;
+FILE_STATIC aggVec_i aggc;
 /***************************************************************/
 
 /*******************Miscellaneous*******************************/
@@ -63,6 +51,7 @@ FILE_STATIC ModuleStatus mod_status;
 
 int main(void)
 {
+
     /* ----- INITIALIZATION -----*/
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
     // __SUBSYSTEM_MODULE__ is set in bsp.h based on the __SS_<subsystemmodule>__ passed in
@@ -92,20 +81,17 @@ int main(void)
     initial_setup();
     rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
     startCallback(rtOneStep_timer);
+    aggVec_init(&agga);
+    aggVec_init(&aggb);
+    aggVec_init(&aggc);
 
     fflush((NULL));
-    while (rtmGetErrorStatus(rtM) == (NULL) || 1)
+    while (1)
     {
 
         if(update_rt_flag)
         {
             P3OUT ^= BIT5;
-            getMagnetometerData();
-            rtU.B_body_in_T[0] = magData->convertedX;
-            rtU.B_body_in_T[1] = magData->convertedY;
-            rtU.B_body_in_T[2] = magData->convertedZ;
-            rtU.B_meas_valid = magNormalOperation;
-            rtU.MT_on = 0;
             rt_OneStep();
             updateMtqInfo();
             sendTelemetry();
@@ -140,40 +126,30 @@ void initial_setup()
     canWrapInit();
     setCANPacketRxCallback(receive_packet);
 
-    magNum = magInit(I2CBus1); // I2C bus 1
 
     asensorInit(Ref_2p5V);
 
-    bdot_controller_lib_initialize();
 
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
     bcbinPopulateHeader(&myTelemMagnetometer.header, TLM_ID_MAGNETOMETER, sizeof(myTelemMagnetometer));
     bcbinPopulateHeader(&myTelemMtqInfo.header, TLM_ID_MTQ_INFO, sizeof(myTelemMtqInfo));
     bcbinPopulateHeader(&mySimulink.header, TLM_ID_SIMULINK_INFO, sizeof(mySimulink));
 
-    mspTemp = init_uint16_t(mspTempArray, 600);
-    mag_x = init_uint16_t(mag_xArray, 600);
-    mag_y = init_uint16_t(mag_yArray, 600);
-    mag_z = init_uint16_t(mag_zArray, 600);
 
     initializeTimer();
 }
 
 void getMagnetometerData()
 {
-    magData = testing_magReadXYZData(magNum, ConvertToTeslas);
 }
 
 void performSelfTest()
 {
-    selfTestConfig(magNum);
-    magNormalOperation = 0;
+
 }
 
 void performNormalOp()
 {
-    normalOperationConfig(magNum);
-    magNormalOperation = 1;
 }
 
 void simulink_compute()
@@ -190,15 +166,37 @@ void sendTelemetry()
     sendMtqInfoSegment();
     sendSimulinkSegment();
 }
-
+int funkyDipolesX[20] = {
+                        12,53,-65,412,24,
+                        -25,68,-26,89,43,
+                        62,-56,25,20,-13,
+                        -12,72,87,2,15
+};
+int funkyDipolesY[20] = {
+                        12,72,65,-42,24,
+                        25,68,26,21,43,
+                        -54,44,-32,20,1,
+                        43,72,87,2,17
+};
+int funkyDipolesZ[20] = {
+                        19,53,65,-28,24,
+                        25,68,-26,89,61,
+                        62,56,24,39,13,
+                        12,-72,26,-2,-31
+};
+int funkyCounter=0;
 void updateMtqInfo()
 {
-    mtqInfo.tumble_status  = (uint8_t) rtY.tumble;
+    funkyCounter++;
+    mtqInfo.tumble_status  = 1;
     if(mtqInfo.tumble_status)
     {
-        mtqInfo.xDipole = map((int8_t) rtY.Dig_val[0]);
-        mtqInfo.yDipole = map((int8_t) rtY.Dig_val[1]);
-        mtqInfo.zDipole = map((int8_t) rtY.Dig_val[2]);
+        mtqInfo.xDipole = funkyDipolesX[funkyCounter];
+        aggVec_i_push(mtqInfo.xDipole);
+        mtqInfo.yDipole = funkyDipolesY[funkyCounter];
+        aggVec_i_push(mtqInfo.yDipole);
+        mtqInfo.zDipole = funkyDipolesZ[funkyCounter];
+        aggVec_i_push(mtqInfo.zDipole);
     } else
     {
         mtqInfo.xDipole = 0;
@@ -222,10 +220,10 @@ void sendHealthSegment()
 
 void sendMagReadingSegment()
 {
-    myTelemMagnetometer.xMag = magData->convertedX * 1e9;
-    myTelemMagnetometer.yMag = magData->convertedY * 1e9;
-    myTelemMagnetometer.zMag = magData->convertedZ * 1e9;
-    myTelemMagnetometer.tempMag = magData->convertedTemp;
+    myTelemMagnetometer.xMag = 0;
+    myTelemMagnetometer.yMag = 0;
+    myTelemMagnetometer.zMag = 0;
+    myTelemMagnetometer.tempMag = 0;
 
     bcbinSendPacket((uint8_t *) &myTelemMagnetometer, sizeof(myTelemMagnetometer));
 }
@@ -242,10 +240,10 @@ void sendMtqInfoSegment()
 
 void sendSimulinkSegment()
 {
-    mySimulink.tumble = rtY.tumble;
-    mySimulink.sim_xDipole = rtY.Dig_val[0];
-    mySimulink.sim_yDipole = rtY.Dig_val[1];
-    mySimulink.sim_zDipole = rtY.Dig_val[2];
+    mySimulink.tumble = 1;
+    mySimulink.sim_xDipole = 1;
+    mySimulink.sim_yDipole = 1;
+    mySimulink.sim_zDipole = 1;
     bcbinSendPacket((uint8_t *) &mySimulink, sizeof(mySimulink));
 }
 
@@ -302,70 +300,17 @@ void receive_packet(CANPacket *packet)
     }
     if(packet->id == CAN_ID_CMD_ROLLCALL)
     {
-        rcFlag = 4;
     }
 }
 
 
 void updateRCData()
 {
-    addData_uint16_t(mag_x, magData->rawX);
-    addData_uint16_t(mag_y, magData->rawY);
-    addData_uint16_t(mag_z, magData->rawZ);
 }
 
 
 void rollCall()
 {
-    if(rcFlag)
-    {
-        while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
-        {
-            CANPacket rollcallPkt = {0};
-            if (rcFlag == 4)
-            {
-                rcFlag=1;
-                rc_adcs_bdot_1 rollcallPkt1_info = {0};
-                rollcallPkt1_info.rc_adcs_bdot_1_sysrstiv = bspGetResetCount();
-                rollcallPkt1_info.rc_adcs_bdot_1_temp_avg = getAvg_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
-                rollcallPkt1_info.rc_adcs_bdot_1_temp_max = getMax_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
-                rollcallPkt1_info.rc_adcs_bdot_1_temp_min = getMin_uint16_t(mspTemp);//asensorReadIntTempC(); //TODO: this
-                encoderc_adcs_bdot_1(&rollcallPkt1_info, &rollcallPkt);
-                canSendPacket(&rollcallPkt);
-            }
-            else if(rcFlag == 3)
-            {
-                rc_adcs_bdot_2 rollcallPkt2_info = {0};
-                rollcallPkt2_info.rc_adcs_bdot_2_mag_x_min = getMin_uint16_t(mag_x);
-                rollcallPkt2_info.rc_adcs_bdot_2_mag_x_max = getMax_uint16_t(mag_x);
-                rollcallPkt2_info.rc_adcs_bdot_2_mag_x_avg = getAvg_uint16_t(mag_x);
-                rollcallPkt2_info.rc_adcs_bdot_2_mag_y_min = getMin_uint16_t(mag_y);
-                encoderc_adcs_bdot_2(&rollcallPkt2_info, &rollcallPkt);
-                canSendPacket(&rollcallPkt);
-            }
-            else if(rcFlag == 2)
-            {
-                rc_adcs_bdot_3 rollcallPkt3_info = {0};
-                rollcallPkt3_info.rc_adcs_bdot_3_mag_y_max = getMax_uint16_t(mag_y);
-                rollcallPkt3_info.rc_adcs_bdot_3_mag_y_avg = getAvg_uint16_t(mag_y);
-                rollcallPkt3_info.rc_adcs_bdot_3_mag_z_min = getMin_uint16_t(mag_z);
-                rollcallPkt3_info.rc_adcs_bdot_3_mag_z_max = getMax_uint16_t(mag_y);
-                encoderc_adcs_bdot_3(&rollcallPkt3_info, &rollcallPkt);
-                canSendPacket(&rollcallPkt);
-            }
-            else if(rcFlag == 1)
-            {
-                CANPacket rollcallPkt4 = {0};
-                rc_adcs_bdot_4 rollcallPkt4_info = {0};
-                rollcallPkt4_info.rc_adcs_bdot_4_mag_z_avg = getAvg_uint16_t(mag_z);
-                rollcallPkt4_info.rc_adcs_bdot_4_tumble = rtY.tumble;
-                encoderc_adcs_bdot_4(&rollcallPkt4_info, &rollcallPkt4);
-                canSendPacket(&rollcallPkt4);
-            }
-            rcFlag--;
-        }
-    }
-
 }
 
 /*
