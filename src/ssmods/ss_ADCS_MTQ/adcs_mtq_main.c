@@ -624,7 +624,7 @@ void cosmos_init(void)
     bcbinPopulateHeader(&(cosmos_commandy_commands.header), TLM_ID_BDOT_FSW_COMMANDS, sizeof(cosmos_commandy_commands));
     bcbinPopulateHeader(&(healthSeg.header), TLM_ID_SHARED_HEALTH, sizeof(healthSeg));
 	bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
-	bcbinPopulateHeader(&cosmos_dooty.header, TLM_ID_DUTY_PERCENT, sizeof(duty_percent));
+	bcbinPopulateHeader(&(cosmos_dooty.header), TLM_ID_DUTY_PERCENT, sizeof(cosmos_dooty));
     asensorInit(Ref_2p5V); // initialize temperature sensor
     telem_timer = timerPollInitializer(telem_time_ms);
 }
@@ -635,7 +635,7 @@ void send_COSMOS_health_packet()
     healthSeg.inttemp = asensorReadIntTempC();
 	healthSeg.reset_count = bspGetResetCount(); 
     bcbinSendPacket((uint8_t *) &healthSeg, sizeof(healthSeg));
-    debugInvokeStatusHandler(Entity_UART); // send uart bus status over backchannel
+    //debugInvokeStatusHandler(Entity_UART); // send uart bus status over backchannel
 }
 
 void send_COSMOS_commands_packet()
