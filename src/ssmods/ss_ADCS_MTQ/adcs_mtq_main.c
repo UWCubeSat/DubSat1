@@ -137,6 +137,11 @@ eMTQState curr_state;
 // get rid of enable command update flag 
 // take out timer stuff from rx handler 
 //------------------------------------------------------------------
+#define toggleTelemetryTimer() P1OUT ^= BIT7
+#define toggleCosmosTimer() P1OUT ^= BIT6
+#define toggleMeasurementTimer() P3OUT ^= BIT7
+#define toggleStabilizeTimer() P3OUT ^= BIT6
+#define toggleActuationTimer() P2OUT ^= BIT2
 
 int main(void)
 {	
@@ -147,7 +152,12 @@ int main(void)
     initializeTimer();             // timer A initialization
     cosmos_init();                 // COSMOS backchannel initialization
     can_init();                    // CAN initialization
-
+    P1DIR |= BIT7;
+    P1DIR |= BIT6;
+    P3DIR |= BIT7;
+    P3DIR |= BIT6;
+    P2DIR |= BIT2;
+    P2DIR |= BIT6;
     restartMTQ(); // restart 
 
     while (1)
@@ -175,7 +185,7 @@ void measurement()
 	
     if(checkTimer(measurement_timer)) // finished measurement phase
     {
-
+        toggleMeasurementTimer();
 		if((sc_mode ==0||sc_mode ==1) && fsw_is_valid())
 		{
 			curr_state = FSW_ACTUATION;
@@ -201,6 +211,7 @@ void fsw_actuation()
     }
     if(checkTimer(actuation_timer)) // finished actuation phase
     {
+        toggleActuationTimer();
         curr_state = STABILIZE;
 		send_CAN_ack_packet();
         start_stabilize_timer();
@@ -220,6 +231,7 @@ void bdot_actuation()
     }
     if(checkTimer(actuation_timer)) // finished actuation phase
     {
+        toggleActuationTimer();
 		bdot_interrupt_received = 0;
         curr_state = STABILIZE;
 		send_CAN_ack_packet();
@@ -233,6 +245,7 @@ void stabilize()
 	
 	if(checkTimer(stabilize_timer)) // finished wait phase
 	{
+	    toggleStabilizeTimer();
 		curr_state = MEASUREMENT;
 		send_CAN_ack_packet();
 		start_measurement_timer();
@@ -292,12 +305,14 @@ void manage_telemetry(void)
 	// send_CAN_rollCall(); commented out because of potential memory leaks 
 	
 	if (checkTimer(cosmos_commands_timer)){
+	    toggleCosmosTimer();
 		send_COSMOS_commands_packet(); 
 		start_cosmos_commands_timer(); 
 	}
 	
     if (checkTimer(telem_timer))
     {
+        toggleTelemetryTimer();
 		send_COSMOS_health_packet();
 		// commented out for DEBUG
 		//send_COSMOS_dooty_packet();
@@ -340,6 +355,8 @@ void blink_LED(void)
 {
 	if (checkTimer(LED_timer)){
 		P3OUT ^= BIT5; // toggle LED 
+		PJDIR |= BIT0; // toggle LED
+		PJOUT ^= BIT0; // toggle LED
 		start_LED_timer();
 	}
 }
