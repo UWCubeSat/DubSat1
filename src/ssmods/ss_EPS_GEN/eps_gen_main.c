@@ -362,10 +362,6 @@ int main(void)
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     //mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
 
-    //canWrapInitWithFilter();
-    canWrapInit();
-    setCANPacketRxCallback(can_packet_rx_callback);
-
     genTempSensorsInit();
     genPCVSensorsInit();
     genPanelsTrackersInit();
@@ -417,6 +413,9 @@ int main(void)
 //    genSetPowerTracker(PowerTracker2, FALSE);
 //    genSetPowerTracker(PowerTracker3, FALSE);
 
+    //canWrapInitWithFilter();
+    canWrapInit();
+    setCANPacketRxCallback(can_packet_rx_callback);
     uint16_t counter = 0;
     while (1)
     {
