@@ -17,7 +17,7 @@
  *      4. To start timer again, repeat step 2-4.
  *      Ex:
  *          initializeTimer();
- *          int timerID = timerPollbackInitializer(2, 0); // 4 seconds timer
+ *          TIMER_HANDLE timerID = timerPollbackInitializer(2, 0); // 4 seconds timer
  *          while(!checkTimer(timerID)) {}  // stays in loop till checkTimer returns 1
  *          LED1 ^= 1; // Do whatever
  *      5. To end timer before checkTimer() returns 1, call on endPollingTimer(uint16_t timerNumber).
@@ -32,7 +32,7 @@
  *      4. To stop calling timer from resetting and calling the function, call on stopCallback(timer ID).
  *      Ex:
  *          initializeTimer();
- *          int timerID = timerCallbackInitializer(&blinkLED, 2000); // timer will call on blinkLED every 2000 us.
+ *          TIMER_HANDLE timerID = timerCallbackInitializer(&blinkLED, 2000); // timer will call on blinkLED every 2000 us.
  *          startCallback(timerID);
  *          ...// Do whatever you want
  *          // When you want to stop blinkLED;
@@ -42,35 +42,63 @@
  *          {
  *              blink the LED;
  *          }
- * PRECAUTION:
- *     1. If
+ *
+ *  NOTE: For testing purposes, each timer struct has a user_id attached to it if the user wishes to use it.
+ *        user_id is a uint16_t so the user can put in any postive number they want, EXCEPT for 0, the number is reserved.
+ *
+ *
  */
 #include <msp430.h>
 #include "timer.h"
 #include <stdint.h>
 
+/*********** Defines the number of polling/callback timer supported by the timer library***********/
 #define NUM_SUPPORTED_DURATIONS_POLLING   8
 #define NUM_SUPPORTED_DURATIONS_CALLBACK  2
+/*************************************************************************************************/
 
+/******************************* Polling Timer Information struct ********************************/
+/* inUse = whether that timer is in use or not                                                   */
+/* start_timer_counter = Start of timer counter when timer is called                             */
+/* start_TAR = start of the TAR when timer is called                                             */
+/* counter_dif = converted difference in counters that maps to the desired time                  */
+/* tar_dif = converted difference in tar that maps to the desired time                           */
+/*************************************************************************************************/
 typedef struct
 {
     uint8_t inUse;
-    uint16_t durationMS;   // Always indicate what the units are in struct names
     uint16_t start_timer_counter;
     uint16_t start_TAR;
     uint16_t counter_dif;
     uint16_t tar_dif;
+    uint16_t user_id;
 } polling_info;
 
+
+/****************************** Callback Timer Information struct ********************************/
+/* inUse = whether that timer is in use or not                                                   */
+/* count = converted difference in counters that maps to the desired time                        */
+/* current_count = current count                                                                 */
+/* tar = converted difference in tars that maps to the deired time                               */
+/* fxPtr = Pointer to the function that will be called                                           */
+/*************************************************************************************************/
 typedef struct
 {
     uint8_t inUse;
     uint16_t count;
     uint16_t current_count;
     uint16_t tar;
+    uint16_t user_id;
     void (*fxPtr)();
 } callback_info;
 
+/****************************** Helper struct for polling timer initializer **********************/
+/* counter =                                                   */
+/* count = converted difference in counters that maps to the desired time                        */
+/* current_count = current count                                                                 */
+/* tar = converted difference in tars that maps to the deired time                               */
+/* fxPtr = Pointer to the function that will be called                                           */
+/*************************************************************************************************/
 typedef struct
 {
     uint16_t counter;
@@ -78,11 +106,16 @@ typedef struct
 } desired_time;
 
 static polling_info polling[NUM_SUPPORTED_DURATIONS_POLLING];
-static int initialized = 0;
+static uint8_t initialized = 0;
 
 /* IMPORTANT: callback[1] == TA0CCTL2, callback[0] == TA0CCTL1 */
 static callback_info callback[NUM_SUPPORTED_DURATIONS_CALLBACK];
 static uint16_t timer_counter = 0;
+
+// Error count
+static uint16_t invalid_timer_id = 0;
+static uint16_t invalid_timer_inUse = 0;
+
 
 
 void initializeTimer()
@@ -98,11 +131,11 @@ void initializeTimer()
     for (i = 0; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
     {
         polling[i].inUse = 0;
-        polling[i].durationMS = 0;
         polling[i].start_timer_counter = 0;
         polling[i].start_TAR = 0;
         polling[i].counter_dif = 0;
         polling[i].tar_dif = 0;
+        polling[i].user_id = 0;
     }
     for (i = 0; i < NUM_SUPPORTED_DURATIONS_CALLBACK; i++)
     {
@@ -110,6 +143,7 @@ void initializeTimer()
         callback[i].count = 0;
         callback[i].current_count = 0;
         callback[i].tar = 0;
+        callback[i].user_id = 0;
 //        callback[i].fxPtr = 0; // TODO: Ask what to set to
     }
     initialized = 1;
@@ -139,15 +173,42 @@ TIMER_HANDLE timerPollInitializer(uint16_t ms)
     uint16_t start_counter = timer_counter;
     uint16_t start_TAR_ = TA0R;
     int i;
-    for (i = NUM_SUPPORTED_DURATIONS_POLLING - 1; i >= 0; i--)
+    for (i = 0; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
     {
         if (!polling[i].inUse)
         {
+            __disable_interrupt();
             polling[i].inUse = 1;
+            __enable_interrupt();
             polling[i].counter_dif = convert.counter;
             polling[i].tar_dif = convert.TARval;
             polling[i].start_timer_counter = start_counter;
             polling[i].start_TAR = start_TAR_;
+            polling[i].user_id = 0;
+            return i;
+        }
+    }
+    return -1;
+}
+
+TIMER_HANDLE timerPollInitializer_userID(uint16_t ms, uint16_t user_id)
+{
+    desired_time convert = convertTime(ms);
+    uint16_t start_counter = timer_counter;
+    uint16_t start_TAR_ = TA0R;
+    int i;
+    for (i = 0; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
+    {
+        if (!polling[i].inUse)
+        {
+           __disable_interrupt();
+            polling[i].inUse = 1;
+            __enable_interrupt();
+            polling[i].counter_dif = convert.counter;
+            polling[i].tar_dif = convert.TARval;
+            polling[i].start_timer_counter = start_counter;
+            polling[i].start_TAR = start_TAR_;
+            polling[i].user_id = user_id;
             return i;
         }
     }
@@ -156,7 +217,7 @@ TIMER_HANDLE timerPollInitializer(uint16_t ms)
 
 TIMER_HANDLE timerCallbackInitializer(void (*waitFunc)(), uint32_t us)
 {
-    uint32_t newTime = us / 30.517578125;           //(ms * 1.00150225338) - 40; //TODO: check this factor
+    uint32_t newTime = (uint32_t)(us / 30.517578125);           //(ms * 1.00150225338) - 40; //TODO: check this factor
     uint16_t overflows = 0;
     while (newTime > 65535)
     {
@@ -168,16 +229,49 @@ TIMER_HANDLE timerCallbackInitializer(void (*waitFunc)(), uint32_t us)
     {
         if (!callback[i].inUse)
         {
+            __disable_interrupt();
             callback[i].inUse = 1;
+            __enable_interrupt();
             callback[i].count = overflows;
             callback[i].current_count = overflows;
             callback[i].tar = newTime;
             callback[i].fxPtr = waitFunc;
+            callback[i].user_id = 0;
             return i;
         }
     }
     return -1;
 }
+
+TIMER_HANDLE timerCallbackInitializer_userID(void (*waitFunc)(), uint32_t us, uint16_t user_id)
+{
+    uint32_t newTime = (uint32_t)(us / 30.517578125);           //(ms * 1.00150225338) - 40; //TODO: check this factor
+    uint16_t overflows = 0;
+    while (newTime > 65535)
+    {
+        newTime -= 65535;
+        overflows++;
+    }
+    uint16_t i;
+    for (i = 0; i < NUM_SUPPORTED_DURATIONS_CALLBACK; i++)
+    {
+        if (!callback[i].inUse)
+        {
+            __disable_interrupt();
+            callback[i].inUse = 1;
+            __enable_interrupt();
+            callback[i].count = overflows;
+            callback[i].current_count = overflows;
+            callback[i].tar = newTime;
+            callback[i].fxPtr = waitFunc;
+            callback[i].user_id = user_id;
+            return i;
+        }
+    }
+    return -1;
+}
+
+
 
 /** \fn startCallback() starts callback for specified interrupt
  * \param n the interrupt to start
@@ -208,6 +302,7 @@ void startCallback(TIMER_HANDLE n)
     }
 }
 
+
 /** \fn stopCallback() stops callback for specified interrupt
  * \param n the interrupt to stop
  * also clears the callback values set in setCallback
@@ -224,7 +319,9 @@ void stopCallback(TIMER_HANDLE n)
     {
         TA0CCTL2 &= ~CCIE;
     }
+    __disable_interrupt();
     callback[n].inUse = 0;
+    __enable_interrupt();
     callback[n].count = 0;
     callback[n].current_count = 0;
     callback[n].tar = 0;
@@ -250,12 +347,12 @@ int checkTimerOverflow(TIMER_HANDLE timerNumber, uint16_t end_counter, uint16_t 
     }
     if(calc_counter > polling[timerNumber].counter_dif)
     {
-        polling[timerNumber].inUse = 0;
+        endPollingTimer(timerNumber);
         return 1;
     }
     if(calc_counter == polling[timerNumber].counter_dif && calc_tar >= polling[timerNumber].tar_dif)
     {
-        polling[timerNumber].inUse = 0;
+        endPollingTimer(timerNumber);
         return 1;
     }
     return 0;
@@ -265,10 +362,12 @@ int checkValidPollingID(TIMER_HANDLE timerNumber)
 {
     if(timerNumber >= NUM_SUPPORTED_DURATIONS_POLLING || timerNumber < 0)
     {
+        invalid_timer_id++;
         return 0;
     }
     if(!polling[timerNumber].inUse)
     {
+        invalid_timer_inUse++;
         return 0;
     }
     return 1;
@@ -304,12 +403,12 @@ int checkTimer(TIMER_HANDLE timerNumber)
     }
     if(calc_counter > polling[timerNumber].counter_dif)
     {
-        polling[timerNumber].inUse = 0;
+        endPollingTimer(timerNumber);
         return 1;
     }
     if(calc_counter == polling[timerNumber].counter_dif && calc_tar >= polling[timerNumber].tar_dif)
     {
-        polling[timerNumber].inUse = 0;
+        endPollingTimer(timerNumber);
         return 1;
     }
     return 0;
@@ -317,7 +416,9 @@ int checkTimer(TIMER_HANDLE timerNumber)
 
 void endPollingTimer(TIMER_HANDLE timerNumber)
 {
+    __disable_interrupt();
     polling[timerNumber].inUse = 0;
+    __enable_interrupt();
 }
 
 int checkValidCallbackID(TIMER_HANDLE timerNumber)
@@ -341,7 +442,7 @@ __interrupt void Timer0_A1_ISR(void)
     {
         case TAIV__NONE:   break;           // No interrupt
         case TAIV__TACCR1:
-            if(callback[0].current_count <= 0)
+            if(callback[0].current_count <= 0 && callback[0].inUse)
             {
                 startCallback(0);
                 callback[0].fxPtr();
@@ -349,7 +450,7 @@ __interrupt void Timer0_A1_ISR(void)
             }
             break;           // CCR1 not used
         case TAIV__TACCR2:
-            if(callback[1].current_count <= 0)
+            if(callback[1].current_count <= 0 && callback[1].inUse)
             {
                 startCallback(1);
                 callback[1].fxPtr();
@@ -361,7 +462,7 @@ __interrupt void Timer0_A1_ISR(void)
         case TAIV__TACCR6: break;           // reserved
         case TAIV__TAIFG:                   // overflow
             timer_counter++;
-            uint16_t i;
+            uint8_t i;
             for(i = 0; i < NUM_SUPPORTED_DURATIONS_CALLBACK; i++)
             {
                 if(callback[i].current_count > 0)

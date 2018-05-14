@@ -27,7 +27,7 @@ FILE_STATIC volatile magDataStatus mag_data = mag_invalid;
 /****************Magnetometer Variables*************************/
 FILE_STATIC MagnetometerData* magData;
 FILE_STATIC hMag magNum;
-FILE_STATIC uint8_t MagNormalOperation = 1;
+FILE_STATIC uint8_t magNormalOperation = 1;
 /***************************************************************/
 
 /******************Simulink Flags and Information***************/
