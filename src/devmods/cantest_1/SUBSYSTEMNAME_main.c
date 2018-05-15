@@ -90,14 +90,14 @@ int main(void) {
 
     PJDIR |= 0x07;
     while(1){
-        uint8_t a = 69;
-        uint8_t b = 96;
-        aggVec_i yolo;
-        aggVec_init(&yolo);
-        aggVec_i_push(&yolo, a);
-        aggVec_i_push(&yolo, b);
-        float avg = aggVec_i_avg_f(&yolo);
-        PJOUT |= (uint8_t) avg & 0x07;
+//        uint8_t a = 69;
+//        uint8_t b = 96;
+//        aggVec_i yolo;
+//        aggVec_init(&yolo);
+//        aggVec_i_push(&yolo, a);
+//        aggVec_i_push(&yolo, b);
+//        float avg = aggVec_i_avg_f(&yolo);
+//        PJOUT |= (uint8_t) avg & 0x07;
 //        CANPacket p = {0};
 //        p.id = 0x01;
 //        p.length = 0;

@@ -21,6 +21,10 @@ uint64_t metConvertToInt(timeStamp ts);
 // convert an MET timeStamp to seconds
 double metConvertToSeconds(timeStamp ts);
 
+double metConvertFromIntToSeconds(int64_t t);
+
+void metFromInt(int64_t t, uint32_t *primary, uint8_t *overflow);
+
 //returns if MET has been confirmed
 uint8_t metConfirmed();
 

@@ -3,6 +3,11 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket VECTOR__INDEPENDENT_SIG_MSG_packet = {0};
+	VECTOR__INDEPENDENT_SIG_MSG VECTOR__INDEPENDENT_SIG_MSG_info = {0};
+	encodeVECTOR__INDEPENDENT_SIG_MSG(&VECTOR__INDEPENDENT_SIG_MSG_info, &VECTOR__INDEPENDENT_SIG_MSG_packet);
+	canSendPacket(&VECTOR__INDEPENDENT_SIG_MSG_packet);
+
 	__delay_cycles(10000);	CANPacket rc_eps_dist_16_packet = {0};
 	rc_eps_dist_16 rc_eps_dist_16_info = {0};
 	encoderc_eps_dist_16(&rc_eps_dist_16_info, &rc_eps_dist_16_packet);
@@ -87,121 +92,6 @@ void canBlast() {
 	rc_eps_dist_1 rc_eps_dist_1_info = {0};
 	encoderc_eps_dist_1(&rc_eps_dist_1_info, &rc_eps_dist_1_packet);
 	canSendPacket(&rc_eps_dist_1_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_11_packet = {0};
-	rc_adcs_mpc_11 rc_adcs_mpc_11_info = {0};
-	encoderc_adcs_mpc_11(&rc_adcs_mpc_11_info, &rc_adcs_mpc_11_packet);
-	canSendPacket(&rc_adcs_mpc_11_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_7_packet = {0};
-	rc_adcs_mpc_7 rc_adcs_mpc_7_info = {0};
-	encoderc_adcs_mpc_7(&rc_adcs_mpc_7_info, &rc_adcs_mpc_7_packet);
-	canSendPacket(&rc_adcs_mpc_7_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_8_packet = {0};
-	rc_adcs_mpc_8 rc_adcs_mpc_8_info = {0};
-	encoderc_adcs_mpc_8(&rc_adcs_mpc_8_info, &rc_adcs_mpc_8_packet);
-	canSendPacket(&rc_adcs_mpc_8_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_9_packet = {0};
-	rc_adcs_mpc_9 rc_adcs_mpc_9_info = {0};
-	encoderc_adcs_mpc_9(&rc_adcs_mpc_9_info, &rc_adcs_mpc_9_packet);
-	canSendPacket(&rc_adcs_mpc_9_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_5_packet = {0};
-	rc_adcs_mpc_5 rc_adcs_mpc_5_info = {0};
-	encoderc_adcs_mpc_5(&rc_adcs_mpc_5_info, &rc_adcs_mpc_5_packet);
-	canSendPacket(&rc_adcs_mpc_5_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_6_packet = {0};
-	rc_adcs_mpc_6 rc_adcs_mpc_6_info = {0};
-	encoderc_adcs_mpc_6(&rc_adcs_mpc_6_info, &rc_adcs_mpc_6_packet);
-	canSendPacket(&rc_adcs_mpc_6_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_4_packet = {0};
-	rc_adcs_mpc_4 rc_adcs_mpc_4_info = {0};
-	encoderc_adcs_mpc_4(&rc_adcs_mpc_4_info, &rc_adcs_mpc_4_packet);
-	canSendPacket(&rc_adcs_mpc_4_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_3_packet = {0};
-	rc_adcs_mpc_3 rc_adcs_mpc_3_info = {0};
-	encoderc_adcs_mpc_3(&rc_adcs_mpc_3_info, &rc_adcs_mpc_3_packet);
-	canSendPacket(&rc_adcs_mpc_3_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_15_packet = {0};
-	rc_adcs_mpc_15 rc_adcs_mpc_15_info = {0};
-	encoderc_adcs_mpc_15(&rc_adcs_mpc_15_info, &rc_adcs_mpc_15_packet);
-	canSendPacket(&rc_adcs_mpc_15_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_12_packet = {0};
-	rc_adcs_mpc_12 rc_adcs_mpc_12_info = {0};
-	encoderc_adcs_mpc_12(&rc_adcs_mpc_12_info, &rc_adcs_mpc_12_packet);
-	canSendPacket(&rc_adcs_mpc_12_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_13_packet = {0};
-	rc_adcs_mpc_13 rc_adcs_mpc_13_info = {0};
-	encoderc_adcs_mpc_13(&rc_adcs_mpc_13_info, &rc_adcs_mpc_13_packet);
-	canSendPacket(&rc_adcs_mpc_13_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_14_packet = {0};
-	rc_adcs_mpc_14 rc_adcs_mpc_14_info = {0};
-	encoderc_adcs_mpc_14(&rc_adcs_mpc_14_info, &rc_adcs_mpc_14_packet);
-	canSendPacket(&rc_adcs_mpc_14_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_10_packet = {0};
-	rc_adcs_mpc_10 rc_adcs_mpc_10_info = {0};
-	encoderc_adcs_mpc_10(&rc_adcs_mpc_10_info, &rc_adcs_mpc_10_packet);
-	canSendPacket(&rc_adcs_mpc_10_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_2_packet = {0};
-	rc_adcs_mpc_2 rc_adcs_mpc_2_info = {0};
-	encoderc_adcs_mpc_2(&rc_adcs_mpc_2_info, &rc_adcs_mpc_2_packet);
-	canSendPacket(&rc_adcs_mpc_2_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_mpc_1_packet = {0};
-	rc_adcs_mpc_1 rc_adcs_mpc_1_info = {0};
-	encoderc_adcs_mpc_1(&rc_adcs_mpc_1_info, &rc_adcs_mpc_1_packet);
-	canSendPacket(&rc_adcs_mpc_1_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_estim_8_packet = {0};
-	rc_adcs_estim_8 rc_adcs_estim_8_info = {0};
-	encoderc_adcs_estim_8(&rc_adcs_estim_8_info, &rc_adcs_estim_8_packet);
-	canSendPacket(&rc_adcs_estim_8_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_estim_7_packet = {0};
-	rc_adcs_estim_7 rc_adcs_estim_7_info = {0};
-	encoderc_adcs_estim_7(&rc_adcs_estim_7_info, &rc_adcs_estim_7_packet);
-	canSendPacket(&rc_adcs_estim_7_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_estim_6_packet = {0};
-	rc_adcs_estim_6 rc_adcs_estim_6_info = {0};
-	encoderc_adcs_estim_6(&rc_adcs_estim_6_info, &rc_adcs_estim_6_packet);
-	canSendPacket(&rc_adcs_estim_6_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_estim_5_packet = {0};
-	rc_adcs_estim_5 rc_adcs_estim_5_info = {0};
-	encoderc_adcs_estim_5(&rc_adcs_estim_5_info, &rc_adcs_estim_5_packet);
-	canSendPacket(&rc_adcs_estim_5_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_estim_4_packet = {0};
-	rc_adcs_estim_4 rc_adcs_estim_4_info = {0};
-	encoderc_adcs_estim_4(&rc_adcs_estim_4_info, &rc_adcs_estim_4_packet);
-	canSendPacket(&rc_adcs_estim_4_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_estim_2_packet = {0};
-	rc_adcs_estim_2 rc_adcs_estim_2_info = {0};
-	encoderc_adcs_estim_2(&rc_adcs_estim_2_info, &rc_adcs_estim_2_packet);
-	canSendPacket(&rc_adcs_estim_2_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_estim_3_packet = {0};
-	rc_adcs_estim_3 rc_adcs_estim_3_info = {0};
-	encoderc_adcs_estim_3(&rc_adcs_estim_3_info, &rc_adcs_estim_3_packet);
-	canSendPacket(&rc_adcs_estim_3_packet);
-
-	__delay_cycles(10000);	CANPacket rc_adcs_estim_1_packet = {0};
-	rc_adcs_estim_1 rc_adcs_estim_1_info = {0};
-	encoderc_adcs_estim_1(&rc_adcs_estim_1_info, &rc_adcs_estim_1_packet);
-	canSendPacket(&rc_adcs_estim_1_packet);
 
 	__delay_cycles(10000);	CANPacket rc_adcs_sp_12_packet = {0};
 	rc_adcs_sp_12 rc_adcs_sp_12_info = {0};

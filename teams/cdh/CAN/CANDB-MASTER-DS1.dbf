@@ -5,7 +5,7 @@
 [PROTOCOL] CAN
 
 [BUSMASTER_VERSION] [1.7.2]
-[NUMBER_OF_MESSAGES] 94
+[NUMBER_OF_MESSAGES] 117
 [START_MSG] VECTOR__INDEPENDENT_SIG_MSG,1073741824,0,55,1,X,Vector__XXX
 [START_SIGNALS] rc_eps_dist_met,32,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
 [START_SIGNALS] rc_eps_dist_met_overflow,8,1,0,U,4294967295.0,0.0,1,0.0,1.0,,,Vector__XXX
@@ -62,6 +62,115 @@
 [START_SIGNALS] rc_eps_dist_ppt_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
 [START_SIGNALS] rc_eps_dist_ppt_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
 [START_SIGNALS] rc_eps_dist_ppt_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_11,304677438,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_11_omega_y_avg,64,1,0,D,10.0,-10.0,1,0.0,1.0,r/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_7,304677434,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_7_omega_x_max,64,1,0,D,10.0,-10.0,1,0.0,1.0,r/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_8,304677435,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_8_omega_x_avg,64,1,0,D,10.0,-10.0,1,0.0,1.0,r/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_9,304677436,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_9_omega_y_min,64,1,0,D,10.0,-10.0,1,0.0,1.0,r/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_5,304677432,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_5_sc_quat_4,64,1,0,D,1.0,-1.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_6,304677433,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_6_omega_x_min,64,1,0,D,10.0,-10.0,1,0.0,1.0,r/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_4,304677431,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_4_sc_quat_3,64,1,0,D,1.0,-1.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_3,304677430,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_3_sc_quat_2,64,1,0,D,1.0,-1.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_15,304677442,2,2,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_15_sc_mode,8,1,0,U,32.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_15_point_true,8,2,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_12,304677439,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_12_omega_z_min,64,1,0,D,10.0,-10.0,1,0.0,1.0,r/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_13,304677440,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_13_omega_z_max,64,1,0,D,10.0,-10.0,1,0.0,1.0,r/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_14,304677441,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_14_omega_z_avg,64,1,0,D,10.0,-10.0,1,0.0,1.0,r/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_10,304677437,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_10_omega_y_max,64,1,0,D,10.0,-10.0,1,0.0,1.0,r/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_2,304677429,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_2_sc_quat_1,64,1,0,D,1.0,-1.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_1,304677428,8,5,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_1_temp_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_1_temp_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_1_temp_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_1_sysrstiv,8,7,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_mpc_1_reset_count,8,8,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_8,304677427,7,5,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_8_sgp4_flag,8,6,0,S,1.0,-1.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_8_sc_in_sun,1,7,0,U,1.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
+[START_SIGNALS] rc_adcs_estim_8_sc_above_gs,1,7,1,U,1.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
+[START_SIGNALS] rc_adcs_estim_8_epoch_overflow,8,5,0,U,256.0,0.0,1,0.0,1.0,s^-8 since J2000 ,,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_8_epoch,32,1,0,U,4294967295.0,0.0,1,0.0,1.0,s^-8 since J2000 ,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_7,304677426,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_7_vel_z,64,1,0,D,1.7e+308,-1.7e+308,1,0.0,1.0,m/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_6,304677425,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_6_vel_y,64,1,0,D,1.7e+308,-1.7e+308,1,0.0,1.0,m/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_5,304677424,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_5_vel_x,64,1,0,D,1.7e+308,-1.7e+308,1,0.0,1.0,m/s,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_4,304677423,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_4_pos_z,64,1,0,D,7000000.0,-7000000.0,1,0.0,1.0,m,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_2,304677421,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_2_pos_x,64,1,0,D,7000000.0,-7000000.0,1,0.0,1.0,m,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_3,304677422,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_3_pos_y,64,1,0,D,7000000.0,-7000000.0,1,0.0,1.0,m,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_1,304677420,8,5,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_1_temp_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_1_temp_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_1_temp_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_1_sysrstiv,8,7,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_1_reset_count,8,8,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
 [START_MSG] rc_adcs_sp_12,304677414,8,4,1,X,Vector__XXX

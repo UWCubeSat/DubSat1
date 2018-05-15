@@ -19,22 +19,44 @@
 // Make sure state and mode variables are declared as volatile
 FILE_STATIC ModuleStatus mod_status;
 
-// rollcall
+/* rollcall */
+
 FILE_STATIC aggVec_f rc_mspTemp;
+FILE_STATIC uint64_t metEpoch = 0;
+FILE_STATIC uint64_t lastUsedMET = 0;
+
+FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulate2(CANPacket *out);
+FILE_STATIC void rcPopulate3(CANPacket *out);
+FILE_STATIC void rcPopulate4(CANPacket *out);
+FILE_STATIC void rcPopulate5(CANPacket *out);
+FILE_STATIC void rcPopulate6(CANPacket *out);
+FILE_STATIC void rcPopulate7(CANPacket *out);
+FILE_STATIC void rcPopulate8(CANPacket *out);
 
 FILE_STATIC rollcall_fn rollcallFunctions[] =
 {
- // TODO
+ rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate6,
+ rcPopulate7, rcPopulate8
 };
 
-// backchannel telemetry segments
+#define NUM_ROLLCALL_PACKETS (sizeof(rollcallFunctions) / sizeof(rollcall_fn))
+
+FILE_STATIC CANPacket rcCANPackets[NUM_ROLLCALL_PACKETS];
+
+/* backchannel */
+
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
+
+/* TLE */
 
 // The latest TLE from CAN is held here and passed to autocode on each step
 // TODO initialize it with a recent TLE before launch?
 #pragma PERSISTENT(tle)
 FILE_STATIC struct tle tle = { 0 };
+
+/* functions */
 
 FILE_STATIC void setInputs();
 FILE_STATIC void sendTelemOverBackchannel();
@@ -105,7 +127,8 @@ int main(void)
     asensorInit(Ref_2p5V);
 
     // init rollcall
-    rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
+    rollcallInitWithBuffer(rollcallFunctions, rcCANPackets, NUM_ROLLCALL_PACKETS);
+    aggVec_init_f(&rc_mspTemp);
 
     // init autocode
     MSP_env_estim0_initialize();
@@ -180,7 +203,8 @@ void handlePPTFiringNotification()
 
 FILE_STATIC void setInputs()
 {
-    rtU.MET = metConvertToSeconds(getMETTimestamp());
+    lastUsedMET = metConvertToInt(getMETTimestamp());
+    rtU.MET = metConvertFromIntToSeconds(lastUsedMET);
 
     // input the TLE unless we're in the middle of reading it from CAN
     // disable interrupts so the TLE isn't modified during read
@@ -301,7 +325,8 @@ void canRxCallback(CANPacket *p)
     case CAN_ID_GRND_EPOCH:
         decodegrnd_epoch(p, &ep);
         t = constructTimestamp(ep.grnd_epoch_val, ep.grnd_epoch_val_overflow);
-        rtU.MET_epoch = metConvertToSeconds(t);
+        metEpoch = metConvertToInt(t);
+        rtU.MET_epoch = metConvertFromIntToSeconds(metEpoch);
         break;
     }
 }
@@ -320,11 +345,86 @@ FILE_STATIC void sendHealthSegment()
     debugInvokeStatusHandler(Entity_UART);
 
     // update temperature (in deci-Kelvin)
-    aggVec_f_push(&rc_mspTemp, (hseg.inttemp + 273.15f) * 10);
+    aggVec_push_f(&rc_mspTemp, (hseg.inttemp + 273.15f) * 10);
 }
 
 FILE_STATIC void sendMetaSegment()
 {
     bcbinPopulateMeta(&mseg, sizeof(mseg));
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
+}
+
+FILE_STATIC void rcPopulate1(CANPacket *out)
+{
+    rc_adcs_estim_1 rc;
+    rc.rc_adcs_estim_1_reset_count = bspGetResetCount();
+    rc.rc_adcs_estim_1_sysrstiv = SYSRSTIV;
+    rc.rc_adcs_estim_1_temp_min = aggVec_min_f(&rc_mspTemp);
+    rc.rc_adcs_estim_1_temp_max = aggVec_max_f(&rc_mspTemp);
+    rc.rc_adcs_estim_1_temp_avg = aggVec_avg_f(&rc_mspTemp);
+    aggVec_reset((aggVec *) &rc_mspTemp);
+    encoderc_adcs_estim_1(&rc, out);
+}
+
+FILE_STATIC void rcPopulate2(CANPacket *out)
+{
+    rc_adcs_estim_2 rc;
+    rc.rc_adcs_estim_2_pos_x = rtY.pos_eci_m[0];
+    encoderc_adcs_estim_2(&rc, out);
+}
+
+FILE_STATIC void rcPopulate3(CANPacket *out)
+{
+    rc_adcs_estim_3 rc;
+    rc.rc_adcs_estim_3_pos_y = rtY.pos_eci_m[1];
+    encoderc_adcs_estim_3(&rc, out);
+}
+
+FILE_STATIC void rcPopulate4(CANPacket *out)
+{
+    rc_adcs_estim_4 rc;
+    rc.rc_adcs_estim_4_pos_z = rtY.pos_eci_m[2];
+    encoderc_adcs_estim_4(&rc, out);
+}
+
+FILE_STATIC void rcPopulate5(CANPacket *out)
+{
+    rc_adcs_estim_5 rc;
+    rc.rc_adcs_estim_5_vel_x = rtY.vel_eci_mps[0];
+    encoderc_adcs_estim_5(&rc, out);
+}
+
+FILE_STATIC void rcPopulate6(CANPacket *out)
+{
+    rc_adcs_estim_6 rc;
+    rc.rc_adcs_estim_6_vel_y = rtY.vel_eci_mps[1];
+    encoderc_adcs_estim_6(&rc, out);
+}
+
+FILE_STATIC void rcPopulate7(CANPacket *out)
+{
+    rc_adcs_estim_7 rc;
+    rc.rc_adcs_estim_7_vel_z = rtY.vel_eci_mps[2];
+    encoderc_adcs_estim_7(&rc, out);
+}
+
+FILE_STATIC void rcPopulate8(CANPacket *out)
+{
+    rc_adcs_estim_8 rc;
+
+    /*
+     * Calculate the J2000 epoch used in calculations by adding the MET epoch
+     * from CAN to the MET last used in the autocode step.
+     *
+     * Don't use the rtY values because they're doubles and can lose precision.
+     */
+    uint64_t calcEpoch = metEpoch + lastUsedMET;
+    metFromInt(calcEpoch, &rc.rc_adcs_estim_8_epoch,
+               &rc.rc_adcs_estim_8_epoch_overflow);
+
+    rc.rc_adcs_estim_8_sc_above_gs = rtY.sc_above_gs;
+    rc.rc_adcs_estim_8_sc_in_sun = rtY.sc_in_sun;
+    rc.rc_adcs_estim_8_sgp4_flag = rtY.SGP4_flag;
+
+    encoderc_adcs_estim_8(&rc, out);
 }

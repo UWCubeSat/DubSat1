@@ -50,6 +50,7 @@ TLM_SEGMENT {
 void triggerStep();
 FILE_STATIC void rt_OneStep();
 void acceptInputs();
+void useOutputs();
 
 // CAN input
 void canRxCallback(CANPacket *p);
