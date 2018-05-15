@@ -50,7 +50,7 @@ FILE_STATIC void populateAll()
     }
 }
 
-void rollcallUpdate()
+uint8_t rollcallUpdate()
 {
     /*
      * if there is a packet buffer and this is the first update, populate the
@@ -95,4 +95,11 @@ void rollcallUpdate()
         // decrement to move on to next packet
         rcFlag--;
     }
+
+    return rollcallQueueLength();
+}
+
+uint8_t rollcallQueueLength()
+{
+    return rcFlag;
 }
