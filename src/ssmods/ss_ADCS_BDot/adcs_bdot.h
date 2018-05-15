@@ -22,7 +22,7 @@
 #define TLM_ID_MAGNETOMETER  127
 #define TLM_ID_MTQ_INFO 126
 #define TLM_ID_SIMULINK_INFO 124
-
+#define TLM_ID_POLLING_TIMER 123
 
 
 #define OPCODE_MY_CMD 1
@@ -59,12 +59,26 @@ TLM_SEGMENT {
     uint8_t tumble;
 } simulink_segment;
 
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint16_t user_id;
+    uint8_t timer_id;
+    uint8_t inUse;
+    uint16_t start_timer_counter;
+    uint16_t start_TAR;
+    uint16_t counter_dif;
+    uint16_t tar_dif;
+} polling_timer_info_segment;
+
+
+
 typedef struct mtq_info {
     uint8_t tumble_status;
     int8_t xDipole;
     int8_t yDipole;
     int8_t zDipole;
 } mtq_info;
+
 
 
 
@@ -89,7 +103,6 @@ typedef enum _subsystem_mode {
 // A struct for storing various interesting info about the subsystem module
 typedef struct _module_status {
     StartupType startup_type;
-
     uint16_t state_transition_errors;
     uint16_t in_unknown_state;
 } ModuleStatus;
@@ -103,6 +116,7 @@ void updateRCData();
 void simulink_compute();
 void sendHealthSegment();
 void sendMagReadingSegment();
+void send_all_polling_timers_segment();
 void sendMtqInfoSegment();
 void sendSimulinkSegment();
 void sendMtqState();
