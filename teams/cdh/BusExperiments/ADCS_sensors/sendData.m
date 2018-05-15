@@ -2,6 +2,10 @@ clear all; close all; clc;
 
 MAX_NUM_AARDVARKS = 10;
 
+dataDir = 'C:\dubsat_data\';
+spDataDir = [dataDir, 'sp\'];
+bdotDataDir = [dataDir, 'bdot\'];
+
 % define sensors
 
 imu.name = 'imu';
@@ -74,10 +78,6 @@ end
 
 % load data
 disp('loading data');
-tic
-dataDir = 'C:\dubsat_data\';
-spDataDir = [dataDir, 'sp\'];
-bdotDataDir = [dataDir, 'bdot\'];
 time = dlmread(strcat(spDataDir, 'time.dat'));
 for i=1:length(sensors)
     % load sensors based on their id (but only the ones with an aardvark)
@@ -142,6 +142,9 @@ for i=1:length(sensors)
     % close then open aardvark
     calllib(lib, 'c_aa_close', sensors(i).port);
     sensors(i).hdev = calllib(lib, 'c_aa_open', sensors(i).port);
+    if sensors(i).hdev < 0
+        error('failed to open %s on port %i (error code: %i)', sensors(i).name, int16(sensors(i).port), sensors(i).hdev);
+    end
     
     % enable aardvark
     calllib(lib, 'c_aa_i2c_slave_enable', sensors(i).hdev, sensors(i).addr, 0, 0);
