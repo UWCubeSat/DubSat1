@@ -89,7 +89,7 @@ for i=1:length(sensors)
             in_imuy_lsb = dlmread(sprintf('%sin_imuy_lsb.dat', spDataDir));
             in_imuz_msb = dlmread(sprintf('%sin_imuz_msb.dat', spDataDir));
             in_imuz_lsb = dlmread(sprintf('%sin_imuz_lsb.dat', spDataDir));
-            sensors(i).bytes = [in_imux_msb in_imux_lsb in_imuy_msb in_imuy_lsb in_imuz_msb in_imuz_lsb];
+            sensors(i).bytes = [in_imux_lsb in_imux_msb in_imuy_lsb in_imuy_msb in_imuz_lsb in_imuz_msb];
         case mag1.id
             in_mag1x_msb = dlmread(sprintf('%sin_mag1x_msb.dat', spDataDir));
             in_mag1x_lsb = dlmread(sprintf('%sin_mag1x_lsb.dat', spDataDir));
