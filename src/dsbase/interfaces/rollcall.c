@@ -41,7 +41,7 @@ FILE_STATIC uint8_t hasPacketBuffer()
  * Use each function populate to populate a CAN packet in the buffer.
  * Only do this if we have a packet buffer.
  */
-FILE_STATIC populateAll()
+FILE_STATIC void populateAll()
 {
     uint8_t i = numFunctions;
     while (i-- > 0)
