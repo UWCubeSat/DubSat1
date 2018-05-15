@@ -15,9 +15,6 @@
 #define ENABLE_MAG2        0
 #define ENABLE_IMU         0
 
-// size of rollcall buffers for min/max/averaging
-#define RC_BUFFER_SIZE 60
-
 // COSMOS telemetry IDs
 #define TLM_ID_SUNSENSOR_RAW    121
 #define TLM_ID_SUNSENSOR_VECTOR 114

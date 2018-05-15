@@ -77,7 +77,7 @@ FILE_STATIC const rollcall_fn rollcallFunctions[] =
  rcPopulate17
 };
 
-FILE_STATIC aggVec_f rc_temp;
+FILE_STATIC aggVec_i rc_temp;
 
 /* Backchannel */
 
@@ -122,7 +122,7 @@ int main(void)
     // initialize sensors
     initSensorInterfaces();
     asensorInit(Ref_2p5V); // temperature sensor
-    aggVec_init_f(&rc_temp);
+    aggVec_init_i(&rc_temp);
 
     // initialize rollcall
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
@@ -347,7 +347,7 @@ void sendHealthSegment()
     debugInvokeStatusHandler(Entity_UART);
 
     // update rollcall temperature (in deci-Kelvin)
-    aggVec_push_f(&rc_temp, (hseg.inttemp + 273.15f) * 10);
+    aggVec_push_i(&rc_temp, (hseg.inttemp + 273.15f) * 10);
 }
 
 void sendMetaSegment()
@@ -405,9 +405,9 @@ void rcPopulate1(CANPacket *out)
     rc_adcs_sp_1 rc;
     rc.rc_adcs_sp_1_reset_count = bspGetResetCount();
     rc.rc_adcs_sp_1_sysrstiv = SYSRSTIV;
-    rc.rc_adcs_sp_1_temp_avg = aggVec_avg_f(&rc_temp);
-    rc.rc_adcs_sp_1_temp_max = aggVec_max_f(&rc_temp);
-    rc.rc_adcs_sp_1_temp_min = aggVec_min_f(&rc_temp);
+    rc.rc_adcs_sp_1_temp_avg = aggVec_avg_i_i(&rc_temp);
+    rc.rc_adcs_sp_1_temp_max = aggVec_max_i(&rc_temp);
+    rc.rc_adcs_sp_1_temp_min = aggVec_min_i(&rc_temp);
     aggVec_reset((aggVec *) &rc_temp);
     encoderc_adcs_sp_1(&rc, out);
 }

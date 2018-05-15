@@ -21,7 +21,7 @@ FILE_STATIC ModuleStatus mod_status;
 
 /* rollcall */
 
-FILE_STATIC aggVec_f rc_mspTemp;
+FILE_STATIC aggVec_i rc_mspTemp;
 FILE_STATIC uint64_t metEpoch = 0;
 FILE_STATIC uint64_t lastUsedMET = 0;
 
@@ -128,7 +128,7 @@ int main(void)
 
     // init rollcall
     rollcallInitWithBuffer(rollcallFunctions, rcCANPackets, NUM_ROLLCALL_PACKETS);
-    aggVec_init_f(&rc_mspTemp);
+    aggVec_init_i(&rc_mspTemp);
 
     // init autocode
     MSP_env_estim0_initialize();
@@ -345,7 +345,7 @@ FILE_STATIC void sendHealthSegment()
     debugInvokeStatusHandler(Entity_UART);
 
     // update temperature (in deci-Kelvin)
-    aggVec_push_f(&rc_mspTemp, (hseg.inttemp + 273.15f) * 10);
+    aggVec_push_i(&rc_mspTemp, (hseg.inttemp + 273.15f) * 10);
 }
 
 FILE_STATIC void sendMetaSegment()
@@ -359,9 +359,9 @@ FILE_STATIC void rcPopulate1(CANPacket *out)
     rc_adcs_estim_1 rc;
     rc.rc_adcs_estim_1_reset_count = bspGetResetCount();
     rc.rc_adcs_estim_1_sysrstiv = SYSRSTIV;
-    rc.rc_adcs_estim_1_temp_min = aggVec_min_f(&rc_mspTemp);
-    rc.rc_adcs_estim_1_temp_max = aggVec_max_f(&rc_mspTemp);
-    rc.rc_adcs_estim_1_temp_avg = aggVec_avg_f(&rc_mspTemp);
+    rc.rc_adcs_estim_1_temp_min = aggVec_min_i(&rc_mspTemp);
+    rc.rc_adcs_estim_1_temp_max = aggVec_max_i(&rc_mspTemp);
+    rc.rc_adcs_estim_1_temp_avg = aggVec_avg_i_i(&rc_mspTemp);
     aggVec_reset((aggVec *) &rc_mspTemp);
     encoderc_adcs_estim_1(&rc, out);
 }
