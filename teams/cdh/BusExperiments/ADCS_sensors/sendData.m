@@ -3,14 +3,22 @@ clear all; close all; clc;
 MAX_NUM_AARDVARKS = 10;
 PORT_ERROR_VALUE = uint16(10000);
 
+dataDir = 'C:\dubsat_data\';
+spDataDir = [dataDir, 'sp\'];
+bdotDataDir = [dataDir, 'bdot\'];
+load(strcat(spDataDir, 'time.dat')); % loading from sensor proc
+dataLength = length(time);
+
 % define sensors
 
 imu.msp = 'sp';
 imu.name = 'imu';
 imu.addr = hex2dec('6A');
 imu.enabled = true;
-imu.id = 2238597684;      % unique ID to match up with aardvark
+imu.id = 2238592316;      % unique ID to match up with aardvark
 imu.port = PORT_ERROR_VALUE;
+imu.bytes = zeros(dataLength, 10);
+imu.length = 6;
 
 mag1.msp = 'sp';
 mag1.name = 'mag1';
@@ -18,6 +26,8 @@ mag1.addr = hex2dec('1E');
 mag1.enabled = false;
 mag1.id = 2238593289;
 mag1.port = PORT_ERROR_VALUE;
+mag1.bytes = zeros(dataLength, 10);
+mag1.length = 6;
 
 mag2.msp = 'sp';
 mag2.name = 'mag2';
@@ -25,6 +35,8 @@ mag2.addr = hex2dec('1E');
 mag2.enabled = false;
 mag2.id = 0;
 mag2.port = PORT_ERROR_VALUE;
+mag2.bytes = zeros(dataLength, 10);
+mag2.length = 6;
 
 sun.msp = 'sp';
 sun.name = 'sun';
@@ -32,78 +44,20 @@ sun.addr = hex2dec('60');
 sun.enabled = false;
 sun.id = 0;
 sun.port = PORT_ERROR_VALUE;
+sun.bytes = zeros(dataLength, 10);
+sun.length = 10;
 
 mag.msp = 'bdot';
 mag.name = 'mag';
 mag.addr = hex2dec('1E');
 mag.enabled = false;
-mag.id = 0;
+mag.id = 2238519142;
 mag.port = PORT_ERROR_VALUE;
-
-sensors = [];
-if (imu.enabled)
-    sensors = [sensors, imu];
-end
-if (mag1.enabled)
-    sensors = [sensors, mag1];
-end
-if (mag2.enabled)
-    sensors = [sensors, mag2];
-end
-if (sun.enabled)
-    sensors = [sensors, sun];
-end
-if (mag.enabled)
-    sensors = [sensors, mag];
-end
-
-% load aardvark library
-disp('loading library');
-lib = 'aardvark';
-libhdr = 'aardvark.h';
-if ~libisloaded(lib)
-    [load_notfounderrors, load_warnings] = loadlibrary(lib, libhdr);
-end
-
-% find aardvarks
-disp('initializing aardvarks');
-portsPtr = libpointer('uint16Ptr', uint16(zeros(1, MAX_NUM_AARDVARKS)));
-idsPtr = libpointer('uint32Ptr', uint32(zeros(1, MAX_NUM_AARDVARKS)));
-numAardvarks = calllib(lib, 'c_aa_find_devices_ext', MAX_NUM_AARDVARKS, portsPtr, MAX_NUM_AARDVARKS, idsPtr);
-ports = get(portsPtr, 'Value');
-ids = get(idsPtr, 'Value');
-
-% assign ports to each sensor
-for i=1:length(sensors)
-    % find an aardvark for this sensor
-    for j=1:numAardvarks
-        if ids(j) == sensors(i).id
-            sensors(i).port = ports(j);
-        end
-    end
-    if sensors(i).port == PORT_ERROR_VALUE
-        error('no aardvark found for %s!', sensors(i).name);
-    end
-end
-
-% open and enable aardvarks
-for i=1:length(sensors)
-    % close then open aardvark
-    fprintf('trying to do stuff with port %i\n', sensors(i).port);
-    calllib(lib, 'c_aa_close', sensors(i).port);
-    sensors(i).hdev = calllib(lib, 'c_aa_open', sensors(i).port);
-    
-    % enable aardvark
-    calllib(lib, 'c_aa_i2c_slave_enable', sensors(i).hdev, sensors(i).addr, 0, 0);
-    disp(['  ' sensors(i).name ' enabled']);
-end
+mag.bytes = zeros(dataLength, 10);
+mag.length = 6;
 
 % load data
 disp('loading data');
-dataDir = 'C:\dubsat_data\';
-spDataDir = [dataDir, 'sp\'];
-bdotDataDir = [dataDir, 'bdot\'];
-load(strcat(spDataDir, 'time.dat')); % loading from sensor proc
 if (imu.enabled)
     load(sprintf('%sin_imux_msb.dat', spDataDir));
     load(sprintf('%sin_imux_lsb.dat', spDataDir));
@@ -159,14 +113,71 @@ if (sun.enabled)
     end
 end
 if (mag.enabled)
-    xMagMsb = uint8(dlmread(strcat(bdotDataDir, 'xMagMsb.dat')));
-    yMagMsb = uint8(dlmread(strcat(bdotDataDir, 'yMagMsb.dat')));
-    zMagMsb = uint8(dlmread(strcat(bdotDataDir, 'zMagMsb.dat')));
-    xMagLsb = uint8(dlmread(strcat(bdotDataDir, 'xMagLsb.dat')));
-    yMagLsb = uint8(dlmread(strcat(bdotDataDir, 'yMagLsb.dat')));
-    zMagLsb = uint8(dlmread(strcat(bdotDataDir, 'zMagLsb.dat')));
+    xMagMsb = uint8(dlmread(strcat(bdotDataDir, 'xMagMsb_to.dat')));
+    yMagMsb = uint8(dlmread(strcat(bdotDataDir, 'yMagMsb_to.dat')));
+    zMagMsb = uint8(dlmread(strcat(bdotDataDir, 'zMagMsb_to.dat')));
+    xMagLsb = uint8(dlmread(strcat(bdotDataDir, 'xMagLsb_to.dat')));
+    yMagLsb = uint8(dlmread(strcat(bdotDataDir, 'yMagLsb_to.dat')));
+    zMagLsb = uint8(dlmread(strcat(bdotDataDir, 'zMagLsb_to.dat')));
     mag.bytes = [xMagMsb xMagLsb zMagMsb zMagLsb yMagMsb yMagLsb];
     mag.bytes = uint8(mag.bytes);
+end
+
+sensors = [];
+if (imu.enabled)
+    sensors = [sensors, imu];
+end
+if (mag1.enabled)
+    sensors = [sensors, mag1];
+end
+if (mag2.enabled)
+    sensors = [sensors, mag2];
+end
+if (sun.enabled)
+    sensors = [sensors, sun];
+end
+if (mag.enabled)
+    sensors = [sensors, mag];
+end
+
+% load aardvark library
+disp('loading library');
+lib = 'aardvark';
+libhdr = 'aardvark.h';
+if ~libisloaded(lib)
+    [load_notfounderrors, load_warnings] = loadlibrary(lib, libhdr);
+end
+
+% find aardvarks
+disp('initializing aardvarks');
+portsPtr = libpointer('uint16Ptr', uint16(zeros(1, MAX_NUM_AARDVARKS)));
+idsPtr = libpointer('uint32Ptr', uint32(zeros(1, MAX_NUM_AARDVARKS)));
+numAardvarks = calllib(lib, 'c_aa_find_devices_ext', MAX_NUM_AARDVARKS, portsPtr, MAX_NUM_AARDVARKS, idsPtr);
+ports = get(portsPtr, 'Value');
+ids = get(idsPtr, 'Value');
+
+% assign ports to each sensor
+for i=1:length(sensors)
+    % find an aardvark for this sensor
+    for j=1:numAardvarks
+        if ids(j) == sensors(i).id
+            sensors(i).port = ports(j);
+        end
+    end
+    if sensors(i).port == PORT_ERROR_VALUE
+        error('no aardvark found for %s!', sensors(i).name);
+    end
+end
+
+% open and enable aardvarks
+for i=1:length(sensors)
+    % close then open aardvark
+    calllib(lib, 'c_aa_close', sensors(i).port);
+    sensors(i).hdev = calllib(lib, 'c_aa_open', sensors(i).port);
+    
+    % enable aardvark
+    calllib(lib, 'c_aa_i2c_slave_enable', sensors(i).hdev, sensors(i).addr, 0, 0);
+    disp(['  ' sensors(i).name ' enabled']);
 end
 
 % set responses
@@ -182,7 +193,7 @@ while 1
                     continue 
                 end
                 bytes = sensor.bytes(index, :);
-                calllib(lib, 'c_aa_i2c_slave_set_response', sensor.hdev, length(bytes), bytes);
+                calllib(lib, 'c_aa_i2c_slave_set_response', sensor.hdev, sensor.length, bytes);
             end
             index = index + 1;
         end
