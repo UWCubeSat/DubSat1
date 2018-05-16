@@ -10,6 +10,7 @@
 
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
+FILE_STATIC meta_segment metaSeg;
 FILE_STATIC magnetometer_segment myTelemMagnetometer;
 FILE_STATIC mtq_info_segment myTelemMtqInfo;
 FILE_STATIC simulink_segment mySimulink;
@@ -159,6 +160,7 @@ void initial_setup()
     bcbinPopulateHeader(&myTelemMtqInfo.header, TLM_ID_MTQ_INFO, sizeof(myTelemMtqInfo));
     bcbinPopulateHeader(&mySimulink.header, TLM_ID_SIMULINK_INFO, sizeof(mySimulink));
     bcbinPopulateHeader(&polling_timer_info.header, TLM_ID_POLLING_TIMER, sizeof(polling_timer_info));
+    bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
     mspTemp = init_uint16_t(mspTempArray, 600);
     mag_x = init_uint16_t(mag_xArray, 600);
     mag_y = init_uint16_t(mag_yArray, 600);
@@ -197,6 +199,7 @@ void sendTelemetry()
     sendMagReadingSegment();
     sendMtqInfoSegment();
     sendSimulinkSegment();
+    bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
 }
 
 void updateMtqInfo()
