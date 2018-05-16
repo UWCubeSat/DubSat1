@@ -1,6 +1,7 @@
 clear all; close all; clc;
 
 MAX_NUM_AARDVARKS = 10;
+AA_PORT_NOT_FREE = uint16(hex2dec('8000'));
 
 dataDir = 'C:\dubsat_data\';
 spDataDir = [dataDir, 'sp\'];
@@ -59,8 +60,10 @@ while i <= length(sensors)
     foundAardvark = false;
     for j=1:numAardvarks
         if ids(j) == sensors(i).id
-            sensors(i).port = ports(j);
-            fprintf('  assigned port %i to %s\n', sensors(i).port, sensors(i).name);
+            % do bitand on ~AA_PORT_NOT_FREE to get the port regardless of
+            % if the port is in use.
+            sensors(i).port = bitand(uint16(ports(j)), bitcmp(AA_PORT_NOT_FREE));
+            fprintf('  assigned port %i to %s\n', uint16(sensors(i).port), sensors(i).name);
             foundAardvark = true;
             i = i + 1;
             break
@@ -149,6 +152,15 @@ for i=1:length(sensors)
     % enable aardvark
     calllib(lib, 'c_aa_i2c_slave_enable', sensors(i).hdev, sensors(i).addr, 0, 0);
 end
+
+% experiment to see if disabling pullups helps
+% for i=1:length(sensors)
+%     if sensors(i).id == imu.id || sensors(i).id == mag1.id
+%         % 0 means none, 3 is on
+%         disp('disabling pullup');
+%         calllib(lib, 'c_aa_i2c_pullup', sensors(i).hdev, 0);
+%     end
+% end
 
 % set responses
 disp('sending data');
