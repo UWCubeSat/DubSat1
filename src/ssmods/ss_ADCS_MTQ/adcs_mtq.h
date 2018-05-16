@@ -48,6 +48,7 @@ FILE_STATIC void send_CAN_rollCall();
 
 FILE_STATIC uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 FILE_STATIC void cosmos_init(void);
+FILE_STATIC void rc_agg_init();
 FILE_STATIC void send_COSMOS_health_packet(void); 
 FILE_STATIC void send_COSMOS_meta_packet(void);
 FILE_STATIC void send_COSMOS_commands_packet(void);
@@ -105,38 +106,27 @@ FILE_STATIC volatile int8_t command_source = ELOISE_UNKNOWN;
 FILE_STATIC volatile int8_t which_phase = ELOISE_UNKNOWN; 
 
 // roll call packet 
-// TODO Garrett enter rollcall globals here. Delete old ones. 
-/*
-FILE_STATIC uint16_t mspTempArray[60] = {0};
-#pragma PERSISTENT(mspTempArray);
-FILE_STATIC uint8_t bdot_xArray[60] = {0};
-FILE_STATIC uint8_t bdot_yArray[60] = {0};
-FILE_STATIC uint8_t bdot_zArray[60] = {0};
-FILE_STATIC uint8_t fsw_xArray[60] = {0};
-FILE_STATIC uint8_t fsw_yArray[60] = {0};
-FILE_STATIC uint8_t fsw_zArray[60] = {0};
-FILE_STATIC uint8_t duty_x1Array[60] = {0};
-FILE_STATIC uint8_t duty_x2Array[60] = {0};
-FILE_STATIC uint8_t duty_y1Array[60] = {0};
-FILE_STATIC uint8_t duty_y2Array[60] = {0};
-FILE_STATIC uint8_t duty_z1Array[60] = {0};
-FILE_STATIC uint8_t duty_z2Array[60] = {0};
-FILE_STATIC uint16_t mspTemp;
-FILE_STATIC uint16_t bdot_x;
-FILE_STATIC uint16_t bdot_y;
-FILE_STATIC uint16_t bdot_z;
-FILE_STATIC uint16_t fsw_x;
-FILE_STATIC uint16_t fsw_y;
-FILE_STATIC uint16_t fsw_z;
-FILE_STATIC uint16_t duty_x1Handle;
-FILE_STATIC uint16_t duty_x2Handle;
-FILE_STATIC uint16_t duty_y1Handle;
-FILE_STATIC uint16_t duty_y2Handle;
-FILE_STATIC uint16_t duty_z1Handle;
-FILE_STATIC uint16_t duty_z2Handle;
-FILE_STATIC int rcFlag = 0;
-*/
-
+FILE_STATIC aggVec_i bdot_x_agg;
+FILE_STATIC aggVec_i bdot_y_agg;
+FILE_STATIC aggVec_i bdot_z_agg;
+FILE_STATIC aggVec_i fsw_x_agg;
+FILE_STATIC aggVec_i fsw_y_agg;
+FILE_STATIC aggVec_i fsw_z_agg;
+FILE_STATIC aggVec_i duty_x1_agg;
+FILE_STATIC aggVec_i duty_x2_agg;
+FILE_STATIC aggVec_i duty_y1_agg;
+FILE_STATIC aggVec_i duty_y2_agg;
+FILE_STATIC aggVec_i duty_z1_agg;
+FILE_STATIC aggVec_i duty_z2_agg;
+FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulate2(CANPacket *out);
+FILE_STATIC void rcPopulate3(CANPacket *out);
+FILE_STATIC void rcPopulate4(CANPacket *out);
+FILE_STATIC void rcPopulate5(CANPacket *out);
+FILE_STATIC const rollcall_fn rollcallFunctions[] =
+{
+        rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5
+};
 //-----------COSMOS------------------
 
 // dooty packet 
