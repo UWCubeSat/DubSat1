@@ -11,7 +11,7 @@
 FILE_STATIC uint8_t rcFlag;
 
 FILE_STATIC const rollcall_fn *functions;
-FILE_STATIC const CANPacket *packets = NULL;
+FILE_STATIC CANPacket *packets = NULL;
 FILE_STATIC uint8_t numFunctions;
 
 void rollcallInit(const rollcall_fn *fns, uint8_t num)
@@ -41,7 +41,7 @@ FILE_STATIC uint8_t hasPacketBuffer()
  * Use each function populate to populate a CAN packet in the buffer.
  * Only do this if we have a packet buffer.
  */
-FILE_STATIC populateAll()
+FILE_STATIC void populateAll()
 {
     uint8_t i = numFunctions;
     while (i-- > 0)
@@ -50,7 +50,7 @@ FILE_STATIC populateAll()
     }
 }
 
-void rollcallUpdate()
+uint8_t rollcallUpdate()
 {
     /*
      * if there is a packet buffer and this is the first update, populate the
@@ -95,4 +95,11 @@ void rollcallUpdate()
         // decrement to move on to next packet
         rcFlag--;
     }
+
+    return rollcallQueueLength();
+}
+
+uint8_t rollcallQueueLength()
+{
+    return rcFlag;
 }

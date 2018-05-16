@@ -52,11 +52,6 @@
 #include "timer.h"
 #include <stdint.h>
 
-/*********** Defines the number of polling/callback timer supported by the timer library***********/
-#define NUM_SUPPORTED_DURATIONS_POLLING   8
-#define NUM_SUPPORTED_DURATIONS_CALLBACK  2
-/*************************************************************************************************/
-
 /******************************* Polling Timer Information struct ********************************/
 /* inUse = whether that timer is in use or not                                                   */
 /* start_timer_counter = Start of timer counter when timer is called                             */
@@ -418,6 +413,7 @@ void endPollingTimer(TIMER_HANDLE timerNumber)
 {
     __disable_interrupt();
     polling[timerNumber].inUse = 0;
+    polling[timerNumber].user_id = 0;
     __enable_interrupt();
 }
 
@@ -432,6 +428,105 @@ int checkValidCallbackID(TIMER_HANDLE timerNumber)
         return 0;
     }
     return 1;
+}
+
+//user_timer_polling_info getPollingTimerInfo(uint16_t user_id)
+//{
+//    uint8_t i;
+//    user_timer_polling_info user_info;
+//    for(i = 0; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
+//    {
+//        if(polling[i].user_id == user_id)
+//        {
+//            user_info.user_id = polling[i].user_id;
+//            user_info.timer_id = i;
+//            user_info.counter_dif = polling[i].counter_dif;
+//            user_info.tar_dif = user_info.tar_dif;
+//            user_info.start_TAR = polling[i].start_TAR;
+//            user_info.start_timer_counter = polling[i].start_timer_counter;
+//            if(!polling[i].inUse)
+//            {
+//                user_info.valid = 0;
+//            } else
+//            {
+//                user_info.valid = 1;
+//            }
+//            return;
+//        }
+//    }
+//    user_info.user_id = user_id;
+//    user_info.timer_id = 255;
+//    user_info.counter_dif = 0;
+//    user_info.tar_dif = 0;
+//    user_info.start_TAR = 0;
+//    user_info.start_timer_counter = 0;
+//    user_info.valid = 0;
+//    return user_info;
+//}
+
+//user_timer_callback_info getCallbackTimerInfo(uint16_t user_id)
+//{
+//    uint8_t i;
+//    user_timer_callback_info user_info;
+//    for(i = 0; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
+//    {
+//        if(polling[i].user_id == user_id)
+//        {
+//            user_info.user_id = callback[i].user_id;
+//            user_info.timer_id = i;
+//            user_info.count = callback[i].count;
+//            user_info.current_count = callback[i].current_count;
+//            user_info.tar = callback[i].tar;
+//            if(!callback[i].inUse)
+//            {
+//                user_info.valid = 0;
+//            } else
+//            {
+//                user_info.valid = 1;
+//            }
+//            return;
+//        }
+//    }
+//    user_info.user_id = callback[i].user_id;
+//    user_info.timer_id = 255;
+//    user_info.count = 0;
+//    user_info.current_count = 0;
+//    user_info.tar = 0;
+//    user_info.valid = 0;
+//    return user_info;
+//}
+
+void get_polling_timer_info(user_timer_polling_info * user_timer_info)
+{
+    user_timer_polling_info timer_info[NUM_SUPPORTED_DURATIONS_POLLING];
+    uint8_t i;
+    for(i = 0 ; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
+    {
+        timer_info[i].user_id = polling[i].user_id;
+        timer_info[i].timer_id = i;
+        timer_info[i].counter_dif = polling[i].counter_dif;
+        timer_info[i].tar_dif = polling[i].tar_dif;
+        timer_info[i].start_TAR = polling[i].start_TAR;
+        timer_info[i].start_timer_counter = polling[i].start_timer_counter;
+        timer_info[i].inUse = polling[i].inUse;
+    }
+    user_timer_info = timer_info;
+}
+
+void get_callback_timer_info(user_timer_callback_info * user_timer_info)
+{
+    user_timer_callback_info timer_info[NUM_SUPPORTED_DURATIONS_CALLBACK];
+    uint8_t i;
+    for(i = 0; i < NUM_SUPPORTED_DURATIONS_CALLBACK; i++)
+    {
+        timer_info[i].user_id = callback[i].user_id;
+        timer_info[i].timer_id = i;
+        timer_info[i].count = callback[i].count;
+        timer_info[i].current_count = callback[i].current_count;
+        timer_info[i].tar = callback[i].tar;
+        timer_info[i].inUse = callback[i].inUse;
+    }
+    user_timer_info = timer_info;
 }
 
 

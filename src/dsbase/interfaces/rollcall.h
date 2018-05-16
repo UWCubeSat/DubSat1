@@ -48,7 +48,16 @@ void rollcallStart();
 /**
  * Populate and send the next rollcall packets if there are any left to send
  * since the last start.
+ *
+ * Returns the same as rollcallQueueLength().
  */
-void rollcallUpdate();
+uint8_t rollcallUpdate();
+
+/**
+ * Returns the number of packets that are queued to be sent. If this is greater
+ * than zero, a call to rollcallUpdate will attempt to send the queued packets.
+ * Otherwise rollcallUpdate will do nothing.
+ */
+uint8_t rollcallQueueLength();
 
 #endif /* ROLLCALL_H_ */

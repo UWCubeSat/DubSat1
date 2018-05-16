@@ -10,9 +10,11 @@
 
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
+FILE_STATIC meta_segment metaSeg;
 FILE_STATIC magnetometer_segment myTelemMagnetometer;
 FILE_STATIC mtq_info_segment myTelemMtqInfo;
 FILE_STATIC simulink_segment mySimulink;
+FILE_STATIC polling_timer_info_segment polling_timer_info;
 /****************************************************************/
 
 
@@ -94,6 +96,7 @@ int main(void)
     startCallback(rtOneStep_timer);
 
     fflush((NULL));
+    int count = 0;
     while (rtmGetErrorStatus(rtM) == (NULL) || 1)
     {
 
@@ -111,8 +114,14 @@ int main(void)
             sendTelemetry();
             updateRCData();
             update_rt_flag = 0;
+            count++;
         }
 
+        if(count == 100)
+        {
+            send_all_polling_timers_segment();
+            count = 0;
+        }
         if(send_dipole_flag && mtq_state == mag_valid)
         {
             sendDipolePacket(mtqInfo.xDipole, mtqInfo.yDipole, mtqInfo.zDipole);
@@ -150,7 +159,8 @@ void initial_setup()
     bcbinPopulateHeader(&myTelemMagnetometer.header, TLM_ID_MAGNETOMETER, sizeof(myTelemMagnetometer));
     bcbinPopulateHeader(&myTelemMtqInfo.header, TLM_ID_MTQ_INFO, sizeof(myTelemMtqInfo));
     bcbinPopulateHeader(&mySimulink.header, TLM_ID_SIMULINK_INFO, sizeof(mySimulink));
-
+    bcbinPopulateHeader(&polling_timer_info.header, TLM_ID_POLLING_TIMER, sizeof(polling_timer_info));
+    bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
     mspTemp = init_uint16_t(mspTempArray, 600);
     mag_x = init_uint16_t(mag_xArray, 600);
     mag_y = init_uint16_t(mag_yArray, 600);
@@ -189,6 +199,7 @@ void sendTelemetry()
     sendMagReadingSegment();
     sendMtqInfoSegment();
     sendSimulinkSegment();
+    bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
 }
 
 void updateMtqInfo()
@@ -304,6 +315,13 @@ void receive_packet(CANPacket *packet)
     {
         rcFlag = 4;
     }
+}
+
+void send_all_polling_timers_segment()
+{
+    user_timer_polling_info polling_info[NUM_SUPPORTED_DURATIONS_POLLING];
+    get_polling_timer_info(polling_info);
+    bcbinSendPacket((uint8_t *) &polling_timer_info, sizeof(polling_timer_info));
 }
 
 
