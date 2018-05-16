@@ -442,7 +442,7 @@ __interrupt void Timer0_A1_ISR(void)
     {
         case TAIV__NONE:   break;           // No interrupt
         case TAIV__TACCR1:
-            if(callback[0].current_count <= 0 && callback[0].inUse)
+            if(callback[0].current_count <= 0)
             {
                 startCallback(0);
                 callback[0].fxPtr();
@@ -450,7 +450,7 @@ __interrupt void Timer0_A1_ISR(void)
             }
             break;           // CCR1 not used
         case TAIV__TACCR2:
-            if(callback[1].current_count <= 0 && callback[1].inUse)
+            if(callback[1].current_count <= 0)
             {
                 startCallback(1);
                 callback[1].fxPtr();
