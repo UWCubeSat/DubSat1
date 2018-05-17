@@ -81,9 +81,10 @@ end
 
 % load data
 disp('loading data');
-time = dlmread(strcat(spDataDir, 'time.dat'));
+time = dlmread(strcat(bdotDataDir, 'time_to.dat'));
 for i=1:length(sensors)
     % load sensors based on their id (but only the ones with an aardvark)
+    disp(['  loading ' sensors(i).name]);
     switch sensors(i).id
         case imu.id
             in_imux_msb = dlmread(sprintf('%sin_imux_msb.dat', spDataDir));
@@ -149,17 +150,18 @@ for i=1:length(sensors)
         error('failed to open %s on port %i (error code: %i)', sensors(i).name, int16(sensors(i).port), sensors(i).hdev);
     end
     
+    % set the first response to avoid sending garbage data
+    bytes = uint8(sensors(i).bytes(1, :));
+    calllib(lib, 'c_aa_i2c_slave_set_response', sensors(i).hdev, length(bytes), bytes);
+    
+    % disable pullups
+    pullupState = calllib(lib, 'c_aa_i2c_pullup', sensors(i).hdev, 0);
+    if pullupState ~= 0
+        error('failed to disable pullup for %s', sensors(i).name);
+    end
+    
     % enable aardvark
     calllib(lib, 'c_aa_i2c_slave_enable', sensors(i).hdev, sensors(i).addr, 0, 0);
-end
-
-% experiment to see if disabling pullups helps
-for i=1:length(sensors)
-%     if sensors(i).id == imu.id || sensors(i).id == mag1.id
-        % 0 means none, 3 is on
-        disp('disabling pullup');
-        calllib(lib, 'c_aa_i2c_pullup', sensors(i).hdev, 0);
-%     end
 end
 
 % set responses
@@ -170,8 +172,9 @@ while 1
     while index < length(time)
         if (toc >= time(index + 1))
             for i=1:length(sensors)
-                bytes = sensors(i).bytes(index, :);
+                bytes = uint8(sensors(i).bytes(index, :));
                 calllib(lib, 'c_aa_i2c_slave_set_response', sensors(i).hdev, length(bytes), bytes);
+                disp(index);
             end
             index = index + 1;
         end
