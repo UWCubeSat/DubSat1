@@ -58,6 +58,7 @@ FILE_STATIC void rcPopulate3(CANPacket *out);
 FILE_STATIC void rcPopulate4(CANPacket *out);
 FILE_STATIC void rcPopulate5(CANPacket *out);
 FILE_STATIC void rcPopulate6(CANPacket *out);
+FILE_STATIC void rcPopulate7(CANPacket *out);
 FILE_STATIC void rcPopulate8(CANPacket *out);
 FILE_STATIC void rcPopulate9(CANPacket *out);
 FILE_STATIC void rcPopulate10(CANPacket *out);
@@ -72,9 +73,9 @@ FILE_STATIC void rcPopulate17(CANPacket *out);
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
  rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
- rcPopulate6, rcPopulate8, rcPopulate9, rcPopulate10, rcPopulate11,
- rcPopulate12, rcPopulate13, rcPopulate14, rcPopulate15, rcPopulate16,
- rcPopulate17
+ rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10,
+ rcPopulate11, rcPopulate12, rcPopulate13, rcPopulate14, rcPopulate15,
+ rcPopulate16, rcPopulate17
 };
 
 FILE_STATIC aggVec_i rc_temp;
