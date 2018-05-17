@@ -143,13 +143,14 @@ int main(void)
 
 void initial_setup()
 {
-    P3DIR |= BIT5;
     P3OUT |= BIT5;
+    P3OUT |= BIT4;
+    P3DIR |= BIT4;
+    magNum = magInit(I2CBus1); // I2C bus 1
+    P3DIR |= BIT5;
 
     canWrapInit();
     setCANPacketRxCallback(receive_packet);
-
-    magNum = magInit(I2CBus1); // I2C bus 1
 
     asensorInit(Ref_2p5V);
 
