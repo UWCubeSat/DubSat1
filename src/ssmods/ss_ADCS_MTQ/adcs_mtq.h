@@ -5,9 +5,9 @@ file: adcs_mtq.h
 #ifndef ADCS_MTQ_H_
 #define ADCS_MTQ_H_
 
-//==============================================
+//==================================================================
 // prototypes 
-//==============================================
+//==================================================================
 
 // state functions
 
@@ -38,17 +38,21 @@ FILE_STATIC int is_bdot_still_alive(void);
 // CAN functions
 
 FILE_STATIC void can_init(void);
+FILE_STATIC void rc_agg_init();
 FILE_STATIC void can_packet_rx_callback(CANPacket *packet);
 FILE_STATIC void send_CAN_health_packet(void);
 FILE_STATIC void send_CAN_ack_packet(void);
 FILE_STATIC void send_CAN_rollCall(); 
-// TODO Garrett enter rollcall functions here 
+FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulate2(CANPacket *out);
+FILE_STATIC void rcPopulate3(CANPacket *out);
+FILE_STATIC void rcPopulate4(CANPacket *out);
+FILE_STATIC void rcPopulate5(CANPacket *out);
 
 // COSMOS functions 
 
 FILE_STATIC uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 FILE_STATIC void cosmos_init(void);
-FILE_STATIC void rc_agg_init();
 FILE_STATIC void send_COSMOS_health_packet(void); 
 FILE_STATIC void send_COSMOS_meta_packet(void);
 FILE_STATIC void send_COSMOS_commands_packet(void);
@@ -58,9 +62,9 @@ FILE_STATIC void send_COSMOS_dooty_packet(void);
 
 FILE_STATIC void mtq_sfr_init(void);
 
-//==============================================
+//==================================================================
 // globals
-//==============================================
+//==================================================================
 
 //--------------- status ------------------
 
@@ -118,15 +122,9 @@ FILE_STATIC aggVec_i duty_y1_agg;
 FILE_STATIC aggVec_i duty_y2_agg;
 FILE_STATIC aggVec_i duty_z1_agg;
 FILE_STATIC aggVec_i duty_z2_agg;
-FILE_STATIC void rcPopulate1(CANPacket *out);
-FILE_STATIC void rcPopulate2(CANPacket *out);
-FILE_STATIC void rcPopulate3(CANPacket *out);
-FILE_STATIC void rcPopulate4(CANPacket *out);
-FILE_STATIC void rcPopulate5(CANPacket *out);
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
-{
-        rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5
-};
+	{rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5};
+
 //-----------COSMOS------------------
 
 // dooty packet 
@@ -177,9 +175,9 @@ FILE_STATIC int LED_time_ms = 200;
 FILE_STATIC int cosmos_commands_timer = 0; 
 FILE_STATIC int cosmos_commands_time_ms = 100; 
 
-//==============================================
+//==================================================================
 // defines 
-//==============================================
+//==================================================================
 
 // ---PWM ----
 

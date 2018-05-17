@@ -28,7 +28,7 @@ Z2 - P2_6 - TB0.1
 #include "adcs_mtq.h"
 
 
-//------------------------------------------------------------------
+//==================================================================
 // Main 
 // TODO 
 // add fsw timeout 
@@ -36,7 +36,7 @@ Z2 - P2_6 - TB0.1
 // cntrl f DEBUG to see commented out sections 
 // add error messages for invalid commands 
 // ack packet not sending commands properly 
-//------------------------------------------------------------------
+//==================================================================
 
 int main(void)
 {	
@@ -48,7 +48,6 @@ int main(void)
     cosmos_init();                 // COSMOS backchannel initialization
     can_init();                    // CAN initialization
     rc_agg_init();
-	// TODO Garrett add rollcall initialization 
 
     restartMTQ(); // restart 
 
@@ -67,9 +66,9 @@ int main(void)
 	return 0;
 }
 
-//------------------------------------------------------------------
+//==================================================================
 // Function definitions 
-//------------------------------------------------------------------
+//==================================================================
 
 //---------- state machine ------------------
 
@@ -89,21 +88,6 @@ FILE_STATIC void measurement()
 		send_CAN_ack_packet();
         start_actuation_timer();
     }
-}
-FILE_STATIC void rc_agg_init() {
-    aggVec_init_i(&bdot_x_agg);
-    aggVec_init_i(&bdot_y_agg);
-    aggVec_init_i(&bdot_z_agg);
-    aggVec_init_i(&fsw_x_agg);
-    aggVec_init_i(&fsw_y_agg);
-    aggVec_init_i(&fsw_z_agg);
-    aggVec_init_i(&duty_x1_agg);
-    aggVec_init_i(&duty_x2_agg);
-    aggVec_init_i(&duty_y1_agg);
-    aggVec_init_i(&duty_y2_agg);
-    aggVec_init_i(&duty_z1_agg);
-    aggVec_init_i(&duty_z2_agg);
-    rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
 }
 
 FILE_STATIC void fsw_actuation()
@@ -348,6 +332,23 @@ FILE_STATIC void can_init(void)
 	setCANPacketRxCallback(can_packet_rx_callback);
 }
 
+// roll call aggregate initialization 
+FILE_STATIC void rc_agg_init() {
+    aggVec_init_i(&bdot_x_agg);
+    aggVec_init_i(&bdot_y_agg);
+    aggVec_init_i(&bdot_z_agg);
+    aggVec_init_i(&fsw_x_agg);
+    aggVec_init_i(&fsw_y_agg);
+    aggVec_init_i(&fsw_z_agg);
+    aggVec_init_i(&duty_x1_agg);
+    aggVec_init_i(&duty_x2_agg);
+    aggVec_init_i(&duty_y1_agg);
+    aggVec_init_i(&duty_y2_agg);
+    aggVec_init_i(&duty_z1_agg);
+    aggVec_init_i(&duty_z2_agg);
+    rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
+}
+
 // Interrupt service routine callback 
 FILE_STATIC void can_packet_rx_callback(CANPacket *packet)
 {  
@@ -418,9 +419,9 @@ FILE_STATIC void send_CAN_ack_packet(void)
 void rcPopulate1(CANPacket *out){
     rc_adcs_mtq_1 rc = {0};
     rc.rc_adcs_mtq_1_sysrstiv = 0;
-    rc.rc_adcs_mtq_1_temp_avg =0;//asensorReadIntTempC(); //TODO: this
-    rc.rc_adcs_mtq_1_temp_max =0;//asensorReadIntTempC(); //TODO: this
-    rc.rc_adcs_mtq_1_temp_min =0;//asensorReadIntTempC(); //TODO: this
+    rc.rc_adcs_mtq_1_temp_avg =0;//asensorReadIntTempC(); //TODO: update for actual temperature 
+    rc.rc_adcs_mtq_1_temp_max =0;
+    rc.rc_adcs_mtq_1_temp_min =0;
     encoderc_adcs_mtq_1(&rc, out);
 }
 void rcPopulate2(CANPacket *out){
@@ -433,8 +434,8 @@ void rcPopulate2(CANPacket *out){
     rc.rc_adcs_mtq_2_bdot_y_avg = aggVec_avg_i_i(&bdot_y_agg);
     rc.rc_adcs_mtq_2_bdot_z_max = aggVec_max_i(&bdot_z_agg);
     rc.rc_adcs_mtq_2_bdot_z_avg = aggVec_avg_i_i(&bdot_z_agg);
-    aggVec_reset(&bdot_x_agg);
-    aggVec_reset(&bdot_y_agg);
+    aggVec_reset((aggVec *) &bdot_x_agg);
+    aggVec_reset((aggVec *) &bdot_y_agg);
     encoderc_adcs_mtq_2(&rc, out);
 }
 void rcPopulate3(CANPacket *out){
@@ -447,9 +448,9 @@ void rcPopulate3(CANPacket *out){
     rc.rc_adcs_mtq_3_fsw_y_max = aggVec_max_i(&fsw_y_agg);
     rc.rc_adcs_mtq_3_fsw_y_avg = aggVec_avg_i_i(&fsw_y_agg);
     rc.rc_adcs_mtq_3_fsw_z_avg = aggVec_avg_i_i(&fsw_z_agg);
-    aggVec_reset(&bdot_z_agg);
-    aggVec_reset(&fsw_x_agg);
-    aggVec_reset(&fsw_y_agg);
+    aggVec_reset((aggVec *) &bdot_z_agg);
+    aggVec_reset((aggVec *) &fsw_x_agg);
+    aggVec_reset((aggVec *) &fsw_y_agg);
     encoderc_adcs_mtq_3(&rc, out);
 
 }
@@ -463,13 +464,13 @@ void rcPopulate4(CANPacket *out){
     rc.rc_adcs_mtq_4_duty_y2_avg = aggVec_avg_i_i(&duty_y2_agg);
     rc.rc_adcs_mtq_4_duty_z1_avg = aggVec_avg_i_i(&duty_z1_agg);
     rc.rc_adcs_mtq_4_duty_z2_avg = aggVec_avg_i_i(&duty_z2_agg);
-    aggVec_reset(&fsw_z_agg);
-    aggVec_reset(&duty_x1_agg);
-    aggVec_reset(&duty_x2_agg);
-    aggVec_reset(&duty_y1_agg);
-    aggVec_reset(&duty_y2_agg);
-    aggVec_reset(&duty_z1_agg);
-    aggVec_reset(&duty_z2_agg);
+    aggVec_reset((aggVec *) &fsw_z_agg);
+    aggVec_reset((aggVec *) &duty_x1_agg);
+    aggVec_reset((aggVec *) &duty_x2_agg);
+    aggVec_reset((aggVec *) &duty_y1_agg);
+    aggVec_reset((aggVec *) &duty_y2_agg);
+    aggVec_reset((aggVec *) &duty_z1_agg);
+    aggVec_reset((aggVec *) &duty_z2_agg);
     encoderc_adcs_mtq_4(&rc, out);
 }
 void rcPopulate5(CANPacket *out){
@@ -478,6 +479,7 @@ void rcPopulate5(CANPacket *out){
     rc.rc_adcs_mtq_5_reset_counts=0;
     encoderc_adcs_mtq_5(&rc, out);
 }
+
 //-------- COSMOS --------
 
 // cosmos initialization 
@@ -531,9 +533,9 @@ FILE_STATIC void send_COSMOS_meta_packet(void)
     bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
 }
 
-//-------- special function registers config --------	
+//-------- sfr config --------	
 		
-// used to configure SFRs for mtq
+// used to configure special function registers for mtq
 FILE_STATIC void mtq_sfr_init(void)
 {	
 	//---------GPIO initialization--------------------------
