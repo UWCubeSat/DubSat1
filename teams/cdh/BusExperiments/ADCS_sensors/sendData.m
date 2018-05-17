@@ -23,7 +23,7 @@ mag2.id = 0;
 
 sun.name = 'sun';
 sun.addr = hex2dec('60');
-sun.id = 0;
+sun.id = 2238597684;
 
 mag.name = 'bdot-mag';
 mag.addr = hex2dec('1E');
@@ -154,13 +154,13 @@ for i=1:length(sensors)
 end
 
 % experiment to see if disabling pullups helps
-% for i=1:length(sensors)
+for i=1:length(sensors)
 %     if sensors(i).id == imu.id || sensors(i).id == mag1.id
-%         % 0 means none, 3 is on
-%         disp('disabling pullup');
-%         calllib(lib, 'c_aa_i2c_pullup', sensors(i).hdev, 0);
+        % 0 means none, 3 is on
+        disp('disabling pullup');
+        calllib(lib, 'c_aa_i2c_pullup', sensors(i).hdev, 0);
 %     end
-% end
+end
 
 % set responses
 disp('sending data');
