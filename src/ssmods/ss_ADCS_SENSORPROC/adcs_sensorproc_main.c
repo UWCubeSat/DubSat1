@@ -109,6 +109,10 @@ int main(void)
 
     LED_DIR |= LED_BIT;
 
+    // Fix phantom power over uart
+    P3DIR |= BIT4;
+    P3OUT |= BIT4;
+
     // Setup segments to be able to serve as COSMOS telemetry packets
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
 
