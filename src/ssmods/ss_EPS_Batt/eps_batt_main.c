@@ -280,6 +280,8 @@ void sendRC()
 
 int main(void)
 {
+    P3DIR |= BIT4;
+    P3OUT |= BIT4;
     /* ----- INITIALIZATION -----*/\
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     asensorInit(Ref_2p5V);
