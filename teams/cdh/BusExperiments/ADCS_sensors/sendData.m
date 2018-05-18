@@ -166,6 +166,8 @@ end
 
 % set responses
 disp('sending data');
+tjump = .046;
+tnext = 0;
 while 1
     tic
     index = 1;
@@ -174,8 +176,11 @@ while 1
             for i=1:length(sensors)
                 bytes = uint8(sensors(i).bytes(index, :));
                 calllib(lib, 'c_aa_i2c_slave_set_response', sensors(i).hdev, length(bytes), bytes);
-                disp(index);
             end
+            time(index)
+            tnext = tnext + tjump;
+        end
+        while(length(time) > index && tnext > time(index))
             index = index + 1;
         end
     end
