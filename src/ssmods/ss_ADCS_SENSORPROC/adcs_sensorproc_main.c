@@ -173,15 +173,18 @@ FILE_STATIC void step()
     i++;
 
     // send periodic backchannel telemetry and blink LED
-    if (i % 40 == 0) // 10 Hz
+    if (i % 4 == 0) // 10 Hz
     {
         // blink LED
         LED_OUT ^= LED_BIT;
 
-        sendHealthSegment();
-        sendMetaSegment();
-        sendSensorBackchannel();
-        magioSendBackchannelVector();
+        if (i % 40 == 0) // 1 Hz
+        {
+        	sendHealthSegment();
+			sendMetaSegment();
+			sendSensorBackchannel();
+			magioSendBackchannelVector();
+        }
     }
 
     rollcallUpdate();
