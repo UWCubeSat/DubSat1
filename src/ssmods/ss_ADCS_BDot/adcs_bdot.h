@@ -123,10 +123,10 @@ void sendMtqState();
 void updateMtqInfo();
 void sendTelemetry();
 void rollCall();
-void rollCallPopulate1(CANPacket *out);
-void rollCallPopulate2(CANPacket *out);
-void rollCallPopulate3(CANPacket *out);
-void rollCallPopulate4(CANPacket *out);
+void rcPopulate1(CANPacket *out);
+void rcPopulate2(CANPacket *out);
+void rcPopulate3(CANPacket *out);
+void rcPopulate4(CANPacket *out);
 int map(int val);
 int mapGeneral(int x, int in_min, int in_max, int out_min, int out_max);
 

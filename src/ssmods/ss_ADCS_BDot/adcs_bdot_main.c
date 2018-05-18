@@ -44,10 +44,6 @@ FILE_STATIC uint32_t rtOneStep_us = 100000;
 /***************************************************************/
 
 /*******************RollCall***********************************/
-FILE_STATIC void rcPopulate1(CANPacket *out);
-FILE_STATIC void rcPopulate2(CANPacket *out);
-FILE_STATIC void rcPopulate3(CANPacket *out);
-FILE_STATIC void rcPopulate4(CANPacket *out);
 FILE_STATIC aggVec_f rc_temp;
 FILE_STATIC aggVec_i magX;
 FILE_STATIC aggVec_i magY;
