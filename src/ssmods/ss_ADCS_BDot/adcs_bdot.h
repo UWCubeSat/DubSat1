@@ -123,6 +123,7 @@ void sendMtqState();
 void updateMtqInfo();
 void sendTelemetry();
 void rollCall();
+void rollCallPopulate1(CANPacket
 int map(int val);
 int mapGeneral(int x, int in_min, int in_max, int out_min, int out_max);
 

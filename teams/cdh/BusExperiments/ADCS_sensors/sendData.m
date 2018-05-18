@@ -1,6 +1,11 @@
 clear all; close all; clc;
 
 MAX_NUM_AARDVARKS = 10;
+AA_PORT_NOT_FREE = uint16(hex2dec('8000'));
+
+dataDir = 'C:\dubsat_data\';
+spDataDir = [dataDir, 'sp\'];
+bdotDataDir = [dataDir, 'bdot\'];
 
 % define sensors
 
@@ -18,7 +23,7 @@ mag2.id = 0;
 
 sun.name = 'sun';
 sun.addr = hex2dec('60');
-sun.id = 0;
+sun.id = 2238597684;
 
 mag.name = 'bdot-mag';
 mag.addr = hex2dec('1E');
@@ -55,8 +60,10 @@ while i <= length(sensors)
     foundAardvark = false;
     for j=1:numAardvarks
         if ids(j) == sensors(i).id
-            sensors(i).port = ports(j);
-            fprintf('  assigned port %i to %s\n', sensors(i).port, sensors(i).name);
+            % do bitand on ~AA_PORT_NOT_FREE to get the port regardless of
+            % if the port is in use.
+            sensors(i).port = bitand(uint16(ports(j)), bitcmp(AA_PORT_NOT_FREE));
+            fprintf('  assigned port %i to %s\n', uint16(sensors(i).port), sensors(i).name);
             foundAardvark = true;
             i = i + 1;
             break
@@ -74,10 +81,6 @@ end
 
 % load data
 disp('loading data');
-tic
-dataDir = 'C:\dubsat_data\';
-spDataDir = [dataDir, 'sp\'];
-bdotDataDir = [dataDir, 'bdot\'];
 time = dlmread(strcat(spDataDir, 'time.dat'));
 for i=1:length(sensors)
     % load sensors based on their id (but only the ones with an aardvark)
@@ -89,7 +92,7 @@ for i=1:length(sensors)
             in_imuy_lsb = dlmread(sprintf('%sin_imuy_lsb.dat', spDataDir));
             in_imuz_msb = dlmread(sprintf('%sin_imuz_msb.dat', spDataDir));
             in_imuz_lsb = dlmread(sprintf('%sin_imuz_lsb.dat', spDataDir));
-            sensors(i).bytes = [in_imux_msb in_imux_lsb in_imuy_msb in_imuy_lsb in_imuz_msb in_imuz_lsb];
+            sensors(i).bytes = [in_imux_lsb in_imux_msb in_imuy_lsb in_imuy_msb in_imuz_lsb in_imuz_msb];
         case mag1.id
             in_mag1x_msb = dlmread(sprintf('%sin_mag1x_msb.dat', spDataDir));
             in_mag1x_lsb = dlmread(sprintf('%sin_mag1x_lsb.dat', spDataDir));
@@ -142,9 +145,21 @@ for i=1:length(sensors)
     % close then open aardvark
     calllib(lib, 'c_aa_close', sensors(i).port);
     sensors(i).hdev = calllib(lib, 'c_aa_open', sensors(i).port);
+    if sensors(i).hdev < 0
+        error('failed to open %s on port %i (error code: %i)', sensors(i).name, int16(sensors(i).port), sensors(i).hdev);
+    end
     
     % enable aardvark
     calllib(lib, 'c_aa_i2c_slave_enable', sensors(i).hdev, sensors(i).addr, 0, 0);
+end
+
+% experiment to see if disabling pullups helps
+for i=1:length(sensors)
+%     if sensors(i).id == imu.id || sensors(i).id == mag1.id
+        % 0 means none, 3 is on
+        disp('disabling pullup');
+        calllib(lib, 'c_aa_i2c_pullup', sensors(i).hdev, 0);
+%     end
 end
 
 % set responses

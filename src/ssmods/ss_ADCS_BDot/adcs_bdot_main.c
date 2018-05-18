@@ -11,6 +11,7 @@
 
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
+FILE_STATIC meta_segment metaSeg;
 FILE_STATIC magnetometer_segment myTelemMagnetometer;
 FILE_STATIC mtq_info_segment myTelemMtqInfo;
 FILE_STATIC simulink_segment mySimulink;
@@ -162,11 +163,13 @@ void initial_setup()
     bcbinPopulateHeader(&myTelemMtqInfo.header, TLM_ID_MTQ_INFO, sizeof(myTelemMtqInfo));
     bcbinPopulateHeader(&mySimulink.header, TLM_ID_SIMULINK_INFO, sizeof(mySimulink));
     bcbinPopulateHeader(&polling_timer_info.header, TLM_ID_POLLING_TIMER, sizeof(polling_timer_info));
+    bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
     aggVec_init_f(&rc_temp);
     aggVec_init_i(&magX);
     aggVec_init_i(&magY);
     aggVec_init_i(&magZ);
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
+
     initializeTimer();
 }
 
@@ -200,6 +203,7 @@ void sendTelemetry()
     sendMagReadingSegment();
     sendMtqInfoSegment();
     sendSimulinkSegment();
+    bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
 }
 
 void updateMtqInfo()
@@ -399,7 +403,7 @@ void rcPopulate1(CANPacket *out)
     rc.rc_adcs_bdot_1_temp_max = 2732+((uint16_t)(10*aggVec_max_f(&rc_temp)));
     rc.rc_adcs_bdot_1_temp_min = 2732+((uint16_t)(10*aggVec_min_f(&rc_temp)));
     rc.rc_adcs_bdot_1_reset_count = 0;
-    aggVec_reset(&rc_temp);
+    aggVec_reset((aggVec *)&rc_temp);
     encoderc_adcs_bdot_1(&rc, out);
 }
 void rcPopulate2(CANPacket *out)
@@ -409,7 +413,7 @@ void rcPopulate2(CANPacket *out)
     rc.rc_adcs_bdot_2_mag_x_max = aggVec_max_i(&magX);
     rc.rc_adcs_bdot_2_mag_x_avg = aggVec_avg_i_i(&magX);
     rc.rc_adcs_bdot_2_mag_y_min = aggVec_min_i(&magY);
-    aggVec_reset_i(&magX);
+    aggVec_reset((aggVec *)&magX);
     encoderc_adcs_bdot_2(&rc, out);
 }
 void rcPopulate3(CANPacket *out)
@@ -419,7 +423,7 @@ void rcPopulate3(CANPacket *out)
     rc.rc_adcs_bdot_3_mag_y_avg = aggVec_avg_i_i(&magY);
     rc.rc_adcs_bdot_3_mag_z_min = aggVec_min_i(&magZ);
     rc.rc_adcs_bdot_3_mag_z_max = aggVec_max_i(&magZ);
-    aggVec_reset(&magY);
+    aggVec_reset((aggVec *)&magY);
     encoderc_adcs_bdot_3(&rc, out);
 }
 void rcPopulate4(CANPacket *out)
@@ -427,7 +431,7 @@ void rcPopulate4(CANPacket *out)
     rc_adcs_bdot_4 rc = {0};
     rc.rc_adcs_bdot_4_mag_z_avg = aggVec_avg_i_i(&magZ);
     rc.rc_adcs_bdot_4_tumble = rtY.tumble;
-    aggVec_reset(&magZ);
+    aggVec_reset((aggVec *)&magZ);
     encoderc_adcs_bdot_4(&rc, out);
 }
 
