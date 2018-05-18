@@ -1,6 +1,8 @@
 clear all; close all; clc;
 
 MAX_NUM_AARDVARKS = 10;
+PULLUP_ENABLE = 3;
+PULLUP_DISABLE = 0;
 AA_PORT_NOT_FREE = uint16(hex2dec('8000'));
 
 dataDir = 'C:\dubsat_data\';
@@ -154,10 +156,11 @@ for i=1:length(sensors)
     bytes = uint8(sensors(i).bytes(1, :));
     calllib(lib, 'c_aa_i2c_slave_set_response', sensors(i).hdev, length(bytes), bytes);
     
-    % disable pullups
-    pullupState = calllib(lib, 'c_aa_i2c_pullup', sensors(i).hdev, 0);
-    if pullupState ~= 0
-        error('failed to disable pullup for %s', sensors(i).name);
+    % enable pullups
+    desiredPullupState = PULLUP_ENABLE;
+    pullupState = calllib(lib, 'c_aa_i2c_pullup', sensors(i).hdev, desiredPullupState);
+    if pullupState ~= desiredPullupState
+        error('failed to enable pullup for %s', sensors(i).name);
     end
     
     % enable aardvark
