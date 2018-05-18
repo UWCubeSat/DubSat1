@@ -1,7 +1,7 @@
-#include <adcs_bdot.h>
 #include <msp430.h>
 #include <stddef.h>
 #include "interfaces/canwrap.h"
+#include <adcs_bdot.h>
 #include "bsp/bsp.h"
 #include "sensors/magnetometer.h"
 #include "core/timer.h"
