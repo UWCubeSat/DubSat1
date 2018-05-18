@@ -1,13 +1,14 @@
 clear all; close all; clc;
 
-MAX_NUM_AARDVARKS = 10;
 PULLUP_ENABLE = 3;
 PULLUP_DISABLE = 0;
 AA_PORT_NOT_FREE = uint16(hex2dec('8000'));
 
-
 u = udp('127.0.0.1', 4012);
 fopen(u);
+
+MAX_NUM_AARDVARKS = 10;
+DESIRED_PULLUP_STATE = PULLUP_DISABLE;
 
 dataDir = 'C:\dubsat_data\';
 spDataDir = [dataDir, 'sp\'];
@@ -17,7 +18,7 @@ bdotDataDir = [dataDir, 'bdot\'];
 
 imu.name = 'imu';
 imu.addr = hex2dec('6A');
-imu.id = 2238592316; % unique ID to match up with aardvark
+imu.id = 2238592316;
 
 mag1.name = 'mag1';
 mag1.addr = hex2dec('1E');
@@ -84,6 +85,10 @@ while i <= length(sensors)
         if ids(j) == sensors(i).id
             % do bitand on ~AA_PORT_NOT_FREE to get the port regardless of
             % if the port is in use.
+            inUse = bitand(uint16(ports(j)), AA_PORT_NOT_FREE);
+            if inUse
+                fprintf('  warning: %s port is already in use\n', sensors(i).name);
+            end
             sensors(i).port = bitand(uint16(ports(j)), bitcmp(AA_PORT_NOT_FREE));
             fprintf('  assigned port %i to %s\n', uint16(sensors(i).port), sensors(i).name);
             foundAardvark = true;
@@ -210,15 +215,17 @@ for i=1:length(sensors)
     calllib(lib, 'c_aa_i2c_slave_set_response', sensors(i).hdev, length(bytes), bytes);
     
     % enable pullups
-    desiredPullupState = PULLUP_ENABLE;
-    pullupState = calllib(lib, 'c_aa_i2c_pullup', sensors(i).hdev, desiredPullupState);
-    if pullupState ~= desiredPullupState
+    pullupState = calllib(lib, 'c_aa_i2c_pullup', sensors(i).hdev, DESIRED_PULLUP_STATE);
+    if pullupState ~= DESIRED_PULLUP_STATE
         error('failed to enable pullup for %s', sensors(i).name);
     end
     
     % enable aardvark
     calllib(lib, 'c_aa_i2c_slave_enable', sensors(i).hdev, sensors(i).addr, 0, 0);
 end
+
+h = uicontrol('Style', 'PushButton', 'String', 'Stop', ...
+              'Callback', 'delete(gcbo)');
 
 % set responses
 disp('sending data');
@@ -240,11 +247,20 @@ while 1
             time(index)
             tnext = tnext + tjump;
         end
-        while(length(time) > index && tnext > time(index))
+        while(index < length(time) && tnext > time(index))
+            pause(tjump / 4); % lets the GUI interrupt
             index = index + 1;
+        end
+        
+        if ~ishandle(h)
+            break
         end
     end
     disp('ran out of input data -- reseting!')
+    
+    if ~ishandle(h)
+        break
+    end
 end
 
 disp('closing');
