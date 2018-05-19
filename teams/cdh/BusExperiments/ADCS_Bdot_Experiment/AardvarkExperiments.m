@@ -65,11 +65,14 @@ outstr = [xMagMsb(index) xMagLsb(index) zMagMsb(index) zMagLsb(index) yMagMsb(in
 outstr = uint8(outstr);
 
 calllib(lib, 'c_aa_i2c_slave_set_response', hdev, length(outstr), outstr);
+pull_up = calllib(lib, 'c_aa_i2c_pullup', hdev, 0);
 calllib(lib, 'c_aa_i2c_slave_enable', hdev, slaveaddr, 0, 0);
 
-tjump = .046;
+tjump = .049;
 tnext = 0;
 dataLength = length(time);
+%dataLength = 150000;
+
 thuCount = 0;
 tic
 while 1
@@ -88,13 +91,13 @@ while 1
    else
        %thuCount = thuCount + 1;
    end
+   while(index < dataLength && tnext > time(index))
+        index = index + 1;
+   end
    if(index >= dataLength)
         index = 1;
         tnext = 0;
         tic
-   end
-   while(tnext > time(index))
-        index = index + 1;
    end
 end
 
