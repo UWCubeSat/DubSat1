@@ -242,7 +242,7 @@ while 1
             end
             for i=1:length(udp_data)
                bytes = uint8(udp_data(i).bytes(index, :));
-               fwrite(u, [bytes.opcode, bytes];
+               fwrite(u, [bytes.opcode, bytes]);
             end
             time(index)
             tnext = tnext + tjump;
