@@ -581,6 +581,8 @@ void initData()
  */
 int main(void)
 {
+    P3DIR |= BIT4;
+    P3OUT |= BIT4;
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
 

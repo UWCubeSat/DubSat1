@@ -358,6 +358,8 @@ void sendRC() //TODO: use if'else for each and do rc while once implemented on C
  */
 int main(void)
 {
+    P3DIR |= BIT4;
+    P3OUT |= BIT4;
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     //mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>

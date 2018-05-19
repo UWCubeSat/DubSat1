@@ -3,7 +3,7 @@ clear all; close all; clc;
 lib = 'aardvark';
 libhdr = 'aardvark.h';
 
-dataDir = 'C:\dubsat_data\sp2\';
+dataDir = 'C:\dubsat_data\sp\';
 
 if ~libisloaded(lib)
     [load_notfounderrors load_warnings] = loadlibrary(lib, libhdr);
@@ -19,12 +19,14 @@ load(sprintf('%sin_imuz_msb.dat', dataDir));
 load(sprintf('%sin_imuz_lsb.dat', dataDir));
 load(sprintf('%sin_imuvalid.dat', dataDir));
 
-outstr = [in_imux_msb in_imux_lsb in_imuy_msb in_imuy_lsb in_imuz_msb in_imuz_lsb];
+% outstr = [in_imux_msb in_imux_lsb in_imuy_msb in_imuy_lsb in_imuz_msb in_imuz_lsb];
+outstr = [in_imux_lsb in_imux_msb in_imuy_lsb in_imuy_msb in_imuz_lsb in_imuz_msb];
 outstr = uint8(outstr);
 
 disp('doing slave stuff');
 
 hport = 0;
+calllib(lib, 'c_aa_close', hport);
 hdev = calllib(lib, 'c_aa_open', hport);
 if (hdev < 0)
     error('Unable to open port 0.');

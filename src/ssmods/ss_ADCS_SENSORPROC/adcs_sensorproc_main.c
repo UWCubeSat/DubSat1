@@ -109,6 +109,10 @@ int main(void)
 
     LED_DIR |= LED_BIT;
 
+    // Fix phantom power over uart
+    P3DIR |= BIT4;
+    P3OUT |= BIT4;
+
     // Setup segments to be able to serve as COSMOS telemetry packets
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
 
@@ -169,15 +173,18 @@ FILE_STATIC void step()
     i++;
 
     // send periodic backchannel telemetry and blink LED
-    if (i % 40 == 0) // 10 Hz
+    if (i % 4 == 0) // 10 Hz
     {
         // blink LED
         LED_OUT ^= LED_BIT;
 
-        sendHealthSegment();
-        sendMetaSegment();
-        sendSensorBackchannel();
-        magioSendBackchannelVector();
+        if (i % 40 == 0) // 1 Hz
+        {
+        	sendHealthSegment();
+			sendMetaSegment();
+			sendSensorBackchannel();
+			magioSendBackchannelVector();
+        }
     }
 
     rollcallUpdate();
