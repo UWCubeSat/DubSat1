@@ -4,8 +4,6 @@ PULLUP_ENABLE = 3;
 PULLUP_DISABLE = 0;
 AA_OK = 0;
 AA_PORT_NOT_FREE = uint16(hex2dec('8000'));
-AA_ASYNC_I2C_READ = 1;
-AA_I2C_DROPPED_EXCESS_BYTES = -107;
 
 u = udp('127.0.0.1', 4012);
 fopen(u);
@@ -40,11 +38,11 @@ mag.addr = hex2dec('1E');
 mag.id = 2238519142;
 
 sensors = [
-%     imu
+    imu
     mag1
-%     mag2
-%     sun
-%     mag
+    mag2
+    sun
+    mag
 ];
 
 % Added UDP 
@@ -68,6 +66,7 @@ disp('loading library');
 lib = 'aardvark';
 libhdr = 'aardvark.h';
 if ~libisloaded(lib)
+    fixEnv()
     [load_notfounderrors, load_warnings] = loadlibrary(lib, libhdr);
 end
 
@@ -252,17 +251,7 @@ while 1
     while index < length(time)
         if (toc >= time(index + 1))
             for i=1:length(sensors)
-                % read to flush buffer
-                code = calllib(lib, 'c_aa_async_poll', sensors(i).hdev, 0);
-                if bitand(code, AA_ASYNC_I2C_READ)
-                    numread = calllib(lib, 'c_aa_i2c_slave_read', sensors(i).hdev, sensors(i).addr, dumpSize, dump);
-                    if numread == AA_I2C_DROPPED_EXCESS_BYTES
-                        disp('dropped excess bytes');
-                    else
-                        fprintf('read %i bytes\n', numread);
-                    end
-                end
-                
+                % set the response
                 bytes = uint8(sensors(i).bytes(index, :));
                 numAccepted = calllib(lib, 'c_aa_i2c_slave_set_response', sensors(i).hdev, length(bytes), bytes);
                 if numAccepted < 0
@@ -271,6 +260,9 @@ while 1
                 elseif numAccepted ~= length(bytes)
                     error('wrong byte length!');
                 end
+                
+                % read to flush buffer
+                i2cPoll(sensors(i));
             end
 %             for i=1:length(udp_data)
 %                bytes = uint8(udp_data(i).bytes(index, :));
