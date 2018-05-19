@@ -397,7 +397,7 @@ void rcPopulate1(CANPacket *out)
     rc_adcs_bdot_1 rc;
     rc.rc_adcs_bdot_1_reset_count = bspGetResetCount();
     rc.rc_adcs_bdot_1_sysrstiv = SYSRSTIV;
-    rc.rc_adcs_bdot_1_temp_avg = aggVec_avg_i(&rc_temp);
+    rc.rc_adcs_bdot_1_temp_avg = aggVec_avg_i_i(&rc_temp);
     rc.rc_adcs_bdot_1_temp_max = aggVec_max_i(&rc_temp);
     rc.rc_adcs_bdot_1_temp_min = aggVec_min_i(&rc_temp);
     rc.rc_adcs_bdot_1_reset_count = 0;
