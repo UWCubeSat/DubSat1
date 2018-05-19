@@ -360,12 +360,13 @@ void sendHealthSegment()
     // TODO determine overall health based on querying sensors for their health
     hseg.oms = OMS_Unknown;
 
-    hseg.inttemp = asensorReadIntTempC();
+    uint16_t inttemp = asensorReadIntTempRawC();
+    hseg.inttemp = inttemp;
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
-    // update temperature (in deci-Kelvin)
-    aggVec_push_i(&rc_mspTemp, (hseg.inttemp + 273.15f) * 10);
+    // update temperature
+    aggVec_push_i(&rc_mspTemp, inttemp);
 }
 
 void sendMetaSegment()

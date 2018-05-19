@@ -350,12 +350,13 @@ void sendHealthSegment()
     // TODO determine overall health
     hseg.oms = OMS_Unknown;
 
-    hseg.inttemp = asensorReadIntTempC();
+    uint16_t inttemp = asensorReadIntTempRawC();
+    hseg.inttemp = inttemp;
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
-    // update rollcall temperature (in deci-Kelvin)
-    aggVec_push_i(&rc_temp, (hseg.inttemp + 273.15f) * 10);
+    // update rollcall temperature
+    aggVec_push_i(&rc_temp, inttemp);
 }
 
 void sendMetaSegment()
