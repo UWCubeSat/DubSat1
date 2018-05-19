@@ -91,6 +91,7 @@ float asensorGetLastIntTempC();
 float asensorGetLastExtTempC(hDev hSensor);
 float asensorReadIntTempC();
 float asensorReadExtTempC(hDev hSensor);
+uint16_t asensorReadIntTempRawC();
 
 FILE_STATIC void inline enableADC() { ADC12CTL0 |= ADC12ENC; }
 FILE_STATIC void inline disableADC() { ADC12CTL0 &= ~ADC12ENC; }

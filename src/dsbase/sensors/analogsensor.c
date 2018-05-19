@@ -400,6 +400,9 @@ float asensorReadIntTempC()
     asensorReadSingleSensorRaw(TEMPSENSOR_DEV);
     return convertRawToFloat(TEMPSENSOR_DEV);
 }
+uint16_t asensorReadIntTempRawC(){
+    return asensorReadSingleSensorRaw(TEMPSENSOR_DEV);
+}
 
 float asensorReadExtTempC(hDev hSensor)
 {
