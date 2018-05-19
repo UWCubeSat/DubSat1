@@ -2,7 +2,10 @@ clear all; close all; clc;
 
 PULLUP_ENABLE = 3;
 PULLUP_DISABLE = 0;
+AA_OK = 0;
 AA_PORT_NOT_FREE = uint16(hex2dec('8000'));
+AA_ASYNC_I2C_READ = 1;
+AA_I2C_DROPPED_EXCESS_BYTES = -107;
 
 u = udp('127.0.0.1', 4012);
 fopen(u);
@@ -37,11 +40,11 @@ mag.addr = hex2dec('1E');
 mag.id = 2238519142;
 
 sensors = [
-    imu
+%     imu
     mag1
-    mag2
-    sun
-    mag
+%     mag2
+%     sun
+%     mag
 ];
 
 % Added UDP 
@@ -167,38 +170,38 @@ for i=1:length(sensors)
     end
 end
 
-for i=1:length(udp_data)
-    % load sensors based on their id (but only the ones with an aardvark)
-    disp(['  loading ' udp_data(i).name]);
-    switch udp_data(i).opcode
-        case bdot_ang_vec.opcode
-            ang_vec_x_msb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_x_msb.dat')));
-            ang_vec_x_lsb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_x_lsb.dat')));
-            ang_vec_y_msb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_y_msb.dat')));
-            ang_vec_y_lsb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_y_lsb.dat')));
-            ang_vec_z_msb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_z_msb.dat')));
-            ang_vec_z_lsb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_z_lsb.dat')));
-            udp_data(i).bytes = [ang_vec_x_msb ang_vec_x_lsb ang_vec_y_msb ang_vec_y_lsb ang_vec_z_msb ang_vec_z_lsb];
-        case sp_ang_vec.opcode
-            sp_ang_vec_x_msb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_x_msb.dat')));
-            sp_ang_vec_x_lsb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_x_lsb.dat')));
-            sp_ang_vec_y_msb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_y_msb.dat')));
-            sp_ang_vec_y_lsb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_y_lsb.dat')));
-            sp_ang_vec_z_msb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_z_msb.dat')));
-            sp_ang_vec_z_lsb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_z_lsb.dat')));
-            udp_data(i).bytes = [sp_ang_vec_x_msb sp_ang_vec_x_lsb sp_ang_vec_y_msb sp_ang_vec_y_lsb sp_ang_vec_z_msb sp_ang_vec_z_lsb];
-        case sp_env_mag.opcode
-            sp_env_mag_x_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_x_msb.dat')));
-            sp_env_mag_x_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_x_lsb.dat')));
-            sp_env_mag_y_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_y_msb.dat')));
-            sp_env_mag_y_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_y_lsb.dat')));
-            sp_env_mag_z_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_z_msb.dat')));
-            sp_env_mag_z_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_z_lsb.dat')));
-            udp_data(i).bytes = [sp_env_mag_x_msb sp_env_mag_x_lsb sp_env_mag_y_msb sp_env_mag_y_lsb sp_env_mag_z_msb sp_env_mag_z_lsb];
-        otherwise
-            error('%s with id %i not recognized!', udp_data(i).name, udp_data(i).id);
-    end
-end
+% for i=1:length(udp_data)
+%     % load sensors based on their id (but only the ones with an aardvark)
+%     disp(['  loading ' udp_data(i).name]);
+%     switch udp_data(i).opcode
+%         case bdot_ang_vec.opcode
+%             ang_vec_x_msb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_x_msb.dat')));
+%             ang_vec_x_lsb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_x_lsb.dat')));
+%             ang_vec_y_msb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_y_msb.dat')));
+%             ang_vec_y_lsb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_y_lsb.dat')));
+%             ang_vec_z_msb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_z_msb.dat')));
+%             ang_vec_z_lsb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_z_lsb.dat')));
+%             udp_data(i).bytes = [ang_vec_x_msb ang_vec_x_lsb ang_vec_y_msb ang_vec_y_lsb ang_vec_z_msb ang_vec_z_lsb];
+%         case sp_ang_vec.opcode
+%             sp_ang_vec_x_msb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_x_msb.dat')));
+%             sp_ang_vec_x_lsb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_x_lsb.dat')));
+%             sp_ang_vec_y_msb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_y_msb.dat')));
+%             sp_ang_vec_y_lsb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_y_lsb.dat')));
+%             sp_ang_vec_z_msb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_z_msb.dat')));
+%             sp_ang_vec_z_lsb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_z_lsb.dat')));
+%             udp_data(i).bytes = [sp_ang_vec_x_msb sp_ang_vec_x_lsb sp_ang_vec_y_msb sp_ang_vec_y_lsb sp_ang_vec_z_msb sp_ang_vec_z_lsb];
+%         case sp_env_mag.opcode
+%             sp_env_mag_x_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_x_msb.dat')));
+%             sp_env_mag_x_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_x_lsb.dat')));
+%             sp_env_mag_y_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_y_msb.dat')));
+%             sp_env_mag_y_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_y_lsb.dat')));
+%             sp_env_mag_z_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_z_msb.dat')));
+%             sp_env_mag_z_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_z_lsb.dat')));
+%             udp_data(i).bytes = [sp_env_mag_x_msb sp_env_mag_x_lsb sp_env_mag_y_msb sp_env_mag_y_lsb sp_env_mag_z_msb sp_env_mag_z_lsb];
+%         otherwise
+%             error('%s with id %i not recognized!', udp_data(i).name, udp_data(i).id);
+%     end
+% end
 
 % open and enable aardvarks
 disp('opening aardvarks');
@@ -207,12 +210,19 @@ for i=1:length(sensors)
     calllib(lib, 'c_aa_close', sensors(i).port);
     sensors(i).hdev = calllib(lib, 'c_aa_open', sensors(i).port);
     if sensors(i).hdev < 0
-        error('failed to open %s on port %i (error code: %i)', sensors(i).name, int16(sensors(i).port), sensors(i).hdev);
+        status = calllib(lib, 'c_aa_status_string', sensors(i).hdev);
+        error('failed to open %s on port %i: ', sensors(i).name, int16(sensors(i).port), status);
     end
     
     % set the first response to avoid sending garbage data
     bytes = uint8(sensors(i).bytes(1, :));
-    calllib(lib, 'c_aa_i2c_slave_set_response', sensors(i).hdev, length(bytes), bytes);
+    numAccepted = calllib(lib, 'c_aa_i2c_slave_set_response', sensors(i).hdev, length(bytes), bytes);
+    if numAccepted < 0
+        status = calllib(lib, 'c_aa_status_string', numAccepted);
+        fprintf('set response to %s failed with status: %s\n', sensors(i).name, status);
+    elseif numAccepted ~= length(bytes)
+        error('wrong byte length!');
+    end
     
     % enable pullups
     pullupState = calllib(lib, 'c_aa_i2c_pullup', sensors(i).hdev, DESIRED_PULLUP_STATE);
@@ -221,7 +231,10 @@ for i=1:length(sensors)
     end
     
     % enable aardvark
-    calllib(lib, 'c_aa_i2c_slave_enable', sensors(i).hdev, sensors(i).addr, 0, 0);
+    res = calllib(lib, 'c_aa_i2c_slave_enable', sensors(i).hdev, sensors(i).addr, 0, 0);
+    if res ~= AA_OK
+        error('unable to open');
+    end
 end
 
 h = uicontrol('Style', 'PushButton', 'String', 'Stop', ...
@@ -231,20 +244,38 @@ h = uicontrol('Style', 'PushButton', 'String', 'Stop', ...
 disp('sending data');
 tjump = .05;
 tnext = 0;
+dumpSize = 4;
+dump = libpointer('uint8Ptr', uint8(zeros(1, dumpSize)));
 while 1
     tic
     index = 1;
     while index < length(time)
         if (toc >= time(index + 1))
             for i=1:length(sensors)
+                % read to flush buffer
+                code = calllib(lib, 'c_aa_async_poll', sensors(i).hdev, 0);
+                if bitand(code, AA_ASYNC_I2C_READ)
+                    numread = calllib(lib, 'c_aa_i2c_slave_read', sensors(i).hdev, sensors(i).addr, dumpSize, dump);
+                    if numread == AA_I2C_DROPPED_EXCESS_BYTES
+                        disp('dropped excess bytes');
+                    else
+                        fprintf('read %i bytes\n', numread);
+                    end
+                end
+                
                 bytes = uint8(sensors(i).bytes(index, :));
-                calllib(lib, 'c_aa_i2c_slave_set_response', sensors(i).hdev, length(bytes), bytes);
+                numAccepted = calllib(lib, 'c_aa_i2c_slave_set_response', sensors(i).hdev, length(bytes), bytes);
+                if numAccepted < 0
+                    status = calllib(lib, 'c_aa_status_string', numAccepted);
+                    fprintf('(%i) set response to %s failed with status: %s\n', index, sensors(i).name, status);
+                elseif numAccepted ~= length(bytes)
+                    error('wrong byte length!');
+                end
             end
-            for i=1:length(udp_data)
-               bytes = uint8(udp_data(i).bytes(index, :));
-               fwrite(u, [bytes.opcode, bytes]);
-            end
-            time(index)
+%             for i=1:length(udp_data)
+%                bytes = uint8(udp_data(i).bytes(index, :));
+%                fwrite(u, [bytes.opcode, bytes]);
+%             end
             tnext = tnext + tjump;
         end
         while(index < length(time) && tnext > time(index))
