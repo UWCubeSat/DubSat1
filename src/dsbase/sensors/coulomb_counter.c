@@ -87,6 +87,19 @@ CoulombCounterData readCoulombCounter() {
 
     return sensor.sensorData;
 }
+uint16_t CCReadRawVoltage()
+{
+    i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_VOLTAGE_MSB, i2cBuff, 2);
+    sensor.sensorData.rawBusVoltage = (uint16_t)(i2cBuff[1] | ((uint16_t)i2cBuff[0]<<8));
+    return sensor.sensorData.rawBusVoltage;
+}
+
+uint16_t CCReadRawCurrent()
+{
+    i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_CURRENT_MSB, i2cBuff, 2);
+    sensor.sensorData.rawCurrent = (uint16_t)(i2cBuff[1] | ((uint16_t)i2cBuff[0]<<8));
+    return sensor.sensorData.rawCurrent;
+}
 
 void readCoulombCounterControl() {
     //read control

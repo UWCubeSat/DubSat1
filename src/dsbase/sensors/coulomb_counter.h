@@ -103,4 +103,7 @@ void readCoulombCounterStatus();
 float rawBusVoltageToFloat(int16_t raw);
 float rawCurrentToFloat(int16_t raw);
 
+uint16_t CCReadRawVoltage();
+uint16_t CCReadRawCurrent();
+
 #endif /* POWER_LTC2943_COULOMBCOUNTER_H_ */
