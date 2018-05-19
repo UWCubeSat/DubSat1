@@ -142,6 +142,11 @@ TLM_SEGMENT {
     float busV[NUM_POWER_DOMAINS];
 } sensordat_segment;
 
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint8_t timeSinceRC;
+} rcCount_segment;
+
 CMD_SEGMENT {
     uint8_t pd_cmds[NUM_POWER_DOMAINS];
 } domaincmd_segment;
