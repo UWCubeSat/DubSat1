@@ -23,7 +23,7 @@ end
 
 %% Slave Setup
 % Configures Aardvark to listen as a slave, using native API wrapper
-slaveaddr = hex2dec('1E');
+slaveaddr = hex2dec('1E'); 
 % calllib(lib, 'c_aa_close', hport);
 
 %% CAN setup
@@ -73,11 +73,12 @@ tnext = 0;
 dataLength = length(time);
 %dataLength = 150000;
 
+results = zeros(1,dataLength);
 thuCount = 0;
 tic
 while 1
    if (toc >= time(index))
-        calllib(lib, 'c_aa_i2c_slave_set_response', hdev, length(outstr), outstr);
+        results(1,index) = calllib(lib, 'c_aa_i2c_slave_set_response', hdev, length(outstr), outstr);
         fwrite(u, [ANG_V_OPCODE, angular_velocity_x_msb(index), ...
                                 angular_velocity_x_lsb(index), ...
                                 angular_velocity_y_msb(index), ...
