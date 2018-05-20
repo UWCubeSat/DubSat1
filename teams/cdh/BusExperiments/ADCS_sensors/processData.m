@@ -1,11 +1,11 @@
 clear all; close all; clc;
 
 dataDir = 'C:\dubsat_data\';
-spDataDir = [dataDir, 'sp\'];
-bdotDataDir = [dataDir, 'bdot\'];
+spDataDir = [dataDir, 'sp-short\'];
+bdotDataDir = [dataDir, 'bdot-short\'];
 
-processSPData_UDP(spDataDir);
-processBDOTData_UDP(bdotDataDir);
+% processSPData_UDP(spDataDir);
+% processBDOTData_UDP(bdotDataDir);
 
 processSPData(spDataDir);
 processBDOTData(bdotDataDir);

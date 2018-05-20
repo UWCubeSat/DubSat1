@@ -90,7 +90,7 @@ env_zMag_lsb = uint8(env_zMag_lsb).';
 
 
 tic
-dlmwrite(strcat(data_path, 'time.dat'), time);
+dlmwrite(strcat(data_path, 'time_to.dat'), time);
 
 dlmwrite(strcat(data_path, 'xMagMsb_to.dat'), xMagMsb);
 dlmwrite(strcat(data_path, 'yMagMsb_to.dat'), yMagMsb);

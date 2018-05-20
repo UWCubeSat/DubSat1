@@ -12,8 +12,8 @@ MAX_NUM_AARDVARKS = 10;
 DESIRED_PULLUP_STATE = PULLUP_DISABLE;
 
 dataDir = 'C:\dubsat_data\';
-spDataDir = [dataDir, 'sp\'];
-bdotDataDir = [dataDir, 'bdot\'];
+spDataDir = [dataDir, 'sp-short\'];
+bdotDataDir = [dataDir, 'bdot-short\'];
 
 % define sensors
 
@@ -40,9 +40,9 @@ mag.id = 2238519142;
 sensors = [
     imu
     mag1
-    mag2
+%     mag2
     sun
-    mag
+%     mag
 ];
 
 % Added UDP 
@@ -167,6 +167,7 @@ for i=1:length(sensors)
         otherwise
             error('%s with id %i not recognized!', sensors(i).name, sensors(i).id);
     end
+    sensors(i).length = length(sensors(i).bytes(1, :));
 end
 
 % for i=1:length(udp_data)
@@ -203,10 +204,11 @@ end
 % end
 
 % open and enable aardvarks
+% first close all
+numClosed = calllib(lib, 'c_aa_close', 0);
+fprintf('closed %i open aardvarks\n', numClosed);
 disp('opening aardvarks');
 for i=1:length(sensors)
-    % close then open aardvark
-    calllib(lib, 'c_aa_close', sensors(i).port);
     sensors(i).hdev = calllib(lib, 'c_aa_open', sensors(i).port);
     if sensors(i).hdev < 0
         status = calllib(lib, 'c_aa_status_string', sensors(i).hdev);
@@ -236,20 +238,20 @@ for i=1:length(sensors)
     end
 end
 
-h = uicontrol('Style', 'PushButton', 'String', 'Stop', ...
-              'Callback', 'delete(gcbo)');
+numNotRead = 0;
 
 % set responses
 disp('sending data');
-tjump = .05;
-tnext = 0;
-dumpSize = 4;
-dump = libpointer('uint8Ptr', uint8(zeros(1, dumpSize)));
 while 1
     tic
     index = 1;
     while index < length(time)
-        if (toc >= time(index + 1))
+        if toc >= time(index + 1)
+            if numNotRead < 100
+                fprintf('num skipped: %i\n', numNotRead);
+                numNotRead = 0;
+            end
+            
             for i=1:length(sensors)
                 % set the response
                 bytes = uint8(sensors(i).bytes(index, :));
@@ -268,22 +270,12 @@ while 1
 %                bytes = uint8(udp_data(i).bytes(index, :));
 %                fwrite(u, [bytes.opcode, bytes]);
 %             end
-            tnext = tnext + tjump;
-        end
-        while(index < length(time) && tnext > time(index))
-            pause(tjump / 4); % lets the GUI interrupt
             index = index + 1;
-        end
-        
-        if ~ishandle(h)
-            break
+        else
+            numNotRead = numNotRead + 1;
         end
     end
     disp('ran out of input data -- reseting!')
-    
-    if ~ishandle(h)
-        break
-    end
 end
 
 disp('closing');
