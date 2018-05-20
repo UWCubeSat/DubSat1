@@ -1,15 +1,11 @@
 clear all; close all; clc;
 
-PULLUP_ENABLE = 3;
-PULLUP_DISABLE = 0;
+PULLUPS_ENABLED = false;
 AA_OK = 0;
 AA_PORT_NOT_FREE = uint16(hex2dec('8000'));
 
 u = udp('127.0.0.1', 4012);
 fopen(u);
-
-MAX_NUM_AARDVARKS = 10;
-DESIRED_PULLUP_STATE = PULLUP_DISABLE;
 
 dataDir = 'C:\dubsat_data\';
 spDataDir = [dataDir, 'sp-short\'];
@@ -72,18 +68,14 @@ end
 
 % find aardvarks
 disp('assigning sensors to ports');
-portsPtr = libpointer('uint16Ptr', uint16(zeros(1, MAX_NUM_AARDVARKS)));
-idsPtr = libpointer('uint32Ptr', uint32(zeros(1, MAX_NUM_AARDVARKS)));
-numAardvarks = calllib(lib, 'c_aa_find_devices_ext', MAX_NUM_AARDVARKS, portsPtr, MAX_NUM_AARDVARKS, idsPtr);
-ports = get(portsPtr, 'Value');
-ids = get(idsPtr, 'Value');
+[ids, ports] = i2cFindDevices();
 
 % assign ports to each sensor
 i = 1;
 while i <= length(sensors)
     % find an aardvark for this sensor
     foundAardvark = false;
-    for j=1:numAardvarks
+    for j=1:length(ids)
         if ids(j) == sensors(i).id
             % do bitand on ~AA_PORT_NOT_FREE to get the port regardless of
             % if the port is in use.
@@ -207,6 +199,7 @@ end
 % first close all
 numClosed = calllib(lib, 'c_aa_close', 0);
 fprintf('closed %i open aardvarks\n', numClosed);
+
 disp('opening aardvarks');
 for i=1:length(sensors)
     sensors(i).hdev = calllib(lib, 'c_aa_open', sensors(i).port);
@@ -214,7 +207,13 @@ for i=1:length(sensors)
         status = calllib(lib, 'c_aa_status_string', sensors(i).hdev);
         error('failed to open %s on port %i: ', sensors(i).name, int16(sensors(i).port), status);
     end
-    
+end
+
+fprintf('setting pullups enabled to %i\n', PULLUPS_ENABLED);
+i2cSetPullupsEnabled(PULLUPS_ENABLED, [sensors.hdev]);
+
+disp('setting first responses and enabling');
+for i=1:length(sensors)
     % set the first response to avoid sending garbage data
     bytes = uint8(sensors(i).bytes(1, :));
     numAccepted = calllib(lib, 'c_aa_i2c_slave_set_response', sensors(i).hdev, length(bytes), bytes);
@@ -223,12 +222,6 @@ for i=1:length(sensors)
         fprintf('set response to %s failed with status: %s\n', sensors(i).name, status);
     elseif numAccepted ~= length(bytes)
         error('wrong byte length!');
-    end
-    
-    % enable pullups
-    pullupState = calllib(lib, 'c_aa_i2c_pullup', sensors(i).hdev, DESIRED_PULLUP_STATE);
-    if pullupState ~= DESIRED_PULLUP_STATE
-        error('failed to enable pullup for %s', sensors(i).name);
     end
     
     % enable aardvark
@@ -242,11 +235,12 @@ numNotRead = 0;
 
 % set responses
 disp('sending data');
+stride = 1;
 while 1
     tic
     index = 1;
-    while index < length(time)
-        if toc >= time(index + 1)
+    while index <= length(time) - stride
+        if toc >= time(index + stride)
             if numNotRead < 100
                 fprintf('num skipped: %i\n', numNotRead);
                 numNotRead = 0;
@@ -270,7 +264,7 @@ while 1
 %                bytes = uint8(udp_data(i).bytes(index, :));
 %                fwrite(u, [bytes.opcode, bytes]);
 %             end
-            index = index + 1;
+            index = index + stride;
         else
             numNotRead = numNotRead + 1;
         end
