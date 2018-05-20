@@ -44,7 +44,7 @@ FILE_STATIC uint32_t rtOneStep_us = 100000;
 /***************************************************************/
 
 /*******************RollCall***********************************/
-FILE_STATIC aggVec_f rc_temp;
+FILE_STATIC aggVec_i rc_temp;
 FILE_STATIC aggVec_i magX;
 FILE_STATIC aggVec_i magY;
 FILE_STATIC aggVec_i magZ;
@@ -161,7 +161,7 @@ void initial_setup()
     bcbinPopulateHeader(&mySimulink.header, TLM_ID_SIMULINK_INFO, sizeof(mySimulink));
     bcbinPopulateHeader(&polling_timer_info.header, TLM_ID_POLLING_TIMER, sizeof(polling_timer_info));
     bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
-    aggVec_init_f(&rc_temp);
+    aggVec_init_i(&rc_temp);
     aggVec_init_i(&magX);
     aggVec_init_i(&magY);
     aggVec_init_i(&magZ);
@@ -331,6 +331,7 @@ void updateRCData()
     aggVec_push_i(&magX, magData->rawX);
     aggVec_push_i(&magY, magData->rawY);
     aggVec_push_i(&magZ, magData->rawZ);
+    aggVec_push_i(&rc_temp, asensorReadIntTempRawC());
 }
 
 
@@ -394,11 +395,11 @@ void handleRollCall()
 void rcPopulate1(CANPacket *out)
 {
     rc_adcs_bdot_1 rc;
-//    rc.rc_adcs_bdot_1_reset_count = bspGetResetCount();
-//    rc.rc_adcs_bdot_1_sysrstiv = SYSRSTIV;
-    rc.rc_adcs_bdot_1_temp_avg = 2732+((uint16_t)(10*aggVec_avg_f(&rc_temp)));
-    rc.rc_adcs_bdot_1_temp_max = 2732+((uint16_t)(10*aggVec_max_f(&rc_temp)));
-    rc.rc_adcs_bdot_1_temp_min = 2732+((uint16_t)(10*aggVec_min_f(&rc_temp)));
+    rc.rc_adcs_bdot_1_reset_count = bspGetResetCount();
+    rc.rc_adcs_bdot_1_sysrstiv = SYSRSTIV;
+    rc.rc_adcs_bdot_1_temp_avg = aggVec_avg_i(&rc_temp);
+    rc.rc_adcs_bdot_1_temp_max = aggVec_max_i(&rc_temp);
+    rc.rc_adcs_bdot_1_temp_min = aggVec_min_i(&rc_temp);
     rc.rc_adcs_bdot_1_reset_count = 0;
     aggVec_reset((aggVec *)&rc_temp);
     encoderc_adcs_bdot_1(&rc, out);
