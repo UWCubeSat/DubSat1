@@ -52,10 +52,22 @@ sp_ang_vec.opcode = 3;
 sp_env_mag.name = 'sp-environmental-magnetic-field';
 sp_env_mag.opcode = 4;
 
+sp_mag_out.name = 'sp-mag-out';
+sp_mag_out.opcode = 5;
+
+sp_imu_out.name = 'sp-imu-out';
+sp_imu_out.opcode = 6;
+
+sp_sun_out.name = 'sp-sun-out';
+sp_sun_out.opcode = 7;
+
 udp_data = [
     bdot_ang_vec
     sp_ang_vec
     sp_env_mag
+    sp_mag_out
+    sp_imu_out
+    sp_sun_out
 ];
 
 % load aardvark library
@@ -191,6 +203,27 @@ for i=1:length(udp_data)
             sp_env_mag_z_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_z_msb.dat')));
             sp_env_mag_z_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_z_lsb.dat')));
             udp_data(i).bytes = [sp_env_mag_x_msb sp_env_mag_x_lsb sp_env_mag_y_msb sp_env_mag_y_lsb sp_env_mag_z_msb sp_env_mag_z_lsb];
+        case sp_mag_out.opcode
+            sp_mag_out_x_msb = uint8(dlmread([spDataDir, 'out_mag_x_msb.dat']));
+            sp_mag_out_x_lsb = uint8(dlmread([spDataDir, 'out_mag_x_lsb.dat']));
+            sp_mag_out_y_msb = uint8(dlmread([spDataDir, 'out_mag_y_msb.dat']));
+            sp_mag_out_y_lsb = uint8(dlmread([spDataDir, 'out_mag_y_lsb.dat']));
+            sp_mag_out_z_msb = uint8(dlmread([spDataDir, 'out_mag_z_msb.dat']));
+            sp_mag_out_z_lsb = uint8(dlmread([spDataDir, 'out_mag_z_lsb.dat']));
+            udp_data(i).bytes = [sp_mag_out_x_msb sp_mag_out_x_lsb sp_mag_out_y_msb sp_mag_out_y_lsb sp_mag_out_z_msb sp_mag_out_z_lsb];
+        case sp_imu_out.opcode
+            sp_imu_out_x_msb = uint8(dlmread([spDataDir, 'out_imu_x_msb.dat']));
+            sp_imu_out_x_lsb = uint8(dlmread([spDataDir, 'out_imu_x_lsb.dat']));
+            sp_imu_out_y_msb = uint8(dlmread([spDataDir, 'out_imu_y_msb.dat']));
+            sp_imu_out_y_lsb = uint8(dlmread([spDataDir, 'out_imu_y_lsb.dat']));
+            sp_imu_out_z_msb = uint8(dlmread([spDataDir, 'out_imu_z_msb.dat']));
+            sp_imu_out_z_lsb = uint8(dlmread([spDataDir, 'out_imu_z_lsb.dat']));
+            udp_data(i).bytes = [sp_imu_out_x_msb sp_mag_out_x_lsb sp_imu_out_y_msb sp_mag_out_y_lsb sp_imu_out_z_msb sp_mag_out_z_lsb];
+        case sp_sun_out.opcode
+            sp_sun_out_x = dlmread([spDataDir, 'out_sun_x.dat']);
+            sp_sun_out_y = dlmread([spDataDir, 'out_sun_y.dat']);
+            sp_sun_out_z = dlmread([spDataDir, 'out_sun_z.dat']);
+            udp_data(i).bytes = [sp_sun_out_x sp_sun_out_y sp_sun_out_z];
         otherwise
             error('%s with id %i not recognized!', udp_data(i).name, udp_data(i).id);
     end
