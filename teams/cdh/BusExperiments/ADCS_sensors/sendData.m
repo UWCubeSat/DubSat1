@@ -4,7 +4,8 @@ PULLUPS_ENABLED = false;
 AA_OK = 0;
 AA_PORT_NOT_FREE = uint16(hex2dec('8000'));
 
-u = udp('127.0.0.1', 4012);
+% use Jupiter's IP address
+u = udp('192.168.1.152', 4012);
 fopen(u);
 
 dataDir = 'C:\dubsat_data\';
@@ -36,9 +37,9 @@ mag.id = 2238519142;
 sensors = [
     imu
     mag1
-%     mag2
+    mag2
     sun
-%     mag
+    mag
 ];
 
 % Added UDP 
@@ -162,38 +163,38 @@ for i=1:length(sensors)
     sensors(i).length = length(sensors(i).bytes(1, :));
 end
 
-% for i=1:length(udp_data)
-%     % load sensors based on their id (but only the ones with an aardvark)
-%     disp(['  loading ' udp_data(i).name]);
-%     switch udp_data(i).opcode
-%         case bdot_ang_vec.opcode
-%             ang_vec_x_msb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_x_msb.dat')));
-%             ang_vec_x_lsb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_x_lsb.dat')));
-%             ang_vec_y_msb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_y_msb.dat')));
-%             ang_vec_y_lsb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_y_lsb.dat')));
-%             ang_vec_z_msb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_z_msb.dat')));
-%             ang_vec_z_lsb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_z_lsb.dat')));
-%             udp_data(i).bytes = [ang_vec_x_msb ang_vec_x_lsb ang_vec_y_msb ang_vec_y_lsb ang_vec_z_msb ang_vec_z_lsb];
-%         case sp_ang_vec.opcode
-%             sp_ang_vec_x_msb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_x_msb.dat')));
-%             sp_ang_vec_x_lsb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_x_lsb.dat')));
-%             sp_ang_vec_y_msb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_y_msb.dat')));
-%             sp_ang_vec_y_lsb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_y_lsb.dat')));
-%             sp_ang_vec_z_msb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_z_msb.dat')));
-%             sp_ang_vec_z_lsb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_z_lsb.dat')));
-%             udp_data(i).bytes = [sp_ang_vec_x_msb sp_ang_vec_x_lsb sp_ang_vec_y_msb sp_ang_vec_y_lsb sp_ang_vec_z_msb sp_ang_vec_z_lsb];
-%         case sp_env_mag.opcode
-%             sp_env_mag_x_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_x_msb.dat')));
-%             sp_env_mag_x_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_x_lsb.dat')));
-%             sp_env_mag_y_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_y_msb.dat')));
-%             sp_env_mag_y_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_y_lsb.dat')));
-%             sp_env_mag_z_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_z_msb.dat')));
-%             sp_env_mag_z_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_z_lsb.dat')));
-%             udp_data(i).bytes = [sp_env_mag_x_msb sp_env_mag_x_lsb sp_env_mag_y_msb sp_env_mag_y_lsb sp_env_mag_z_msb sp_env_mag_z_lsb];
-%         otherwise
-%             error('%s with id %i not recognized!', udp_data(i).name, udp_data(i).id);
-%     end
-% end
+for i=1:length(udp_data)
+    % load sensors based on their id (but only the ones with an aardvark)
+    disp(['  loading ' udp_data(i).name]);
+    switch udp_data(i).opcode
+        case bdot_ang_vec.opcode
+            ang_vec_x_msb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_x_msb.dat')));
+            ang_vec_x_lsb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_x_lsb.dat')));
+            ang_vec_y_msb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_y_msb.dat')));
+            ang_vec_y_lsb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_y_lsb.dat')));
+            ang_vec_z_msb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_z_msb.dat')));
+            ang_vec_z_lsb = uint8(dlmread(strcat(bdotDataDir, 'angular_velocity_z_lsb.dat')));
+            udp_data(i).bytes = [ang_vec_x_msb ang_vec_x_lsb ang_vec_y_msb ang_vec_y_lsb ang_vec_z_msb ang_vec_z_lsb];
+        case sp_ang_vec.opcode
+            sp_ang_vec_x_msb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_x_msb.dat')));
+            sp_ang_vec_x_lsb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_x_lsb.dat')));
+            sp_ang_vec_y_msb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_y_msb.dat')));
+            sp_ang_vec_y_lsb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_y_lsb.dat')));
+            sp_ang_vec_z_msb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_z_msb.dat')));
+            sp_ang_vec_z_lsb = uint8(dlmread(strcat(spDataDir, 'angular_velocity_z_lsb.dat')));
+            udp_data(i).bytes = [sp_ang_vec_x_msb sp_ang_vec_x_lsb sp_ang_vec_y_msb sp_ang_vec_y_lsb sp_ang_vec_z_msb sp_ang_vec_z_lsb];
+        case sp_env_mag.opcode
+            sp_env_mag_x_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_x_msb.dat')));
+            sp_env_mag_x_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_x_lsb.dat')));
+            sp_env_mag_y_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_y_msb.dat')));
+            sp_env_mag_y_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_y_lsb.dat')));
+            sp_env_mag_z_msb = uint8(dlmread(strcat(spDataDir, 'env_mag_z_msb.dat')));
+            sp_env_mag_z_lsb = uint8(dlmread(strcat(spDataDir, 'env_mag_z_lsb.dat')));
+            udp_data(i).bytes = [sp_env_mag_x_msb sp_env_mag_x_lsb sp_env_mag_y_msb sp_env_mag_y_lsb sp_env_mag_z_msb sp_env_mag_z_lsb];
+        otherwise
+            error('%s with id %i not recognized!', udp_data(i).name, udp_data(i).id);
+    end
+end
 
 % open and enable aardvarks
 % first close all
@@ -260,10 +261,10 @@ while 1
                 % read to flush buffer
                 i2cPoll(sensors(i));
             end
-%             for i=1:length(udp_data)
-%                bytes = uint8(udp_data(i).bytes(index, :));
-%                fwrite(u, [bytes.opcode, bytes]);
-%             end
+            for i=1:length(udp_data)
+               bytes = uint8(udp_data(i).bytes(index, :));
+               fwrite(u, [udp_data(i).opcode, bytes]);
+            end
             index = index + stride;
         else
             numNotRead = numNotRead + 1;
