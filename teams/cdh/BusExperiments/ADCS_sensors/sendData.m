@@ -237,6 +237,7 @@ numNotRead = 0;
 % set responses
 disp('sending data');
 stride = 1;
+udpStride = 100;
 while 1
     tic
     index = 1;
@@ -261,9 +262,11 @@ while 1
                 % read to flush buffer
                 i2cPoll(sensors(i));
             end
-            for i=1:length(udp_data)
-               bytes = uint8(udp_data(i).bytes(index, :));
-               fwrite(u, [udp_data(i).opcode, bytes]);
+            if mod(index, udpStride) == 0
+                for i=1:length(udp_data)
+                   bytes = uint8(udp_data(i).bytes(index, :));
+                   fwrite(u, [udp_data(i).opcode, bytes]);
+                end
             end
             index = index + stride;
         else
