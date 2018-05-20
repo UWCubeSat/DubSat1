@@ -28,18 +28,21 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
      sunsensorioUpdate,
      sunsensorioSendBackchannel,
      sunsensorioSendCAN,
+	 NULL,
     },
     {
      magioInit,
      magioUpdate,
      magioSendBackchannel,
      magioSendCAN,
+	 magioHandleCAN,
     },
     {
      imuioInit,
      imuioUpdate,
      imuioSendBackchannel,
      imuioSendCAN,
+	 NULL,
     },
 };
 
@@ -182,9 +185,10 @@ FILE_STATIC void step()
         {
         	sendHealthSegment();
 			sendMetaSegment();
-			sendSensorBackchannel();
-			magioSendBackchannelVector();
         }
+
+        sendSensorBackchannel();
+		magioSendBackchannelVector();
     }
 
     rollcallUpdate();
@@ -406,6 +410,14 @@ void canRxCallback(CANPacket *p)
     if (p->id == CAN_ID_CMD_ROLLCALL)
     {
         rollcallStart();
+    }
+    uint8_t i = NUM_INTERFACES;
+    while (i-- != 0)
+    {
+    	if (sensorInterfaces[i].handleCan)
+    	{
+        	sensorInterfaces[i].handleCan(p);
+    	}
     }
 }
 

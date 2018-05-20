@@ -8,13 +8,15 @@
 #ifndef MAG_IO_H_
 #define MAG_IO_H_
 
-#define DELAY_MAG_UPDATE_MS 200
+#define MAG_VALID_RANGE_NT  50 // TODO what is this really
+#define MAG_VALID_RANGE_RAW MAG_VALID_RANGE_NT / MAG_CONVERSION_FACTOR_RAW_TO_NANOTESLAS
 
 #define MAG1_I2CBUS I2CBus1
 #define MAG2_I2CBUS I2CBus2
 
 #include "core/debugtools.h"
 #include "interfaces/canWrap.h"
+#include "sensors/magnetometer.h"
 
 // telemetry segment for mag readings in nanoTeslas
 TLM_SEGMENT {
@@ -30,6 +32,7 @@ void magioUpdate();
 void magioSendBackchannel();
 void magioSendBackchannelVector(); // send processed vector
 void magioSendCAN();
+void magioHandleCAN(CANPacket *p);
 
 // rollcall
 void magioRcPopulate6(rc_adcs_sp_6 *rc);

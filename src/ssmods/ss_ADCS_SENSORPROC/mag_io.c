@@ -34,6 +34,9 @@ FILE_STATIC hMag mag2;
 FILE_STATIC MagnetometerData *data1;
 FILE_STATIC MagnetometerData *data2;
 
+// TODO it might be safer to default to actuation phase
+FILE_STATIC uint8_t mtqPhase = MEASUREMENT_PHASE;
+
 #if !ENABLE_MAG1
     MagnetometerData mockData1;
 #endif
@@ -61,10 +64,14 @@ void magioInit()
     aggVec_init_i(&rc_magValid);
 }
 
-FILE_STATIC uint8_t isValid(hMag handle)
+FILE_STATIC uint8_t isValidRange(int16_t raw)
 {
-    // TODO write a validity check
-    return 1;
+	return raw < MAG_VALID_RANGE_RAW && raw > -MAG_VALID_RANGE_RAW;
+}
+
+FILE_STATIC uint8_t isValid(hMag handle, MagnetometerData *input)
+{
+    return mtqPhase == MEASUREMENT_PHASE && isValidRange(input->rawX) && isValidRange(input->rawY) && isValidRange(input->rawZ);
 }
 
 FILE_STATIC void setOutput(hMag mag, MagnetometerData *input, real32_T *output)
@@ -73,7 +80,7 @@ FILE_STATIC void setOutput(hMag mag, MagnetometerData *input, real32_T *output)
     output[0] = magConvertRawToTeslas(input->rawX);
     output[1] = magConvertRawToTeslas(input->rawY);
     output[2] = magConvertRawToTeslas(input->rawZ);
-    output[3] = isValid(mag);
+    output[3] = isValid(mag, input);
 }
 
 FILE_STATIC void update1()
@@ -182,6 +189,16 @@ void magioSendCAN()
     aggVec_push_i(&rc_magpy, mag.sensorproc_mag_y);
     aggVec_push_i(&rc_magpz, mag.sensorproc_mag_z);
     aggVec_push_i(&rc_magValid, mag.sensorproc_mag_valid);
+}
+
+void magioHandleCAN(CANPacket *p)
+{
+	mtq_ack ack;
+	if (p->id == CAN_ID_MTQ_ACK)
+	{
+		decodemtq_ack(p, &ack);
+		mtqPhase = ack.mtq_ack_phase;
+	}
 }
 
 void magioRcPopulate6(rc_adcs_sp_6 *r)
