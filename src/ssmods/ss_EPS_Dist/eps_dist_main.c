@@ -6,6 +6,9 @@
 #include "core/MET.h"
 #include "interfaces/canwrap.h"
 #include "core/dataArray.h"
+#include "interfaces/rollcall.h"
+
+#define WDT_CONFIG WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_2
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -51,6 +54,8 @@ FILE_STATIC meta_segment mseg;
 FILE_STATIC general_segment gseg = {0};
 FILE_STATIC sensordat_segment sseg;
 FILE_STATIC health_segment hseg;
+
+FILE_STATIC rcCount_segment rcCount;
 
 #pragma PERSISTENT(gseg)
 
@@ -442,16 +447,19 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
 void sendRollCallHandler()
 {
     rcSendFlag = 1;
+    rcCount.timeSinceRC = 0;
 }
 
 void sendRCCmd()
 {
+    distDomainSwitch(PD_WHEELS, PD_CMD_Enable);
     CANPacket rcPkt = {0};
     cmd_rollcall rc_info = {0};
     rc_info.cmd_rollcall_met = getMETPrimary();
     rc_info.cmd_rollcall_met_overflow = getMETOverflow();
     encodecmd_rollcall(&rc_info, &rcPkt);
     canSendPacket(&rcPkt);
+    rcFlag = 17; //TODO: this should be the number of packets
 
     //TODO: uncomment this when automatic shutoff is ready to go!
     /*if(rcResponseFlag)
@@ -508,13 +516,86 @@ void sendRCCmd()
     if(distQueryDomainSwitch(PD_PPT))
         rcResponseFlag |= PD_PPT_FLAG;
     rcSendFlag = 0;
+    distDomainSwitch(PD_WHEELS, PD_CMD_Disable);
 }
 
 void sendRC()
 {
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
     {
-        //TODO: send RC w/ if/else if structure here
+        CANPacket rollcallPkt = {0};
+        if(rcFlag == 17)
+        {
+            rc_eps_dist_1 rollcallPkt1_info = {0};
+            rollcallPkt1_info.rc_eps_dist_1_reset_count = bspGetResetCount();
+            rollcallPkt1_info.rc_eps_dist_1_sysrstiv = SYSRSTIV;
+            rollcallPkt1_info.rc_eps_dist_1_temp_avg = 0;
+        }
+        else if(rcFlag == 16)
+        {
+
+        }
+        else if(rcFlag == 15)
+        {
+
+        }
+        else if(rcFlag == 14)
+        {
+
+        }
+        else if(rcFlag == 13)
+        {
+
+        }
+        else if(rcFlag == 12)
+        {
+
+        }
+        else if(rcFlag == 11)
+        {
+
+        }
+        else if(rcFlag == 10)
+        {
+
+        }
+        else if(rcFlag == 9)
+        {
+
+        }
+        else if(rcFlag == 8)
+        {
+
+        }
+        else if(rcFlag == 7)
+        {
+
+        }
+        else if(rcFlag == 6)
+        {
+
+        }
+        else if(rcFlag == 5)
+        {
+
+        }
+        else if(rcFlag == 4)
+        {
+
+        }
+        else if(rcFlag == 3)
+        {
+
+        }
+        else if(rcFlag == 2)
+        {
+
+        }
+        else if(rcFlag == 1)
+        {
+
+        }
+        canSendPacket(&rollcallPkt);
         rcFlag--;
     }
 }
@@ -565,7 +646,7 @@ void autoStart()
     __delay_cycles(0.5 * SEC);
     distDomainSwitch(PD_RAHS, PD_CMD_AutoStart);
     __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_WHEELS, PD_CMD_AutoStart);
+    //distDomainSwitch(PD_WHEELS, PD_CMD_AutoStart);
     __delay_cycles(0.5 * SEC);
     distDomainSwitch(PD_PPT, PD_CMD_AutoStart);
 }
@@ -576,6 +657,12 @@ void initData()
     battV = init_uint16_t(battVArray, 480);
 }
 
+void intermediateRollcall()
+{
+    bcbinSendPacket((uint8_t *) &rcCount, sizeof(rcCount));
+    rcCount.timeSinceRC++;
+}
+
 /*
  * main.c
  */
@@ -584,6 +671,7 @@ int main(void)
     P3DIR |= BIT4;
     P3OUT |= BIT4;
     /* ----- INITIALIZATION -----*/
+    WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1;
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
 
     // Spin up the ADC, for the temp sensor and battery voltage
@@ -633,10 +721,14 @@ int main(void)
 
     initializeTimer();
     startCallback(timerCallbackInitializer(&sendRollCallHandler, 6000000));
+    //TODO: this is test code:
+    bcbinPopulateHeader(&(rcCount.header), 25, sizeof(rcCount));
+    startCallback(timerCallbackInitializer(&intermediateRollcall, 1000000));
 
     uint16_t counter = 0;
     while (1)
     {
+        WDTCTL = WDT_CONFIG;
         // TODO:  eventually drive this with a timer
         //LED_OUT ^= LED_BIT;
         __delay_cycles(0.1 * SEC);
@@ -671,8 +763,7 @@ int main(void)
         }
         if(rcSendFlag && (canTxCheck() != CAN_TX_BUSY))
             sendRCCmd();
-        if(rcFlag)
-            sendRC();
+        //sendRC();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!

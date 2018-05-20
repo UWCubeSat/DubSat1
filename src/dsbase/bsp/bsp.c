@@ -111,8 +111,9 @@ void bspInit(SubsystemModule mod)
 {
     ssModule = mod;
 
+    if(mod != Module_EPS_Dist)
     // Stop watchdog timer
-    WDTCTL = WDTPW | WDTHOLD;
+        WDTCTL = WDTPW | WDTHOLD;
 
     // Keep track of local reset count here for now (should move into ... timers?)
     local_reset_count++;
