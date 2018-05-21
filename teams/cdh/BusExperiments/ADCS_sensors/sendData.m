@@ -9,8 +9,8 @@ u = udp('192.168.1.152', 4012);
 fopen(u);
 
 dataDir = 'C:\dubsat_data\';
-spDataDir = [dataDir, 'sp-short\'];
-bdotDataDir = [dataDir, 'bdot-short\'];
+spDataDir = [dataDir, 'sp\'];
+bdotDataDir = [dataDir, 'bdot\'];
 
 % define sensors
 
@@ -223,7 +223,13 @@ for i=1:length(udp_data)
             sp_sun_out_x = dlmread([spDataDir, 'out_sun_x.dat']);
             sp_sun_out_y = dlmread([spDataDir, 'out_sun_y.dat']);
             sp_sun_out_z = dlmread([spDataDir, 'out_sun_z.dat']);
-            udp_data(i).bytes = [sp_sun_out_x sp_sun_out_y sp_sun_out_z];
+            len = length(sp_sun_out_x);
+            for j=1:len
+                xbytes = typecast(single(sp_sun_out_x(j)), 'uint8');
+                ybytes = typecast(single(sp_sun_out_y(j)), 'uint8');
+                zbytes = typecast(single(sp_sun_out_z(j)), 'uint8');
+                udp_data(i).bytes(j, :) = [xbytes ybytes zbytes];
+            end
         otherwise
             error('%s with id %i not recognized!', udp_data(i).name, udp_data(i).id);
     end
