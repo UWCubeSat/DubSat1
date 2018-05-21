@@ -3,6 +3,36 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rc_adcs_estim_14_packet = {0};
+	rc_adcs_estim_14 rc_adcs_estim_14_info = {0};
+	encoderc_adcs_estim_14(&rc_adcs_estim_14_info, &rc_adcs_estim_14_packet);
+	canSendPacket(&rc_adcs_estim_14_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_estim_13_packet = {0};
+	rc_adcs_estim_13 rc_adcs_estim_13_info = {0};
+	encoderc_adcs_estim_13(&rc_adcs_estim_13_info, &rc_adcs_estim_13_packet);
+	canSendPacket(&rc_adcs_estim_13_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_estim_12_packet = {0};
+	rc_adcs_estim_12 rc_adcs_estim_12_info = {0};
+	encoderc_adcs_estim_12(&rc_adcs_estim_12_info, &rc_adcs_estim_12_packet);
+	canSendPacket(&rc_adcs_estim_12_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_estim_11_packet = {0};
+	rc_adcs_estim_11 rc_adcs_estim_11_info = {0};
+	encoderc_adcs_estim_11(&rc_adcs_estim_11_info, &rc_adcs_estim_11_packet);
+	canSendPacket(&rc_adcs_estim_11_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_estim_10_packet = {0};
+	rc_adcs_estim_10 rc_adcs_estim_10_info = {0};
+	encoderc_adcs_estim_10(&rc_adcs_estim_10_info, &rc_adcs_estim_10_packet);
+	canSendPacket(&rc_adcs_estim_10_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_estim_9_packet = {0};
+	rc_adcs_estim_9 rc_adcs_estim_9_info = {0};
+	encoderc_adcs_estim_9(&rc_adcs_estim_9_info, &rc_adcs_estim_9_packet);
+	canSendPacket(&rc_adcs_estim_9_packet);
+
 	__delay_cycles(10000);	CANPacket rc_eps_dist_16_packet = {0};
 	rc_eps_dist_16 rc_eps_dist_16_info = {0};
 	encoderc_eps_dist_16(&rc_eps_dist_16_info, &rc_eps_dist_16_packet);

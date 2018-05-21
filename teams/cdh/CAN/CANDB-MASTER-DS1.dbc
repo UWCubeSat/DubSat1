@@ -46,6 +46,24 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2452161113 rc_adcs_estim_14: 8 Vector__XXX
+ SG_ rc_adcs_estim_14_mag_z : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+
+BO_ 2452161112 rc_adcs_estim_13: 8 Vector__XXX
+ SG_ rc_adcs_estim_13_mag_y : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+
+BO_ 2452161111 rc_adcs_estim_12: 8 Vector__XXX
+ SG_ rc_adcs_estim_12_mag_x : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+
+BO_ 2452161110 rc_adcs_estim_11: 8 Vector__XXX
+ SG_ rc_adcs_estim_11_sun_z : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+
+BO_ 2452161109 rc_adcs_estim_10: 8 Vector__XXX
+ SG_ rc_adcs_estim_10_sun_y : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+
+BO_ 2452161108 rc_adcs_estim_9: 8 Vector__XXX
+ SG_ rc_adcs_estim_9_sun_x : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+
 BO_ 2452161106 rc_eps_dist_16: 7 Vector__XXX
  SG_ rc_eps_dist_16_ppt_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
  SG_ rc_eps_dist_16_ppt_c_min : 8|16@1+ (1,0) [0|65535] "mA" Vector__XXX
@@ -770,6 +788,12 @@ VAL_ 2183266498 eps_batt_state_bal 1 "true" 0 "false" ;
 VAL_ 2183266498 eps_batt_state_heat 1 "true" 0 "false" ;
 VAL_ 2483355713 sensorproc_sun_valid 1 "true" 0 "false" ;
 VAL_ 2181496864 bdot_tumble_status_status 1 "true" 0 "false" ;
+SIG_VALTYPE_ 2452161113 rc_adcs_estim_14_mag_z : 2;
+SIG_VALTYPE_ 2452161112 rc_adcs_estim_13_mag_y : 2;
+SIG_VALTYPE_ 2452161111 rc_adcs_estim_12_mag_x : 2;
+SIG_VALTYPE_ 2452161110 rc_adcs_estim_11_sun_z : 2;
+SIG_VALTYPE_ 2452161109 rc_adcs_estim_10_sun_y : 2;
+SIG_VALTYPE_ 2452161108 rc_adcs_estim_9_sun_x : 2;
 SIG_VALTYPE_ 2452161086 rc_adcs_mpc_11_omega_y_avg : 2;
 SIG_VALTYPE_ 2452161082 rc_adcs_mpc_7_omega_x_max : 2;
 SIG_VALTYPE_ 2452161083 rc_adcs_mpc_8_omega_x_avg : 2;

@@ -26,6 +26,12 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_RC_ADCS_ESTIM_14 304677465
+#define CAN_ID_RC_ADCS_ESTIM_13 304677464
+#define CAN_ID_RC_ADCS_ESTIM_12 304677463
+#define CAN_ID_RC_ADCS_ESTIM_11 304677462
+#define CAN_ID_RC_ADCS_ESTIM_10 304677461
+#define CAN_ID_RC_ADCS_ESTIM_9 304677460
 #define CAN_ID_RC_EPS_DIST_16 304677458
 #define CAN_ID_RC_EPS_DIST_9 304677451
 #define CAN_ID_RC_EPS_DIST_7 304677449
@@ -232,6 +238,30 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct rc_adcs_estim_14 {
+    double rc_adcs_estim_14_mag_z; //  (No Units)
+} rc_adcs_estim_14;
+
+typedef struct rc_adcs_estim_13 {
+    double rc_adcs_estim_13_mag_y; //  (No Units)
+} rc_adcs_estim_13;
+
+typedef struct rc_adcs_estim_12 {
+    double rc_adcs_estim_12_mag_x; //  (No Units)
+} rc_adcs_estim_12;
+
+typedef struct rc_adcs_estim_11 {
+    double rc_adcs_estim_11_sun_z; //  (No Units)
+} rc_adcs_estim_11;
+
+typedef struct rc_adcs_estim_10 {
+    double rc_adcs_estim_10_sun_y; //  (No Units)
+} rc_adcs_estim_10;
+
+typedef struct rc_adcs_estim_9 {
+    double rc_adcs_estim_9_sun_x; //  (No Units)
+} rc_adcs_estim_9;
+
 typedef struct rc_eps_dist_16 {
     uint8_t rc_eps_dist_16_ppt_state; //  (No Units)
     uint16_t rc_eps_dist_16_ppt_c_min; // mA
@@ -1036,6 +1066,24 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encoderc_adcs_estim_14(rc_adcs_estim_14 *input, CANPacket* output);
+void decoderc_adcs_estim_14(CANPacket *input, rc_adcs_estim_14 *output);
+
+void encoderc_adcs_estim_13(rc_adcs_estim_13 *input, CANPacket* output);
+void decoderc_adcs_estim_13(CANPacket *input, rc_adcs_estim_13 *output);
+
+void encoderc_adcs_estim_12(rc_adcs_estim_12 *input, CANPacket* output);
+void decoderc_adcs_estim_12(CANPacket *input, rc_adcs_estim_12 *output);
+
+void encoderc_adcs_estim_11(rc_adcs_estim_11 *input, CANPacket* output);
+void decoderc_adcs_estim_11(CANPacket *input, rc_adcs_estim_11 *output);
+
+void encoderc_adcs_estim_10(rc_adcs_estim_10 *input, CANPacket* output);
+void decoderc_adcs_estim_10(CANPacket *input, rc_adcs_estim_10 *output);
+
+void encoderc_adcs_estim_9(rc_adcs_estim_9 *input, CANPacket* output);
+void decoderc_adcs_estim_9(CANPacket *input, rc_adcs_estim_9 *output);
 
 void encoderc_eps_dist_16(rc_eps_dist_16 *input, CANPacket* output);
 void decoderc_eps_dist_16(CANPacket *input, rc_eps_dist_16 *output);
