@@ -49,8 +49,14 @@ saveAsShort(imu_out_y, [data_path 'out_imu_y']);
 saveAsShort(imu_out_z, [data_path 'out_imu_z']);
 
 disp('saving sp sun output');
-save([data_path 'out_sun_x.dat'], 'sun_out_x', '-ascii');
-save([data_path 'out_sun_y.dat'], 'sun_out_y', '-ascii');
-save([data_path 'out_sun_z.dat'], 'sun_out_z', '-ascii');
+len = length(sun_out_x);
+sun_out = zeros(len, 12);
+for i=1:len
+    xbytes = typecast(single(sun_out_x(i)), 'uint8');
+    ybytes = typecast(single(sun_out_y(i)), 'uint8');
+    zbytes = typecast(single(sun_out_z(i)), 'uint8');
+    sun_out(i, :) = [fliplr(xbytes) fliplr(ybytes) fliplr(zbytes)];
+end
+save([data_path 'out_sun.dat'], 'sun_out', '-ascii');
 
 disp('done saving sp udp');
