@@ -194,7 +194,7 @@ BO_ 2452161075 rc_adcs_estim_8: 7 Vector__XXX
  SG_ rc_adcs_estim_8_sgp4_flag : 40|8@1- (1,0) [-1|1] "" Vector__XXX
  SG_ rc_adcs_estim_8_sc_in_sun : 48|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_adcs_estim_8_sc_above_gs : 49|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ rc_adcs_estim_8_epoch_overflow : 32|8@1+ (1,0) [0|256] "s^-8 since J2000 " Vector__XXX
+ SG_ rc_adcs_estim_8_epoch_overflow : 32|8@1+ (1,0) [0|255] "s^-8 since J2000 " Vector__XXX
  SG_ rc_adcs_estim_8_epoch : 0|32@1+ (1,0) [0|4294967295] "s^-8 since J2000 " Vector__XXX
 
 BO_ 2452161074 rc_adcs_estim_7: 8 Vector__XXX

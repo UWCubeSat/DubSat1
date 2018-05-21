@@ -412,7 +412,7 @@ typedef struct rc_adcs_estim_8 {
     int8_t rc_adcs_estim_8_sgp4_flag; //  (No Units)
     uint8_t rc_adcs_estim_8_sc_in_sun; //  (No Units)
     uint8_t rc_adcs_estim_8_sc_above_gs; //  (No Units)
-    uint16_t rc_adcs_estim_8_epoch_overflow; // s^-8 since J2000 
+    uint8_t rc_adcs_estim_8_epoch_overflow; // s^-8 since J2000 
     uint32_t rc_adcs_estim_8_epoch; // s^-8 since J2000 
 } rc_adcs_estim_8;
 

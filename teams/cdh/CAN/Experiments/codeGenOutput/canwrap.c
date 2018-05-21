@@ -878,7 +878,7 @@ void decoderc_adcs_estim_8(CANPacket *input, rc_adcs_estim_8 *output){
     output -> rc_adcs_estim_8_sgp4_flag = (int8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
     output -> rc_adcs_estim_8_sc_in_sun = (uint8_t) (((fullData & ((uint64_t) 0x1 << 15)) >> 15));
     output -> rc_adcs_estim_8_sc_above_gs = (uint8_t) (((fullData & ((uint64_t) 0x1 << 14)) >> 14));
-    output -> rc_adcs_estim_8_epoch_overflow = (uint16_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
+    output -> rc_adcs_estim_8_epoch_overflow = (uint8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
     output -> rc_adcs_estim_8_epoch = (uint32_t) (((fullData & ((uint64_t) 0xffffffff << 32)) >> 32));
 }
 
