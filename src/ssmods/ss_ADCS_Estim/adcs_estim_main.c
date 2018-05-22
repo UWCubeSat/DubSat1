@@ -147,7 +147,8 @@ int main(void)
         sendHealthSegment();
         sendMetaSegment();
 
-        rollcallUpdate();
+        // update aggressively
+        while (rollcallUpdate());
 
         // step autocode
         rt_OneStep();
