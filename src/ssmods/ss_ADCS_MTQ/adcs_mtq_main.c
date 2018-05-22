@@ -54,6 +54,7 @@ int main(void)
 		blink_LED(); 
         state_table[curr_state](); // mtq control loop
 		manage_telemetry(); // send periodic telemetry
+		rollcallUpdate(); 
 		update_rollcall_aggregates(); // add to rollcall aggregates 
     }
 		
