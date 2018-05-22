@@ -105,5 +105,8 @@ float rawCurrentToFloat(int16_t raw);
 
 uint16_t CCReadRawVoltage();
 uint16_t CCReadRawCurrent();
+uint16_t CCReadRawAccumulatedCharge();
+uint8_t CCGetControlReg();
+uint8_t CCGetStatusReg();
 
 #endif /* POWER_LTC2943_COULOMBCOUNTER_H_ */
