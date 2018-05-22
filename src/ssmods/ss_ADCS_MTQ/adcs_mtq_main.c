@@ -31,11 +31,9 @@ Z2 - P2_6 - TB0.1
 //==================================================================
 // Main 
 // TODO 
-// add fsw timeout 
-// fix manage telem function   
 // cntrl f DEBUG to see commented out sections 
 // add error messages for invalid commands 
-// ack packet not sending commands properly 
+// confirm update_rollcall_aggregates() functionality and check for agg overflow
 //==================================================================
 
 int main(void)
@@ -54,13 +52,9 @@ int main(void)
     while (1)
     {
 		blink_LED(); 
-		
-        // mtq control loop
-        state_table[curr_state]();
-		
-		// send periodic telemetry
-		manage_telemetry(); 
-		rollcallUpdate();
+        state_table[curr_state](); // mtq control loop
+		manage_telemetry(); // send periodic telemetry
+		update_rollcall_aggregates(); // add to rollcall aggregates 
     }
 		
 	return 0;
@@ -478,6 +472,40 @@ void rcPopulate5(CANPacket *out){
     rc.rc_adcs_mtq_5_fsw_ignore=0;
     rc.rc_adcs_mtq_5_reset_counts=0;
     encoderc_adcs_mtq_5(&rc, out);
+}
+
+FILE_STATIC void update_rollcall_aggregates()
+{
+	aggVec_push_i(&bdot_x_agg, bdot_command_x);
+	aggVec_push_i(&bdot_y_agg, bdot_command_y);
+	aggVec_push_i(&bdot_z_agg, bdot_command_z);
+	aggVec_push_i(&fsw_x_agg, fsw_command_x); 
+	aggVec_push_i(&fsw_y_agg, fsw_command_y);  
+	aggVec_push_i(&fsw_z_agg, fsw_command_z); 
+	aggVec_push_i(&duty_x1_agg, duty_x1);	  
+	aggVec_push_i(&duty_x2_agg, duty_x2);      
+	aggVec_push_i(&duty_y1_agg, duty_y1);      
+	aggVec_push_i(&duty_y2_agg, duty_y2);      
+	aggVec_push_i(&duty_z1_agg, duty_z1);      
+	aggVec_push_i(&duty_z2_agg, duty_z2);	  
+	//
+	// if (aggVec_push_i(&bdot_x_agg, bdot_command_x) |
+	// 	aggVec_push_i(&bdot_y_agg, bdot_command_y) |
+	// 	aggVec_push_i(&bdot_z_agg, bdot_command_z) |
+	// 	aggVec_push_i(&fsw_x_agg, fsw_command_x)   |
+	// 	aggVec_push_i(&fsw_y_agg, fsw_command_y)   |
+	// 	aggVec_push_i(&fsw_z_agg, fsw_command_z)   |
+	// 	aggVec_push_i(&duty_x1_agg, duty_x1)	   |
+	// 	aggVec_push_i(&duty_x2_agg, duty_x2)       |
+	// 	aggVec_push_i(&duty_y1_agg, duty_y1)       |
+	// 	aggVec_push_i(&duty_y2_agg, duty_y2)       |
+	// 	aggVec_push_i(&duty_z1_agg, duty_z1)       |
+	// 	aggVec_push_i(&duty_z2_agg, duty_z2)	   | ) // aggregate overflow
+	//  	{
+	//
+	// }
+	
+	
 }
 
 //-------- COSMOS --------
