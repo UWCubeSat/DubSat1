@@ -1,0 +1,14 @@
+TELEMETRY SDM3065X VOLTAGE BIG_ENDIAN "Power Supply Telemetry"
+  APPEND_ID_ITEM TLM_ID 32 INT 1 "Packet Identifier" # Unique telemetry ID
+  APPEND_ITEM V 512 STRING "Measured Voltage"
+    UNITS "Volts" "V"
+  
+  
+TELEMETRY SDM3065X CURRENT BIG_ENDIAN "Power Supply Telemetry"
+  APPEND_ID_ITEM TLM_ID 32 INT 1 "Packet Identifier" # Unique telemetry ID
+  APPEND_ITEM I 512 STRING "Measured Current"
+    UNITS "Amps" "A"
+	
+TELEMETRY SDM3065X DATA BIG_ENDIAN "Power Supply Telemetry"
+  APPEND_ID_ITEM TLM_ID 32 INT 1 "Packet Identifier" # Unique telemetry ID
+  APPEND_ITEM DATA 512 STRING "data from channel"
