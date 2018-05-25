@@ -97,8 +97,13 @@ while True:
       flip5state = x[5]
   counter += 1
   print("Min, Max, Avg, Count for pin x file {}:".format(counter))
-  print("1: {}, {}, {}, {}".format(min(flip1), max(flip1), sum(flip1) / len(flip1), len(flip1)))
-  print("2: {}, {}, {}, {}".format(min(flip2), max(flip2), sum(flip2) / len(flip2), len(flip2)))
-  print("3: {}, {}, {}, {}".format(min(flip3), max(flip3), sum(flip3) / len(flip3), len(flip3)))
-  print("4: {}, {}, {}, {}".format(min(flip4), max(flip4), sum(flip4) / len(flip4), len(flip4)))
-  print("5: {}, {}, {}, {}".format(min(flip5), max(flip5), sum(flip5) / len(flip5), len(flip5)))
+  if len(flip1) > 0:
+     print("1: {}, {}, {}, {}".format(min(flip1), max(flip1), sum(flip1) / len(flip1), len(flip1)))
+  if len(flip2) > 0:
+    print("2: {}, {}, {}, {}".format(min(flip2), max(flip2), sum(flip2) / len(flip2), len(flip2)))
+  if len(flip3) > 0:
+     print("3: {}, {}, {}, {}".format(min(flip3), max(flip3), sum(flip3) / len(flip3), len(flip3)))
+  if len(flip4) > 0:
+     print("4: {}, {}, {}, {}".format(min(flip4), max(flip4), sum(flip4) / len(flip4), len(flip4)))
+  if len(flip5) > 0:
+     print("5: {}, {}, {}, {}".format(min(flip5), max(flip5), sum(flip5) / len(flip5), len(flip5)))
