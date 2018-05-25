@@ -27,6 +27,7 @@
 // BEGIN GENERATOR MACROS
 
 #define CAN_ID_RC_EPS_BATT_7 304677466
+#define CAN_ID_SENSORPROC_MAG2 335872068
 #define CAN_ID_RC_ADCS_ESTIM_14 304677465
 #define CAN_ID_RC_ADCS_ESTIM_13 304677464
 #define CAN_ID_RC_ADCS_ESTIM_12 304677463
@@ -244,6 +245,13 @@ typedef struct rc_eps_batt_7 {
     uint16_t rc_eps_batt_7_acc_charge_max; // 22.588 mAh
     uint16_t rc_eps_batt_7_acc_charge_avg; // 22.588 mAh
 } rc_eps_batt_7;
+
+typedef struct sensorproc_mag2 {
+    int16_t sensorproc_mag2_z; //  (No Units)
+    int16_t sensorproc_mag2_y; //  (No Units)
+    int16_t sensorproc_mag2_x; //  (No Units)
+    uint8_t sensorproc_mag2_valid; // bool
+} sensorproc_mag2;
 
 typedef struct rc_adcs_estim_14 {
     double rc_adcs_estim_14_mag_z; //  (No Units)
@@ -1075,6 +1083,9 @@ typedef struct grnd_epoch {
 
 void encoderc_eps_batt_7(rc_eps_batt_7 *input, CANPacket* output);
 void decoderc_eps_batt_7(CANPacket *input, rc_eps_batt_7 *output);
+
+void encodesensorproc_mag2(sensorproc_mag2 *input, CANPacket* output);
+void decodesensorproc_mag2(CANPacket *input, sensorproc_mag2 *output);
 
 void encoderc_adcs_estim_14(rc_adcs_estim_14 *input, CANPacket* output);
 void decoderc_adcs_estim_14(CANPacket *input, rc_adcs_estim_14 *output);

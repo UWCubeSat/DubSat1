@@ -226,6 +226,29 @@ void encoderc_eps_batt_7(rc_eps_batt_7 *input, CANPacket *output){
     reverseArray((output->data), 0, 7);
 }
 
+void decodesensorproc_mag2(CANPacket *input, sensorproc_mag2 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> sensorproc_mag2_z = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> sensorproc_mag2_y = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> sensorproc_mag2_x = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> sensorproc_mag2_valid = (uint8_t) (((fullData & ((uint64_t) 0x1 << 15)) >> 15));
+}
+
+void encodesensorproc_mag2(sensorproc_mag2 *input, CANPacket *output){
+    output -> id = 335872068;
+    output -> length = 7;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_mag2_z))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_mag2_y))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_mag2_x))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_mag2_valid))) & 0x1) << 15;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decoderc_adcs_estim_14(CANPacket *input, rc_adcs_estim_14 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
