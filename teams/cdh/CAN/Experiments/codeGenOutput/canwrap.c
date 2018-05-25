@@ -205,6 +205,27 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decoderc_eps_batt_7(CANPacket *input, rc_eps_batt_7 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rc_eps_batt_7_acc_charge_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_batt_7_acc_charge_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_eps_batt_7_acc_charge_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+}
+
+void encoderc_eps_batt_7(rc_eps_batt_7 *input, CANPacket *output){
+    output -> id = 304677466;
+    output -> length = 6;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_7_acc_charge_min))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_7_acc_charge_max))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_7_acc_charge_avg))) & 0xffff) << 16;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decoderc_adcs_estim_14(CANPacket *input, rc_adcs_estim_14 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -2190,20 +2211,18 @@ void decoderc_eps_batt_6(CANPacket *input, rc_eps_batt_6 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_eps_batt_6_soc_min = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-    output -> rc_eps_batt_6_soc_max = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
-    output -> rc_eps_batt_6_soc_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
-    output -> rc_eps_batt_6_last_charge = (uint64_t) (((fullData & ((uint64_t) 0xffffffffff))));
+    output -> rc_eps_batt_6_status = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_eps_batt_6_ctrl = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> rc_eps_batt_6_last_charge = (uint64_t) (((fullData & ((uint64_t) 0xffffffffff << 8)) >> 8));
 }
 
 void encoderc_eps_batt_6(rc_eps_batt_6 *input, CANPacket *output){
     output -> id = 304677381;
-    output -> length = 8;
+    output -> length = 7;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_6_soc_min))) & 0xff) << 56;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_6_soc_max))) & 0xff) << 48;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_6_soc_avg))) & 0xff) << 40;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_6_last_charge))) & 0xffffffffff);
+    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_6_status))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_6_ctrl))) & 0xff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_6_last_charge))) & 0xffffffffff) << 8;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
