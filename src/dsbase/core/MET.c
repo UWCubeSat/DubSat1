@@ -25,8 +25,6 @@ void METInit(uint8_t _isDist)
 	RTCCNT3 = 0;
 	RTCCNT4 = 0;
 
-	RTCCTL13 &= ~(RTCHOLD);                 // Start RTC
-
 	isDist = _isDist;
 	if(isDist)
 	{
@@ -39,15 +37,17 @@ void METInit(uint8_t _isDist)
 	}
 	else
 	    confirmed = 0;
+
+	RTCCTL13 &= ~(RTCHOLD);                 // Start RTC
 }
 
 uint32_t getMETPrimary()
 {
     timeStamp t = getMETTimestamp();
-    uint32_t res = (uint32_t) RTCCNT1;
-    res |= ((uint32_t) RTCCNT2) << 8;
-    res |= ((uint32_t) RTCCNT3) << 16;
-    res |= ((uint32_t) RTCCNT4) << 24;
+    uint32_t res = (uint32_t) t.count1;
+    res |= ((uint32_t) t.count2) << 8;
+    res |= ((uint32_t) t.count3) << 16;
+    res |= ((uint32_t) t.count4) << 24;
     return res;
 }
 
@@ -128,7 +128,7 @@ __interrupt void RTC_ISR(void)
             safeRead(RTCCNT2, recentTime.count2);
             safeRead(RTCCNT3, recentTime.count3);
             safeRead(RTCCNT4, recentTime.count4);
-            if (!(RTCCNT1 | RTCCNT2 | RTCCNT3 | RTCCNT4))
+            if (!(recentTime.count2 | recentTime.count3 | recentTime.count4))
                 recentTime.count5++;
             break;
 
