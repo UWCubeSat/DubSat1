@@ -231,9 +231,10 @@ void canRxCallback(CANPacket *p)
         break;
     case CAN_ID_SENSORPROC_SUN:
         decodesensorproc_sun(p, &sun);
-        tmp_sun[0] = sun.sensorproc_sun_x / INT16_MAX; // convert to unit vector
-        tmp_sun[1] = sun.sensorproc_sun_y / INT16_MAX;
-        tmp_sun[2] = sun.sensorproc_sun_z / INT16_MAX;
+        // convert to unit vector
+        tmp_sun[0] = sun.sensorproc_sun_x / (real32_T) INT16_MAX;
+        tmp_sun[1] = sun.sensorproc_sun_y / (real32_T) INT16_MAX;
+        tmp_sun[2] = sun.sensorproc_sun_z / (real32_T) INT16_MAX;
         tmp_sun[3] = sun.sensorproc_sun_valid;
         break;
     case CAN_ID_MTQ_ACK:
