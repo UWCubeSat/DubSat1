@@ -166,7 +166,8 @@ TIMER_HANDLE timerPollInitializer(uint16_t ms)
 {
     desired_time convert = convertTime(ms);
     uint16_t start_counter = timer_counter;
-    uint16_t start_TAR_ = TA0R;
+    uint16_t start_TAR_;
+    do {start_TAR_ = TA0R;} while (start_TAR_ != TA0R);
     int i;
     for (i = 0; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
     {
@@ -346,7 +347,8 @@ int checkTimer(TIMER_HANDLE timerNumber)
         return 0;
     }
     uint16_t end_counter = timer_counter;
-    uint16_t end_TAR = TA0R;
+    uint16_t end_TAR;
+    do {end_TAR = TA0R;} while (end_TAR != TA0R);
 
     // timer overflow already happened, will deal with this case later
 
