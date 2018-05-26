@@ -16,7 +16,9 @@
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
 FILE_STATIC meta_segment metaSeg;
-FILE_STATIC magnetometer_segment bdot_magnetometer_data;
+FILE_STATIC magnetometer_segment bdot_magnetometer_data_cosmos;
+FILE_STATIC magnetometer_segment sp_mag1_data_cosmos;
+FILE_STATIC magnetometer_segment sp_mag2_data_cosmos;
 FILE_STATIC mtq_info_segment cosmos_bdot_persp_mtq_info;
 FILE_STATIC simulink_segment mySimulink;
 FILE_STATIC polling_timer_info_segment polling_timer_info;
@@ -195,7 +197,9 @@ void initial_setup()
 
     /* populate header for backchannel  */
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
-    bcbinPopulateHeader(&bdot_magnetometer_data.header, TLM_ID_MAGNETOMETER, sizeof(bdot_magnetometer_data));
+    bcbinPopulateHeader(&bdot_magnetometer_data_cosmos.header, TLM_ID_BDOT_MAGNETOMETER, sizeof(bdot_magnetometer_data_cosmos));
+    bcbinPopulateHeader(&sp_mag1_data_cosmos.header, TLM_ID_SP_MAG1, sizeof(sp_mag1_data_cosmos));
+    bcbinPopulateHeader(&sp_mag2_data_cosmos.header, TLM_ID_SP_MAG2, sizeof(sp_mag2_data_cosmos));
     bcbinPopulateHeader(&cosmos_bdot_persp_mtq_info.header, TLM_ID_MTQ_INFO, sizeof(cosmos_bdot_persp_mtq_info));
     bcbinPopulateHeader(&mySimulink.header, TLM_ID_SIMULINK_INFO, sizeof(mySimulink));
     bcbinPopulateHeader(&polling_timer_info.header, TLM_ID_POLLING_TIMER, sizeof(polling_timer_info));
@@ -442,12 +446,11 @@ void send_health_segment_cosmos()
 /* send magnetometer reading segment through backchannel */
 void send_bdot_mag_reading_cosmos()
 {
-    bdot_magnetometer_data.xMag = bdot_mag_data->convertedX * 1e9;
-    bdot_magnetometer_data.yMag = bdot_mag_data->convertedY * 1e9;
-    bdot_magnetometer_data.zMag = bdot_mag_data->convertedZ * 1e9;
-    bdot_magnetometer_data.tempMag = bdot_mag_data->convertedTemp;
-    bdot_magnetometer_data.listening_mag = current_listening_mag;
-    bcbinSendPacket((uint8_t *) &bdot_magnetometer_data, sizeof(bdot_magnetometer_data));
+    bdot_magnetometer_data_cosmos.xMag = bdot_mag_data->convertedX * 1e9;
+    bdot_magnetometer_data_cosmos.yMag = bdot_mag_data->convertedY * 1e9;
+    bdot_magnetometer_data_cosmos.zMag = bdot_mag_data->convertedZ * 1e9;
+
+    bcbinSendPacket((uint8_t *) &bdot_magnetometer_data_cosmos, sizeof(bdot_magnetometer_data_cosmos));
 }
 
 /* Send magnetorquer's state based on bdot's perspective */

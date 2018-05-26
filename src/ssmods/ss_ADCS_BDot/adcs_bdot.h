@@ -21,11 +21,12 @@
 #define MY_TELEM_DISABLED 0
 #define MY_TELEM_ENABLED 1
 
-#define TLM_ID_MAGNETOMETER  127
+#define TLM_ID_BDOT_MAGNETOMETER  127
 #define TLM_ID_MTQ_INFO 126
 #define TLM_ID_SIMULINK_INFO 124
 #define TLM_ID_POLLING_TIMER 123
-
+#define TLM_ID_SP_MAG1 122
+#define TLM_ID_SP_MAG2 121
 
 #define OPCODE_MY_CMD 1
 
@@ -43,8 +44,6 @@ TLM_SEGMENT {
     float xMag; // nT
     float yMag; // nT
     float zMag; // nT
-    float tempMag; // nT
-    uint8 listening_mag;
 } magnetometer_segment;
 
 TLM_SEGMENT {
