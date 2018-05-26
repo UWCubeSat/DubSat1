@@ -10,10 +10,6 @@
 #include "interfaces/rollcall.h"
 #include "core/agglib.h"
 
-#define MAG_READING_NORM_OP 1
-#define MAG_READING_TEST_OP 0
-#define MAG_READING_CURR_OP MAG_READING_TEST_OP
-
 #define BDOT_MAG 0
 #define SP_MAG1 1
 #define SP_MAG2 2
@@ -265,16 +261,7 @@ void update_simulink_info()
  * Function to read magnetometer data returns a struct with xyz magnetometer and temp. */
 void read_magnetometer_data()
 {
-    switch(MAG_READING_CURR_OP)
-    {
-        case MAG_READING_NORM_OP:
-            bdot_mag_data = magReadXYZData(mag_num, ConvertToTeslas);
-            break;
-        case MAG_READING_TEST_OP:
-            bdot_mag_data = testing_magReadXYZData(mag_num, ConvertToTeslas);
-            break;
-        default: magReadXYZData(mag_num, ConvertToTeslas);
-    }
+    bdot_mag_data = magReadXYZData(mag_num, ConvertToTeslas);
 }
 
 void convert_mag_data_raw_to_teslas(MagnetometerData * mag)
