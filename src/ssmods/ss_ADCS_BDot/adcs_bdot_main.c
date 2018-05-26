@@ -1,18 +1,13 @@
-#include <msp430.h>
-#include <stddef.h>
-#include "interfaces/canwrap.h"
+
 #include <adcs_bdot.h>
-#include "bsp/bsp.h"
-#include "sensors/magnetometer.h"
-#include "core/timer.h"
-#include "bdot_controller_lib.h"
-#include "interfaces/rollcall.h"
-#include "core/agglib.h"
 
 #define MAG_READING_NORM_OP 1
 #define MAG_READING_TEST_OP 0
 #define MAG_READING_CURR_OP MAG_READING_TEST_OP
 
+#define BDOT_MAG 0
+#define SP_MAG1 1
+#define SP_MAG2 2
 
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
@@ -33,8 +28,11 @@ FILE_STATIC mtq_info mtq_last_known_state;
 
 /****************Magnetometer Variables*************************/
 FILE_STATIC MagnetometerData* bdot_mag_data;
-FILE_STATIC MagnetometerData* proc_mag1_data;
-FILE_STATIC MagnetometerData* proc_mag2_data;
+FILE_STATIC MagnetometerData* sp_mag1_data;
+FILE_STATIC MagnetometerData* sp_mag2_data;
+FILE_STATIC uint8_t sp_mag1_new_data_flag;
+FILE_STATIC uint8_t sp_mag2_new_data_flag;
+FILE_STATIC uint8_t current_listening_mag = BDOT_MAG;
 FILE_STATIC hMag mag_num;
 FILE_STATIC uint8_t mag_norm_op = 1;
 /***************************************************************/
@@ -46,6 +44,9 @@ FILE_STATIC uint8_t rt_flag = 0;
 /******************Timer Information***************************/
 FILE_STATIC TIMER_HANDLE rtOneStep_timer;
 FILE_STATIC uint32_t rtOneStep_us = 100000;
+
+FILE_STATIC TIMER_HANDLE check_best_mag_timer;
+FILE_STATIC uint32_t check_best_mag_timer_ms = 180000; // 3 min
 /***************************************************************/
 
 /*******************RollCall***********************************/
@@ -101,12 +102,27 @@ int main(void)
     initial_setup();
     rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
     startCallback(rtOneStep_timer);
+    start_check_best_mag_timer();
 
     fflush((NULL));
 
     while (rtmGetErrorStatus(rtM) == (NULL) || 1)
     {
-
+        if(sp_mag1_new_data_flag)
+        {
+            convert_mag_data_raw_to_teslas(sp_mag1_data);
+            sp_mag1_new_data_flag = 0;
+        }
+        if(sp_mag2_new_data_flag)
+        {
+            convert_mag_data_raw_to_teslas(sp_mag2_data);
+            sp_mag2_new_data_flag = 0;
+        }
+        if(checkTimer(check_best_mag_timer))
+        {
+            determine_best_fit_mag();
+            start_check_best_mag_timer();
+        }
         if(rt_flag)
         {
             P3OUT ^= BIT5;
@@ -152,7 +168,6 @@ int main(void)
 
     return 0;
 }
-
 
 void initial_setup()
 {
@@ -204,11 +219,36 @@ void initial_setup()
  * MT_on = 0 always. Always send in the latest VALID magnetometer data*/
 void update_simulink_info()
 {
-    rtU.B_body_in_T[0] = bdot_mag_data->convertedX;
-    rtU.B_body_in_T[1] = bdot_mag_data->convertedY;
-    rtU.B_body_in_T[2] = bdot_mag_data->convertedZ;
-    rtU.B_meas_valid = mag_norm_op;
-    rtU.MT_on = 0;
+    switch(current_listening_mag)
+    {
+        case BDOT_MAG:
+            rtU.B_body_in_T[0] = bdot_mag_data->convertedX;
+            rtU.B_body_in_T[1] = bdot_mag_data->convertedY;
+            rtU.B_body_in_T[2] = bdot_mag_data->convertedZ;
+            rtU.B_meas_valid = mag_norm_op;
+            rtU.MT_on = 0;
+            break;
+        case SP_MAG1:
+            rtU.B_body_in_T[0] = sp_mag1_data->convertedX;
+            rtU.B_body_in_T[1] = sp_mag1_data->convertedY;
+            rtU.B_body_in_T[2] = sp_mag1_data->convertedZ;
+            rtU.B_meas_valid = mag_norm_op;
+            rtU.MT_on = 0;
+            break;
+        case SP_MAG2:
+            rtU.B_body_in_T[0] = sp_mag2_data->convertedX;
+            rtU.B_body_in_T[1] = sp_mag2_data->convertedY;
+            rtU.B_body_in_T[2] = sp_mag2_data->convertedZ;
+            rtU.B_meas_valid = mag_norm_op;
+            rtU.MT_on = 0;
+            break;
+        default:
+            rtU.B_body_in_T[0] = bdot_mag_data->convertedX;
+            rtU.B_body_in_T[1] = bdot_mag_data->convertedY;
+            rtU.B_body_in_T[2] = bdot_mag_data->convertedZ;
+            rtU.B_meas_valid = mag_norm_op;
+            rtU.MT_on = 0;
+    }
 }
 
 /* Read magnetometer data based on the current operation.
@@ -227,6 +267,41 @@ void read_magnetometer_data()
         default: magReadXYZData(mag_num, ConvertToTeslas);
     }
 }
+
+void convert_mag_data_raw_to_teslas(MagnetometerData * mag)
+{
+    mag->convertedX = magConvertRawToTeslas(mag->rawX);
+    mag->convertedZ = magConvertRawToTeslas(mag->rawZ);
+    mag->convertedY = magConvertRawToTeslas(mag->rawY);
+}
+
+void determine_best_fit_mag()
+{
+    float bdot_mag_norm = sqrt(abs(bdot_mag_data->convertedX)^2 + abs(bdot_mag_data->convertedY)^2 + abs(bdot_mag_data->convertedZ)^2);
+    float sp_mag1_norm =  sqrt(abs(sp_mag1_data->convertedX)^2 + abs(sp_mag1_data->convertedY)^2 + abs(sp_mag1_data->convertedZ)^2);
+    float sp_mag2_norm = sqrt(abs(sp_mag2_data->convertedX)^2 + abs(sp_mag2_data->convertedY)^2 + abs(sp_mag2_data->convertedZ)^2);
+
+    // find the median of the norm to determine best magnetometer to use. TODO: Think of a better, less costly method
+    if(bdot_mag_norm <= sp_mag1_norm && sp_mag1_norm <= sp_mag2_norm)
+    {
+        current_listening_mag = SP_MAG1;
+        return;
+    }
+    if(sp_mag1_norm <= bdot_mag_norm && bdot_mag_norm <= sp_mag2_norm)
+    {
+        current_listening_mag = BDOT_MAG;
+    }
+    if(sp_mag1_norm <= sp_mag2_norm && sp_mag2_norm <= bdot_mag_norm)
+    {
+        current_listening_mag = SP_MAG2;
+    }
+}
+
+void start_check_best_mag_timer()
+{
+    check_best_mag_timer = timerPollInitializer(check_best_mag_timer_ms);
+}
+
 
 void determine_mtq_commands()
 {
@@ -305,6 +380,9 @@ int map_general(int x, int in_min, int in_max, int out_min, int out_max)
 void can_rx_callback(CANPacket *packet)
 {
     mtq_ack ack = {0};
+    sensorproc_mag mag1 = {0};
+    sensorproc_mag2 mag2 = {0};
+
     switch(packet->id)
     {
         case CAN_ID_MTQ_ACK:
@@ -319,10 +397,29 @@ void can_rx_callback(CANPacket *packet)
                 mtq_state = MTQ_ACTUATION_PHASE;
             }
             break;
+        case CAN_ID_SENSORPROC_MAG:
+            decodesensorproc_mag(packet, &mag1);
+            if(mag1.sensorproc_mag_valid)
+            {
+                sp_mag1_data->rawX = mag1.sensorproc_mag_x;
+                sp_mag1_data->rawY = mag1.sensorproc_mag_y;
+                sp_mag1_data->rawZ = mag1.sensorproc_mag_z;
+                sp_mag1_new_data_flag = 1;
+            }
+            break;
+        case CAN_ID_SENSORPROC_MAG2:
+            decodesensorproc_mag2(packet, &mag2);
+            if(mag2.sensorproc_mag2_valid)
+            {
+                sp_mag2_data->rawX = mag2.sensorproc_mag2_x;
+                sp_mag2_data->rawY = mag2.sensorproc_mag2_y;
+                sp_mag2_data->rawZ = mag2.sensorproc_mag2_z;
+                sp_mag2_new_data_flag = 1;
+            }
+            break;
         case CAN_ID_CMD_ROLLCALL:
             rollcallStart();
             break;
-       // TODO: Add magnetometer packets from david to thu
     }
 }
 
@@ -403,33 +500,7 @@ void updateRCData()
  */
 void rt_OneStep(void)
 {
-//  static boolean_T OverrunFlag = false;
-
-  /* Disable interrupts here */
-
-  /* Check for overrun */
-//  if (OverrunFlag) {
-//    rtmSetErrorStatus(rtM, "Overrun");
-//    return;
-//  }
-
-//  OverrunFlag = true;
-
-  /* Save FPU context here (if necessary) */
-  /* Re-enable timer or interrupt here */
-  /* Set model inputs here */
-
-  /* Step the model */
   bdot_controller_lib_step();
-
-  /* Get model outputs here */
-
-  /* Indicate task complete */
-//  OverrunFlag = false;
-
-  /* Disable interrupts here */
-  /* Restore FPU context here (if necessary) */
-  /* Enable interrupts here */
 }
 
 

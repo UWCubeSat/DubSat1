@@ -59,9 +59,9 @@ typedef struct  {
     int16_t rawZ;
     int8_t rawTempA;
     int8_t rawTempB;
-    double convertedX;
-    double convertedY;
-    double convertedZ;
+    float convertedX;
+    float convertedY;
+    float convertedZ;
     double convertedTemp;
 } MagnetometerData;
 
