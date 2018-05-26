@@ -9,6 +9,8 @@
 
 #include "imu.h"
 
+#define GLITCH_FILTER_MAX_DIFF 10000
+
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 FILE_STATIC uint8_t imuInitialized = 0;
 FILE_STATIC hDev hSensor;
@@ -101,9 +103,26 @@ IMUData *imuReadGyroAccelData()
     i2cMasterRegisterRead(hSensor, IMU_LSM6DSM_OUTPUT_DATA_REGS, i2cBuff, IMU_LSM6DSM_DATA_NUM_BYTES);
 #endif /* __I2C_DONT_WRITE_IMU__ */
 
+#if defined(__HIL_AA_GLITCHFILTER__)
+    idata.prevRawGyroX = idata.rawGyroX;
+    idata.prevRawGyroY = idata.rawGyroY;
+    idata.prevRawGyroZ = idata.rawGyroZ;
+#endif /* __HIL_AA_GLITCHFILTER__ */
+
     idata.rawGyroX = (int16_t)(i2cBuff[0] | ((int16_t)i2cBuff[1] << 8));
     idata.rawGyroY = (int16_t)(i2cBuff[2] | ((int16_t)i2cBuff[3] << 8));
     idata.rawGyroZ = (int16_t)(i2cBuff[4] | ((int16_t)i2cBuff[5] << 8));
+
+#if defined(__HIL_AA_GLITCHFILTER__)
+    if (abs(idata.rawGyroX - idata.prevRawGyroX) > GLITCH_FILTER_MAX_DIFF
+    		|| abs(idata.rawGyroY - idata.prevRawGyroY) > GLITCH_FILTER_MAX_DIFF
+			|| abs(idata.rawGyroZ - idata.prevRawGyroZ) > GLITCH_FILTER_MAX_DIFF)
+    {
+    	idata.rawGyroX = idata.prevRawGyroX;
+    	idata.rawGyroY = idata.prevRawGyroY;
+    	idata.rawGyroZ = idata.prevRawGyroZ;
+    }
+#endif /* __HIL_AA_GLITCHFILTER__ */
 
 #else
 
