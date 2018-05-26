@@ -100,14 +100,14 @@ int main(void)
 #if MOCK_TLE
     // TLE taken from Wikipedia example
     // ID = 0
-    tle.tle1.tle_1_bstar = -.11606E-4;
-    tle.tle1.tle_1_mna = 325.0288;
-    tle.tle2.tle_2_day = (365.24 * 8) + 264.51782528;
-    tle.tle3.tle_3_ecc = .0006703;
-    tle.tle3.tle_3_inc = 51.6416;
-    tle.tle4.tle_4_aop = 130.5360;
-    tle.tle4.tle_4_raan = 247.4627;
-    tle.tle5.tle_5_mnm = 15.72125391;
+    tle.tle1.tle_1_bstar = 0.25331E-4;
+    tle.tle1.tle_1_mna = 219.2159;
+    tle.tle2.tle_2_day = (365.24 * 18) + 145.69162037;
+    tle.tle3.tle_3_ecc = .0003992;
+    tle.tle3.tle_3_inc = 51.6424;
+    tle.tle4.tle_4_aop = 125.4258;
+    tle.tle4.tle_4_raan = 130.8523;
+    tle.tle5.tle_5_mnm = 15.54093254;
 
     // guess at the epoch
     rtU.MET_epoch = (8 * 365.24 + tle.tle2.tle_2_day) * 24 * 60 * 60;
