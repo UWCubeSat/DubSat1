@@ -10,19 +10,12 @@
 
 #include <stdint.h>
 
-#include <msp430.h>
-#include <stddef.h>
-#include "interfaces/canwrap.h"
-#include "bsp/bsp.h"
-#include "sensors/magnetometer.h"
-#include "core/timer.h"
-#include "bdot_controller_lib.h"
-#include "interfaces/rollcall.h"
-#include "core/agglib.h"
 #include "core/utils.h"
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
+#include "interfaces/canwrap.h"
+#include "sensors/magnetometer.h"
 
 
 #define MY_TELEM_DISABLED 0
@@ -111,8 +104,6 @@ void send_simulink_segment_cosmos();
 void convert_mag_data_raw_to_teslas(MagnetometerData * mag);
 void determine_best_fit_mag();
 void start_check_best_mag_timer();
-
-
 
 void determine_mtq_commands();
 void send_cosmos_telem();

@@ -329,36 +329,6 @@ void stopCallback(TIMER_HANDLE n)
     callback[n].fxPtr = 0;
 }
 
-
-int checkTimerOverflow(TIMER_HANDLE timerNumber, uint16_t end_counter, uint16_t end_TAR)
-{
-    uint16_t calc_tar;
-    uint16_t calc_counter = 65535 - polling[timerNumber].start_timer_counter + end_counter;
-    if (end_TAR >= polling[timerNumber].start_TAR)
-    {
-        calc_tar = end_TAR - polling[timerNumber].start_TAR;
-    } else
-    {
-        if (calc_counter == 0)
-        {
-            return 0;
-        }
-        calc_counter--;
-        calc_tar = 65535 - polling[timerNumber].start_TAR + end_TAR;
-    }
-    if(calc_counter > polling[timerNumber].counter_dif)
-    {
-        endPollingTimer(timerNumber);
-        return 1;
-    }
-    if(calc_counter == polling[timerNumber].counter_dif && calc_tar >= polling[timerNumber].tar_dif)
-    {
-        endPollingTimer(timerNumber);
-        return 1;
-    }
-    return 0;
-}
-
 int checkValidPollingID(TIMER_HANDLE timerNumber)
 {
     if(timerNumber >= NUM_SUPPORTED_DURATIONS_POLLING || timerNumber < 0)
@@ -381,15 +351,17 @@ int checkTimer(TIMER_HANDLE timerNumber)
         return 0;
     }
     uint16_t end_counter = timer_counter;
-    uint16_t end_TAR = TA0R;
-
-    // timer overflow already happened, will deal with this case later
-    if(end_counter < polling[timerNumber].start_timer_counter) {
-        checkTimerOverflow(timerNumber, end_counter, end_TAR);
-    }
+    uint16_t end_TAR;
+    do {end_TAR = TA0R;} while (end_TAR != TA0R);
 
     uint16_t calc_tar;
-    uint16_t calc_counter = end_counter - polling[timerNumber].start_timer_counter;
+    uint16_t calc_counter;
+    if(end_counter < polling[timerNumber].start_timer_counter) {
+        calc_counter = 65535 - polling[timerNumber].start_timer_counter + end_counter;
+    }
+    else {
+        calc_counter = end_counter - polling[timerNumber].start_timer_counter;
+    }
     if (end_TAR >= polling[timerNumber].start_TAR)
     {
         calc_tar = end_TAR - polling[timerNumber].start_TAR;

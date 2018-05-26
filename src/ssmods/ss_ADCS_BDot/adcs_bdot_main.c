@@ -1,5 +1,14 @@
 
 #include <adcs_bdot.h>
+#include <msp430.h>
+#include <stddef.h>
+#include "interfaces/canwrap.h"
+#include "bsp/bsp.h"
+#include "sensors/magnetometer.h"
+#include "core/timer.h"
+#include "bdot_controller_lib.h"
+#include "interfaces/rollcall.h"
+#include "core/agglib.h"
 
 #define MAG_READING_NORM_OP 1
 #define MAG_READING_TEST_OP 0
