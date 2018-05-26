@@ -7,8 +7,7 @@ void dummyFn(void){}
 
 void spiInit(uint8_t csPins)
 {
-	// This prevents CAN interrupt from screwing up SPI.
-	spiWriteInProgress = 0;
+
 	spiCallback = dummyFn;
 	/******************************************** UCB0CTLW0 ************************************************ 
 	/  [15]   UCCKPH:  0b = Data is changed on the first UCLK edge and captured on the following edge.
@@ -52,25 +51,26 @@ void spiInit(uint8_t csPins)
 	/* 5. Clear UCSWRST to start device. */
 	UCA2CTLW0 &= ~UCSWRST;
 
-	/* 6. Set P8 Direction to OUT */
-    if(csPins & 0x01){
-        P2DIR |= 0x10;
+	/* 6. Set Pin 1 Direction to OUT */
+    if(csPins & CS_1){
+        P2DIR |= BIT4;
     }
-    if(csPins & 0x02){
-        P4DIR |= 0x10;
+    if(csPins & CS_2){
+        P4DIR |= BIT4;
     }
-    if(csPins & 0x04){
-        P4DIR |= 0x20;
+    if(csPins & CS_3){
+        P4DIR |= BIT5;
     }
-	// Set CS (P8.0) high
-    if(csPins & 0x01){
-        P2OUT |= 0x10;
+
+	// Set CS high
+    if(csPins & CS_1){
+        P2OUT |= BIT4;
     }
-    if(csPins & 0x02){
-        P4OUT |= 0x10;
+    if(csPins & CS_2){
+        P4OUT |= BIT4;
     }
-    if(csPins & 0x04){
-        P4OUT |= 0x20;
+    if(csPins & CS_3){
+        P4OUT |= BIT5;
     }
 }
 void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
@@ -81,26 +81,28 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
 
 	// TX all data from the provided register over the SPI bus by adding it to the txbuffer one byte at a time.
 	// Store all data received from the slave in pRxBuf.
-	spiWriteInProgress = 1;
 	uint8_t i;
 	for(i = 0; i < num; i++) {
-		uint16_t timeout = 65535;
 
 		// Wait for any previous tx to finish.
-		while (!(UCA2IFG & UCTXIFG)){
+	    // The timeout is used just in case an interrupt put us
+	    // in an illegal state. Shouldn't happen, as we've been mitigating
+	    // it, but we've kept it here is a last resort.
+        uint16_t timeout = UINT16_MAX;
+		while (!(UCA2IFG & UCTXIFG) && timeout){
 			timeout--;
 		}
 
 		// Drop CS Pin if it hasn't been dropped yet.
 		if (i == 0){
-            if(csPin & 0x01){
-                P2OUT &= ~0x10;
+            if(csPin & CS_1){
+                P2OUT &= ~BIT4;
             }
-            else if(csPin & 0x02){
-                P4OUT &= ~0x10;
+            else if(csPin & CS_2){
+                P4OUT &= ~BIT4;
             }
-            else if(csPin & 0x04){
-                P4OUT &= ~0x20;
+            else if(csPin & CS_3){
+                P4OUT &= ~BIT5;
             }
 		}
 		// Write to tx buffer.
@@ -108,19 +110,22 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
 
 		// Bring CS High again.
 		if (i == num - 1){
-            if(csPin & 0x01){
-                P2OUT |= 0x10;
+            if(csPin & CS_1){
+                P2OUT |= BIT4;
             }
-            else if(csPin & 0x02){
-                P4OUT |= 0x10;
+            else if(csPin & CS_2){
+                P4OUT |= BIT4;
             }
-            else if(csPin & 0x04){
-                P4OUT |= 0x20;
+            else if(csPin & CS_3){
+                P4OUT |= BIT5;
             }
 		}
-		timeout = 65535;
 
 		// Wait for any previous rx to finish rx-ing.
+        // The timeout is used just in case an interrupt put us
+        // in an illegal state. Shouldn't happen, as we've been mitigating
+        // it, but we've kept it here is a last resort.
+        timeout = UINT16_MAX;
 		while (!(UCA2IFG & UCRXIFG) && timeout){
 			timeout--;
 		}
@@ -131,9 +136,4 @@ void spiTransceive(uint8_t *pTxBuf, uint8_t *pRxBuf, size_t num, uint8_t csPin){
 		pTxBuf++;
 		pRxBuf++;
 	}
-	spiWriteInProgress = 0;
-	// Now go to callback if a spi write was interrupted.
-	void (*runThis)(void) = spiCallback;
-	spiCallback = dummyFn;
-	runThis();
 }
