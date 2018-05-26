@@ -2,6 +2,7 @@
 #include <msp430fr5994.h>
 #include <stdint.h>
 #include "MET.h"
+#include "utils.h"
 
 uint8_t confirmed;
 
@@ -71,10 +72,10 @@ void updateMET(timeStamp newTime)
 timeStamp getMETTimestamp()
 {
 	timeStamp now = {0};
-	now.count1 |= RTCCNT1; //TODO: these reads are unpredictable
-	now.count2 |= RTCCNT2;
-	now.count3 |= RTCCNT3;
-	now.count4 |= RTCCNT4;
+	safeRead(RTCCNT1, now.count1);
+	safeRead(RTCCNT2, now.count2);
+	safeRead(RTCCNT3, now.count3);
+	safeRead(RTCCNT4, now.count4);
 	now.count5 |= recentTime.count5;
 
 	return now;
@@ -124,13 +125,14 @@ __interrupt void RTC_ISR(void)
     {
         case RTCIV__RTCTEVIFG: // RTCEVIFG
             if(isDist)
+            {
                 //RTCCNT1 not necessary b/c always 0
-                recentTime.count2 = RTCCNT2;
-                recentTime.count3 = RTCCNT3;
-                recentTime.count4 = RTCCNT4;
-                recentTime.count5 = recentTime.count5;
+                safeRead(RTCCNT2, recentTime.count2);
+                safeRead(RTCCNT3, recentTime.count3);
+                safeRead(RTCCNT4, recentTime.count4);
                 if (!(RTCCNT1 | RTCCNT2 | RTCCNT3 | RTCCNT4))
                     recentTime.count5++;
+            }
             else
                 recentTime.count5++;
             break;
