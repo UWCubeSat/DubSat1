@@ -242,6 +242,8 @@
 									<listOptionValue builtIn="false" value="__BSP_HW_MAGTOM_HMC5883L__"/>
 									<listOptionValue builtIn="false" value="__BSP_Board_SS__"/>
 									<listOptionValue builtIn="false" value="__DEBUG__"/>
+									<listOptionValue builtIn="false" value="__HIL_AA_NOEXTRAREADS__"/>
+									<listOptionValue builtIn="false" value="__HIL_AA_GLITCHFILTER__"/>
 									<listOptionValue builtIn="false" value="_MPU_ENABLE"/>
 								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DATA_MODEL.156525264" name="Specify the data memory model. (--data_model)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DATA_MODEL" value="com.ti.ccstudio.buildDefinitions.MSP430_17.6.compilerID.DATA_MODEL.restricted" valueType="enumerated"/>
