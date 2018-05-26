@@ -20,7 +20,8 @@
 #define TLM_ID_SUNSENSOR_VECTOR 114
 #define TLM_ID_MAG1_RAW         117
 #define TLM_ID_MAG2_RAW         115
-#define TLM_ID_MAG_VECTOR       113
+#define TLM_ID_MAG1_FILTERED    113
+#define TLM_ID_MAG2_FILTERED    111
 #define TLM_ID_IMU_RAW          116
 #define TLM_ID_IMU_VECTOR       112
 

@@ -44,6 +44,7 @@ TLM_SEGMENT {
     float yMag; // nT
     float zMag; // nT
     float tempMag; // nT
+    uint8 listening_mag;
 } magnetometer_segment;
 
 TLM_SEGMENT {

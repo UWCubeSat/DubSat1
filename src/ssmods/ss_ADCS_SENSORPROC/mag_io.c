@@ -17,259 +17,203 @@
 #include "autocode/MSP_SP.h"
 #include "autocode/rtwtypes.h"
 
-// rollcall
-FILE_STATIC aggVec_i rc_mag1x;
-FILE_STATIC aggVec_i rc_mag1y;
-FILE_STATIC aggVec_i rc_mag1z;
-FILE_STATIC aggVec_i rc_mag2x;
-FILE_STATIC aggVec_i rc_mag2y;
-FILE_STATIC aggVec_i rc_mag2z;
-FILE_STATIC aggVec_i rc_magpx;
-FILE_STATIC aggVec_i rc_magpy;
-FILE_STATIC aggVec_i rc_magpz;
-FILE_STATIC aggVec_i rc_magValid;
+FILE_STATIC MagIO mag1;
+FILE_STATIC MagIO mag2;
 
-FILE_STATIC hMag mag1;
-FILE_STATIC hMag mag2;
-FILE_STATIC MagnetometerData *data1;
-FILE_STATIC MagnetometerData *data2;
-
-// TODO it might be safer to default to actuation phase
-FILE_STATIC uint8_t mtqPhase = MEASUREMENT_PHASE;
-
-#if !ENABLE_MAG1
-    MagnetometerData mockData1;
-#endif
-#if !ENABLE_MAG2
-    MagnetometerData mockData2;
-#endif
-
-void magioInit()
+FILE_STATIC uint8_t isValidRange(int16_t v)
 {
-#if ENABLE_MAG1
-    mag1 = magInit(MAG1_I2CBUS);
-#endif
-#if ENABLE_MAG2
-    mag2 = magInit(MAG2_I2CBUS);
-#endif
-    aggVec_init_i(&rc_mag1x);
-    aggVec_init_i(&rc_mag1y);
-    aggVec_init_i(&rc_mag1z);
-    aggVec_init_i(&rc_mag2x);
-    aggVec_init_i(&rc_mag2y);
-    aggVec_init_i(&rc_mag2z);
-    aggVec_init_i(&rc_magpx);
-    aggVec_init_i(&rc_magpy);
-    aggVec_init_i(&rc_magpz);
-    aggVec_init_i(&rc_magValid);
+	return v < MAG_VALID_RANGE_RAW && v > -MAG_VALID_RANGE_RAW;
 }
 
-FILE_STATIC uint8_t isValidRange(int16_t raw)
+void magioInit(MagIO *magio, real32_T *input, real32_T *output, bus_instance_i2c bus)
 {
-	return raw < MAG_VALID_RANGE_RAW && raw > -MAG_VALID_RANGE_RAW;
+	magio->handle = magInit(bus);
+	magio->input = input;
+	magio->output = output;
+	aggVec_init_i(&magio->agg_x);
+	aggVec_init_i(&magio->agg_y);
+	aggVec_init_i(&magio->agg_z);
+	aggVec_init_i(&magio->agg_valid);
 }
 
-FILE_STATIC uint8_t isValid(hMag handle, MagnetometerData *input)
+void magioUpdate(MagIO *magio)
 {
-    return mtqPhase == MEASUREMENT_PHASE && isValidRange(input->rawX) && isValidRange(input->rawY) && isValidRange(input->rawZ);
+	magio->data = magReadXYZData(magio->handle, ConvertToNone);
+	int16_t x = magConvertRawToTeslas(magio->data->rawX);
+	int16_t y = magConvertRawToTeslas(magio->data->rawY);
+	int16_t z = magConvertRawToTeslas(magio->data->rawZ);
+	uint8_t valid = isValidRange(x) && isValidRange(y) && isValidRange(z);
+
+	magio->input[0] = x;
+	magio->input[1] = y;
+	magio->input[2] = z;
+	magio->input[3] = valid;
 }
 
-FILE_STATIC void setOutput(hMag mag, MagnetometerData *input, real32_T *output)
+void magioSendBackchannel(MagIO *magio, uint8_t tlmId, uint8_t tlmIdP)
 {
-    // set autocode inputs
-    output[0] = magConvertRawToTeslas(input->rawX);
-    output[1] = magConvertRawToTeslas(input->rawY);
-    output[2] = magConvertRawToTeslas(input->rawZ);
-    output[3] = isValid(mag, input);
+	mag_segment seg;
+	seg.x = magio->data->rawX;
+	seg.y = magio->data->rawY;
+	seg.z = magio->data->rawZ;
+	bcbinPopulateHeader(&seg.header, tlmId, sizeof(seg));
+	bcbinSendPacket((uint8_t *) &seg, sizeof(seg));
+
+	sensor_vector_segment s;
+	s.x = magio->output[0];
+	s.y = magio->output[1];
+	s.z = magio->output[2];
+	s.valid = magio->output[3];
+	bcbinPopulateHeader(&s.header, tlmIdP, sizeof(s));
+	bcbinSendPacket((uint8_t *) &s, sizeof(s));
 }
 
-FILE_STATIC void update1()
+void magioInit1()
 {
-#if ENABLE_MAG1
-    data1 = magReadXYZData(mag1, ConvertToNone);
-#else
-    mockData1.rawX = 100;
-    mockData1.rawY = 100;
-    mockData1.rawZ = 100;
-    data1 = &mockData1;
-#endif
-
-    setOutput(mag1, data1, rtU.mag1_vec_body_T);
-
-    // update rollcall data
-    aggVec_push_i(&rc_mag1x, data1->rawX);
-    aggVec_push_i(&rc_mag1y, data1->rawY);
-    aggVec_push_i(&rc_mag1z, data1->rawZ);
+	magioInit(&mag1, rtU.mag1_vec_body_T, rtY.mag_body_processed_T, MAG1_I2CBUS);
 }
 
-FILE_STATIC void update2()
+void magioInit2()
 {
-#if ENABLE_MAG2
-    data2 = magReadXYZData(mag2, ConvertToNone);
-#else
-    mockData2.rawX = 300;
-    mockData2.rawY = 300;
-    mockData2.rawZ = 300;
-    data2 = &mockData2;
-#endif /* ENABLE_MAG2 */
-
-    setOutput(mag2, data2, rtU.mag2_vec_body_T);
-
-    // update rollcall array
-    aggVec_push_i(&rc_mag2x, data2->rawX);
-    aggVec_push_i(&rc_mag2y, data2->rawY);
-    aggVec_push_i(&rc_mag2z, data2->rawZ);
+	// TODO use mag2 rtY
+	magioInit(&mag2, rtU.mag2_vec_body_T, rtY.mag_body_processed_T, MAG2_I2CBUS);
 }
 
-void magioUpdate()
+void magioUpdate1()
 {
-    update1();
-    update2();
+	magioUpdate(&mag1);
 }
 
-void magioSendBackchannelVector()
+void magioUpdate2()
 {
-    sensor_vector_segment s;
-    s.x = rtY.mag_body_processed_T[0];
-    s.y = rtY.mag_body_processed_T[1];
-    s.z = rtY.mag_body_processed_T[2];
-    s.valid = rtY.mag_body_processed_T[3];
-    bcbinPopulateHeader(&s.header, TLM_ID_MAG_VECTOR, sizeof(s));
-    bcbinSendPacket((uint8_t *) &s, sizeof(s));
+	magioUpdate(&mag2);
 }
 
-FILE_STATIC void sendBackchannel(MagnetometerData *data, uint8_t tlmId)
+void magioSendBackchannel1()
 {
-    mag_segment seg;
-    seg.x = data->rawX;
-    seg.y = data->rawY;
-    seg.z = data->rawZ;
-    bcbinPopulateHeader(&seg.header, tlmId, sizeof(seg));
-    bcbinSendPacket((uint8_t *) &seg, sizeof(seg));
+	magioSendBackchannel(&mag1, TLM_ID_MAG1_RAW, TLM_ID_MAG1_FILTERED);
 }
 
-FILE_STATIC void magioSendBackchannel1()
+void magioSendBackchannel2()
 {
-    sendBackchannel(data1, TLM_ID_MAG1_RAW);
+	magioSendBackchannel(&mag2, TLM_ID_MAG2_RAW, TLM_ID_MAG2_FILTERED);
 }
 
-FILE_STATIC void magioSendBackchannel2()
+FILE_STATIC void updateProcessedRollcall(MagIO *mag)
 {
-    sendBackchannel(data2, TLM_ID_MAG2_RAW);
+    aggVec_push_i(&mag->agg_x, mag->output[0]);
+    aggVec_push_i(&mag->agg_y, mag->output[1]);
+    aggVec_push_i(&mag->agg_z, mag->output[2]);
+    aggVec_push_i(&mag->agg_valid, mag->output[3]);
 }
 
-void magioSendBackchannel()
-{
-    magioSendBackchannel1();
-    magioSendBackchannel2();
-}
-
-void magioSendCAN()
+void magioSendCAN1()
 {
     // send packet
-    sensorproc_mag mag;
-    mag.sensorproc_mag_x = magConvertTeslasToRaw(rtY.mag_body_processed_T[0]);
-    mag.sensorproc_mag_y = magConvertTeslasToRaw(rtY.mag_body_processed_T[1]);
-    mag.sensorproc_mag_z = magConvertTeslasToRaw(rtY.mag_body_processed_T[2]);
-    mag.sensorproc_mag_valid = rtY.mag_body_processed_T[3];
+
+	// TODO switch to using mag1.output when autocode is updated
+	real32_T *output = mag1.input;
+
+    sensorproc_mag p;
+    p.sensorproc_mag_x = magConvertTeslasToRaw(output[0]);
+    p.sensorproc_mag_y = magConvertTeslasToRaw(output[1]);
+    p.sensorproc_mag_z = magConvertTeslasToRaw(output[2]);
+    p.sensorproc_mag_valid = output[3];
     CANPacket packet;
-    encodesensorproc_mag(&mag, &packet);
+    encodesensorproc_mag(&p, &packet);
     canSendPacket(&packet);
 
     // update rollcall arrays
-    aggVec_push_i(&rc_magpx, mag.sensorproc_mag_x);
-    aggVec_push_i(&rc_magpy, mag.sensorproc_mag_y);
-    aggVec_push_i(&rc_magpz, mag.sensorproc_mag_z);
-    aggVec_push_i(&rc_magValid, mag.sensorproc_mag_valid);
+    updateProcessedRollcall(&mag1);
 }
 
-void magioHandleCAN(CANPacket *p)
+void magioSendCAN2()
 {
-	mtq_ack ack;
-	if (p->id == CAN_ID_MTQ_ACK)
-	{
-		decodemtq_ack(p, &ack);
-		mtqPhase = ack.mtq_ack_phase;
-	}
+    // send packet
+
+	// TODO switch to using mag2.output when autocode is updated
+	real32_T *output = mag2.input;
+
+    sensorproc_mag2 p;
+    p.sensorproc_mag2_x = magConvertTeslasToRaw(output[0]);
+    p.sensorproc_mag2_y = magConvertTeslasToRaw(output[1]);
+    p.sensorproc_mag2_z = magConvertTeslasToRaw(output[2]);
+    p.sensorproc_mag2_valid = output[3];
+    CANPacket packet;
+    encodesensorproc_mag2(&p, &packet);
+    canSendPacket(&packet);
+
+    // update rollcall arrays
+    updateProcessedRollcall(&mag2);
 }
+
+// TODO set mag1, mag2 valid
 
 void magioRcPopulate6(rc_adcs_sp_6 *r)
 {
-    r->rc_adcs_sp_6_magp_x_min = aggVec_min_i(&rc_magpx);
-    r->rc_adcs_sp_6_magp_x_max = aggVec_max_i(&rc_magpx);
-    aggVec_mm_reset((aggVec *) &rc_magpx);
+    // magp deprecated
 }
 
 void magioRcPopulate7(rc_adcs_sp_7 *r)
 {
-    r->rc_adcs_sp_7_magp_x_avg = aggVec_avg_i_i(&rc_magpx);
-    aggVec_as_reset((aggVec *) &rc_magpx);
-    r->rc_adcs_sp_7_magp_y_min = aggVec_min_i(&rc_magpy);
-    r->rc_adcs_sp_7_magp_y_max = aggVec_max_i(&rc_magpy);
-    r->rc_adcs_sp_7_magp_y_avg = aggVec_avg_i_i(&rc_magpy);
-    aggVec_reset((aggVec *) &rc_magpx);
+    // magp depreated
 }
 
 void magioRcPopulate8(rc_adcs_sp_8 *r)
 {
-    r->rc_adcs_sp_8_magp_z_min = aggVec_min_i(&rc_magpz);
-    r->rc_adcs_sp_8_magp_z_max = aggVec_max_i(&rc_magpz);
-    r->rc_adcs_sp_8_magp_z_avg = aggVec_avg_i_i(&rc_magpz);
-    aggVec_reset((aggVec *) &rc_magpz);
-    r->rc_adcs_sp_8_mag1_x_min = aggVec_min_i(&rc_mag1x);
-    aggVec_min_reset((aggVec *) &rc_mag1x);
+    r->rc_adcs_sp_8_mag1_x_min = aggVec_min_i(&mag1.agg_x);
+    aggVec_min_reset((aggVec *) &mag1.agg_x);
 }
 
 void magioRcPopulate9(rc_adcs_sp_9 *r)
 {
-    r->rc_adcs_sp_9_mag1_x_max = aggVec_max_i(&rc_mag1x);
-    aggVec_max_reset((aggVec *) &rc_mag1x);
-    r->rc_adcs_sp_9_mag1_x_avg = aggVec_avg_i_i(&rc_mag1x);
-    aggVec_as_reset((aggVec *) &rc_mag1x);
-    r->rc_adcs_sp_9_mag1_y_min = aggVec_min_i(&rc_mag1y);
-    r->rc_adcs_sp_9_mag1_y_max = aggVec_max_i(&rc_mag1y);
-    aggVec_mm_reset((aggVec *) &rc_mag1y);
+    r->rc_adcs_sp_9_mag1_x_max = aggVec_max_i(&mag1.agg_x);
+    aggVec_max_reset((aggVec *) &mag1.agg_x);
+    r->rc_adcs_sp_9_mag1_x_avg = aggVec_avg_i_i(&mag1.agg_x);
+    aggVec_as_reset((aggVec *) &mag1.agg_x);
+    r->rc_adcs_sp_9_mag1_y_min = aggVec_min_i(&mag1.agg_y);
+    r->rc_adcs_sp_9_mag1_y_max = aggVec_max_i(&mag1.agg_y);
+    aggVec_mm_reset((aggVec *) &mag1.agg_y);
 }
 
 void magioRcPopulate10(rc_adcs_sp_10 *r)
 {
-    r->rc_adcs_sp_10_mag1_y_avg = aggVec_avg_i_i(&rc_mag1y);
-    aggVec_as_reset((aggVec *) &rc_mag1y);
-    r->rc_adcs_sp_10_mag1_z_min = aggVec_min_i(&rc_mag1z);
-    r->rc_adcs_sp_10_mag1_z_max = aggVec_max_i(&rc_mag1z);
-    r->rc_adcs_sp_10_mag1_z_avg = aggVec_avg_i_i(&rc_mag1z);
-    aggVec_reset((aggVec *) &rc_mag1z);
+    r->rc_adcs_sp_10_mag1_y_avg = aggVec_avg_i_i(&mag1.agg_y);
+    aggVec_as_reset((aggVec *) &mag1.agg_y);
+    r->rc_adcs_sp_10_mag1_z_min = aggVec_min_i(&mag1.agg_z);
+    r->rc_adcs_sp_10_mag1_z_max = aggVec_max_i(&mag1.agg_z);
+    r->rc_adcs_sp_10_mag1_z_avg = aggVec_avg_i_i(&mag1.agg_z);
+    aggVec_reset((aggVec *) &mag1.agg_z);
 }
 
 void magioRcPopulate11(rc_adcs_sp_11 *r)
 {
-    r->rc_adcs_sp_11_mag2_x_min = aggVec_min_i(&rc_mag2x);
-    r->rc_adcs_sp_11_mag2_x_max = aggVec_max_i(&rc_mag2x);
-    r->rc_adcs_sp_11_mag2_x_avg = aggVec_avg_i_i(&rc_mag2x);
-    aggVec_reset((aggVec *) &rc_mag2x);
-    r->rc_adcs_sp_11_mag2_y_min = aggVec_min_i(&rc_mag2y);
-    aggVec_min_reset((aggVec *) &rc_mag2y);
+    r->rc_adcs_sp_11_mag2_x_min = aggVec_min_i(&mag2.agg_x);
+    r->rc_adcs_sp_11_mag2_x_max = aggVec_max_i(&mag2.agg_x);
+    r->rc_adcs_sp_11_mag2_x_avg = aggVec_avg_i_i(&mag2.agg_x);
+    aggVec_reset((aggVec *) &mag2.agg_x);
+    r->rc_adcs_sp_11_mag2_y_min = aggVec_min_i(&mag2.agg_y);
+    aggVec_min_reset((aggVec *) &mag2.agg_y);
 }
 
 void magioRcPopulate12(rc_adcs_sp_12 *r)
 {
-    r->rc_adcs_sp_12_mag2_y_max = aggVec_max_i(&rc_mag2y);
-    aggVec_max_reset((aggVec *) &rc_mag2y);
-    r->rc_adcs_sp_12_mag2_y_avg = aggVec_avg_i_i(&rc_mag2y);
-    aggVec_as_reset((aggVec *) &rc_mag2y);
-    r->rc_adcs_sp_12_mag2_z_min = aggVec_min_i(&rc_mag2z);
-    r->rc_adcs_sp_12_mag2_z_max = aggVec_max_i(&rc_mag2z);
-    aggVec_mm_reset((aggVec *) &rc_mag2z);
+    r->rc_adcs_sp_12_mag2_y_max = aggVec_max_i(&mag2.agg_y);
+    aggVec_max_reset((aggVec *) &mag2.agg_y);
+    r->rc_adcs_sp_12_mag2_y_avg = aggVec_avg_i_i(&mag2.agg_y);
+    aggVec_as_reset((aggVec *) &mag2.agg_y);
+    r->rc_adcs_sp_12_mag2_z_min = aggVec_min_i(&mag2.agg_z);
+    r->rc_adcs_sp_12_mag2_z_max = aggVec_max_i(&mag2.agg_z);
+    aggVec_mm_reset((aggVec *) &mag2.agg_z);
 }
 
 void magioRcPopulate13(rc_adcs_sp_13 *r)
 {
-    r->rc_adcs_sp_13_mag2_z_avg = aggVec_avg_i_i(&rc_mag2z);
-    aggVec_as_reset((aggVec *) &rc_mag2z);
+    r->rc_adcs_sp_13_mag2_z_avg = aggVec_avg_i_i(&mag2.agg_z);
+    aggVec_as_reset((aggVec *) &mag2.agg_z);
 }
 
 void magioRcPopulate14(rc_adcs_sp_14 *r)
 {
-    r->rc_adcs_sp_14_magp_valid = aggVec_sum_i(&rc_magValid);
-    aggVec_reset((aggVec *) &rc_magValid);
+    // magp deprecated
 }
