@@ -130,6 +130,11 @@ int main(void)
     // Setup segments to be able to serve as COSMOS telemetry packets
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
 
+    // initialize sensors
+	initSensorInterfaces();
+	asensorInit(Ref_2p5V); // temperature sensor
+	aggVec_init_i(&rc_temp);
+
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
     canWrapInitWithFilter();
     setCANPacketRxCallback(canRxCallback);
@@ -137,11 +142,6 @@ int main(void)
     /* ----- SUBSYSTEM LOGIC -----*/
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
-
-    // initialize sensors
-    initSensorInterfaces();
-    asensorInit(Ref_2p5V); // temperature sensor
-    aggVec_init_i(&rc_temp);
 
     // initialize rollcall
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
@@ -481,57 +481,66 @@ void rcPopulate6(CANPacket *out)
 {
     rc_adcs_sp_6 rc;
     sunsensorioRcPopulate6(&rc);
-    magioRcPopulate6(&rc);
     encoderc_adcs_sp_6(&rc, out);
 }
 
 void rcPopulate7(CANPacket *out)
 {
-    rc_adcs_sp_7 rc;
-    magioRcPopulate7(&rc);
-    encoderc_adcs_sp_7(&rc, out);
+    // deprecated
 }
 
 void rcPopulate8(CANPacket *out)
 {
+#if ENABLE_MAG1
     rc_adcs_sp_8 rc;
-    magioRcPopulate8(&rc);
+    magio1RcPopulate8(&rc);
     encoderc_adcs_sp_8(&rc, out);
+#endif
 }
 
 void rcPopulate9(CANPacket *out)
 {
+#if ENABLE_MAG1
     rc_adcs_sp_9 rc;
-    magioRcPopulate9(&rc);
+    magio1RcPopulate9(&rc);
     encoderc_adcs_sp_9(&rc, out);
+#endif
 }
 
 void rcPopulate10(CANPacket *out)
 {
+#if ENABLE_MAG1
     rc_adcs_sp_10 rc;
-    magioRcPopulate10(&rc);
+    magio1RcPopulate10(&rc);
     encoderc_adcs_sp_10(&rc, out);
+#endif
 }
 
 void rcPopulate11(CANPacket *out)
 {
+#if ENABLE_MAG2
     rc_adcs_sp_11 rc;
-    magioRcPopulate11(&rc);
+    magio2RcPopulate11(&rc);
     encoderc_adcs_sp_11(&rc, out);
+#endif
 }
 
 void rcPopulate12(CANPacket *out)
 {
+#if ENABLE_MAG2
     rc_adcs_sp_12 rc;
-    magioRcPopulate12(&rc);
+    magio2RcPopulate12(&rc);
     encoderc_adcs_sp_12(&rc, out);
+#endif
 }
 
 void rcPopulate13(CANPacket *out)
 {
     rc_adcs_sp_13 rc;
     sunsensorioRcPopulate13(&rc);
-    magioRcPopulate13(&rc);
+#if ENABLE_MAG2
+    magio2RcPopulate13(&rc);
+#endif
     encoderc_adcs_sp_13(&rc, out);
 }
 
@@ -539,7 +548,9 @@ void rcPopulate14(CANPacket *out)
 {
     rc_adcs_sp_14 rc;
     sunsensorioRcPopulate14(&rc);
-    magioRcPopulate14(&rc);
+#if ENABLE_MAG2
+    magio2RcPopulate14(&rc);
+#endif
     encoderc_adcs_sp_14(&rc, out);
 }
 

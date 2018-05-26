@@ -149,23 +149,13 @@ void magioSendCAN2()
 
 // TODO set mag1, mag2 valid
 
-void magioRcPopulate6(rc_adcs_sp_6 *r)
-{
-    // magp deprecated
-}
-
-void magioRcPopulate7(rc_adcs_sp_7 *r)
-{
-    // magp depreated
-}
-
-void magioRcPopulate8(rc_adcs_sp_8 *r)
+void magio1RcPopulate8(rc_adcs_sp_8 *r)
 {
     r->rc_adcs_sp_8_mag1_x_min = aggVec_min_i(&mag1.agg_x);
     aggVec_min_reset((aggVec *) &mag1.agg_x);
 }
 
-void magioRcPopulate9(rc_adcs_sp_9 *r)
+void magio1RcPopulate9(rc_adcs_sp_9 *r)
 {
     r->rc_adcs_sp_9_mag1_x_max = aggVec_max_i(&mag1.agg_x);
     aggVec_max_reset((aggVec *) &mag1.agg_x);
@@ -176,7 +166,7 @@ void magioRcPopulate9(rc_adcs_sp_9 *r)
     aggVec_mm_reset((aggVec *) &mag1.agg_y);
 }
 
-void magioRcPopulate10(rc_adcs_sp_10 *r)
+void magio1RcPopulate10(rc_adcs_sp_10 *r)
 {
     r->rc_adcs_sp_10_mag1_y_avg = aggVec_avg_i_i(&mag1.agg_y);
     aggVec_as_reset((aggVec *) &mag1.agg_y);
@@ -186,7 +176,7 @@ void magioRcPopulate10(rc_adcs_sp_10 *r)
     aggVec_reset((aggVec *) &mag1.agg_z);
 }
 
-void magioRcPopulate11(rc_adcs_sp_11 *r)
+void magio2RcPopulate11(rc_adcs_sp_11 *r)
 {
     r->rc_adcs_sp_11_mag2_x_min = aggVec_min_i(&mag2.agg_x);
     r->rc_adcs_sp_11_mag2_x_max = aggVec_max_i(&mag2.agg_x);
@@ -196,7 +186,7 @@ void magioRcPopulate11(rc_adcs_sp_11 *r)
     aggVec_min_reset((aggVec *) &mag2.agg_y);
 }
 
-void magioRcPopulate12(rc_adcs_sp_12 *r)
+void magio2RcPopulate12(rc_adcs_sp_12 *r)
 {
     r->rc_adcs_sp_12_mag2_y_max = aggVec_max_i(&mag2.agg_y);
     aggVec_max_reset((aggVec *) &mag2.agg_y);
@@ -207,13 +197,8 @@ void magioRcPopulate12(rc_adcs_sp_12 *r)
     aggVec_mm_reset((aggVec *) &mag2.agg_z);
 }
 
-void magioRcPopulate13(rc_adcs_sp_13 *r)
+void magio2RcPopulate13(rc_adcs_sp_13 *r)
 {
     r->rc_adcs_sp_13_mag2_z_avg = aggVec_avg_i_i(&mag2.agg_z);
     aggVec_as_reset((aggVec *) &mag2.agg_z);
-}
-
-void magioRcPopulate14(rc_adcs_sp_14 *r)
-{
-    // magp deprecated
 }
