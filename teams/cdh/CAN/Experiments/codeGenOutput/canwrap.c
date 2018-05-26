@@ -454,8 +454,8 @@ void decoderc_eps_dist_2(CANPacket *input, rc_eps_dist_2 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_eps_dist_2_uv_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-    output -> rc_eps_dist_2_met_overflow = (uint32_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
-    output -> rc_eps_dist_2_met = (uint8_t) (((fullData & ((uint64_t) 0xffffffff << 24)) >> 24));
+    output -> rc_eps_dist_2_met_overflow = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+    output -> rc_eps_dist_2_met = (uint64_t) (((fullData & ((uint64_t) 0xffffffff << 24)) >> 24));
 }
 
 void encoderc_eps_dist_2(rc_eps_dist_2 *input, CANPacket *output){

@@ -98,8 +98,8 @@ BO_ 2452161093 rc_eps_dist_3: 6 Vector__XXX
 
 BO_ 2452161092 rc_eps_dist_2: 6 Vector__XXX
  SG_ rc_eps_dist_2_uv_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
- SG_ rc_eps_dist_2_met_overflow : 40|8@1+ (1,0) [0|4294967295] "" Vector__XXX
- SG_ rc_eps_dist_2_met : 8|32@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_eps_dist_2_met_overflow : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_eps_dist_2_met : 8|32@1+ (1,0) [0|4294967296] "" Vector__XXX
 
 BO_ 2452161107 rc_eps_dist_17: 6 Vector__XXX
  SG_ rc_eps_dist_17_ppt_v_min : 0|16@1+ (1,0) [0|65535] "mV" Vector__XXX

@@ -302,8 +302,8 @@ typedef struct rc_eps_dist_3 {
 
 typedef struct rc_eps_dist_2 {
     uint8_t rc_eps_dist_2_uv_state; //  (No Units)
-    uint32_t rc_eps_dist_2_met_overflow; //  (No Units)
-    uint8_t rc_eps_dist_2_met; //  (No Units)
+    uint8_t rc_eps_dist_2_met_overflow; //  (No Units)
+    uint64_t rc_eps_dist_2_met; //  (No Units)
 } rc_eps_dist_2;
 
 typedef struct rc_eps_dist_17 {
