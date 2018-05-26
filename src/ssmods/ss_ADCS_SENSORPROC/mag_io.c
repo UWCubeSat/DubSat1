@@ -117,11 +117,15 @@ FILE_STATIC void updateProcessedRollcall(MagIO *mag)
 void magioSendCAN1()
 {
     // send packet
+
+	// TODO switch to using mag1.output when autocode is updated
+	real32_T *output = mag1.input;
+
     sensorproc_mag p;
-    p.sensorproc_mag_x = magConvertTeslasToRaw(mag1.output[0]);
-    p.sensorproc_mag_y = magConvertTeslasToRaw(mag1.output[1]);
-    p.sensorproc_mag_z = magConvertTeslasToRaw(mag1.output[2]);
-    p.sensorproc_mag_valid = mag1.output[3];
+    p.sensorproc_mag_x = magConvertTeslasToRaw(output[0]);
+    p.sensorproc_mag_y = magConvertTeslasToRaw(output[1]);
+    p.sensorproc_mag_z = magConvertTeslasToRaw(output[2]);
+    p.sensorproc_mag_valid = output[3];
     CANPacket packet;
     encodesensorproc_mag(&p, &packet);
     canSendPacket(&packet);
@@ -133,11 +137,15 @@ void magioSendCAN1()
 void magioSendCAN2()
 {
     // send packet
+
+	// TODO switch to using mag2.output when autocode is updated
+	real32_T *output = mag2.input;
+
     sensorproc_mag2 p;
-    p.sensorproc_mag2_x = magConvertTeslasToRaw(mag2.output[0]);
-    p.sensorproc_mag2_y = magConvertTeslasToRaw(mag2.output[1]);
-    p.sensorproc_mag2_z = magConvertTeslasToRaw(mag2.output[2]);
-    p.sensorproc_mag2_valid = mag2.output[3];
+    p.sensorproc_mag2_x = magConvertTeslasToRaw(output[0]);
+    p.sensorproc_mag2_y = magConvertTeslasToRaw(output[1]);
+    p.sensorproc_mag2_z = magConvertTeslasToRaw(output[2]);
+    p.sensorproc_mag2_valid = output[3];
     CANPacket packet;
     encodesensorproc_mag2(&p, &packet);
     canSendPacket(&packet);
