@@ -64,4 +64,3 @@ typedef enum {
 #define safeRead(reg, outVal) do {outVal = reg;} while (outVal != reg)
 
 #endif /* CORE_UTILS_H_ */
-//
