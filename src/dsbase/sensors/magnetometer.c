@@ -113,7 +113,7 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
 
 #if defined(__HIL_AA_GLITCHFILTER__)
 
-    if(abs(mdata->rawX - prevData->rawX) || abs(mdata->rawY - prevData->rawY) || abs(mdata->rawZ - prevData->rawZ)  && (mdata->conversionMode == prevData->conversionMode))
+    if(abs(mdata->rawX - prevData->rawX) > GLITCH_FILTER_MAX_DIFF || abs(mdata->rawY - prevData->rawY) > GLITCH_FILTER_MAX_DIFF || abs(mdata->rawZ - prevData->rawZ) > GLITCH_FILTER_MAX_DIFF  && (mdata->conversionMode == prevData->conversionMode))
     {
         mdata->rawX = prevData->rawX;
         mdata->rawY = prevData->rawY;
