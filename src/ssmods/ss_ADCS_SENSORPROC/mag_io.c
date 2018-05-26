@@ -86,11 +86,7 @@ FILE_STATIC void setOutput(hMag mag, MagnetometerData *input, real32_T *output)
 FILE_STATIC void update1()
 {
 #if ENABLE_MAG1
-#ifdef __I2C_DONT_WRITE_MAG1__
-    data1 = testing_magReadXYZData(mag1, ConvertToNone);
-#else
     data1 = magReadXYZData(mag1, ConvertToNone);
-#endif /* __I2C_DONT_WRITE_MAG1__ */
 #else
     mockData1.rawX = 100;
     mockData1.rawY = 100;
@@ -109,11 +105,7 @@ FILE_STATIC void update1()
 FILE_STATIC void update2()
 {
 #if ENABLE_MAG2
-#ifdef __I2C_DONT_WRITE_MAG2__
-    data2 = testing_magReadXYZData(mag2, ConvertToNone);
-#else
     data2 = magReadXYZData(mag2, ConvertToNone);
-#endif /* __I2C_DONT_WRITE_MAG2__ */
 #else
     mockData2.rawX = 300;
     mockData2.rawY = 300;
