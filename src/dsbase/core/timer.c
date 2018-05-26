@@ -112,6 +112,11 @@ static uint16_t invalid_timer_id = 0;
 static uint16_t invalid_timer_inUse = 0;
 
 
+void no_op_func()
+{
+    __no_operation();
+}
+
 
 void initializeTimer()
 {
@@ -119,7 +124,8 @@ void initializeTimer()
     {
         return;
     }
-//    // ACLK has frequency of 32768 Hz, which means one "tick" is .00003051757 s = 30.51757 us
+
+    // ACLK has frequency of 32768 Hz, which means one "tick" is .00003051757 s = 30.51757 us
     TA0CTL = TASSEL__ACLK | TAIE | MC__CONTINUOUS | ID__1;
     __bis_SR_register(GIE);
     uint16_t i;
@@ -139,7 +145,7 @@ void initializeTimer()
         callback[i].current_count = 0;
         callback[i].tar = 0;
         callback[i].user_id = 0;
-//        callback[i].fxPtr = 0; // TODO: Ask what to set to
+        callback[i].fxPtr = &no_op_func;
     }
     initialized = 1;
 }
@@ -165,8 +171,8 @@ desired_time convertTime(uint16_t ms)
 TIMER_HANDLE timerPollInitializer(uint16_t ms)
 {
     desired_time convert = convertTime(ms);
-    uint16_t start_counter = timer_counter;
-    uint16_t start_TAR_ = TA0R;
+    uint16_t current_counter = timer_counter;
+    uint16_t current_TAR = TA0R;
     int i;
     for (i = 0; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
     {
@@ -177,8 +183,8 @@ TIMER_HANDLE timerPollInitializer(uint16_t ms)
             __enable_interrupt();
             polling[i].counter_dif = convert.counter;
             polling[i].tar_dif = convert.TARval;
-            polling[i].start_timer_counter = start_counter;
-            polling[i].start_TAR = start_TAR_;
+            polling[i].start_timer_counter = current_counter;
+            polling[i].start_TAR = current_TAR;
             polling[i].user_id = 0;
             return i;
         }
@@ -323,36 +329,6 @@ void stopCallback(TIMER_HANDLE n)
     callback[n].fxPtr = 0;
 }
 
-
-int checkTimerOverflow(TIMER_HANDLE timerNumber, uint16_t end_counter, uint16_t end_TAR)
-{
-    uint16_t calc_tar;
-    uint16_t calc_counter = 65535 - polling[timerNumber].start_timer_counter + end_counter;
-    if (end_TAR >= polling[timerNumber].start_TAR)
-    {
-        calc_tar = end_TAR - polling[timerNumber].start_TAR;
-    } else
-    {
-        if (calc_counter == 0)
-        {
-            return 0;
-        }
-        calc_counter--;
-        calc_tar = 65535 - polling[timerNumber].start_TAR + end_TAR;
-    }
-    if(calc_counter > polling[timerNumber].counter_dif)
-    {
-        endPollingTimer(timerNumber);
-        return 1;
-    }
-    if(calc_counter == polling[timerNumber].counter_dif && calc_tar >= polling[timerNumber].tar_dif)
-    {
-        endPollingTimer(timerNumber);
-        return 1;
-    }
-    return 0;
-}
-
 int checkValidPollingID(TIMER_HANDLE timerNumber)
 {
     if(timerNumber >= NUM_SUPPORTED_DURATIONS_POLLING || timerNumber < 0)
@@ -375,15 +351,17 @@ int checkTimer(TIMER_HANDLE timerNumber)
         return 0;
     }
     uint16_t end_counter = timer_counter;
-    uint16_t end_TAR = TA0R;
-
-    // timer overflow already happened, will deal with this case later
-    if(end_counter < polling[timerNumber].start_timer_counter) {
-        checkTimerOverflow(timerNumber, end_counter, end_TAR);
-    }
+    uint16_t end_TAR;
+    do {end_TAR = TA0R;} while (end_TAR != TA0R);
 
     uint16_t calc_tar;
-    uint16_t calc_counter = end_counter - polling[timerNumber].start_timer_counter;
+    uint16_t calc_counter;
+    if(end_counter < polling[timerNumber].start_timer_counter) {
+        calc_counter = 65535 - polling[timerNumber].start_timer_counter + end_counter;
+    }
+    else {
+        calc_counter = end_counter - polling[timerNumber].start_timer_counter;
+    }
     if (end_TAR >= polling[timerNumber].start_TAR)
     {
         calc_tar = end_TAR - polling[timerNumber].start_TAR;
@@ -430,73 +408,7 @@ int checkValidCallbackID(TIMER_HANDLE timerNumber)
     return 1;
 }
 
-//user_timer_polling_info getPollingTimerInfo(uint16_t user_id)
-//{
-//    uint8_t i;
-//    user_timer_polling_info user_info;
-//    for(i = 0; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
-//    {
-//        if(polling[i].user_id == user_id)
-//        {
-//            user_info.user_id = polling[i].user_id;
-//            user_info.timer_id = i;
-//            user_info.counter_dif = polling[i].counter_dif;
-//            user_info.tar_dif = user_info.tar_dif;
-//            user_info.start_TAR = polling[i].start_TAR;
-//            user_info.start_timer_counter = polling[i].start_timer_counter;
-//            if(!polling[i].inUse)
-//            {
-//                user_info.valid = 0;
-//            } else
-//            {
-//                user_info.valid = 1;
-//            }
-//            return;
-//        }
-//    }
-//    user_info.user_id = user_id;
-//    user_info.timer_id = 255;
-//    user_info.counter_dif = 0;
-//    user_info.tar_dif = 0;
-//    user_info.start_TAR = 0;
-//    user_info.start_timer_counter = 0;
-//    user_info.valid = 0;
-//    return user_info;
-//}
-
-//user_timer_callback_info getCallbackTimerInfo(uint16_t user_id)
-//{
-//    uint8_t i;
-//    user_timer_callback_info user_info;
-//    for(i = 0; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
-//    {
-//        if(polling[i].user_id == user_id)
-//        {
-//            user_info.user_id = callback[i].user_id;
-//            user_info.timer_id = i;
-//            user_info.count = callback[i].count;
-//            user_info.current_count = callback[i].current_count;
-//            user_info.tar = callback[i].tar;
-//            if(!callback[i].inUse)
-//            {
-//                user_info.valid = 0;
-//            } else
-//            {
-//                user_info.valid = 1;
-//            }
-//            return;
-//        }
-//    }
-//    user_info.user_id = callback[i].user_id;
-//    user_info.timer_id = 255;
-//    user_info.count = 0;
-//    user_info.current_count = 0;
-//    user_info.tar = 0;
-//    user_info.valid = 0;
-//    return user_info;
-//}
-
-void get_polling_timer_info(user_timer_polling_info * user_timer_info)
+void debug_polling_timer_info(user_timer_polling_info * user_timer_info)
 {
     user_timer_polling_info timer_info[NUM_SUPPORTED_DURATIONS_POLLING];
     uint8_t i;
@@ -513,7 +425,7 @@ void get_polling_timer_info(user_timer_polling_info * user_timer_info)
     user_timer_info = timer_info;
 }
 
-void get_callback_timer_info(user_timer_callback_info * user_timer_info)
+void debug_callback_timer_info(user_timer_callback_info * user_timer_info)
 {
     user_timer_callback_info timer_info[NUM_SUPPORTED_DURATIONS_CALLBACK];
     uint8_t i;
@@ -528,7 +440,6 @@ void get_callback_timer_info(user_timer_callback_info * user_timer_info)
     }
     user_timer_info = timer_info;
 }
-
 
 #pragma vector = TIMER0_A1_VECTOR
 __interrupt void Timer0_A1_ISR(void)

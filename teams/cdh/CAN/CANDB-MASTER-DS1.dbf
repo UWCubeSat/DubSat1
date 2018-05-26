@@ -5,63 +5,185 @@
 [PROTOCOL] CAN
 
 [BUSMASTER_VERSION] [1.7.2]
-[NUMBER_OF_MESSAGES] 117
-[START_MSG] VECTOR__INDEPENDENT_SIG_MSG,1073741824,0,55,1,X,Vector__XXX
-[START_SIGNALS] rc_eps_dist_met,32,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_met_overflow,8,1,0,U,4294967295.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_batt_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_batt_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_batt_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_uv_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com1_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com1_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com1_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com1_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com1_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com1_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com1_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com2_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com2_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com2_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com2_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com2_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com2_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_com2_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_rahs_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_rahs_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_rahs_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_rahs_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_rahs_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_rahs_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_rahs_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_bdot_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_bdot_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_bdot_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_bdot_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_bdot_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_bdot_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_bdot_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_estim_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_estim_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_estim_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_estim_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_estim_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_estim_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_estim_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_eps_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_eps_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_eps_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_eps_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_eps_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_eps_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_eps_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_ppt_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_ppt_c_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_ppt_c_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_ppt_c_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_ppt_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_ppt_v_max,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
-[START_SIGNALS] rc_eps_dist_ppt_v_avg,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[NUMBER_OF_MESSAGES] 141
+[START_MSG] rc_eps_batt_7,304677466,6,3,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_batt_7_acc_charge_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,22.588 mAh,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_7_acc_charge_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,22.588 mAh,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_7_acc_charge_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,22.588 mAh,,Vector__XXX
+[END_MSG]
+
+[START_MSG] sensorproc_mag2,335872068,7,4,1,X,Vector__XXX
+[START_SIGNALS] sensorproc_mag2_z,16,5,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_mag2_y,16,3,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_mag2_x,16,1,0,S,32767.0,-32768.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] sensorproc_mag2_valid,1,7,0,U,1.0,0.0,1,0.0,1.0,bool,,Vector__XXX
+[VALUE_DESCRIPTION] "false",0
+[VALUE_DESCRIPTION] "true",1
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_14,304677465,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_14_mag_z,64,1,0,D,1.0,-1.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_13,304677464,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_13_mag_y,64,1,0,D,1.0,-1.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_12,304677463,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_12_mag_x,64,1,0,D,1.0,-1.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_11,304677462,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_11_sun_z,64,1,0,D,1.0,-1.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_10,304677461,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_10_sun_y,64,1,0,D,1.0,-1.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_9,304677460,8,1,1,X,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_9_sun_x,64,1,0,D,1.0,-1.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_16,304677458,7,4,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_16_ppt_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "on",0
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[START_SIGNALS] rc_eps_dist_16_ppt_c_min,16,2,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_16_ppt_c_max,16,4,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_16_ppt_c_avg,16,6,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_9,304677451,6,3,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_9_rahs_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_9_rahs_v_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_9_rahs_v_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_7,304677449,6,3,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_7_com2_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_7_com2_v_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_7_com2_v_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_6,304677448,7,4,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_6_com2_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "on",0
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[START_SIGNALS] rc_eps_dist_6_com2_c_min,16,2,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_6_com2_c_max,16,4,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_6_com2_c_avg,16,6,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_5,304677447,6,3,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_5_com1_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_5_com1_v_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_5_com1_v_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_3,304677445,6,3,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_3_batt_v_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_3_batt_v_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_3_batt_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_2,304677444,6,3,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_2_uv_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "normal",0
+[VALUE_DESCRIPTION] "undervoltage",1
+[START_SIGNALS] rc_eps_dist_2_met_overflow,8,6,0,U,4294967295.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_2_met,32,2,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_17,304677459,6,3,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_17_ppt_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_17_ppt_v_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_17_ppt_v_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_14,304677456,8,4,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_14_eps_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "on",0
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[START_SIGNALS] rc_eps_dist_14_eps_c_min,16,2,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_14_eps_c_max,16,4,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_14_eps_c_avg,16,6,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_13,304677455,6,3,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_13_estim_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_13_estim_v_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_13_estim_v_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_11,304677453,6,3,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_11_bdot_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_11_bdot_v_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_11_bdot_v_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_12,304677454,7,4,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_12_estim_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "on",0
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[START_SIGNALS] rc_eps_dist_12_estim_c_min,16,2,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_12_estim_c_max,16,4,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_12_estim_c_avg,16,6,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_15,304677457,6,3,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_15_eps_v_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_15_eps_v_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_15_eps_v_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,mV,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_10,304677452,7,4,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_10_bdot_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "on",0
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[START_SIGNALS] rc_eps_dist_10_bdot_c_min,16,2,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_10_bdot_c_max,16,4,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_10_bdot_c_avg,16,6,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_8,304677450,7,4,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_8_rahs_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "on",0
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[START_SIGNALS] rc_eps_dist_8_rahs_c_min,16,2,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_8_rahs_c_max,16,4,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_8_rahs_c_avg,16,6,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_4,304677446,7,4,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_4_com1_state,8,1,0,U,3.0,0.0,1,0.0,1.0,,,Vector__XXX
+[VALUE_DESCRIPTION] "on",0
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[START_SIGNALS] rc_eps_dist_4_com1_c_min,16,2,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_4_com1_c_max,16,4,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_4_com1_c_avg,16,6,0,U,65535.0,0.0,1,0.0,1.0,mA,,Vector__XXX
+[END_MSG]
+
+[START_MSG] rc_eps_dist_1,304677443,8,5,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_dist_1_temp_min,16,1,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_1_temp_max,16,3,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_1_temp_avg,16,5,0,U,65535.0,0.0,1,0.0,1.0,dK,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_1_sysrstiv,8,7,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_dist_1_reset_count,8,8,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
 [START_MSG] rc_adcs_mpc_11,304677438,8,1,1,X,Vector__XXX
@@ -137,7 +259,7 @@
 [START_SIGNALS] rc_adcs_estim_8_sc_above_gs,1,7,1,U,1.0,0.0,1,0.0,1.0,,,Vector__XXX
 [VALUE_DESCRIPTION] "false",0
 [VALUE_DESCRIPTION] "true",1
-[START_SIGNALS] rc_adcs_estim_8_epoch_overflow,8,5,0,U,256.0,0.0,1,0.0,1.0,s^-8 since J2000 ,,Vector__XXX
+[START_SIGNALS] rc_adcs_estim_8_epoch_overflow,8,5,0,U,255.0,0.0,1,0.0,1.0,s^-8 since J2000 ,,Vector__XXX
 [START_SIGNALS] rc_adcs_estim_8_epoch,32,1,0,U,4294967295.0,0.0,1,0.0,1.0,s^-8 since J2000 ,,Vector__XXX
 [END_MSG]
 
@@ -489,11 +611,10 @@
 [START_SIGNALS] rc_eps_gen_1_sysrstiv,8,7,0,U,256.0,0.0,1,0.0,1.0,,,Vector__XXX
 [END_MSG]
 
-[START_MSG] rc_eps_batt_6,304677381,8,4,1,X,Vector__XXX
-[START_SIGNALS] rc_eps_batt_6_soc_min,8,1,0,U,255.0,0.0,1,0.0,1.0,pct,,Vector__XXX
-[START_SIGNALS] rc_eps_batt_6_soc_max,8,2,0,U,255.0,0.0,1,0.0,1.0,pct,,Vector__XXX
-[START_SIGNALS] rc_eps_batt_6_soc_avg,8,3,0,U,255.0,0.0,1,0.0,1.0,pct,,Vector__XXX
-[START_SIGNALS] rc_eps_batt_6_last_charge,40,4,0,U,1.09951162778e+12,0.0,1,0.0,1.0,2^-8 seconds,,Vector__XXX
+[START_MSG] rc_eps_batt_6,304677381,7,3,1,X,Vector__XXX
+[START_SIGNALS] rc_eps_batt_6_status,8,1,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_6_ctrl,8,2,0,U,255.0,0.0,1,0.0,1.0,,,Vector__XXX
+[START_SIGNALS] rc_eps_batt_6_last_charge,40,3,0,U,1099511627775.0,0.0,1,0.0,1.0,2^-8 seconds,,Vector__XXX
 [END_MSG]
 
 [START_MSG] rc_eps_batt_5,304677380,8,5,1,X,Vector__XXX
@@ -878,7 +999,6 @@
 [START_DESC]
 
 [START_DESC_MSG]
-1073741824 S "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 [END_DESC_MSG]
 [START_DESC_NODE]
 [END_DESC_NODE]

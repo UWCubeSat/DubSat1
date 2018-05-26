@@ -60,5 +60,7 @@ typedef enum {
     Bus_Uninitialized,
 } bus_health;
 
+//puts the value of reg to outVal at a time when reg is not being written to
+#define safeRead(reg, outVal) do {outVal = reg;} while (outVal != reg)
 
 #endif /* CORE_UTILS_H_ */

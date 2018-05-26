@@ -3,6 +3,16 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rc_eps_batt_7_packet = {0};
+	rc_eps_batt_7 rc_eps_batt_7_info = {0};
+	encoderc_eps_batt_7(&rc_eps_batt_7_info, &rc_eps_batt_7_packet);
+	canSendPacket(&rc_eps_batt_7_packet);
+
+	__delay_cycles(10000);	CANPacket sensorproc_mag2_packet = {0};
+	sensorproc_mag2 sensorproc_mag2_info = {0};
+	encodesensorproc_mag2(&sensorproc_mag2_info, &sensorproc_mag2_packet);
+	canSendPacket(&sensorproc_mag2_packet);
+
 	__delay_cycles(10000);	CANPacket rc_adcs_estim_14_packet = {0};
 	rc_adcs_estim_14 rc_adcs_estim_14_info = {0};
 	encoderc_adcs_estim_14(&rc_adcs_estim_14_info, &rc_adcs_estim_14_packet);

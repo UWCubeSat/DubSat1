@@ -14,6 +14,8 @@
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
+#include "interfaces/canwrap.h"
+#include "sensors/magnetometer.h"
 
 
 #define MY_TELEM_DISABLED 0
@@ -70,35 +72,12 @@ TLM_SEGMENT {
     uint16_t tar_dif;
 } polling_timer_info_segment;
 
-
-
 typedef struct mtq_info {
     uint8_t tumble_status;
     int8_t xDipole;
     int8_t yDipole;
     int8_t zDipole;
 } mtq_info;
-
-
-
-
-// Most subsystem modules should be implemented at least in part
-// as a state machine (specifically, a FSM).  Here the available states are
-// defined.
-typedef enum _subsystem_state {
-    mag_valid,
-    mag_invalid,
-} magDataStatus;
-
-// Additional, it can be helpful if states are grouped into higher level
-// "modes" in a hierarchical way for certain kinds of decision making and
-// reporting.  These are not mandatory, however.  State transitions will need
-// to explicitly transition the mode as well
-typedef enum _subsystem_mode {
-    Mode_FirstMode,
-    Mode_SecondMode,
-    Mode_ThirdMode,
-} SubsystemMode;
 
 // A struct for storing various interesting info about the subsystem module
 typedef struct _module_status {
@@ -109,30 +88,38 @@ typedef struct _module_status {
 
 
 void initial_setup();
-void receive_packet();
-void sendDipolePacket(int8_t x, int8_t y, int8_t z);
-void getMagnetometerData();
-void updateRCData();
+
+void can_rx_callback(CANPacket *packet);
+void send_dipole_packet(int8_t x, int8_t y, int8_t z);
+
+void read_magnetometer_data();
 void simulink_compute();
-void sendHealthSegment();
-void sendMagReadingSegment();
+
+void send_bdot_mag_reading_cosmos();
 void send_all_polling_timers_segment();
-void sendMtqInfoSegment();
-void sendSimulinkSegment();
-void sendMtqState();
-void updateMtqInfo();
-void sendTelemetry();
-void rollCall();
+void send_health_segment_cosmos();
+void send_mtq_info_segment_cosmos();
+void send_simulink_segment_cosmos();
+
+void convert_mag_data_raw_to_teslas(MagnetometerData * mag);
+void determine_best_fit_mag();
+void start_check_best_mag_timer();
+
+void determine_mtq_commands();
+void send_cosmos_telem();
+
+void handleRollCall();
+void updateRCData();
 void rcPopulate1(CANPacket *out);
 void rcPopulate2(CANPacket *out);
 void rcPopulate3(CANPacket *out);
 void rcPopulate4(CANPacket *out);
+
 int map(int val);
-int mapGeneral(int x, int in_min, int in_max, int out_min, int out_max);
+int map_general(int x, int in_min, int in_max, int out_min, int out_max);
 
 void rt_OneStep(void);
-
-void handleRollCall();
+void update_simulink_info();
 uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);

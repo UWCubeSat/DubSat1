@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'MSP_SP'.
  *
- * Model version                  : 1.359
+ * Model version                  : 1.380
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Fri Apr 27 17:45:09 2018
+ * C/C++ source code generated on : Mon May 21 16:28:33 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -21,6 +21,7 @@
 
 #ifndef RTW_HEADER_MSP_SP_h_
 #define RTW_HEADER_MSP_SP_h_
+#include <stddef.h>
 #include <math.h>
 #ifndef MSP_SP_COMMON_INCLUDES_
 # define MSP_SP_COMMON_INCLUDES_
@@ -45,9 +46,11 @@ typedef struct tag_RTM RT_MODEL;
 typedef struct {
   real32_T RateTransition2[4];         /* '<S3>/Rate Transition2' */
   real32_T RateTransition[4];          /* '<S3>/Rate Transition' */
-  real32_T RateTransition1_m[3];       /* '<S5>/Rate Transition1' */
+  real32_T RateTransition1_m[3];       /* '<S4>/Rate Transition1' */
   real32_T DiscreteTransferFcn_states[3];/* '<S3>/Discrete Transfer Fcn' */
   real32_T DiscreteTransferFcn1_states[3];/* '<S2>/Discrete Transfer Fcn1' */
+  real32_T UnitDelay_DSTATE;           /* '<S5>/Unit Delay' */
+  int8_T If_ActiveSubsystem;           /* '<S4>/If' */
 } DW;
 
 /* Constant parameters (auto storage) */
@@ -57,10 +60,14 @@ typedef struct {
    *   '<S2>/Constant1'
    *   '<S3>/process_matrix'
    *   '<S3>/sensor2body'
-   *   '<S5>/process_matrix'
-   *   '<S5>/sensor2body'
+   *   '<S4>/process_matrix'
    */
-  real32_T pooled1[9];
+  real32_T pooled4[9];
+
+  /* Computed Parameter: sensor2body_Value
+   * Referenced by: '<S4>/sensor2body'
+   */
+  real32_T sensor2body_Value[9];
 } ConstP;
 
 /* External inputs (root inport signals with auto storage) */
@@ -121,17 +128,11 @@ extern RT_MODEL *const rtM;
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
+ * Block '<S8>/FixPt Data Type Duplicate' : Unused code path elimination
+ * Block '<S9>/FixPt Data Type Duplicate' : Unused code path elimination
  * Block '<S2>/Rate Transition' : Eliminated since input and output rates are identical
- * Block '<S4>/Rate Transition' : Eliminated since input and output rates are identical
- * Block '<S4>/Rate Transition1' : Eliminated since input and output rates are identical
- * Block '<S4>/Rate Transition2' : Eliminated since input and output rates are identical
- * Block '<S4>/Rate Transition3' : Eliminated since input and output rates are identical
- * Block '<S4>/Rate Transition4' : Eliminated since input and output rates are identical
- * Block '<S4>/Rate Transition5' : Eliminated since input and output rates are identical
- * Block '<S5>/Rate Transition6' : Eliminated since input and output rates are identical
- * Block '<S7>/Data Type Conversion' : Eliminate redundant data type conversion
- * Block '<S7>/Data Type Conversion1' : Eliminate redundant data type conversion
- * Block '<S7>/Data Type Conversion2' : Eliminate redundant data type conversion
+ * Block '<S4>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S4>/Rate Transition6' : Eliminated since input and output rates are identical
  */
 
 /*-
@@ -155,10 +156,12 @@ extern RT_MODEL *const rtM;
  * '<S1>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP'
  * '<S2>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/gyro_processing_lib'
  * '<S3>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/magnetometer_processing_lib'
- * '<S4>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/rate_transition'
- * '<S5>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/sunsensor_processing_lib'
- * '<S6>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/sunsensor_processing_lib/MATLAB Function'
+ * '<S4>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/sunsensor_processing_lib'
+ * '<S5>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/sunsensor_processing_lib/If Action Subsystem'
+ * '<S6>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/sunsensor_processing_lib/Switch Case Action Subsystem'
  * '<S7>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/sunsensor_processing_lib/angles_to_vec'
+ * '<S8>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/sunsensor_processing_lib/If Action Subsystem/Interval Test'
+ * '<S9>'   : 'adcs_sim_main/Flightsoftware/sensor_processing/MSP_SP/sunsensor_processing_lib/If Action Subsystem/Interval Test1'
  */
 #endif                                 /* RTW_HEADER_MSP_SP_h_ */
 

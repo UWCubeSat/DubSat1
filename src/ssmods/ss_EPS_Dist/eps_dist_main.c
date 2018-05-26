@@ -7,6 +7,7 @@
 #include "interfaces/canwrap.h"
 #include "core/dataArray.h"
 #include "interfaces/rollcall.h"
+#include "core/agglib.h"
 
 #define WDT_CONFIG WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_2
 
@@ -75,14 +76,13 @@ FILE_STATIC int rcTimerID = 0;
 
 
 //**********Data Stuff**********************
-FILE_STATIC uint16_t mspTempArray[480] = {0};
-FILE_STATIC uint16_t battVArray[480] = {0};
+FILE_STATIC uint8_t rebootCount = 60;
 
-#pragma PERSISTENT(mspTempArray)
-#pragma PERSISTENT(battVArray)
-
-FILE_STATIC uint16_t mspTemp;
-FILE_STATIC uint16_t battV;
+FILE_STATIC aggVec_i tempAg;
+FILE_STATIC aggVec_i battVAg;
+FILE_STATIC aggVec_i coulombCounterAg;
+FILE_STATIC aggVec_i ssCurrAgs[NUM_POWER_DOMAINS];
+FILE_STATIC aggVec_i ssBusVAgs[NUM_POWER_DOMAINS];
 
 #define PD_COM1_FLAG 1
 #define PD_COM2_FLAG 2
@@ -291,6 +291,8 @@ FILE_STATIC void distMonitorDomains()
     for (i=0; i < NUM_POWER_DOMAINS; i++)
     {
         pdata = pcvsensorRead(powerdomains[i].hpcvsensor, Read_CurrentA | Read_BusV);
+        aggVec_push_i(&ssCurrAgs[i], pdata->rawCurrent);
+        aggVec_push_i(&ssBusVAgs[i], pdata->rawBusVoltage);
 
         if (pdata->calcdCurrentA >= gseg.powerdomainocpthreshold[i])
         {
@@ -312,7 +314,7 @@ FILE_STATIC void distMonitorDomains()
 FILE_STATIC void distMonitorBattery()
 {
     int i;
-    addData_uint16_t(battV, asensorReadSingleSensorRaw(hSensor)); //adds raw voltage to battV array
+    aggVec_push_i(&battVAg, asensorReadSingleSensorRaw(hBattV)); //adds raw voltage to battV array
     float predivV = asensorReadSingleSensorV(hBattV);
     float newbattV = BATTV_CONV_FACTOR * predivV;
     float prevBattV = gseg.battV;
@@ -424,12 +426,13 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
                 break;
             case OPCODE_OCPTHRESH:
                 osegment = (ocpthresh_segment *) &cmdstr[1];
-
-                gseg.undervoltagethreshold = osegment->newBattVThreshold;
+                if(osegment->newBattVThreshold)
+                    gseg.undervoltagethreshold = osegment->newBattVThreshold;
 
                 for (i = 0; i < NUM_POWER_DOMAINS; i++)
                 {
-                    distSetOCPThreshold((PowerDomainID)i, osegment->newCurrentThreshold[i]);
+                    if(osegment->newCurrentThreshold[i])
+                        distSetOCPThreshold((PowerDomainID)i, osegment->newCurrentThreshold[i]);
                 }
                 break;
             case OPCODE_FIREDEPLOY:
@@ -459,7 +462,13 @@ void sendRCCmd()
     rc_info.cmd_rollcall_met_overflow = getMETOverflow();
     encodecmd_rollcall(&rc_info, &rcPkt);
     canSendPacket(&rcPkt);
-    rcFlag = 17; //TODO: this should be the number of packets
+    rcFlag = 17;
+    if(rebootCount)
+        rebootCount--;
+    else
+    {
+        //WDTCTL = 0; //reboot
+    }
 
     //TODO: uncomment this when automatic shutoff is ready to go!
     /*if(rcResponseFlag)
@@ -530,70 +539,157 @@ void sendRC()
             rollcallPkt1_info.rc_eps_dist_1_reset_count = bspGetResetCount();
             rollcallPkt1_info.rc_eps_dist_1_sysrstiv = SYSRSTIV;
             rollcallPkt1_info.rc_eps_dist_1_temp_avg = 0;
+            encoderc_eps_dist_1(&rollcallPkt1_info, &rollcallPkt);
         }
         else if(rcFlag == 16)
         {
-
+            rc_eps_dist_2 rollcallPkt2_info = {0};
+            rollcallPkt2_info.rc_eps_dist_2_met = getMETPrimary();
+            rollcallPkt2_info.rc_eps_dist_2_met_overflow = getMETOverflow();
+            rollcallPkt2_info.rc_eps_dist_2_uv_state = gseg.uvmode;
+            encoderc_eps_dist_2(&rollcallPkt2_info, &rollcallPkt);
         }
         else if(rcFlag == 15)
         {
-
+            rc_eps_dist_3 rollcallPkt3_info = {0};
+            rollcallPkt3_info.rc_eps_dist_3_batt_v_avg = aggVec_avg_i_i(&battVAg);
+            rollcallPkt3_info.rc_eps_dist_3_batt_v_max = aggVec_max_i(&battVAg);
+            rollcallPkt3_info.rc_eps_dist_3_batt_v_min = aggVec_min_i(&battVAg);
+            encoderc_eps_dist_3(&rollcallPkt3_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&battVAg);
         }
         else if(rcFlag == 14)
         {
-
+            rc_eps_dist_4 rollcallPkt4_info = {0};
+            rollcallPkt4_info.rc_eps_dist_4_com1_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
+            rollcallPkt4_info.rc_eps_dist_4_com1_c_max = aggVec_max_i(&ssCurrAgs[PD_COM1]);
+            rollcallPkt4_info.rc_eps_dist_4_com1_c_min = aggVec_min_i(&ssCurrAgs[PD_COM1]);
+            rollcallPkt4_info.rc_eps_dist_4_com1_state = distQueryDomainSwitch(PD_COM1);
+            encoderc_eps_dist_4(&rollcallPkt4_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
         }
         else if(rcFlag == 13)
         {
-
+            rc_eps_dist_5 rollcallPkt5_info = {0};
+            rollcallPkt5_info.rc_eps_dist_5_com1_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_COM1]);
+            rollcallPkt5_info.rc_eps_dist_5_com1_v_max = aggVec_max_i(&ssBusVAgs[PD_COM1]);
+            rollcallPkt5_info.rc_eps_dist_5_com1_v_min = aggVec_min_i(&ssBusVAgs[PD_COM1]);
+            encoderc_eps_dist_5(&rollcallPkt5_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssBusVAgs);
         }
         else if(rcFlag == 12)
         {
-
+            rc_eps_dist_6 rollcallPkt6_info = {0};
+            rollcallPkt6_info.rc_eps_dist_6_com2_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM2]);
+            rollcallPkt6_info.rc_eps_dist_6_com2_c_max = aggVec_max_i(&ssCurrAgs[PD_COM2]);
+            rollcallPkt6_info.rc_eps_dist_6_com2_c_min = aggVec_min_i(&ssCurrAgs[PD_COM2]);
+            rollcallPkt6_info.rc_eps_dist_6_com2_state = distQueryDomainSwitch(PD_COM2);
+            encoderc_eps_dist_6(&rollcallPkt6_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM2]);
         }
         else if(rcFlag == 11)
         {
-
+            rc_eps_dist_7 rollcallPkt7_info = {0};
+            rollcallPkt7_info.rc_eps_dist_7_com2_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_COM2]);
+            rollcallPkt7_info.rc_eps_dist_7_com2_v_max = aggVec_max_i(&ssBusVAgs[PD_COM2]);
+            rollcallPkt7_info.rc_eps_dist_7_com2_v_min = aggVec_min_i(&ssBusVAgs[PD_COM2]);
+            encoderc_eps_dist_7(&rollcallPkt7_info, &rollcallPkt);
+            aggVec_as_reset((aggVec*)&ssCurrAgs[PD_COM2]);
         }
         else if(rcFlag == 10)
         {
-
+            rc_eps_dist_8 rollcallPkt8_info = {0};
+            rollcallPkt8_info.rc_eps_dist_8_rahs_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_RAHS]);
+            rollcallPkt8_info.rc_eps_dist_8_rahs_c_max = aggVec_max_i(&ssCurrAgs[PD_RAHS]);
+            rollcallPkt8_info.rc_eps_dist_8_rahs_c_min = aggVec_min_i(&ssCurrAgs[PD_RAHS]);
+            rollcallPkt8_info.rc_eps_dist_8_rahs_state = distQueryDomainSwitch(PD_RAHS);
+            encoderc_eps_dist_8(&rollcallPkt8_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_RAHS]);
         }
         else if(rcFlag == 9)
         {
-
+            rc_eps_dist_9 rollcallPkt9_info = {0};
+            rollcallPkt9_info.rc_eps_dist_9_rahs_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_RAHS]);
+            rollcallPkt9_info.rc_eps_dist_9_rahs_v_max = aggVec_max_i(&ssBusVAgs[PD_RAHS]);
+            rollcallPkt9_info.rc_eps_dist_9_rahs_v_min = aggVec_min_i(&ssBusVAgs[PD_RAHS]);
+            encoderc_eps_dist_9(&rollcallPkt9_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_RAHS]);
         }
         else if(rcFlag == 8)
         {
-
+            rc_eps_dist_10 rollcallPkt10_info = {0};
+            rollcallPkt10_info.rc_eps_dist_10_bdot_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_BDOT]);
+            rollcallPkt10_info.rc_eps_dist_10_bdot_c_max = aggVec_max_i(&ssCurrAgs[PD_BDOT]);
+            rollcallPkt10_info.rc_eps_dist_10_bdot_c_min = aggVec_min_i(&ssCurrAgs[PD_BDOT]);
+            rollcallPkt10_info.rc_eps_dist_10_bdot_state = distQueryDomainSwitch(PD_BDOT);
+            encoderc_eps_dist_10(&rollcallPkt10_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_BDOT]);
         }
         else if(rcFlag == 7)
         {
-
+            rc_eps_dist_11 rollcallPkt11_info = {0};
+            rollcallPkt11_info.rc_eps_dist_11_bdot_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_BDOT]);
+            rollcallPkt11_info.rc_eps_dist_11_bdot_v_max = aggVec_max_i(&ssBusVAgs[PD_BDOT]);
+            rollcallPkt11_info.rc_eps_dist_11_bdot_v_min = aggVec_min_i(&ssBusVAgs[PD_BDOT]);
+            encoderc_eps_dist_11(&rollcallPkt11_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_BDOT]);
         }
         else if(rcFlag == 6)
         {
-
+            rc_eps_dist_12 rollcallPkt12_info = {0};
+            rollcallPkt12_info.rc_eps_dist_12_estim_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_ESTIM]);
+            rollcallPkt12_info.rc_eps_dist_12_estim_c_max = aggVec_max_i(&ssCurrAgs[PD_ESTIM]);
+            rollcallPkt12_info.rc_eps_dist_12_estim_c_min = aggVec_min_i(&ssCurrAgs[PD_ESTIM]);
+            rollcallPkt12_info.rc_eps_dist_12_estim_state = distQueryDomainSwitch(PD_ESTIM);
+            encoderc_eps_dist_12(&rollcallPkt12_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_ESTIM]);
         }
         else if(rcFlag == 5)
         {
-
+            rc_eps_dist_13 rollcallPkt13_info = {0};
+            rollcallPkt13_info.rc_eps_dist_13_estim_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_ESTIM]);
+            rollcallPkt13_info.rc_eps_dist_13_estim_v_max = aggVec_max_i(&ssBusVAgs[PD_ESTIM]);
+            rollcallPkt13_info.rc_eps_dist_13_estim_v_min = aggVec_min_i(&ssBusVAgs[PD_ESTIM]);
+            encoderc_eps_dist_13(&rollcallPkt13_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_ESTIM]);
         }
         else if(rcFlag == 4)
         {
-
+            rc_eps_dist_14 rollcallPkt14_info = {0};
+            rollcallPkt14_info.rc_eps_dist_14_eps_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_EPS]);
+            rollcallPkt14_info.rc_eps_dist_14_eps_c_max = aggVec_max_i(&ssCurrAgs[PD_EPS]);
+            rollcallPkt14_info.rc_eps_dist_14_eps_c_min = aggVec_min_i(&ssCurrAgs[PD_EPS]);
+            rollcallPkt14_info.rc_eps_dist_14_eps_state = distQueryDomainSwitch(PD_EPS);
+            encoderc_eps_dist_14(&rollcallPkt14_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_EPS]);
         }
         else if(rcFlag == 3)
         {
-
+            rc_eps_dist_15 rollcallPkt15_info = {0};
+            rollcallPkt15_info.rc_eps_dist_15_eps_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_EPS]);
+            rollcallPkt15_info.rc_eps_dist_15_eps_v_max = aggVec_max_i(&ssBusVAgs[PD_EPS]);
+            rollcallPkt15_info.rc_eps_dist_15_eps_v_min = aggVec_min_i(&ssBusVAgs[PD_EPS]);
+            encoderc_eps_dist_15(&rollcallPkt15_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_EPS]);
         }
         else if(rcFlag == 2)
         {
-
+            rc_eps_dist_16 rollcallPkt16_info = {0};
+            rollcallPkt16_info.rc_eps_dist_16_ppt_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_PPT]);
+            rollcallPkt16_info.rc_eps_dist_16_ppt_c_max = aggVec_max_i(&ssCurrAgs[PD_PPT]);
+            rollcallPkt16_info.rc_eps_dist_16_ppt_c_min = aggVec_min_i(&ssCurrAgs[PD_PPT]);
+            rollcallPkt16_info.rc_eps_dist_16_ppt_state = distQueryDomainSwitch(PD_PPT);
+            encoderc_eps_dist_16(&rollcallPkt16_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_PPT]);
         }
         else if(rcFlag == 1)
         {
-
+            rc_eps_dist_17 rollcallPkt17_info = {0};
+            rollcallPkt17_info.rc_eps_dist_17_ppt_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_PPT]);
+            rollcallPkt17_info.rc_eps_dist_17_ppt_v_max = aggVec_max_i(&ssBusVAgs[PD_PPT]);
+            rollcallPkt17_info.rc_eps_dist_17_ppt_v_min = aggVec_min_i(&ssBusVAgs[PD_PPT]);
+            encoderc_eps_dist_17(&rollcallPkt17_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_PPT]);
         }
         canSendPacket(&rollcallPkt);
         rcFlag--;
@@ -651,16 +747,28 @@ void autoStart()
     distDomainSwitch(PD_PPT, PD_CMD_AutoStart);
 }
 
-void initData()
-{
-    mspTemp = init_uint16_t(mspTempArray, 480);
-    battV = init_uint16_t(battVArray, 480);
-}
-
 void intermediateRollcall()
 {
     bcbinSendPacket((uint8_t *) &rcCount, sizeof(rcCount));
     rcCount.timeSinceRC++;
+}
+
+void initData()
+{
+    aggVec_init_i(&tempAg);
+    aggVec_init_i(&battVAg);
+    aggVec_init_i(&coulombCounterAg);
+    uint8_t i;
+    for(i = NUM_POWER_DOMAINS; i; i--)
+    {
+        aggVec_init_i(&ssCurrAgs[i - 1]);
+        aggVec_init_i(&ssBusVAgs[i - 1]);
+    }
+    FILE_STATIC aggVec_i tempAg;
+    FILE_STATIC aggVec_i battVAg;
+    FILE_STATIC aggVec_i coulombCounterAg;
+    FILE_STATIC aggVec_i ssCurrAgs[NUM_POWER_DOMAINS];
+    FILE_STATIC aggVec_i ssBusVAgs[NUM_POWER_DOMAINS];
 }
 
 /*
@@ -668,10 +776,11 @@ void intermediateRollcall()
  */
 int main(void)
 {
-    P3DIR |= BIT4;
+    P3DIR |= BIT4; //this is Paul's fix
     P3OUT |= BIT4;
     /* ----- INITIALIZATION -----*/
-    WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1;
+    //WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this when watchdog goes in
+    WDTCTL = WDTPW | WDTHOLD;
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
 
     // Spin up the ADC, for the temp sensor and battery voltage
@@ -717,9 +826,8 @@ int main(void)
     // Autostart the EPS power domain for now
     autoStart();
 
-    initData();
-
     initializeTimer();
+    initData();
     startCallback(timerCallbackInitializer(&sendRollCallHandler, 6000000));
     //TODO: this is test code:
     bcbinPopulateHeader(&(rcCount.header), 25, sizeof(rcCount));
@@ -728,7 +836,8 @@ int main(void)
     uint16_t counter = 0;
     while (1)
     {
-        WDTCTL = WDT_CONFIG;
+        //TODO: uncomment this
+        //WDTCTL = WDT_CONFIG;
         // TODO:  eventually drive this with a timer
         //LED_OUT ^= LED_BIT;
         __delay_cycles(0.1 * SEC);
@@ -763,7 +872,7 @@ int main(void)
         }
         if(rcSendFlag && (canTxCheck() != CAN_TX_BUSY))
             sendRCCmd();
-        //sendRC();
+        sendRC();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
