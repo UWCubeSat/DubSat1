@@ -27,12 +27,34 @@ TLM_SEGMENT {
     int16_t z;
 } mag_segment;
 
-void magioInit();
-void magioUpdate();
-void magioSendBackchannel();
-void magioSendBackchannelVector(); // send processed vector
-void magioSendCAN();
-void magioHandleCAN(CANPacket *p);
+typedef struct {
+	hMag handle;
+	MagnetometerData *data;
+	real32_T *input;
+	real32_T *output;
+	aggVec_i agg_x;
+	aggVec_i agg_y;
+	aggVec_i agg_z;
+	aggVec_i agg_px;
+	aggVec_i agg_py;
+	aggVec_i agg_pz;
+} MagIO;
+
+void magioInit(MagIO *magio, real32_T *input, real32_T *output, bus_instance_i2c bus);
+void magioUpdate(MagIO *magio);
+void magioSendBackchannel(MagIO *magio, uint8_t tmlId, uint8_t tlmIdP);
+
+void magioInit1();
+void magioUpdate1();
+void magioSendBackchannel1();
+void magioSendCAN1();
+void magioHandleCAN1(CANPacket *p);
+
+void magioInit2();
+void magioUpdate2();
+void magioSendBackchannel2();
+void magioSendCAN2();
+void magioHandleCAN2(CANPacket *p);
 
 // rollcall
 void magioRcPopulate6(rc_adcs_sp_6 *rc);

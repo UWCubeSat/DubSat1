@@ -17,159 +17,120 @@
 #include "autocode/MSP_SP.h"
 #include "autocode/rtwtypes.h"
 
-// rollcall
-FILE_STATIC aggVec_i rc_mag1x;
-FILE_STATIC aggVec_i rc_mag1y;
-FILE_STATIC aggVec_i rc_mag1z;
-FILE_STATIC aggVec_i rc_mag2x;
-FILE_STATIC aggVec_i rc_mag2y;
-FILE_STATIC aggVec_i rc_mag2z;
-FILE_STATIC aggVec_i rc_magpx;
-FILE_STATIC aggVec_i rc_magpy;
-FILE_STATIC aggVec_i rc_magpz;
-FILE_STATIC aggVec_i rc_magValid;
+FILE_STATIC MagIO mag1;
+FILE_STATIC MagIO mag2;
 
-FILE_STATIC hMag mag1;
-FILE_STATIC hMag mag2;
-FILE_STATIC MagnetometerData *data1;
-FILE_STATIC MagnetometerData *data2;
-
-// TODO it might be safer to default to actuation phase
-FILE_STATIC uint8_t mtqPhase = MEASUREMENT_PHASE;
-
-#if !ENABLE_MAG1
-    MagnetometerData mockData1;
-#endif
-#if !ENABLE_MAG2
-    MagnetometerData mockData2;
-#endif
-
-void magioInit()
-{
-#if ENABLE_MAG1
-    mag1 = magInit(MAG1_I2CBUS);
-#endif
-#if ENABLE_MAG2
-    mag2 = magInit(MAG2_I2CBUS);
-#endif
-    aggVec_init_i(&rc_mag1x);
-    aggVec_init_i(&rc_mag1y);
-    aggVec_init_i(&rc_mag1z);
-    aggVec_init_i(&rc_mag2x);
-    aggVec_init_i(&rc_mag2y);
-    aggVec_init_i(&rc_mag2z);
-    aggVec_init_i(&rc_magpx);
-    aggVec_init_i(&rc_magpy);
-    aggVec_init_i(&rc_magpz);
-    aggVec_init_i(&rc_magValid);
-}
-
-FILE_STATIC uint8_t isValidRange(int16_t raw)
-{
-	return raw < MAG_VALID_RANGE_RAW && raw > -MAG_VALID_RANGE_RAW;
-}
-
-FILE_STATIC uint8_t isValid(hMag handle, MagnetometerData *input)
-{
-    return mtqPhase == MEASUREMENT_PHASE && isValidRange(input->rawX) && isValidRange(input->rawY) && isValidRange(input->rawZ);
-}
-
-FILE_STATIC void setOutput(hMag mag, MagnetometerData *input, real32_T *output)
-{
-    // set autocode inputs
-    output[0] = magConvertRawToTeslas(input->rawX);
-    output[1] = magConvertRawToTeslas(input->rawY);
-    output[2] = magConvertRawToTeslas(input->rawZ);
-    output[3] = isValid(mag, input);
-}
-
-FILE_STATIC void update1()
-{
-#if ENABLE_MAG1
-#ifdef __I2C_DONT_WRITE_MAG1__
-    data1 = testing_magReadXYZData(mag1, ConvertToNone);
+typedef MagnetometerData (* mag_read_fn)(hMag handle, UnitConversionMode desiredConversion);
+#if __I2C_DONT_READ_MAG__
+	FILE_STATIC mag_read_fn magRead = testing_magReadXYZData;
 #else
-    data1 = magReadXYZData(mag1, ConvertToNone);
-#endif /* __I2C_DONT_WRITE_MAG1__ */
-#else
-    mockData1.rawX = 100;
-    mockData1.rawY = 100;
-    mockData1.rawZ = 100;
-    data1 = &mockData1;
+	FILE_STATIC mag_read_fn magRead = magReadXYZData;
 #endif
 
-    setOutput(mag1, data1, rtU.mag1_vec_body_T);
-
-    // update rollcall data
-    aggVec_push_i(&rc_mag1x, data1->rawX);
-    aggVec_push_i(&rc_mag1y, data1->rawY);
-    aggVec_push_i(&rc_mag1z, data1->rawZ);
+FILE_STATIC uint8_t isValidRange(int16_t v)
+{
+	return v < MAG_VALID_RANGE_RAW && v > -MAG_VALID_RANGE_RAW;
 }
 
-FILE_STATIC void update2()
+void magioInit(MagIO *magio, real32_T *input, real32_T *output, bus_instance_i2c bus)
 {
-#if ENABLE_MAG2
-#ifdef __I2C_DONT_WRITE_MAG2__
-    data2 = testing_magReadXYZData(mag2, ConvertToNone);
-#else
-    data2 = magReadXYZData(mag2, ConvertToNone);
-#endif /* __I2C_DONT_WRITE_MAG2__ */
-#else
-    mockData2.rawX = 300;
-    mockData2.rawY = 300;
-    mockData2.rawZ = 300;
-    data2 = &mockData2;
-#endif /* ENABLE_MAG2 */
-
-    setOutput(mag2, data2, rtU.mag2_vec_body_T);
-
-    // update rollcall array
-    aggVec_push_i(&rc_mag2x, data2->rawX);
-    aggVec_push_i(&rc_mag2y, data2->rawY);
-    aggVec_push_i(&rc_mag2z, data2->rawZ);
+	magio->handle = magInit(bus);
+	magio->input = input;
+	magio->output = output;
+	aggVec_init_i(&magio->agg_x);
+	aggVec_init_i(&magio->agg_y);
+	aggVec_init_i(&magio->agg_z);
+	aggVec_init_i(&magio->agg_px);
+	aggVec_init_i(&magio->agg_py);
+	aggVec_init_i(&magio->agg_pz);
 }
 
-void magioUpdate()
+void magioUpdate(MagIO *magio)
 {
-    update1();
-    update2();
+	magio->data = magRead(magio->handle, ConvertToNone);
+	int16_t x = magConvertRawToTeslas(magio->data->rawX);
+	int16_t y = magConvertRawToTeslas(magio->data->rawY);
+	int16_t z = magConvertRawToTeslas(magio->data->rawZ);
+
+	magio->input[0] = x;
+	magio->input[1] = y;
+	magio->input[2] = z;
+	magio->input[3] = isValidRange(x) && isValidRange(y) && isValidRange(z);
+
+	aggVec_push_i(&magio->agg_x, x);
+	aggVec_push_i(&magio->agg_y, y);
+	aggVec_push_i(&magio->agg_z, z);
 }
 
-void magioSendBackchannelVector()
+void magioSendBackchannel(MagIO *magio, uint8_t tmlId, uint8_t tlmIdP)
 {
-    sensor_vector_segment s;
-    s.x = rtY.mag_body_processed_T[0];
-    s.y = rtY.mag_body_processed_T[1];
-    s.z = rtY.mag_body_processed_T[2];
-    s.valid = rtY.mag_body_processed_T[3];
-    bcbinPopulateHeader(&s.header, TLM_ID_MAG_VECTOR, sizeof(s));
-    bcbinSendPacket((uint8_t *) &s, sizeof(s));
+	mag_segment seg;
+	seg.x = magio->data->rawX;
+	seg.y = magio->data->rawY;
+	seg.z = magio->data->rawZ;
+	bcbinPopulateHeader(&seg.header, tlmId, sizeof(seg));
+	bcbinSendPacket((uint8_t *) &seg, sizeof(seg));
+
+	sensor_vector_segment s;
+	s.x = magio->output[0];
+	s.y = magio->output[1];
+	s.z = magio->output[2];
+	s.valid = magio->output[3];
+	bcbinPopulateHeader(&s.header, tlmIdP, sizeof(s));
+	bcbinSendPacket((uint8_t *) &s, sizeof(s));
 }
 
-FILE_STATIC void sendBackchannel(MagnetometerData *data, uint8_t tlmId)
+void magioInit1()
 {
-    mag_segment seg;
-    seg.x = data->rawX;
-    seg.y = data->rawY;
-    seg.z = data->rawZ;
-    bcbinPopulateHeader(&seg.header, tlmId, sizeof(seg));
-    bcbinSendPacket((uint8_t *) &seg, sizeof(seg));
+	magioInit(&mag1, rtU.mag1_vec_body_T, rtY.mag_body_processed_T, MAG1_I2CBUS);
 }
 
-FILE_STATIC void magioSendBackchannel1()
+void magioInit2()
 {
-    sendBackchannel(data1, TLM_ID_MAG1_RAW);
+	// TODO use mag2 rtY
+	magioInit(&mag2, rtU.mag2_vec_body_T, rtY.mag_body_processed_T, MAG2_I2CBUS);
 }
 
-FILE_STATIC void magioSendBackchannel2()
+void magioUpdate1()
 {
-    sendBackchannel(data2, TLM_ID_MAG2_RAW);
+	magioUpdate(&mag1);
 }
 
-void magioSendBackchannel()
+void magioUpdate2()
 {
-    magioSendBackchannel1();
-    magioSendBackchannel2();
+	magioUpdate(&mag2);
+}
+
+magioSendBackchannel1()
+{
+	// TODO use mag1p backchannel
+	magioSendBackchannel(&mag1, TLM_ID_MAG1_RAW, TLM_ID_MAG_VECTOR);
+}
+
+magioSendBackchannel2()
+{
+	// TODO use mag2p backchannel
+	magioSendBackchannel(&mag2, TLM_ID_MAG2_RAW, TLM_ID_MAG_VECTOR);
+}
+
+void magioSendCAN1()
+{
+	// TODO
+}
+
+void magioHandleCAN1(CANPacket *p)
+{
+	// TODO
+}
+
+void magioSendCAN2()
+{
+	// TODO
+}
+
+void magioHandleCAN2(CANPacket *p)
+{
+	// TODO
 }
 
 void magioSendCAN()
