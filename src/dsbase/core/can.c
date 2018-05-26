@@ -15,10 +15,15 @@ void enableCanInterrupt(){
 }
 uint8_t canRxErrorCheck(void){
     uint8_t retval = 0;
+    // Disable CAN interrupts.
     disableCanInterrupt();
+    // Read the Error Flag Register
     readRegister(MCP_EFLG, &retval);
+    // Bit mask to only look at Rx Errors
     retval = retval & (RX1OVR | RX0OVR);
+    // Reset Error Flag
     bitModify(MCP_EFLG, RX1OVR | RX0OVR, 0x0);
+    // Reenable CAN interrupts.
     enableCanInterrupt();
     return retval;
 }
@@ -26,16 +31,23 @@ uint8_t canRxErrorCheck(void){
 uint8_t canTxCheck(void){
     uint8_t retval = 0;
     uint8_t bufferstatus = 0;
+    // Disable CAN interrupts.
     disableCanInterrupt();
+    // Read TXB0CTRL to see if Buffer 0 RTS is 1
+    // That would mean we shouldn't overwrite this register.
     readRegister(MCP_TXB0CTRL, &bufferstatus);
-    retval |= (bufferstatus & 0x08) >> 3;
+    retval |= (bufferstatus & CAN_RTS) >> 3;
+    // Read TXB1CTRL to see if Buffer 1 RTS is 1
+    // That would mean we shouldn't overwrite this register.
     bufferstatus = 0;
     readRegister(MCP_TXB1CTRL, &bufferstatus);
-    retval |= (bufferstatus & 0x08) >> 2;
+    retval |= (bufferstatus & CAN_RTS) >> 2;
+    // Read TXB2CTRL to see if Buffer 2 RTS is 1
+    // That would mean we shouldn't overwrite this register.
     bufferstatus = 0;
     readRegister(MCP_TXB2CTRL, &bufferstatus);
     enableCanInterrupt();
-    retval |= (bufferstatus & 0x08) >> 1;
+    retval |= (bufferstatus & CAN_RTS) >> 1;
     return retval;
 }
 
@@ -45,8 +57,10 @@ uint8_t canTxCheck(void){
 void DummyCallback(uint8_t length, uint8_t* data, uint32_t id){}
 
 void setTheFilter(uint8_t address, uint32_t value){
-    // Set mode to CFG
+    // Disable CAN interrupts (critical for maintaining 1 SPI transactions at a time rule)
     disableCanInterrupt();
+
+    // Set mode to CFG
     bitModify(MCP_CANCTRL, 0xE0, 0x80);
 
     //Set The Registers
@@ -55,14 +69,10 @@ void setTheFilter(uint8_t address, uint32_t value){
     setRegister(address + 2, (uint8_t) (value >> 8));
     setRegister(address + 3, (uint8_t) value);
 
-//    setRegister(address, 0xFF);
-//    setRegister(address + 1, 0xFF);
-//    setRegister(address + 2, 0xFF);
-//    setRegister(address + 3, 0xFF);
-    // Add Masks and Filters
-
     //Set mode to Normal
     bitModify(MCP_CANCTRL, 0xE0, 0x00);
+
+    // Re-enable CAN interrupts
     enableCanInterrupt();
 }
 
@@ -302,7 +312,8 @@ __interrupt void ReceivedMsg(void) {
                 buf[0] = 0x92;
                 spiTransceive(buf, buf, 9, CS_1);
 
-                // Read incoming message ID
+                // Read incoming message ID. This is spread over several
+                // registers, hence all the bit masks and bitwise ops.
                 uint32_t id = 0;
                 uint8_t bufBuf = 0xFF;
                 readRegister(MCP_RXB0SIDH, &bufBuf);

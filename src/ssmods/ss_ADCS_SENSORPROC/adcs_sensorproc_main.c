@@ -30,13 +30,24 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
      sunsensorioSendCAN,
 	 NULL,
     },
+#if ENABLE_MAG1
     {
-     magioInit,
-     magioUpdate,
-     magioSendBackchannel,
-     magioSendCAN,
-	 magioHandleCAN,
+     magioInit1,
+     magioUpdate1,
+     magioSendBackchannel1,
+     magioSendCAN1,
+     NULL,
     },
+#endif /* ENABLE_MAG1 */
+#if ENABLE_MAG2
+    {
+     magioInit2,
+     magioUpdate2,
+     magioSendBackchannel2,
+     magioSendCAN2,
+     NULL,
+    },
+#endif /* ENABLE_MAG2 */
     {
      imuioInit,
      imuioUpdate,
@@ -188,7 +199,6 @@ FILE_STATIC void step()
         }
 
         sendSensorBackchannel();
-		magioSendBackchannelVector();
     }
 
     rollcallUpdate();
@@ -299,7 +309,12 @@ void rt_OneStep(void)
       /* Step the model for subrate "i" */
       switch (i) {
        case 1 :
-        magioUpdate();
+#if ENABLE_MAG1
+        magioUpdate1();
+#endif /* ENABLE_MAG1 */
+#if ENABLE_MAG2
+        magioUpdate2();
+#endif /* ENABLE_MAG2 */
         /*
          * rate: 20 Hz
          * inputs: mag

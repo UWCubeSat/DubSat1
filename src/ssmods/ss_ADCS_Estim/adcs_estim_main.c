@@ -98,16 +98,17 @@ int main(void)
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
 #if MOCK_TLE
-    // TLE taken from Wikipedia example
+    // TLE taken from SWISSCUBE.tle
+    // https://github.com/tpreynolds/uw_hs1_adcs/blob/develop/adcs/sw/components/adcs_fsw/matlab/test/sgp4-test/SWISSCUBE/SWISSCUBE.tle
     // ID = 0
-    tle.tle1.tle_1_bstar = 0.25331E-4;
-    tle.tle1.tle_1_mna = 219.2159;
-    tle.tle2.tle_2_day = (365.24 * 18) + 145.69162037;
-    tle.tle3.tle_3_ecc = .0003992;
-    tle.tle3.tle_3_inc = 51.6424;
-    tle.tle4.tle_4_aop = 125.4258;
-    tle.tle4.tle_4_raan = 130.8523;
-    tle.tle5.tle_5_mnm = 15.54093254;
+    tle.tle1.tle_1_bstar = 0.32923E-4;
+    tle.tle1.tle_1_mna = 2.1593;
+    tle.tle2.tle_2_day = (365.24 * 18) + 274.79166667;
+    tle.tle3.tle_3_ecc = .0008911;
+    tle.tle3.tle_3_inc = 98.5033;
+    tle.tle4.tle_4_aop = 245.3514;
+    tle.tle4.tle_4_raan = 67.1301;
+    tle.tle5.tle_5_mnm = 14.56154823;
 
     // guess at the epoch
     rtU.MET_epoch = (8 * 365.24 + tle.tle2.tle_2_day) * 24 * 60 * 60;

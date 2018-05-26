@@ -127,8 +127,6 @@ void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t)
  * setReceiveCallback(...) will be replaced with setReceiveZeroCallback(...)
  * and setReceiveOneCallback(...)
  *
- * I recommend configuring these filters ASAP because if it is called
- * during a CAN packet, the packet will be lost.
  *
  */
 
