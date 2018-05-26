@@ -20,13 +20,6 @@
 FILE_STATIC MagIO mag1;
 FILE_STATIC MagIO mag2;
 
-typedef MagnetometerData *(* mag_read_fn)(hMag handle, UnitConversionMode desiredConversion);
-#ifdef __I2C_DONT_WRITE_MAG__
-	FILE_STATIC mag_read_fn magRead = testing_magReadXYZData;
-#else
-	FILE_STATIC mag_read_fn magRead = magReadXYZData;
-#endif
-
 FILE_STATIC uint8_t isValidRange(int16_t v)
 {
 	return v < MAG_VALID_RANGE_RAW && v > -MAG_VALID_RANGE_RAW;
@@ -45,7 +38,7 @@ void magioInit(MagIO *magio, real32_T *input, real32_T *output, bus_instance_i2c
 
 void magioUpdate(MagIO *magio)
 {
-	magio->data = magRead(magio->handle, ConvertToNone);
+	magio->data = magReadXYZData(magio->handle, ConvertToNone);
 	int16_t x = magConvertRawToTeslas(magio->data->rawX);
 	int16_t y = magConvertRawToTeslas(magio->data->rawY);
 	int16_t z = magConvertRawToTeslas(magio->data->rawZ);

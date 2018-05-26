@@ -99,7 +99,7 @@ FILE_STATIC aggVec_i rc_temp;
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 
-/* Autcode */
+/* Autocode */
 
 FILE_STATIC flag_t triggerStepFlag = FALSE;
 FILE_STATIC void triggerStep();

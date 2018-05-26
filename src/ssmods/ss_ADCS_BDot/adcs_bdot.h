@@ -73,6 +73,7 @@ TLM_SEGMENT {
     uint16_t tar_dif;
 } polling_timer_info_segment;
 
+
 typedef struct mtq_info {
     uint8_t tumble_status;
     int8_t xDipole;
