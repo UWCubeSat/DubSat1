@@ -124,16 +124,11 @@ __interrupt void RTC_ISR(void)
     switch(__even_in_range(RTCIV, RTCIV__RT1PSIFG))
     {
         case RTCIV__RTCTEVIFG: // RTCEVIFG
-            if(isDist)
-            {
-                //RTCCNT1 not necessary b/c always 0
-                safeRead(RTCCNT2, recentTime.count2);
-                safeRead(RTCCNT3, recentTime.count3);
-                safeRead(RTCCNT4, recentTime.count4);
-                if (!(RTCCNT1 | RTCCNT2 | RTCCNT3 | RTCCNT4))
-                    recentTime.count5++;
-            }
-            else
+            //RTCCNT1 not necessary b/c always 0
+            safeRead(RTCCNT2, recentTime.count2);
+            safeRead(RTCCNT3, recentTime.count3);
+            safeRead(RTCCNT4, recentTime.count4);
+            if (!(RTCCNT1 | RTCCNT2 | RTCCNT3 | RTCCNT4))
                 recentTime.count5++;
             break;
 
