@@ -15,8 +15,10 @@
 #define MAG2_I2CBUS I2CBus2
 
 #include "core/debugtools.h"
+#include "core/agglib.h"
 #include "interfaces/canWrap.h"
 #include "sensors/magnetometer.h"
+#include "autocode/rtwtypes.h"
 
 // telemetry segment for mag readings in nanoTeslas
 TLM_SEGMENT {
@@ -35,9 +37,7 @@ typedef struct {
 	aggVec_i agg_x;
 	aggVec_i agg_y;
 	aggVec_i agg_z;
-	aggVec_i agg_px;
-	aggVec_i agg_py;
-	aggVec_i agg_pz;
+	aggVec_i agg_valid;
 } MagIO;
 
 void magioInit(MagIO *magio, real32_T *input, real32_T *output, bus_instance_i2c bus);
@@ -48,13 +48,11 @@ void magioInit1();
 void magioUpdate1();
 void magioSendBackchannel1();
 void magioSendCAN1();
-void magioHandleCAN1(CANPacket *p);
 
 void magioInit2();
 void magioUpdate2();
 void magioSendBackchannel2();
 void magioSendCAN2();
-void magioHandleCAN2(CANPacket *p);
 
 // rollcall
 void magioRcPopulate6(rc_adcs_sp_6 *rc);

@@ -20,8 +20,8 @@
 FILE_STATIC MagIO mag1;
 FILE_STATIC MagIO mag2;
 
-typedef MagnetometerData (* mag_read_fn)(hMag handle, UnitConversionMode desiredConversion);
-#if __I2C_DONT_READ_MAG__
+typedef MagnetometerData *(* mag_read_fn)(hMag handle, UnitConversionMode desiredConversion);
+#ifdef __I2C_DONT_WRITE_MAG__
 	FILE_STATIC mag_read_fn magRead = testing_magReadXYZData;
 #else
 	FILE_STATIC mag_read_fn magRead = magReadXYZData;
@@ -40,9 +40,7 @@ void magioInit(MagIO *magio, real32_T *input, real32_T *output, bus_instance_i2c
 	aggVec_init_i(&magio->agg_x);
 	aggVec_init_i(&magio->agg_y);
 	aggVec_init_i(&magio->agg_z);
-	aggVec_init_i(&magio->agg_px);
-	aggVec_init_i(&magio->agg_py);
-	aggVec_init_i(&magio->agg_pz);
+	aggVec_init_i(&magio->agg_valid);
 }
 
 void magioUpdate(MagIO *magio)
@@ -51,18 +49,15 @@ void magioUpdate(MagIO *magio)
 	int16_t x = magConvertRawToTeslas(magio->data->rawX);
 	int16_t y = magConvertRawToTeslas(magio->data->rawY);
 	int16_t z = magConvertRawToTeslas(magio->data->rawZ);
+	uint8_t valid = isValidRange(x) && isValidRange(y) && isValidRange(z);
 
 	magio->input[0] = x;
 	magio->input[1] = y;
 	magio->input[2] = z;
-	magio->input[3] = isValidRange(x) && isValidRange(y) && isValidRange(z);
-
-	aggVec_push_i(&magio->agg_x, x);
-	aggVec_push_i(&magio->agg_y, y);
-	aggVec_push_i(&magio->agg_z, z);
+	magio->input[3] = valid;
 }
 
-void magioSendBackchannel(MagIO *magio, uint8_t tmlId, uint8_t tlmIdP)
+void magioSendBackchannel(MagIO *magio, uint8_t tlmId, uint8_t tlmIdP)
 {
 	mag_segment seg;
 	seg.x = magio->data->rawX;
@@ -101,144 +96,123 @@ void magioUpdate2()
 	magioUpdate(&mag2);
 }
 
-magioSendBackchannel1()
+void magioSendBackchannel1()
 {
-	// TODO use mag1p backchannel
-	magioSendBackchannel(&mag1, TLM_ID_MAG1_RAW, TLM_ID_MAG_VECTOR);
+	magioSendBackchannel(&mag1, TLM_ID_MAG1_RAW, TLM_ID_MAG1_FILTERED);
 }
 
-magioSendBackchannel2()
+void magioSendBackchannel2()
 {
-	// TODO use mag2p backchannel
-	magioSendBackchannel(&mag2, TLM_ID_MAG2_RAW, TLM_ID_MAG_VECTOR);
+	magioSendBackchannel(&mag2, TLM_ID_MAG2_RAW, TLM_ID_MAG2_FILTERED);
+}
+
+FILE_STATIC void updateProcessedRollcall(MagIO *mag)
+{
+    aggVec_push_i(&mag->agg_x, mag->output[0]);
+    aggVec_push_i(&mag->agg_y, mag->output[1]);
+    aggVec_push_i(&mag->agg_z, mag->output[2]);
+    aggVec_push_i(&mag->agg_valid, mag->output[3]);
 }
 
 void magioSendCAN1()
 {
-	// TODO
-}
+    // send packet
+    sensorproc_mag p;
+    p.sensorproc_mag_x = magConvertTeslasToRaw(mag1.output[0]);
+    p.sensorproc_mag_y = magConvertTeslasToRaw(mag1.output[1]);
+    p.sensorproc_mag_z = magConvertTeslasToRaw(mag1.output[2]);
+    p.sensorproc_mag_valid = mag1.output[3];
+    CANPacket packet;
+    encodesensorproc_mag(&p, &packet);
+    canSendPacket(&packet);
 
-void magioHandleCAN1(CANPacket *p)
-{
-	// TODO
+    // update rollcall arrays
+    updateProcessedRollcall(&mag1);
 }
 
 void magioSendCAN2()
 {
-	// TODO
-}
-
-void magioHandleCAN2(CANPacket *p)
-{
-	// TODO
-}
-
-void magioSendCAN()
-{
     // send packet
-    sensorproc_mag mag;
-    mag.sensorproc_mag_x = magConvertTeslasToRaw(rtY.mag_body_processed_T[0]);
-    mag.sensorproc_mag_y = magConvertTeslasToRaw(rtY.mag_body_processed_T[1]);
-    mag.sensorproc_mag_z = magConvertTeslasToRaw(rtY.mag_body_processed_T[2]);
-    mag.sensorproc_mag_valid = rtY.mag_body_processed_T[3];
+    sensorproc_mag2 p;
+    p.sensorproc_mag2_x = magConvertTeslasToRaw(mag2.output[0]);
+    p.sensorproc_mag2_y = magConvertTeslasToRaw(mag2.output[1]);
+    p.sensorproc_mag2_z = magConvertTeslasToRaw(mag2.output[2]);
+    p.sensorproc_mag2_valid = mag2.output[3];
     CANPacket packet;
-    encodesensorproc_mag(&mag, &packet);
+    encodesensorproc_mag2(&p, &packet);
     canSendPacket(&packet);
 
     // update rollcall arrays
-    aggVec_push_i(&rc_magpx, mag.sensorproc_mag_x);
-    aggVec_push_i(&rc_magpy, mag.sensorproc_mag_y);
-    aggVec_push_i(&rc_magpz, mag.sensorproc_mag_z);
-    aggVec_push_i(&rc_magValid, mag.sensorproc_mag_valid);
+    updateProcessedRollcall(&mag2);
 }
 
-void magioHandleCAN(CANPacket *p)
-{
-	mtq_ack ack;
-	if (p->id == CAN_ID_MTQ_ACK)
-	{
-		decodemtq_ack(p, &ack);
-		mtqPhase = ack.mtq_ack_phase;
-	}
-}
+// TODO set mag1, mag2 valid
 
 void magioRcPopulate6(rc_adcs_sp_6 *r)
 {
-    r->rc_adcs_sp_6_magp_x_min = aggVec_min_i(&rc_magpx);
-    r->rc_adcs_sp_6_magp_x_max = aggVec_max_i(&rc_magpx);
-    aggVec_mm_reset((aggVec *) &rc_magpx);
+    // magp deprecated
 }
 
 void magioRcPopulate7(rc_adcs_sp_7 *r)
 {
-    r->rc_adcs_sp_7_magp_x_avg = aggVec_avg_i_i(&rc_magpx);
-    aggVec_as_reset((aggVec *) &rc_magpx);
-    r->rc_adcs_sp_7_magp_y_min = aggVec_min_i(&rc_magpy);
-    r->rc_adcs_sp_7_magp_y_max = aggVec_max_i(&rc_magpy);
-    r->rc_adcs_sp_7_magp_y_avg = aggVec_avg_i_i(&rc_magpy);
-    aggVec_reset((aggVec *) &rc_magpx);
+    // magp depreated
 }
 
 void magioRcPopulate8(rc_adcs_sp_8 *r)
 {
-    r->rc_adcs_sp_8_magp_z_min = aggVec_min_i(&rc_magpz);
-    r->rc_adcs_sp_8_magp_z_max = aggVec_max_i(&rc_magpz);
-    r->rc_adcs_sp_8_magp_z_avg = aggVec_avg_i_i(&rc_magpz);
-    aggVec_reset((aggVec *) &rc_magpz);
-    r->rc_adcs_sp_8_mag1_x_min = aggVec_min_i(&rc_mag1x);
-    aggVec_min_reset((aggVec *) &rc_mag1x);
+    r->rc_adcs_sp_8_mag1_x_min = aggVec_min_i(&mag1.agg_x);
+    aggVec_min_reset((aggVec *) &mag1.agg_x);
 }
 
 void magioRcPopulate9(rc_adcs_sp_9 *r)
 {
-    r->rc_adcs_sp_9_mag1_x_max = aggVec_max_i(&rc_mag1x);
-    aggVec_max_reset((aggVec *) &rc_mag1x);
-    r->rc_adcs_sp_9_mag1_x_avg = aggVec_avg_i_i(&rc_mag1x);
-    aggVec_as_reset((aggVec *) &rc_mag1x);
-    r->rc_adcs_sp_9_mag1_y_min = aggVec_min_i(&rc_mag1y);
-    r->rc_adcs_sp_9_mag1_y_max = aggVec_max_i(&rc_mag1y);
-    aggVec_mm_reset((aggVec *) &rc_mag1y);
+    r->rc_adcs_sp_9_mag1_x_max = aggVec_max_i(&mag1.agg_x);
+    aggVec_max_reset((aggVec *) &mag1.agg_x);
+    r->rc_adcs_sp_9_mag1_x_avg = aggVec_avg_i_i(&mag1.agg_x);
+    aggVec_as_reset((aggVec *) &mag1.agg_x);
+    r->rc_adcs_sp_9_mag1_y_min = aggVec_min_i(&mag1.agg_y);
+    r->rc_adcs_sp_9_mag1_y_max = aggVec_max_i(&mag1.agg_y);
+    aggVec_mm_reset((aggVec *) &mag1.agg_y);
 }
 
 void magioRcPopulate10(rc_adcs_sp_10 *r)
 {
-    r->rc_adcs_sp_10_mag1_y_avg = aggVec_avg_i_i(&rc_mag1y);
-    aggVec_as_reset((aggVec *) &rc_mag1y);
-    r->rc_adcs_sp_10_mag1_z_min = aggVec_min_i(&rc_mag1z);
-    r->rc_adcs_sp_10_mag1_z_max = aggVec_max_i(&rc_mag1z);
-    r->rc_adcs_sp_10_mag1_z_avg = aggVec_avg_i_i(&rc_mag1z);
-    aggVec_reset((aggVec *) &rc_mag1z);
+    r->rc_adcs_sp_10_mag1_y_avg = aggVec_avg_i_i(&mag1.agg_y);
+    aggVec_as_reset((aggVec *) &mag1.agg_y);
+    r->rc_adcs_sp_10_mag1_z_min = aggVec_min_i(&mag1.agg_z);
+    r->rc_adcs_sp_10_mag1_z_max = aggVec_max_i(&mag1.agg_z);
+    r->rc_adcs_sp_10_mag1_z_avg = aggVec_avg_i_i(&mag1.agg_z);
+    aggVec_reset((aggVec *) &mag1.agg_z);
 }
 
 void magioRcPopulate11(rc_adcs_sp_11 *r)
 {
-    r->rc_adcs_sp_11_mag2_x_min = aggVec_min_i(&rc_mag2x);
-    r->rc_adcs_sp_11_mag2_x_max = aggVec_max_i(&rc_mag2x);
-    r->rc_adcs_sp_11_mag2_x_avg = aggVec_avg_i_i(&rc_mag2x);
-    aggVec_reset((aggVec *) &rc_mag2x);
-    r->rc_adcs_sp_11_mag2_y_min = aggVec_min_i(&rc_mag2y);
-    aggVec_min_reset((aggVec *) &rc_mag2y);
+    r->rc_adcs_sp_11_mag2_x_min = aggVec_min_i(&mag2.agg_x);
+    r->rc_adcs_sp_11_mag2_x_max = aggVec_max_i(&mag2.agg_x);
+    r->rc_adcs_sp_11_mag2_x_avg = aggVec_avg_i_i(&mag2.agg_x);
+    aggVec_reset((aggVec *) &mag2.agg_x);
+    r->rc_adcs_sp_11_mag2_y_min = aggVec_min_i(&mag2.agg_y);
+    aggVec_min_reset((aggVec *) &mag2.agg_y);
 }
 
 void magioRcPopulate12(rc_adcs_sp_12 *r)
 {
-    r->rc_adcs_sp_12_mag2_y_max = aggVec_max_i(&rc_mag2y);
-    aggVec_max_reset((aggVec *) &rc_mag2y);
-    r->rc_adcs_sp_12_mag2_y_avg = aggVec_avg_i_i(&rc_mag2y);
-    aggVec_as_reset((aggVec *) &rc_mag2y);
-    r->rc_adcs_sp_12_mag2_z_min = aggVec_min_i(&rc_mag2z);
-    r->rc_adcs_sp_12_mag2_z_max = aggVec_max_i(&rc_mag2z);
-    aggVec_mm_reset((aggVec *) &rc_mag2z);
+    r->rc_adcs_sp_12_mag2_y_max = aggVec_max_i(&mag2.agg_y);
+    aggVec_max_reset((aggVec *) &mag2.agg_y);
+    r->rc_adcs_sp_12_mag2_y_avg = aggVec_avg_i_i(&mag2.agg_y);
+    aggVec_as_reset((aggVec *) &mag2.agg_y);
+    r->rc_adcs_sp_12_mag2_z_min = aggVec_min_i(&mag2.agg_z);
+    r->rc_adcs_sp_12_mag2_z_max = aggVec_max_i(&mag2.agg_z);
+    aggVec_mm_reset((aggVec *) &mag2.agg_z);
 }
 
 void magioRcPopulate13(rc_adcs_sp_13 *r)
 {
-    r->rc_adcs_sp_13_mag2_z_avg = aggVec_avg_i_i(&rc_mag2z);
-    aggVec_as_reset((aggVec *) &rc_mag2z);
+    r->rc_adcs_sp_13_mag2_z_avg = aggVec_avg_i_i(&mag2.agg_z);
+    aggVec_as_reset((aggVec *) &mag2.agg_z);
 }
 
 void magioRcPopulate14(rc_adcs_sp_14 *r)
 {
-    r->rc_adcs_sp_14_magp_valid = aggVec_sum_i(&rc_magValid);
-    aggVec_reset((aggVec *) &rc_magValid);
+    // magp deprecated
 }
