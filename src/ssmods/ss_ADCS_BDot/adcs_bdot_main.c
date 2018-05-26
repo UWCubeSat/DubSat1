@@ -13,6 +13,8 @@
 #define SP_MAG1 1
 #define SP_MAG2 2
 
+#define MAG_BEST_FIT_OVERRIDE 1
+
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
 FILE_STATIC meta_segment metaSeg;
@@ -451,6 +453,26 @@ void send_bdot_mag_reading_cosmos()
     bdot_magnetometer_data_cosmos.zMag = bdot_mag_data->convertedZ * 1e9;
 
     bcbinSendPacket((uint8_t *) &bdot_magnetometer_data_cosmos, sizeof(bdot_magnetometer_data_cosmos));
+}
+
+/* send magnetometer reading segment through backchannel */
+void send_sp_mag1_reading_cosmos()
+{
+    sp_mag1_data_cosmos.xMag = sp_mag1_data->convertedX * 1e9;
+    sp_mag1_data_cosmos.yMag = sp_mag1_data->convertedY * 1e9;
+    sp_mag1_data_cosmos.zMag = sp_mag1_data->convertedZ * 1e9;
+
+    bcbinSendPacket((uint8_t *) &sp_mag1_data_cosmos, sizeof(sp_mag1_data_cosmos));
+}
+
+/* send magnetometer reading segment through backchannel */
+void send_sp_mag2_reading_cosmos()
+{
+    sp_mag2_data_cosmos.xMag = sp_mag2_data->convertedX * 1e9;
+    sp_mag2_data_cosmos.yMag = sp_mag2_data->convertedY * 1e9;
+    sp_mag2_data_cosmos.zMag = sp_mag2_data->convertedZ * 1e9;
+
+    bcbinSendPacket((uint8_t *) &sp_mag2_data_cosmos, sizeof(sp_mag2_data_cosmos));
 }
 
 /* Send magnetorquer's state based on bdot's perspective */

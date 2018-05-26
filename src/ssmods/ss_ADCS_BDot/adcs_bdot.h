@@ -97,6 +97,10 @@ void read_magnetometer_data();
 void simulink_compute();
 
 void send_bdot_mag_reading_cosmos();
+
+void send_sp_mag1_reading_cosmos();
+void send_sp_mag2_reading_cosmos();
+
 void send_all_polling_timers_segment();
 void send_health_segment_cosmos();
 void send_mtq_info_segment_cosmos();
