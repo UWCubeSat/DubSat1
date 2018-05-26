@@ -104,9 +104,9 @@ IMUData *imuReadGyroAccelData()
 #endif /* __I2C_DONT_WRITE_IMU__ */
 
 #if defined(__HIL_AA_GLITCHFILTER__)
-    idata.prevRawGyroX = idata.rawGyroX;
-    idata.prevRawGyroY = idata.rawGyroY;
-    idata.prevRawGyroZ = idata.rawGyroZ;
+    int16_t prevX = idata.rawGyroX;
+    int16_t prevY = idata.rawGyroY;
+    int16_t prevZ = idata.rawGyroZ;
 #endif /* __HIL_AA_GLITCHFILTER__ */
 
     idata.rawGyroX = (int16_t)(i2cBuff[0] | ((int16_t)i2cBuff[1] << 8));
@@ -114,13 +114,13 @@ IMUData *imuReadGyroAccelData()
     idata.rawGyroZ = (int16_t)(i2cBuff[4] | ((int16_t)i2cBuff[5] << 8));
 
 #if defined(__HIL_AA_GLITCHFILTER__)
-    if (abs(idata.rawGyroX - idata.prevRawGyroX) > GLITCH_FILTER_MAX_DIFF
-    		|| abs(idata.rawGyroY - idata.prevRawGyroY) > GLITCH_FILTER_MAX_DIFF
-			|| abs(idata.rawGyroZ - idata.prevRawGyroZ) > GLITCH_FILTER_MAX_DIFF)
+    if (abs(idata.rawGyroX - prevX) > GLITCH_FILTER_MAX_DIFF
+    		|| abs(idata.rawGyroY - prevY) > GLITCH_FILTER_MAX_DIFF
+			|| abs(idata.rawGyroZ - prevZ) > GLITCH_FILTER_MAX_DIFF)
     {
-    	idata.rawGyroX = idata.prevRawGyroX;
-    	idata.rawGyroY = idata.prevRawGyroY;
-    	idata.rawGyroZ = idata.prevRawGyroZ;
+    	idata.rawGyroX = prevX;
+    	idata.rawGyroY = prevY;
+    	idata.rawGyroZ = prevZ;
     }
 #endif /* __HIL_AA_GLITCHFILTER__ */
 

@@ -49,11 +49,6 @@ typedef struct  {
     int16_t rawGyroX;
     int16_t rawGyroY;
     int16_t rawGyroZ;
-#if defined(__HIL_AA_GLITCHFILTER__)
-    int16_t prevRawGyroX;
-    int16_t prevRawGyroY;
-    int16_t prevRawGyroZ;
-#endif /* __HIL_AA_GLITCHFILTER__ */
     // TODO:  add timestamp?
 } IMUData;
 
