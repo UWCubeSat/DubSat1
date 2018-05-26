@@ -8,8 +8,6 @@
 #ifndef IMU_IO_H_
 #define IMU_IO_H_
 
-#define DELAY_IMU_UPDATE_MS 200
-
 // TODO confirm this bus after descope board redesign
 #define IMU_I2CBUS I2CBus1
 
