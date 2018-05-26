@@ -6,14 +6,18 @@
 #include <msp430.h>
 #include <stdint.h>
 
+// Configuration macros for UCB0CTLW0.
 #define UCMODE_THREE_WIRE_SPI 				 0x0000
 #define UCMODE_FOUR_WIRE_SPI_STE_ACTIVE_HIGH 0x0200
 #define UCMODE_FOUR_WIRE_SPI_STE_ACTIVE_LOW  0x0400
 #define UCMODE_I2C			  				 0x0600
 
+// Clock Divider/other timing macros
 #define SPI_CLOCK_DIV 						 0x0000
 #define WAIT_TIME 			  				 0xFFFF
 
+
+// These pins correspond to the chip select pins on our MSP CAN Block.
 #define CS_1                                  0x01
 #define CS_2                                  0x02
 #define CS_3                                  0x04
