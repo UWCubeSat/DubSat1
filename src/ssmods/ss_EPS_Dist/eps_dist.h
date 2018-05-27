@@ -27,6 +27,7 @@
 #define OCP_THRESH_LOW_DRAW_DEVICE  0.300f
 #define OCP_THRESH_MED_DRAW_DEVICE  0.500f
 #define OCP_THRESH_HIGH_DRAW_DEVICE 0.700f
+#define OCP_THRESH_VERY_HIGH_DRAW_DEVICE  1.0f
 
 // Configure power domain control pins
 #define DOMAIN_ENABLE_COM2_DIR  P7DIR
