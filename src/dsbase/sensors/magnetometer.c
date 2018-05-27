@@ -16,6 +16,9 @@ typedef struct {
     hDev hSensor;
     MagnetometerData data;
     MagnetometerData prev_data;
+    uint16_t prev_difference_x;
+    uint16_t prev_difference_y;
+    uint16_t prev_difference_z;
 } MagInternalData;
 
 
@@ -88,6 +91,9 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
     hDev hSensor = mags[handle].hSensor;
     MagnetometerData *mdata = &(mags[handle].data);
     MagnetometerData *prevData = &(mags[handle].prev_data);
+    uint16_t * prev_dif_x = &(mags[handle].prev_difference_x);
+    uint16_t * prev_dif_y = &(mags[handle].prev_difference_y);
+    uint16_t * prev_dif_z = &(mags[handle].prev_difference_z);
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)
 
@@ -96,6 +102,9 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
 #else
     i2cMasterRegisterRead(hSensor, MAG_XYZ_OUTPUT_REG_ADDR_START, i2cBuff, 6 );
 #endif
+
+#if defined(__HIL_AA_GLITCHFILTER__)
+
     // NOTE:  Order of X/Z/Y on HMC5883 is, unfortunately, intentional ...
     if(!first_read)
     {
@@ -103,6 +112,9 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
         prevData->rawX = mdata->rawX;
         prevData->rawY = mdata->rawY;
         prevData->rawZ = mdata->rawZ;
+        *prev_dif_x = abs(prevData->rawX - mdata->rawX);
+        *prev_dif_y = abs(prevData->rawY - mdata->rawY);
+        *prev_dif_z = abs(prevData->rawZ - mdata->rawZ);
     }
 
     mdata->conversionMode = desiredConversion;
@@ -116,20 +128,31 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
         prevData->rawX = mdata->rawX;
         prevData->rawY = mdata->rawY;
         prevData->rawZ = mdata->rawZ;
+        *prev_dif_x = abs(prevData->rawX - mdata->rawX);
+        *prev_dif_y = abs(prevData->rawY - mdata->rawY);
+        *prev_dif_z = abs(prevData->rawZ - mdata->rawZ);
         first_read = 0;
     }
 
-    mdata->rawTempA = (int8_t)i2cBuff[6];
-    mdata->rawTempB = (int8_t)i2cBuff[7];
-
-#if defined(__HIL_AA_GLITCHFILTER__)
-
     if(abs(mdata->rawX - prevData->rawX) > GLITCH_FILTER_MAX_DIFF || abs(mdata->rawY - prevData->rawY) > GLITCH_FILTER_MAX_DIFF || abs(mdata->rawZ - prevData->rawZ) > GLITCH_FILTER_MAX_DIFF)
     {
-        mdata->rawX = prevData->rawX;
-        mdata->rawY = prevData->rawY;
-        mdata->rawZ = prevData->rawZ;
+        if(*prev_dif_x > GLITCH_FILTER_MAX_DIFF || *prev_dif_y > GLITCH_FILTER_MAX_DIFF || *prev_dif_z > GLITCH_FILTER_MAX_DIFF)
+        {
+            prevData->rawX = mdata->rawX;
+            prevData->rawY = mdata->rawY;
+            prevData->rawZ = mdata->rawZ;
+        }
     }
+
+#else
+
+    mdata->conversionMode = desiredConversion;
+    mdata->rawX = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
+    mdata->rawZ = (int16_t)(i2cBuff[3] | ((int16_t)i2cBuff[2] << 8));
+    mdata->rawY = (int16_t)(i2cBuff[5] | ((int16_t)i2cBuff[4] << 8));
+
+    mdata->rawTempA = (int8_t)i2cBuff[6];
+    mdata->rawTempB = (int8_t)i2cBuff[7];
 #endif
 
 #elif defined( __BSP_HW_MAGTOM_MAG3110__)
@@ -144,7 +167,32 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
 
 #endif /* HW_MAGTOM */
 
+#if defined(__HIL_AA_GLITCHFILTER__)
+    double conversionFactor;
+    switch (desiredConversion)
+    {
+        case ConvertToNanoTeslas:
+            conversionFactor = MAG_CONVERSION_FACTOR_RAW_TO_NANOTESLAS;
+            break;
+        case ConvertToTeslas:
+            conversionFactor = MAG_CONVERSION_FACTOR_RAW_TO_TESLAS;
+            break;
+        case ConvertToNone:
+            // return early to skip conversions
+            return prevData;
+        default:
+            conversionFactor = MAG_CONVERSION_FACTOR_DEFAULT;
+            break;
+    }
 
+    // (MSB * 2^8 + LSB) / (2^4 * 8) + 25 in C
+
+    prevData->convertedX = prevData->rawX * conversionFactor;
+    prevData->convertedY = prevData->rawY * conversionFactor;
+    prevData->convertedZ = prevData->rawZ * conversionFactor;
+    prevData->convertedTemp = (double)((((double)prevData->rawTempA * 256.0)  +  (double) prevData->rawTempB * 1.0) / (8.0 * 16.0) + 25.0);
+    return prevData;
+#else
     // todo:  Ultimately, this logic needs to move into the device-specific file
     // (though some of it will be able to stay here, hopefully? just lookup conversion in a table
     // in the device header?
@@ -171,8 +219,8 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
     mdata->convertedY = mdata->rawY * conversionFactor;
     mdata->convertedZ = mdata->rawZ * conversionFactor;
     mdata->convertedTemp = (double)((((double)mdata->rawTempA * 256.0)  +  (double) mdata->rawTempB * 1.0) / (8.0 * 16.0) + 25.0);
-
     return mdata;
+#endif
 }
 
 float magConvertRawToTeslas(int16_t raw)

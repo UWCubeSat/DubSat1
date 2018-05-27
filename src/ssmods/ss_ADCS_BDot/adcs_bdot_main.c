@@ -1,3 +1,26 @@
+/* BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT
+ *
+ * MAIN FUNCTIONALITY
+ * - Reads magnetometer data using the i2c bus and feeds it into Simulink autocode rt_oneStep every 10hz.
+ * - rt_oneStep will determine the xyz dipoles commands to send to the magnetorquer board (MTQ) via CAN.
+ * - MTQ will send acknowledgement packets to Bdot via CAN that will inform Bdot of the current state of the magnetorquer (whether it is firing or not).
+ * - Bdot only reads mangetometer data when MTQ is not firing.
+ *
+ * BEST FIT MAGNETOMETER
+ * - Sensor Processing board (SP) will send two CAN packets, each with magnetometer readings from its own magnetometers.
+ * - Upon first launch for a certain amount of time, Bdot will decide which magnetometer readings are most accurate relative to each other.
+ * - After satellite has stabilized after launch, commands from ground will "lock" in one magnetometer as the best fit one.
+ *
+ * Detumble Safety Procedure Initialization (DESPIN)
+ * - Bdot will determine/time how long the satellite has been tumbling for.
+ * - If the amount of time is above a certain threshold, it is likely that the satellite will never de-tumble and that there are problems with hardware/software.
+ * - Bdot will then initiate Detumble Safety Lockout, which mean it will send dipole commands to MTQ of zeros, effectively turning MTQ off.
+ * - Commands from ground can be sent to exit this protocol and let Bdot function normally.
+ *
+ *
+ *
+ */
+
 #include <adcs_bdot.h>
 #include <msp430.h>
 #include <stddef.h>
