@@ -52,18 +52,19 @@ FILE_STATIC void populateAll()
 
 uint8_t rollcallUpdate()
 {
-    /*
-     * if there is a packet buffer and this is the first update, populate the
-     * packets
-     */
-    if (hasPacketBuffer() && rcFlag == numFunctions)
-    {
-        populateAll();
-    }
-
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
     {
-        uint8_t idx = rcFlag - 1;
+        /*
+         * if there is a packet buffer and this is the first update, populate
+         * the packets
+         */
+        if (hasPacketBuffer() && rcFlag == numFunctions)
+        {
+            populateAll();
+        }
+
+        // decrement to move on to next packet
+        rcFlag--;
 
         /*
          * Get the next CAN packet. If there's a buffer, take from the buffer.
@@ -73,27 +74,19 @@ uint8_t rollcallUpdate()
         if (hasPacketBuffer())
         {
             // take a packet from the buffer
-            pPtr = &packets[idx];
+            pPtr = &packets[rcFlag];
         }
         else
         {
             // populate the next rollcall packet
             CANPacket p;
-            functions[idx](&p);
+            functions[rcFlag](&p);
             pPtr = &p;
         }
 
         // send the packet
-        // If the packet fails to send, keep trying until it works or until CAN
-        // says it's busy.
-        uint8_t notSent;
-        do
-        {
-            notSent = canSendPacket(pPtr);
-        } while (notSent && (canTxCheck() != CAN_TX_BUSY));
-
-        // decrement to move on to next packet
-        rcFlag--;
+        // shouldn't fail because canTxCheck() says there is room in the buffer
+        canSendPacket(pPtr);
     }
 
     return rollcallQueueLength();
