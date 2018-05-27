@@ -26,3 +26,9 @@ test/unit-tests/build/
 *.asv
 grnd/experiments/ArdMOS/cosmos/outputs/
 ref/CAN/*.ini
+
+teams/cdh/BusExperiments/ADCS_Bdot_Experiment/data_file/*.dat
+teams/cdh/BusExperiments/MTQ_hlt/*.fig
+teams/cdh/BusExperiments/MTQ_hlt/*.csv
+teams/cdh/BusExperiments/MTQ_hlt/*.mat
+
