@@ -11,7 +11,7 @@
 
 #define MAX_BUFF_SIZE   0x25
 #define MAX_NUM_MAGNETOMETERS 2 // one for each i2c bus
-#define GLITCH_FILTER_MAX_DIFF 100
+#define GLITCH_FILTER_MAX_DIFF 200
 typedef struct {
     hDev hSensor;
     MagnetometerData data;
@@ -108,13 +108,13 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
     // NOTE:  Order of X/Z/Y on HMC5883 is, unfortunately, intentional ...
     if(!first_read)
     {
+        *prev_dif_x = abs((int32_t)prevData->rawX - (int32_t)mdata->rawX);
+        *prev_dif_y = abs((int32_t)prevData->rawY - (int32_t)mdata->rawY);
+        *prev_dif_z = abs((int32_t)prevData->rawZ - (int32_t)mdata->rawZ);
         prevData->conversionMode = mdata->conversionMode;
         prevData->rawX = mdata->rawX;
         prevData->rawY = mdata->rawY;
         prevData->rawZ = mdata->rawZ;
-        *prev_dif_x = abs(prevData->rawX - mdata->rawX);
-        *prev_dif_y = abs(prevData->rawY - mdata->rawY);
-        *prev_dif_z = abs(prevData->rawZ - mdata->rawZ);
     }
 
     mdata->conversionMode = desiredConversion;
@@ -128,13 +128,13 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
         prevData->rawX = mdata->rawX;
         prevData->rawY = mdata->rawY;
         prevData->rawZ = mdata->rawZ;
-        *prev_dif_x = abs(prevData->rawX - mdata->rawX);
-        *prev_dif_y = abs(prevData->rawY - mdata->rawY);
-        *prev_dif_z = abs(prevData->rawZ - mdata->rawZ);
+        *prev_dif_x = 0;
+        *prev_dif_y = 0;
+        *prev_dif_z = 0;
         first_read = 0;
     }
 
-    if(abs(mdata->rawX - prevData->rawX) > GLITCH_FILTER_MAX_DIFF || abs(mdata->rawY - prevData->rawY) > GLITCH_FILTER_MAX_DIFF || abs(mdata->rawZ - prevData->rawZ) > GLITCH_FILTER_MAX_DIFF)
+    if(abs((int32_t)mdata->rawX - (int32_t)prevData->rawX) > GLITCH_FILTER_MAX_DIFF || abs((int32_t)mdata->rawY - (int32_t)prevData->rawY) > GLITCH_FILTER_MAX_DIFF || abs((int32_t)mdata->rawZ - (int32_t)prevData->rawZ) > GLITCH_FILTER_MAX_DIFF)
     {
         if(*prev_dif_x > GLITCH_FILTER_MAX_DIFF || *prev_dif_y > GLITCH_FILTER_MAX_DIFF || *prev_dif_z > GLITCH_FILTER_MAX_DIFF)
         {
