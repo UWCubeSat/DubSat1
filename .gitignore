@@ -2,9 +2,11 @@ RemoteSystemsTempFiles/
 .metadata/
 .jxbrowser-data/
 src/ssmods/*/Debug/
+src/ssmods/*/Debug_HIL/
 src/ssmods/*/Release/
 src/ssmods/*/.launches/
 src/devmods/*/Debug/
+src/devmods/*/Debug_HIL/
 src/devmods/*/Release/
 src/devmods/*/.launches/
 test/unit-tests/build/
