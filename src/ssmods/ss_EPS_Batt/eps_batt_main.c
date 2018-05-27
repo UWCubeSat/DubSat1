@@ -12,7 +12,6 @@
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
-FILE_STATIC ModuleStatus mod_status;
 FILE_STATIC volatile SubsystemState ss_state    = State_FirstState;
 FILE_STATIC volatile SubsystemMode ss_mode      = Mode_FirstMode;
 
@@ -44,7 +43,7 @@ FILE_STATIC aggVec_i voltageAg;
 FILE_STATIC aggVec_i currentAg;
 FILE_STATIC aggVec_i nodeVoltageAg;
 FILE_STATIC aggVec_i nodeCurrentAg;
-FILE_STATIC aggVec_f SOCAg;
+FILE_STATIC aggVec_i accChargeAg;
 
 FILE_STATIC uint64_t lastFullChargeTime = 0;
 #pragma PERSISTENT(lastFullChargeTime);
@@ -155,9 +154,9 @@ void readCC (){
 
     aggVec_push_i(&voltageAg, CCReadRawVoltage());
     aggVec_push_i(&currentAg, CCReadRawCurrent());
-    aggVec_push_f(&SOCAg, CCData.SOC);
-    /*if(CCData.fullCharge)
-        lastFullChargeTime = getTimeStampInt();*/
+    aggVec_push_i(&accChargeAg, CCReadRawAccumulatedCharge());
+    if(CCData.fullCharge)
+        lastFullChargeTime = metConvertToInt(getMETTimestamp());
 }
 
 void readINA(hDev hSensor){
@@ -173,7 +172,7 @@ void readTempSensor(){
     float tempVoltageV =  asensorReadSingleSensorV(hTempC); //Assuming in V (not mV)
     //sseg.battTemp = ((tempVoltageV/100.0) - 500) / 10.0; //Temp in Celcius
     //conversion from voltage to temperatur, has a slope of 10mv per degree celcius
-    //and an intercept of 50 degrees at 0 volts
+    //and an intercept of 50 degrees at 0 voltsx
     aggVec_push_i(&tempAg, tempVoltageV); //TODO: get raw values here
 
     sseg.battTemp = (tempVoltageV /0.010) - 50;
@@ -184,7 +183,7 @@ void can_packet_rx_callback(CANPacket *packet)
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            rcFlag = 6;
+            rcFlag = 7;
             break;
         default:
             break;
@@ -196,17 +195,17 @@ void sendRC()
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
     {
         CANPacket rollcallPkt = {0};
-        if(rcFlag == 6)
+        if(rcFlag == 7)
         {
             rc_eps_batt_1 rollcallPkt1_info = {0};
             float newVal = asensorReadIntTempC();
             rollcallPkt1_info.rc_eps_batt_1_sysrstiv = bspGetResetCount();
-            rollcallPkt1_info.rc_eps_batt_1_temp_avg = asensorReadIntTempRawC(); //TODO: this
-            rollcallPkt1_info.rc_eps_batt_1_temp_max = asensorReadIntTempRawC(); //TODO: this
-            rollcallPkt1_info.rc_eps_batt_1_temp_min = asensorReadIntTempRawC(); //TODO: this
+            rollcallPkt1_info.rc_eps_batt_1_temp_avg = asensorReadIntTempRawC();
+            rollcallPkt1_info.rc_eps_batt_1_temp_max = asensorReadIntTempRawC();
+            rollcallPkt1_info.rc_eps_batt_1_temp_min = asensorReadIntTempRawC();
             encoderc_eps_batt_1(&rollcallPkt1_info, &rollcallPkt);
         }
-        else if(rcFlag == 5)
+        else if(rcFlag == 6)
         {
             rc_eps_batt_2 rollcallPkt2_info = {0};
             rollcallPkt2_info.rc_eps_batt_2_node_v_avg = aggVec_avg_i_i(&nodeVoltageAg);
@@ -215,7 +214,7 @@ void sendRC()
             encoderc_eps_batt_2(&rollcallPkt2_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&nodeVoltageAg);
         }
-        else if(rcFlag == 4)
+        else if(rcFlag == 5)
         {
             rc_eps_batt_3 rollcallPkt3_info = {0};
             rollcallPkt3_info.rc_eps_batt_3_batt_temp_avg = aggVec_avg_i_i(&tempAg);
@@ -227,7 +226,7 @@ void sendRC()
             aggVec_as_reset((aggVec *)&currentAg);
             aggVec_as_reset((aggVec *)&nodeCurrentAg);
         }
-        else if(rcFlag == 3)
+        else if(rcFlag == 4)
         {
             rc_eps_batt_4 rollcallPkt4_info = {0};
             rollcallPkt4_info.rc_eps_batt_4_balancer_state = (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) != 0;
@@ -238,7 +237,7 @@ void sendRC()
             encoderc_eps_batt_4(&rollcallPkt4_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&voltageAg);
         }
-        else if(rcFlag == 2)
+        else if(rcFlag == 3)
         {
             rc_eps_batt_5 rollcallPkt5_info = {0};
             rollcallPkt5_info.rc_eps_batt_5_batt_temp_max = aggVec_max_i(&tempAg);
@@ -249,15 +248,22 @@ void sendRC()
             encoderc_eps_batt_5(&rollcallPkt5_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&nodeVoltageAg);
         }
-        else if(rcFlag == 1)
+        else if(rcFlag == 2)
         {
             rc_eps_batt_6 rollcallPkt6_info = {0};
             rollcallPkt6_info.rc_eps_batt_6_last_charge = lastFullChargeTime;
-            rollcallPkt6_info.rc_eps_batt_6_soc_avg = aggVec_avg_f(&SOCAg); //TODO: these are floats, but the packets
-            rollcallPkt6_info.rc_eps_batt_6_soc_max = aggVec_max_f(&SOCAg);
-            rollcallPkt6_info.rc_eps_batt_6_soc_min = aggVec_min_f(&SOCAg);
+            rollcallPkt6_info.rc_eps_batt_6_status = CCGetStatusReg();
+            rollcallPkt6_info.rc_eps_batt_6_ctrl = CCGetControlReg();
             encoderc_eps_batt_6(&rollcallPkt6_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&SOCAg);
+        }
+        else if(rcFlag == 1)
+        {
+            rc_eps_batt_7 rollcallPkt7_info = {0};
+            rollcallPkt7_info.rc_eps_batt_7_acc_charge_avg = aggVec_avg_i_i(&accChargeAg);
+            rollcallPkt7_info.rc_eps_batt_7_acc_charge_max = aggVec_max_i(&accChargeAg);
+            rollcallPkt7_info.rc_eps_batt_7_acc_charge_min = aggVec_min_i(&accChargeAg);
+            encoderc_eps_batt_7(&rollcallPkt7_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&accChargeAg);
         }
         canSendPacket(&rollcallPkt);
         rcFlag--;
@@ -270,7 +276,7 @@ void sendRC()
 
 int main(void)
 {
-    P3DIR |= BIT4;
+    P3DIR |= BIT4; //this is for Paul's backpower fix
     P3OUT |= BIT4;
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
@@ -313,7 +319,7 @@ int main(void)
     aggVec_init_i(&currentAg);
     aggVec_init_i(&nodeVoltageAg);
     aggVec_init_i(&nodeCurrentAg);
-    aggVec_init_f(&SOCAg);
+    aggVec_init_i(&accChargeAg);
 
     //canWrapInitWithFilter();
     canWrapInit();
@@ -349,6 +355,8 @@ int main(void)
             battBcSendGeneral();
             battBcSendHealth();
 
+            aggVec_push_i(&tempAg, asensorReadIntTempRawC());
+
             if(isChecking)
             {
                 float temp = asensorReadSingleSensorV(hTempC); //<-- this is batt temp
@@ -368,8 +376,4 @@ int main(void)
         }
         sendRC();
      }
-
-    // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
-
-    return 0;
 }
