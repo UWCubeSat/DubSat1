@@ -9,8 +9,8 @@ u = udp('192.168.1.152', 4012);
 fopen(u);
 
 dataDir = 'C:\dubsat_data\';
-spDataDir = [dataDir, 'sp-short\'];
-bdotDataDir = [dataDir, 'bdot-short\'];
+spDataDir = [dataDir, 'sp\'];
+bdotDataDir = [dataDir, 'bdot\'];
 
 % define sensors
 
@@ -303,7 +303,7 @@ while 1
             numNotRead = numNotRead + 1;
         end
     end
-    disp('ran out of input data -- reseting!')
+    fprintf('reset sim at (%s)\n', datestr(now,'HH:MM:SS.FFF'))
 end
 
 disp('closing');
