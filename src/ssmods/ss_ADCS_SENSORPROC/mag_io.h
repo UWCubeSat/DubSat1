@@ -57,7 +57,7 @@ void magioSendCAN2();
 // rollcall
 void magio1RcPopulate8(rc_adcs_sp_8 *rc);
 void magio1RcPopulate9(rc_adcs_sp_9 *rc);
-void magio2RcPopulate10(rc_adcs_sp_10 *rc);
+void magio1RcPopulate10(rc_adcs_sp_10 *rc);
 void magio2RcPopulate11(rc_adcs_sp_11 *rc);
 void magio2RcPopulate12(rc_adcs_sp_12 *rc);
 void magio2RcPopulate13(rc_adcs_sp_13 *rc);
