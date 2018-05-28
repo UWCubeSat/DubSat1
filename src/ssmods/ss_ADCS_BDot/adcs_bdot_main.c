@@ -37,6 +37,8 @@
 #define SP_MAG2 2
 
 #define MAG_BEST_FIT_OVERRIDE 1
+#define MAG_BEST_FIT_AUTO 0
+
 
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
@@ -64,6 +66,8 @@ FILE_STATIC MagnetometerData* sp_mag2_data;
 FILE_STATIC uint8_t sp_mag1_new_data_flag;
 FILE_STATIC uint8_t sp_mag2_new_data_flag;
 FILE_STATIC uint8_t current_listening_mag = BDOT_MAG;
+FILE_STATIC uint8_t mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
+FILE_STATIC uint8_t cmd_mag_selection = BDOT_MAG;
 FILE_STATIC hMag mag_num;
 FILE_STATIC uint8_t mag_norm_op = 1;
 /***************************************************************/
@@ -106,38 +110,19 @@ int main(void)
 {
     /* ----- INITIALIZATION -----*/
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
-    // __SUBSYSTEM_MODULE__ is set in bsp.h based on the __SS_<subsystemmodule>__ passed in
-    // as a predefined symbol
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
-    // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
-    // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
-    // Also hooks up special notification handlers.  Note that actual pulse interrupt handlers will update the
-    // firing state structures before calling the provided handler function pointers.
     mod_status.startup_type = coreStartup(handlePPTFiringNotification, handleRollCall);  // <<DO NOT DELETE or MOVE>>
 
 #if defined(__DEBUG__)
-
-    // Insert debug-build-only things here, like status/info/command handlers for the debug
-    // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
-    // debugtools.h.  Also, be sure to change the "path char"
-    // e.g. debugRegisterEntity(Entity_Test, handleDebugInfoCallback,
-    //                               handleDebugStatusCallback,
-    //                               handleDebugActionCallback);
-
+    debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, handleDebugActionCallback);
 #endif  //  __DEBUG__
-
-    debugTraceF(1, "CAN message bus configured.\r\n");
-    debugTraceF(1, "Commencing subsystem module execution ...\r\n");
-
 
     initial_setup();
     rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
     startCallback(rtOneStep_timer);
     start_check_best_mag_timer();
 
-    fflush((NULL));
-
-    while (rtmGetErrorStatus(rtM) == (NULL) || 1)
+    while (1)
     {
         if(sp_mag1_new_data_flag)
         {
@@ -190,13 +175,9 @@ int main(void)
             /* clear rt_flag */
             rt_flag = 0;
         }
-
         /* update rollcall "aggressively" - David */
         rollcallUpdate();
     }
-
-    bdot_controller_lib_terminate();
-
     return 0;
 }
 
@@ -307,9 +288,9 @@ void determine_best_fit_mag()
 
     // find the median of the norm to determine best magnetometer to use. TODO: Think of a better, less costly method
 
-    if(MAG_BEST_FIT_OVERRIDE)
+    if(mag_selection_mode == MAG_BEST_FIT_OVERRIDE)
     {
-        current_listening_mag = BDOT_MAG;
+        current_listening_mag = cmd_mag_selection;
         return;
     }
     if(bdot_mag_norm <= sp_mag1_norm && sp_mag1_norm <= sp_mag2_norm)
@@ -518,7 +499,6 @@ void send_simulink_segment_cosmos()
     bcbinSendPacket((uint8_t *) &mySimulink, sizeof(mySimulink));
 }
 
-
 /* debugging purpose function */
 void send_all_polling_timers_segment()
 {
@@ -599,6 +579,53 @@ void rcPopulate4(CANPacket *out)
     aggVec_reset((aggVec *)&magZ);
     encoderc_adcs_bdot_4(&rc, out);
 }
+
+void mag_select_switch(uint8_t mag_selection)
+{
+    switch(mag_selection)
+    {
+        case CMD_SELECT_AUTO:
+            mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
+            break;
+        case CMD_SELECT_BDOT_MAG:
+            mag_selection_mode = MAG_BEST_FIT_AUTO;
+            cmd_mag_selection = BDOT_MAG;
+            break;
+        case CMD_SELECT_SP_MAG1:
+            mag_selection_mode = MAG_BEST_FIT_AUTO;
+            cmd_mag_selection = SP_MAG1;
+            break;
+        case CMD_SELECT_SP_MAG2:
+            mag_selection_mode = MAG_BEST_FIT_AUTO;
+            cmd_mag_selection = SP_MAG2;
+            break;
+        default:
+            break;
+    }
+}
+
+
+uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
+{
+    mag_select_cmd *mag_select;
+
+    if (mode == Mode_BinaryStreaming)
+    {
+        switch(cmdstr[0])
+        {
+            case OPCODE_MAG_SELECT_CMD:
+                mag_select = (mag_select_cmd *) (cmdstr + 1);
+                mag_select_switch(mag_select->mag_select);
+                break;
+            case OPCODE_COMMONCMD:
+                break;
+            default:
+                break;
+        }
+    }
+    return 1;
+}
+
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
 void handlePPTFiringNotification()

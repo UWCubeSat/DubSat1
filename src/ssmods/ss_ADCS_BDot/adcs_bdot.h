@@ -21,6 +21,12 @@
 #define MY_TELEM_DISABLED 0
 #define MY_TELEM_ENABLED 1
 
+#define CMD_SELECT_AUTO 0
+#define CMD_SELECT_BDOT_MAG 1
+#define CMD_SELECT_SP_MAG1 2
+#define CMD_SELECT_SP_MAG2 3
+
+
 #define TLM_ID_BDOT_MAGNETOMETER  127
 #define TLM_ID_MTQ_INFO 126
 #define TLM_ID_SIMULINK_INFO 124
@@ -28,7 +34,10 @@
 #define TLM_ID_SP_MAG1 122
 #define TLM_ID_SP_MAG2 121
 
+
 #define OPCODE_MY_CMD 1
+#define OPCODE_MAG_SELECT_CMD 2
+
 
 #define MTQ_MEASUREMENT_PHASE 0
 #define MTQ_ACTUATION_PHASE  1
@@ -37,6 +46,12 @@
 CMD_SEGMENT {
     uint8_t enable;
 } enable_segment;
+
+CMD_SEGMENT {
+    uint8_t enable_cmd;
+    uint8_t mag_select;
+} mag_select_cmd;
+
 
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this

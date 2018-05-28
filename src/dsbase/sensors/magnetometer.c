@@ -12,6 +12,7 @@
 #define MAX_BUFF_SIZE   0x25
 #define MAX_NUM_MAGNETOMETERS 2 // one for each i2c bus
 #define GLITCH_FILTER_MAX_DIFF 200
+
 typedef struct {
     hDev hSensor;
     MagnetometerData data;
