@@ -36,18 +36,18 @@ uint8_t canTxCheck(void){
     // Read TXB0CTRL to see if Buffer 0 RTS is 1
     // That would mean we shouldn't overwrite this register.
     readRegister(MCP_TXB0CTRL, &bufferstatus);
-    retval |= (bufferstatus & CAN_RTS) >> 3;
+    retval |= (bufferstatus & 0x08) >> 3;
     // Read TXB1CTRL to see if Buffer 1 RTS is 1
     // That would mean we shouldn't overwrite this register.
     bufferstatus = 0;
     readRegister(MCP_TXB1CTRL, &bufferstatus);
-    retval |= (bufferstatus & CAN_RTS) >> 2;
+    retval |= (bufferstatus & 0x08) >> 2;
     // Read TXB2CTRL to see if Buffer 2 RTS is 1
     // That would mean we shouldn't overwrite this register.
     bufferstatus = 0;
     readRegister(MCP_TXB2CTRL, &bufferstatus);
     enableCanInterrupt();
-    retval |= (bufferstatus & CAN_RTS) >> 1;
+    retval |= (bufferstatus & 0x08) >> 1;
     return retval;
 }
 
