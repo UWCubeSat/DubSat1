@@ -508,17 +508,14 @@ typedef struct rc_adcs_sp_11 {
 } rc_adcs_sp_11;
 
 typedef struct rc_adcs_sp_7 {
-    int16_t rc_adcs_sp_7_magp_y_min; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_7_magp_y_max; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_7_magp_y_avg; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_7_magp_x_avg; // 1/73 nanoTeslas
 } rc_adcs_sp_7;
 
 typedef struct rc_adcs_sp_6 {
+    uint8_t rc_adcs_sp_6_mag2_valid; //  (No Units)
+    int16_t rc_adcs_sp_6_mag1_x_min; // 1/73 nanoTeslas
+    uint8_t rc_adcs_sp_6_mag1_valid; //  (No Units)
     int16_t rc_adcs_sp_6_sun_z_max; // 1/32768 units
     int16_t rc_adcs_sp_6_sun_z_avg; // 1/32768 units
-    int16_t rc_adcs_sp_6_magp_x_min; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_6_magp_x_max; // 1/73 nanoTeslas
 } rc_adcs_sp_6;
 
 typedef struct rc_adcs_sp_17 {
@@ -541,10 +538,6 @@ typedef struct rc_adcs_sp_10 {
 } rc_adcs_sp_10;
 
 typedef struct rc_adcs_sp_8 {
-    int16_t rc_adcs_sp_8_magp_z_min; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_8_magp_z_max; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_8_magp_z_avg; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_8_mag1_x_min; // 1/73 nanoTeslas
 } rc_adcs_sp_8;
 
 typedef struct rc_adcs_sp_9 {
@@ -573,7 +566,6 @@ typedef struct rc_adcs_sp_14 {
     int16_t rc_adcs_sp_14_sunb_max; // 60/32767 degrees
     int16_t rc_adcs_sp_14_sunb_avg; // 60/32767 degrees
     uint8_t rc_adcs_sp_14_sun_valid; //  (No Units)
-    uint8_t rc_adcs_sp_14_magp_valid; //  (No Units)
 } rc_adcs_sp_14;
 
 typedef struct rc_adcs_sp_5 {
