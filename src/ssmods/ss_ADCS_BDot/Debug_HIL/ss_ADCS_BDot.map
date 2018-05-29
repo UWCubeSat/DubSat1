@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v17.6.0                     
 ******************************************************************************
->> Linked Mon May 28 13:46:34 2018
+>> Linked Mon May 28 18:05:50 2018
 
 OUTPUT FILE NAME:   <ss_ADCS_BDot.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs_noexit_mpu"  address: 000048e0
@@ -17,7 +17,7 @@ MEMORY CONFIGURATION
   INFOC                 00001880   00000080  00000000  00000080  RWIX
   INFOB                 00001900   00000080  00000000  00000080  RWIX
   INFOA                 00001980   00000080  00000000  00000080  RWIX
-  RAM                   00001c00   00002000  0000112e  00000ed2  RWIX
+  RAM                   00001c00   00002000  00001132  00000ece  RWIX
   FRAM                  00004000   0000bf80  00001103  0000ae7d  RWIX
   JTAGSIGNATURE         0000ff80   00000004  00000004  00000000  RWIX  ffff 
   BSLSIGNATURE          0000ff84   00000004  00000004  00000000  RWIX  ffff 
@@ -78,7 +78,7 @@ MEMORY CONFIGURATION
   INT53                 0000fffa   00000002  00000002  00000000  RWIX
   INT54                 0000fffc   00000002  00000002  00000000  RWIX
   RESET                 0000fffe   00000002  00000002  00000000  RWIX
-  FRAM2                 00010000   00034000  000068b8  0002d748  RWIX
+  FRAM2                 00010000   00034000  000068d0  0002d730  RWIX
 
 
 SECTION ALLOCATION MAP
@@ -134,75 +134,75 @@ section   page    origin      length       input sections
                   0000490a    0000000c     i2c.obj (.text:_isr:USCI_B2_ISR)
                   00004916    00000008     rts430x_lc_rd_eabi.lib : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
 
-.bss       0    00001c00    00000c32     UNINITIALIZED
+.bss       0    00001c00    00000c36     UNINITIALIZED
                   00001c00    000004e8     uart.obj (.bss:buses)
                   000020e8    00000190     debugtools.obj (.bss:debugWriteOutputBuff)
                   00002278    000000f0     debugtools.obj (.bss:registeredDebugEntities)
                   00002368    000000b0     analogsensor.obj (.bss:asensors)
                   00002418    00000090     (.common:busregs)
-                  000024a8    00000088     magnetometer.obj (.bss:mags)
-                  00002530    00000060     timer.obj (.bss:polling)
-                  00002590    0000004a     (.common:rtDW)
-                  000025da    00000040     debugtools.obj (.bss:debugConsoleInputBuff)
-                  0000261a    00000032     adcs_bdot_main.obj (.bss:metaSeg)
-                  0000264c    00000032     bsp.obj (.bss:mseg)
-                  0000267e    00000028     (.common:rtU)
-                  000026a6    00000026     magnetometer.obj (.bss:i2cBuff)
-                  000026cc    00000020     i2c.obj (.bss:devices)
-                  000026ec    0000001c     timer.obj (.bss:callback)
-                  00002708    00000014     adcs_bdot_main.obj (.bss:magX)
-                  0000271c    00000014     adcs_bdot_main.obj (.bss:magY)
-                  00002730    00000014     adcs_bdot_main.obj (.bss:magZ)
-                  00002744    00000014     adcs_bdot_main.obj (.bss:rc_temp)
-                  00002758    00000014     systeminfo.obj (.bss:sc_info)
-                  0000276c    00000011     adcs_bdot_main.obj (.bss)
-                  0000277d    0000000f     adcs_bdot_main.obj (.bss:bdot_magnetometer_data_cosmos)
-                  0000278c    0000000f     adcs_bdot_main.obj (.bss:polling_timer_info)
-                  0000279b    0000000f     adcs_bdot_main.obj (.bss:sp_mag1_data_cosmos)
-                  000027aa    0000000f     adcs_bdot_main.obj (.bss:sp_mag2_data_cosmos)
-                  000027b9    00000001     (.common:confirmed)
-                  000027ba    0000000c     bsp.obj (.bss)
-                  000027c6    0000000c     adcs_bdot_main.obj (.bss:hseg)
-                  000027d2    0000000a     analogsensor.obj (.bss)
-                  000027dc    00000009     debugtools.obj (.bss)
-                  000027e5    00000001     (.common:error_bus_not_initialized)
-                  000027e6    00000008     debugtools.obj (.bss:debug_status)
-                  000027ee    00000007     adcs_bdot_main.obj (.bss:mySimulink)
-                  000027f5    00000001     (.common:isDist)
-                  000027f6    00000007     rollcall.obj (.bss)
-                  000027fd    00000001     --HOLE--
-                  000027fe    00000006     i2c.obj (.bss:buses)
-                  00002804    00000006     adcs_bdot_main.obj (.bss:cosmos_bdot_persp_mtq_info)
-                  0000280a    00000006     adcs_bdot_main.obj (.bss:mod_status)
-                  00002810    00000004     adcs_bdot_main.obj (.bss:bdot_perspective_mtq_info)
-                  00002814    00000004     debugtools.obj (.bss:cmd_header)
-                  00002818    00000004     adcs_bdot_main.obj (.bss:mtq_last_known_state)
-                  0000281c    00000004     (.common:CANPacketReceived)
-                  00002820    00000004     (.common:ReceiveCallback0)
-                  00002824    00000004     (.common:ReceiveCallback1)
-                  00002828    00000004     (.common:rtY)
-                  0000282c    00000004     (.common:spiCallback)
-                  00002830    00000002     uart.obj (.bss:statusSent$1)
+                  000024a8    0000008c     magnetometer.obj (.bss:mags)
+                  00002534    00000060     timer.obj (.bss:polling)
+                  00002594    0000004a     (.common:rtDW)
+                  000025de    00000040     debugtools.obj (.bss:debugConsoleInputBuff)
+                  0000261e    00000032     adcs_bdot_main.obj (.bss:metaSeg)
+                  00002650    00000032     bsp.obj (.bss:mseg)
+                  00002682    00000028     (.common:rtU)
+                  000026aa    00000026     magnetometer.obj (.bss:i2cBuff)
+                  000026d0    00000020     i2c.obj (.bss:devices)
+                  000026f0    0000001c     timer.obj (.bss:callback)
+                  0000270c    00000014     adcs_bdot_main.obj (.bss:magX)
+                  00002720    00000014     adcs_bdot_main.obj (.bss:magY)
+                  00002734    00000014     adcs_bdot_main.obj (.bss:magZ)
+                  00002748    00000014     adcs_bdot_main.obj (.bss:rc_temp)
+                  0000275c    00000014     systeminfo.obj (.bss:sc_info)
+                  00002770    00000011     adcs_bdot_main.obj (.bss)
+                  00002781    0000000f     adcs_bdot_main.obj (.bss:bdot_magnetometer_data_cosmos)
+                  00002790    0000000f     adcs_bdot_main.obj (.bss:polling_timer_info)
+                  0000279f    0000000f     adcs_bdot_main.obj (.bss:sp_mag1_data_cosmos)
+                  000027ae    0000000f     adcs_bdot_main.obj (.bss:sp_mag2_data_cosmos)
+                  000027bd    00000001     (.common:confirmed)
+                  000027be    0000000c     bsp.obj (.bss)
+                  000027ca    0000000c     adcs_bdot_main.obj (.bss:hseg)
+                  000027d6    0000000a     analogsensor.obj (.bss)
+                  000027e0    00000009     debugtools.obj (.bss)
+                  000027e9    00000001     (.common:error_bus_not_initialized)
+                  000027ea    00000008     debugtools.obj (.bss:debug_status)
+                  000027f2    00000007     adcs_bdot_main.obj (.bss:mySimulink)
+                  000027f9    00000001     (.common:isDist)
+                  000027fa    00000007     rollcall.obj (.bss)
+                  00002801    00000001     --HOLE--
+                  00002802    00000006     i2c.obj (.bss:buses)
+                  00002808    00000006     adcs_bdot_main.obj (.bss:cosmos_bdot_persp_mtq_info)
+                  0000280e    00000006     adcs_bdot_main.obj (.bss:mod_status)
+                  00002814    00000004     adcs_bdot_main.obj (.bss:bdot_perspective_mtq_info)
+                  00002818    00000004     debugtools.obj (.bss:cmd_header)
+                  0000281c    00000004     adcs_bdot_main.obj (.bss:mtq_last_known_state)
+                  00002820    00000004     (.common:CANPacketReceived)
+                  00002824    00000004     (.common:ReceiveCallback0)
+                  00002828    00000004     (.common:ReceiveCallback1)
+                  0000282c    00000004     (.common:rtY)
+                  00002830    00000004     (.common:spiCallback)
+                  00002834    00000002     uart.obj (.bss:statusSent$1)
 
-.data      0    00002832    000000fc     UNINITIALIZED
-                  00002832    00000040     systeminfo.obj (.data:SubsystemModulePaths)
-                  00002872    0000002c     debugtools.obj (.data:DebugEntityFriendlyNames)
-                  0000289e    00000016     analogsensor.obj (.data:ADCIn_ADC12MCTL)
-                  000028b4    00000016     analogsensor.obj (.data:ADCMEMnum_ADC12CSTART)
-                  000028ca    00000016     rw.obj (.data)
-                  000028e0    0000000e     adcs_bdot_main.obj (.data)
-                  000028ee    0000000c     rw.obj (.data:avg_window)
-                  000028fa    0000000b     debugtools.obj (.data:DebugEntityPathChars)
-                  00002905    00000001     i2c.obj (.data)
-                  00002906    00000008     analogsensor.obj (.data:RefV_ADC12MCTL_Set)
-                  0000290e    00000008     analogsensor.obj (.data:RefV_REFCTL0_SetAndOn)
-                  00002916    00000008     timer.obj (.data)
-                  0000291e    00000004     debugtools.obj (.data)
-                  00002922    00000004     rollcall.obj (.data)
-                  00002926    00000003     analogsensor.obj (.data)
-                  00002929    00000002     magnetometer.obj (.data)
-                  0000292b    00000001     uart.obj (.data)
-                  0000292c    00000002     rts430x_lc_rd_eabi.lib : errno.obj (.data)
+.data      0    00002836    000000fc     UNINITIALIZED
+                  00002836    00000040     systeminfo.obj (.data:SubsystemModulePaths)
+                  00002876    0000002c     debugtools.obj (.data:DebugEntityFriendlyNames)
+                  000028a2    00000016     analogsensor.obj (.data:ADCIn_ADC12MCTL)
+                  000028b8    00000016     analogsensor.obj (.data:ADCMEMnum_ADC12CSTART)
+                  000028ce    00000016     rw.obj (.data)
+                  000028e4    0000000e     adcs_bdot_main.obj (.data)
+                  000028f2    0000000c     rw.obj (.data:avg_window)
+                  000028fe    0000000b     debugtools.obj (.data:DebugEntityPathChars)
+                  00002909    00000001     i2c.obj (.data)
+                  0000290a    00000008     analogsensor.obj (.data:RefV_ADC12MCTL_Set)
+                  00002912    00000008     analogsensor.obj (.data:RefV_REFCTL0_SetAndOn)
+                  0000291a    00000008     timer.obj (.data)
+                  00002922    00000004     debugtools.obj (.data)
+                  00002926    00000004     rollcall.obj (.data)
+                  0000292a    00000003     analogsensor.obj (.data)
+                  0000292d    00000002     magnetometer.obj (.data)
+                  0000292f    00000001     uart.obj (.data)
+                  00002930    00000002     rts430x_lc_rd_eabi.lib : errno.obj (.data)
 
 .stack     0    00003800    00000400     UNINITIALIZED
                   00003800    00000004     rts430x_lc_rd_eabi.lib : boot.obj (.stack)
@@ -365,228 +365,228 @@ SYSNMI     0    0000fffc    00000002
                   0000502b    00000001     --HOLE-- [fill = 0]
                   0000502c    00000001     can.obj (.const:.string:$P$T0$1)
 
-.text      0    00010000    000068b8     
+.text      0    00010000    000068d0     
                   00010000    00000ab8     bdot_controller_lib.obj (.text:bdot_controller_lib_step)
                   00010ab8    00000466     rts430x_lc_rd_eabi.lib : frcdivd.obj (.text:__TI_frcdivd)
-                  00010f1e    000002e0                            : addd.obj (.text:__mspabi_addd)
-                  000111fe    000002de                            : e_sqrt.obj (.text:sqrt)
-                  000114dc    000002d0     magnetometer.obj (.text:magReadXYZData)
-                  000117ac    00000280     rts430x_lc_rd_eabi.lib : frcmpyd.obj (.text:__TI_frcmpyd)
-                  00011a2c    00000266                            : mpyd.obj (.text:__mspabi_mpyd)
-                  00011c92    00000248                            : frcaddd.obj (.text:__TI_frcaddd)
-                  00011eda    00000238     adcs_bdot_main.obj (.text:update_simulink_info)
-                  00012112    00000222     rts430x_lc_rd_eabi.lib : divd.obj (.text:__mspabi_divd)
-                  00012334    000001c4                            : s_floor.obj (.text:floor)
-                  000124f8    00000192     agglib.obj (.text:aggVec_push)
-                  0001268a    0000018c     adcs_bdot_main.obj (.text:determine_best_fit_mag)
-                  00012816    0000018a     canwrap.obj (.text:canWrapInitWithFilter)
-                  000129a0    00000160     uart.obj (.text:uartReportStatus)
-                  00012b00    00000132     rts430x_lc_rd_eabi.lib : _printfi_min.obj (.text:_setfield)
-                  00012c32    00000132                            : fs_add.obj (.text)
-                  00012d64    00000120     bsp.obj (.text:bspInit)
-                  00012e84    00000112     adcs_bdot_main.obj (.text:can_rx_callback)
-                  00012f96    0000010e     i2c.obj (.text:i2cCoreRead)
-                  000130a4    00000104     debugtools.obj (.text:debugInvokeActionHandlers)
-                  000131a8    000000fc     debugtools.obj (.text:debugReadCallback)
-                  000132a4    000000fa     uart.obj (.text:uartInit)
-                  0001339e    000000f8     i2c.obj (.text:i2cCoreWrite)
-                  00013496    000000e6     uart.obj (.text:uartTransmit)
-                  0001357c    000000e4     adcs_bdot_main.obj (.text:main)
-                  00013660    000000e2     adcs_bdot_main.obj (.text:initial_setup)
-                  00013742    000000dc     rts430x_lc_rd_eabi.lib : _printfi_min.obj (.text:_pproc_diouxp)
-                  0001381e    000000dc     timer.obj (.text:initializeTimer)
-                  000138fa    000000da     analogsensor.obj (.text:configSequence)
-                  000139d4    000000d8     rts430x_lc_rd_eabi.lib : cmpd.obj (.text:__mspabi_cmpd)
-                  00013aac    000000d4     can.obj (.text:canSend)
-                  00013b80    000000d4     i2c.obj (.text:populateBusRegisters)
-                  00013c54    000000d2     timer.obj (.text:checkTimer)
-                  00013d26    000000ce     rts430x_lc_rd_eabi.lib : _printfi_min.obj (.text:__TI_printfi_minimal)
-                  00013df4    000000ce     canwrap.obj (.text:encodecmd_mtq_bdot)
-                  00013ec2    000000ce     adcs_bdot_main.obj (.text:send_bdot_mag_reading_cosmos)
-                  00013f90    000000ce     timer.obj (.text:timerCallbackInitializer)
-                  0001405e    000000c0     can.obj (.text:canInit)
-                  0001411e    000000bc     analogsensor.obj (.text:configChannel)
-                  000141da    000000b8     rts430x_lc_rd_eabi.lib : fs_mpy.obj (.text)
-                  00014292    000000b2                            : renormd.obj (.text:__TI_renormd)
-                  00014344    000000b0     debugtools.obj (.text:bcbinPopulateMeta)
-                  000143f4    000000ae     canwrap.obj (.text:encoderc_adcs_bdot_3)
-                  000144a2    000000aa     canwrap.obj (.text:encoderc_adcs_bdot_2)
-                  0001454c    000000a6     timer.obj (.text:startCallback)
-                  000145f2    000000a6     timer.obj (.text:timerPollInitializer)
-                  00014698    000000a0     canwrap.obj (.text:encoderc_adcs_bdot_1)
-                  00014738    000000a0     spi.obj (.text:spiTransceive)
-                  000147d8    0000009e     rts430x_lc_rd_eabi.lib : fltlid.obj (.text:__mspabi_fltlid)
-                  00014876    0000009e     canwrap.obj (.text:canSendPacket)
-                  00014914    0000009c     i2c.obj (.text:i2cInit)
-                  000149b0    00000090     rts430x_lc_rd_eabi.lib : fs_div.obj (.text)
-                  00014a40    0000008c                            : cvtdf.obj (.text:__mspabi_cvtdf)
-                  00014acc    00000084     debugtools.obj (.text:processCommand)
-                  00014b50    00000082     rts430x_lc_rd_eabi.lib : autoinit_wdt.obj (.text:_auto_init_hold_wdt)
-                  00014bd2    00000080                            : fltuld.obj (.text:__mspabi_fltuld)
-                  00014c52    0000007e     canwrap.obj (.text:encoderc_adcs_bdot_4)
-                  00014cd0    0000007c     can.obj (.text:setTheFilter)
-                  00014d4c    00000078     rts430x_lc_rd_eabi.lib : copy_decompress_lzss.obj (.text:decompress:lzss:__TI_decompress_lzss)
-                  00014dc4    00000078     bsp.obj (.text:infoReport)
-                  00014e3c    00000078     analogsensor.obj (.text:initializeVoltageRef)
-                  00014eb4    00000074     rollcall.obj (.text:rollcallUpdate)
-                  00014f28    00000072     debugtools.obj (.text:coreCallSimpleHandlers)
-                  00014f9a    00000072     uart.obj (.text:handleUCTXIFG)
-                  0001500c    00000070     spi.obj (.text:spiInit)
-                  0001507c    0000006c     analogsensor.obj (.text:convertRawToFloat)
-                  000150e8    0000006a     adcs_bdot_main.obj (.text:rcPopulate3)
-                  00015152    00000068     rts430x_lc_rd_eabi.lib : fixdul.obj (.text:__mspabi_fixdul)
-                  000151ba    00000068     analogsensor.obj (.text:coreActivateChannel)
-                  00015222    00000068     rts430x_lc_rd_eabi.lib : fs_toi.obj (.text)
-                  0001528a    00000066                            : cvtfd.obj (.text:__mspabi_cvtfd)
-                  000152f0    00000066                            : fixdli.obj (.text:__mspabi_fixdli)
-                  00015356    00000066                            : cpy_tbl.obj (.text:copy_in)
-                  000153bc    00000062     MET.obj (.text:METInit)
-                  0001541e    00000060     debugtools.obj (.text:actionCallback)
-                  0001547e    00000060     timer.obj (.text:convertTime)
-                  000154de    0000005c     can.obj (.text:canTxCheck)
-                  0001553a    0000005a     canwrap.obj (.text:decodemtq_ack)
-                  00015594    0000005a     adcs_bdot_main.obj (.text:updateRCData)
-                  000155ee    00000058     rts430x_lc_rd_eabi.lib : div32u.obj (.text)
-                  00015646    00000056     adcs_bdot_main.obj (.text:rcPopulate1)
-                  0001569c    00000056     rts430x_lc_rd_eabi.lib : vsnprintf.obj (.text:vsnprintf)
-                  000156f2    00000054     adcs_bdot_main.obj (.text:send_dipole_packet)
-                  00015746    00000052     debugtools.obj (.text:reportStatusCallback)
-                  00015798    00000052     analogsensor.obj (.text:tempIntConvertRawtoCelsius)
-                  000157ea    00000050     adcs_bdot_main.obj (.text:rcPopulate2)
-                  0001583a    0000004c     rts430x_lc_rd_eabi.lib : fs_toul.obj (.text)
-                  00015886    0000004c     canwrap.obj (.text:wrapCB0)
-                  000158d2    0000004c     canwrap.obj (.text:wrapCB1)
-                  0001591e    0000004a     uart.obj (.text:handleUCRXIFG)
-                  00015968    0000004a     rts430x_lc_rd_eabi.lib : fs_cmp.obj (.text)
-                  000159b2    00000048                            : _printfi_min.obj (.text:_pproc_str)
-                  000159fa    00000048     magnetometer.obj (.text:magInit)
-                  00015a42    00000048     adcs_bdot_main.obj (.text:send_health_segment_cosmos)
-                  00015a8a    00000046     debugtools.obj (.text:debugInit)
-                  00015ad0    00000046     adcs_bdot_main.obj (.text:determine_mtq_commands)
-                  00015b16    00000044     debugtools.obj (.text:debugRegisterEntity)
-                  00015b5a    00000040     canwrap.obj (.text:decodesensorproc_mag2)
-                  00015b9a    00000040     canwrap.obj (.text:decodesensorproc_mag)
-                  00015bda    00000040     rts430x_lc_rd_eabi.lib : div32s.obj (.text)
-                  00015c1a    0000003e                            : asr32.obj (.text:l_asr_const)
-                  00015c58    0000003e                            : lsl32.obj (.text:l_lsl_const)
-                  00015c96    0000003e                            : lsr32.obj (.text:l_lsr_const)
-                  00015cd4    0000003e     adcs_bdot_main.obj (.text:rcPopulate4)
-                  00015d12    0000003c     analogsensor.obj (.text:asensorInit)
-                  00015d4e    0000003c     debugtools.obj (.text:debugInvokeActionHandler)
-                  00015d8a    0000003c     debugtools.obj (.text:debugTraceF)
-                  00015dc6    0000003a     rts430x_lc_rd_eabi.lib : lsl64.obj (.text:__mspabi_sllll)
-                  00015e00    0000003a     rollcall.obj (.text:populateAll)
-                  00015e3a    0000003a     can.obj (.text:readRegister)
-                  00015e74    00000038     adcs_bdot_main.obj (.text:convert_mag_data_raw_to_teslas)
-                  00015eac    00000038     debugtools.obj (.text:displayPrompt)
-                  00015ee4    00000036     rts430x_lc_rd_eabi.lib : vsnprintf.obj (.text:_outs)
-                  00015f1a    00000036     adcs_bdot_main.obj (.text:mag_select_switch)
-                  00015f50    00000032     rts430x_lc_rd_eabi.lib : subd.obj (.text:__mspabi_subd)
-                  00015f82    00000032     debugtools.obj (.text:debugPrintF)
-                  00015fb4    00000032     rts430x_lc_rd_eabi.lib : fs_ultof.obj (.text)
-                  00015fe6    00000032                            : strncpy.obj (.text:strncpy)
-                  00016018    0000002e     agglib.obj (.text:aggVec_max)
-                  00016046    0000002e     agglib.obj (.text:aggVec_min)
-                  00016074    0000002e     canwrap.obj (.text:reverseArray)
-                  000160a2    0000002c     MSPMPU_INIT_LIB_CCS_msp430_large_code_restricted_data.lib : mpu_init.o (.text:__mpu_init)
-                  000160ce    0000002c     magnetometer.obj (.text:normalOperationConfig)
-                  000160fa    0000002c     rts430x_lc_rd_eabi.lib : div16s.obj (.text)
-                  00016126    0000002a     can.obj (.text:bitModify)
-                  00016150    0000002a     timer.obj (.text:checkValidPollingID)
-                  0001617a    0000002a     magnetometer.obj (.text:magConvertRawToTeslas)
-                  000161a4    0000002a     can.obj (.text:readStatus)
-                  000161ce    00000028     rts430x_lc_rd_eabi.lib : fixdi.obj (.text:__mspabi_fixdi)
-                  000161f6    00000028     agglib.obj (.text:aggVec_as_reset)
-                  0001621e    00000028     agglib.obj (.text:aggVec_max_reset)
-                  00016246    00000028     agglib.obj (.text:aggVec_min_reset)
-                  0001626e    00000028     timer.obj (.text:endPollingTimer)
-                  00016296    00000026     analogsensor.obj (.text:asensorReadSingleSensorRaw)
-                  000162bc    00000026     can.obj (.text:requestToSend)
-                  000162e2    00000026     adcs_bdot_main.obj (.text:send_simulink_segment_cosmos)
-                  00016308    00000026     can.obj (.text:setRegister)
-                  0001632e    00000026     uart.obj (.text:uartRegisterRxCallback)
-                  00016354    00000024     bsp.obj (.text:bspI2CInit)
-                  00016378    00000024     bsp.obj (.text:bspUARTInit)
-                  0001639c    00000024     rts430x_lc_rd_eabi.lib : copy_zero_init.obj (.text:decompress:ZI:__TI_zero_init)
-                  000163c0    00000024                            : fs_utof.obj (.text)
-                  000163e4    00000024                            : mult32_f5hw.obj (.text)
-                  00016408    00000022     agglib.obj (.text:aggVec_avg_i_i)
-                  0001642a    00000022     adcs_bdot_main.obj (.text:map_general)
-                  0001644c    00000020     rts430x_lc_rd_eabi.lib : vsnprintf.obj (.text:_outc)
-                  0001646c    00000020     adcs_bdot_main.obj (.text:send_mtq_info_segment_cosmos)
-                  0001648c    0000001e     systeminfo.obj (.text:coreStartup)
-                  000164aa    0000001e     debugtools.obj (.text:debugInvokeInfoHandlers)
-                  000164c8    0000001e     debugtools.obj (.text:debugInvokeStatusHandlers)
-                  000164e6    0000001e     debugtools.obj (.text:debugSetMode)
-                  00016504    0000001e     analogsensor.obj (.text:enableSingleSampleMode)
-                  00016522    0000001e     rts430x_lc_rd_eabi.lib : memccpy.obj (.text:memccpy)
-                  00016540    0000001e     adcs_bdot_main.obj (.text:send_cosmos_telem)
-                  0001655e    0000001e     uart.obj (.text:uartSetEchoOff)
-                  0001657c    0000001e     uart.obj (.text:uartSetEchoOn)
-                  0001659a    0000001c     analogsensor.obj (.text:enableMultiSampleMode)
-                  000165b6    0000001c     adcs_bdot_main.obj (.text:map)
-                  000165d2    0000001a     adcs_bdot_main.obj (.text:handleDebugActionCallback)
-                  000165ec    00000018     agglib.obj (.text:aggVec_push_i)
-                  00016604    00000018     uart.obj (.text:disableUARTInterrupts)
-                  0001661c    00000018     uart.obj (.text:enableUARTInterrupts)
-                  00016634    00000018     rts430x_lc_rd_eabi.lib : mult16_f5hw.obj (.text)
-                  0001664c    00000016     agglib.obj (.text:aggVec_max_i)
-                  00016662    00000016     agglib.obj (.text:aggVec_min_i)
-                  00016678    00000016     canwrap.obj (.text:canWrapInit)
-                  0001668e    00000016     rts430x_lc_rd_eabi.lib : memset.obj (.text:memset)
-                  000166a4    00000016                            : div16u.obj (.text)
-                  000166ba    00000014                            : memcpy.obj (.text:memcpy)
-                  000166ce    00000012                            : fixdu.obj (.text:__mspabi_fixdu)
-                  000166e0    00000012     bsp.obj (.text:bspGetChipID)
-                  000166f2    00000012     rts430x_lc_rd_eabi.lib : copy_decompress_none.obj (.text:decompress:none:__TI_decompress_none)
-                  00016704    00000012     analogsensor.obj (.text:initializeTempSensor)
-                  00016716    00000010     debugtools.obj (.text:bcbinPopulateHeader)
-                  00016726    00000010     systeminfo.obj (.text:getSubsystemModulePath)
-                  00016736    00000010     rts430x_lc_rd_eabi.lib : asr32.obj (.text:l_asr)
-                  00016746    00000010                            : lsl32.obj (.text:l_lsl)
-                  00016756    00000010                            : lsr32.obj (.text:l_lsr)
-                  00016766    00000010     adcs_bdot_main.obj (.text:read_magnetometer_data)
-                  00016776    0000000e     analogsensor.obj (.text:asensorReadIntTempC)
-                  00016784    0000000e     debugtools.obj (.text:bcbinSendPacket)
-                  00016792    0000000e     rollcall.obj (.text:hasPacketBuffer)
-                  000167a0    0000000e     rollcall.obj (.text:rollcallInit)
-                  000167ae    0000000e     adcs_bdot_main.obj (.text:start_check_best_mag_timer)
-                  000167bc    0000000e     rts430x_lc_rd_eabi.lib : strlen.obj (.text:strlen)
-                  000167ca    0000000c                            : fltid.obj (.text:__mspabi_fltid)
-                  000167d6    0000000a                            : abs.obj (.text:abs)
-                  000167e0    0000000a     agglib.obj (.text:aggVec_init_i)
-                  000167ea    0000000a     agglib.obj (.text:aggVec_mm_reset)
-                  000167f4    0000000a     agglib.obj (.text:aggVec_reset)
-                  000167fe    0000000a     bsp.obj (.text:bspGetResetCount)
-                  00016808    0000000a     debugtools.obj (.text:debugInvokeStatusHandler)
-                  00016812    0000000a     debugtools.obj (.text:normalizeTraceLevel)
-                  0001681c    0000000a     rts430x_lc_rd_eabi.lib : lsl16.obj (.text)
-                  00016826    00000008     analogsensor.obj (.text:asensorReadIntTempRawC)
-                  0001682e    00000008     can.obj (.text:disableCanInterrupt)
-                  00016836    00000008     can.obj (.text:enableCanInterrupt)
-                  0001683e    00000008     i2c.obj (.text:i2cMasterRead)
-                  00016846    00000008     i2c.obj (.text:i2cMasterWrite)
-                  0001684e    00000008     rollcall.obj (.text:rollcallStart)
-                  00016856    00000008     analogsensor.obj (.text:tempExtConvertRawtoCelsius)
-                  0001685e    00000006     rts430x_lc_rd_eabi.lib : fltud.obj (.text:__mspabi_fltud)
-                  00016864    00000006                            : exit.obj (.text:abort)
-                  0001686a    00000006     bsp.obj (.text:bspGetHWSWMatchState)
-                  00016870    00000006     bsp.obj (.text:bspGetModule)
-                  00016876    00000006     debugtools.obj (.text:debugGetCommMatchState)
-                  0001687c    00000006     bsp.obj (.text:enforceHWSWLock)
-                  00016882    00000006     rollcall.obj (.text:rollcallQueueLength)
-                  00016888    00000006     canwrap.obj (.text:setCANPacketRxCallback)
-                  0001688e    00000006     can.obj (.text:setReceiveCallback0)
-                  00016894    00000006     can.obj (.text:setReceiveCallback1)
-                  0001689a    00000006     adcs_bdot_main.obj (.text:simulink_compute)
-                  000168a0    00000004     rts430x_lc_rd_eabi.lib : pre_init.obj (.text:_system_pre_init)
-                  000168a4    00000004     adcs_bdot_main.obj (.text:handlePPTFiringNotification)
-                  000168a8    00000004     adcs_bdot_main.obj (.text:handleRollCall)
-                  000168ac    00000004     timer.obj (.text:no_op_func)
-                  000168b0    00000002     can.obj (.text:DummyCallback)
-                  000168b2    00000002     rts430x_lc_rd_eabi.lib : startup.obj (.text:_system_post_cinit)
-                  000168b4    00000002     bdot_controller_lib.obj (.text:bdot_controller_lib_initialize)
-                  000168b6    00000002     spi.obj (.text:dummyFn)
+                  00010f1e    000002ee     magnetometer.obj (.text:magReadXYZData)
+                  0001120c    000002e0     rts430x_lc_rd_eabi.lib : addd.obj (.text:__mspabi_addd)
+                  000114ec    000002de                            : e_sqrt.obj (.text:sqrt)
+                  000117ca    00000280                            : frcmpyd.obj (.text:__TI_frcmpyd)
+                  00011a4a    00000266                            : mpyd.obj (.text:__mspabi_mpyd)
+                  00011cb0    00000248                            : frcaddd.obj (.text:__TI_frcaddd)
+                  00011ef8    00000238     adcs_bdot_main.obj (.text:update_simulink_info)
+                  00012130    00000222     rts430x_lc_rd_eabi.lib : divd.obj (.text:__mspabi_divd)
+                  00012352    000001c4                            : s_floor.obj (.text:floor)
+                  00012516    00000192     agglib.obj (.text:aggVec_push)
+                  000126a8    0000018c     adcs_bdot_main.obj (.text:determine_best_fit_mag)
+                  00012834    0000018a     canwrap.obj (.text:canWrapInitWithFilter)
+                  000129be    00000160     uart.obj (.text:uartReportStatus)
+                  00012b1e    00000132     rts430x_lc_rd_eabi.lib : _printfi_min.obj (.text:_setfield)
+                  00012c50    00000132                            : fs_add.obj (.text)
+                  00012d82    00000120     bsp.obj (.text:bspInit)
+                  00012ea2    00000112     adcs_bdot_main.obj (.text:can_rx_callback)
+                  00012fb4    0000010e     i2c.obj (.text:i2cCoreRead)
+                  000130c2    00000104     debugtools.obj (.text:debugInvokeActionHandlers)
+                  000131c6    000000fc     debugtools.obj (.text:debugReadCallback)
+                  000132c2    000000fa     uart.obj (.text:uartInit)
+                  000133bc    000000f8     i2c.obj (.text:i2cCoreWrite)
+                  000134b4    000000e6     uart.obj (.text:uartTransmit)
+                  0001359a    000000e4     adcs_bdot_main.obj (.text:main)
+                  0001367e    000000e2     adcs_bdot_main.obj (.text:initial_setup)
+                  00013760    000000dc     rts430x_lc_rd_eabi.lib : _printfi_min.obj (.text:_pproc_diouxp)
+                  0001383c    000000dc     timer.obj (.text:initializeTimer)
+                  00013918    000000da     analogsensor.obj (.text:configSequence)
+                  000139f2    000000d8     rts430x_lc_rd_eabi.lib : cmpd.obj (.text:__mspabi_cmpd)
+                  00013aca    000000d4     can.obj (.text:canSend)
+                  00013b9e    000000d4     i2c.obj (.text:populateBusRegisters)
+                  00013c72    000000d2     timer.obj (.text:checkTimer)
+                  00013d44    000000ce     rts430x_lc_rd_eabi.lib : _printfi_min.obj (.text:__TI_printfi_minimal)
+                  00013e12    000000ce     canwrap.obj (.text:encodecmd_mtq_bdot)
+                  00013ee0    000000ce     adcs_bdot_main.obj (.text:send_bdot_mag_reading_cosmos)
+                  00013fae    000000ce     timer.obj (.text:timerCallbackInitializer)
+                  0001407c    000000c0     can.obj (.text:canInit)
+                  0001413c    000000bc     analogsensor.obj (.text:configChannel)
+                  000141f8    000000b8     rts430x_lc_rd_eabi.lib : fs_mpy.obj (.text)
+                  000142b0    000000b2                            : renormd.obj (.text:__TI_renormd)
+                  00014362    000000b0     debugtools.obj (.text:bcbinPopulateMeta)
+                  00014412    000000ae     canwrap.obj (.text:encoderc_adcs_bdot_3)
+                  000144c0    000000aa     canwrap.obj (.text:encoderc_adcs_bdot_2)
+                  0001456a    000000a6     timer.obj (.text:startCallback)
+                  00014610    000000a6     timer.obj (.text:timerPollInitializer)
+                  000146b6    000000a0     canwrap.obj (.text:encoderc_adcs_bdot_1)
+                  00014756    000000a0     spi.obj (.text:spiTransceive)
+                  000147f6    0000009e     rts430x_lc_rd_eabi.lib : fltlid.obj (.text:__mspabi_fltlid)
+                  00014894    0000009e     canwrap.obj (.text:canSendPacket)
+                  00014932    0000009c     i2c.obj (.text:i2cInit)
+                  000149ce    00000090     rts430x_lc_rd_eabi.lib : fs_div.obj (.text)
+                  00014a5e    0000008c                            : cvtdf.obj (.text:__mspabi_cvtdf)
+                  00014aea    00000084     debugtools.obj (.text:processCommand)
+                  00014b6e    00000082     rts430x_lc_rd_eabi.lib : autoinit_wdt.obj (.text:_auto_init_hold_wdt)
+                  00014bf0    00000080                            : fltuld.obj (.text:__mspabi_fltuld)
+                  00014c70    0000007e     canwrap.obj (.text:encoderc_adcs_bdot_4)
+                  00014cee    0000007c     can.obj (.text:setTheFilter)
+                  00014d6a    00000078     rts430x_lc_rd_eabi.lib : copy_decompress_lzss.obj (.text:decompress:lzss:__TI_decompress_lzss)
+                  00014de2    00000078     bsp.obj (.text:infoReport)
+                  00014e5a    00000078     analogsensor.obj (.text:initializeVoltageRef)
+                  00014ed2    00000074     rollcall.obj (.text:rollcallUpdate)
+                  00014f46    00000072     debugtools.obj (.text:coreCallSimpleHandlers)
+                  00014fb8    00000072     uart.obj (.text:handleUCTXIFG)
+                  0001502a    00000070     spi.obj (.text:spiInit)
+                  0001509a    0000006c     analogsensor.obj (.text:convertRawToFloat)
+                  00015106    0000006a     adcs_bdot_main.obj (.text:rcPopulate3)
+                  00015170    00000068     rts430x_lc_rd_eabi.lib : fixdul.obj (.text:__mspabi_fixdul)
+                  000151d8    00000068     analogsensor.obj (.text:coreActivateChannel)
+                  00015240    00000068     rts430x_lc_rd_eabi.lib : fs_toi.obj (.text)
+                  000152a8    00000066                            : cvtfd.obj (.text:__mspabi_cvtfd)
+                  0001530e    00000066                            : fixdli.obj (.text:__mspabi_fixdli)
+                  00015374    00000066                            : cpy_tbl.obj (.text:copy_in)
+                  000153da    00000062     MET.obj (.text:METInit)
+                  0001543c    00000060     debugtools.obj (.text:actionCallback)
+                  0001549c    00000060     timer.obj (.text:convertTime)
+                  000154fc    0000005a     canwrap.obj (.text:decodemtq_ack)
+                  00015556    0000005a     adcs_bdot_main.obj (.text:updateRCData)
+                  000155b0    00000058     rts430x_lc_rd_eabi.lib : div32u.obj (.text)
+                  00015608    00000056     can.obj (.text:canTxCheck)
+                  0001565e    00000056     adcs_bdot_main.obj (.text:rcPopulate1)
+                  000156b4    00000056     rts430x_lc_rd_eabi.lib : vsnprintf.obj (.text:vsnprintf)
+                  0001570a    00000054     adcs_bdot_main.obj (.text:send_dipole_packet)
+                  0001575e    00000052     debugtools.obj (.text:reportStatusCallback)
+                  000157b0    00000052     analogsensor.obj (.text:tempIntConvertRawtoCelsius)
+                  00015802    00000050     adcs_bdot_main.obj (.text:rcPopulate2)
+                  00015852    0000004c     rts430x_lc_rd_eabi.lib : fs_toul.obj (.text)
+                  0001589e    0000004c     canwrap.obj (.text:wrapCB0)
+                  000158ea    0000004c     canwrap.obj (.text:wrapCB1)
+                  00015936    0000004a     uart.obj (.text:handleUCRXIFG)
+                  00015980    0000004a     rts430x_lc_rd_eabi.lib : fs_cmp.obj (.text)
+                  000159ca    00000048                            : _printfi_min.obj (.text:_pproc_str)
+                  00015a12    00000048     magnetometer.obj (.text:magInit)
+                  00015a5a    00000048     adcs_bdot_main.obj (.text:send_health_segment_cosmos)
+                  00015aa2    00000046     debugtools.obj (.text:debugInit)
+                  00015ae8    00000046     adcs_bdot_main.obj (.text:determine_mtq_commands)
+                  00015b2e    00000044     debugtools.obj (.text:debugRegisterEntity)
+                  00015b72    00000040     canwrap.obj (.text:decodesensorproc_mag2)
+                  00015bb2    00000040     canwrap.obj (.text:decodesensorproc_mag)
+                  00015bf2    00000040     rts430x_lc_rd_eabi.lib : div32s.obj (.text)
+                  00015c32    0000003e                            : asr32.obj (.text:l_asr_const)
+                  00015c70    0000003e                            : lsl32.obj (.text:l_lsl_const)
+                  00015cae    0000003e                            : lsr32.obj (.text:l_lsr_const)
+                  00015cec    0000003e     adcs_bdot_main.obj (.text:rcPopulate4)
+                  00015d2a    0000003c     analogsensor.obj (.text:asensorInit)
+                  00015d66    0000003c     debugtools.obj (.text:debugInvokeActionHandler)
+                  00015da2    0000003c     debugtools.obj (.text:debugTraceF)
+                  00015dde    0000003a     rts430x_lc_rd_eabi.lib : lsl64.obj (.text:__mspabi_sllll)
+                  00015e18    0000003a     rollcall.obj (.text:populateAll)
+                  00015e52    0000003a     can.obj (.text:readRegister)
+                  00015e8c    00000038     adcs_bdot_main.obj (.text:convert_mag_data_raw_to_teslas)
+                  00015ec4    00000038     debugtools.obj (.text:displayPrompt)
+                  00015efc    00000036     rts430x_lc_rd_eabi.lib : vsnprintf.obj (.text:_outs)
+                  00015f32    00000036     adcs_bdot_main.obj (.text:mag_select_switch)
+                  00015f68    00000032     rts430x_lc_rd_eabi.lib : subd.obj (.text:__mspabi_subd)
+                  00015f9a    00000032     debugtools.obj (.text:debugPrintF)
+                  00015fcc    00000032     rts430x_lc_rd_eabi.lib : fs_ultof.obj (.text)
+                  00015ffe    00000032                            : strncpy.obj (.text:strncpy)
+                  00016030    0000002e     agglib.obj (.text:aggVec_max)
+                  0001605e    0000002e     agglib.obj (.text:aggVec_min)
+                  0001608c    0000002e     canwrap.obj (.text:reverseArray)
+                  000160ba    0000002c     MSPMPU_INIT_LIB_CCS_msp430_large_code_restricted_data.lib : mpu_init.o (.text:__mpu_init)
+                  000160e6    0000002c     magnetometer.obj (.text:normalOperationConfig)
+                  00016112    0000002c     rts430x_lc_rd_eabi.lib : div16s.obj (.text)
+                  0001613e    0000002a     can.obj (.text:bitModify)
+                  00016168    0000002a     timer.obj (.text:checkValidPollingID)
+                  00016192    0000002a     magnetometer.obj (.text:magConvertRawToTeslas)
+                  000161bc    0000002a     can.obj (.text:readStatus)
+                  000161e6    00000028     rts430x_lc_rd_eabi.lib : fixdi.obj (.text:__mspabi_fixdi)
+                  0001620e    00000028     agglib.obj (.text:aggVec_as_reset)
+                  00016236    00000028     agglib.obj (.text:aggVec_max_reset)
+                  0001625e    00000028     agglib.obj (.text:aggVec_min_reset)
+                  00016286    00000028     timer.obj (.text:endPollingTimer)
+                  000162ae    00000026     analogsensor.obj (.text:asensorReadSingleSensorRaw)
+                  000162d4    00000026     can.obj (.text:requestToSend)
+                  000162fa    00000026     adcs_bdot_main.obj (.text:send_simulink_segment_cosmos)
+                  00016320    00000026     can.obj (.text:setRegister)
+                  00016346    00000026     uart.obj (.text:uartRegisterRxCallback)
+                  0001636c    00000024     bsp.obj (.text:bspI2CInit)
+                  00016390    00000024     bsp.obj (.text:bspUARTInit)
+                  000163b4    00000024     rts430x_lc_rd_eabi.lib : copy_zero_init.obj (.text:decompress:ZI:__TI_zero_init)
+                  000163d8    00000024                            : fs_utof.obj (.text)
+                  000163fc    00000024                            : mult32_f5hw.obj (.text)
+                  00016420    00000022     agglib.obj (.text:aggVec_avg_i_i)
+                  00016442    00000022     adcs_bdot_main.obj (.text:map_general)
+                  00016464    00000020     rts430x_lc_rd_eabi.lib : vsnprintf.obj (.text:_outc)
+                  00016484    00000020     adcs_bdot_main.obj (.text:send_mtq_info_segment_cosmos)
+                  000164a4    0000001e     systeminfo.obj (.text:coreStartup)
+                  000164c2    0000001e     debugtools.obj (.text:debugInvokeInfoHandlers)
+                  000164e0    0000001e     debugtools.obj (.text:debugInvokeStatusHandlers)
+                  000164fe    0000001e     debugtools.obj (.text:debugSetMode)
+                  0001651c    0000001e     analogsensor.obj (.text:enableSingleSampleMode)
+                  0001653a    0000001e     rts430x_lc_rd_eabi.lib : memccpy.obj (.text:memccpy)
+                  00016558    0000001e     adcs_bdot_main.obj (.text:send_cosmos_telem)
+                  00016576    0000001e     uart.obj (.text:uartSetEchoOff)
+                  00016594    0000001e     uart.obj (.text:uartSetEchoOn)
+                  000165b2    0000001c     analogsensor.obj (.text:enableMultiSampleMode)
+                  000165ce    0000001c     adcs_bdot_main.obj (.text:map)
+                  000165ea    0000001a     adcs_bdot_main.obj (.text:handleDebugActionCallback)
+                  00016604    00000018     agglib.obj (.text:aggVec_push_i)
+                  0001661c    00000018     uart.obj (.text:disableUARTInterrupts)
+                  00016634    00000018     uart.obj (.text:enableUARTInterrupts)
+                  0001664c    00000018     rts430x_lc_rd_eabi.lib : mult16_f5hw.obj (.text)
+                  00016664    00000016     agglib.obj (.text:aggVec_max_i)
+                  0001667a    00000016     agglib.obj (.text:aggVec_min_i)
+                  00016690    00000016     canwrap.obj (.text:canWrapInit)
+                  000166a6    00000016     rts430x_lc_rd_eabi.lib : memset.obj (.text:memset)
+                  000166bc    00000016                            : div16u.obj (.text)
+                  000166d2    00000014                            : memcpy.obj (.text:memcpy)
+                  000166e6    00000012                            : fixdu.obj (.text:__mspabi_fixdu)
+                  000166f8    00000012     bsp.obj (.text:bspGetChipID)
+                  0001670a    00000012     rts430x_lc_rd_eabi.lib : copy_decompress_none.obj (.text:decompress:none:__TI_decompress_none)
+                  0001671c    00000012     analogsensor.obj (.text:initializeTempSensor)
+                  0001672e    00000010     debugtools.obj (.text:bcbinPopulateHeader)
+                  0001673e    00000010     systeminfo.obj (.text:getSubsystemModulePath)
+                  0001674e    00000010     rts430x_lc_rd_eabi.lib : asr32.obj (.text:l_asr)
+                  0001675e    00000010                            : lsl32.obj (.text:l_lsl)
+                  0001676e    00000010                            : lsr32.obj (.text:l_lsr)
+                  0001677e    00000010     adcs_bdot_main.obj (.text:read_magnetometer_data)
+                  0001678e    0000000e     analogsensor.obj (.text:asensorReadIntTempC)
+                  0001679c    0000000e     debugtools.obj (.text:bcbinSendPacket)
+                  000167aa    0000000e     rollcall.obj (.text:hasPacketBuffer)
+                  000167b8    0000000e     rollcall.obj (.text:rollcallInit)
+                  000167c6    0000000e     adcs_bdot_main.obj (.text:start_check_best_mag_timer)
+                  000167d4    0000000e     rts430x_lc_rd_eabi.lib : strlen.obj (.text:strlen)
+                  000167e2    0000000c                            : fltid.obj (.text:__mspabi_fltid)
+                  000167ee    0000000a                            : abs.obj (.text:abs)
+                  000167f8    0000000a     agglib.obj (.text:aggVec_init_i)
+                  00016802    0000000a     agglib.obj (.text:aggVec_mm_reset)
+                  0001680c    0000000a     agglib.obj (.text:aggVec_reset)
+                  00016816    0000000a     bsp.obj (.text:bspGetResetCount)
+                  00016820    0000000a     debugtools.obj (.text:debugInvokeStatusHandler)
+                  0001682a    0000000a     debugtools.obj (.text:normalizeTraceLevel)
+                  00016834    0000000a     rts430x_lc_rd_eabi.lib : lsl16.obj (.text)
+                  0001683e    00000008     analogsensor.obj (.text:asensorReadIntTempRawC)
+                  00016846    00000008     can.obj (.text:disableCanInterrupt)
+                  0001684e    00000008     can.obj (.text:enableCanInterrupt)
+                  00016856    00000008     i2c.obj (.text:i2cMasterRead)
+                  0001685e    00000008     i2c.obj (.text:i2cMasterWrite)
+                  00016866    00000008     rollcall.obj (.text:rollcallStart)
+                  0001686e    00000008     analogsensor.obj (.text:tempExtConvertRawtoCelsius)
+                  00016876    00000006     rts430x_lc_rd_eabi.lib : fltud.obj (.text:__mspabi_fltud)
+                  0001687c    00000006                            : exit.obj (.text:abort)
+                  00016882    00000006     bsp.obj (.text:bspGetHWSWMatchState)
+                  00016888    00000006     bsp.obj (.text:bspGetModule)
+                  0001688e    00000006     debugtools.obj (.text:debugGetCommMatchState)
+                  00016894    00000006     bsp.obj (.text:enforceHWSWLock)
+                  0001689a    00000006     rollcall.obj (.text:rollcallQueueLength)
+                  000168a0    00000006     canwrap.obj (.text:setCANPacketRxCallback)
+                  000168a6    00000006     can.obj (.text:setReceiveCallback0)
+                  000168ac    00000006     can.obj (.text:setReceiveCallback1)
+                  000168b2    00000006     adcs_bdot_main.obj (.text:simulink_compute)
+                  000168b8    00000004     rts430x_lc_rd_eabi.lib : pre_init.obj (.text:_system_pre_init)
+                  000168bc    00000004     adcs_bdot_main.obj (.text:handlePPTFiringNotification)
+                  000168c0    00000004     adcs_bdot_main.obj (.text:handleRollCall)
+                  000168c4    00000004     timer.obj (.text:no_op_func)
+                  000168c8    00000002     can.obj (.text:DummyCallback)
+                  000168ca    00000002     rts430x_lc_rd_eabi.lib : startup.obj (.text:_system_post_cinit)
+                  000168cc    00000002     bdot_controller_lib.obj (.text:bdot_controller_lib_initialize)
+                  000168ce    00000002     spi.obj (.text:dummyFn)
 
 MODULE SUMMARY
 
@@ -612,14 +612,14 @@ MODULE SUMMARY
     .\dsbase\core\
        debugtools.obj                 1622    940       784    
        uart.obj                       1238    168       1259   
-       can.obj                        1442    6         0      
+       can.obj                        1436    6         0      
        timer.obj                      1276    2         132    
        i2c.obj                        926     4         183    
        agglib.obj                     746     0         0      
        spi.obj                        274     0         0      
        MET.obj                        174     2         7      
     +--+------------------------------+-------+---------+---------+
-       Total:                         7698    1122      2365   
+       Total:                         7692    1122      2365   
                                                                
     .\dsbase\interfaces\
        canwrap.obj                    1832    28        0      
@@ -630,9 +630,9 @@ MODULE SUMMARY
                                                                
     .\dsbase\sensors\
        analogsensor.obj               1206    2         249    
-       magnetometer.obj               878     0         176    
+       magnetometer.obj               908     0         180    
     +--+------------------------------+-------+---------+---------+
-       Total:                         2084    2         425    
+       Total:                         2114    2         429    
                                                                
     C:\ti\ccsv7\ccs_base\msp430\lib\FR59xx\MSPMPU_INIT_LIB_CCS_msp430_large_code_restricted_data.lib
        mpu_init.o                     44      0         0      
@@ -733,14 +733,14 @@ MODULE SUMMARY
        Stack:                         0       0         1024   
        Linker Generated:              0       213       0      
     +--+------------------------------+-------+---------+---------+
-       Grand Total:                   28118   2094      4406   
+       Grand Total:                   28142   2094      4410   
 
 
 LINKER GENERATED COPY TABLES
 
 __TI_cinit_table @ 000050f4 records: 2, size/record: 8, table size: 16
-	.data: load addr=0000502e, load size=000000b3 bytes, run addr=00002832, run size=000000fc bytes, compression=lzss
-	.bss: load addr=000050ee, load size=00000006 bytes, run addr=00001c00, run size=00000c32 bytes, compression=zero_init
+	.data: load addr=0000502e, load size=000000b3 bytes, run addr=00002836, run size=000000fc bytes, compression=lzss
+	.bss: load addr=000050ee, load size=00000006 bytes, run addr=00001c00, run size=00000c36 bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
@@ -1017,8 +1017,8 @@ address   name
 000004bc  BIN2BCD                       
 000004bd  BIN2BCD_H                     
 000004bc  BIN2BCD_L                     
-00016864  C$$EXIT                       
-0000281c  CANPacketReceived             
+0001687c  C$$EXIT                       
+00002820  CANPacketReceived             
 0000043e  CAPTIO0CTL                    
 0000043f  CAPTIO0CTL_H                  
 0000043e  CAPTIO0CTL_L                  
@@ -1199,7 +1199,7 @@ address   name
 0000050e  DMAIV                         
 0000050f  DMAIV_H                       
 0000050e  DMAIV_L                       
-000168b0  DummyCallback                 
+000168c8  DummyCallback                 
 00000140  FRCTL0                        
 00000141  FRCTL0_H                      
 00000140  FRCTL0_L                      
@@ -1290,7 +1290,7 @@ address   name
 000004c6  MACS_L                        
 000004c5  MAC_H                         
 000004c4  MAC_L                         
-000153bc  METInit                       
+000153da  METInit                       
 000005a0  MPUCTL0                       
 000005a1  MPUCTL0_H                     
 000005a0  MPUCTL0_L                     
@@ -1678,8 +1678,8 @@ address   name
 000004b7  RTCYEAR_H                     
 000004b6  RTCYEAR_L                     
 0000482e  RTC_ISR                       
-00002820  ReceiveCallback0              
-00002824  ReceiveCallback1              
+00002824  ReceiveCallback0              
+00002828  ReceiveCallback1              
 00004400  ReceivedMsg                   
 00000100  SFRIE1                        
 00000101  SFRIE1_H                      
@@ -2281,11 +2281,11 @@ UNDEFED   __TI_BINIT_Limit
 UNDEFED   __TI_INITARRAY_Base           
 UNDEFED   __TI_INITARRAY_Limit          
 00004916  __TI_ISR_TRAP                 
-00014d4c  __TI_decompress_lzss          
-000166f2  __TI_decompress_none          
-00011c92  __TI_frcaddd                  
+00014d6a  __TI_decompress_lzss          
+0001670a  __TI_decompress_none          
+00011cb0  __TI_frcaddd                  
 00010ab8  __TI_frcdivd                  
-000117ac  __TI_frcmpyd                  
+000117ca  __TI_frcmpyd                  
 0000ffb4  __TI_int18                    
 0000ffb6  __TI_int19                    
 0000ffb8  __TI_int20                    
@@ -2324,285 +2324,285 @@ UNDEFED   __TI_INITARRAY_Limit
 0000fffa  __TI_int53                    
 0000fffc  __TI_int54                    
 ffffffff  __TI_pprof_out_hndl           
-00013d26  __TI_printfi_minimal          
+00013d44  __TI_printfi_minimal          
 ffffffff  __TI_prof_data_size           
 ffffffff  __TI_prof_data_start          
-00014292  __TI_renormd                  
-0001639c  __TI_zero_init                
+000142b0  __TI_renormd                  
+000163b4  __TI_zero_init                
 ffffffff  __c_args__                    
 00000001  __mpu_enable                  
-000160a2  __mpu_init                    
-00010f1e  __mspabi_addd                 
-00012c38  __mspabi_addf                 
-000139d4  __mspabi_cmpd                 
-00015968  __mspabi_cmpf                 
-00014a40  __mspabi_cvtdf                
-0001528a  __mspabi_cvtfd                
-00012112  __mspabi_divd                 
-000149b0  __mspabi_divf                 
-000160fa  __mspabi_divi                 
-00015bda  __mspabi_divli                
-000166a4  __mspabi_divu                 
-000155ee  __mspabi_divul                
-000161ce  __mspabi_fixdi                
-000152f0  __mspabi_fixdli               
-000166ce  __mspabi_fixdu                
-00015152  __mspabi_fixdul               
-00015222  __mspabi_fixfi                
-0001583a  __mspabi_fixful               
-000167ca  __mspabi_fltid                
-000147d8  __mspabi_fltlid               
-0001685e  __mspabi_fltud                
-000163c0  __mspabi_fltuf                
-00014bd2  __mspabi_fltuld               
-00015fb4  __mspabi_fltulf               
-00011a2c  __mspabi_mpyd                 
-000141da  __mspabi_mpyf                 
-00016634  __mspabi_mpyi_f5hw            
-000163e4  __mspabi_mpyl_f5hw            
-000160fa  __mspabi_remi                 
-00015bda  __mspabi_remli                
-000166a4  __mspabi_remu                 
-000155ee  __mspabi_remul                
-0001681c  __mspabi_slli                 
-00016746  __mspabi_slll                 
-00015c90  __mspabi_slll_1               
-00015c6c  __mspabi_slll_10              
-00015c68  __mspabi_slll_11              
-00015c64  __mspabi_slll_12              
-00015c60  __mspabi_slll_13              
-00015c5c  __mspabi_slll_14              
-00015c58  __mspabi_slll_15              
-00015c8c  __mspabi_slll_2               
-00015c88  __mspabi_slll_3               
-00015c84  __mspabi_slll_4               
-00015c80  __mspabi_slll_5               
-00015c7c  __mspabi_slll_6               
-00015c78  __mspabi_slll_7               
-00015c74  __mspabi_slll_8               
-00015c70  __mspabi_slll_9               
-00015dc6  __mspabi_sllll                
-00016736  __mspabi_sral                 
-00015c52  __mspabi_sral_1               
-00015c2e  __mspabi_sral_10              
-00015c2a  __mspabi_sral_11              
-00015c26  __mspabi_sral_12              
-00015c22  __mspabi_sral_13              
-00015c1e  __mspabi_sral_14              
-00015c1a  __mspabi_sral_15              
-00015c4e  __mspabi_sral_2               
-00015c4a  __mspabi_sral_3               
-00015c46  __mspabi_sral_4               
-00015c42  __mspabi_sral_5               
-00015c3e  __mspabi_sral_6               
-00015c3a  __mspabi_sral_7               
-00015c36  __mspabi_sral_8               
-00015c32  __mspabi_sral_9               
-00016756  __mspabi_srll                 
-00015cce  __mspabi_srll_1               
-00015caa  __mspabi_srll_10              
-00015ca6  __mspabi_srll_11              
-00015ca2  __mspabi_srll_12              
-00015c9e  __mspabi_srll_13              
-00015c9a  __mspabi_srll_14              
-00015c96  __mspabi_srll_15              
-00015cca  __mspabi_srll_2               
-00015cc6  __mspabi_srll_3               
-00015cc2  __mspabi_srll_4               
-00015cbe  __mspabi_srll_5               
-00015cba  __mspabi_srll_6               
-00015cb6  __mspabi_srll_7               
-00015cb2  __mspabi_srll_8               
-00015cae  __mspabi_srll_9               
-00015f50  __mspabi_subd                 
-00012c32  __mspabi_subf                 
-00014b50  _auto_init_hold_wdt           
+000160ba  __mpu_init                    
+0001120c  __mspabi_addd                 
+00012c56  __mspabi_addf                 
+000139f2  __mspabi_cmpd                 
+00015980  __mspabi_cmpf                 
+00014a5e  __mspabi_cvtdf                
+000152a8  __mspabi_cvtfd                
+00012130  __mspabi_divd                 
+000149ce  __mspabi_divf                 
+00016112  __mspabi_divi                 
+00015bf2  __mspabi_divli                
+000166bc  __mspabi_divu                 
+000155b0  __mspabi_divul                
+000161e6  __mspabi_fixdi                
+0001530e  __mspabi_fixdli               
+000166e6  __mspabi_fixdu                
+00015170  __mspabi_fixdul               
+00015240  __mspabi_fixfi                
+00015852  __mspabi_fixful               
+000167e2  __mspabi_fltid                
+000147f6  __mspabi_fltlid               
+00016876  __mspabi_fltud                
+000163d8  __mspabi_fltuf                
+00014bf0  __mspabi_fltuld               
+00015fcc  __mspabi_fltulf               
+00011a4a  __mspabi_mpyd                 
+000141f8  __mspabi_mpyf                 
+0001664c  __mspabi_mpyi_f5hw            
+000163fc  __mspabi_mpyl_f5hw            
+00016112  __mspabi_remi                 
+00015bf2  __mspabi_remli                
+000166bc  __mspabi_remu                 
+000155b0  __mspabi_remul                
+00016834  __mspabi_slli                 
+0001675e  __mspabi_slll                 
+00015ca8  __mspabi_slll_1               
+00015c84  __mspabi_slll_10              
+00015c80  __mspabi_slll_11              
+00015c7c  __mspabi_slll_12              
+00015c78  __mspabi_slll_13              
+00015c74  __mspabi_slll_14              
+00015c70  __mspabi_slll_15              
+00015ca4  __mspabi_slll_2               
+00015ca0  __mspabi_slll_3               
+00015c9c  __mspabi_slll_4               
+00015c98  __mspabi_slll_5               
+00015c94  __mspabi_slll_6               
+00015c90  __mspabi_slll_7               
+00015c8c  __mspabi_slll_8               
+00015c88  __mspabi_slll_9               
+00015dde  __mspabi_sllll                
+0001674e  __mspabi_sral                 
+00015c6a  __mspabi_sral_1               
+00015c46  __mspabi_sral_10              
+00015c42  __mspabi_sral_11              
+00015c3e  __mspabi_sral_12              
+00015c3a  __mspabi_sral_13              
+00015c36  __mspabi_sral_14              
+00015c32  __mspabi_sral_15              
+00015c66  __mspabi_sral_2               
+00015c62  __mspabi_sral_3               
+00015c5e  __mspabi_sral_4               
+00015c5a  __mspabi_sral_5               
+00015c56  __mspabi_sral_6               
+00015c52  __mspabi_sral_7               
+00015c4e  __mspabi_sral_8               
+00015c4a  __mspabi_sral_9               
+0001676e  __mspabi_srll                 
+00015ce6  __mspabi_srll_1               
+00015cc2  __mspabi_srll_10              
+00015cbe  __mspabi_srll_11              
+00015cba  __mspabi_srll_12              
+00015cb6  __mspabi_srll_13              
+00015cb2  __mspabi_srll_14              
+00015cae  __mspabi_srll_15              
+00015ce2  __mspabi_srll_2               
+00015cde  __mspabi_srll_3               
+00015cda  __mspabi_srll_4               
+00015cd6  __mspabi_srll_5               
+00015cd2  __mspabi_srll_6               
+00015cce  __mspabi_srll_7               
+00015cca  __mspabi_srll_8               
+00015cc6  __mspabi_srll_9               
+00015f68  __mspabi_subd                 
+00012c50  __mspabi_subf                 
+00014b6e  _auto_init_hold_wdt           
 000048e0  _c_int00_noargs_noexit_mpu    
 0000fffe  _reset_vector                 
 00003800  _stack                        
-000168b2  _system_post_cinit            
-000168a0  _system_pre_init              
-00016864  abort                         
-000167d6  abs                           
-0001541e  actionCallback                
-000161f6  aggVec_as_reset               
-00016408  aggVec_avg_i_i                
-000167e0  aggVec_init_i                 
-00016018  aggVec_max                    
-0001664c  aggVec_max_i                  
-0001621e  aggVec_max_reset              
-00016046  aggVec_min                    
-00016662  aggVec_min_i                  
-00016246  aggVec_min_reset              
-000167ea  aggVec_mm_reset               
-000124f8  aggVec_push                   
-000165ec  aggVec_push_i                 
-000167f4  aggVec_reset                  
-0001507c  asensorGetLastExtTempC        
-0001507c  asensorGetLastValueV          
-00015d12  asensorInit                   
-00016776  asensorReadIntTempC           
-00016826  asensorReadIntTempRawC        
-00016296  asensorReadSingleSensorRaw    
-000028ee  avg_window                    
-00016716  bcbinPopulateHeader           
-00014344  bcbinPopulateMeta             
-00016784  bcbinSendPacket               
-000168b4  bdot_controller_lib_initialize
+000168ca  _system_post_cinit            
+000168b8  _system_pre_init              
+0001687c  abort                         
+000167ee  abs                           
+0001543c  actionCallback                
+0001620e  aggVec_as_reset               
+00016420  aggVec_avg_i_i                
+000167f8  aggVec_init_i                 
+00016030  aggVec_max                    
+00016664  aggVec_max_i                  
+00016236  aggVec_max_reset              
+0001605e  aggVec_min                    
+0001667a  aggVec_min_i                  
+0001625e  aggVec_min_reset              
+00016802  aggVec_mm_reset               
+00012516  aggVec_push                   
+00016604  aggVec_push_i                 
+0001680c  aggVec_reset                  
+0001509a  asensorGetLastExtTempC        
+0001509a  asensorGetLastValueV          
+00015d2a  asensorInit                   
+0001678e  asensorReadIntTempC           
+0001683e  asensorReadIntTempRawC        
+000162ae  asensorReadSingleSensorRaw    
+000028f2  avg_window                    
+0001672e  bcbinPopulateHeader           
+00014362  bcbinPopulateMeta             
+0001679c  bcbinSendPacket               
+000168cc  bdot_controller_lib_initialize
 00010000  bdot_controller_lib_step      
-00016126  bitModify                     
-000166e0  bspGetChipID                  
-0001686a  bspGetHWSWMatchState          
-00016870  bspGetModule                  
-000167fe  bspGetResetCount              
-00016354  bspI2CInit                    
-00012d64  bspInit                       
-00016378  bspUARTInit                   
+0001613e  bitModify                     
+000166f8  bspGetChipID                  
+00016882  bspGetHWSWMatchState          
+00016888  bspGetModule                  
+00016816  bspGetResetCount              
+0001636c  bspI2CInit                    
+00012d82  bspInit                       
+00016390  bspUARTInit                   
 00002418  busregs                       
-0001405e  canInit                       
-00013aac  canSend                       
-00014876  canSendPacket                 
-000154de  canTxCheck                    
-00016678  canWrapInit                   
-00012816  canWrapInitWithFilter         
-00012e84  can_rx_callback               
-00013c54  checkTimer                    
-00016150  checkValidPollingID           
-0001411e  configChannel                 
-000138fa  configSequence                
-000027b9  confirmed                     
-0001507c  convertRawToFloat             
-0001547e  convertTime                   
-00015e74  convert_mag_data_raw_to_teslas
-00015356  copy_in                       
-00014f28  coreCallSimpleHandlers        
-0001648c  coreStartup                   
-00016876  debugGetCommMatchState        
-00015a8a  debugInit                     
-00015d4e  debugInvokeActionHandler      
-000130a4  debugInvokeActionHandlers     
-000164aa  debugInvokeInfoHandlers       
-00016808  debugInvokeStatusHandler      
-000164c8  debugInvokeStatusHandlers     
-00015f82  debugPrintF                   
-000131a8  debugReadCallback             
-00015b16  debugRegisterEntity           
-000164e6  debugSetMode                  
-00015d8a  debugTraceF                   
-0001553a  decodemtq_ack                 
-00015b9a  decodesensorproc_mag          
-00015b5a  decodesensorproc_mag2         
-0001268a  determine_best_fit_mag        
-00015ad0  determine_mtq_commands        
-0001682e  disableCanInterrupt           
-00016604  disableUARTInterrupts         
-00015eac  displayPrompt                 
-000168b6  dummyFn                       
-00016836  enableCanInterrupt            
-0001661c  enableUARTInterrupts          
-00013df4  encodecmd_mtq_bdot            
-00014698  encoderc_adcs_bdot_1          
-000144a2  encoderc_adcs_bdot_2          
-000143f4  encoderc_adcs_bdot_3          
-00014c52  encoderc_adcs_bdot_4          
-0001626e  endPollingTimer               
-0000292c  errno                         
-000027e5  error_bus_not_initialized     
-00012334  floor                         
-00012334  floorl                        
+0001407c  canInit                       
+00013aca  canSend                       
+00014894  canSendPacket                 
+00015608  canTxCheck                    
+00016690  canWrapInit                   
+00012834  canWrapInitWithFilter         
+00012ea2  can_rx_callback               
+00013c72  checkTimer                    
+00016168  checkValidPollingID           
+0001413c  configChannel                 
+00013918  configSequence                
+000027bd  confirmed                     
+0001509a  convertRawToFloat             
+0001549c  convertTime                   
+00015e8c  convert_mag_data_raw_to_teslas
+00015374  copy_in                       
+00014f46  coreCallSimpleHandlers        
+000164a4  coreStartup                   
+0001688e  debugGetCommMatchState        
+00015aa2  debugInit                     
+00015d66  debugInvokeActionHandler      
+000130c2  debugInvokeActionHandlers     
+000164c2  debugInvokeInfoHandlers       
+00016820  debugInvokeStatusHandler      
+000164e0  debugInvokeStatusHandlers     
+00015f9a  debugPrintF                   
+000131c6  debugReadCallback             
+00015b2e  debugRegisterEntity           
+000164fe  debugSetMode                  
+00015da2  debugTraceF                   
+000154fc  decodemtq_ack                 
+00015bb2  decodesensorproc_mag          
+00015b72  decodesensorproc_mag2         
+000126a8  determine_best_fit_mag        
+00015ae8  determine_mtq_commands        
+00016846  disableCanInterrupt           
+0001661c  disableUARTInterrupts         
+00015ec4  displayPrompt                 
+000168ce  dummyFn                       
+0001684e  enableCanInterrupt            
+00016634  enableUARTInterrupts          
+00013e12  encodecmd_mtq_bdot            
+000146b6  encoderc_adcs_bdot_1          
+000144c0  encoderc_adcs_bdot_2          
+00014412  encoderc_adcs_bdot_3          
+00014c70  encoderc_adcs_bdot_4          
+00016286  endPollingTimer               
+00002930  errno                         
+000027e9  error_bus_not_initialized     
+00012352  floor                         
+00012352  floorl                        
 00004400  fram_ipe_end                  
 00004400  fram_ipe_start                
 00004000  fram_rw_start                 
 00004400  fram_rx_start                 
-00016726  getSubsystemModulePath        
-000165d2  handleDebugActionCallback     
-000168a4  handlePPTFiringNotification   
-000168a8  handleRollCall                
-0001591e  handleUCRXIFG                 
-00014f9a  handleUCTXIFG                 
-00014914  i2cInit                       
-0001683e  i2cMasterRead                 
-00016846  i2cMasterWrite                
-00014dc4  infoReport                    
-000028df  initialTAIFG                  
-00013660  initial_setup                 
-0001381e  initializeTimer               
-000027f5  isDist                        
+0001673e  getSubsystemModulePath        
+000165ea  handleDebugActionCallback     
+000168bc  handlePPTFiringNotification   
+000168c0  handleRollCall                
+00015936  handleUCRXIFG                 
+00014fb8  handleUCTXIFG                 
+00014932  i2cInit                       
+00016856  i2cMasterRead                 
+0001685e  i2cMasterWrite                
+00014de2  infoReport                    
+000028e3  initialTAIFG                  
+0001367e  initial_setup                 
+0001383c  initializeTimer               
+000027f9  isDist                        
 00004006  local_reset_count             
-0001617a  magConvertRawToTeslas         
-000159fa  magInit                       
-000114dc  magReadXYZData                
-00015f1a  mag_select_switch             
-0001357c  main                          
-000165b6  map                           
-0001642a  map_general                   
-00016522  memccpy                       
-000166ba  memcpy                        
-0001668e  memset                        
+00016192  magConvertRawToTeslas         
+00015a12  magInit                       
+00010f1e  magReadXYZData                
+00015f32  mag_select_switch             
+0001359a  main                          
+000165ce  map                           
+00016442  map_general                   
+0001653a  memccpy                       
+000166d2  memcpy                        
+000166a6  memset                        
 0000a501  mpu_ctl0_value                
 00001513  mpu_sam_value                 
 00000440  mpu_segment_border1           
 00000440  mpu_segment_border2           
-000168ac  no_op_func                    
-000160ce  normalOperationConfig         
-00016812  normalizeTraceLevel           
-00014acc  processCommand                
-00015646  rcPopulate1                   
-000157ea  rcPopulate2                   
-000150e8  rcPopulate3                   
-00015cd4  rcPopulate4                   
-00015e3a  readRegister                  
-000161a4  readStatus                    
-00016766  read_magnetometer_data        
+000168c4  no_op_func                    
+000160e6  normalOperationConfig         
+0001682a  normalizeTraceLevel           
+00014aea  processCommand                
+0001565e  rcPopulate1                   
+00015802  rcPopulate2                   
+00015106  rcPopulate3                   
+00015cec  rcPopulate4                   
+00015e52  readRegister                  
+000161bc  readStatus                    
+0001677e  read_magnetometer_data        
 00004000  recentTime                    
-00015746  reportStatusCallback          
-000162bc  requestToSend                 
-00016074  reverseArray                  
-000167a0  rollcallInit                  
-00016882  rollcallQueueLength           
-0001684e  rollcallStart                 
-00014eb4  rollcallUpdate                
+0001575e  reportStatusCallback          
+000162d4  requestToSend                 
+0001608c  reverseArray                  
+000167b8  rollcallInit                  
+0001689a  rollcallQueueLength           
+00016866  rollcallStart                 
+00014ed2  rollcallUpdate                
 00004f22  rtConstP                      
-00002590  rtDW                          
-0000267e  rtU                           
-00002828  rtY                           
+00002594  rtDW                          
+00002682  rtU                           
+0000282c  rtY                           
 00010000  rt_OneStep                    
-00013ec2  send_bdot_mag_reading_cosmos  
-00016540  send_cosmos_telem             
-000156f2  send_dipole_packet            
-00015a42  send_health_segment_cosmos    
-0001646c  send_mtq_info_segment_cosmos  
-000162e2  send_simulink_segment_cosmos  
-00016888  setCANPacketRxCallback        
-00014cd0  setMaskOrFilter               
-0001688e  setReceiveCallback0           
-00016894  setReceiveCallback1           
-00016308  setRegister                   
-00014cd0  setTheFilter                  
-0001689a  simulink_compute              
-0000282c  spiCallback                   
-0001500c  spiInit                       
-00014738  spiTransceive                 
-000111fe  sqrt                          
-000111fe  sqrtl                         
-0001454c  startCallback                 
-000167ae  start_check_best_mag_timer    
-000167bc  strlen                        
-00015fe6  strncpy                       
-00013f90  timerCallbackInitializer      
-000145f2  timerPollInitializer          
-000132a4  uartInit                      
-0001632e  uartRegisterRxCallback        
-000129a0  uartReportStatus              
-0001655e  uartSetEchoOff                
-0001657c  uartSetEchoOn                 
-00013496  uartTransmit                  
-00015594  updateRCData                  
-00011eda  update_simulink_info          
-0001569c  vsnprintf                     
-000028de  window_index                  
-00015886  wrapCB0                       
-000158d2  wrapCB1                       
+00013ee0  send_bdot_mag_reading_cosmos  
+00016558  send_cosmos_telem             
+0001570a  send_dipole_packet            
+00015a5a  send_health_segment_cosmos    
+00016484  send_mtq_info_segment_cosmos  
+000162fa  send_simulink_segment_cosmos  
+000168a0  setCANPacketRxCallback        
+00014cee  setMaskOrFilter               
+000168a6  setReceiveCallback0           
+000168ac  setReceiveCallback1           
+00016320  setRegister                   
+00014cee  setTheFilter                  
+000168b2  simulink_compute              
+00002830  spiCallback                   
+0001502a  spiInit                       
+00014756  spiTransceive                 
+000114ec  sqrt                          
+000114ec  sqrtl                         
+0001456a  startCallback                 
+000167c6  start_check_best_mag_timer    
+000167d4  strlen                        
+00015ffe  strncpy                       
+00013fae  timerCallbackInitializer      
+00014610  timerPollInitializer          
+000132c2  uartInit                      
+00016346  uartRegisterRxCallback        
+000129be  uartReportStatus              
+00016576  uartSetEchoOff                
+00016594  uartSetEchoOn                 
+000134b4  uartTransmit                  
+00015556  updateRCData                  
+00011ef8  update_simulink_info          
+000156b4  vsnprintf                     
+000028e2  window_index                  
+0001589e  wrapCB0                       
+000158ea  wrapCB1                       
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -4114,20 +4114,20 @@ address   name
 00000afe  LEAIVH                        
 00001513  mpu_sam_value                 
 00002418  busregs                       
-00002590  rtDW                          
-0000267e  rtU                           
-000027b9  confirmed                     
-000027e5  error_bus_not_initialized     
-000027f5  isDist                        
-0000281c  CANPacketReceived             
-00002820  ReceiveCallback0              
-00002824  ReceiveCallback1              
-00002828  rtY                           
-0000282c  spiCallback                   
-000028de  window_index                  
-000028df  initialTAIFG                  
-000028ee  avg_window                    
-0000292c  errno                         
+00002594  rtDW                          
+00002682  rtU                           
+000027bd  confirmed                     
+000027e9  error_bus_not_initialized     
+000027f9  isDist                        
+00002820  CANPacketReceived             
+00002824  ReceiveCallback0              
+00002828  ReceiveCallback1              
+0000282c  rtY                           
+00002830  spiCallback                   
+000028e2  window_index                  
+000028e3  initialTAIFG                  
+000028f2  avg_window                    
+00002930  errno                         
 00003800  _stack                        
 00003c00  __STACK_END                   
 00004000  fram_rw_start                 
@@ -4195,260 +4195,260 @@ address   name
 00010000  bdot_controller_lib_step      
 00010000  rt_OneStep                    
 00010ab8  __TI_frcdivd                  
-00010f1e  __mspabi_addd                 
-000111fe  sqrt                          
-000111fe  sqrtl                         
-000114dc  magReadXYZData                
-000117ac  __TI_frcmpyd                  
-00011a2c  __mspabi_mpyd                 
-00011c92  __TI_frcaddd                  
-00011eda  update_simulink_info          
-00012112  __mspabi_divd                 
-00012334  floor                         
-00012334  floorl                        
-000124f8  aggVec_push                   
-0001268a  determine_best_fit_mag        
-00012816  canWrapInitWithFilter         
-000129a0  uartReportStatus              
-00012c32  __mspabi_subf                 
-00012c38  __mspabi_addf                 
-00012d64  bspInit                       
-00012e84  can_rx_callback               
-000130a4  debugInvokeActionHandlers     
-000131a8  debugReadCallback             
-000132a4  uartInit                      
-00013496  uartTransmit                  
-0001357c  main                          
-00013660  initial_setup                 
-0001381e  initializeTimer               
-000138fa  configSequence                
-000139d4  __mspabi_cmpd                 
-00013aac  canSend                       
-00013c54  checkTimer                    
-00013d26  __TI_printfi_minimal          
-00013df4  encodecmd_mtq_bdot            
-00013ec2  send_bdot_mag_reading_cosmos  
-00013f90  timerCallbackInitializer      
-0001405e  canInit                       
-0001411e  configChannel                 
-000141da  __mspabi_mpyf                 
-00014292  __TI_renormd                  
-00014344  bcbinPopulateMeta             
-000143f4  encoderc_adcs_bdot_3          
-000144a2  encoderc_adcs_bdot_2          
-0001454c  startCallback                 
-000145f2  timerPollInitializer          
-00014698  encoderc_adcs_bdot_1          
-00014738  spiTransceive                 
-000147d8  __mspabi_fltlid               
-00014876  canSendPacket                 
-00014914  i2cInit                       
-000149b0  __mspabi_divf                 
-00014a40  __mspabi_cvtdf                
-00014acc  processCommand                
-00014b50  _auto_init_hold_wdt           
-00014bd2  __mspabi_fltuld               
-00014c52  encoderc_adcs_bdot_4          
-00014cd0  setMaskOrFilter               
-00014cd0  setTheFilter                  
-00014d4c  __TI_decompress_lzss          
-00014dc4  infoReport                    
-00014eb4  rollcallUpdate                
-00014f28  coreCallSimpleHandlers        
-00014f9a  handleUCTXIFG                 
-0001500c  spiInit                       
-0001507c  asensorGetLastExtTempC        
-0001507c  asensorGetLastValueV          
-0001507c  convertRawToFloat             
-000150e8  rcPopulate3                   
-00015152  __mspabi_fixdul               
-00015222  __mspabi_fixfi                
-0001528a  __mspabi_cvtfd                
-000152f0  __mspabi_fixdli               
-00015356  copy_in                       
-000153bc  METInit                       
-0001541e  actionCallback                
-0001547e  convertTime                   
-000154de  canTxCheck                    
-0001553a  decodemtq_ack                 
-00015594  updateRCData                  
-000155ee  __mspabi_divul                
-000155ee  __mspabi_remul                
-00015646  rcPopulate1                   
-0001569c  vsnprintf                     
-000156f2  send_dipole_packet            
-00015746  reportStatusCallback          
-000157ea  rcPopulate2                   
-0001583a  __mspabi_fixful               
-00015886  wrapCB0                       
-000158d2  wrapCB1                       
-0001591e  handleUCRXIFG                 
-00015968  __mspabi_cmpf                 
-000159fa  magInit                       
-00015a42  send_health_segment_cosmos    
-00015a8a  debugInit                     
-00015ad0  determine_mtq_commands        
-00015b16  debugRegisterEntity           
-00015b5a  decodesensorproc_mag2         
-00015b9a  decodesensorproc_mag          
-00015bda  __mspabi_divli                
-00015bda  __mspabi_remli                
-00015c1a  __mspabi_sral_15              
-00015c1e  __mspabi_sral_14              
-00015c22  __mspabi_sral_13              
-00015c26  __mspabi_sral_12              
-00015c2a  __mspabi_sral_11              
-00015c2e  __mspabi_sral_10              
-00015c32  __mspabi_sral_9               
-00015c36  __mspabi_sral_8               
-00015c3a  __mspabi_sral_7               
-00015c3e  __mspabi_sral_6               
-00015c42  __mspabi_sral_5               
-00015c46  __mspabi_sral_4               
-00015c4a  __mspabi_sral_3               
-00015c4e  __mspabi_sral_2               
-00015c52  __mspabi_sral_1               
-00015c58  __mspabi_slll_15              
-00015c5c  __mspabi_slll_14              
-00015c60  __mspabi_slll_13              
-00015c64  __mspabi_slll_12              
-00015c68  __mspabi_slll_11              
-00015c6c  __mspabi_slll_10              
-00015c70  __mspabi_slll_9               
-00015c74  __mspabi_slll_8               
-00015c78  __mspabi_slll_7               
-00015c7c  __mspabi_slll_6               
-00015c80  __mspabi_slll_5               
-00015c84  __mspabi_slll_4               
-00015c88  __mspabi_slll_3               
-00015c8c  __mspabi_slll_2               
-00015c90  __mspabi_slll_1               
-00015c96  __mspabi_srll_15              
-00015c9a  __mspabi_srll_14              
-00015c9e  __mspabi_srll_13              
-00015ca2  __mspabi_srll_12              
-00015ca6  __mspabi_srll_11              
-00015caa  __mspabi_srll_10              
-00015cae  __mspabi_srll_9               
-00015cb2  __mspabi_srll_8               
-00015cb6  __mspabi_srll_7               
-00015cba  __mspabi_srll_6               
-00015cbe  __mspabi_srll_5               
-00015cc2  __mspabi_srll_4               
-00015cc6  __mspabi_srll_3               
-00015cca  __mspabi_srll_2               
-00015cce  __mspabi_srll_1               
-00015cd4  rcPopulate4                   
-00015d12  asensorInit                   
-00015d4e  debugInvokeActionHandler      
-00015d8a  debugTraceF                   
-00015dc6  __mspabi_sllll                
-00015e3a  readRegister                  
-00015e74  convert_mag_data_raw_to_teslas
-00015eac  displayPrompt                 
-00015f1a  mag_select_switch             
-00015f50  __mspabi_subd                 
-00015f82  debugPrintF                   
-00015fb4  __mspabi_fltulf               
-00015fe6  strncpy                       
-00016018  aggVec_max                    
-00016046  aggVec_min                    
-00016074  reverseArray                  
-000160a2  __mpu_init                    
-000160ce  normalOperationConfig         
-000160fa  __mspabi_divi                 
-000160fa  __mspabi_remi                 
-00016126  bitModify                     
-00016150  checkValidPollingID           
-0001617a  magConvertRawToTeslas         
-000161a4  readStatus                    
-000161ce  __mspabi_fixdi                
-000161f6  aggVec_as_reset               
-0001621e  aggVec_max_reset              
-00016246  aggVec_min_reset              
-0001626e  endPollingTimer               
-00016296  asensorReadSingleSensorRaw    
-000162bc  requestToSend                 
-000162e2  send_simulink_segment_cosmos  
-00016308  setRegister                   
-0001632e  uartRegisterRxCallback        
-00016354  bspI2CInit                    
-00016378  bspUARTInit                   
-0001639c  __TI_zero_init                
-000163c0  __mspabi_fltuf                
-000163e4  __mspabi_mpyl_f5hw            
-00016408  aggVec_avg_i_i                
-0001642a  map_general                   
-0001646c  send_mtq_info_segment_cosmos  
-0001648c  coreStartup                   
-000164aa  debugInvokeInfoHandlers       
-000164c8  debugInvokeStatusHandlers     
-000164e6  debugSetMode                  
-00016522  memccpy                       
-00016540  send_cosmos_telem             
-0001655e  uartSetEchoOff                
-0001657c  uartSetEchoOn                 
-000165b6  map                           
-000165d2  handleDebugActionCallback     
-000165ec  aggVec_push_i                 
-00016604  disableUARTInterrupts         
-0001661c  enableUARTInterrupts          
-00016634  __mspabi_mpyi_f5hw            
-0001664c  aggVec_max_i                  
-00016662  aggVec_min_i                  
-00016678  canWrapInit                   
-0001668e  memset                        
-000166a4  __mspabi_divu                 
-000166a4  __mspabi_remu                 
-000166ba  memcpy                        
-000166ce  __mspabi_fixdu                
-000166e0  bspGetChipID                  
-000166f2  __TI_decompress_none          
-00016716  bcbinPopulateHeader           
-00016726  getSubsystemModulePath        
-00016736  __mspabi_sral                 
-00016746  __mspabi_slll                 
-00016756  __mspabi_srll                 
-00016766  read_magnetometer_data        
-00016776  asensorReadIntTempC           
-00016784  bcbinSendPacket               
-000167a0  rollcallInit                  
-000167ae  start_check_best_mag_timer    
-000167bc  strlen                        
-000167ca  __mspabi_fltid                
-000167d6  abs                           
-000167e0  aggVec_init_i                 
-000167ea  aggVec_mm_reset               
-000167f4  aggVec_reset                  
-000167fe  bspGetResetCount              
-00016808  debugInvokeStatusHandler      
-00016812  normalizeTraceLevel           
-0001681c  __mspabi_slli                 
-00016826  asensorReadIntTempRawC        
-0001682e  disableCanInterrupt           
-00016836  enableCanInterrupt            
-0001683e  i2cMasterRead                 
-00016846  i2cMasterWrite                
-0001684e  rollcallStart                 
-0001685e  __mspabi_fltud                
-00016864  C$$EXIT                       
-00016864  abort                         
-0001686a  bspGetHWSWMatchState          
-00016870  bspGetModule                  
-00016876  debugGetCommMatchState        
-00016882  rollcallQueueLength           
-00016888  setCANPacketRxCallback        
-0001688e  setReceiveCallback0           
-00016894  setReceiveCallback1           
-0001689a  simulink_compute              
-000168a0  _system_pre_init              
-000168a4  handlePPTFiringNotification   
-000168a8  handleRollCall                
-000168ac  no_op_func                    
-000168b0  DummyCallback                 
-000168b2  _system_post_cinit            
-000168b4  bdot_controller_lib_initialize
-000168b6  dummyFn                       
+00010f1e  magReadXYZData                
+0001120c  __mspabi_addd                 
+000114ec  sqrt                          
+000114ec  sqrtl                         
+000117ca  __TI_frcmpyd                  
+00011a4a  __mspabi_mpyd                 
+00011cb0  __TI_frcaddd                  
+00011ef8  update_simulink_info          
+00012130  __mspabi_divd                 
+00012352  floor                         
+00012352  floorl                        
+00012516  aggVec_push                   
+000126a8  determine_best_fit_mag        
+00012834  canWrapInitWithFilter         
+000129be  uartReportStatus              
+00012c50  __mspabi_subf                 
+00012c56  __mspabi_addf                 
+00012d82  bspInit                       
+00012ea2  can_rx_callback               
+000130c2  debugInvokeActionHandlers     
+000131c6  debugReadCallback             
+000132c2  uartInit                      
+000134b4  uartTransmit                  
+0001359a  main                          
+0001367e  initial_setup                 
+0001383c  initializeTimer               
+00013918  configSequence                
+000139f2  __mspabi_cmpd                 
+00013aca  canSend                       
+00013c72  checkTimer                    
+00013d44  __TI_printfi_minimal          
+00013e12  encodecmd_mtq_bdot            
+00013ee0  send_bdot_mag_reading_cosmos  
+00013fae  timerCallbackInitializer      
+0001407c  canInit                       
+0001413c  configChannel                 
+000141f8  __mspabi_mpyf                 
+000142b0  __TI_renormd                  
+00014362  bcbinPopulateMeta             
+00014412  encoderc_adcs_bdot_3          
+000144c0  encoderc_adcs_bdot_2          
+0001456a  startCallback                 
+00014610  timerPollInitializer          
+000146b6  encoderc_adcs_bdot_1          
+00014756  spiTransceive                 
+000147f6  __mspabi_fltlid               
+00014894  canSendPacket                 
+00014932  i2cInit                       
+000149ce  __mspabi_divf                 
+00014a5e  __mspabi_cvtdf                
+00014aea  processCommand                
+00014b6e  _auto_init_hold_wdt           
+00014bf0  __mspabi_fltuld               
+00014c70  encoderc_adcs_bdot_4          
+00014cee  setMaskOrFilter               
+00014cee  setTheFilter                  
+00014d6a  __TI_decompress_lzss          
+00014de2  infoReport                    
+00014ed2  rollcallUpdate                
+00014f46  coreCallSimpleHandlers        
+00014fb8  handleUCTXIFG                 
+0001502a  spiInit                       
+0001509a  asensorGetLastExtTempC        
+0001509a  asensorGetLastValueV          
+0001509a  convertRawToFloat             
+00015106  rcPopulate3                   
+00015170  __mspabi_fixdul               
+00015240  __mspabi_fixfi                
+000152a8  __mspabi_cvtfd                
+0001530e  __mspabi_fixdli               
+00015374  copy_in                       
+000153da  METInit                       
+0001543c  actionCallback                
+0001549c  convertTime                   
+000154fc  decodemtq_ack                 
+00015556  updateRCData                  
+000155b0  __mspabi_divul                
+000155b0  __mspabi_remul                
+00015608  canTxCheck                    
+0001565e  rcPopulate1                   
+000156b4  vsnprintf                     
+0001570a  send_dipole_packet            
+0001575e  reportStatusCallback          
+00015802  rcPopulate2                   
+00015852  __mspabi_fixful               
+0001589e  wrapCB0                       
+000158ea  wrapCB1                       
+00015936  handleUCRXIFG                 
+00015980  __mspabi_cmpf                 
+00015a12  magInit                       
+00015a5a  send_health_segment_cosmos    
+00015aa2  debugInit                     
+00015ae8  determine_mtq_commands        
+00015b2e  debugRegisterEntity           
+00015b72  decodesensorproc_mag2         
+00015bb2  decodesensorproc_mag          
+00015bf2  __mspabi_divli                
+00015bf2  __mspabi_remli                
+00015c32  __mspabi_sral_15              
+00015c36  __mspabi_sral_14              
+00015c3a  __mspabi_sral_13              
+00015c3e  __mspabi_sral_12              
+00015c42  __mspabi_sral_11              
+00015c46  __mspabi_sral_10              
+00015c4a  __mspabi_sral_9               
+00015c4e  __mspabi_sral_8               
+00015c52  __mspabi_sral_7               
+00015c56  __mspabi_sral_6               
+00015c5a  __mspabi_sral_5               
+00015c5e  __mspabi_sral_4               
+00015c62  __mspabi_sral_3               
+00015c66  __mspabi_sral_2               
+00015c6a  __mspabi_sral_1               
+00015c70  __mspabi_slll_15              
+00015c74  __mspabi_slll_14              
+00015c78  __mspabi_slll_13              
+00015c7c  __mspabi_slll_12              
+00015c80  __mspabi_slll_11              
+00015c84  __mspabi_slll_10              
+00015c88  __mspabi_slll_9               
+00015c8c  __mspabi_slll_8               
+00015c90  __mspabi_slll_7               
+00015c94  __mspabi_slll_6               
+00015c98  __mspabi_slll_5               
+00015c9c  __mspabi_slll_4               
+00015ca0  __mspabi_slll_3               
+00015ca4  __mspabi_slll_2               
+00015ca8  __mspabi_slll_1               
+00015cae  __mspabi_srll_15              
+00015cb2  __mspabi_srll_14              
+00015cb6  __mspabi_srll_13              
+00015cba  __mspabi_srll_12              
+00015cbe  __mspabi_srll_11              
+00015cc2  __mspabi_srll_10              
+00015cc6  __mspabi_srll_9               
+00015cca  __mspabi_srll_8               
+00015cce  __mspabi_srll_7               
+00015cd2  __mspabi_srll_6               
+00015cd6  __mspabi_srll_5               
+00015cda  __mspabi_srll_4               
+00015cde  __mspabi_srll_3               
+00015ce2  __mspabi_srll_2               
+00015ce6  __mspabi_srll_1               
+00015cec  rcPopulate4                   
+00015d2a  asensorInit                   
+00015d66  debugInvokeActionHandler      
+00015da2  debugTraceF                   
+00015dde  __mspabi_sllll                
+00015e52  readRegister                  
+00015e8c  convert_mag_data_raw_to_teslas
+00015ec4  displayPrompt                 
+00015f32  mag_select_switch             
+00015f68  __mspabi_subd                 
+00015f9a  debugPrintF                   
+00015fcc  __mspabi_fltulf               
+00015ffe  strncpy                       
+00016030  aggVec_max                    
+0001605e  aggVec_min                    
+0001608c  reverseArray                  
+000160ba  __mpu_init                    
+000160e6  normalOperationConfig         
+00016112  __mspabi_divi                 
+00016112  __mspabi_remi                 
+0001613e  bitModify                     
+00016168  checkValidPollingID           
+00016192  magConvertRawToTeslas         
+000161bc  readStatus                    
+000161e6  __mspabi_fixdi                
+0001620e  aggVec_as_reset               
+00016236  aggVec_max_reset              
+0001625e  aggVec_min_reset              
+00016286  endPollingTimer               
+000162ae  asensorReadSingleSensorRaw    
+000162d4  requestToSend                 
+000162fa  send_simulink_segment_cosmos  
+00016320  setRegister                   
+00016346  uartRegisterRxCallback        
+0001636c  bspI2CInit                    
+00016390  bspUARTInit                   
+000163b4  __TI_zero_init                
+000163d8  __mspabi_fltuf                
+000163fc  __mspabi_mpyl_f5hw            
+00016420  aggVec_avg_i_i                
+00016442  map_general                   
+00016484  send_mtq_info_segment_cosmos  
+000164a4  coreStartup                   
+000164c2  debugInvokeInfoHandlers       
+000164e0  debugInvokeStatusHandlers     
+000164fe  debugSetMode                  
+0001653a  memccpy                       
+00016558  send_cosmos_telem             
+00016576  uartSetEchoOff                
+00016594  uartSetEchoOn                 
+000165ce  map                           
+000165ea  handleDebugActionCallback     
+00016604  aggVec_push_i                 
+0001661c  disableUARTInterrupts         
+00016634  enableUARTInterrupts          
+0001664c  __mspabi_mpyi_f5hw            
+00016664  aggVec_max_i                  
+0001667a  aggVec_min_i                  
+00016690  canWrapInit                   
+000166a6  memset                        
+000166bc  __mspabi_divu                 
+000166bc  __mspabi_remu                 
+000166d2  memcpy                        
+000166e6  __mspabi_fixdu                
+000166f8  bspGetChipID                  
+0001670a  __TI_decompress_none          
+0001672e  bcbinPopulateHeader           
+0001673e  getSubsystemModulePath        
+0001674e  __mspabi_sral                 
+0001675e  __mspabi_slll                 
+0001676e  __mspabi_srll                 
+0001677e  read_magnetometer_data        
+0001678e  asensorReadIntTempC           
+0001679c  bcbinSendPacket               
+000167b8  rollcallInit                  
+000167c6  start_check_best_mag_timer    
+000167d4  strlen                        
+000167e2  __mspabi_fltid                
+000167ee  abs                           
+000167f8  aggVec_init_i                 
+00016802  aggVec_mm_reset               
+0001680c  aggVec_reset                  
+00016816  bspGetResetCount              
+00016820  debugInvokeStatusHandler      
+0001682a  normalizeTraceLevel           
+00016834  __mspabi_slli                 
+0001683e  asensorReadIntTempRawC        
+00016846  disableCanInterrupt           
+0001684e  enableCanInterrupt            
+00016856  i2cMasterRead                 
+0001685e  i2cMasterWrite                
+00016866  rollcallStart                 
+00016876  __mspabi_fltud                
+0001687c  C$$EXIT                       
+0001687c  abort                         
+00016882  bspGetHWSWMatchState          
+00016888  bspGetModule                  
+0001688e  debugGetCommMatchState        
+0001689a  rollcallQueueLength           
+000168a0  setCANPacketRxCallback        
+000168a6  setReceiveCallback0           
+000168ac  setReceiveCallback1           
+000168b2  simulink_compute              
+000168b8  _system_pre_init              
+000168bc  handlePPTFiringNotification   
+000168c0  handleRollCall                
+000168c4  no_op_func                    
+000168c8  DummyCallback                 
+000168ca  _system_post_cinit            
+000168cc  bdot_controller_lib_initialize
+000168ce  dummyFn                       
 ffffffff  __TI_pprof_out_hndl           
 ffffffff  __TI_prof_data_size           
 ffffffff  __TI_prof_data_start          

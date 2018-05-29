@@ -20,6 +20,7 @@ typedef struct {
     uint16_t prev_difference_x;
     uint16_t prev_difference_y;
     uint16_t prev_difference_z;
+    uint16_t glitter_count;
 } MagInternalData;
 
 
@@ -95,7 +96,7 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
     uint16_t * prev_dif_x = &(mags[handle].prev_difference_x);
     uint16_t * prev_dif_y = &(mags[handle].prev_difference_y);
     uint16_t * prev_dif_z = &(mags[handle].prev_difference_z);
-
+    uint16_t * glitter_count = &(mags[handle].glitter_count);
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)
 
 #if defined(__HIL_AA_NOEXTRAREADS__)
@@ -129,6 +130,7 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
         prevData->rawX = mdata->rawX;
         prevData->rawY = mdata->rawY;
         prevData->rawZ = mdata->rawZ;
+        *glitter_count = 0;
         *prev_dif_x = 0;
         *prev_dif_y = 0;
         *prev_dif_z = 0;
@@ -142,6 +144,9 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
             prevData->rawX = mdata->rawX;
             prevData->rawY = mdata->rawY;
             prevData->rawZ = mdata->rawZ;
+        } else
+        {
+            (*glitter_count)++;
         }
     }
 
