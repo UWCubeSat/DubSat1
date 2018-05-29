@@ -142,10 +142,6 @@ int main(void)
         if(rt_flag)
         {
             P3OUT ^= BIT5;
-
-            /* get new magnetometer data from bdot magnetometer. */
-            read_magnetometer_data();
-
             /* update data that will be fed into rt onestep */
             update_simulink_info();
 
@@ -164,6 +160,10 @@ int main(void)
             /* Determine if mtq is ready to actuate */
             if(mtq_state == MTQ_MEASUREMENT_PHASE)
             {
+
+                /* get new magnetometer data from bdot magnetometer. */
+                read_magnetometer_data();
+
                 send_dipole_packet(bdot_perspective_mtq_info.xDipole,
                                    bdot_perspective_mtq_info.yDipole,
                                    bdot_perspective_mtq_info.zDipole);

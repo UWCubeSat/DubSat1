@@ -2,7 +2,7 @@
 <link_info>
    <banner>MSP430 Linker PC v17.6.0.STS</banner>
    <copyright>Copyright (c) 2003-2017 Texas Instruments Incorporated</copyright>
-   <link_time>0x5b0ca76e</link_time>
+   <link_time>0x5b0dae8c</link_time>
    <link_errors>0x0</link_errors>
    <output_file>ss_ADCS_BDot.out</output_file>
    <entry_point>
