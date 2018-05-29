@@ -144,6 +144,10 @@ int main(void)
         if(rt_flag)
         {
             P3OUT ^= BIT5;
+            if(mtq_state == MTQ_MEASUREMENT_PHASE)
+            {
+                read_magnetometer_data();
+            }
             /* update data that will be fed into rt onestep */
             update_simulink_info();
 
@@ -164,17 +168,12 @@ int main(void)
             {
 
                 /* get new magnetometer data from bdot magnetometer. */
-                read_magnetometer_data();
-                *continuous_mag_data = *bdot_mag_data;
                 send_dipole_packet(bdot_perspective_mtq_info.xDipole,
                                    bdot_perspective_mtq_info.yDipole,
                                    bdot_perspective_mtq_info.zDipole);
                 mtq_last_known_state.xDipole = bdot_perspective_mtq_info.xDipole;
                 mtq_last_known_state.yDipole = bdot_perspective_mtq_info.yDipole;
                 mtq_last_known_state.zDipole = bdot_perspective_mtq_info.zDipole;
-            } else
-            {
-                read_continuous_mag_data_cosmos();
             }
 
             /* clear rt_flag */
@@ -356,7 +355,7 @@ void simulink_compute()
 void send_cosmos_telem()
 {
     send_health_segment_cosmos();
-    send_continuous_mag_reading_cosmos();
+//    send_continuous_mag_reading_cosmos();
     send_bdot_mag_reading_cosmos();
     send_mtq_info_segment_cosmos();
     send_simulink_segment_cosmos();
