@@ -33,7 +33,7 @@
 #define TLM_ID_POLLING_TIMER 123
 #define TLM_ID_SP_MAG1 122
 #define TLM_ID_SP_MAG2 121
-
+#define TLM_ID_CONTINUOUS_MAG 120
 
 #define OPCODE_MY_CMD 1
 #define OPCODE_MAG_SELECT_CMD 2
@@ -108,8 +108,11 @@ void initial_setup();
 void can_rx_callback(CANPacket *packet);
 void send_dipole_packet(int8_t x, int8_t y, int8_t z);
 
+void read_continuous_mag_data_cosmos();
 void read_magnetometer_data();
 void simulink_compute();
+
+void send_continuous_mag_reading_cosmos();
 
 void send_bdot_mag_reading_cosmos();
 

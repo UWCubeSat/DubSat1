@@ -43,6 +43,8 @@
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
 FILE_STATIC meta_segment metaSeg;
+FILE_STATIC MagnetometerData* continuous_mag_data;
+FILE_STATIC magnetometer_segment continuous_mag_data_cosmos;
 FILE_STATIC magnetometer_segment bdot_magnetometer_data_cosmos;
 FILE_STATIC magnetometer_segment sp_mag1_data_cosmos;
 FILE_STATIC magnetometer_segment sp_mag2_data_cosmos;
@@ -163,13 +165,16 @@ int main(void)
 
                 /* get new magnetometer data from bdot magnetometer. */
                 read_magnetometer_data();
-
+                *continuous_mag_data = *bdot_mag_data;
                 send_dipole_packet(bdot_perspective_mtq_info.xDipole,
                                    bdot_perspective_mtq_info.yDipole,
                                    bdot_perspective_mtq_info.zDipole);
                 mtq_last_known_state.xDipole = bdot_perspective_mtq_info.xDipole;
                 mtq_last_known_state.yDipole = bdot_perspective_mtq_info.yDipole;
                 mtq_last_known_state.zDipole = bdot_perspective_mtq_info.zDipole;
+            } else
+            {
+                read_continuous_mag_data_cosmos();
             }
 
             /* clear rt_flag */
@@ -203,6 +208,7 @@ void initial_setup()
 
     /* populate header for backchannel  */
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
+    bcbinPopulateHeader(&continuous_mag_data_cosmos.header, TLM_ID_CONTINUOUS_MAG, sizeof(continuous_mag_data_cosmos));
     bcbinPopulateHeader(&bdot_magnetometer_data_cosmos.header, TLM_ID_BDOT_MAGNETOMETER, sizeof(bdot_magnetometer_data_cosmos));
     bcbinPopulateHeader(&sp_mag1_data_cosmos.header, TLM_ID_SP_MAG1, sizeof(sp_mag1_data_cosmos));
     bcbinPopulateHeader(&sp_mag2_data_cosmos.header, TLM_ID_SP_MAG2, sizeof(sp_mag2_data_cosmos));
@@ -272,6 +278,12 @@ void read_magnetometer_data()
 {
     bdot_mag_data = magReadXYZData(mag_num, ConvertToTeslas);
 }
+
+void read_continuous_mag_data_cosmos()
+{
+    continuous_mag_data = magReadXYZData(mag_num, ConvertToTeslas);
+}
+
 
 void convert_mag_data_raw_to_teslas(MagnetometerData * mag)
 {
@@ -344,6 +356,7 @@ void simulink_compute()
 void send_cosmos_telem()
 {
     send_health_segment_cosmos();
+    send_continuous_mag_reading_cosmos();
     send_bdot_mag_reading_cosmos();
     send_mtq_info_segment_cosmos();
     send_simulink_segment_cosmos();
@@ -447,6 +460,15 @@ void send_health_segment_cosmos()
     // Also invoke the status handler for UART to send its health segments
     debugInvokeStatusHandler(Entity_UART);
 
+}
+
+void send_continuous_mag_reading_cosmos()
+{
+    continuous_mag_data_cosmos.xMag = continuous_mag_data->convertedX * 1e9;
+    continuous_mag_data_cosmos.yMag = continuous_mag_data->convertedY * 1e9;
+    continuous_mag_data_cosmos.zMag = continuous_mag_data->convertedZ * 1e9;
+
+    bcbinSendPacket((uint8_t *) &continuous_mag_data_cosmos, sizeof(continuous_mag_data_cosmos));
 }
 
 /* send magnetometer reading segment through backchannel */
