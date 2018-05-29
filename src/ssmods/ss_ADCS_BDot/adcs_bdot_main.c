@@ -39,9 +39,6 @@ FILE_STATIC uint32_t rtOneStep_us = 100000;
 /***************************************************************/
 
 /*******************RollCall***********************************/
-FILE_STATIC aggVec_i agga;
-FILE_STATIC aggVec_i aggb;
-FILE_STATIC aggVec_i aggc;
 /***************************************************************/
 
 /*******************Miscellaneous*******************************/
@@ -81,9 +78,6 @@ int main(void)
     initial_setup();
     rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
     startCallback(rtOneStep_timer);
-    aggVec_init(&agga);
-    aggVec_init(&aggb);
-    aggVec_init(&aggc);
 
     fflush((NULL));
     while (1)
@@ -91,7 +85,8 @@ int main(void)
 
         if(update_rt_flag)
         {
-            P3OUT ^= BIT5;
+            PJDIR |= BIT0;
+            PJOUT ^= BIT0;
             rt_OneStep();
             updateMtqInfo();
             sendTelemetry();
@@ -192,11 +187,8 @@ void updateMtqInfo()
     if(mtqInfo.tumble_status)
     {
         mtqInfo.xDipole = funkyDipolesX[funkyCounter];
-        aggVec_i_push(mtqInfo.xDipole);
         mtqInfo.yDipole = funkyDipolesY[funkyCounter];
-        aggVec_i_push(mtqInfo.yDipole);
         mtqInfo.zDipole = funkyDipolesZ[funkyCounter];
-        aggVec_i_push(mtqInfo.zDipole);
     } else
     {
         mtqInfo.xDipole = 0;
@@ -280,7 +272,15 @@ int mapGeneral(int x, int in_min, int in_max, int out_min, int out_max)
 {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
-
+void reverseArrah(uint8_t arr[], uint8_t start, uint8_t end) {
+    uint8_t temp;
+    if (start >= end)
+        return;
+    temp = arr[start];
+    arr[start] = arr[end];
+    arr[end] = temp;
+    reverseArrah(arr, start+1, end-1);
+}
 /*No op function */
 void receive_packet(CANPacket *packet)
 {
@@ -297,6 +297,14 @@ void receive_packet(CANPacket *packet)
         {
             mtq_state = MTQ_ACTUATION_PHASE;
         }
+        CANPacket out;
+        CANPacket* output = &out;
+        output -> id = 123456;
+        uint64_t fullPacketData = 0x0000000000000000;
+        uint64_t *thePointer = (uint64_t *) (&(output -> data));
+        *thePointer = fullPacketData;
+        reverseArrah((output->data), 0, 7);
+        canSendPacket(output);
     }
     if(packet->id == CAN_ID_CMD_ROLLCALL)
     {
