@@ -72,8 +72,6 @@ FILE_STATIC void rcPopulate3(CANPacket *out);
 FILE_STATIC void rcPopulate4(CANPacket *out);
 FILE_STATIC void rcPopulate5(CANPacket *out);
 FILE_STATIC void rcPopulate6(CANPacket *out);
-FILE_STATIC void rcPopulate7(CANPacket *out);
-FILE_STATIC void rcPopulate8(CANPacket *out);
 FILE_STATIC void rcPopulate9(CANPacket *out);
 FILE_STATIC void rcPopulate10(CANPacket *out);
 FILE_STATIC void rcPopulate11(CANPacket *out);
@@ -87,9 +85,8 @@ FILE_STATIC void rcPopulate17(CANPacket *out);
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
  rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
- rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10,
- rcPopulate11, rcPopulate12, rcPopulate13, rcPopulate14, rcPopulate15,
- rcPopulate16, rcPopulate17
+ rcPopulate6, rcPopulate9, rcPopulate10, rcPopulate11, rcPopulate12,
+ rcPopulate13, rcPopulate14, rcPopulate15, rcPopulate16, rcPopulate17
 };
 
 FILE_STATIC aggVec_i rc_temp;
@@ -481,21 +478,13 @@ void rcPopulate6(CANPacket *out)
 {
     rc_adcs_sp_6 rc;
     sunsensorioRcPopulate6(&rc);
-    encoderc_adcs_sp_6(&rc, out);
-}
-
-void rcPopulate7(CANPacket *out)
-{
-    // deprecated
-}
-
-void rcPopulate8(CANPacket *out)
-{
 #if ENABLE_MAG1
-    rc_adcs_sp_8 rc;
-    magio1RcPopulate8(&rc);
-    encoderc_adcs_sp_8(&rc, out);
+    magio1RcPopulate6(&rc);
 #endif
+#if ENABLE_MAG2
+    magio2RcPopulate6(&rc);
+#endif
+    encoderc_adcs_sp_6(&rc, out);
 }
 
 void rcPopulate9(CANPacket *out)
@@ -548,9 +537,6 @@ void rcPopulate14(CANPacket *out)
 {
     rc_adcs_sp_14 rc;
     sunsensorioRcPopulate14(&rc);
-#if ENABLE_MAG2
-    magio2RcPopulate14(&rc);
-#endif
     encoderc_adcs_sp_14(&rc, out);
 }
 
