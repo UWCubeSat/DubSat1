@@ -149,10 +149,18 @@ void magioSendCAN2()
 
 // TODO set mag1, mag2 valid
 
-void magio1RcPopulate8(rc_adcs_sp_8 *r)
+void magio1RcPopulate6(rc_adcs_sp_6 *r)
 {
-    r->rc_adcs_sp_8_mag1_x_min = aggVec_min_i(&mag1.agg_x);
-    aggVec_min_reset((aggVec *) &mag1.agg_x);
+	r->rc_adcs_sp_6_mag1_valid = aggVec_sum_i(&mag1.agg_valid);
+	aggVec_reset((aggVec *) &mag1.agg_valid);
+	r->rc_adcs_sp_6_mag1_x_min = aggVec_min_i(&mag1.agg_x);
+	aggVec_min_reset((aggVec *) &mag1.agg_x);
+}
+
+void magio2RcPopulate6(rc_adcs_sp_6 *r)
+{
+	r->rc_adcs_sp_6_mag2_valid = aggVec_sum_i(&mag2.agg_valid);
+	aggVec_reset((aggVec *) &mag2.agg_valid);
 }
 
 void magio1RcPopulate9(rc_adcs_sp_9 *r)
