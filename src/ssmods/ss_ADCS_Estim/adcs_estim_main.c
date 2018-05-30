@@ -121,6 +121,10 @@ int main(void)
     // set LED gpio pin to output
     LED_DIR |= LED_BIT;
 
+    // Fix phantom power over uart
+	P3DIR |= BIT4;
+	P3OUT |= BIT4;
+
     // populate segment headers
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
 
