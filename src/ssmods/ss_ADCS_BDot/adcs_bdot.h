@@ -112,7 +112,6 @@ void read_continuous_mag_data_cosmos();
 void read_magnetometer_data();
 void simulink_compute();
 
-void send_continuous_mag_reading_cosmos();
 
 void send_bdot_mag_reading_cosmos();
 
@@ -127,6 +126,7 @@ void send_simulink_segment_cosmos();
 void convert_mag_data_raw_to_teslas(MagnetometerData * mag);
 void determine_best_fit_mag();
 void start_check_best_mag_timer();
+void update_valid_mag_data();
 
 void determine_mtq_commands();
 void send_cosmos_telem();

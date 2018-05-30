@@ -43,7 +43,6 @@
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
 FILE_STATIC meta_segment metaSeg;
-FILE_STATIC MagnetometerData* continuous_mag_data;
 FILE_STATIC magnetometer_segment continuous_mag_data_cosmos;
 FILE_STATIC magnetometer_segment bdot_magnetometer_data_cosmos;
 FILE_STATIC magnetometer_segment sp_mag1_data_cosmos;
@@ -62,7 +61,8 @@ FILE_STATIC mtq_info mtq_last_known_state;
 
 
 /****************Magnetometer Variables*************************/
-FILE_STATIC MagnetometerData* bdot_mag_data;
+FILE_STATIC MagnetometerData* continuous_bdot_mag_data;
+FILE_STATIC MagnetometerData* valid_bdot_mag_data;
 FILE_STATIC MagnetometerData* sp_mag1_data;
 FILE_STATIC MagnetometerData* sp_mag2_data;
 FILE_STATIC uint8_t sp_mag1_new_data_flag;
@@ -144,10 +144,13 @@ int main(void)
         if(rt_flag)
         {
             P3OUT ^= BIT5;
+            read_magnetometer_data();
+
             if(mtq_state == MTQ_MEASUREMENT_PHASE)
             {
-                read_magnetometer_data();
+            	update_valid_mag_data();
             }
+
             /* update data that will be fed into rt onestep */
             update_simulink_info();
 
@@ -241,9 +244,9 @@ void update_simulink_info()
     switch(current_listening_mag)
     {
         case BDOT_MAG:
-            rtU.B_body_in_T[0] = bdot_mag_data->convertedX;
-            rtU.B_body_in_T[1] = bdot_mag_data->convertedY;
-            rtU.B_body_in_T[2] = bdot_mag_data->convertedZ;
+            rtU.B_body_in_T[0] = valid_bdot_mag_data->convertedX;
+            rtU.B_body_in_T[1] = valid_bdot_mag_data->convertedY;
+            rtU.B_body_in_T[2] = valid_bdot_mag_data->convertedZ;
             rtU.B_meas_valid = mag_norm_op;
             rtU.MT_on = 0;
             break;
@@ -262,9 +265,9 @@ void update_simulink_info()
             rtU.MT_on = 0;
             break;
         default:
-            rtU.B_body_in_T[0] = bdot_mag_data->convertedX;
-            rtU.B_body_in_T[1] = bdot_mag_data->convertedY;
-            rtU.B_body_in_T[2] = bdot_mag_data->convertedZ;
+            rtU.B_body_in_T[0] = valid_bdot_mag_data->convertedX;
+            rtU.B_body_in_T[1] = valid_bdot_mag_data->convertedY;
+            rtU.B_body_in_T[2] = valid_bdot_mag_data->convertedZ;
             rtU.B_meas_valid = mag_norm_op;
             rtU.MT_on = 0;
     }
@@ -275,14 +278,15 @@ void update_simulink_info()
  * Function to read magnetometer data returns a struct with xyz magnetometer and temp. */
 void read_magnetometer_data()
 {
-    bdot_mag_data = magReadXYZData(mag_num, ConvertToTeslas);
+    continuous_bdot_mag_data = magReadXYZData(mag_num, ConvertToTeslas);
 }
 
-void read_continuous_mag_data_cosmos()
+void update_valid_mag_data()
 {
-    continuous_mag_data = magReadXYZData(mag_num, ConvertToTeslas);
+	valid_bdot_mag_data->convertedX = continuous_bdot_mag_data->convertedX;
+	valid_bdot_mag_data->convertedY = continuous_bdot_mag_data->convertedY;
+	valid_bdot_mag_data->convertedZ = continuous_bdot_mag_data->convertedZ;
 }
-
 
 void convert_mag_data_raw_to_teslas(MagnetometerData * mag)
 {
@@ -293,7 +297,7 @@ void convert_mag_data_raw_to_teslas(MagnetometerData * mag)
 
 void determine_best_fit_mag()
 {
-    float bdot_mag_norm = sqrt(abs(bdot_mag_data->convertedX)^2 + abs(bdot_mag_data->convertedY)^2 + abs(bdot_mag_data->convertedZ)^2);
+    float bdot_mag_norm = sqrt(abs(continuous_bdot_mag_data->convertedX)^2 + abs(continuous_bdot_mag_data->convertedY)^2 + abs(continuous_bdot_mag_data->convertedZ)^2);
     float sp_mag1_norm =  sqrt(abs(sp_mag1_data->convertedX)^2 + abs(sp_mag1_data->convertedY)^2 + abs(sp_mag1_data->convertedZ)^2);
     float sp_mag2_norm = sqrt(abs(sp_mag2_data->convertedX)^2 + abs(sp_mag2_data->convertedY)^2 + abs(sp_mag2_data->convertedZ)^2);
 
@@ -355,7 +359,7 @@ void simulink_compute()
 void send_cosmos_telem()
 {
     send_health_segment_cosmos();
-//    send_continuous_mag_reading_cosmos();
+    send_continuous_mag_reading_cosmos();
     send_bdot_mag_reading_cosmos();
     send_mtq_info_segment_cosmos();
     send_simulink_segment_cosmos();
@@ -463,9 +467,9 @@ void send_health_segment_cosmos()
 
 void send_continuous_mag_reading_cosmos()
 {
-    continuous_mag_data_cosmos.xMag = continuous_mag_data->convertedX * 1e9;
-    continuous_mag_data_cosmos.yMag = continuous_mag_data->convertedY * 1e9;
-    continuous_mag_data_cosmos.zMag = continuous_mag_data->convertedZ * 1e9;
+    continuous_mag_data_cosmos.xMag = continuous_bdot_mag_data->convertedX * 1e9;
+    continuous_mag_data_cosmos.yMag = continuous_bdot_mag_data->convertedY * 1e9;
+    continuous_mag_data_cosmos.zMag = continuous_bdot_mag_data->convertedZ * 1e9;
 
     bcbinSendPacket((uint8_t *) &continuous_mag_data_cosmos, sizeof(continuous_mag_data_cosmos));
 }
@@ -473,9 +477,9 @@ void send_continuous_mag_reading_cosmos()
 /* send magnetometer reading segment through backchannel */
 void send_bdot_mag_reading_cosmos()
 {
-    bdot_magnetometer_data_cosmos.xMag = bdot_mag_data->convertedX * 1e9;
-    bdot_magnetometer_data_cosmos.yMag = bdot_mag_data->convertedY * 1e9;
-    bdot_magnetometer_data_cosmos.zMag = bdot_mag_data->convertedZ * 1e9;
+    bdot_magnetometer_data_cosmos.xMag = valid_bdot_mag_data->convertedX * 1e9;
+    bdot_magnetometer_data_cosmos.yMag = valid_bdot_mag_data->convertedY * 1e9;
+    bdot_magnetometer_data_cosmos.zMag = valid_bdot_mag_data->convertedZ * 1e9;
 
     bcbinSendPacket((uint8_t *) &bdot_magnetometer_data_cosmos, sizeof(bdot_magnetometer_data_cosmos));
 }
@@ -532,9 +536,9 @@ void send_all_polling_timers_segment()
 /* update rollcall packet */
 void updateRCData()
 {
-    aggVec_push_i(&magX, bdot_mag_data->rawX);
-    aggVec_push_i(&magY, bdot_mag_data->rawY);
-    aggVec_push_i(&magZ, bdot_mag_data->rawZ);
+    aggVec_push_i(&magX, continuous_bdot_mag_data->rawX);
+    aggVec_push_i(&magY, continuous_bdot_mag_data->rawY);
+    aggVec_push_i(&magZ, continuous_bdot_mag_data->rawZ);
     aggVec_push_i(&rc_temp, asensorReadIntTempRawC());
 }
 
