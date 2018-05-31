@@ -109,7 +109,6 @@ FILE_STATIC int LED_time_ms = 200;
 FILE_STATIC int cosmos_commands_timer = 0;
 FILE_STATIC int cosmos_commands_time_ms = 100;
 FILE_STATIC uint64_t sent = 0;
-FILE_STATIC uint64_t received = 0;
 
 //------- state machine -----------
 
@@ -342,8 +341,8 @@ void turn_off_coils(void)
 void blink_LED(void)
 {
     if (checkTimer(LED_timer)){
-        PJDIR |= BIT0;
-        PJOUT ^= BIT5; // toggle LED
+        PJDIR |= BIT1;
+        PJOUT ^= BIT1; // toggle LED
         start_LED_timer();
     }
 }
@@ -430,9 +429,6 @@ void can_init(void)
 // Interrupt service routine callback
 void can_packet_rx_callback(CANPacket *packet)
 {
-    if(packet -> id == 123456) {
-        received ++;
-    }
     if (packet->id == CAN_ID_CMD_MTQ_BDOT){
         bdot_interrupt_received = 1;
         command_source = FROM_BDOT;
@@ -474,6 +470,7 @@ void reverseArrah(uint8_t arr[], uint8_t start, uint8_t end) {
     arr[end] = temp;
     reverseArrah(arr, start+1, end-1);
 }
+uint8_t errorcount=0;
 void send_CAN_health_packet(void)
 {
     // send CAN packet of temperature (in deci-Kelvin)
@@ -482,16 +479,10 @@ void send_CAN_health_packet(void)
     output -> id = 304677442;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
+    errorcount += canRxErrorCheck();
     fullPacketData = ((uint64_t)sent) ;
+    fullPacketData = (((uint64_t)sent) | ((uint64_t)errorcount <<56)) ;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArrah((output->data), 0, 7);
-    canSendPacket(output);
-    output -> id = 304677443;
-    output -> length = 8;
-    fullPacketData = 0x0000000000000000;
-    fullPacketData = ((uint64_t)received) ;
-    thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArrah((output->data), 0, 7);
     canSendPacket(output);

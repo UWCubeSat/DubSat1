@@ -44,6 +44,18 @@ FILE_STATIC uint32_t rtOneStep_us = 100000;
 /*******************Miscellaneous*******************************/
 FILE_STATIC ModuleStatus mod_status;
 /***************************************************************/
+uint8_t receievedquestionmark =0;
+uint64_t received=0;
+
+void reverseArrah(uint8_t arr[], uint8_t start, uint8_t end) {
+    uint8_t temp;
+    if (start >= end)
+        return;
+    temp = arr[start];
+    arr[start] = arr[end];
+    arr[end] = temp;
+    reverseArrah(arr, start+1, end-1);
+}
 
 
 int main(void)
@@ -80,9 +92,24 @@ int main(void)
     startCallback(rtOneStep_timer);
 
     fflush((NULL));
+            uint8_t errorcount=0;
     while (1)
     {
-
+        if(receievedquestionmark){
+            received++;
+            CANPacket out;
+            CANPacket* output = &out;
+             output -> id = 304677443;
+            output -> length = 8;
+            uint64_t fullPacketData = 0x0000000000000000;
+            errorcount += canRxErrorCheck();
+            fullPacketData = (((uint64_t)received) | ((uint64_t)errorcount <<56)) ;
+            uint64_t *thePointer = (uint64_t *) (&(output -> data));
+            *thePointer = fullPacketData;
+            reverseArrah((output->data), 0, 7);
+            canSendPacket(output);
+            receievedquestionmark=0;
+        }
         if(update_rt_flag)
         {
             PJDIR |= BIT0;
@@ -272,16 +299,9 @@ int mapGeneral(int x, int in_min, int in_max, int out_min, int out_max)
 {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
-void reverseArrah(uint8_t arr[], uint8_t start, uint8_t end) {
-    uint8_t temp;
-    if (start >= end)
-        return;
-    temp = arr[start];
-    arr[start] = arr[end];
-    arr[end] = temp;
-    reverseArrah(arr, start+1, end-1);
-}
+
 /*No op function */
+
 void receive_packet(CANPacket *packet)
 {
     if(packet->id == CAN_ID_MTQ_ACK)
@@ -297,14 +317,7 @@ void receive_packet(CANPacket *packet)
         {
             mtq_state = MTQ_ACTUATION_PHASE;
         }
-        CANPacket out;
-        CANPacket* output = &out;
-        output -> id = 123456;
-        uint64_t fullPacketData = 0x0000000000000000;
-        uint64_t *thePointer = (uint64_t *) (&(output -> data));
-        *thePointer = fullPacketData;
-        reverseArrah((output->data), 0, 7);
-        canSendPacket(output);
+        receievedquestionmark = 1;
     }
     if(packet->id == CAN_ID_CMD_ROLLCALL)
     {
