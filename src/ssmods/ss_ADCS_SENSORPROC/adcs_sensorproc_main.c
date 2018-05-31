@@ -59,28 +59,7 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
 
 #define NUM_INTERFACES (sizeof(sensorInterfaces) / sizeof(SensorInterface))
 
-FILE_STATIC void initSensorInterfaces();
-FILE_STATIC void updateSensorInterfaces();
-FILE_STATIC void sendSensorBackchannel();
-FILE_STATIC void sendSensorCAN();
-
 /* Rollcall */
-
-FILE_STATIC void rcPopulate1(CANPacket *out);
-FILE_STATIC void rcPopulate2(CANPacket *out);
-FILE_STATIC void rcPopulate3(CANPacket *out);
-FILE_STATIC void rcPopulate4(CANPacket *out);
-FILE_STATIC void rcPopulate5(CANPacket *out);
-FILE_STATIC void rcPopulate6(CANPacket *out);
-FILE_STATIC void rcPopulate9(CANPacket *out);
-FILE_STATIC void rcPopulate10(CANPacket *out);
-FILE_STATIC void rcPopulate11(CANPacket *out);
-FILE_STATIC void rcPopulate12(CANPacket *out);
-FILE_STATIC void rcPopulate13(CANPacket *out);
-FILE_STATIC void rcPopulate14(CANPacket *out);
-FILE_STATIC void rcPopulate15(CANPacket *out);
-FILE_STATIC void rcPopulate16(CANPacket *out);
-FILE_STATIC void rcPopulate17(CANPacket *out);
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
@@ -99,8 +78,10 @@ FILE_STATIC health_segment hseg;
 /* Autocode */
 
 FILE_STATIC flag_t triggerStepFlag = FALSE;
-FILE_STATIC void triggerStep();
-FILE_STATIC void step();
+
+/**
+ * Takes one step of autocode.
+ */
 FILE_STATIC void rt_OneStep();
 
 int main(void)
@@ -112,7 +93,7 @@ int main(void)
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
     // Also hooks up special notification handlers.  Note that actual pulse interrupt handlers will update the
     // firing state structures before calling the provided handler function pointers.
-    StartupType starttype = coreStartup(handlePPTFiringNotification, NULL);  // <<DO NOT DELETE or MOVE>>
+    StartupType starttype = coreStartup(NULL, NULL);  // <<DO NOT DELETE or MOVE>>
 
 #if defined(__DEBUG__)
     debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, NULL);
@@ -172,12 +153,12 @@ int main(void)
 	return 0;
 }
 
-FILE_STATIC void triggerStep()
+void triggerStep()
 {
     triggerStepFlag = TRUE;
 }
 
-FILE_STATIC void step()
+void step()
 {
     // counter to trigger operations that don't happen every step
     static uint16_t i = 0;
@@ -213,7 +194,7 @@ FILE_STATIC void step()
  * Step function originally copied from autocode/ert_main.c, now with inputs
  * and outputs filled out
  */
-void rt_OneStep(void)
+FILE_STATIC void rt_OneStep(void)
 {
   static boolean_T OverrunFlags[3] = { 0, 0, 0 };
 
@@ -353,12 +334,6 @@ void rt_OneStep(void)
   /* Enable interrupts here */
 }
 
-// Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
-void handlePPTFiringNotification()
-{
-    __no_operation();
-}
-
 // Packetizes and sends backchannel health packet
 // also invokes uart status handler
 void sendHealthSegment()
@@ -381,7 +356,7 @@ void sendMetaSegment()
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
-FILE_STATIC void initSensorInterfaces()
+void initSensorInterfaces()
 {
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
@@ -390,7 +365,7 @@ FILE_STATIC void initSensorInterfaces()
     }
 }
 
-FILE_STATIC void updateSensorInterfaces()
+void updateSensorInterfaces()
 {
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
@@ -399,7 +374,7 @@ FILE_STATIC void updateSensorInterfaces()
     }
 }
 
-FILE_STATIC void sendSensorBackchannel()
+void sendSensorBackchannel()
 {
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
@@ -408,7 +383,7 @@ FILE_STATIC void sendSensorBackchannel()
     }
 }
 
-FILE_STATIC void sendSensorCAN()
+void sendSensorCAN()
 {
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
