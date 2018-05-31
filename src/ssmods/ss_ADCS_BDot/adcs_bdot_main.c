@@ -17,7 +17,7 @@
  * - Bdot will then initiate Detumble Safety Lockout, which mean it will send dipole commands to MTQ of zeros, effectively turning MTQ off.
  * - Commands from ground can be sent to exit this protocol and let Bdot function normally.
  *
- *
+ * rt_oneStep: Feed into rt onestep only VALID magnetometer data.
  *
  */
 
