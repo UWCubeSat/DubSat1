@@ -451,7 +451,7 @@ void rcPopulate5(CANPacket *out)
 
 void rcPopulate6(CANPacket *out)
 {
-    rc_adcs_sp_6 rc;
+    rc_adcs_sp_6 rc = { 0 };
     sunsensorioRcPopulate6(&rc);
 #if ENABLE_MAG1
     magio1RcPopulate6(&rc);
@@ -464,43 +464,43 @@ void rcPopulate6(CANPacket *out)
 
 void rcPopulate9(CANPacket *out)
 {
+    rc_adcs_sp_9 rc = { 0 };
 #if ENABLE_MAG1
-    rc_adcs_sp_9 rc;
     magio1RcPopulate9(&rc);
-    encoderc_adcs_sp_9(&rc, out);
 #endif
+    encoderc_adcs_sp_9(&rc, out);
 }
 
 void rcPopulate10(CANPacket *out)
 {
+    rc_adcs_sp_10 rc = { 0 };
 #if ENABLE_MAG1
-    rc_adcs_sp_10 rc;
     magio1RcPopulate10(&rc);
-    encoderc_adcs_sp_10(&rc, out);
 #endif
+    encoderc_adcs_sp_10(&rc, out);
 }
 
 void rcPopulate11(CANPacket *out)
 {
+    rc_adcs_sp_11 rc = { 0 };
 #if ENABLE_MAG2
-    rc_adcs_sp_11 rc;
     magio2RcPopulate11(&rc);
-    encoderc_adcs_sp_11(&rc, out);
 #endif
+    encoderc_adcs_sp_11(&rc, out);
 }
 
 void rcPopulate12(CANPacket *out)
 {
+    rc_adcs_sp_12 rc = { 0 };
 #if ENABLE_MAG2
-    rc_adcs_sp_12 rc;
     magio2RcPopulate12(&rc);
-    encoderc_adcs_sp_12(&rc, out);
 #endif
+    encoderc_adcs_sp_12(&rc, out);
 }
 
 void rcPopulate13(CANPacket *out)
 {
-    rc_adcs_sp_13 rc;
+    rc_adcs_sp_13 rc = { 0 };
     sunsensorioRcPopulate13(&rc);
 #if ENABLE_MAG2
     magio2RcPopulate13(&rc);
