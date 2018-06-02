@@ -97,12 +97,13 @@ int main(void)
     {
         if(receievedquestionmark){
             received++;
+            errorcount += canRxErrorCheck();
             CANPacket out;
             CANPacket* output = &out;
              output -> id = 304677443;
             output -> length = 8;
             uint64_t fullPacketData = 0x0000000000000000;
-            errorcount += canRxErrorCheck();
+            fullPacketData = ((uint64_t)received) ;
             fullPacketData = (((uint64_t)received) | ((uint64_t)errorcount <<56)) ;
             uint64_t *thePointer = (uint64_t *) (&(output -> data));
             *thePointer = fullPacketData;
