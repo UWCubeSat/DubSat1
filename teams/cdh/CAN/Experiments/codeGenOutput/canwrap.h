@@ -454,6 +454,7 @@ typedef struct rc_adcs_mpc_1 {
 } rc_adcs_mpc_1;
 
 typedef struct rc_adcs_estim_8 {
+    uint8_t rc_adcs_estim_8_tle_id; //  (No Units)
     int8_t rc_adcs_estim_8_sgp4_flag; //  (No Units)
     uint8_t rc_adcs_estim_8_sc_in_sun; //  (No Units)
     uint8_t rc_adcs_estim_8_sc_above_gs; //  (No Units)

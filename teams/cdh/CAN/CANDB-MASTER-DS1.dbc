@@ -220,6 +220,7 @@ BO_ 2452161076 rc_adcs_mpc_1: 8 Vector__XXX
  SG_ rc_adcs_mpc_1_reset_count : 56|8@1+ (1,0) [0|256] "" Vector__XXX
 
 BO_ 2452161075 rc_adcs_estim_8: 7 Vector__XXX
+ SG_ rc_adcs_estim_8_tle_id : 50|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_adcs_estim_8_sgp4_flag : 40|8@1- (1,0) [-1|1] "" Vector__XXX
  SG_ rc_adcs_estim_8_sc_in_sun : 48|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_adcs_estim_8_sc_above_gs : 49|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -753,6 +754,7 @@ VAL_ 2452161102 rc_eps_dist_12_estim_state 3 "off_batt_undervoltage" 2 "off_over
 VAL_ 2452161100 rc_eps_dist_10_bdot_state 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
 VAL_ 2452161098 rc_eps_dist_8_rahs_state 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
 VAL_ 2452161094 rc_eps_dist_4_com1_state 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
+VAL_ 2452161075 rc_adcs_estim_8_tle_id 1 "true" 0 "false" ;
 VAL_ 2452161075 rc_adcs_estim_8_sc_in_sun 1 "true" 0 "false" ;
 VAL_ 2452161075 rc_adcs_estim_8_sc_above_gs 1 "true" 0 "false" ;
 VAL_ 2452161050 rc_adcs_bdot_4_tumble 1 "true" 0 "false" ;
