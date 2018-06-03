@@ -720,8 +720,8 @@ void decoderc_eps_dist_1(CANPacket *input, rc_eps_dist_1 *output){
     output -> rc_eps_dist_1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> rc_eps_dist_1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_eps_dist_1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_eps_dist_1_sysrstiv = (uint16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
-    output -> rc_eps_dist_1_reset_count = (uint16_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_eps_dist_1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_eps_dist_1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
 
 void encoderc_eps_dist_1(rc_eps_dist_1 *input, CANPacket *output){
@@ -1011,8 +1011,8 @@ void decoderc_adcs_mpc_1(CANPacket *input, rc_adcs_mpc_1 *output){
     output -> rc_adcs_mpc_1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> rc_adcs_mpc_1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_adcs_mpc_1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_adcs_mpc_1_sysrstiv = (uint16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
-    output -> rc_adcs_mpc_1_reset_count = (uint16_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_adcs_mpc_1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_adcs_mpc_1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
 
 void encoderc_adcs_mpc_1(rc_adcs_mpc_1 *input, CANPacket *output){
@@ -1177,8 +1177,8 @@ void decoderc_adcs_estim_1(CANPacket *input, rc_adcs_estim_1 *output){
     output -> rc_adcs_estim_1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> rc_adcs_estim_1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_adcs_estim_1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_adcs_estim_1_sysrstiv = (uint16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
-    output -> rc_adcs_estim_1_reset_count = (uint16_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_adcs_estim_1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_adcs_estim_1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
 
 void encoderc_adcs_estim_1(rc_adcs_estim_1 *input, CANPacket *output){
@@ -1552,8 +1552,8 @@ void decoderc_adcs_sp_1(CANPacket *input, rc_adcs_sp_1 *output){
     output -> rc_adcs_sp_1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> rc_adcs_sp_1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_adcs_sp_1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_adcs_sp_1_sysrstiv = (uint16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
-    output -> rc_adcs_sp_1_reset_count = (uint16_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_adcs_sp_1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_adcs_sp_1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
 
 void encoderc_adcs_sp_1(rc_adcs_sp_1 *input, CANPacket *output){
@@ -1639,11 +1639,11 @@ void decoderc_adcs_bdot_1(CANPacket *input, rc_adcs_bdot_1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_bdot_1_reset_count = (uint16_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_adcs_bdot_1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
     output -> rc_adcs_bdot_1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> rc_adcs_bdot_1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_adcs_bdot_1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_adcs_bdot_1_sysrstiv = (uint16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_adcs_bdot_1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
 }
 
 void encoderc_adcs_bdot_1(rc_adcs_bdot_1 *input, CANPacket *output){
@@ -1909,11 +1909,11 @@ void decoderc_adcs_mtq_1(CANPacket *input, rc_adcs_mtq_1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_mtq_1_reset_count = (uint16_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_adcs_mtq_1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
     output -> rc_adcs_mtq_1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> rc_adcs_mtq_1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_adcs_mtq_1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_adcs_mtq_1_sysrstiv = (uint16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_adcs_mtq_1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
 }
 
 void encoderc_adcs_mtq_1(rc_adcs_mtq_1 *input, CANPacket *output){
@@ -1978,11 +1978,11 @@ void decoderc_ppt_1(CANPacket *input, rc_ppt_1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_ppt_1_reset_count = (uint16_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_ppt_1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
     output -> rc_ppt_1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> rc_ppt_1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_ppt_1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_ppt_1_sysrstiv = (uint16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_ppt_1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
 }
 
 void encoderc_ppt_1(rc_ppt_1 *input, CANPacket *output){
@@ -2195,11 +2195,11 @@ void decoderc_eps_gen_1(CANPacket *input, rc_eps_gen_1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_eps_gen_1_reset_count = (uint16_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_eps_gen_1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
     output -> rc_eps_gen_1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> rc_eps_gen_1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_eps_gen_1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_eps_gen_1_sysrstiv = (uint16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_eps_gen_1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
 }
 
 void encoderc_eps_gen_1(rc_eps_gen_1 *input, CANPacket *output){
@@ -2335,11 +2335,11 @@ void decoderc_eps_batt_1(CANPacket *input, rc_eps_batt_1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_eps_batt_1_reset_count = (uint16_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_eps_batt_1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
     output -> rc_eps_batt_1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> rc_eps_batt_1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_eps_batt_1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_eps_batt_1_sysrstiv = (uint16_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_eps_batt_1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
 }
 
 void encoderc_eps_batt_1(rc_eps_batt_1 *input, CANPacket *output){

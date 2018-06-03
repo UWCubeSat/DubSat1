@@ -254,27 +254,27 @@ typedef struct sensorproc_mag2 {
 } sensorproc_mag2;
 
 typedef struct rc_adcs_estim_14 {
-    double rc_adcs_estim_14_mag_z; //  (No Units)
+    double rc_adcs_estim_14_mag_z; // u
 } rc_adcs_estim_14;
 
 typedef struct rc_adcs_estim_13 {
-    double rc_adcs_estim_13_mag_y; //  (No Units)
+    double rc_adcs_estim_13_mag_y; // u
 } rc_adcs_estim_13;
 
 typedef struct rc_adcs_estim_12 {
-    double rc_adcs_estim_12_mag_x; //  (No Units)
+    double rc_adcs_estim_12_mag_x; // u
 } rc_adcs_estim_12;
 
 typedef struct rc_adcs_estim_11 {
-    double rc_adcs_estim_11_sun_z; //  (No Units)
+    double rc_adcs_estim_11_sun_z; // u
 } rc_adcs_estim_11;
 
 typedef struct rc_adcs_estim_10 {
-    double rc_adcs_estim_10_sun_y; //  (No Units)
+    double rc_adcs_estim_10_sun_y; // u
 } rc_adcs_estim_10;
 
 typedef struct rc_adcs_estim_9 {
-    double rc_adcs_estim_9_sun_x; //  (No Units)
+    double rc_adcs_estim_9_sun_x; // u
 } rc_adcs_estim_9;
 
 typedef struct rc_eps_dist_16 {
@@ -384,8 +384,8 @@ typedef struct rc_eps_dist_1 {
     uint16_t rc_eps_dist_1_temp_min; // dK
     uint16_t rc_eps_dist_1_temp_max; // dK
     uint16_t rc_eps_dist_1_temp_avg; // dK
-    uint16_t rc_eps_dist_1_sysrstiv; //  (No Units)
-    uint16_t rc_eps_dist_1_reset_count; //  (No Units)
+    uint8_t rc_eps_dist_1_sysrstiv; //  (No Units)
+    uint8_t rc_eps_dist_1_reset_count; //  (No Units)
 } rc_eps_dist_1;
 
 typedef struct rc_adcs_mpc_11 {
@@ -449,8 +449,8 @@ typedef struct rc_adcs_mpc_1 {
     uint16_t rc_adcs_mpc_1_temp_min; // dK
     uint16_t rc_adcs_mpc_1_temp_max; // dK
     uint16_t rc_adcs_mpc_1_temp_avg; // dK
-    uint16_t rc_adcs_mpc_1_sysrstiv; //  (No Units)
-    uint16_t rc_adcs_mpc_1_reset_count; //  (No Units)
+    uint8_t rc_adcs_mpc_1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_mpc_1_reset_count; //  (No Units)
 } rc_adcs_mpc_1;
 
 typedef struct rc_adcs_estim_8 {
@@ -490,8 +490,8 @@ typedef struct rc_adcs_estim_1 {
     uint16_t rc_adcs_estim_1_temp_min; // dK
     uint16_t rc_adcs_estim_1_temp_max; // dK
     uint16_t rc_adcs_estim_1_temp_avg; // dK
-    uint16_t rc_adcs_estim_1_sysrstiv; //  (No Units)
-    uint16_t rc_adcs_estim_1_reset_count; //  (No Units)
+    uint8_t rc_adcs_estim_1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_estim_1_reset_count; //  (No Units)
 } rc_adcs_estim_1;
 
 typedef struct rc_adcs_sp_12 {
@@ -601,8 +601,8 @@ typedef struct rc_adcs_sp_1 {
     uint16_t rc_adcs_sp_1_temp_min; // dK
     uint16_t rc_adcs_sp_1_temp_max; // dK
     uint16_t rc_adcs_sp_1_temp_avg; // dK
-    uint16_t rc_adcs_sp_1_sysrstiv; //  (No Units)
-    uint16_t rc_adcs_sp_1_reset_count; //  (No Units)
+    uint8_t rc_adcs_sp_1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_sp_1_reset_count; //  (No Units)
 } rc_adcs_sp_1;
 
 typedef struct rc_adcs_bdot_4 {
@@ -625,11 +625,11 @@ typedef struct rc_adcs_bdot_2 {
 } rc_adcs_bdot_2;
 
 typedef struct rc_adcs_bdot_1 {
-    uint16_t rc_adcs_bdot_1_reset_count; //  (No Units)
+    uint8_t rc_adcs_bdot_1_reset_count; //  (No Units)
     uint16_t rc_adcs_bdot_1_temp_min; // dK
     uint16_t rc_adcs_bdot_1_temp_max; // dK
     uint16_t rc_adcs_bdot_1_temp_avg; // dK
-    uint16_t rc_adcs_bdot_1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_bdot_1_sysrstiv; //  (No Units)
 } rc_adcs_bdot_1;
 
 typedef struct estim_sun_unit_z {
@@ -700,11 +700,11 @@ typedef struct rc_adcs_mtq_2 {
 } rc_adcs_mtq_2;
 
 typedef struct rc_adcs_mtq_1 {
-    uint16_t rc_adcs_mtq_1_reset_count; //  (No Units)
+    uint8_t rc_adcs_mtq_1_reset_count; //  (No Units)
     uint16_t rc_adcs_mtq_1_temp_min; // dK
     uint16_t rc_adcs_mtq_1_temp_max; // dK
     uint16_t rc_adcs_mtq_1_temp_avg; // dK
-    uint16_t rc_adcs_mtq_1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_mtq_1_sysrstiv; //  (No Units)
 } rc_adcs_mtq_1;
 
 typedef struct rc_ppt_3 {
@@ -721,11 +721,11 @@ typedef struct rc_ppt_2 {
 } rc_ppt_2;
 
 typedef struct rc_ppt_1 {
-    uint16_t rc_ppt_1_reset_count; //  (No Units)
+    uint8_t rc_ppt_1_reset_count; //  (No Units)
     uint16_t rc_ppt_1_temp_min; // dK
     uint16_t rc_ppt_1_temp_max; // dK
     uint16_t rc_ppt_1_temp_avg; // dK
-    uint16_t rc_ppt_1_sysrstiv; //  (No Units)
+    uint8_t rc_ppt_1_sysrstiv; //  (No Units)
 } rc_ppt_1;
 
 typedef struct rc_eps_gen_9 {
@@ -789,11 +789,11 @@ typedef struct rc_eps_gen_2 {
 } rc_eps_gen_2;
 
 typedef struct rc_eps_gen_1 {
-    uint16_t rc_eps_gen_1_reset_count; //  (No Units)
+    uint8_t rc_eps_gen_1_reset_count; //  (No Units)
     uint16_t rc_eps_gen_1_temp_min; // dK
     uint16_t rc_eps_gen_1_temp_max; // dK
     uint16_t rc_eps_gen_1_temp_avg; // dK
-    uint16_t rc_eps_gen_1_sysrstiv; //  (No Units)
+    uint8_t rc_eps_gen_1_sysrstiv; //  (No Units)
 } rc_eps_gen_1;
 
 typedef struct rc_eps_batt_6 {
@@ -832,11 +832,11 @@ typedef struct rc_eps_batt_2 {
 } rc_eps_batt_2;
 
 typedef struct rc_eps_batt_1 {
-    uint16_t rc_eps_batt_1_reset_count; //  (No Units)
+    uint8_t rc_eps_batt_1_reset_count; //  (No Units)
     uint16_t rc_eps_batt_1_temp_min; // dK
     uint16_t rc_eps_batt_1_temp_max; // dK
     uint16_t rc_eps_batt_1_temp_avg; // dK
-    uint16_t rc_eps_batt_1_sysrstiv; //  (No Units)
+    uint8_t rc_eps_batt_1_sysrstiv; //  (No Units)
 } rc_eps_batt_1;
 
 typedef struct cmd_ppt_set_count {
