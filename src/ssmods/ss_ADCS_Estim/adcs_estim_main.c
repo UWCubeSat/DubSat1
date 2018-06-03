@@ -273,6 +273,14 @@ FILE_STATIC void sendTelemOverBackchannel()
 
 }
 
+/**
+ * Keep trying to send a CAN packet until it really sends
+ */
+FILE_STATIC void waitAndSendCAN(CANPacket *p)
+{
+	while(canSendPacket(p));
+}
+
 FILE_STATIC void sendTelemOverCAN()
 {
     CANPacket p;
@@ -280,24 +288,24 @@ FILE_STATIC void sendTelemOverCAN()
     // send sc2sun_unit
     estim_sun_unit_x sunx = { rtY.sc2sun_unit[0] };
     encodeestim_sun_unit_x(&sunx, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
     estim_sun_unit_y suny = { rtY.sc2sun_unit[1] };
     encodeestim_sun_unit_y(&suny, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
     estim_sun_unit_z sunz = { rtY.sc2sun_unit[2] };
     encodeestim_sun_unit_z(&sunz, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
 
     // send mag_eci_unit
     estim_mag_unit_x magx = { rtY.mag_eci_unit[0] };
     encodeestim_mag_unit_x(&magx, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
     estim_mag_unit_y magy = { rtY.mag_eci_unit[1] };
     encodeestim_mag_unit_y(&magy, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
     estim_mag_unit_z magz = { rtY.mag_eci_unit[2] };
     encodeestim_mag_unit_z(&magz, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
 
     // send state
     estim_state state;
@@ -306,7 +314,7 @@ FILE_STATIC void sendTelemOverCAN()
     state.estim_state_in_sun = rtY.sc_in_sun ? CAN_ENUM_BOOL_TRUE
             : CAN_ENUM_BOOL_FALSE;
     encodeestim_state(&state, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
 }
 
 void canRxCallback(CANPacket *p)
