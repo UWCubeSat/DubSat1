@@ -10,9 +10,9 @@
 #ifndef ADCS_SENSORPROC_IDS_H_
 #define ADCS_SENSORPROC_IDS_H_
 
-#define ENABLE_SUNSENSOR   1
+#define ENABLE_SUNSENSOR   0
 #define ENABLE_MAG1        1
-#define ENABLE_MAG2        0
+#define ENABLE_MAG2        1
 #define ENABLE_IMU         1
 
 // COSMOS telemetry IDs

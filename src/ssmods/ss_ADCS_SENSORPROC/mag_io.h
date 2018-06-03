@@ -8,8 +8,8 @@
 #ifndef MAG_IO_H_
 #define MAG_IO_H_
 
-#define MAG_VALID_RANGE_NT  50 // TODO what is this really
-#define MAG_VALID_RANGE_RAW MAG_VALID_RANGE_NT / MAG_CONVERSION_FACTOR_RAW_TO_NANOTESLAS
+// TODO what should this be?
+#define MAG_VALID_RANGE_T 5e-6
 
 #define MAG1_I2CBUS I2CBus1
 #define MAG2_I2CBUS I2CBus2
