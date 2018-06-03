@@ -182,16 +182,16 @@ BO_ 2452161084 rc_adcs_mpc_9: 8 Vector__XXX
  SG_ rc_adcs_mpc_9_omega_y_min : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
 
 BO_ 2452161080 rc_adcs_mpc_5: 8 Vector__XXX
- SG_ rc_adcs_mpc_5_sc_quat_4 : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+ SG_ rc_adcs_mpc_5_sc_quat_4 : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
 
 BO_ 2452161081 rc_adcs_mpc_6: 8 Vector__XXX
  SG_ rc_adcs_mpc_6_omega_x_min : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
 
 BO_ 2452161079 rc_adcs_mpc_4: 8 Vector__XXX
- SG_ rc_adcs_mpc_4_sc_quat_3 : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+ SG_ rc_adcs_mpc_4_sc_quat_3 : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
 
 BO_ 2452161078 rc_adcs_mpc_3: 8 Vector__XXX
- SG_ rc_adcs_mpc_3_sc_quat_2 : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+ SG_ rc_adcs_mpc_3_sc_quat_2 : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
 
 BO_ 2452161090 rc_adcs_mpc_15: 2 Vector__XXX
  SG_ rc_adcs_mpc_15_sc_mode : 0|8@1+ (1,0) [0|32] "" Vector__XXX
@@ -210,7 +210,7 @@ BO_ 2452161085 rc_adcs_mpc_10: 8 Vector__XXX
  SG_ rc_adcs_mpc_10_omega_y_max : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
 
 BO_ 2452161077 rc_adcs_mpc_2: 8 Vector__XXX
- SG_ rc_adcs_mpc_2_sc_quat_1 : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+ SG_ rc_adcs_mpc_2_sc_quat_1 : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
 
 BO_ 2452161076 rc_adcs_mpc_1: 8 Vector__XXX
  SG_ rc_adcs_mpc_1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
@@ -370,22 +370,22 @@ BO_ 2452161030 rc_adcs_bdot_1: 8 Vector__XXX
  SG_ rc_adcs_bdot_1_sysrstiv : 48|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2449932980 estim_sun_unit_z: 8 Vector__XXX
- SG_ estim_sun_unit_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ estim_sun_unit_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "u" Vector__XXX
 
 BO_ 2449932979 estim_sun_unit_y: 8 Vector__XXX
- SG_ estim_sun_unit_y_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ estim_sun_unit_y_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "u" Vector__XXX
 
 BO_ 2449932978 estim_sun_unit_x: 8 Vector__XXX
- SG_ estim_sun_unit_x_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ estim_sun_unit_x_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "u" Vector__XXX
 
 BO_ 2449932983 estim_mag_unit_z: 8 Vector__XXX
- SG_ estim_mag_unit_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ estim_mag_unit_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "u" Vector__XXX
 
 BO_ 2449932982 estim_mag_unit_y: 8 Vector__XXX
- SG_ estim_mag_unit_y_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ estim_mag_unit_y_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "u" Vector__XXX
 
 BO_ 2449932981 estim_mag_unit_x: 8 Vector__XXX
- SG_ estim_mag_unit_x_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "" Vector__XXX
+ SG_ estim_mag_unit_x_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "u" Vector__XXX
 
 BO_ 2449932984 estim_state: 1 Vector__XXX
  SG_ estim_state_in_sun : 1|1@1+ (1,0) [0|1] "" Vector__XXX
