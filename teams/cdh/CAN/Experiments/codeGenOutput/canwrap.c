@@ -1033,6 +1033,7 @@ void decoderc_adcs_estim_8(CANPacket *input, rc_adcs_estim_8 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
+    output -> rc_adcs_estim_8_tle_id = (uint8_t) (((fullData & ((uint64_t) 0x1 << 13)) >> 13));
     output -> rc_adcs_estim_8_sgp4_flag = (int8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
     output -> rc_adcs_estim_8_sc_in_sun = (uint8_t) (((fullData & ((uint64_t) 0x1 << 15)) >> 15));
     output -> rc_adcs_estim_8_sc_above_gs = (uint8_t) (((fullData & ((uint64_t) 0x1 << 14)) >> 14));
@@ -1044,6 +1045,7 @@ void encoderc_adcs_estim_8(rc_adcs_estim_8 *input, CANPacket *output){
     output -> id = 304677427;
     output -> length = 7;
     uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_8_tle_id))) & 0x1) << 13;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_8_sgp4_flag))) & 0xff) << 16;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_8_sc_in_sun))) & 0x1) << 15;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_estim_8_sc_above_gs))) & 0x1) << 14;
