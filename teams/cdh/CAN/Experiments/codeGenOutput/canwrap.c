@@ -112,9 +112,9 @@ void canWrapInitWithFilter(){
         break;
       case Module_ADCS_MPC :
         filter_one = 0x01;
-        filter_two = 0x03;
-        filter_three = 0x04;
-        filter_four = 0x04;
+        filter_two = 0x04;
+        filter_three = 0x05;
+        filter_four = 0x07;
         break;
       case Module_ADCS_SensorProc :
         filter_one = 0x01;
