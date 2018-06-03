@@ -110,7 +110,7 @@ BO_ 2452161093 rc_eps_dist_3: 6 Vector__XXX
 BO_ 2452161092 rc_eps_dist_2: 6 Vector__XXX
  SG_ rc_eps_dist_2_uv_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
  SG_ rc_eps_dist_2_met_overflow : 40|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_eps_dist_2_met : 8|32@1+ (1,0) [0|4294967296] "" Vector__XXX
+ SG_ rc_eps_dist_2_met : 8|32@1+ (1,0) [0|4294967296] "2^-8 s" Vector__XXX
 
 BO_ 2452161107 rc_eps_dist_17: 6 Vector__XXX
  SG_ rc_eps_dist_17_ppt_v_min : 0|16@1+ (1,0) [0|65535] "mV" Vector__XXX
@@ -224,8 +224,8 @@ BO_ 2452161075 rc_adcs_estim_8: 7 Vector__XXX
  SG_ rc_adcs_estim_8_sgp4_flag : 40|8@1- (1,0) [-1|1] "" Vector__XXX
  SG_ rc_adcs_estim_8_sc_in_sun : 48|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_adcs_estim_8_sc_above_gs : 49|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ rc_adcs_estim_8_epoch_overflow : 32|8@1+ (1,0) [0|255] "s^-8 since J2000 " Vector__XXX
- SG_ rc_adcs_estim_8_epoch : 0|32@1+ (1,0) [0|4294967295] "s^-8 since J2000 " Vector__XXX
+ SG_ rc_adcs_estim_8_epoch_overflow : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_estim_8_epoch : 0|32@1+ (1,0) [0|4294967295] "2^-8 s" Vector__XXX
 
 BO_ 2452161074 rc_adcs_estim_7: 8 Vector__XXX
  SG_ rc_adcs_estim_7_vel_z : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "m/s" Vector__XXX
@@ -651,7 +651,7 @@ BO_ 2483355715 sensorproc_mag: 7 adcs_sensorproc
 BO_ 2148597780 cmd_rollcall: 7 eps_dist
  SG_ cmd_rollcall_type : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ cmd_rollcall_met_overflow : 40|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ cmd_rollcall_met : 8|32@1+ (1,0) [0|4294967295] "" Vector__XXX
+ SG_ cmd_rollcall_met : 8|32@1+ (1,0) [0|4294967295] "2^-8 s" Vector__XXX
  SG_ cmd_rollcall_msp : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2181496880 mtq_ack: 8 adcs_mtq
