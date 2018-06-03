@@ -33,11 +33,18 @@ FILE_STATIC void rcPopulate5(CANPacket *out);
 FILE_STATIC void rcPopulate6(CANPacket *out);
 FILE_STATIC void rcPopulate7(CANPacket *out);
 FILE_STATIC void rcPopulate8(CANPacket *out);
+FILE_STATIC void rcPopulate9(CANPacket *out);
+FILE_STATIC void rcPopulate10(CANPacket *out);
+FILE_STATIC void rcPopulate11(CANPacket *out);
+FILE_STATIC void rcPopulate12(CANPacket *out);
+FILE_STATIC void rcPopulate13(CANPacket *out);
+FILE_STATIC void rcPopulate14(CANPacket *out);
 
 FILE_STATIC rollcall_fn rollcallFunctions[] =
 {
- rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate6,
- rcPopulate7, rcPopulate8
+ rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
+ rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10,
+ rcPopulate11, rcPopulate12, rcPopulate13, rcPopulate14
 };
 
 #define NUM_ROLLCALL_PACKETS (sizeof(rollcallFunctions) / sizeof(rollcall_fn))
@@ -441,3 +448,46 @@ FILE_STATIC void rcPopulate8(CANPacket *out)
 
     encoderc_adcs_estim_8(&rc, out);
 }
+
+FILE_STATIC void rcPopulate9(CANPacket *out)
+{
+    rc_adcs_estim_9 rc;
+    rc.rc_adcs_estim_9_sun_x = rtY.sc2sun_unit[0];
+    encoderc_adcs_estim_9(&rc, out);
+}
+
+FILE_STATIC void rcPopulate10(CANPacket *out)
+{
+    rc_adcs_estim_10 rc;
+    rc.rc_adcs_estim_10_sun_y = rtY.sc2sun_unit[1];
+    encoderc_adcs_estim_10(&rc, out);
+}
+
+FILE_STATIC void rcPopulate11(CANPacket *out)
+{
+    rc_adcs_estim_11 rc;
+    rc.rc_adcs_estim_11_sun_z = rtY.sc2sun_unit[2];
+    encoderc_adcs_estim_11(&rc, out);
+}
+
+FILE_STATIC void rcPopulate12(CANPacket *out)
+{
+    rc_adcs_estim_12 rc;
+    rc.rc_adcs_estim_12_mag_x = rtY.mag_eci_unit[0];
+    encoderc_adcs_estim_12(&rc, out);
+}
+
+FILE_STATIC void rcPopulate13(CANPacket *out)
+{
+    rc_adcs_estim_13 rc;
+    rc.rc_adcs_estim_13_mag_y = rtY.mag_eci_unit[1];
+    encoderc_adcs_estim_13(&rc, out);
+}
+
+FILE_STATIC void rcPopulate14(CANPacket *out)
+{
+    rc_adcs_estim_14 rc;
+    rc.rc_adcs_estim_14_mag_z = rtY.mag_eci_unit[2];
+    encoderc_adcs_estim_14(&rc, out);
+}
+
