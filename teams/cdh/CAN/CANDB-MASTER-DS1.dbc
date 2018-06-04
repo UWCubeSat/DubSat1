@@ -58,22 +58,22 @@ BO_ 2483355716 sensorproc_mag2: 7 Vector__XXX
  SG_ sensorproc_mag2_valid : 48|1@1+ (1,0) [0|1] "bool" Vector__XXX
 
 BO_ 2452161113 rc_adcs_estim_14: 8 Vector__XXX
- SG_ rc_adcs_estim_14_mag_z : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+ SG_ rc_adcs_estim_14_mag_z : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
 
 BO_ 2452161112 rc_adcs_estim_13: 8 Vector__XXX
- SG_ rc_adcs_estim_13_mag_y : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+ SG_ rc_adcs_estim_13_mag_y : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
 
 BO_ 2452161111 rc_adcs_estim_12: 8 Vector__XXX
- SG_ rc_adcs_estim_12_mag_x : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+ SG_ rc_adcs_estim_12_mag_x : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
 
 BO_ 2452161110 rc_adcs_estim_11: 8 Vector__XXX
- SG_ rc_adcs_estim_11_sun_z : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+ SG_ rc_adcs_estim_11_sun_z : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
 
 BO_ 2452161109 rc_adcs_estim_10: 8 Vector__XXX
- SG_ rc_adcs_estim_10_sun_y : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+ SG_ rc_adcs_estim_10_sun_y : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
 
 BO_ 2452161108 rc_adcs_estim_9: 8 Vector__XXX
- SG_ rc_adcs_estim_9_sun_x : 0|64@1- (1,0) [-1|1] "" Vector__XXX
+ SG_ rc_adcs_estim_9_sun_x : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
 
 BO_ 2452161106 rc_eps_dist_16: 7 Vector__XXX
  SG_ rc_eps_dist_16_ppt_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
