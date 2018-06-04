@@ -45,7 +45,7 @@ FILE_STATIC uint32_t rtOneStep_us = 100000;
 FILE_STATIC ModuleStatus mod_status;
 /***************************************************************/
 uint8_t receievedquestionmark =0;
-uint64_t received=0;
+FILE_STATIC uint64_t received=0;
 
 void reverseArrah(uint8_t arr[], uint8_t start, uint8_t end) {
     uint8_t temp;
@@ -100,7 +100,7 @@ int main(void)
             errorcount += canRxErrorCheck();
             CANPacket out;
             CANPacket* output = &out;
-             output -> id = 304677443;
+            output -> id = 304677443;
             output -> length = 8;
             uint64_t fullPacketData = 0x0000000000000000;
             fullPacketData = ((uint64_t)received) ;
@@ -115,23 +115,14 @@ int main(void)
         {
             PJDIR |= BIT0;
             PJOUT ^= BIT0;
+            //deteled this and worked
             rt_OneStep();
             updateMtqInfo();
             sendTelemetry();
             updateRCData();
+            //end deletion
             update_rt_flag = 0;
         }
-
-        if(send_dipole_flag && mtq_state == mag_valid)
-        {
-            sendDipolePacket(mtqInfo.xDipole, mtqInfo.yDipole, mtqInfo.zDipole);
-            lastKnownState.xDipole = mtqInfo.xDipole;
-            lastKnownState.yDipole = mtqInfo.yDipole;
-            lastKnownState.zDipole = mtqInfo.zDipole;
-            send_dipole_flag = 0;
-        }
-
-        rollCall();
 
     }
 

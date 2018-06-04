@@ -14,6 +14,7 @@
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
+#include "bdot_controller_lib.h"
 
 
 #define MY_TELEM_DISABLED 0
