@@ -205,6 +205,27 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodegcmd_mtq_pop(CANPacket *input, gcmd_mtq_pop *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_mtq_pop_z = (uint8_t) (((fullData & ((uint64_t) 0x3 << 58)) >> 58));
+    output -> gcmd_mtq_pop_y = (uint8_t) (((fullData & ((uint64_t) 0x3 << 60)) >> 60));
+    output -> gcmd_mtq_pop_x = (uint8_t) (((fullData & ((uint64_t) 0x3 << 62)) >> 62));
+}
+
+void encodegcmd_mtq_pop(gcmd_mtq_pop *input, CANPacket *output){
+    output -> id = 302449340;
+    output -> length = 6;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_mtq_pop_z))) & 0x3) << 58;
+    fullPacketData |= (((uint64_t)((input -> gcmd_mtq_pop_y))) & 0x3) << 60;
+    fullPacketData |= (((uint64_t)((input -> gcmd_mtq_pop_x))) & 0x3) << 62;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decoderc_eps_batt_7(CANPacket *input, rc_eps_batt_7 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);

@@ -26,6 +26,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_MTQ_POP 302449340
 #define CAN_ID_RC_EPS_BATT_7 304677466
 #define CAN_ID_SENSORPROC_MAG2 335872068
 #define CAN_ID_RC_ADCS_ESTIM_14 304677465
@@ -240,6 +241,12 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_mtq_pop {
+    uint8_t gcmd_mtq_pop_z; //  (No Units)
+    uint8_t gcmd_mtq_pop_y; //  (No Units)
+    uint8_t gcmd_mtq_pop_x; //  (No Units)
+} gcmd_mtq_pop;
+
 typedef struct rc_eps_batt_7 {
     uint16_t rc_eps_batt_7_acc_charge_min; // 22.588 mAh
     uint16_t rc_eps_batt_7_acc_charge_max; // 22.588 mAh
@@ -405,7 +412,7 @@ typedef struct rc_adcs_mpc_9 {
 } rc_adcs_mpc_9;
 
 typedef struct rc_adcs_mpc_5 {
-    double rc_adcs_mpc_5_sc_quat_4; //  (No Units)
+    double rc_adcs_mpc_5_sc_quat_4; // u
 } rc_adcs_mpc_5;
 
 typedef struct rc_adcs_mpc_6 {
@@ -413,11 +420,11 @@ typedef struct rc_adcs_mpc_6 {
 } rc_adcs_mpc_6;
 
 typedef struct rc_adcs_mpc_4 {
-    double rc_adcs_mpc_4_sc_quat_3; //  (No Units)
+    double rc_adcs_mpc_4_sc_quat_3; // u
 } rc_adcs_mpc_4;
 
 typedef struct rc_adcs_mpc_3 {
-    double rc_adcs_mpc_3_sc_quat_2; //  (No Units)
+    double rc_adcs_mpc_3_sc_quat_2; // u
 } rc_adcs_mpc_3;
 
 typedef struct rc_adcs_mpc_15 {
@@ -442,7 +449,7 @@ typedef struct rc_adcs_mpc_10 {
 } rc_adcs_mpc_10;
 
 typedef struct rc_adcs_mpc_2 {
-    double rc_adcs_mpc_2_sc_quat_1; //  (No Units)
+    double rc_adcs_mpc_2_sc_quat_1; // u
 } rc_adcs_mpc_2;
 
 typedef struct rc_adcs_mpc_1 {
@@ -633,27 +640,27 @@ typedef struct rc_adcs_bdot_1 {
 } rc_adcs_bdot_1;
 
 typedef struct estim_sun_unit_z {
-    double estim_sun_unit_z_val; //  (No Units)
+    double estim_sun_unit_z_val; // u
 } estim_sun_unit_z;
 
 typedef struct estim_sun_unit_y {
-    double estim_sun_unit_y_val; //  (No Units)
+    double estim_sun_unit_y_val; // u
 } estim_sun_unit_y;
 
 typedef struct estim_sun_unit_x {
-    double estim_sun_unit_x_val; //  (No Units)
+    double estim_sun_unit_x_val; // u
 } estim_sun_unit_x;
 
 typedef struct estim_mag_unit_z {
-    double estim_mag_unit_z_val; //  (No Units)
+    double estim_mag_unit_z_val; // u
 } estim_mag_unit_z;
 
 typedef struct estim_mag_unit_y {
-    double estim_mag_unit_y_val; //  (No Units)
+    double estim_mag_unit_y_val; // u
 } estim_mag_unit_y;
 
 typedef struct estim_mag_unit_x {
-    double estim_mag_unit_x_val; //  (No Units)
+    double estim_mag_unit_x_val; // u
 } estim_mag_unit_x;
 
 typedef struct estim_state {
@@ -1073,6 +1080,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_mtq_pop(gcmd_mtq_pop *input, CANPacket* output);
+void decodegcmd_mtq_pop(CANPacket *input, gcmd_mtq_pop *output);
 
 void encoderc_eps_batt_7(rc_eps_batt_7 *input, CANPacket* output);
 void decoderc_eps_batt_7(CANPacket *input, rc_eps_batt_7 *output);
