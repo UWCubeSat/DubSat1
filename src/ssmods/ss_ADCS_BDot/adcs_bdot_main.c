@@ -116,6 +116,7 @@ int main(void)
             PJDIR |= BIT0;
             PJOUT ^= BIT0;
             //deteled this and worked
+            //rt_OneStep && mtqInfo but no telemetry crashed
             rt_OneStep();
             updateMtqInfo();
             sendTelemetry();
@@ -201,7 +202,8 @@ int funkyDipolesZ[20] = {
 int funkyCounter=0;
 void updateMtqInfo()
 {
-    funkyCounter++;
+    funkyCounter = funkyCounter+1;
+    funkyCounter = funkyCounter%20;
     mtqInfo.tumble_status  = 1;
     if(mtqInfo.tumble_status)
     {
