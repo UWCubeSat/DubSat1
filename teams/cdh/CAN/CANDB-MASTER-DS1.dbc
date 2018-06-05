@@ -46,6 +46,11 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2449932988 gcmd_mtq_pop: 6 Vector__XXX
+ SG_ gcmd_mtq_pop_z : 4|2@1+ (1,0) [0|2] "" Vector__XXX
+ SG_ gcmd_mtq_pop_y : 2|2@1+ (1,0) [0|2] "" Vector__XXX
+ SG_ gcmd_mtq_pop_x : 0|2@1+ (1,0) [0|2] "" Vector__XXX
+
 BO_ 2452161114 rc_eps_batt_7: 6 Vector__XXX
  SG_ rc_eps_batt_7_acc_charge_min : 0|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
  SG_ rc_eps_batt_7_acc_charge_max : 16|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
@@ -745,6 +750,9 @@ BO_TX_BU_ 2183725075 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2449932988 gcmd_mtq_pop_z 2 "null" 1 "true" 0 "false" ;
+VAL_ 2449932988 gcmd_mtq_pop_y 2 "null" 1 "true" 0 "false" ;
+VAL_ 2449932988 gcmd_mtq_pop_x 2 "null" 1 "true" 0 "false" ;
 VAL_ 2483355716 sensorproc_mag2_valid 1 "true" 0 "false" ;
 VAL_ 2452161106 rc_eps_dist_16_ppt_state 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
 VAL_ 2452161096 rc_eps_dist_6_com2_state 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
