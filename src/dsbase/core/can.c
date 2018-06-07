@@ -36,18 +36,18 @@ uint8_t canTxCheck(void){
     // Read TXB0CTRL to see if Buffer 0 RTS is 1
     // That would mean we shouldn't overwrite this register.
     readRegister(MCP_TXB0CTRL, &bufferstatus);
-    retval |= (bufferstatus & 0x08) >> 3;
+    retval |= (bufferstatus & TXREQ) >> 3;
     // Read TXB1CTRL to see if Buffer 1 RTS is 1
     // That would mean we shouldn't overwrite this register.
     bufferstatus = 0;
     readRegister(MCP_TXB1CTRL, &bufferstatus);
-    retval |= (bufferstatus & 0x08) >> 2;
+    retval |= (bufferstatus & TXREQ) >> 2;
     // Read TXB2CTRL to see if Buffer 2 RTS is 1
     // That would mean we shouldn't overwrite this register.
     bufferstatus = 0;
     readRegister(MCP_TXB2CTRL, &bufferstatus);
     enableCanInterrupt();
-    retval |= (bufferstatus & 0x08) >> 1;
+    retval |= (bufferstatus & TXREQ) >> 1;
     return retval;
 }
 
@@ -61,7 +61,7 @@ void setTheFilter(uint8_t address, uint32_t value){
     disableCanInterrupt();
 
     // Set mode to CFG
-    bitModify(MCP_CANCTRL, 0xE0, 0x80);
+    bitModify(MCP_CANCTRL, MCP_REQOP, MODE_CONFIG);
 
     //Set The Registers
     setRegister(address, (uint8_t) (value >> 21));
@@ -70,7 +70,7 @@ void setTheFilter(uint8_t address, uint32_t value){
     setRegister(address + 3, (uint8_t) value);
 
     //Set mode to Normal
-    bitModify(MCP_CANCTRL, 0xE0, 0x00);
+    bitModify(MCP_CANCTRL, MCP_REQOP, MCP_NORMAL);
 
     // Re-enable CAN interrupts
     enableCanInterrupt();
@@ -89,23 +89,23 @@ uint8_t canInit() {
     //step 2: initialize buffers, masks, and filters
     // a: CNF1, synchronization jump width length, baud rate prescaler
     //    ref: pg 45
-    setRegister(MCP_CNF1, 0x83);
+    setRegister(MCP_CNF1, HS_CNF1_SJW | HS_CNF1_BRP);
     // b: CNF2, bittime length bit, sample point config bit
-    setRegister(MCP_CNF2, 0xbf);
+    setRegister(MCP_CNF2, HS_CNF2_BTLMODE | HS_CNF2_SAM | HS_CNF2_PHSEG1 | HS_CNF2_PRSEG);
     // c: CNF3, start of frame signal bit, wake up filter bit,
-    setRegister(MCP_CNF3, 0x02);
+    setRegister(MCP_CNF3, HS_CNF3_SOF | HS_CNF3_WAKFIL | HS_CNF3_PHSEG2);
 
     // Set the interrupt pin low when the following occurs
     // Interrupts for receive
     // Enable support for error on send
-    bitModify(MCP_CANINTE, 0x3,0x3);
+    bitModify(MCP_CANINTE, RX0IE | RX1IE, RX0IE | RX1IE);
 
     // Acceptance Filters only on extended identifiers
-    bitModify(MCP_RXB0CTRL, 0x60, 0x00);
-    bitModify(MCP_RXB1CTRL, 0x60, 0x00);
+    bitModify(MCP_RXB0CTRL, RXM1 | RXM0, 0x00);
+    bitModify(MCP_RXB1CTRL, RXM1 | RXM0, 0x00);
 
       //step 3: set mode to normal
-    bitModify(MCP_CANCTRL, 0xE0, 0x00);
+    bitModify(MCP_CANCTRL, MCP_REQOP, MCP_NORMAL);
 
     // step 4: check on REQOP<2:0> on CANCTRL register
     // a: verify normal mode by reading OPMOD bits in the CANCTRL registe
@@ -303,13 +303,13 @@ __interrupt void ReceivedMsg(void) {
 
             if (res == 0) {
                 // Data received in bytes
-                length = rxb0dlc & 0xF;
+                length = rxb0dlc & MCP_RXBNDLC_DLC;
 
                 // Read from receive buffer
                 uint8_t buf[8 + 1], msg[8];
 
                 // Read from receive buffer SPI instruction
-                buf[0] = 0x92;
+                buf[0] = CAN_READ_RXBUF | CAN_READ_RXBUF_0;
                 spiTransceive(buf, buf, 9, CS_1);
 
                 // Read incoming message ID. This is spread over several
@@ -326,7 +326,7 @@ __interrupt void ReceivedMsg(void) {
                 readRegister(MCP_RXB0SIDH + 3, &bufBuf);
                 id |= bufBuf;
                 // Clear out the interrupt flag for receive buffer 0
-                bitModify(MCP_CANINTF, 0x1, 0x0);
+                bitModify(MCP_CANINTF, RX0IF, 0x0);
                 int i = 0;
                 for (i = 0; i < length; i++){
                     msg[i] = buf[i+1];
@@ -344,9 +344,9 @@ __interrupt void ReceivedMsg(void) {
         res = readRegister(MCP_RXB1DLC, &rxb1dlc);
 
             if (res == 0) {
-                length = rxb1dlc & 0xF;
+                length = rxb1dlc & MCP_RXBNDLC_DLC;
                 uint8_t buf[8 + 1], msg[8];
-                buf[0] = 0x96;
+                buf[0] = CAN_READ_RXBUF | CAN_READ_RXBUF_0;
                 spiTransceive(buf, buf, 9, CS_1);
                 uint32_t id = 0;
                 uint8_t bufBuf = 0xFF;
@@ -359,7 +359,7 @@ __interrupt void ReceivedMsg(void) {
                 id |= (uint32_t) bufBuf << 8;
                 readRegister(MCP_RXB1SIDH + 3, &bufBuf);
                 id |= bufBuf;
-                bitModify(MCP_CANINTF, 0x2, 0x0);
+                bitModify(MCP_CANINTF, RX1IF, 0x0);
                 int i = 0;
                 for (i = 0; i < length; i++){
                     msg[i] = buf[i+1];
