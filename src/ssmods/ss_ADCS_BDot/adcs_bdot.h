@@ -26,6 +26,8 @@
 #define CMD_SELECT_SP_MAG1 2
 #define CMD_SELECT_SP_MAG2 3
 
+#define CMD_MODE_OP_NORMAL 1
+#define CMD_SELF_TEST_OP 0
 
 #define TLM_ID_BDOT_MAGNETOMETER  127
 #define TLM_ID_MTQ_INFO 126
@@ -38,6 +40,7 @@
 #define OPCODE_MY_CMD 1
 #define OPCODE_MAG_SELECT_CMD 2
 #define OPCODE_NAP_WAKEUP_CMD 3
+#define OPCODE_MODE_OPERATION_CMD 4
 
 #define MTQ_MEASUREMENT_PHASE 0
 #define MTQ_ACTUATION_PHASE  1
@@ -48,9 +51,12 @@ CMD_SEGMENT {
 } enable_segment;
 
 CMD_SEGMENT {
-    uint8_t enable_cmd;
     uint8_t mag_select;
 } mag_select_cmd;
+
+CMD_SEGMENT {
+    uint8_t select_mode_operation;
+} mode_operation_cmd;
 
 
 TLM_SEGMENT {
@@ -112,8 +118,10 @@ void read_continuous_mag_data_cosmos();
 void read_magnetometer_data();
 void simulink_compute();
 
+void process_sp_mag();
 
 void send_bdot_mag_reading_cosmos();
+void send_continuous_mag_reading_cosmos();
 
 void send_sp_mag1_reading_cosmos();
 void send_sp_mag2_reading_cosmos();

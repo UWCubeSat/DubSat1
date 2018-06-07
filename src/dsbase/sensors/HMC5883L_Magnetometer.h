@@ -5,6 +5,12 @@
  *      Author: jeffc
  */
 
+/* README:
+ * In the event the ADC reading overflows or underflows for the given channel, or if there is a math overflow during the bias
+ * measurement,  the  data  register  will  contain  the  value -4096.  The  register  value  will  clear  when  after  the  next  valid
+ * measurement is made.
+ */
+
 #ifndef _HMC5883L_MAGNETOMETER_H
 #define _HMC5883L_MAGNETOMETER_H
 

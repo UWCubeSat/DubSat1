@@ -39,6 +39,9 @@
 #define MAG_BEST_FIT_OVERRIDE 1
 #define MAG_BEST_FIT_AUTO 0
 
+#define NORMAL_READING_OPERATION 1
+#define SELF_TEST_READING_OPERATION 0
+
 
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
@@ -71,7 +74,7 @@ FILE_STATIC uint8_t current_listening_mag = BDOT_MAG;
 FILE_STATIC uint8_t mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
 FILE_STATIC uint8_t cmd_mag_selection = BDOT_MAG;
 FILE_STATIC hMag mag_num;
-FILE_STATIC uint8_t mag_norm_op = 1;
+FILE_STATIC uint8_t mag_reading_mode = NORMAL_READING_OPERATION;
 /***************************************************************/
 
 /******************Simulink Flags and Information***************/
@@ -126,16 +129,8 @@ int main(void)
 
     while (1)
     {
-        if(sp_mag1_new_data_flag)
-        {
-            convert_mag_data_raw_to_teslas(sp_mag1_data);
-            sp_mag1_new_data_flag = 0;
-        }
-        if(sp_mag2_new_data_flag)
-        {
-            convert_mag_data_raw_to_teslas(sp_mag2_data);
-            sp_mag2_new_data_flag = 0;
-        }
+        process_sp_mag();
+
         if(checkTimer(check_best_mag_timer))
         {
             determine_best_fit_mag();
@@ -241,51 +236,72 @@ void initial_setup()
  * MT_on = 0 always. Always send in the latest VALID magnetometer data*/
 void update_simulink_info()
 {
+    // Data going into rt onestep depends on which magnetometer bdot is listening to
     switch(current_listening_mag)
     {
         case BDOT_MAG:
             rtU.B_body_in_T[0] = valid_bdot_mag_data->convertedX;
             rtU.B_body_in_T[1] = valid_bdot_mag_data->convertedY;
             rtU.B_body_in_T[2] = valid_bdot_mag_data->convertedZ;
-            rtU.B_meas_valid = mag_norm_op;
+            rtU.B_meas_valid = (mag_reading_mode == NORMAL_READING_OPERATION);
             rtU.MT_on = 0;
             break;
         case SP_MAG1:
             rtU.B_body_in_T[0] = sp_mag1_data->convertedX;
             rtU.B_body_in_T[1] = sp_mag1_data->convertedY;
             rtU.B_body_in_T[2] = sp_mag1_data->convertedZ;
-            rtU.B_meas_valid = mag_norm_op;
+            rtU.B_meas_valid = (mag_reading_mode == NORMAL_READING_OPERATION);
             rtU.MT_on = 0;
             break;
         case SP_MAG2:
             rtU.B_body_in_T[0] = sp_mag2_data->convertedX;
             rtU.B_body_in_T[1] = sp_mag2_data->convertedY;
             rtU.B_body_in_T[2] = sp_mag2_data->convertedZ;
-            rtU.B_meas_valid = mag_norm_op;
+            rtU.B_meas_valid = (mag_reading_mode == NORMAL_READING_OPERATION);
             rtU.MT_on = 0;
             break;
         default:
             rtU.B_body_in_T[0] = valid_bdot_mag_data->convertedX;
             rtU.B_body_in_T[1] = valid_bdot_mag_data->convertedY;
             rtU.B_body_in_T[2] = valid_bdot_mag_data->convertedZ;
-            rtU.B_meas_valid = mag_norm_op;
+            rtU.B_meas_valid = (mag_reading_mode == NORMAL_READING_OPERATION);
             rtU.MT_on = 0;
     }
 }
 
-/* Read magnetometer data based on the current operation.
- * For debugging purposes, use testing_magReadXYZData (for aardvark).
- * Function to read magnetometer data returns a struct with xyz magnetometer and temp. */
+
+void process_sp_mag()
+{
+    if(sp_mag1_new_data_flag)
+    {
+        convert_mag_data_raw_to_teslas(sp_mag1_data);
+        sp_mag1_new_data_flag = 0;
+    }
+    if(sp_mag2_new_data_flag)
+    {
+        convert_mag_data_raw_to_teslas(sp_mag2_data);
+        sp_mag2_new_data_flag = 0;
+    }
+}
+
+/* Read magnetometer data continuously every 10Hz, ignoring whether or not mtq is actuating.
+ * Function is for debugging purposes.
+ */
 void read_magnetometer_data()
 {
     continuous_bdot_mag_data = magReadXYZData(mag_num, ConvertToTeslas);
 }
 
+
+/* Update valid bdot magnetometer. This function is only called when mtq is in measurement phase */
 void update_valid_mag_data()
 {
-	valid_bdot_mag_data->convertedX = continuous_bdot_mag_data->convertedX;
-	valid_bdot_mag_data->convertedY = continuous_bdot_mag_data->convertedY;
-	valid_bdot_mag_data->convertedZ = continuous_bdot_mag_data->convertedZ;
+    if (mag_reading_mode == NORMAL_READING_OPERATION)
+    {
+        valid_bdot_mag_data->convertedX = continuous_bdot_mag_data->convertedX;
+        valid_bdot_mag_data->convertedY = continuous_bdot_mag_data->convertedY;
+        valid_bdot_mag_data->convertedZ = continuous_bdot_mag_data->convertedZ;
+    }
 }
 
 void convert_mag_data_raw_to_teslas(MagnetometerData * mag)
@@ -295,14 +311,18 @@ void convert_mag_data_raw_to_teslas(MagnetometerData * mag)
     mag->convertedY = magConvertRawToTeslas(mag->rawY);
 }
 
+/* Function that does math to determine which magnetometer bdot should listen to.
+ * This should not be called every time sampling.
+ */
 void determine_best_fit_mag()
 {
+    // find the median of the norm to determine best magnetometer to use. TODO: Think of a better, less costly method
     float bdot_mag_norm = sqrt(abs(continuous_bdot_mag_data->convertedX)^2 + abs(continuous_bdot_mag_data->convertedY)^2 + abs(continuous_bdot_mag_data->convertedZ)^2);
     float sp_mag1_norm =  sqrt(abs(sp_mag1_data->convertedX)^2 + abs(sp_mag1_data->convertedY)^2 + abs(sp_mag1_data->convertedZ)^2);
     float sp_mag2_norm = sqrt(abs(sp_mag2_data->convertedX)^2 + abs(sp_mag2_data->convertedY)^2 + abs(sp_mag2_data->convertedZ)^2);
 
-    // find the median of the norm to determine best magnetometer to use. TODO: Think of a better, less costly method
-
+    /* If magnetometer selection mode is on override, which is a command given from ground, bdot should select the magnetometer
+        that ground saids to listen to */
     if(mag_selection_mode == MAG_BEST_FIT_OVERRIDE)
     {
         current_listening_mag = cmd_mag_selection;
@@ -325,12 +345,13 @@ void determine_best_fit_mag()
     }
 }
 
+/* Start the timer that goes off when it's time to check what magnetometer to listen to */
 void start_check_best_mag_timer()
 {
     check_best_mag_timer = timerPollInitializer(check_best_mag_timer_ms);
 }
 
-
+/* determine that dipoles to send to mtq */
 void determine_mtq_commands()
 {
     bdot_perspective_mtq_info.tumble_status  = (uint8_t) rtY.tumble;
@@ -380,20 +401,6 @@ void send_dipole_packet(int8_t x, int8_t y, int8_t z)
     canSendPacket(&dipole_packet);
 }
 
-/* Switch magnetometer reading operation to do self test...lol */
-void perform_self_test()
-{
-    selfTestConfig(mag_num);
-    mag_norm_op = 0;
-}
-
-/* Switch magnetometer reading operation to do normal operation */
-void perform_norm_op()
-{
-    normalOperationConfig(mag_num);
-    mag_norm_op = 1;
-}
-
 /* convert val range from -127-127 to -100-100 */
 int map(int val)
 {
@@ -402,7 +409,7 @@ int map(int val)
 
 int map_general(int x, int in_min, int in_max, int out_min, int out_max)
 {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 /* Can packet receive callback function */
@@ -556,7 +563,7 @@ void updateRCData()
  */
 void rt_OneStep(void)
 {
-  bdot_controller_lib_step();
+    bdot_controller_lib_step();
 }
 
 
@@ -605,6 +612,30 @@ void rcPopulate4(CANPacket *out)
     encoderc_adcs_bdot_4(&rc, out);
 }
 
+/* Switch magnetometer reading operation to do self test...lol */
+void select_mode_operation(uint8_t reading_mode_selection)
+{
+    switch(reading_mode_selection)
+    {
+        case NORMAL_READING_OPERATION:
+            mag_normal_reading_operation_config(mag_num);
+            mag_reading_mode = NORMAL_READING_OPERATION;
+            __delay_cycles(6000);
+            break;
+        case SELF_TEST_READING_OPERATION:
+            mag_self_test_config(mag_num);
+            mag_reading_mode = SELF_TEST_READING_OPERATION;
+            __delay_cycles(6000);
+            break;
+        default:
+            mag_normal_reading_operation_config(mag_num);
+            mag_reading_mode = NORMAL_READING_OPERATION;
+            __delay_cycles(6000);
+            break;
+    }
+}
+
+/* Supporting function that carries out ground command */
 void mag_select_switch(uint8_t mag_selection)
 {
     switch(mag_selection)
@@ -629,10 +660,10 @@ void mag_select_switch(uint8_t mag_selection)
     }
 }
 
-
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
-    mag_select_cmd *mag_select;
+    mag_select_cmd* mag_select;
+    mode_operation_cmd* mode_operation_select;
 
     if (mode == Mode_BinaryStreaming)
     {
@@ -641,6 +672,10 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
             case OPCODE_MAG_SELECT_CMD:
                 mag_select = (mag_select_cmd *) (cmdstr + 1);
                 mag_select_switch(mag_select->mag_select);
+                break;
+            case OPCODE_MODE_OPERATION_CMD:
+                mode_operation_select = (mode_operation_cmd *)(cmdstr + 1);
+                select_mode_operation(mode_operation_select->select_mode_operation);
                 break;
             case OPCODE_COMMONCMD:
                 break;

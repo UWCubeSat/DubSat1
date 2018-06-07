@@ -57,12 +57,9 @@ typedef struct  {
     int16_t rawX;
     int16_t rawY;
     int16_t rawZ;
-    int8_t rawTempA;
-    int8_t rawTempB;
     float convertedX;
     float convertedY;
     float convertedZ;
-    double convertedTemp;
 } MagnetometerData;
 
 typedef uint8_t hMag;
@@ -76,8 +73,8 @@ typedef uint8_t hMag;
 hMag magInit(bus_instance_i2c bus);
 
 MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode mode);
-void selfTestConfig(hMag handle);
-void normalOperationConfig(hMag handle);
+void mag_self_test_config(hMag handle);
+void mag_normal_reading_operation_config(hMag handle);
 
 /**
  * Convert a raw mag reading to Teslas
