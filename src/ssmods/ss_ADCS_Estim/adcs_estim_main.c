@@ -143,9 +143,7 @@ int main(void)
     asensorInit(Ref_2p5V);
 
     // init rollcall
-    // TODO use the buffer again when it works
-//    rollcallInitWithBuffer(rollcallFunctions, rcCANPackets, NUM_ROLLCALL_PACKETS);
-    rollcallInit(rollcallFunctions, NUM_ROLLCALL_PACKETS);
+    rollcallInitWithBuffer(rollcallFunctions, rcCANPackets, NUM_ROLLCALL_PACKETS);
     aggVec_init_i(&rc_mspTemp);
 
     // init autocode
