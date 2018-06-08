@@ -42,6 +42,9 @@
 #define NORMAL_READING_OPERATION 1
 #define SELF_TEST_READING_OPERATION 0
 
+#define BDOT_AWAKE 1
+#define BDOT_NAP 0
+
 
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
@@ -64,30 +67,69 @@ FILE_STATIC mtq_info mtq_last_known_state;
 
 
 /****************Magnetometer Variables*************************/
+/* holds magnetometer data read every 10 hz */
 FILE_STATIC MagnetometerData* continuous_bdot_mag_data;
+
+/* holds only the magnetometer that are "valid", meaning collected
+ * only under valid conditions.
+ * Valid conditions: 1. Magnetorquer is not on
+ *                   2. Magnetometer  is set to be in normal configurations
+ */
 FILE_STATIC MagnetometerData* valid_bdot_mag_data;
+
+/* sensor proc magnetometer data. These data were decided to be unfiltered data,
+ * meaning the data can be data collected when the magnetorquer is on.
+ */
 FILE_STATIC MagnetometerData* sp_mag1_data;
 FILE_STATIC MagnetometerData* sp_mag2_data;
+
+/* flag set to see when new magnetometer data are sent over to bdot from sensorproc */
 FILE_STATIC uint8_t sp_mag1_new_data_flag;
 FILE_STATIC uint8_t sp_mag2_new_data_flag;
+
+/* stores which magnetometer bdot is curently "listening" to */
 FILE_STATIC uint8_t current_listening_mag = BDOT_MAG;
+
+/* lets ground station pick which mag to use */
 FILE_STATIC uint8_t mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
+
+/* Ground station selection of which magnetomer to use */
 FILE_STATIC uint8_t cmd_mag_selection = BDOT_MAG;
+
+/* mag number for magnetometer reading. for questions, contact david */
 FILE_STATIC hMag mag_num;
+
+/* stores what magnetometer reading mode bdot is on, normal or testing */
 FILE_STATIC uint8_t mag_reading_mode = NORMAL_READING_OPERATION;
+
+FILE_STATIC uint8_t tumbling_too_long_flag = 0;
 /***************************************************************/
+
 
 /******************Simulink Flags and Information***************/
 FILE_STATIC uint8_t rt_flag = 0;
 /***************************************************************/
 
+
 /******************Timer Information***************************/
 FILE_STATIC TIMER_HANDLE rtOneStep_timer;
 FILE_STATIC uint32_t rtOneStep_us = 100000;
 
+/* this is the timer that will check go off when it's time to check
+ * to see which magnetometer to use.
+ */
 FILE_STATIC TIMER_HANDLE check_best_mag_timer;
 FILE_STATIC uint32_t check_best_mag_timer_ms = 180000; // 3 min
+
+/* this is the timer that will check to see whether or not bdot has
+ * reported tumbling continuously for a configurable amount of time.
+ * If that time has reached, bdot should send dipoles of 0 to magnetorquer
+ * until commands from ground are sent to "wake up" bdot OR rt onestep reports
+ * not tumbling */
+FILE_STATIC TIMER_HANDLE check_nap_status_timer;
+FILE_STATIC uint32_t check_nap_status_timer_ms = 1200000; // 20 min
 /***************************************************************/
+
 
 /*******************RollCall***********************************/
 FILE_STATIC aggVec_i rc_temp;
@@ -98,7 +140,7 @@ FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
  rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4
 };
-/*******************RollCall***********************************/
+/**************************************************************/
 
 
 /***************************************************************/
@@ -126,7 +168,7 @@ int main(void)
     rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
     startCallback(rtOneStep_timer);
     start_check_best_mag_timer();
-
+    start_check_nap_status_timer();
     while (1)
     {
         process_sp_mag();
@@ -136,6 +178,15 @@ int main(void)
             determine_best_fit_mag();
             start_check_best_mag_timer();
         }
+
+        if(!tumbling_too_long_flag)
+        {
+            if(checkTimer(start_check_nap_status_timer))
+            {
+                tumbling_too_long_flag = 1;
+            }
+        }
+
         if(rt_flag)
         {
             P3OUT ^= BIT5;
@@ -322,7 +373,7 @@ void determine_best_fit_mag()
     float sp_mag2_norm = sqrt(abs(sp_mag2_data->convertedX)^2 + abs(sp_mag2_data->convertedY)^2 + abs(sp_mag2_data->convertedZ)^2);
 
     /* If magnetometer selection mode is on override, which is a command given from ground, bdot should select the magnetometer
-        that ground saids to listen to */
+       that ground saids to listen to */
     if(mag_selection_mode == MAG_BEST_FIT_OVERRIDE)
     {
         current_listening_mag = cmd_mag_selection;
@@ -351,20 +402,34 @@ void start_check_best_mag_timer()
     check_best_mag_timer = timerPollInitializer(check_best_mag_timer_ms);
 }
 
+/* Start the timer that goes off when bdot has been tumbling for a certain amount of time */
+void start_check_nap_status_timer()
+{
+    check_nap_status_timer = timerPollInitializer(check_nap_status_timer_ms);
+}
+
 /* determine that dipoles to send to mtq */
 void determine_mtq_commands()
 {
     bdot_perspective_mtq_info.tumble_status  = (uint8_t) rtY.tumble;
     if(bdot_perspective_mtq_info.tumble_status)
     {
-        bdot_perspective_mtq_info.xDipole = map((int8_t) rtY.Dig_val[0]);
-        bdot_perspective_mtq_info.yDipole = map((int8_t) rtY.Dig_val[1]);
-        bdot_perspective_mtq_info.zDipole = map((int8_t) rtY.Dig_val[2]);
+        if(!tumbling_too_long_flag)
+        {
+            bdot_perspective_mtq_info.xDipole = map((int8_t) rtY.Dig_val[0]);
+            bdot_perspective_mtq_info.yDipole = map((int8_t) rtY.Dig_val[1]);
+            bdot_perspective_mtq_info.zDipole = map((int8_t) rtY.Dig_val[2]);
+        }
     } else
     {
+        tumbling_too_long_flag = 0;
         bdot_perspective_mtq_info.xDipole = 0;
         bdot_perspective_mtq_info.yDipole = 0;
         bdot_perspective_mtq_info.zDipole = 0;
+
+        /* restart nap timer for bdot */
+        endPollingTimer(check_nap_status_timer);
+        start_check_nap_status_timer();
     }
 }
 
@@ -401,7 +466,7 @@ void send_dipole_packet(int8_t x, int8_t y, int8_t z)
     canSendPacket(&dipole_packet);
 }
 
-/* convert val range from -127-127 to -100-100 */
+/* convert val range from -127->127 to -100->100 */
 int map(int val)
 {
     return map_general(val, -127, 127, -100, 100);
@@ -566,6 +631,79 @@ void rt_OneStep(void)
     bdot_controller_lib_step();
 }
 
+/* Switch magnetometer reading operation to do self test...lol */
+void select_mode_operation(uint8_t reading_mode_selection)
+{
+    switch(reading_mode_selection)
+    {
+        case NORMAL_READING_OPERATION:
+            mag_normal_reading_operation_config(mag_num);
+            mag_reading_mode = NORMAL_READING_OPERATION;
+            __delay_cycles(6000);
+            break;
+        case SELF_TEST_READING_OPERATION:
+            mag_self_test_config(mag_num);
+            mag_reading_mode = SELF_TEST_READING_OPERATION;
+            __delay_cycles(6000);
+            break;
+        default:
+            mag_normal_reading_operation_config(mag_num);
+            mag_reading_mode = NORMAL_READING_OPERATION;
+            __delay_cycles(6000);
+            break;
+    }
+}
+
+/* Supporting function that carries out ground command */
+void mag_select_switch(uint8_t mag_selection)
+{
+    switch(mag_selection)
+    {
+        case CMD_SELECT_AUTO:
+            mag_selection_mode = MAG_BEST_FIT_AUTO;
+            break;
+        case CMD_SELECT_BDOT_MAG:
+            mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
+            cmd_mag_selection = BDOT_MAG;
+            break;
+        case CMD_SELECT_SP_MAG1:
+            mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
+            cmd_mag_selection = SP_MAG1;
+            break;
+        case CMD_SELECT_SP_MAG2:
+            mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
+            cmd_mag_selection = SP_MAG2;
+            break;
+        default:
+            break;
+    }
+}
+
+uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
+{
+    mag_select_cmd* mag_select;
+    mode_operation_cmd* mode_operation_select;
+
+    if (mode == Mode_BinaryStreaming)
+    {
+        switch(cmdstr[0])
+        {
+            case OPCODE_MAG_SELECT_CMD:
+                mag_select = (mag_select_cmd *) (cmdstr + 1);
+                mag_select_switch(mag_select->mag_select);
+                break;
+            case OPCODE_MODE_OPERATION_CMD:
+                mode_operation_select = (mode_operation_cmd *)(cmdstr + 1);
+                select_mode_operation(mode_operation_select->select_mode_operation);
+                break;
+            case OPCODE_COMMONCMD:
+                break;
+            default:
+                break;
+        }
+    }
+    return 1;
+}
 
 void rcPopulate1(CANPacket *out)
 {
@@ -612,79 +750,7 @@ void rcPopulate4(CANPacket *out)
     encoderc_adcs_bdot_4(&rc, out);
 }
 
-/* Switch magnetometer reading operation to do self test...lol */
-void select_mode_operation(uint8_t reading_mode_selection)
-{
-    switch(reading_mode_selection)
-    {
-        case NORMAL_READING_OPERATION:
-            mag_normal_reading_operation_config(mag_num);
-            mag_reading_mode = NORMAL_READING_OPERATION;
-            __delay_cycles(6000);
-            break;
-        case SELF_TEST_READING_OPERATION:
-            mag_self_test_config(mag_num);
-            mag_reading_mode = SELF_TEST_READING_OPERATION;
-            __delay_cycles(6000);
-            break;
-        default:
-            mag_normal_reading_operation_config(mag_num);
-            mag_reading_mode = NORMAL_READING_OPERATION;
-            __delay_cycles(6000);
-            break;
-    }
-}
 
-/* Supporting function that carries out ground command */
-void mag_select_switch(uint8_t mag_selection)
-{
-    switch(mag_selection)
-    {
-        case CMD_SELECT_AUTO:
-            mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
-            break;
-        case CMD_SELECT_BDOT_MAG:
-            mag_selection_mode = MAG_BEST_FIT_AUTO;
-            cmd_mag_selection = BDOT_MAG;
-            break;
-        case CMD_SELECT_SP_MAG1:
-            mag_selection_mode = MAG_BEST_FIT_AUTO;
-            cmd_mag_selection = SP_MAG1;
-            break;
-        case CMD_SELECT_SP_MAG2:
-            mag_selection_mode = MAG_BEST_FIT_AUTO;
-            cmd_mag_selection = SP_MAG2;
-            break;
-        default:
-            break;
-    }
-}
-
-uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
-{
-    mag_select_cmd* mag_select;
-    mode_operation_cmd* mode_operation_select;
-
-    if (mode == Mode_BinaryStreaming)
-    {
-        switch(cmdstr[0])
-        {
-            case OPCODE_MAG_SELECT_CMD:
-                mag_select = (mag_select_cmd *) (cmdstr + 1);
-                mag_select_switch(mag_select->mag_select);
-                break;
-            case OPCODE_MODE_OPERATION_CMD:
-                mode_operation_select = (mode_operation_cmd *)(cmdstr + 1);
-                select_mode_operation(mode_operation_select->select_mode_operation);
-                break;
-            case OPCODE_COMMONCMD:
-                break;
-            default:
-                break;
-        }
-    }
-    return 1;
-}
 
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
