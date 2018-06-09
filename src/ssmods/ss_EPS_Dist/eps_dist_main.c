@@ -43,9 +43,14 @@ FILE_STATIC uint8_t domainsSensorAddresses[] =   { 0x43, 0x40, 0x44, 0x42, 0x45,
 FILE_STATIC float   domainShuntResistances[] =   { SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE,
                                                    SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE };
 
-FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_LOW_DRAW_DEVICE, OCP_THRESH_MED_DRAW_DEVICE, OCP_THRESH_LOW_DRAW_DEVICE,
-                                                      OCP_THRESH_VERY_HIGH_DRAW_DEVICE, OCP_THRESH_LOW_DRAW_DEVICE, OCP_THRESH_LOW_DRAW_DEVICE,
-                                                      OCP_THRESH_LOW_DRAW_DEVICE, OCP_THRESH_HIGH_DRAW_DEVICE };
+FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_LOW_DRAW_DEVICE, //COM1
+                                                      OCP_THRESH_VERY_HIGH_DRAW_DEVICE, //COM2
+                                                      OCP_THRESH_LOW_DRAW_DEVICE, //RAHS
+                                                      OCP_THRESH_VERY_HIGH_DRAW_DEVICE, //BDOT
+                                                      OCP_THRESH_LOW_DRAW_DEVICE, //ESTIM
+                                                      OCP_THRESH_LOW_DRAW_DEVICE, //WHEELS
+                                                      OCP_THRESH_LOW_DRAW_DEVICE, //EPS
+                                                      OCP_THRESH_HIGH_DRAW_DEVICE }; //PPT
 
 PCVSensorData *sensorData;
 hDev i2cdev, hSensor;
@@ -455,13 +460,14 @@ void sendRollCallHandler()
 
 void sendRCCmd()
 {
-    distDomainSwitch(PD_WHEELS, PD_CMD_Enable);
+    //distDomainSwitch(PD_WHEELS, PD_CMD_Enable);
     CANPacket rcPkt = {0};
     cmd_rollcall rc_info = {0};
     rc_info.cmd_rollcall_met = getMETPrimary();
     rc_info.cmd_rollcall_met_overflow = getMETOverflow();
     encodecmd_rollcall(&rc_info, &rcPkt);
     canSendPacket(&rcPkt);
+
     rcFlag = 17;
     if(rebootCount)
         rebootCount--;
@@ -525,7 +531,7 @@ void sendRCCmd()
     if(distQueryDomainSwitch(PD_PPT))
         rcResponseFlag |= PD_PPT_FLAG;
     rcSendFlag = 0;
-    distDomainSwitch(PD_WHEELS, PD_CMD_Disable);
+    //distDomainSwitch(PD_WHEELS, PD_CMD_Disable);
 }
 
 void sendRC()
@@ -764,11 +770,6 @@ void initData()
         aggVec_init_i(&ssCurrAgs[i - 1]);
         aggVec_init_i(&ssBusVAgs[i - 1]);
     }
-    FILE_STATIC aggVec_i tempAg;
-    FILE_STATIC aggVec_i battVAg;
-    FILE_STATIC aggVec_i coulombCounterAg;
-    FILE_STATIC aggVec_i ssCurrAgs[NUM_POWER_DOMAINS];
-    FILE_STATIC aggVec_i ssBusVAgs[NUM_POWER_DOMAINS];
 }
 
 /*
@@ -776,12 +777,12 @@ void initData()
  */
 int main(void)
 {
-    P3DIR |= BIT4; //this is Paul's fix
-    P3OUT |= BIT4;
     /* ----- INITIALIZATION -----*/
     //WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this when watchdog goes in
     WDTCTL = WDTPW | WDTHOLD;
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
+    P3DIR |= BIT4; //this is Paul's fix
+    P3OUT |= BIT4;
 
     // Spin up the ADC, for the temp sensor and battery voltage
     asensorInit(Ref_2p5V);
@@ -828,7 +829,7 @@ int main(void)
 
     initializeTimer();
     initData();
-    startCallback(timerCallbackInitializer(&sendRollCallHandler, 6000000));
+    startCallback(timerCallbackInitializer(&sendRollCallHandler, 6000000)); //TODO: was 6000000 for 6s
     //TODO: this is test code:
     bcbinPopulateHeader(&(rcCount.header), 25, sizeof(rcCount));
     startCallback(timerCallbackInitializer(&intermediateRollcall, 1000000));
@@ -839,37 +840,22 @@ int main(void)
         //TODO: uncomment this
         //WDTCTL = WDT_CONFIG;
         // TODO:  eventually drive this with a timer
-        //LED_OUT ^= LED_BIT;
+        LED_OUT ^= LED_BIT;
         __delay_cycles(0.1 * SEC);
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
-        switch (ss_state)
+        distMonitorDomains();
+
+        counter++;
+        distBcSendSensorDat();
+        if (counter % 8 == 0)
         {
-            case State_FirstState:
-                LED_OUT ^= LED_BIT;
-
-                distMonitorDomains();
-
-                counter++;
-                distBcSendSensorDat();
-                if (counter % 8 == 0)
-                {
-                    distBcSendGeneral();
-                    distBcSendHealth();
-                    distMonitorBattery();
-                }
-                if (counter % 64 == 0)
-                    distBcSendMeta();
-                break;
-            case State_SecondState:
-                // fall through
-            case State_ThirdState:
-                // fall through
-            default:
-                mod_status.state_transition_errors++;
-                mod_status.in_unknown_state++;
-                break;
+            distBcSendGeneral();
+            distBcSendHealth();
+            distMonitorBattery();
         }
+        if (counter % 64 == 0)
+            distBcSendMeta();
         if(rcSendFlag && (canTxCheck() != CAN_TX_BUSY))
             sendRCCmd();
         sendRC();
