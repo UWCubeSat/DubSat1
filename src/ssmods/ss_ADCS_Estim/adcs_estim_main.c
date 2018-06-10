@@ -33,11 +33,18 @@ FILE_STATIC void rcPopulate5(CANPacket *out);
 FILE_STATIC void rcPopulate6(CANPacket *out);
 FILE_STATIC void rcPopulate7(CANPacket *out);
 FILE_STATIC void rcPopulate8(CANPacket *out);
+FILE_STATIC void rcPopulate9(CANPacket *out);
+FILE_STATIC void rcPopulate10(CANPacket *out);
+FILE_STATIC void rcPopulate11(CANPacket *out);
+FILE_STATIC void rcPopulate12(CANPacket *out);
+FILE_STATIC void rcPopulate13(CANPacket *out);
+FILE_STATIC void rcPopulate14(CANPacket *out);
 
 FILE_STATIC rollcall_fn rollcallFunctions[] =
 {
- rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate6,
- rcPopulate7, rcPopulate8
+ rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
+ rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10,
+ rcPopulate11, rcPopulate12, rcPopulate13, rcPopulate14
 };
 
 #define NUM_ROLLCALL_PACKETS (sizeof(rollcallFunctions) / sizeof(rollcall_fn))
@@ -55,6 +62,9 @@ FILE_STATIC health_segment hseg;
 // TODO initialize it with a recent TLE before launch?
 #pragma PERSISTENT(tle)
 FILE_STATIC struct tle tle = { 0 };
+
+// store the ID of the last *complete* TLE to report in rollcall
+FILE_STATIC uint8_t lastTleId;
 
 /* functions */
 
@@ -109,6 +119,7 @@ int main(void)
     tle.tle4.tle_4_aop = 245.3514;
     tle.tle4.tle_4_raan = 67.1301;
     tle.tle5.tle_5_mnm = 14.56154823;
+    lastTleId = tleId(&tle);
 
     // guess at the epoch
     rtU.MET_epoch = (8 * 365.24 + tle.tle2.tle_2_day) * 24 * 60 * 60;
@@ -132,7 +143,9 @@ int main(void)
     asensorInit(Ref_2p5V);
 
     // init rollcall
-    rollcallInitWithBuffer(rollcallFunctions, rcCANPackets, NUM_ROLLCALL_PACKETS);
+    // TODO use the buffer again when it works
+//    rollcallInitWithBuffer(rollcallFunctions, rcCANPackets, NUM_ROLLCALL_PACKETS);
+    rollcallInit(rollcallFunctions, NUM_ROLLCALL_PACKETS);
     aggVec_init_i(&rc_mspTemp);
 
     // init autocode
@@ -227,6 +240,7 @@ FILE_STATIC void setInputs()
         rtU.orbit_tle[6] = tleAop(&tle);
         rtU.orbit_tle[7] = tleMna(&tle);
         rtU.orbit_tle[8] = tleMnm(&tle);
+        lastTleId = tleId(&tle);
     }
     __enable_interrupt();
 }
@@ -273,6 +287,14 @@ FILE_STATIC void sendTelemOverBackchannel()
 
 }
 
+/**
+ * Keep trying to send a CAN packet until it really sends
+ */
+FILE_STATIC void waitAndSendCAN(CANPacket *p)
+{
+	while(canSendPacket(p));
+}
+
 FILE_STATIC void sendTelemOverCAN()
 {
     CANPacket p;
@@ -280,24 +302,24 @@ FILE_STATIC void sendTelemOverCAN()
     // send sc2sun_unit
     estim_sun_unit_x sunx = { rtY.sc2sun_unit[0] };
     encodeestim_sun_unit_x(&sunx, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
     estim_sun_unit_y suny = { rtY.sc2sun_unit[1] };
     encodeestim_sun_unit_y(&suny, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
     estim_sun_unit_z sunz = { rtY.sc2sun_unit[2] };
     encodeestim_sun_unit_z(&sunz, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
 
     // send mag_eci_unit
     estim_mag_unit_x magx = { rtY.mag_eci_unit[0] };
     encodeestim_mag_unit_x(&magx, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
     estim_mag_unit_y magy = { rtY.mag_eci_unit[1] };
     encodeestim_mag_unit_y(&magy, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
     estim_mag_unit_z magz = { rtY.mag_eci_unit[2] };
     encodeestim_mag_unit_z(&magz, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
 
     // send state
     estim_state state;
@@ -306,7 +328,7 @@ FILE_STATIC void sendTelemOverCAN()
     state.estim_state_in_sun = rtY.sc_in_sun ? CAN_ENUM_BOOL_TRUE
             : CAN_ENUM_BOOL_FALSE;
     encodeestim_state(&state, &p);
-    canSendPacket(&p);
+    waitAndSendCAN(&p);
 }
 
 void canRxCallback(CANPacket *p)
@@ -432,6 +454,50 @@ FILE_STATIC void rcPopulate8(CANPacket *out)
     rc.rc_adcs_estim_8_sc_above_gs = rtY.sc_above_gs;
     rc.rc_adcs_estim_8_sc_in_sun = rtY.sc_in_sun;
     rc.rc_adcs_estim_8_sgp4_flag = rtY.SGP4_flag;
+    rc.rc_adcs_estim_8_tle_id = lastTleId;
 
     encoderc_adcs_estim_8(&rc, out);
 }
+
+FILE_STATIC void rcPopulate9(CANPacket *out)
+{
+    rc_adcs_estim_9 rc;
+    rc.rc_adcs_estim_9_sun_x = rtY.sc2sun_unit[0];
+    encoderc_adcs_estim_9(&rc, out);
+}
+
+FILE_STATIC void rcPopulate10(CANPacket *out)
+{
+    rc_adcs_estim_10 rc;
+    rc.rc_adcs_estim_10_sun_y = rtY.sc2sun_unit[1];
+    encoderc_adcs_estim_10(&rc, out);
+}
+
+FILE_STATIC void rcPopulate11(CANPacket *out)
+{
+    rc_adcs_estim_11 rc;
+    rc.rc_adcs_estim_11_sun_z = rtY.sc2sun_unit[2];
+    encoderc_adcs_estim_11(&rc, out);
+}
+
+FILE_STATIC void rcPopulate12(CANPacket *out)
+{
+    rc_adcs_estim_12 rc;
+    rc.rc_adcs_estim_12_mag_x = rtY.mag_eci_unit[0];
+    encoderc_adcs_estim_12(&rc, out);
+}
+
+FILE_STATIC void rcPopulate13(CANPacket *out)
+{
+    rc_adcs_estim_13 rc;
+    rc.rc_adcs_estim_13_mag_y = rtY.mag_eci_unit[1];
+    encoderc_adcs_estim_13(&rc, out);
+}
+
+FILE_STATIC void rcPopulate14(CANPacket *out)
+{
+    rc_adcs_estim_14 rc;
+    rc.rc_adcs_estim_14_mag_z = rtY.mag_eci_unit[2];
+    encoderc_adcs_estim_14(&rc, out);
+}
+
