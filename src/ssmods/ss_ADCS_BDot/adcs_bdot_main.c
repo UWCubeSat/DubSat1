@@ -45,6 +45,13 @@
 #define BDOT_AWAKE 1
 #define BDOT_NAP 0
 
+typedef enum _subsystem_mode {
+    NORMAL_MODE,
+    MAG_TEST_READING_MODE,
+    SLEEP_MODE,
+    MAS_AUTOKICK_MODE
+} bdot_state_mode;
+
 
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
@@ -67,6 +74,10 @@ FILE_STATIC mtq_info mtq_last_known_state;
 
 
 /****************Magnetometer Variables*************************/
+/* keeps track of the bdot's state */
+FILE_STATIC bdot_state_mode bdot_state = NORMAL_MODE;
+FILE_STATIC bdot_state_mode next_bdot_state = NORMAL_MODE;
+
 /* holds magnetometer data read every 10 hz */
 FILE_STATIC MagnetometerData* continuous_bdot_mag_data;
 
@@ -98,11 +109,6 @@ FILE_STATIC uint8_t cmd_mag_selection = BDOT_MAG;
 
 /* mag number for magnetometer reading. for questions, contact david */
 FILE_STATIC hMag mag_num;
-
-/* stores what magnetometer reading mode bdot is on, normal or testing */
-FILE_STATIC uint8_t mag_reading_mode = NORMAL_READING_OPERATION;
-
-FILE_STATIC uint8_t tumbling_too_long_flag = 0;
 /***************************************************************/
 
 
@@ -128,6 +134,7 @@ FILE_STATIC uint32_t check_best_mag_timer_ms = 180000; // 3 min
  * not tumbling */
 FILE_STATIC TIMER_HANDLE check_nap_status_timer;
 FILE_STATIC uint32_t check_nap_status_timer_ms = 1200000; // 20 min
+FILE_STATIC uint8_t nap_status_timer_on_flag = 0;
 /***************************************************************/
 
 
@@ -171,20 +178,44 @@ int main(void)
     start_check_nap_status_timer();
     while (1)
     {
+        if(bdot_state != next_bdot_state)
+        {
+            end_check_nap_status_timer();
+        }
+
+        if(next_bdot_state == NORMAL_MODE)
+        {
+            start_check_nap_status_timer();
+        }
+        bdot_state = next_bdot_state;
+
+        switch (bdot_state)
+        {
+            case NORMAL_MODE:
+                if(rtY.tumble && checkTimer(check_nap_status_timer))
+                {
+                       next_bdot_state = SLEEP_MODE;
+                       nap_status_timer_on_flag = 0;
+                }
+            break;
+            case MAG_TEST_READING_MODE:
+            break;
+            case SLEEP_MODE:
+                if(!((uint8_t)rtY.tumble))
+                {
+                    next_bdot_state = NORMAL_MODE;
+                }
+            break;
+            case MAS_AUTOKICK_MODE:
+            break;
+        }
+
         process_sp_mag();
 
         if(checkTimer(check_best_mag_timer))
         {
             determine_best_fit_mag();
             start_check_best_mag_timer();
-        }
-
-        if(!tumbling_too_long_flag)
-        {
-            if(checkTimer(start_check_nap_status_timer))
-            {
-                tumbling_too_long_flag = 1;
-            }
         }
 
         if(rt_flag)
@@ -209,9 +240,6 @@ int main(void)
             /* send backchannel telemetry */
             send_cosmos_telem();
 
-            /* update rollcall data */
-            updateRCData();
-
             /* Determine if mtq is ready to actuate */
             if(mtq_state == MTQ_MEASUREMENT_PHASE)
             {
@@ -225,6 +253,8 @@ int main(void)
                 mtq_last_known_state.zDipole = bdot_perspective_mtq_info.zDipole;
             }
 
+            /* update rollcall data */
+            updateRCData();
             /* clear rt_flag */
             rt_flag = 0;
         }
@@ -234,7 +264,7 @@ int main(void)
     return 0;
 }
 
-void initial_setup()
+FILE_STATIC void initial_setup()
 {
     P3OUT |= BIT5;
     P3OUT |= BIT4;
@@ -290,32 +320,33 @@ void update_simulink_info()
     // Data going into rt onestep depends on which magnetometer bdot is listening to
     switch(current_listening_mag)
     {
+        /* B_meas_valid is actually thrown away in rt one step so it doesn't matter what value you put in */
         case BDOT_MAG:
             rtU.B_body_in_T[0] = valid_bdot_mag_data->convertedX;
             rtU.B_body_in_T[1] = valid_bdot_mag_data->convertedY;
             rtU.B_body_in_T[2] = valid_bdot_mag_data->convertedZ;
-            rtU.B_meas_valid = (mag_reading_mode == NORMAL_READING_OPERATION);
+            rtU.B_meas_valid = (bdot_state != MAG_TEST_READING_MODE);
             rtU.MT_on = 0;
             break;
         case SP_MAG1:
             rtU.B_body_in_T[0] = sp_mag1_data->convertedX;
             rtU.B_body_in_T[1] = sp_mag1_data->convertedY;
             rtU.B_body_in_T[2] = sp_mag1_data->convertedZ;
-            rtU.B_meas_valid = (mag_reading_mode == NORMAL_READING_OPERATION);
+            rtU.B_meas_valid = (bdot_state != MAG_TEST_READING_MODE);
             rtU.MT_on = 0;
             break;
         case SP_MAG2:
             rtU.B_body_in_T[0] = sp_mag2_data->convertedX;
             rtU.B_body_in_T[1] = sp_mag2_data->convertedY;
             rtU.B_body_in_T[2] = sp_mag2_data->convertedZ;
-            rtU.B_meas_valid = (mag_reading_mode == NORMAL_READING_OPERATION);
+            rtU.B_meas_valid = (bdot_state != MAG_TEST_READING_MODE);
             rtU.MT_on = 0;
             break;
         default:
             rtU.B_body_in_T[0] = valid_bdot_mag_data->convertedX;
             rtU.B_body_in_T[1] = valid_bdot_mag_data->convertedY;
             rtU.B_body_in_T[2] = valid_bdot_mag_data->convertedZ;
-            rtU.B_meas_valid = (mag_reading_mode == NORMAL_READING_OPERATION);
+            rtU.B_meas_valid = (bdot_state != MAG_TEST_READING_MODE);
             rtU.MT_on = 0;
     }
 }
@@ -347,7 +378,7 @@ void read_magnetometer_data()
 /* Update valid bdot magnetometer. This function is only called when mtq is in measurement phase */
 void update_valid_mag_data()
 {
-    if (mag_reading_mode == NORMAL_READING_OPERATION)
+    if (bdot_state == NORMAL_MODE || bdot_state == SLEEP_MODE)
     {
         valid_bdot_mag_data->convertedX = continuous_bdot_mag_data->convertedX;
         valid_bdot_mag_data->convertedY = continuous_bdot_mag_data->convertedY;
@@ -367,10 +398,7 @@ void convert_mag_data_raw_to_teslas(MagnetometerData * mag)
  */
 void determine_best_fit_mag()
 {
-    // find the median of the norm to determine best magnetometer to use. TODO: Think of a better, less costly method
-    float bdot_mag_norm = sqrt(abs(continuous_bdot_mag_data->convertedX)^2 + abs(continuous_bdot_mag_data->convertedY)^2 + abs(continuous_bdot_mag_data->convertedZ)^2);
-    float sp_mag1_norm =  sqrt(abs(sp_mag1_data->convertedX)^2 + abs(sp_mag1_data->convertedY)^2 + abs(sp_mag1_data->convertedZ)^2);
-    float sp_mag2_norm = sqrt(abs(sp_mag2_data->convertedX)^2 + abs(sp_mag2_data->convertedY)^2 + abs(sp_mag2_data->convertedZ)^2);
+    if(bdot_state == MAG_TEST_READING_MODE || bdot_state == MAS_AUTOKICK_MODE) return;
 
     /* If magnetometer selection mode is on override, which is a command given from ground, bdot should select the magnetometer
        that ground saids to listen to */
@@ -379,6 +407,12 @@ void determine_best_fit_mag()
         current_listening_mag = cmd_mag_selection;
         return;
     }
+
+    // find the median of the norm to determine best magnetometer to use. TODO: Think of a better, less costly method
+    float bdot_mag_norm = sqrt(abs(continuous_bdot_mag_data->convertedX)^2 + abs(continuous_bdot_mag_data->convertedY)^2 + abs(continuous_bdot_mag_data->convertedZ)^2);
+    float sp_mag1_norm =  sqrt(abs(sp_mag1_data->convertedX)^2 + abs(sp_mag1_data->convertedY)^2 + abs(sp_mag1_data->convertedZ)^2);
+    float sp_mag2_norm = sqrt(abs(sp_mag2_data->convertedX)^2 + abs(sp_mag2_data->convertedY)^2 + abs(sp_mag2_data->convertedZ)^2);
+
     if(bdot_mag_norm <= sp_mag1_norm && sp_mag1_norm <= sp_mag2_norm)
     {
         current_listening_mag = SP_MAG1;
@@ -405,31 +439,64 @@ void start_check_best_mag_timer()
 /* Start the timer that goes off when bdot has been tumbling for a certain amount of time */
 void start_check_nap_status_timer()
 {
-    check_nap_status_timer = timerPollInitializer(check_nap_status_timer_ms);
+    if(!nap_status_timer_on_flag)
+    {
+        check_nap_status_timer = timerPollInitializer(check_nap_status_timer_ms);
+        nap_status_timer_on_flag = 1;
+    }
+}
+
+void end_check_nap_status_timer()
+{
+    if(nap_status_timer_on_flag)
+    {
+        endPollingTimer(check_nap_status_timer);
+        nap_status_timer_on_flag = 0;
+    }
 }
 
 /* determine that dipoles to send to mtq */
 void determine_mtq_commands()
 {
-    bdot_perspective_mtq_info.tumble_status  = (uint8_t) rtY.tumble;
-    if(bdot_perspective_mtq_info.tumble_status)
+    /* rtY is a struct that rt onestep outputs that carries dipole and tumble status
+       information. Sometimes rt onestep will spit out small numbers for dipoles but tumble
+       status will be 0, in which case dipoles of value 0 should be sent to mtq. This is because
+       tumble status is not sent to mtq, just the dipoles. */
+    switch(bdot_state)
     {
-        if(!tumbling_too_long_flag)
-        {
-            bdot_perspective_mtq_info.xDipole = map((int8_t) rtY.Dig_val[0]);
-            bdot_perspective_mtq_info.yDipole = map((int8_t) rtY.Dig_val[1]);
-            bdot_perspective_mtq_info.zDipole = map((int8_t) rtY.Dig_val[2]);
-        }
-    } else
-    {
-        tumbling_too_long_flag = 0;
-        bdot_perspective_mtq_info.xDipole = 0;
-        bdot_perspective_mtq_info.yDipole = 0;
-        bdot_perspective_mtq_info.zDipole = 0;
-
-        /* restart nap timer for bdot */
-        endPollingTimer(check_nap_status_timer);
-        start_check_nap_status_timer();
+        case NORMAL_MODE:
+            bdot_perspective_mtq_info.tumble_status  = (uint8_t) rtY.tumble;
+            if(bdot_perspective_mtq_info.tumble_status)
+            {
+                bdot_perspective_mtq_info.xDipole = map((int8_t) rtY.Dig_val[0]);
+                bdot_perspective_mtq_info.yDipole = map((int8_t) rtY.Dig_val[1]);
+                bdot_perspective_mtq_info.zDipole = map((int8_t) rtY.Dig_val[2]);
+            } else
+            {
+                bdot_perspective_mtq_info.xDipole = 0;
+                bdot_perspective_mtq_info.yDipole = 0;
+                bdot_perspective_mtq_info.zDipole = 0;
+            }
+            break;
+        case MAG_TEST_READING_MODE:
+            bdot_perspective_mtq_info.xDipole = 0;
+            bdot_perspective_mtq_info.yDipole = 0;
+            bdot_perspective_mtq_info.zDipole = 0;
+            break;
+        case SLEEP_MODE:
+            bdot_perspective_mtq_info.xDipole = 0;
+            bdot_perspective_mtq_info.yDipole = 0;
+            bdot_perspective_mtq_info.zDipole = 0;
+            break;
+        case MAS_AUTOKICK_MODE:
+            bdot_perspective_mtq_info.xDipole = 100;
+            bdot_perspective_mtq_info.yDipole = 100;
+            bdot_perspective_mtq_info.zDipole = 100;
+            break;
+        default:
+            bdot_perspective_mtq_info.xDipole = 0;
+            bdot_perspective_mtq_info.yDipole = 0;
+            bdot_perspective_mtq_info.zDipole = 0;
     }
 }
 
@@ -597,7 +664,7 @@ void send_simulink_segment_cosmos()
 }
 
 /* debugging purpose function */
-void send_all_polling_timers_segment()
+void send_all_polling_timers_segment_cosmos()
 {
     user_timer_polling_info polling_info[NUM_SUPPORTED_DURATIONS_POLLING];
     debug_polling_timer_info(polling_info);
@@ -638,18 +705,18 @@ void select_mode_operation(uint8_t reading_mode_selection)
     {
         case NORMAL_READING_OPERATION:
             mag_normal_reading_operation_config(mag_num);
-            mag_reading_mode = NORMAL_READING_OPERATION;
-            __delay_cycles(6000);
+            next_bdot_state = NORMAL_MODE;
+//            __delay_cycles(6000);
             break;
         case SELF_TEST_READING_OPERATION:
             mag_self_test_config(mag_num);
-            mag_reading_mode = SELF_TEST_READING_OPERATION;
-            __delay_cycles(6000);
+            next_bdot_state = MAG_TEST_READING_MODE;
+//            __delay_cycles(6000);
             break;
         default:
             mag_normal_reading_operation_config(mag_num);
-            mag_reading_mode = NORMAL_READING_OPERATION;
-            __delay_cycles(6000);
+            next_bdot_state = NORMAL_MODE;
+//            __delay_cycles(6000);
             break;
     }
 }
@@ -679,11 +746,26 @@ void mag_select_switch(uint8_t mag_selection)
     }
 }
 
+void ground_cmd_bdot_nap_schedule(uint8_t nap_status)
+{
+    switch(nap_status)
+    {
+        case CMD_BDOT_WAKEUP:
+            next_bdot_state = NORMAL_MODE;
+            break;
+        case CMD_BDOT_SLEEP:
+            next_bdot_state = SLEEP_MODE;
+            break;
+        default:
+            next_bdot_state = NORMAL_MODE;
+    }
+}
+
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     mag_select_cmd* mag_select;
     mode_operation_cmd* mode_operation_select;
-
+    nap_wakeup_cmd* bdot_nap_status;
     if (mode == Mode_BinaryStreaming)
     {
         switch(cmdstr[0])
@@ -691,6 +773,10 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
             case OPCODE_MAG_SELECT_CMD:
                 mag_select = (mag_select_cmd *) (cmdstr + 1);
                 mag_select_switch(mag_select->mag_select);
+                break;
+            case OPCODE_NAP_WAKEUP_CMD:
+                bdot_nap_status = (nap_wakeup_cmd *)(cmdstr + 1);
+                ground_cmd_bdot_nap_schedule(bdot_nap_status->bdot_nap_status);
                 break;
             case OPCODE_MODE_OPERATION_CMD:
                 mode_operation_select = (mode_operation_cmd *)(cmdstr + 1);
@@ -759,10 +845,3 @@ void handlePPTFiringNotification()
     __no_operation();
 }
 
-// Will be called when the subsystem gets the distribution board's CAN message that asks for check-in
-// Likely calling frequency is probably once every couple of minutes, but the code shouldn't work with
-// any period (in particular for testing, where we might spam the CAN bus with roll call queries)
-void handleRollCall()
-{
-    __no_operation();
-}

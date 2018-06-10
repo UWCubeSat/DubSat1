@@ -29,6 +29,9 @@
 #define CMD_MODE_OP_NORMAL 1
 #define CMD_SELF_TEST_OP 0
 
+#define CMD_BDOT_WAKEUP 1
+#define CMD_BDOT_SLEEP 0
+
 #define TLM_ID_BDOT_MAGNETOMETER  127
 #define TLM_ID_MTQ_INFO 126
 #define TLM_ID_SIMULINK_INFO 124
@@ -58,6 +61,9 @@ CMD_SEGMENT {
     uint8_t select_mode_operation;
 } mode_operation_cmd;
 
+CMD_SEGMENT {
+    uint8_t bdot_nap_status;
+} nap_wakeup_cmd;
 
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
@@ -109,50 +115,75 @@ typedef struct _module_status {
 } ModuleStatus;
 
 
-void initial_setup();
 
-void can_rx_callback(CANPacket *packet);
-void send_dipole_packet(int8_t x, int8_t y, int8_t z);
+/************************* Initial Setup***********************************/
+FILE_STATIC void initial_setup();
+FILE_STATIC void can_rx_callback(CANPacket *packet);
+/**************************************************************************/
 
-void read_continuous_mag_data_cosmos();
-void read_magnetometer_data();
-void simulink_compute();
 
-void process_sp_mag();
+/*******************************Timers************************************/
+FILE_STATIC void start_check_best_mag_timer();
+FILE_STATIC void start_check_nap_status_timer();
+FILE_STATIC void end_check_nap_status_timer();
+FILE_STATIC void simulink_compute();
+/*************************************************************************/
 
-void send_bdot_mag_reading_cosmos();
-void send_continuous_mag_reading_cosmos();
 
-void send_sp_mag1_reading_cosmos();
-void send_sp_mag2_reading_cosmos();
+/*************************** CAN/Rollcall ********************************/
+FILE_STATIC void send_dipole_packet(int8_t x, int8_t y, int8_t z);
+FILE_STATIC void updateRCData();
+FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulate2(CANPacket *out);
+FILE_STATIC void rcPopulate3(CANPacket *out);
+FILE_STATIC void rcPopulate4(CANPacket *out);
+/************************************************************************/
 
-void send_all_polling_timers_segment();
-void send_health_segment_cosmos();
-void send_mtq_info_segment_cosmos();
-void send_simulink_segment_cosmos();
 
-void convert_mag_data_raw_to_teslas(MagnetometerData * mag);
-void determine_best_fit_mag();
-void start_check_best_mag_timer();
-void update_valid_mag_data();
+/**************************Cosmos Telemetry******************************/
+FILE_STATIC void send_bdot_mag_reading_cosmos();
+FILE_STATIC void send_continuous_mag_reading_cosmos();
 
-void determine_mtq_commands();
-void send_cosmos_telem();
+FILE_STATIC void send_sp_mag1_reading_cosmos();
+FILE_STATIC void send_sp_mag2_reading_cosmos();
 
-void handleRollCall();
-void updateRCData();
-void rcPopulate1(CANPacket *out);
-void rcPopulate2(CANPacket *out);
-void rcPopulate3(CANPacket *out);
-void rcPopulate4(CANPacket *out);
+FILE_STATIC void send_mtq_info_segment_cosmos();
+FILE_STATIC void send_simulink_segment_cosmos();
 
-int map(int val);
-int map_general(int x, int in_min, int in_max, int out_min, int out_max);
+FILE_STATIC void send_all_polling_timers_segment_cosmos();
+FILE_STATIC void send_health_segment_cosmos();
 
-void rt_OneStep(void);
-void update_simulink_info();
-uint8_t handleDebugInfoCallback(DebugMode mode);
-uint8_t handleDebugStatusCallback(DebugMode mode);
+FILE_STATIC void send_cosmos_telem();
+/************************************************************************/
+
+
+/****************Cosmos Commands and Supporting Functions****************/
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
+
+FILE_STATIC void mag_select_switch(uint8_t mag_selection);
+FILE_STATIC void select_mode_operation(uint8_t reading_mode_selection);
+FILE_STATIC void ground_cmd_bdot_nap_schedule(uint8_t nap_status);
+
+/***********************************************************************/
+
+
+/*******************Magnetometer Analysis*******************************/
+FILE_STATIC void determine_best_fit_mag();
+FILE_STATIC void process_sp_mag();
+
+FILE_STATIC void convert_mag_data_raw_to_teslas(MagnetometerData * mag);
+
+FILE_STATIC void read_magnetometer_data();
+FILE_STATIC void update_valid_mag_data();
+FILE_STATIC void rt_OneStep(void);
+FILE_STATIC void update_simulink_info();
+FILE_STATIC void determine_mtq_commands();
+/**********************************************************************/
+
+
+/*****************************Others***********************************/
+FILE_STATIC int map(int val);
+FILE_STATIC int map_general(int x, int in_min, int in_max, int out_min, int out_max);
 void handlePPTFiringNotification();
+/**********************************************************************/
 #endif /* ADCS_BDOT_H_ */
