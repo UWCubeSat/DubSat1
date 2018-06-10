@@ -675,7 +675,7 @@ BO_ 2183725267 gen_panel_temp: 4 eps_gen
  SG_ gen_panel_temp_y_neg : 8|8@1- (1,0) [-128|127] "" Vector__XXX
  SG_ gen_panel_temp_y_pos : 0|8@1- (1,0) [-128|127] "" Vector__XXX
 
-BO_ 2182349072 cmd_gen_rst: 1 eps_gen
+BO_ 2450784528 cmd_gen_rst: 1 eps_gen
  SG_ cmd_gen_rst_confirm : 0|1@1+ (1,0) [0|1] "bool" Vector__XXX
 
 BO_ 2182349056 cmd_ppt_single_fire: 1 com_1
@@ -792,7 +792,7 @@ VAL_ 2451701984 eps_domain_output_num 8 "unk" 7 "com1" 6 "com2" 5 "rahs" 4 "bdot
 VAL_ 2483355714 sensorproc_imu_valid 1 "true" 0 "false" ;
 VAL_ 2483355715 sensorproc_mag_valid 1 "true" 0 "false" ;
 VAL_ 2183725267 gen_panel_temp_agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
-VAL_ 2182349072 cmd_gen_rst_confirm 1 "true" 0 "false" ;
+VAL_ 2450784528 cmd_gen_rst_confirm 1 "true" 0 "false" ;
 VAL_ 2182349056 cmd_ppt_single_fire_override 1 "true" 0 "false" ;
 VAL_ 2182349056 cmd_ppt_single_fire_with_pulse 1 "true" 0 "false" ;
 VAL_ 2183266514 gen_panel_pwr_agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;

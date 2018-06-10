@@ -2935,7 +2935,7 @@ void decodecmd_gen_rst(CANPacket *input, cmd_gen_rst *output){
 }
 
 void encodecmd_gen_rst(cmd_gen_rst *input, CANPacket *output){
-    output -> id = 34865424;
+    output -> id = 303300880;
     output -> length = 1;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> cmd_gen_rst_confirm))) & 0x1) << 63;
