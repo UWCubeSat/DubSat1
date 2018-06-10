@@ -25,8 +25,8 @@ FILE_STATIC uint32_t overflowCount = 0;
  */
 // Send back the same reply
 
-void pause(uint32_t i){
-    int j=0;
+void pause(uint64_t i){
+    uint64_t j=0;
     for(j=0; j <i; j++){
         __delay_cycles(1);
     }
@@ -68,7 +68,7 @@ int main(void) {
 
     PJDIR |= BIT0 | BIT1 | BIT2;
 
-    uint32_t delay = 0;
+    uint64_t delay = 30000;
 
     while(1){
 
@@ -76,9 +76,10 @@ int main(void) {
             delay = 0;
         }
         else {
-            delay = 20000000;
+            delay = 60000;
         }
         if (P1IN & BIT6){
+            //GND_NONE
             PJOUT |= BIT0;
             CANPacket cmd_com2_run_packet = {0};
             cmd_com2_run cmd_com2_run_info = {0};
@@ -90,6 +91,7 @@ int main(void) {
         }
         pause(delay);
         if (P3IN & BIT7){
+            //GND_REALTIME
             PJOUT |= BIT1;
             CANPacket cmd_gen_rst_packet = {0};
             cmd_gen_rst cmd_gen_rst_info = {0};
@@ -101,6 +103,7 @@ int main(void) {
         }
         pause(delay);
         if (P3IN & BIT6){
+            //GND_HEALTH
             PJOUT |= BIT2;
             CANPacket com2_state_packet = {0};
             com2_state com2_state_info = {0};
@@ -112,6 +115,7 @@ int main(void) {
         }
         pause(delay);
         if (P2IN & BIT2){
+            //GND_WOD
             CANPacket mpc_vp_packet = {0};
             mpc_vp mpc_vp_info = {0};
             encodempc_vp(&mpc_vp_info, &mpc_vp_packet);
