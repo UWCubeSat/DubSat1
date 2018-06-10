@@ -26,7 +26,8 @@ FILE_STATIC uint32_t overflowCount = 0;
 // Send back the same reply
 
 void pause(uint32_t i){
-    while(i > 0){
+    int j=0;
+    for(j=0; j <i; j++){
         __delay_cycles(1);
     }
 }
@@ -50,6 +51,7 @@ int main(void) {
     P3DIR |= BIT0 | BIT1 | BIT2 | BIT3;
 
     P1OUT |= BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5;
+    P1OUT &= ~(BIT0);
     P3OUT |= BIT0 | BIT1 | BIT2 | BIT3;
 
     P1DIR &= ~(BIT7 | BIT6);
@@ -74,7 +76,7 @@ int main(void) {
             delay = 0;
         }
         else {
-            delay = 200000;
+            delay = 20000000;
         }
         if (P1IN & BIT6){
             PJOUT |= BIT0;
