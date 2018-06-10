@@ -3,6 +3,61 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket gcmd_gen_set_pt_state_packet = {0};
+	gcmd_gen_set_pt_state gcmd_gen_set_pt_state_info = {0};
+	encodegcmd_gen_set_pt_state(&gcmd_gen_set_pt_state_info, &gcmd_gen_set_pt_state_packet);
+	canSendPacket(&gcmd_gen_set_pt_state_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_sp_set_thresh_packet = {0};
+	gcmd_sp_set_thresh gcmd_sp_set_thresh_info = {0};
+	encodegcmd_sp_set_thresh(&gcmd_sp_set_thresh_info, &gcmd_sp_set_thresh_packet);
+	canSendPacket(&gcmd_sp_set_thresh_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_dist_set_pd_ovc_ppt_packet = {0};
+	gcmd_dist_set_pd_ovc_ppt gcmd_dist_set_pd_ovc_ppt_info = {0};
+	encodegcmd_dist_set_pd_ovc_ppt(&gcmd_dist_set_pd_ovc_ppt_info, &gcmd_dist_set_pd_ovc_ppt_packet);
+	canSendPacket(&gcmd_dist_set_pd_ovc_ppt_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_dist_set_pd_ovc_eps_packet = {0};
+	gcmd_dist_set_pd_ovc_eps gcmd_dist_set_pd_ovc_eps_info = {0};
+	encodegcmd_dist_set_pd_ovc_eps(&gcmd_dist_set_pd_ovc_eps_info, &gcmd_dist_set_pd_ovc_eps_packet);
+	canSendPacket(&gcmd_dist_set_pd_ovc_eps_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_dist_set_pd_ovc_wheels_packet = {0};
+	gcmd_dist_set_pd_ovc_wheels gcmd_dist_set_pd_ovc_wheels_info = {0};
+	encodegcmd_dist_set_pd_ovc_wheels(&gcmd_dist_set_pd_ovc_wheels_info, &gcmd_dist_set_pd_ovc_wheels_packet);
+	canSendPacket(&gcmd_dist_set_pd_ovc_wheels_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_dist_set_pd_ovc_estim_packet = {0};
+	gcmd_dist_set_pd_ovc_estim gcmd_dist_set_pd_ovc_estim_info = {0};
+	encodegcmd_dist_set_pd_ovc_estim(&gcmd_dist_set_pd_ovc_estim_info, &gcmd_dist_set_pd_ovc_estim_packet);
+	canSendPacket(&gcmd_dist_set_pd_ovc_estim_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_dist_set_pd_ovc_bdot_packet = {0};
+	gcmd_dist_set_pd_ovc_bdot gcmd_dist_set_pd_ovc_bdot_info = {0};
+	encodegcmd_dist_set_pd_ovc_bdot(&gcmd_dist_set_pd_ovc_bdot_info, &gcmd_dist_set_pd_ovc_bdot_packet);
+	canSendPacket(&gcmd_dist_set_pd_ovc_bdot_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_dist_set_pd_ovc_rahs_packet = {0};
+	gcmd_dist_set_pd_ovc_rahs gcmd_dist_set_pd_ovc_rahs_info = {0};
+	encodegcmd_dist_set_pd_ovc_rahs(&gcmd_dist_set_pd_ovc_rahs_info, &gcmd_dist_set_pd_ovc_rahs_packet);
+	canSendPacket(&gcmd_dist_set_pd_ovc_rahs_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_dist_set_pd_ovc_com2_packet = {0};
+	gcmd_dist_set_pd_ovc_com2 gcmd_dist_set_pd_ovc_com2_info = {0};
+	encodegcmd_dist_set_pd_ovc_com2(&gcmd_dist_set_pd_ovc_com2_info, &gcmd_dist_set_pd_ovc_com2_packet);
+	canSendPacket(&gcmd_dist_set_pd_ovc_com2_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_dist_set_pd_ovc_com1_packet = {0};
+	gcmd_dist_set_pd_ovc_com1 gcmd_dist_set_pd_ovc_com1_info = {0};
+	encodegcmd_dist_set_pd_ovc_com1(&gcmd_dist_set_pd_ovc_com1_info, &gcmd_dist_set_pd_ovc_com1_packet);
+	canSendPacket(&gcmd_dist_set_pd_ovc_com1_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_dist_set_pd_state_packet = {0};
+	gcmd_dist_set_pd_state gcmd_dist_set_pd_state_info = {0};
+	encodegcmd_dist_set_pd_state(&gcmd_dist_set_pd_state_info, &gcmd_dist_set_pd_state_packet);
+	canSendPacket(&gcmd_dist_set_pd_state_packet);
+
 	__delay_cycles(10000);	CANPacket gcmd_mtq_pop_packet = {0};
 	gcmd_mtq_pop gcmd_mtq_pop_info = {0};
 	encodegcmd_mtq_pop(&gcmd_mtq_pop_info, &gcmd_mtq_pop_packet);
