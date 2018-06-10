@@ -205,6 +205,227 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodegcmd_gen_set_pt_state(CANPacket *input, gcmd_gen_set_pt_state *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_gen_set_pt_state_3 = (uint8_t) (((fullData & ((uint64_t) 0x3 << 58)) >> 58));
+    output -> gcmd_gen_set_pt_state_2 = (uint8_t) (((fullData & ((uint64_t) 0x3 << 60)) >> 60));
+    output -> gcmd_gen_set_pt_state_1 = (uint8_t) (((fullData & ((uint64_t) 0x3 << 62)) >> 62));
+}
+
+void encodegcmd_gen_set_pt_state(gcmd_gen_set_pt_state *input, CANPacket *output){
+    output -> id = 302252742;
+    output -> length = 1;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_gen_set_pt_state_3))) & 0x3) << 58;
+    fullPacketData |= (((uint64_t)((input -> gcmd_gen_set_pt_state_2))) & 0x3) << 60;
+    fullPacketData |= (((uint64_t)((input -> gcmd_gen_set_pt_state_1))) & 0x3) << 62;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_sp_set_thresh(CANPacket *input, gcmd_sp_set_thresh *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_sp_set_thresh_thresh = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+}
+
+void encodegcmd_sp_set_thresh(gcmd_sp_set_thresh *input, CANPacket *output){
+    output -> id = 302252743;
+    output -> length = 1;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_sp_set_thresh_thresh))) & 0xffff) << 48;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_dist_set_pd_ovc_ppt(CANPacket *input, gcmd_dist_set_pd_ovc_ppt *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint32_t tempgcmd_dist_set_pd_ovc_ppt_ovc = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
+    output -> gcmd_dist_set_pd_ovc_ppt_ovc = (*((float *)(&(tempgcmd_dist_set_pd_ovc_ppt_ovc))));
+}
+
+void encodegcmd_dist_set_pd_ovc_ppt(gcmd_dist_set_pd_ovc_ppt *input, CANPacket *output){
+    output -> id = 302252741;
+    output -> length = 4;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const float tempgcmd_dist_set_pd_ovc_ppt_ovc = ((input -> gcmd_dist_set_pd_ovc_ppt_ovc));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_dist_set_pd_ovc_ppt_ovc))))) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_dist_set_pd_ovc_eps(CANPacket *input, gcmd_dist_set_pd_ovc_eps *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint32_t tempgcmd_dist_set_pd_ovc_eps_ovc = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
+    output -> gcmd_dist_set_pd_ovc_eps_ovc = (*((float *)(&(tempgcmd_dist_set_pd_ovc_eps_ovc))));
+}
+
+void encodegcmd_dist_set_pd_ovc_eps(gcmd_dist_set_pd_ovc_eps *input, CANPacket *output){
+    output -> id = 302252740;
+    output -> length = 4;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const float tempgcmd_dist_set_pd_ovc_eps_ovc = ((input -> gcmd_dist_set_pd_ovc_eps_ovc));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_dist_set_pd_ovc_eps_ovc))))) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_dist_set_pd_ovc_wheels(CANPacket *input, gcmd_dist_set_pd_ovc_wheels *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint32_t tempgcmd_dist_set_pd_ovc_wheels_ovc = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
+    output -> gcmd_dist_set_pd_ovc_wheels_ovc = (*((float *)(&(tempgcmd_dist_set_pd_ovc_wheels_ovc))));
+}
+
+void encodegcmd_dist_set_pd_ovc_wheels(gcmd_dist_set_pd_ovc_wheels *input, CANPacket *output){
+    output -> id = 302252739;
+    output -> length = 4;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const float tempgcmd_dist_set_pd_ovc_wheels_ovc = ((input -> gcmd_dist_set_pd_ovc_wheels_ovc));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_dist_set_pd_ovc_wheels_ovc))))) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_dist_set_pd_ovc_estim(CANPacket *input, gcmd_dist_set_pd_ovc_estim *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint32_t tempgcmd_dist_set_pd_ovc_estim_ovc = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
+    output -> gcmd_dist_set_pd_ovc_estim_ovc = (*((float *)(&(tempgcmd_dist_set_pd_ovc_estim_ovc))));
+}
+
+void encodegcmd_dist_set_pd_ovc_estim(gcmd_dist_set_pd_ovc_estim *input, CANPacket *output){
+    output -> id = 302252738;
+    output -> length = 4;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const float tempgcmd_dist_set_pd_ovc_estim_ovc = ((input -> gcmd_dist_set_pd_ovc_estim_ovc));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_dist_set_pd_ovc_estim_ovc))))) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_dist_set_pd_ovc_bdot(CANPacket *input, gcmd_dist_set_pd_ovc_bdot *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint32_t tempgcmd_dist_set_pd_ovc_bdot_ovc = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
+    output -> gcmd_dist_set_pd_ovc_bdot_ovc = (*((float *)(&(tempgcmd_dist_set_pd_ovc_bdot_ovc))));
+}
+
+void encodegcmd_dist_set_pd_ovc_bdot(gcmd_dist_set_pd_ovc_bdot *input, CANPacket *output){
+    output -> id = 302252737;
+    output -> length = 4;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const float tempgcmd_dist_set_pd_ovc_bdot_ovc = ((input -> gcmd_dist_set_pd_ovc_bdot_ovc));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_dist_set_pd_ovc_bdot_ovc))))) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_dist_set_pd_ovc_rahs(CANPacket *input, gcmd_dist_set_pd_ovc_rahs *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint32_t tempgcmd_dist_set_pd_ovc_rahs_ovc = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
+    output -> gcmd_dist_set_pd_ovc_rahs_ovc = (*((float *)(&(tempgcmd_dist_set_pd_ovc_rahs_ovc))));
+}
+
+void encodegcmd_dist_set_pd_ovc_rahs(gcmd_dist_set_pd_ovc_rahs *input, CANPacket *output){
+    output -> id = 302252736;
+    output -> length = 4;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const float tempgcmd_dist_set_pd_ovc_rahs_ovc = ((input -> gcmd_dist_set_pd_ovc_rahs_ovc));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_dist_set_pd_ovc_rahs_ovc))))) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_dist_set_pd_ovc_com2(CANPacket *input, gcmd_dist_set_pd_ovc_com2 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint32_t tempgcmd_dist_set_pd_ovc_com2_ovc = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
+    output -> gcmd_dist_set_pd_ovc_com2_ovc = (*((float *)(&(tempgcmd_dist_set_pd_ovc_com2_ovc))));
+}
+
+void encodegcmd_dist_set_pd_ovc_com2(gcmd_dist_set_pd_ovc_com2 *input, CANPacket *output){
+    output -> id = 302252735;
+    output -> length = 4;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const float tempgcmd_dist_set_pd_ovc_com2_ovc = ((input -> gcmd_dist_set_pd_ovc_com2_ovc));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_dist_set_pd_ovc_com2_ovc))))) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_dist_set_pd_ovc_com1(CANPacket *input, gcmd_dist_set_pd_ovc_com1 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint32_t tempgcmd_dist_set_pd_ovc_com1_ovc = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
+    output -> gcmd_dist_set_pd_ovc_com1_ovc = (*((float *)(&(tempgcmd_dist_set_pd_ovc_com1_ovc))));
+}
+
+void encodegcmd_dist_set_pd_ovc_com1(gcmd_dist_set_pd_ovc_com1 *input, CANPacket *output){
+    output -> id = 302252734;
+    output -> length = 4;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const float tempgcmd_dist_set_pd_ovc_com1_ovc = ((input -> gcmd_dist_set_pd_ovc_com1_ovc));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_dist_set_pd_ovc_com1_ovc))))) << 32;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_dist_set_pd_state(CANPacket *input, gcmd_dist_set_pd_state *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_dist_set_pd_state_wheels = (uint8_t) (((fullData & ((uint64_t) 0x3 << 52)) >> 52));
+    output -> gcmd_dist_set_pd_state_rahs = (uint8_t) (((fullData & ((uint64_t) 0x3 << 58)) >> 58));
+    output -> gcmd_dist_set_pd_state_ppt = (uint8_t) (((fullData & ((uint64_t) 0x3 << 48)) >> 48));
+    output -> gcmd_dist_set_pd_state_estim = (uint8_t) (((fullData & ((uint64_t) 0x3 << 54)) >> 54));
+    output -> gcmd_dist_set_pd_state_eps = (uint8_t) (((fullData & ((uint64_t) 0x3 << 50)) >> 50));
+    output -> gcmd_dist_set_pd_state_com2 = (uint8_t) (((fullData & ((uint64_t) 0x3 << 60)) >> 60));
+    output -> gcmd_dist_set_pd_state_com1 = (uint8_t) (((fullData & ((uint64_t) 0x3 << 62)) >> 62));
+    output -> gcmd_dist_set_pd_state_bdot = (uint8_t) (((fullData & ((uint64_t) 0x3 << 56)) >> 56));
+}
+
+void encodegcmd_dist_set_pd_state(gcmd_dist_set_pd_state *input, CANPacket *output){
+    output -> id = 302252733;
+    output -> length = 2;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_set_pd_state_wheels))) & 0x3) << 52;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_set_pd_state_rahs))) & 0x3) << 58;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_set_pd_state_ppt))) & 0x3) << 48;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_set_pd_state_estim))) & 0x3) << 54;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_set_pd_state_eps))) & 0x3) << 50;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_set_pd_state_com2))) & 0x3) << 60;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_set_pd_state_com1))) & 0x3) << 62;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_set_pd_state_bdot))) & 0x3) << 56;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decodegcmd_mtq_pop(CANPacket *input, gcmd_mtq_pop *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -2935,7 +3156,7 @@ void decodecmd_gen_rst(CANPacket *input, cmd_gen_rst *output){
 }
 
 void encodecmd_gen_rst(cmd_gen_rst *input, CANPacket *output){
-    output -> id = 34865424;
+    output -> id = 303300880;
     output -> length = 1;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> cmd_gen_rst_confirm))) & 0x1) << 63;

@@ -26,6 +26,17 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_GEN_SET_PT_STATE 302252742
+#define CAN_ID_GCMD_SP_SET_THRESH 302252743
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_PPT 302252741
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_EPS 302252740
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_WHEELS 302252739
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_ESTIM 302252738
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_BDOT 302252737
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_RAHS 302252736
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_COM2 302252735
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_COM1 302252734
+#define CAN_ID_GCMD_DIST_SET_PD_STATE 302252733
 #define CAN_ID_GCMD_MTQ_POP 302449340
 #define CAN_ID_RC_EPS_BATT_7 304677466
 #define CAN_ID_SENSORPROC_MAG2 335872068
@@ -152,7 +163,7 @@
 #define CAN_ID_CMD_ROLLCALL 1114132
 #define CAN_ID_MTQ_ACK 34013232
 #define CAN_ID_GEN_PANEL_TEMP 36241619
-#define CAN_ID_CMD_GEN_RST 34865424
+#define CAN_ID_CMD_GEN_RST 303300880
 #define CAN_ID_CMD_PPT_SINGLE_FIRE 34865408
 #define CAN_ID_GEN_PANEL_PWR 35782866
 #define CAN_ID_GEN_PANEL_CURRENT 35782865
@@ -241,6 +252,59 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_gen_set_pt_state {
+    uint8_t gcmd_gen_set_pt_state_3; //  (No Units)
+    uint8_t gcmd_gen_set_pt_state_2; //  (No Units)
+    uint8_t gcmd_gen_set_pt_state_1; //  (No Units)
+} gcmd_gen_set_pt_state;
+
+typedef struct gcmd_sp_set_thresh {
+    uint16_t gcmd_sp_set_thresh_thresh; // 1/73 nanoTeslas
+} gcmd_sp_set_thresh;
+
+typedef struct gcmd_dist_set_pd_ovc_ppt {
+    float gcmd_dist_set_pd_ovc_ppt_ovc; // A
+} gcmd_dist_set_pd_ovc_ppt;
+
+typedef struct gcmd_dist_set_pd_ovc_eps {
+    float gcmd_dist_set_pd_ovc_eps_ovc; // A
+} gcmd_dist_set_pd_ovc_eps;
+
+typedef struct gcmd_dist_set_pd_ovc_wheels {
+    float gcmd_dist_set_pd_ovc_wheels_ovc; // A
+} gcmd_dist_set_pd_ovc_wheels;
+
+typedef struct gcmd_dist_set_pd_ovc_estim {
+    float gcmd_dist_set_pd_ovc_estim_ovc; // A
+} gcmd_dist_set_pd_ovc_estim;
+
+typedef struct gcmd_dist_set_pd_ovc_bdot {
+    float gcmd_dist_set_pd_ovc_bdot_ovc; // A
+} gcmd_dist_set_pd_ovc_bdot;
+
+typedef struct gcmd_dist_set_pd_ovc_rahs {
+    float gcmd_dist_set_pd_ovc_rahs_ovc; // A
+} gcmd_dist_set_pd_ovc_rahs;
+
+typedef struct gcmd_dist_set_pd_ovc_com2 {
+    float gcmd_dist_set_pd_ovc_com2_ovc; // A
+} gcmd_dist_set_pd_ovc_com2;
+
+typedef struct gcmd_dist_set_pd_ovc_com1 {
+    float gcmd_dist_set_pd_ovc_com1_ovc; // A
+} gcmd_dist_set_pd_ovc_com1;
+
+typedef struct gcmd_dist_set_pd_state {
+    uint8_t gcmd_dist_set_pd_state_wheels; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_rahs; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_ppt; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_estim; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_eps; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_com2; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_com1; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_bdot; //  (No Units)
+} gcmd_dist_set_pd_state;
+
 typedef struct gcmd_mtq_pop {
     uint8_t gcmd_mtq_pop_z; //  (No Units)
     uint8_t gcmd_mtq_pop_y; //  (No Units)
@@ -1080,6 +1144,39 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_gen_set_pt_state(gcmd_gen_set_pt_state *input, CANPacket* output);
+void decodegcmd_gen_set_pt_state(CANPacket *input, gcmd_gen_set_pt_state *output);
+
+void encodegcmd_sp_set_thresh(gcmd_sp_set_thresh *input, CANPacket* output);
+void decodegcmd_sp_set_thresh(CANPacket *input, gcmd_sp_set_thresh *output);
+
+void encodegcmd_dist_set_pd_ovc_ppt(gcmd_dist_set_pd_ovc_ppt *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_ppt(CANPacket *input, gcmd_dist_set_pd_ovc_ppt *output);
+
+void encodegcmd_dist_set_pd_ovc_eps(gcmd_dist_set_pd_ovc_eps *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_eps(CANPacket *input, gcmd_dist_set_pd_ovc_eps *output);
+
+void encodegcmd_dist_set_pd_ovc_wheels(gcmd_dist_set_pd_ovc_wheels *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_wheels(CANPacket *input, gcmd_dist_set_pd_ovc_wheels *output);
+
+void encodegcmd_dist_set_pd_ovc_estim(gcmd_dist_set_pd_ovc_estim *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_estim(CANPacket *input, gcmd_dist_set_pd_ovc_estim *output);
+
+void encodegcmd_dist_set_pd_ovc_bdot(gcmd_dist_set_pd_ovc_bdot *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_bdot(CANPacket *input, gcmd_dist_set_pd_ovc_bdot *output);
+
+void encodegcmd_dist_set_pd_ovc_rahs(gcmd_dist_set_pd_ovc_rahs *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_rahs(CANPacket *input, gcmd_dist_set_pd_ovc_rahs *output);
+
+void encodegcmd_dist_set_pd_ovc_com2(gcmd_dist_set_pd_ovc_com2 *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_com2(CANPacket *input, gcmd_dist_set_pd_ovc_com2 *output);
+
+void encodegcmd_dist_set_pd_ovc_com1(gcmd_dist_set_pd_ovc_com1 *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_com1(CANPacket *input, gcmd_dist_set_pd_ovc_com1 *output);
+
+void encodegcmd_dist_set_pd_state(gcmd_dist_set_pd_state *input, CANPacket* output);
+void decodegcmd_dist_set_pd_state(CANPacket *input, gcmd_dist_set_pd_state *output);
 
 void encodegcmd_mtq_pop(gcmd_mtq_pop *input, CANPacket* output);
 void decodegcmd_mtq_pop(CANPacket *input, gcmd_mtq_pop *output);
