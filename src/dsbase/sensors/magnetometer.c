@@ -13,6 +13,7 @@
 #define MAX_NUM_MAGNETOMETERS 2 // one for each i2c bus
 #define GLITCH_FILTER_MAX_DIFF 200
 
+#if defined(__HIL_AA_GLITCHFILTER__)
 typedef struct {
     hDev hSensor;
     MagnetometerData data;
@@ -22,14 +23,20 @@ typedef struct {
     uint16_t prev_difference_z;
     uint16_t glitter_count;
 } MagInternalData;
-
+FILE_STATIC uint8_t first_read = 1;
+#else
+typedef struct {
+    hDev hSensor;
+    MagnetometerData data;
+} MagInternalData;
+#endif
 
 // TODO:  Need some const decorations
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 
 FILE_STATIC MagInternalData mags[MAX_NUM_MAGNETOMETERS];
 FILE_STATIC uint8_t numRegistered = 0;
-FILE_STATIC uint8_t first_read = 1;
+
 hMag magInit(bus_instance_i2c bus)
 {
     i2cEnable(bus);
@@ -41,7 +48,7 @@ hMag magInit(bus_instance_i2c bus)
     // HMC5883 pattern is to address
 
    // selfTestConfig(numRegistered);
-   normalOperationConfig(numRegistered);
+    mag_normal_reading_operation_config(numRegistered);
 
 #elif defined( __BSP_HW_MAGTOM_MAG3110__)
 
@@ -64,7 +71,11 @@ hMag magInit(bus_instance_i2c bus)
     return numRegistered++;
 }
 
-void selfTestConfig(hMag handle)
+/* Gain = 5
+   Expected Results for self test
+   For x and y data output registers: 390 * 1.16 = +452 --> 452 * 73 = 32996;
+   For z data output registers: 390 & 1.08 = +421 * 73 = 30733; */
+void mag_self_test_config(hMag handle)
 {
     hDev hSensor = mags[handle].hSensor;
 
@@ -76,14 +87,16 @@ void selfTestConfig(hMag handle)
 }
 
 
-void normalOperationConfig(hMag handle)
+void mag_normal_reading_operation_config(hMag handle)
 {
     hDev hSensor = mags[handle].hSensor;
 
     // HMC5883 pattern is to address
     i2cBuff[0] = MAG_HMC5883L_REG_ADDR_CRA;
-    i2cBuff[1] = MAG_HMC5883L_AVERAGE_8_SAMPLE | MAG_HMC5883L_CONTINUOUS_OUTPUT_RATE_30 | MAG_HMC5883L_MEASURE_MODE_DEFAULT | MAG_HMC5883L_TEMP_COMP_MODE;
-    i2cBuff[2] = MAG_HMC5883L_GAIN_1370;
+    // Configuration Register A: Average of 8 samples, 30Hz sample rate, normal measurement configuration (no bias)
+    i2cBuff[1] = MAG_HMC5883L_AVERAGE_8_SAMPLE | MAG_HMC5883L_CONTINUOUS_OUTPUT_RATE_30 | MAG_HMC5883L_MEASURE_MODE_DEFAULT;
+    // Configuration Register B: Gain (Lsb/Gauss) = 1370 --> nT gain factor of 73.0; Output range: 0xF800 - 0x07ff (-2048 - 2047)
+    i2cBuff[2] = MAG_HMC5883L_GAIN_1370; // Gain of 73
     i2cBuff[3] = MAG_HMC5883L_OPERATING_MODE_CONTINUOUS;
     i2cMasterWrite(hSensor, i2cBuff, 4);
 }
@@ -92,11 +105,6 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
 {
     hDev hSensor = mags[handle].hSensor;
     MagnetometerData *mdata = &(mags[handle].data);
-    MagnetometerData *prevData = &(mags[handle].prev_data);
-    uint16_t * prev_dif_x = &(mags[handle].prev_difference_x);
-    uint16_t * prev_dif_y = &(mags[handle].prev_difference_y);
-    uint16_t * prev_dif_z = &(mags[handle].prev_difference_z);
-    uint16_t * glitter_count = &(mags[handle].glitter_count);
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)
 
 #if defined(__HIL_AA_NOEXTRAREADS__)
@@ -106,6 +114,12 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
 #endif
 
 #if defined(__HIL_AA_GLITCHFILTER__)
+
+    MagnetometerData *prevData = &(mags[handle].prev_data);
+    uint16_t * prev_dif_x = &(mags[handle].prev_difference_x);
+    uint16_t * prev_dif_y = &(mags[handle].prev_difference_y);
+    uint16_t * prev_dif_z = &(mags[handle].prev_difference_z);
+    uint16_t * glitter_count = &(mags[handle].glitter_count);
 
     // NOTE:  Order of X/Z/Y on HMC5883 is, unfortunately, intentional ...
     if(!first_read)
@@ -157,8 +171,6 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
     mdata->rawZ = (int16_t)(i2cBuff[3] | ((int16_t)i2cBuff[2] << 8));
     mdata->rawY = (int16_t)(i2cBuff[5] | ((int16_t)i2cBuff[4] << 8));
 
-    mdata->rawTempA = (int8_t)i2cBuff[6];
-    mdata->rawTempB = (int8_t)i2cBuff[7];
 #endif
 
 #elif defined( __BSP_HW_MAGTOM_MAG3110__)
@@ -196,7 +208,6 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
     prevData->convertedX = prevData->rawX * conversionFactor;
     prevData->convertedY = prevData->rawY * conversionFactor;
     prevData->convertedZ = prevData->rawZ * conversionFactor;
-    prevData->convertedTemp = (double)((((double)prevData->rawTempA * 256.0)  +  (double) prevData->rawTempB * 1.0) / (8.0 * 16.0) + 25.0);
     return prevData;
 #else
     // todo:  Ultimately, this logic needs to move into the device-specific file
@@ -224,7 +235,6 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
     mdata->convertedX = mdata->rawX * conversionFactor;
     mdata->convertedY = mdata->rawY * conversionFactor;
     mdata->convertedZ = mdata->rawZ * conversionFactor;
-    mdata->convertedTemp = (double)((((double)mdata->rawTempA * 256.0)  +  (double) mdata->rawTempB * 1.0) / (8.0 * 16.0) + 25.0);
     return mdata;
 #endif
 }

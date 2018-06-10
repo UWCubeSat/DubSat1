@@ -9,9 +9,9 @@
 #define ADCS_MPC_H_
 
 // Debug LED
-#define LED_DIR PJDIR
-#define LED_OUT PJOUT
-#define LED_BIT BIT1
+#define LED_DIR P3DIR
+#define LED_OUT P3OUT
+#define LED_BIT BIT5
 
 #define TLM_ID_OUTPUT 2
 #define TLM_ID_MTQCMD 3

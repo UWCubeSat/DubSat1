@@ -35,9 +35,7 @@ FILE_STATIC estim_mag_unit_z tmpEMagz;
 // rollcall
 FILE_STATIC aggVec_i rc_pointTrue;
 FILE_STATIC aggVec_i rc_mspTemp;
-FILE_STATIC aggVec_d rc_omegax;
-FILE_STATIC aggVec_d rc_omegay;
-FILE_STATIC aggVec_d rc_omegaz;
+FILE_STATIC aggVec_d rc_omega;
 
 FILE_STATIC void rcPopulate1(CANPacket *out);
 FILE_STATIC void rcPopulate2(CANPacket *out);
@@ -50,16 +48,13 @@ FILE_STATIC void rcPopulate8(CANPacket *out);
 FILE_STATIC void rcPopulate9(CANPacket *out);
 FILE_STATIC void rcPopulate10(CANPacket *out);
 FILE_STATIC void rcPopulate11(CANPacket *out);
-FILE_STATIC void rcPopulate12(CANPacket *out);
-FILE_STATIC void rcPopulate13(CANPacket *out);
-FILE_STATIC void rcPopulate14(CANPacket *out);
 FILE_STATIC void rcPopulate15(CANPacket *out);
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
  rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
  rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10,
- rcPopulate11, rcPopulate12,rcPopulate13, rcPopulate14, rcPopulate15
+ rcPopulate11, rcPopulate15
 };
 
 // Backchannel telemerty
@@ -117,9 +112,7 @@ int main(void)
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
     aggVec_init_i(&rc_pointTrue);
     aggVec_init_i(&rc_mspTemp);
-    aggVec_init_d(&rc_omegax);
-    aggVec_init_d(&rc_omegay);
-    aggVec_init_d(&rc_omegaz);
+    aggVec_init_d(&rc_omega);
 
     // init autocode
     MSP_FSW_initialize();
@@ -271,8 +264,6 @@ void canRxCallback(CANPacket *p)
 // copy CAN inputs from temporary storage to the autocode inputs
 void acceptInputs()
 {
-    __disable_interrupt();
-
     // sensor proc outputs
     memcpy(rtU.mag_vec_body_T, tmpSP2FSW.mag_vec_body_T,
            4 * sizeof(tmpSP2FSW.mag_vec_body_T[0]));
@@ -298,8 +289,6 @@ void acceptInputs()
     rtU.mag_eci_unit[0] = tmpEMagx.estim_mag_unit_x_val;
     rtU.mag_eci_unit[1] = tmpEMagy.estim_mag_unit_y_val;
     rtU.mag_eci_unit[2] = tmpEMagz.estim_mag_unit_z_val;
-
-    __enable_interrupt();
 }
 
 void sendCANVelocityPointing()
@@ -330,11 +319,15 @@ void useOutputs()
     sendCANVelocityPointing();
     sendCANMtqCmd();
 
+    // calculate omega magnitude for rollcall
+    double x = rtY.body_rates[0];
+    double y = rtY.body_rates[1];
+    double z = rtY.body_rates[2];
+    double omega = sqrt(x * x + y * y + z * z);
+
     // update rollcall data
     aggVec_push_i(&rc_pointTrue, rtY.point_true);
-    aggVec_push_d(&rc_omegax, rtY.body_rates[0]);
-    aggVec_push_d(&rc_omegay, rtY.body_rates[1]);
-    aggVec_push_d(&rc_omegaz, rtY.body_rates[2]);
+    aggVec_push_d(&rc_omega, omega);
 }
 
 void sendBackchannelTelem()
@@ -428,74 +421,41 @@ FILE_STATIC void rcPopulate5(CANPacket *out)
 
 FILE_STATIC void rcPopulate6(CANPacket *out)
 {
-    rc_adcs_mpc_6 rc;
-    rc.rc_adcs_mpc_6_omega_x_min = aggVec_min_d(&rc_omegax);
-    aggVec_min_reset((aggVec *) &rc_omegax);
+    rc_adcs_mpc_6 rc = { aggVec_min_d(&rc_omega) };
+    aggVec_min_reset((aggVec *) &rc_omega);
     encoderc_adcs_mpc_6(&rc, out);
 }
 
 FILE_STATIC void rcPopulate7(CANPacket *out)
 {
-    rc_adcs_mpc_7 rc;
-    rc.rc_adcs_mpc_7_omega_x_max = aggVec_max_d(&rc_omegax);
-    aggVec_max_reset((aggVec *) &rc_omegax);
+    rc_adcs_mpc_7 rc = { aggVec_max_d(&rc_omega) };
+    aggVec_max_reset((aggVec *) &rc_omega);
     encoderc_adcs_mpc_7(&rc, out);
 }
 
 FILE_STATIC void rcPopulate8(CANPacket *out)
 {
-    rc_adcs_mpc_8 rc;
-    rc.rc_adcs_mpc_8_omega_x_avg = aggVec_avg_d(&rc_omegax);
-    aggVec_as_reset((aggVec *) &rc_omegax);
+    rc_adcs_mpc_8 rc = { aggVec_avg_d(&rc_omega) };
+    aggVec_as_reset((aggVec *) &rc_omega);
     encoderc_adcs_mpc_8(&rc, out);
 }
 
 FILE_STATIC void rcPopulate9(CANPacket *out)
 {
-    rc_adcs_mpc_9 rc;
-    rc.rc_adcs_mpc_9_omega_y_min = aggVec_min_d(&rc_omegay);
-    aggVec_min_reset((aggVec *) &rc_omegay);
+    rc_adcs_mpc_9 rc = { rtY.body_rates[0] };
     encoderc_adcs_mpc_9(&rc, out);
 }
 
 FILE_STATIC void rcPopulate10(CANPacket *out)
 {
-    rc_adcs_mpc_10 rc;
-    rc.rc_adcs_mpc_10_omega_y_max = aggVec_max_d(&rc_omegay);
-    aggVec_max_reset((aggVec *) &rc_omegay);
+    rc_adcs_mpc_10 rc = { rtY.body_rates[1] };
     encoderc_adcs_mpc_10(&rc, out);
 }
 
 FILE_STATIC void rcPopulate11(CANPacket *out)
 {
-    rc_adcs_mpc_11 rc;
-    rc.rc_adcs_mpc_11_omega_y_avg = aggVec_avg_d(&rc_omegay);
-    aggVec_as_reset((aggVec *) &rc_omegay);
+    rc_adcs_mpc_11 rc = { rtY.body_rates[2] };
     encoderc_adcs_mpc_11(&rc, out);
-}
-
-FILE_STATIC void rcPopulate12(CANPacket *out)
-{
-    rc_adcs_mpc_12 rc;
-    rc.rc_adcs_mpc_12_omega_z_min = aggVec_min_d(&rc_omegaz);
-    aggVec_min_reset((aggVec *) &rc_omegaz);
-    encoderc_adcs_mpc_12(&rc, out);
-}
-
-FILE_STATIC void rcPopulate13(CANPacket *out)
-{
-    rc_adcs_mpc_13 rc;
-    rc.rc_adcs_mpc_13_omega_z_max = aggVec_max_d(&rc_omegaz);
-    aggVec_max_reset((aggVec *) &rc_omegaz);
-    encoderc_adcs_mpc_13(&rc, out);
-}
-
-FILE_STATIC void rcPopulate14(CANPacket *out)
-{
-    rc_adcs_mpc_14 rc;
-    rc.rc_adcs_mpc_14_omega_z_avg = aggVec_avg_d(&rc_omegaz);
-    aggVec_as_reset((aggVec *) &rc_omegaz);
-    encoderc_adcs_mpc_14(&rc, out);
 }
 
 FILE_STATIC void rcPopulate15(CANPacket *out)

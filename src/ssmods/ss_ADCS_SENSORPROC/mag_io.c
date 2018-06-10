@@ -20,9 +20,9 @@
 FILE_STATIC MagIO mag1;
 FILE_STATIC MagIO mag2;
 
-FILE_STATIC uint8_t isValidRange(int16_t v)
+FILE_STATIC uint8_t isValidRange(float v)
 {
-	return v < MAG_VALID_RANGE_RAW && v > -MAG_VALID_RANGE_RAW;
+	return v < MAG_VALID_RANGE_T && v > -MAG_VALID_RANGE_T;
 }
 
 void magioInit(MagIO *magio, real32_T *input, real32_T *output, bus_instance_i2c bus)
@@ -39,9 +39,9 @@ void magioInit(MagIO *magio, real32_T *input, real32_T *output, bus_instance_i2c
 void magioUpdate(MagIO *magio)
 {
 	magio->data = magReadXYZData(magio->handle, ConvertToNone);
-	int16_t x = magConvertRawToTeslas(magio->data->rawX);
-	int16_t y = magConvertRawToTeslas(magio->data->rawY);
-	int16_t z = magConvertRawToTeslas(magio->data->rawZ);
+	float x = magConvertRawToTeslas(magio->data->rawX);
+	float y = magConvertRawToTeslas(magio->data->rawY);
+	float z = magConvertRawToTeslas(magio->data->rawZ);
 	uint8_t valid = isValidRange(x) && isValidRange(y) && isValidRange(z);
 
 	magio->input[0] = x;
@@ -146,8 +146,6 @@ void magioSendCAN2()
     // update rollcall arrays
     updateProcessedRollcall(&mag2);
 }
-
-// TODO set mag1, mag2 valid
 
 void magio1RcPopulate6(rc_adcs_sp_6 *r)
 {

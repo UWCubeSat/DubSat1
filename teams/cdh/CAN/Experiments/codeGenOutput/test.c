@@ -3,6 +3,11 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket gcmd_mtq_pop_packet = {0};
+	gcmd_mtq_pop gcmd_mtq_pop_info = {0};
+	encodegcmd_mtq_pop(&gcmd_mtq_pop_info, &gcmd_mtq_pop_packet);
+	canSendPacket(&gcmd_mtq_pop_packet);
+
 	__delay_cycles(10000);	CANPacket rc_eps_batt_7_packet = {0};
 	rc_eps_batt_7 rc_eps_batt_7_info = {0};
 	encoderc_eps_batt_7(&rc_eps_batt_7_info, &rc_eps_batt_7_packet);
