@@ -276,10 +276,10 @@ void sendRC()
 
 int main(void)
 {
-    P3DIR |= BIT4; //this is for Paul's backpower fix
-    P3OUT |= BIT4;
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
+    P3DIR |= BIT4; //this is for Paul's backpower fix
+    P3OUT |= BIT4;
     asensorInit(Ref_2p5V);
     battInit();
 
@@ -288,7 +288,7 @@ int main(void)
     hSensor = pcvsensorInit(I2CBus2, 0x40, 1.0, 100); //ground ground, 1 ohm???, 100 mA
 
     /* ------COULOMB COUNTER---- */
-    LTC2943Init(I2CBus2, 6.0);
+    LTC2943Init(I2CBus2, 6.0); //NOTE: if 6.0 (shunt resistance) changes it will mess up COSMOS conversions
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug

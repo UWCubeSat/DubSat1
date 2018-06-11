@@ -600,7 +600,6 @@ void sendRC()
             rollcallPkt7_info.rc_eps_dist_7_com2_v_max = aggVec_max_i(&ssBusVAgs[PD_COM2]);
             rollcallPkt7_info.rc_eps_dist_7_com2_v_min = aggVec_min_i(&ssBusVAgs[PD_COM2]);
             encoderc_eps_dist_7(&rollcallPkt7_info, &rollcallPkt);
-            aggVec_as_reset((aggVec*)&ssCurrAgs[PD_COM2]);
         }
         else if(rcFlag == 10)
         {
@@ -781,8 +780,8 @@ int main(void)
     //WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this when watchdog goes in
     WDTCTL = WDTPW | WDTHOLD;
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
-    P3DIR |= BIT4; //this is Paul's fix
-    P3OUT |= BIT4;
+    P3DIR |= BIT4 | BIT7; //this is Paul's backpower fix
+    P3OUT |= BIT4 | BIT7;
 
     // Spin up the ADC, for the temp sensor and battery voltage
     asensorInit(Ref_2p5V);
