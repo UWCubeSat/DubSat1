@@ -31,12 +31,28 @@ void pause(uint64_t i){
         __delay_cycles(1);
     }
 }
+void reverseArrah(uint8_t arr[], uint8_t start, uint8_t end) {
+    uint8_t temp;
+    if (start >= end)
+        return;
+    temp = arr[start];
+    arr[start] = arr[end];
+    arr[end] = temp;
+    reverseArrah(arr, start+1, end-1);
+}
+
 
 void rxCb(CANPacket *p){
     // PPT Single Fire
-    if(p -> id == 303300864){
-        CANPacket p = {0};
-        canSendPacket(&p);
+    if(p -> id == 303300864 ){
+        CANPacket j = {0};
+        j.id =  1234567;
+        uint64_t data =3400535326 ;
+        uint64_t *thePointer = (uint64_t *) (j.data);
+        j.length=4;
+        *thePointer = data;
+        reverseArrah((j.data), 0, 3);
+        canSendPacket(&j);
     }
 }
 
@@ -51,7 +67,6 @@ int main(void) {
     P3DIR |= BIT0 | BIT1 | BIT2 | BIT3;
 
     P1OUT |= BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5;
-    P1OUT &= ~(BIT0);
     P3OUT |= BIT0 | BIT1 | BIT2 | BIT3;
 
     P1DIR &= ~(BIT7 | BIT6);
@@ -73,7 +88,7 @@ int main(void) {
     while(1){
 
         if (P1IN & BIT7){
-            delay = 0;
+            delay = 20;
         }
         else {
             delay = 60000;
@@ -84,6 +99,11 @@ int main(void) {
             CANPacket cmd_com2_run_packet = {0};
             cmd_com2_run cmd_com2_run_info = {0};
             encodecmd_com2_run(&cmd_com2_run_info, &cmd_com2_run_packet);
+            uint64_t data = 3735928559;
+            uint64_t *thePointer = (uint64_t *) (cmd_com2_run_packet.data);
+            cmd_com2_run_packet.length=4;
+            *thePointer = data;
+            reverseArrah((cmd_com2_run_packet.data), 0, 3);
             canSendPacket(&cmd_com2_run_packet);
         }
         else {
@@ -96,6 +116,11 @@ int main(void) {
             CANPacket cmd_gen_rst_packet = {0};
             cmd_gen_rst cmd_gen_rst_info = {0};
             encodecmd_gen_rst(&cmd_gen_rst_info, &cmd_gen_rst_packet);
+            uint64_t data = 789514;
+            uint64_t *thePointer = (uint64_t *) (cmd_gen_rst_packet.data);
+            cmd_gen_rst_packet.length=3;
+            *thePointer = data;
+            reverseArrah((cmd_gen_rst_packet.data), 0, 2);
             canSendPacket(&cmd_gen_rst_packet);
         }
         else {
@@ -108,6 +133,11 @@ int main(void) {
             CANPacket com2_state_packet = {0};
             com2_state com2_state_info = {0};
             encodecom2_state(&com2_state_info, &com2_state_packet);
+            uint64_t data = 900517141665;
+            uint64_t *thePointer = (uint64_t *) (com2_state_packet.data);
+            com2_state_packet.length=5;
+            *thePointer = data;
+            reverseArrah((com2_state_packet.data), 0, 4);
             canSendPacket(&com2_state_packet);
         }
         else {
@@ -119,6 +149,11 @@ int main(void) {
             CANPacket mpc_vp_packet = {0};
             mpc_vp mpc_vp_info = {0};
             encodempc_vp(&mpc_vp_info, &mpc_vp_packet);
+            uint64_t data = 3201966622;
+            uint64_t *thePointer = (uint64_t *) (mpc_vp_packet.data);
+            mpc_vp_packet.length=4;
+            *thePointer = data;
+            reverseArrah((mpc_vp_packet.data), 0, 3);
             canSendPacket(&mpc_vp_packet);
         }
         pause(delay);
