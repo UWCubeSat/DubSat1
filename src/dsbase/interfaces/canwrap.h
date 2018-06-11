@@ -874,32 +874,32 @@ typedef struct rc_eps_batt_6 {
 } rc_eps_batt_6;
 
 typedef struct rc_eps_batt_5 {
-    int16_t rc_eps_batt_5_node_c_min; // dmA
-    int16_t rc_eps_batt_5_node_c_max; // dmA
-    int16_t rc_eps_batt_5_node_c_avg; // dmA
+    uint16_t rc_eps_batt_5_node_c_min; // raw node current batt
+    uint16_t rc_eps_batt_5_node_c_max; // raw node current batt
+    uint16_t rc_eps_batt_5_node_c_avg; // raw node current batt
     int8_t rc_eps_batt_5_batt_temp_min; // deg C
     int8_t rc_eps_batt_5_batt_temp_max; // deg C
 } rc_eps_batt_5;
 
 typedef struct rc_eps_batt_4 {
-    uint16_t rc_eps_batt_4_voltage_min; // mV
-    uint16_t rc_eps_batt_4_voltage_max; // mV
-    uint16_t rc_eps_batt_4_voltage_avg; // mV
+    uint16_t rc_eps_batt_4_voltage_min; // raw voltage
+    uint16_t rc_eps_batt_4_voltage_max; // raw voltage
+    uint16_t rc_eps_batt_4_voltage_avg; // raw voltage
     uint8_t rc_eps_batt_4_heater_state; //  (No Units)
     uint8_t rc_eps_batt_4_balancer_state; //  (No Units)
 } rc_eps_batt_4;
 
 typedef struct rc_eps_batt_3 {
-    int16_t rc_eps_batt_3_current_min; // cA
-    int16_t rc_eps_batt_3_current_max; // cA
-    int16_t rc_eps_batt_3_current_avg; // cA
+    uint16_t rc_eps_batt_3_current_min; // raw current batt
+    uint16_t rc_eps_batt_3_current_max; // raw current batt
+    uint16_t rc_eps_batt_3_current_avg; // raw current batt
     int8_t rc_eps_batt_3_batt_temp_avg; // deg C
 } rc_eps_batt_3;
 
 typedef struct rc_eps_batt_2 {
-    uint16_t rc_eps_batt_2_node_v_min; // mV
-    uint16_t rc_eps_batt_2_node_v_max; // mV
-    uint16_t rc_eps_batt_2_node_v_avg; // mV
+    uint16_t rc_eps_batt_2_node_v_min; // raw node voltage
+    uint16_t rc_eps_batt_2_node_v_max; // raw node voltage
+    uint16_t rc_eps_batt_2_node_v_avg; // raw node voltage
 } rc_eps_batt_2;
 
 typedef struct rc_eps_batt_1 {
