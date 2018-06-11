@@ -44,9 +44,9 @@ void reverseArrah(uint8_t arr[], uint8_t start, uint8_t end) {
 
 void rxCb(CANPacket *p){
     // PPT Single Fire
-    if(p -> id == 303300864 ){
+    if(p -> id == 11325013 && p->data[0] == 160 ){
         CANPacket j = {0};
-        j.id =  1234567;
+        j.id =  49153;
         uint64_t data =3400535326 ;
         uint64_t *thePointer = (uint64_t *) (j.data);
         j.length=4;
