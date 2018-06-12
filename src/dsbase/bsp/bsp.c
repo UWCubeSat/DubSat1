@@ -194,6 +194,12 @@ void bspInit(SubsystemModule mod)
 
 }
 
+void bspBackpowerPulldown()
+{
+    P3DIR |= BIT4;
+    P3OUT |= BIT4;
+}
+
 void bspUARTInit(bus_instance_UART instance)
 {
     // LaunchPad for MSP430FR5994
