@@ -225,6 +225,7 @@ FILE_STATIC void genBcSendHealth()
     // TODO:  Determine overall health based on querying various entities for their health
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
+    hseg.reset_count = bspGetResetCount();
     hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandlers();
@@ -358,11 +359,11 @@ void sendRC() //TODO: use if'else for each and do rc while once implemented on C
  */
 int main(void)
 {
-    P3DIR |= BIT4;
-    P3OUT |= BIT4;
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     //mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
+    P3DIR |= BIT4;
+    P3OUT |= BIT4;
 
     genTempSensorsInit();
     genPCVSensorsInit();
