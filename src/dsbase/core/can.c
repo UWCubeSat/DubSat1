@@ -91,7 +91,7 @@ uint8_t canInit() {
     //    ref: pg 45
     setRegister(MCP_CNF1, HS_CNF1_SJW | HS_CNF1_BRP);
     // b: CNF2, bittime length bit, sample point config bit
-    setRegister(MCP_CNF2, HS_CNF2_BTLMODE | HS_CNF2_SAM | HS_CNF2_PHSEG1 | HS_CNF2_PRSEG);
+    setRegister(MCP_CNF2, 0xbf);// HS_CNF2_BTLMODE | HS_CNF2_SAM | HS_CNF2_PHSEG1 | HS_CNF2_PRSEG);
     // c: CNF3, start of frame signal bit, wake up filter bit,
     setRegister(MCP_CNF3, HS_CNF3_SOF | HS_CNF3_WAKFIL | HS_CNF3_PHSEG2);
 
@@ -346,7 +346,7 @@ __interrupt void ReceivedMsg(void) {
             if (res == 0) {
                 length = rxb1dlc & MCP_RXBNDLC_DLC;
                 uint8_t buf[8 + 1], msg[8];
-                buf[0] = CAN_READ_RXBUF | CAN_READ_RXBUF_0;
+                buf[0] = CAN_READ_RXBUF | CAN_READ_RXBUF_1;
                 spiTransceive(buf, buf, 9, CS_1);
                 uint32_t id = 0;
                 uint8_t bufBuf = 0xFF;
