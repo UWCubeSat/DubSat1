@@ -97,8 +97,10 @@ FILE_STATIC volatile uint8_t fsw_ignore = 1;
 
 //----------- CAN ------------------
 
-// input packet 
-FILE_STATIC volatile int8_t bdot_command_x, bdot_command_y, bdot_command_z; 
+// bdot commands packet 
+FILE_STATIC volatile int8_t bdot_command_x, bdot_command_y, bdot_command_z;
+ 
+// fsw commands 
 FILE_STATIC volatile int8_t fsw_command_x, fsw_command_y, fsw_command_z;  
 FILE_STATIC volatile int8_t sc_mode;
 
@@ -125,6 +127,12 @@ FILE_STATIC aggVec_i duty_z1_agg;
 FILE_STATIC aggVec_i duty_z2_agg;
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 	{rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5};
+
+// POP "Polarity Override Protocol" 
+FILE_STATIC volatile int8_t pop_x = 0, pop_y = 0, pop_z = 0; 
+#pragma PERSISTENT(pop_x)
+#pragma PERSISTENT(pop_y)
+#pragma PERSISTENT(pop_z)
 
 //-----------COSMOS------------------
 
@@ -159,8 +167,7 @@ FILE_STATIC bdot_fsw_commands cosmos_commandy_commands; // commands
 
 //------------ timers ----------------
 
-FILE_STATIC int telem_timer; 
-FILE_STATIC int telem_time_ms = 1000;
+// state machine timers 
 #pragma PERSISTENT(telem_time_ms)
 FILE_STATIC int actuation_timer = 0;
 FILE_STATIC int actuation_time_ms = 2000;
@@ -171,10 +178,15 @@ FILE_STATIC int measurement_time_ms = 2000;
 FILE_STATIC int stabilize_timer = 0;
 FILE_STATIC int stabilize_time_ms = 100;
 #pragma PERSISTENT(stabilize_time_ms)
+// other timers 
+FILE_STATIC int telem_timer; 
+FILE_STATIC int telem_time_ms = 1000;
 FILE_STATIC int LED_timer = 0;
 FILE_STATIC int LED_time_ms = 200;
 FILE_STATIC int cosmos_commands_timer = 0; 
 FILE_STATIC int cosmos_commands_time_ms = 100; 
+
+
 
 //==================================================================
 // defines 
