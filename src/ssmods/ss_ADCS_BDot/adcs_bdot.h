@@ -39,6 +39,7 @@
 #define TLM_ID_SP_MAG1 122
 #define TLM_ID_SP_MAG2 121
 #define TLM_ID_CONTINUOUS_MAG 120
+#define TLM_ID_BDOT_STATE_STATUS 119
 
 #define OPCODE_MY_CMD 1
 #define OPCODE_MAG_SELECT_CMD 2
@@ -64,6 +65,14 @@ CMD_SEGMENT {
 CMD_SEGMENT {
     uint8_t bdot_nap_status;
 } nap_wakeup_cmd;
+
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint8_t state_status;
+    uint8_t mag_selection_mode;
+    uint8_t current_listening_mag;
+} bdot_state_status;
 
 TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
@@ -152,6 +161,8 @@ FILE_STATIC void send_simulink_segment_cosmos();
 
 FILE_STATIC void send_all_polling_timers_segment_cosmos();
 FILE_STATIC void send_health_segment_cosmos();
+
+FILE_STATIC void send_bdot_state_status_cosmos();
 
 FILE_STATIC void send_cosmos_telem();
 /************************************************************************/
