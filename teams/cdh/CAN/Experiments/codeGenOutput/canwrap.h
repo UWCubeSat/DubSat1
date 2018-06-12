@@ -161,23 +161,23 @@
 #define CAN_ID_SENSORPROC_IMU 335872066
 #define CAN_ID_SENSORPROC_MAG 335872067
 #define CAN_ID_CMD_ROLLCALL 1114132
-#define CAN_ID_MTQ_ACK 34013232
-#define CAN_ID_GEN_PANEL_TEMP 36241619
+#define CAN_ID_MTQ_ACK 302448688
+#define CAN_ID_GEN_PANEL_TEMP 304677075
 #define CAN_ID_CMD_GEN_RST 303300880
-#define CAN_ID_CMD_PPT_SINGLE_FIRE 34865408
-#define CAN_ID_GEN_PANEL_PWR 35782866
-#define CAN_ID_GEN_PANEL_CURRENT 35782865
-#define CAN_ID_GEN_PANEL_VOLTAGE 34734288
-#define CAN_ID_MPC_VP 37158946
-#define CAN_ID_EPS_BATT_STATE 35782850
-#define CAN_ID_EPS_BATT_CURRENT 35782849
-#define CAN_ID_EPS_BATT_VOLTAGE 35782848
+#define CAN_ID_CMD_PPT_SINGLE_FIRE 303300864
+#define CAN_ID_GEN_PANEL_PWR 304218322
+#define CAN_ID_GEN_PANEL_CURRENT 304218321
+#define CAN_ID_GEN_PANEL_VOLTAGE 303169744
+#define CAN_ID_MPC_VP 305594402
+#define CAN_ID_EPS_BATT_STATE 303169730
+#define CAN_ID_EPS_BATT_CURRENT 303169729
+#define CAN_ID_EPS_BATT_VOLTAGE 303169728
 #define CAN_ID_SENSORPROC_SUN 335872065
 #define CAN_ID_CMD_MTQ_BDOT 304545825
-#define CAN_ID_BDOT_TUMBLE_STATUS 34013216
+#define CAN_ID_BDOT_TUMBLE_STATUS 302448672
 #define CAN_ID_SYNC_2 65554
 #define CAN_ID_SYNC_1 65553
-#define CAN_ID_MSP_TEMP 36241427
+#define CAN_ID_MSP_TEMP 304676883
 #define CAN_ID_GRND_EPOCH 302449337
 
 #define CAN_ENUM_DOMAIN_STATE_OFF_BATT_UNDERVOLTAGE 3
@@ -874,32 +874,32 @@ typedef struct rc_eps_batt_6 {
 } rc_eps_batt_6;
 
 typedef struct rc_eps_batt_5 {
-    int16_t rc_eps_batt_5_node_c_min; // dmA
-    int16_t rc_eps_batt_5_node_c_max; // dmA
-    int16_t rc_eps_batt_5_node_c_avg; // dmA
+    uint16_t rc_eps_batt_5_node_c_min; // raw node current batt
+    uint16_t rc_eps_batt_5_node_c_max; // raw node current batt
+    uint16_t rc_eps_batt_5_node_c_avg; // raw node current batt
     int8_t rc_eps_batt_5_batt_temp_min; // deg C
     int8_t rc_eps_batt_5_batt_temp_max; // deg C
 } rc_eps_batt_5;
 
 typedef struct rc_eps_batt_4 {
-    uint16_t rc_eps_batt_4_voltage_min; // mV
-    uint16_t rc_eps_batt_4_voltage_max; // mV
-    uint16_t rc_eps_batt_4_voltage_avg; // mV
+    uint16_t rc_eps_batt_4_voltage_min; // raw voltage
+    uint16_t rc_eps_batt_4_voltage_max; // raw voltage
+    uint16_t rc_eps_batt_4_voltage_avg; // raw voltage
     uint8_t rc_eps_batt_4_heater_state; //  (No Units)
     uint8_t rc_eps_batt_4_balancer_state; //  (No Units)
 } rc_eps_batt_4;
 
 typedef struct rc_eps_batt_3 {
-    int16_t rc_eps_batt_3_current_min; // cA
-    int16_t rc_eps_batt_3_current_max; // cA
-    int16_t rc_eps_batt_3_current_avg; // cA
+    uint16_t rc_eps_batt_3_current_min; // raw current batt
+    uint16_t rc_eps_batt_3_current_max; // raw current batt
+    uint16_t rc_eps_batt_3_current_avg; // raw current batt
     int8_t rc_eps_batt_3_batt_temp_avg; // deg C
 } rc_eps_batt_3;
 
 typedef struct rc_eps_batt_2 {
-    uint16_t rc_eps_batt_2_node_v_min; // mV
-    uint16_t rc_eps_batt_2_node_v_max; // mV
-    uint16_t rc_eps_batt_2_node_v_avg; // mV
+    uint16_t rc_eps_batt_2_node_v_min; // raw node voltage
+    uint16_t rc_eps_batt_2_node_v_max; // raw node voltage
+    uint16_t rc_eps_batt_2_node_v_avg; // raw node voltage
 } rc_eps_batt_2;
 
 typedef struct rc_eps_batt_1 {
