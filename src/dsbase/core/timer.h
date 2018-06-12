@@ -39,7 +39,7 @@ typedef struct
 } user_timer_callback_info;
 
 void initializeTimer();
-TIMER_HANDLE timerPollInitializer(uint16_t ms);
+TIMER_HANDLE timerPollInitializer(uint32_t ms);
 int checkTimer(TIMER_HANDLE timerNumber);
 void endPollingTimer(TIMER_HANDLE timerNumber);
 TIMER_HANDLE timerCallbackInitializer(void (*waitFunc)(), uint32_t us);
