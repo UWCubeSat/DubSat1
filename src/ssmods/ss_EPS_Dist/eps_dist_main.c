@@ -83,7 +83,7 @@ FILE_STATIC int rcTimerID = 0;
 //**********Data Stuff**********************
 FILE_STATIC uint8_t rebootCount = 60;
 
-FILE_STATIC aggVec_i tempAg;
+FILE_STATIC aggVec_f mspTempAg;
 FILE_STATIC aggVec_i battVAg;
 FILE_STATIC aggVec_i coulombCounterAg;
 FILE_STATIC aggVec_i ssCurrAgs[NUM_POWER_DOMAINS];
@@ -364,6 +364,7 @@ FILE_STATIC void distBcSendHealth()
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
     hseg.inttemp = asensorReadIntTempC();
+    aggVec_push_f(&mspTempAg, hseg.inttemp);
     hseg.reset_count = bspGetResetCount();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandlers();
@@ -544,8 +545,9 @@ void sendRC()
             rc_eps_dist_1 rollcallPkt1_info = {0};
             rollcallPkt1_info.rc_eps_dist_1_reset_count = bspGetResetCount();
             rollcallPkt1_info.rc_eps_dist_1_sysrstiv = SYSRSTIV;
-            rollcallPkt1_info.rc_eps_dist_1_temp_avg = 0;
+            rollcallPkt1_info.rc_eps_dist_1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
             encoderc_eps_dist_1(&rollcallPkt1_info, &rollcallPkt);
+            aggVec_as_reset(&mspTempAg);
         }
         else if(rcFlag == 16)
         {
@@ -760,7 +762,7 @@ void intermediateRollcall()
 
 void initData()
 {
-    aggVec_init_i(&tempAg);
+    aggVec_init_f(&mspTempAg);
     aggVec_init_i(&battVAg);
     aggVec_init_i(&coulombCounterAg);
     uint8_t i;

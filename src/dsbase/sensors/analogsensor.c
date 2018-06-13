@@ -428,6 +428,11 @@ void asensorUpdateAllSensors()
     return;
 }
 
+uint16_t compressMSPTemp(float raw)
+{
+    return (uint16_t)(*(uint32_t*)&raw >> 16);
+}
+
 #pragma vector=ADC12_B_VECTOR
 __interrupt void ADC12ISR (void)
 {
