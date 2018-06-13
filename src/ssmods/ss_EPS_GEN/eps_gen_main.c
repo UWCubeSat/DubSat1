@@ -197,6 +197,7 @@ FILE_STATIC void genBcSendHealth()
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
     hseg.inttemp = asensorReadIntTempC();
+    aggVec_push_f(&mspTempAg, hseg.inttemp);
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandlers();
 }
@@ -366,6 +367,19 @@ int main(void)
 //    genSetPowerTracker(PowerTracker1, FALSE);
 //    genSetPowerTracker(PowerTracker2, FALSE);
 //    genSetPowerTracker(PowerTracker3, FALSE);
+    aggVec_init_f(&mspTempAg);
+    aggVec_init_i(&panel1VoltageAg);
+    aggVec_init_i(&panel2VoltageAg);
+    aggVec_init_i(&panel3VoltageAg);
+    aggVec_init_i(&panel1CurrentAg);
+    aggVec_init_i(&panel2CurrentAg);
+    aggVec_init_i(&panel3CurrentAg);
+    aggVec_init_i(&panel1PwrAg);
+    aggVec_init_i(&panel2PwrAg);
+    aggVec_init_i(&panel3PwrAg);
+    aggVec_init_i(&panel1TempAg);
+    aggVec_init_i(&panel2TempAg);
+    aggVec_init_i(&panel3TempAg);
 
     //canWrapInitWithFilter();
     canWrapInit();

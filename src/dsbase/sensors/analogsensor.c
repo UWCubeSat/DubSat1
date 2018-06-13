@@ -430,7 +430,7 @@ void asensorUpdateAllSensors()
 
 uint16_t compressMSPTemp(float raw)
 {
-    return (uint16_t)(*(uint32_t*)&raw >> 16);
+    return (uint16_t)(raw * 1000);
 }
 
 #pragma vector=ADC12_B_VECTOR
@@ -468,6 +468,7 @@ __interrupt void ADC12ISR (void)
             asensors[5].lastrawvalue = ADC12MEM5;               // Move results, IFG is cleared
             capture_complete += 1;
             break;
+        case ADC12IV__ADC12IFG6:
             asensors[6].lastrawvalue = ADC12MEM6;               // Move results, IFG is cleared
             capture_complete += 1;
             break;

@@ -6,7 +6,6 @@
 #include "sensors/coulomb_counter.h" //Coulomb counter
 #include "core/i2c.h"
 #include "interfaces/canwrap.h"
-#include "core/dataArray.h"
 #include "core/MET.h"
 #include "core/agglib.h"
 
