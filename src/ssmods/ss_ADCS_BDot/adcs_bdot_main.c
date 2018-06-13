@@ -32,24 +32,32 @@
 #include "interfaces/rollcall.h"
 #include "core/agglib.h"
 
-#define BDOT_MAG 0
-#define SP_MAG1 1
-#define SP_MAG2 2
-
 #define MAG_BEST_FIT_OVERRIDE 1
 #define MAG_BEST_FIT_AUTO 0
 
-#define NORMAL_READING_OPERATION 1
-#define SELF_TEST_READING_OPERATION 0
+#define NORMAL_READING_OPERATION 0
+#define NAP_OPERATION 1
+#define SPAM_OPERATION 3
 
-#define BDOT_AWAKE 1
-#define BDOT_NAP 0
+#define NAP_CHECK_TIME_CONVERSION_FACTOR 60000
 
-typedef enum _subsystem_mode {
+
+typedef enum mag_src {
+    BDOT_MAG,
+    SP_MAG1,
+    SP_MAG2
+} mag_src;
+
+typedef enum mtq_phase {
+    MTQ_MEASUREMENT_PHASE,
+    MTQ_ACTUATION_PHASE
+} mtq_phase;
+
+typedef enum bdot_state_mode {
     NORMAL_MODE,
-    MAG_TEST_READING_MODE,
     SLEEP_MODE,
-    MAS_AUTOKICK_MODE
+    SPAM_MAG_SELF_TEST,
+    SPAM
 } bdot_state_mode;
 
 
@@ -68,7 +76,7 @@ FILE_STATIC bdot_state_status bdot_state_cosmos;
 
 
 /************ MTQ Info From Bdot Perspective*********************/
-FILE_STATIC uint8_t mtq_state = MTQ_MEASUREMENT_PHASE;
+FILE_STATIC mtq_phase mtq_state = MTQ_MEASUREMENT_PHASE;
 FILE_STATIC mtq_info bdot_perspective_mtq_info;
 FILE_STATIC mtq_info mtq_last_known_state;
 /****************************************************************/
@@ -100,13 +108,12 @@ FILE_STATIC uint8_t sp_mag1_new_data_flag;
 FILE_STATIC uint8_t sp_mag2_new_data_flag;
 
 /* stores which magnetometer bdot is curently "listening" to */
-FILE_STATIC uint8_t current_listening_mag = BDOT_MAG;
+FILE_STATIC mag_src current_listening_mag = BDOT_MAG;
 
 /* lets ground station pick which mag to use */
 FILE_STATIC uint8_t mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
 
-/* Ground station selection of which magnetomer to use */
-FILE_STATIC uint8_t cmd_mag_selection = BDOT_MAG;
+/* Ground station selection of which magnetometer to use */
 FILE_STATIC uint8_t cmd_select_auto_flag = 0;
 
 /* mag number for magnetometer reading. for questions, contact david */
@@ -136,6 +143,7 @@ FILE_STATIC uint32_t check_best_mag_timer_ms = 180000; // 3 min
  * not tumbling */
 FILE_STATIC TIMER_HANDLE check_nap_status_timer;
 FILE_STATIC uint32_t check_nap_status_timer_ms = 1200000; // 20 min
+//FILE_STATIC uint32_t check_nap_status_timer_ms = 5000; // 5 sec
 
 FILE_STATIC uint8_t nap_status_timer_on_flag = 0;
 /***************************************************************/
@@ -178,50 +186,45 @@ int main(void)
     rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
     startCallback(rtOneStep_timer);
     start_check_best_mag_timer();
-    start_check_nap_status_timer();
     while (1)
     {
         bdot_state = next_bdot_state;
         switch (bdot_state)
         {
             case NORMAL_MODE:
+                start_check_nap_status_timer();
+                uint8_t time_done_flag = 0;
+                if(checkTimer(check_nap_status_timer))
+                {
+                    __disable_interrupt();
+                    time_done_flag = 1;
+                    nap_status_timer_on_flag = 0;
+                    __enable_interrupt();
+                }
                 if(rtY.tumble)
                 {
-                    if(checkTimer(check_nap_status_timer))
+                    if(time_done_flag)
                     {
                         next_bdot_state = SLEEP_MODE;
-                        nap_status_timer_on_flag = 0;
                     }
-            	} else
-                {
-                	next_bdot_state = NORMAL_MODE;
-                    end_check_nap_status_timer();
-                    start_check_nap_status_timer();
-                }
-            break;
-            case MAG_TEST_READING_MODE:
-                end_check_nap_status_timer();
-            break;
-            case SLEEP_MODE:
-                end_check_nap_status_timer();
-                if(!((uint8_t)rtY.tumble))
+                } else
                 {
                     next_bdot_state = NORMAL_MODE;
-                    start_check_nap_status_timer();
+                    end_check_nap_status_timer();
                 }
-            break;
-            case MAS_AUTOKICK_MODE:
+                break;
+            case SLEEP_MODE:
+                end_check_nap_status_timer();
+                break;
+            case SPAM_MAG_SELF_TEST:
+                break;
+            case SPAM:
                 end_check_nap_status_timer();
             break;
         }
 
         process_sp_mag();
-
-        if(checkTimer(check_best_mag_timer))
-        {
-            determine_best_fit_mag();
-            start_check_best_mag_timer();
-        }
+        determine_best_fit_mag();
 
         if(rt_flag)
         {
@@ -253,6 +256,7 @@ int main(void)
                 send_dipole_packet(bdot_perspective_mtq_info.xDipole,
                                    bdot_perspective_mtq_info.yDipole,
                                    bdot_perspective_mtq_info.zDipole);
+                // debugging purposes
                 mtq_last_known_state.xDipole = bdot_perspective_mtq_info.xDipole;
                 mtq_last_known_state.yDipole = bdot_perspective_mtq_info.yDipole;
                 mtq_last_known_state.zDipole = bdot_perspective_mtq_info.zDipole;
@@ -333,32 +337,47 @@ void update_simulink_info()
             rtU.B_body_in_T[0] = valid_bdot_mag_data->convertedX;
             rtU.B_body_in_T[1] = valid_bdot_mag_data->convertedY;
             rtU.B_body_in_T[2] = valid_bdot_mag_data->convertedZ;
-            rtU.B_meas_valid = (bdot_state != MAG_TEST_READING_MODE);
+            rtU.B_meas_valid = (bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST);
             rtU.MT_on = 0;
             break;
         case SP_MAG1:
             rtU.B_body_in_T[0] = sp_mag1_data->convertedX;
             rtU.B_body_in_T[1] = sp_mag1_data->convertedY;
             rtU.B_body_in_T[2] = sp_mag1_data->convertedZ;
-            rtU.B_meas_valid = (bdot_state != MAG_TEST_READING_MODE);
+            rtU.B_meas_valid = (bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST);
             rtU.MT_on = 0;
             break;
         case SP_MAG2:
             rtU.B_body_in_T[0] = sp_mag2_data->convertedX;
             rtU.B_body_in_T[1] = sp_mag2_data->convertedY;
             rtU.B_body_in_T[2] = sp_mag2_data->convertedZ;
-            rtU.B_meas_valid = (bdot_state != MAG_TEST_READING_MODE);
+            rtU.B_meas_valid = (bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST);
             rtU.MT_on = 0;
             break;
         default:
             rtU.B_body_in_T[0] = valid_bdot_mag_data->convertedX;
             rtU.B_body_in_T[1] = valid_bdot_mag_data->convertedY;
             rtU.B_body_in_T[2] = valid_bdot_mag_data->convertedZ;
-            rtU.B_meas_valid = (bdot_state != MAG_TEST_READING_MODE);
+            rtU.B_meas_valid = (bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST);
             rtU.MT_on = 0;
     }
 }
 
+void determine_best_fit_mag()
+{
+    if(cmd_select_auto_flag)
+    {
+        calc_best_fit_mag();
+        endPollingTimer(check_best_mag_timer);
+        start_check_best_mag_timer();
+        cmd_select_auto_flag = 0;
+    }
+    if(checkTimer(check_best_mag_timer))
+    {
+        determine_best_fit_mag();
+        start_check_best_mag_timer();
+    }
+}
 
 void process_sp_mag()
 {
@@ -405,9 +424,9 @@ void convert_mag_data_raw_to_teslas(MagnetometerData * mag)
 /* Function that does math to determine which magnetometer bdot should listen to.
  * This should not be called every time sampling.
  */
-void determine_best_fit_mag()
+void calc_best_fit_mag()
 {
-    if(bdot_state == MAG_TEST_READING_MODE || bdot_state == MAS_AUTOKICK_MODE || (mag_selection_mode == MAG_BEST_FIT_OVERRIDE)) return;
+    if(bdot_state == SPAM || bdot_state == SPAM_MAG_SELF_TEST || (mag_selection_mode == MAG_BEST_FIT_OVERRIDE)) return;
 
     // find the median of the norm to determine best magnetometer to use. TODO: Think of a better, less costly method
     float bdot_mag_norm = sqrt(abs(continuous_bdot_mag_data->convertedX)^2 + abs(continuous_bdot_mag_data->convertedY)^2 + abs(continuous_bdot_mag_data->convertedZ)^2);
@@ -479,17 +498,17 @@ void determine_mtq_commands()
                 bdot_perspective_mtq_info.zDipole = 0;
             }
             break;
-        case MAG_TEST_READING_MODE:
-            bdot_perspective_mtq_info.xDipole = 0;
-            bdot_perspective_mtq_info.yDipole = 0;
-            bdot_perspective_mtq_info.zDipole = 0;
-            break;
         case SLEEP_MODE:
             bdot_perspective_mtq_info.xDipole = 0;
             bdot_perspective_mtq_info.yDipole = 0;
             bdot_perspective_mtq_info.zDipole = 0;
             break;
-        case MAS_AUTOKICK_MODE:
+        case SPAM_MAG_SELF_TEST:
+            bdot_perspective_mtq_info.xDipole = 0;
+            bdot_perspective_mtq_info.yDipole = 0;
+            bdot_perspective_mtq_info.zDipole = 0;
+            break;
+        case SPAM:
             bdot_perspective_mtq_info.xDipole = 100;
             bdot_perspective_mtq_info.yDipole = 100;
             bdot_perspective_mtq_info.zDipole = 100;
@@ -518,6 +537,8 @@ void send_cosmos_telem()
     send_mtq_info_segment_cosmos();
     send_bdot_state_status_cosmos();
     send_simulink_segment_cosmos();
+//    send_sp_mag1_reading_cosmos();
+//    send_sp_mag2_reading_cosmos();
     bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
 }
 
@@ -708,24 +729,25 @@ void rt_OneStep(void)
     bdot_controller_lib_step();
 }
 
-/* Switch magnetometer reading operation to do self test...lol */
-void select_mode_operation(uint8_t reading_mode_selection)
+void select_mode_operation(uint8_t reading_mode_selection, uint16_t nap_check_time_min)
 {
     switch(reading_mode_selection)
     {
         case NORMAL_READING_OPERATION:
             mag_normal_reading_operation_config(mag_num);
             next_bdot_state = NORMAL_MODE;
+            check_nap_status_timer_ms = ((uint32_t) nap_check_time_min) * NAP_CHECK_TIME_CONVERSION_FACTOR;
+            end_check_nap_status_timer();
 //            __delay_cycles(6000);
             break;
-        case SELF_TEST_READING_OPERATION:
-            mag_self_test_config(mag_num);
-            next_bdot_state = MAG_TEST_READING_MODE;
-//            __delay_cycles(6000);
+        case NAP_OPERATION:
+            next_bdot_state = SLEEP_MODE;
             break;
         default:
             mag_normal_reading_operation_config(mag_num);
             next_bdot_state = NORMAL_MODE;
+            check_nap_status_timer_ms = ((uint32_t) nap_check_time_min) * NAP_CHECK_TIME_CONVERSION_FACTOR;
+            end_check_nap_status_timer();
 //            __delay_cycles(6000);
             break;
     }
@@ -757,26 +779,11 @@ void mag_select_switch(uint8_t mag_selection)
     }
 }
 
-void ground_cmd_bdot_nap_schedule(uint8_t nap_status)
-{
-    switch(nap_status)
-    {
-        case CMD_BDOT_WAKEUP:
-            next_bdot_state = NORMAL_MODE;
-            break;
-        case CMD_BDOT_SLEEP:
-            next_bdot_state = SLEEP_MODE;
-            break;
-        default:
-            next_bdot_state = NORMAL_MODE;
-    }
-}
 
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     mag_select_cmd* mag_select;
     mode_operation_cmd* mode_operation_select;
-    nap_wakeup_cmd* bdot_nap_status;
     if (mode == Mode_BinaryStreaming)
     {
         switch(cmdstr[0])
@@ -785,13 +792,9 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
                 mag_select = (mag_select_cmd *) (cmdstr + 1);
                 mag_select_switch(mag_select->mag_select);
                 break;
-            case OPCODE_NAP_WAKEUP_CMD:
-                bdot_nap_status = (nap_wakeup_cmd *)(cmdstr + 1);
-                ground_cmd_bdot_nap_schedule(bdot_nap_status->bdot_nap_status);
-                break;
             case OPCODE_MODE_OPERATION_CMD:
                 mode_operation_select = (mode_operation_cmd *)(cmdstr + 1);
-                select_mode_operation(mode_operation_select->select_mode_operation);
+                select_mode_operation(mode_operation_select->select_mode_operation, mode_operation_select->nap_check_time_min);
                 break;
             case OPCODE_COMMONCMD:
                 break;
