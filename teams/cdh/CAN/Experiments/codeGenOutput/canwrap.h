@@ -26,6 +26,11 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_BDOT_MAX_TUMBLE 302252748
+#define CAN_ID_GCMD_BDOT_SPAM 302252747
+#define CAN_ID_GCMD_BDOT_CONTROL 302252746
+#define CAN_ID_GCMD_BDOT_MAG_CONTROL 302252745
+#define CAN_ID_GCMD_BDOT_POLE_OVERRIDE 302252744
 #define CAN_ID_GCMD_GEN_SET_PT_STATE 302252742
 #define CAN_ID_GCMD_SP_SET_THRESH 302252743
 #define CAN_ID_GCMD_DIST_SET_PD_OVC_PPT 302252741
@@ -180,6 +185,12 @@
 #define CAN_ID_MSP_TEMP 304676883
 #define CAN_ID_GRND_EPOCH 302449337
 
+#define CAN_ENUM_BDOT_MAG_MODE_SP2MODE 3
+#define CAN_ENUM_BDOT_MAG_MODE_SP1MODE 2
+#define CAN_ENUM_BDOT_MAG_MODE_BDOTMODE 1
+#define CAN_ENUM_BDOT_MAG_MODE_AUTOMODE 0
+#define CAN_ENUM_BDOT_CONTROL_MODE_SLEEPMODE 1
+#define CAN_ENUM_BDOT_CONTROL_MODE_NORMALMODE 0
 #define CAN_ENUM_DOMAIN_STATE_OFF_BATT_UNDERVOLTAGE 3
 #define CAN_ENUM_DOMAIN_STATE_OFF_OVERCURRENT 2
 #define CAN_ENUM_DOMAIN_STATE_OFF_MANUAL 1
@@ -252,6 +263,30 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_bdot_max_tumble {
+    uint16_t gcmd_bdot_max_tumble_time; // minutes
+} gcmd_bdot_max_tumble;
+
+typedef struct gcmd_bdot_spam {
+    uint8_t gcmd_bdot_spam_time_on; // minutes
+    uint16_t gcmd_bdot_spam_time_off; // minutes
+    uint8_t gcmd_bdot_spam_control; //  (No Units)
+} gcmd_bdot_spam;
+
+typedef struct gcmd_bdot_control {
+    uint8_t gcmd_bdot_control_mode; //  (No Units)
+} gcmd_bdot_control;
+
+typedef struct gcmd_bdot_mag_control {
+    uint8_t gcmd_bdot_mag_control_mode; //  (No Units)
+} gcmd_bdot_mag_control;
+
+typedef struct gcmd_bdot_pole_override {
+    uint8_t gcmd_bdot_pole_override_z; //  (No Units)
+    uint8_t gcmd_bdot_pole_override_y; //  (No Units)
+    uint8_t gcmd_bdot_pole_override_x; //  (No Units)
+} gcmd_bdot_pole_override;
+
 typedef struct gcmd_gen_set_pt_state {
     uint8_t gcmd_gen_set_pt_state_3; //  (No Units)
     uint8_t gcmd_gen_set_pt_state_2; //  (No Units)
@@ -350,40 +385,40 @@ typedef struct rc_adcs_estim_9 {
 
 typedef struct rc_eps_dist_16 {
     uint8_t rc_eps_dist_16_ppt_state; //  (No Units)
-    uint16_t rc_eps_dist_16_ppt_c_min; // mA
-    uint16_t rc_eps_dist_16_ppt_c_max; // mA
-    uint16_t rc_eps_dist_16_ppt_c_avg; // mA
+    uint16_t rc_eps_dist_16_ppt_c_min; // raw node current dist
+    uint16_t rc_eps_dist_16_ppt_c_max; // raw node current dist
+    uint16_t rc_eps_dist_16_ppt_c_avg; // raw node current dist
 } rc_eps_dist_16;
 
 typedef struct rc_eps_dist_9 {
-    uint16_t rc_eps_dist_9_rahs_v_min; // mV
-    uint16_t rc_eps_dist_9_rahs_v_max; // mV
-    uint16_t rc_eps_dist_9_rahs_v_avg; // mV
+    uint16_t rc_eps_dist_9_rahs_v_min; // raw node voltage
+    uint16_t rc_eps_dist_9_rahs_v_max; // raw node voltage
+    uint16_t rc_eps_dist_9_rahs_v_avg; // raw node voltage
 } rc_eps_dist_9;
 
 typedef struct rc_eps_dist_7 {
-    uint16_t rc_eps_dist_7_com2_v_min; // mV
-    uint16_t rc_eps_dist_7_com2_v_max; // mV
-    uint16_t rc_eps_dist_7_com2_v_avg; // mV
+    uint16_t rc_eps_dist_7_com2_v_min; // raw node voltage
+    uint16_t rc_eps_dist_7_com2_v_max; // raw node voltage
+    uint16_t rc_eps_dist_7_com2_v_avg; // raw node voltage
 } rc_eps_dist_7;
 
 typedef struct rc_eps_dist_6 {
     uint8_t rc_eps_dist_6_com2_state; //  (No Units)
-    uint16_t rc_eps_dist_6_com2_c_min; // mA
-    uint16_t rc_eps_dist_6_com2_c_max; // mA
-    uint16_t rc_eps_dist_6_com2_c_avg; // mA
+    uint16_t rc_eps_dist_6_com2_c_min; // raw node current dist
+    uint16_t rc_eps_dist_6_com2_c_max; // raw node current dist
+    uint16_t rc_eps_dist_6_com2_c_avg; // raw node current dist
 } rc_eps_dist_6;
 
 typedef struct rc_eps_dist_5 {
-    uint16_t rc_eps_dist_5_com1_v_min; // mV
-    uint16_t rc_eps_dist_5_com1_v_max; // mV
-    uint16_t rc_eps_dist_5_com1_v_avg; // mV
+    uint16_t rc_eps_dist_5_com1_v_min; // raw node voltage
+    uint16_t rc_eps_dist_5_com1_v_max; // raw node voltage
+    uint16_t rc_eps_dist_5_com1_v_avg; // raw node voltage
 } rc_eps_dist_5;
 
 typedef struct rc_eps_dist_3 {
-    uint16_t rc_eps_dist_3_batt_v_avg; // mV
-    uint16_t rc_eps_dist_3_batt_v_max; // mV
-    uint16_t rc_eps_dist_3_batt_v_min; // mV
+    uint16_t rc_eps_dist_3_batt_v_avg; // raw dist battery voltage
+    uint16_t rc_eps_dist_3_batt_v_max; // raw dist battery voltage
+    uint16_t rc_eps_dist_3_batt_v_min; // raw dist battery voltage
 } rc_eps_dist_3;
 
 typedef struct rc_eps_dist_2 {
@@ -393,68 +428,68 @@ typedef struct rc_eps_dist_2 {
 } rc_eps_dist_2;
 
 typedef struct rc_eps_dist_17 {
-    uint16_t rc_eps_dist_17_ppt_v_min; // mV
-    uint16_t rc_eps_dist_17_ppt_v_max; // mV
-    uint16_t rc_eps_dist_17_ppt_v_avg; // mV
+    uint16_t rc_eps_dist_17_ppt_v_min; // raw voltage
+    uint16_t rc_eps_dist_17_ppt_v_max; // raw voltage
+    uint16_t rc_eps_dist_17_ppt_v_avg; // raw voltage
 } rc_eps_dist_17;
 
 typedef struct rc_eps_dist_14 {
     uint8_t rc_eps_dist_14_eps_state; //  (No Units)
-    uint16_t rc_eps_dist_14_eps_c_min; // mA
-    uint16_t rc_eps_dist_14_eps_c_max; // mA
-    uint16_t rc_eps_dist_14_eps_c_avg; // mA
+    uint16_t rc_eps_dist_14_eps_c_min; // raw node current dist
+    uint16_t rc_eps_dist_14_eps_c_max; // raw node current dist
+    uint16_t rc_eps_dist_14_eps_c_avg; // raw node current dist
 } rc_eps_dist_14;
 
 typedef struct rc_eps_dist_13 {
-    uint16_t rc_eps_dist_13_estim_v_min; // mV
-    uint16_t rc_eps_dist_13_estim_v_max; // mV
-    uint16_t rc_eps_dist_13_estim_v_avg; // mV
+    uint16_t rc_eps_dist_13_estim_v_min; // raw voltage
+    uint16_t rc_eps_dist_13_estim_v_max; // raw voltage
+    uint16_t rc_eps_dist_13_estim_v_avg; // raw voltage
 } rc_eps_dist_13;
 
 typedef struct rc_eps_dist_11 {
-    uint16_t rc_eps_dist_11_bdot_v_min; // mV
-    uint16_t rc_eps_dist_11_bdot_v_max; // mV
-    uint16_t rc_eps_dist_11_bdot_v_avg; // mV
+    uint16_t rc_eps_dist_11_bdot_v_min; // raw voltage
+    uint16_t rc_eps_dist_11_bdot_v_max; // raw voltage
+    uint16_t rc_eps_dist_11_bdot_v_avg; // raw voltage
 } rc_eps_dist_11;
 
 typedef struct rc_eps_dist_12 {
     uint8_t rc_eps_dist_12_estim_state; //  (No Units)
-    uint16_t rc_eps_dist_12_estim_c_min; // mA
-    uint16_t rc_eps_dist_12_estim_c_max; // mA
-    uint16_t rc_eps_dist_12_estim_c_avg; // mA
+    uint16_t rc_eps_dist_12_estim_c_min; // raw node current dist
+    uint16_t rc_eps_dist_12_estim_c_max; // raw node current dist
+    uint16_t rc_eps_dist_12_estim_c_avg; // raw node current dist
 } rc_eps_dist_12;
 
 typedef struct rc_eps_dist_15 {
-    uint16_t rc_eps_dist_15_eps_v_min; // mV
-    uint16_t rc_eps_dist_15_eps_v_max; // mV
-    uint16_t rc_eps_dist_15_eps_v_avg; // mV
+    uint16_t rc_eps_dist_15_eps_v_min; // raw voltage
+    uint16_t rc_eps_dist_15_eps_v_max; // raw voltage
+    uint16_t rc_eps_dist_15_eps_v_avg; // raw voltage
 } rc_eps_dist_15;
 
 typedef struct rc_eps_dist_10 {
     uint8_t rc_eps_dist_10_bdot_state; //  (No Units)
-    uint16_t rc_eps_dist_10_bdot_c_min; // mA
-    uint16_t rc_eps_dist_10_bdot_c_max; // mA
-    uint16_t rc_eps_dist_10_bdot_c_avg; // mA
+    uint16_t rc_eps_dist_10_bdot_c_min; // raw node current dist
+    uint16_t rc_eps_dist_10_bdot_c_max; // raw node current dist
+    uint16_t rc_eps_dist_10_bdot_c_avg; // raw node current dist
 } rc_eps_dist_10;
 
 typedef struct rc_eps_dist_8 {
     uint8_t rc_eps_dist_8_rahs_state; //  (No Units)
-    uint16_t rc_eps_dist_8_rahs_c_min; // mA
-    uint16_t rc_eps_dist_8_rahs_c_max; // mA
-    uint16_t rc_eps_dist_8_rahs_c_avg; // mA
+    uint16_t rc_eps_dist_8_rahs_c_min; // raw node current dist
+    uint16_t rc_eps_dist_8_rahs_c_max; // raw node current dist
+    uint16_t rc_eps_dist_8_rahs_c_avg; // raw node current dist
 } rc_eps_dist_8;
 
 typedef struct rc_eps_dist_4 {
     uint8_t rc_eps_dist_4_com1_state; //  (No Units)
-    uint16_t rc_eps_dist_4_com1_c_min; // mA
-    uint16_t rc_eps_dist_4_com1_c_max; // mA
-    uint16_t rc_eps_dist_4_com1_c_avg; // mA
+    uint16_t rc_eps_dist_4_com1_c_min; // raw node current dist
+    uint16_t rc_eps_dist_4_com1_c_max; // raw node current dist
+    uint16_t rc_eps_dist_4_com1_c_avg; // raw node current dist
 } rc_eps_dist_4;
 
 typedef struct rc_eps_dist_1 {
-    uint16_t rc_eps_dist_1_temp_min; // dK
-    uint16_t rc_eps_dist_1_temp_max; // dK
-    uint16_t rc_eps_dist_1_temp_avg; // dK
+    uint16_t rc_eps_dist_1_temp_min; // msp temp
+    uint16_t rc_eps_dist_1_temp_max; // msp temp
+    uint16_t rc_eps_dist_1_temp_avg; // msp temp
     uint8_t rc_eps_dist_1_sysrstiv; //  (No Units)
     uint8_t rc_eps_dist_1_reset_count; //  (No Units)
 } rc_eps_dist_1;
@@ -811,59 +846,59 @@ typedef struct rc_eps_gen_9 {
 } rc_eps_gen_9;
 
 typedef struct rc_eps_gen_8 {
-    uint16_t rc_eps_gen_8_pnl_3_power_min; // mW
-    uint16_t rc_eps_gen_8_pnl_3_power_max; // mW
-    uint16_t rc_eps_gen_8_pnl_3_power_avg; // mW
+    uint16_t rc_eps_gen_8_pnl_3_power_min; // raw power gen
+    uint16_t rc_eps_gen_8_pnl_3_power_max; // raw power gen
+    uint16_t rc_eps_gen_8_pnl_3_power_avg; // raw power gen
     int8_t rc_eps_gen_8_pnl_1_temp_min; // C
 } rc_eps_gen_8;
 
 typedef struct rc_eps_gen_7 {
-    uint16_t rc_eps_gen_7_pnl_2_power_min; // mW
-    uint16_t rc_eps_gen_7_pnl_2_power_max; // mW
-    uint16_t rc_eps_gen_7_pnl_2_power_avg; // mW
-    uint16_t rc_eps_gen_7_pnl_1_power_avg; // mW
+    uint16_t rc_eps_gen_7_pnl_2_power_min; // raw power gen
+    uint16_t rc_eps_gen_7_pnl_2_power_max; // raw power gen
+    uint16_t rc_eps_gen_7_pnl_2_power_avg; // raw power gen
+    uint16_t rc_eps_gen_7_pnl_1_power_avg; // raw power gen
 } rc_eps_gen_7;
 
 typedef struct rc_eps_gen_6 {
-    uint16_t rc_eps_gen_6_pnl_3_current_max; // mA
-    uint16_t rc_eps_gen_6_pnl_3_current_avg; // mA
-    uint16_t rc_eps_gen_6_pnl_1_power_min; // mW
-    uint16_t rc_eps_gen_6_pnl_1_power_max; // mW
+    uint16_t rc_eps_gen_6_pnl_3_current_max; // raw node current gen
+    uint16_t rc_eps_gen_6_pnl_3_current_avg; // raw node current gen
+    uint16_t rc_eps_gen_6_pnl_1_power_min; // raw power gen
+    uint16_t rc_eps_gen_6_pnl_1_power_max; // raw power gen
 } rc_eps_gen_6;
 
 typedef struct rc_eps_gen_5 {
-    uint16_t rc_eps_gen_5_pnl_3_current_min; // mA
-    uint16_t rc_eps_gen_5_pnl_2_current_min; // mA
-    uint16_t rc_eps_gen_5_pnl_2_current_max; // mA
-    uint16_t rc_eps_gen_5_pnl_2_current_avg; // mA
+    uint16_t rc_eps_gen_5_pnl_3_current_min; // raw node current gen
+    uint16_t rc_eps_gen_5_pnl_2_current_min; // raw node current gen
+    uint16_t rc_eps_gen_5_pnl_2_current_max; // raw node current gen
+    uint16_t rc_eps_gen_5_pnl_2_current_avg; // raw node current gen
 } rc_eps_gen_5;
 
 typedef struct rc_eps_gen_4 {
-    uint16_t rc_eps_gen_4_pnl_3_voltage_avg; // mV
-    uint16_t rc_eps_gen_4_pnl_1_current_min; // mA
-    uint16_t rc_eps_gen_4_pnl_1_current_max; // mA
-    uint16_t rc_eps_gen_4_pnl_1_current_avg; // mA
+    uint16_t rc_eps_gen_4_pnl_3_voltage_avg; // raw node voltage
+    uint16_t rc_eps_gen_4_pnl_1_current_min; // raw node current gen
+    uint16_t rc_eps_gen_4_pnl_1_current_max; // raw node current gen
+    uint16_t rc_eps_gen_4_pnl_1_current_avg; // raw node current gen
 } rc_eps_gen_4;
 
 typedef struct rc_eps_gen_3 {
-    uint16_t rc_eps_gen_3_pnl_3_voltage_min; // mV
-    uint16_t rc_eps_gen_3_pnl_3_voltage_max; // mV
-    uint16_t rc_eps_gen_3_pnl_2_voltage_max; // mV
-    uint16_t rc_eps_gen_3_pnl_2_voltage_avg; // mV
+    uint16_t rc_eps_gen_3_pnl_3_voltage_min; // raw node voltage
+    uint16_t rc_eps_gen_3_pnl_3_voltage_max; // raw node voltage
+    uint16_t rc_eps_gen_3_pnl_2_voltage_max; // raw node voltage
+    uint16_t rc_eps_gen_3_pnl_2_voltage_avg; // raw node voltage
 } rc_eps_gen_3;
 
 typedef struct rc_eps_gen_2 {
-    uint16_t rc_eps_gen_2_pnl_2_voltage_min; // mV
-    uint16_t rc_eps_gen_2_pnl_1_voltage_min; // mV
-    uint16_t rc_eps_gen_2_pnl_1_voltage_max; // mV
-    uint16_t rc_eps_gen_2_pnl_1_voltage_avg; // mV
+    uint16_t rc_eps_gen_2_pnl_2_voltage_min; // raw node voltage
+    uint16_t rc_eps_gen_2_pnl_1_voltage_min; // raw node voltage
+    uint16_t rc_eps_gen_2_pnl_1_voltage_max; // raw node voltage
+    uint16_t rc_eps_gen_2_pnl_1_voltage_avg; // raw node voltage
 } rc_eps_gen_2;
 
 typedef struct rc_eps_gen_1 {
     uint8_t rc_eps_gen_1_reset_count; //  (No Units)
-    uint16_t rc_eps_gen_1_temp_min; // dK
-    uint16_t rc_eps_gen_1_temp_max; // dK
-    uint16_t rc_eps_gen_1_temp_avg; // dK
+    uint16_t rc_eps_gen_1_temp_min; // msp temp
+    uint16_t rc_eps_gen_1_temp_max; // msp temp
+    uint16_t rc_eps_gen_1_temp_avg; // msp temp
     uint8_t rc_eps_gen_1_sysrstiv; //  (No Units)
 } rc_eps_gen_1;
 
@@ -904,9 +939,9 @@ typedef struct rc_eps_batt_2 {
 
 typedef struct rc_eps_batt_1 {
     uint8_t rc_eps_batt_1_reset_count; //  (No Units)
-    uint16_t rc_eps_batt_1_temp_min; // dK
-    uint16_t rc_eps_batt_1_temp_max; // dK
-    uint16_t rc_eps_batt_1_temp_avg; // dK
+    uint16_t rc_eps_batt_1_temp_min; // msp temp
+    uint16_t rc_eps_batt_1_temp_max; // msp temp
+    uint16_t rc_eps_batt_1_temp_avg; // msp temp
     uint8_t rc_eps_batt_1_sysrstiv; //  (No Units)
 } rc_eps_batt_1;
 
@@ -1144,6 +1179,21 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_bdot_max_tumble(gcmd_bdot_max_tumble *input, CANPacket* output);
+void decodegcmd_bdot_max_tumble(CANPacket *input, gcmd_bdot_max_tumble *output);
+
+void encodegcmd_bdot_spam(gcmd_bdot_spam *input, CANPacket* output);
+void decodegcmd_bdot_spam(CANPacket *input, gcmd_bdot_spam *output);
+
+void encodegcmd_bdot_control(gcmd_bdot_control *input, CANPacket* output);
+void decodegcmd_bdot_control(CANPacket *input, gcmd_bdot_control *output);
+
+void encodegcmd_bdot_mag_control(gcmd_bdot_mag_control *input, CANPacket* output);
+void decodegcmd_bdot_mag_control(CANPacket *input, gcmd_bdot_mag_control *output);
+
+void encodegcmd_bdot_pole_override(gcmd_bdot_pole_override *input, CANPacket* output);
+void decodegcmd_bdot_pole_override(CANPacket *input, gcmd_bdot_pole_override *output);
 
 void encodegcmd_gen_set_pt_state(gcmd_gen_set_pt_state *input, CANPacket* output);
 void decodegcmd_gen_set_pt_state(CANPacket *input, gcmd_gen_set_pt_state *output);
