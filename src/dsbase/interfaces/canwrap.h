@@ -26,6 +26,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_MTQ_PMS 302252749
 #define CAN_ID_GCMD_BDOT_MAX_TUMBLE 302252748
 #define CAN_ID_GCMD_BDOT_SPAM 302252747
 #define CAN_ID_GCMD_BDOT_CONTROL 302252746
@@ -263,6 +264,13 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_mtq_pms {
+    int8_t gcmd_mtq_pms_z; //  (No Units)
+    int8_t gcmd_mtq_pms_y; //  (No Units)
+    int8_t gcmd_mtq_pms_x; //  (No Units)
+    uint8_t gcmd_mtq_pms_enable; //  (No Units)
+} gcmd_mtq_pms;
+
 typedef struct gcmd_bdot_max_tumble {
     uint16_t gcmd_bdot_max_tumble_time; // minutes
 } gcmd_bdot_max_tumble;
@@ -1179,6 +1187,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_mtq_pms(gcmd_mtq_pms *input, CANPacket* output);
+void decodegcmd_mtq_pms(CANPacket *input, gcmd_mtq_pms *output);
 
 void encodegcmd_bdot_max_tumble(gcmd_bdot_max_tumble *input, CANPacket* output);
 void decodegcmd_bdot_max_tumble(CANPacket *input, gcmd_bdot_max_tumble *output);
