@@ -6,7 +6,6 @@
 #include "sensors/coulomb_counter.h" //Coulomb counter
 #include "core/i2c.h"
 #include "interfaces/canwrap.h"
-#include "core/dataArray.h"
 #include "core/MET.h"
 #include "core/agglib.h"
 
@@ -38,6 +37,7 @@ FILE_STATIC float previousTemp;
 
 FILE_STATIC volatile int autoHeating = 1;
 
+FILE_STATIC aggVec_f mspTempAg;
 FILE_STATIC aggVec_i tempAg;
 FILE_STATIC aggVec_i voltageAg;
 FILE_STATIC aggVec_i currentAg;
@@ -125,6 +125,7 @@ FILE_STATIC void battBcSendHealth()
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
     hseg.inttemp = asensorReadIntTempC();
+    aggVec_push_f(&mspTempAg, hseg.inttemp);
     hseg.reset_count = bspGetResetCount();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandlers();
@@ -164,8 +165,8 @@ void readINA(hDev hSensor){
     INAData = pcvsensorRead(hSensor, Read_BusV | Read_CurrentA);
     sseg.battNodeVolt = INAData->busVoltageV;
     sseg.battNodeCurr = INAData->calcdCurrentA;
-    aggVec_push_i(&nodeCurrentAg, INAData->calcdCurrentA); //TODO: get raw values here
-    aggVec_push_i(&nodeVoltageAg, INAData->busVoltageV);
+    aggVec_push_i(&nodeCurrentAg, INAData->rawCurrent); //TODO: get raw values here
+    aggVec_push_i(&nodeVoltageAg, INAData->rawBusVoltage);
 }
 
 void readTempSensor(){
@@ -200,10 +201,11 @@ void sendRC()
             rc_eps_batt_1 rollcallPkt1_info = {0};
             float newVal = asensorReadIntTempC();
             rollcallPkt1_info.rc_eps_batt_1_sysrstiv = bspGetResetCount();
-            rollcallPkt1_info.rc_eps_batt_1_temp_avg = asensorReadIntTempRawC();
-            rollcallPkt1_info.rc_eps_batt_1_temp_max = asensorReadIntTempRawC();
-            rollcallPkt1_info.rc_eps_batt_1_temp_min = asensorReadIntTempRawC();
+            rollcallPkt1_info.rc_eps_batt_1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_batt_1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_batt_1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
             encoderc_eps_batt_1(&rollcallPkt1_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&mspTempAg);
         }
         else if(rcFlag == 6)
         {
@@ -224,7 +226,6 @@ void sendRC()
             encoderc_eps_batt_3(&rollcallPkt3_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&tempAg);
             aggVec_as_reset((aggVec *)&currentAg);
-            aggVec_as_reset((aggVec *)&nodeCurrentAg);
         }
         else if(rcFlag == 4)
         {
@@ -242,9 +243,9 @@ void sendRC()
             rc_eps_batt_5 rollcallPkt5_info = {0};
             rollcallPkt5_info.rc_eps_batt_5_batt_temp_max = aggVec_max_i(&tempAg);
             rollcallPkt5_info.rc_eps_batt_5_batt_temp_min = aggVec_min_i(&tempAg);
-            rollcallPkt5_info.rc_eps_batt_5_node_c_avg = aggVec_avg_i_i(&nodeVoltageAg);
-            rollcallPkt5_info.rc_eps_batt_5_node_c_max = aggVec_max_i(&nodeVoltageAg);
-            rollcallPkt5_info.rc_eps_batt_5_node_c_min = aggVec_min_i(&nodeVoltageAg);
+            rollcallPkt5_info.rc_eps_batt_5_node_c_avg = aggVec_avg_i_i(&nodeCurrentAg);
+            rollcallPkt5_info.rc_eps_batt_5_node_c_max = aggVec_max_i(&nodeCurrentAg);
+            rollcallPkt5_info.rc_eps_batt_5_node_c_min = aggVec_min_i(&nodeCurrentAg);
             encoderc_eps_batt_5(&rollcallPkt5_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&nodeVoltageAg);
         }
@@ -276,10 +277,10 @@ void sendRC()
 
 int main(void)
 {
-    /* ----- INITIALIZATION -----*/
-    bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     P3DIR |= BIT4; //this is for Paul's backpower fix
     P3OUT |= BIT4;
+    /* ----- INITIALIZATION -----*/
+    bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     asensorInit(Ref_2p5V);
     battInit();
 
@@ -288,7 +289,7 @@ int main(void)
     hSensor = pcvsensorInit(I2CBus2, 0x40, 1.0, 100); //ground ground, 1 ohm???, 100 mA
 
     /* ------COULOMB COUNTER---- */
-    LTC2943Init(I2CBus2, 6.0); //NOTE: if 6.0 (shunt resistance) changes it will mess up COSMOS conversions
+    LTC2943Init(I2CBus2, 6.0);
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
@@ -314,6 +315,7 @@ int main(void)
     battControlBalancer(Cmd_AutoEnable);
     //battControlHeater(Cmd_AutoEnable);
 
+    aggVec_init_f(&mspTempAg);
     aggVec_init_i(&tempAg);
     aggVec_init_i(&voltageAg);
     aggVec_init_i(&currentAg);
