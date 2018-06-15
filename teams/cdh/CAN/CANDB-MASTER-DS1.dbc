@@ -535,34 +535,34 @@ BO_ 2452161048 rc_eps_gen_9: 8 Vector__XXX
  SG_ rc_eps_gen_9_pnl_1_temp_avg : 8|8@1- (1,0) [-128|127] "C" Vector__XXX
 
 BO_ 2452161047 rc_eps_gen_8: 7 Vector__XXX
- SG_ rc_eps_gen_8_pnl_3_power_min : 0|16@1+ (1,0) [0|20000] "raw power gen" Vector__XXX
- SG_ rc_eps_gen_8_pnl_3_power_max : 16|16@1+ (1,0) [0|20000] "raw power gen" Vector__XXX
- SG_ rc_eps_gen_8_pnl_3_power_avg : 32|16@1+ (1,0) [0|20000] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_8_pnl_3_power_min : 0|16@1+ (1,0) [-32768|32767] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_8_pnl_3_power_max : 16|16@1+ (1,0) [-32768|32767] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_8_pnl_3_power_avg : 32|16@1+ (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_8_pnl_1_temp_min : 48|8@1- (1,0) [-128|127] "C" Vector__XXX
 
 BO_ 2452161046 rc_eps_gen_7: 8 Vector__XXX
- SG_ rc_eps_gen_7_pnl_2_power_min : 16|16@1+ (1,0) [0|20000] "raw power gen" Vector__XXX
- SG_ rc_eps_gen_7_pnl_2_power_max : 32|16@1+ (1,0) [0|20000] "raw power gen" Vector__XXX
- SG_ rc_eps_gen_7_pnl_2_power_avg : 48|16@1+ (1,0) [0|20000] "raw power gen" Vector__XXX
- SG_ rc_eps_gen_7_pnl_1_power_avg : 0|16@1+ (1,0) [0|20000] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_7_pnl_2_power_min : 16|16@1+ (1,0) [-32768|32767] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_7_pnl_2_power_max : 32|16@1+ (1,0) [-32768|32767] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_7_pnl_2_power_avg : 48|16@1+ (1,0) [-32768|32767] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_7_pnl_1_power_avg : 0|16@1+ (1,0) [-32768|32767] "raw power gen" Vector__XXX
 
 BO_ 2452161045 rc_eps_gen_6: 8 Vector__XXX
- SG_ rc_eps_gen_6_pnl_3_current_max : 0|16@1+ (1,0) [0|1000] "raw node current gen" Vector__XXX
- SG_ rc_eps_gen_6_pnl_3_current_avg : 16|16@1+ (1,0) [0|1000] "raw node current gen" Vector__XXX
- SG_ rc_eps_gen_6_pnl_1_power_min : 32|16@1+ (1,0) [0|20000] "raw power gen" Vector__XXX
- SG_ rc_eps_gen_6_pnl_1_power_max : 48|16@1+ (1,0) [0|20000] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_6_pnl_3_current_max : 0|16@1+ (1,0) [-32768|32767] "raw node current gen" Vector__XXX
+ SG_ rc_eps_gen_6_pnl_3_current_avg : 16|16@1+ (1,0) [-32768|32767] "raw node current gen" Vector__XXX
+ SG_ rc_eps_gen_6_pnl_1_power_min : 32|16@1+ (1,0) [-32768|32767] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_6_pnl_1_power_max : 48|16@1+ (1,0) [-32768|32767] "raw power gen" Vector__XXX
 
 BO_ 2452161044 rc_eps_gen_5: 8 Vector__XXX
- SG_ rc_eps_gen_5_pnl_3_current_min : 48|16@1+ (1,0) [0|1000] "raw node current gen" Vector__XXX
- SG_ rc_eps_gen_5_pnl_2_current_min : 0|16@1+ (1,0) [0|1000] "raw node current gen" Vector__XXX
- SG_ rc_eps_gen_5_pnl_2_current_max : 16|16@1+ (1,0) [0|1000] "raw node current gen" Vector__XXX
- SG_ rc_eps_gen_5_pnl_2_current_avg : 32|16@1+ (1,0) [0|1000] "raw node current gen" Vector__XXX
+ SG_ rc_eps_gen_5_pnl_3_current_min : 48|16@1+ (1,0) [-32768|32767] "raw node current gen" Vector__XXX
+ SG_ rc_eps_gen_5_pnl_2_current_min : 0|16@1+ (1,0) [-32768|32767] "raw node current gen" Vector__XXX
+ SG_ rc_eps_gen_5_pnl_2_current_max : 16|16@1+ (1,0) [-32768|32767] "raw node current gen" Vector__XXX
+ SG_ rc_eps_gen_5_pnl_2_current_avg : 32|16@1+ (1,0) [-32768|32767] "raw node current gen" Vector__XXX
 
 BO_ 2452161043 rc_eps_gen_4: 8 Vector__XXX
  SG_ rc_eps_gen_4_pnl_3_voltage_avg : 0|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
- SG_ rc_eps_gen_4_pnl_1_current_min : 16|16@1- (1,0) [0|1000] "raw node current gen" Vector__XXX
- SG_ rc_eps_gen_4_pnl_1_current_max : 32|16@1+ (1,0) [0|1000] "raw node current gen" Vector__XXX
- SG_ rc_eps_gen_4_pnl_1_current_avg : 48|16@1+ (1,0) [0|1000] "raw node current gen" Vector__XXX
+ SG_ rc_eps_gen_4_pnl_1_current_min : 16|16@1- (1,0) [-32768|32767] "raw node current gen" Vector__XXX
+ SG_ rc_eps_gen_4_pnl_1_current_max : 32|16@1+ (1,0) [-32768|32767] "raw node current gen" Vector__XXX
+ SG_ rc_eps_gen_4_pnl_1_current_avg : 48|16@1+ (1,0) [-32768|32767] "raw node current gen" Vector__XXX
 
 BO_ 2452161042 rc_eps_gen_3: 8 Vector__XXX
  SG_ rc_eps_gen_3_pnl_3_voltage_min : 32|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
@@ -589,9 +589,9 @@ BO_ 2452161029 rc_eps_batt_6: 7 Vector__XXX
  SG_ rc_eps_batt_6_last_charge : 16|40@1+ (1,0) [0|1099511627775] "2^-8 seconds" Vector__XXX
 
 BO_ 2452161028 rc_eps_batt_5: 8 Vector__XXX
- SG_ rc_eps_batt_5_node_c_min : 0|16@1- (1,0) [0|65535] "raw node current batt" Vector__XXX
- SG_ rc_eps_batt_5_node_c_max : 16|16@1- (1,0) [0|65535] "raw node current batt" Vector__XXX
- SG_ rc_eps_batt_5_node_c_avg : 32|16@1- (1,0) [0|65535] "raw node current batt" Vector__XXX
+ SG_ rc_eps_batt_5_node_c_min : 0|16@1- (1,0) [-32768|32767] "raw node current batt" Vector__XXX
+ SG_ rc_eps_batt_5_node_c_max : 16|16@1- (1,0) [-32768|32767] "raw node current batt" Vector__XXX
+ SG_ rc_eps_batt_5_node_c_avg : 32|16@1- (1,0) [-32768|32767] "raw node current batt" Vector__XXX
  SG_ rc_eps_batt_5_batt_temp_min : 48|8@1- (1,0) [-128|127] "deg C" Vector__XXX
  SG_ rc_eps_batt_5_batt_temp_max : 56|8@1- (1,0) [-128|127] "deg C" Vector__XXX
 

@@ -2392,9 +2392,9 @@ void decoderc_eps_gen_8(CANPacket *input, rc_eps_gen_8 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_eps_gen_8_pnl_3_power_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_eps_gen_8_pnl_3_power_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_eps_gen_8_pnl_3_power_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_eps_gen_8_pnl_3_power_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_gen_8_pnl_3_power_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_eps_gen_8_pnl_3_power_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_eps_gen_8_pnl_1_temp_min = (int8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
 }
 
@@ -2415,10 +2415,10 @@ void decoderc_eps_gen_7(CANPacket *input, rc_eps_gen_7 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_eps_gen_7_pnl_2_power_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_eps_gen_7_pnl_2_power_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_eps_gen_7_pnl_2_power_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff))));
-    output -> rc_eps_gen_7_pnl_1_power_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_gen_7_pnl_2_power_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_eps_gen_7_pnl_2_power_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_eps_gen_7_pnl_2_power_avg = (int16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> rc_eps_gen_7_pnl_1_power_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
 
 void encoderc_eps_gen_7(rc_eps_gen_7 *input, CANPacket *output){
@@ -2438,10 +2438,10 @@ void decoderc_eps_gen_6(CANPacket *input, rc_eps_gen_6 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_eps_gen_6_pnl_3_current_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_eps_gen_6_pnl_3_current_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_eps_gen_6_pnl_1_power_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_eps_gen_6_pnl_1_power_max = (uint16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> rc_eps_gen_6_pnl_3_current_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_gen_6_pnl_3_current_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_eps_gen_6_pnl_1_power_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_eps_gen_6_pnl_1_power_max = (int16_t) (((fullData & ((uint64_t) 0xffff))));
 }
 
 void encoderc_eps_gen_6(rc_eps_gen_6 *input, CANPacket *output){
@@ -2461,10 +2461,10 @@ void decoderc_eps_gen_5(CANPacket *input, rc_eps_gen_5 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_eps_gen_5_pnl_3_current_min = (uint16_t) (((fullData & ((uint64_t) 0xffff))));
-    output -> rc_eps_gen_5_pnl_2_current_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_eps_gen_5_pnl_2_current_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_eps_gen_5_pnl_2_current_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_eps_gen_5_pnl_3_current_min = (int16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> rc_eps_gen_5_pnl_2_current_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_gen_5_pnl_2_current_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_eps_gen_5_pnl_2_current_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
 }
 
 void encoderc_eps_gen_5(rc_eps_gen_5 *input, CANPacket *output){
@@ -2485,9 +2485,9 @@ void decoderc_eps_gen_4(CANPacket *input, rc_eps_gen_4 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_eps_gen_4_pnl_3_voltage_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_eps_gen_4_pnl_1_current_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_eps_gen_4_pnl_1_current_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_eps_gen_4_pnl_1_current_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> rc_eps_gen_4_pnl_1_current_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_eps_gen_4_pnl_1_current_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_eps_gen_4_pnl_1_current_avg = (int16_t) (((fullData & ((uint64_t) 0xffff))));
 }
 
 void encoderc_eps_gen_4(rc_eps_gen_4 *input, CANPacket *output){
@@ -2599,9 +2599,9 @@ void decoderc_eps_batt_5(CANPacket *input, rc_eps_batt_5 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_eps_batt_5_node_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_eps_batt_5_node_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_eps_batt_5_node_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_eps_batt_5_node_c_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_batt_5_node_c_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_eps_batt_5_node_c_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_eps_batt_5_batt_temp_min = (int8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> rc_eps_batt_5_batt_temp_max = (int8_t) (((fullData & ((uint64_t) 0xff))));
 }

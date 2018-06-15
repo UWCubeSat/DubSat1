@@ -854,38 +854,38 @@ typedef struct rc_eps_gen_9 {
 } rc_eps_gen_9;
 
 typedef struct rc_eps_gen_8 {
-    uint16_t rc_eps_gen_8_pnl_3_power_min; // raw power gen
-    uint16_t rc_eps_gen_8_pnl_3_power_max; // raw power gen
-    uint16_t rc_eps_gen_8_pnl_3_power_avg; // raw power gen
+    int16_t rc_eps_gen_8_pnl_3_power_min; // raw power gen
+    int16_t rc_eps_gen_8_pnl_3_power_max; // raw power gen
+    int16_t rc_eps_gen_8_pnl_3_power_avg; // raw power gen
     int8_t rc_eps_gen_8_pnl_1_temp_min; // C
 } rc_eps_gen_8;
 
 typedef struct rc_eps_gen_7 {
-    uint16_t rc_eps_gen_7_pnl_2_power_min; // raw power gen
-    uint16_t rc_eps_gen_7_pnl_2_power_max; // raw power gen
-    uint16_t rc_eps_gen_7_pnl_2_power_avg; // raw power gen
-    uint16_t rc_eps_gen_7_pnl_1_power_avg; // raw power gen
+    int16_t rc_eps_gen_7_pnl_2_power_min; // raw power gen
+    int16_t rc_eps_gen_7_pnl_2_power_max; // raw power gen
+    int16_t rc_eps_gen_7_pnl_2_power_avg; // raw power gen
+    int16_t rc_eps_gen_7_pnl_1_power_avg; // raw power gen
 } rc_eps_gen_7;
 
 typedef struct rc_eps_gen_6 {
-    uint16_t rc_eps_gen_6_pnl_3_current_max; // raw node current gen
-    uint16_t rc_eps_gen_6_pnl_3_current_avg; // raw node current gen
-    uint16_t rc_eps_gen_6_pnl_1_power_min; // raw power gen
-    uint16_t rc_eps_gen_6_pnl_1_power_max; // raw power gen
+    int16_t rc_eps_gen_6_pnl_3_current_max; // raw node current gen
+    int16_t rc_eps_gen_6_pnl_3_current_avg; // raw node current gen
+    int16_t rc_eps_gen_6_pnl_1_power_min; // raw power gen
+    int16_t rc_eps_gen_6_pnl_1_power_max; // raw power gen
 } rc_eps_gen_6;
 
 typedef struct rc_eps_gen_5 {
-    uint16_t rc_eps_gen_5_pnl_3_current_min; // raw node current gen
-    uint16_t rc_eps_gen_5_pnl_2_current_min; // raw node current gen
-    uint16_t rc_eps_gen_5_pnl_2_current_max; // raw node current gen
-    uint16_t rc_eps_gen_5_pnl_2_current_avg; // raw node current gen
+    int16_t rc_eps_gen_5_pnl_3_current_min; // raw node current gen
+    int16_t rc_eps_gen_5_pnl_2_current_min; // raw node current gen
+    int16_t rc_eps_gen_5_pnl_2_current_max; // raw node current gen
+    int16_t rc_eps_gen_5_pnl_2_current_avg; // raw node current gen
 } rc_eps_gen_5;
 
 typedef struct rc_eps_gen_4 {
     uint16_t rc_eps_gen_4_pnl_3_voltage_avg; // raw node voltage
-    uint16_t rc_eps_gen_4_pnl_1_current_min; // raw node current gen
-    uint16_t rc_eps_gen_4_pnl_1_current_max; // raw node current gen
-    uint16_t rc_eps_gen_4_pnl_1_current_avg; // raw node current gen
+    int16_t rc_eps_gen_4_pnl_1_current_min; // raw node current gen
+    int16_t rc_eps_gen_4_pnl_1_current_max; // raw node current gen
+    int16_t rc_eps_gen_4_pnl_1_current_avg; // raw node current gen
 } rc_eps_gen_4;
 
 typedef struct rc_eps_gen_3 {
@@ -917,9 +917,9 @@ typedef struct rc_eps_batt_6 {
 } rc_eps_batt_6;
 
 typedef struct rc_eps_batt_5 {
-    uint16_t rc_eps_batt_5_node_c_min; // raw node current batt
-    uint16_t rc_eps_batt_5_node_c_max; // raw node current batt
-    uint16_t rc_eps_batt_5_node_c_avg; // raw node current batt
+    int16_t rc_eps_batt_5_node_c_min; // raw node current batt
+    int16_t rc_eps_batt_5_node_c_max; // raw node current batt
+    int16_t rc_eps_batt_5_node_c_avg; // raw node current batt
     int8_t rc_eps_batt_5_batt_temp_min; // deg C
     int8_t rc_eps_batt_5_batt_temp_max; // deg C
 } rc_eps_batt_5;
