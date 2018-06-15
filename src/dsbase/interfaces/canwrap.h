@@ -393,9 +393,9 @@ typedef struct rc_adcs_estim_9 {
 
 typedef struct rc_eps_dist_16 {
     uint8_t rc_eps_dist_16_ppt_state; //  (No Units)
-    uint16_t rc_eps_dist_16_ppt_c_min; // raw node current dist
-    uint16_t rc_eps_dist_16_ppt_c_max; // raw node current dist
-    uint16_t rc_eps_dist_16_ppt_c_avg; // raw node current dist
+    int16_t rc_eps_dist_16_ppt_c_min; // raw node current dist
+    int16_t rc_eps_dist_16_ppt_c_max; // raw node current dist
+    int16_t rc_eps_dist_16_ppt_c_avg; // raw node current dist
 } rc_eps_dist_16;
 
 typedef struct rc_eps_dist_9 {
@@ -412,9 +412,9 @@ typedef struct rc_eps_dist_7 {
 
 typedef struct rc_eps_dist_6 {
     uint8_t rc_eps_dist_6_com2_state; //  (No Units)
-    uint16_t rc_eps_dist_6_com2_c_min; // raw node current dist
-    uint16_t rc_eps_dist_6_com2_c_max; // raw node current dist
-    uint16_t rc_eps_dist_6_com2_c_avg; // raw node current dist
+    int16_t rc_eps_dist_6_com2_c_min; // raw node current dist
+    int16_t rc_eps_dist_6_com2_c_max; // raw node current dist
+    int16_t rc_eps_dist_6_com2_c_avg; // raw node current dist
 } rc_eps_dist_6;
 
 typedef struct rc_eps_dist_5 {
@@ -443,9 +443,9 @@ typedef struct rc_eps_dist_17 {
 
 typedef struct rc_eps_dist_14 {
     uint8_t rc_eps_dist_14_eps_state; //  (No Units)
-    uint16_t rc_eps_dist_14_eps_c_min; // raw node current dist
-    uint16_t rc_eps_dist_14_eps_c_max; // raw node current dist
-    uint16_t rc_eps_dist_14_eps_c_avg; // raw node current dist
+    int16_t rc_eps_dist_14_eps_c_min; // raw node current dist
+    int16_t rc_eps_dist_14_eps_c_max; // raw node current dist
+    int16_t rc_eps_dist_14_eps_c_avg; // raw node current dist
 } rc_eps_dist_14;
 
 typedef struct rc_eps_dist_13 {
@@ -462,9 +462,9 @@ typedef struct rc_eps_dist_11 {
 
 typedef struct rc_eps_dist_12 {
     uint8_t rc_eps_dist_12_estim_state; //  (No Units)
-    uint16_t rc_eps_dist_12_estim_c_min; // raw node current dist
-    uint16_t rc_eps_dist_12_estim_c_max; // raw node current dist
-    uint16_t rc_eps_dist_12_estim_c_avg; // raw node current dist
+    int16_t rc_eps_dist_12_estim_c_min; // raw node current dist
+    int16_t rc_eps_dist_12_estim_c_max; // raw node current dist
+    int16_t rc_eps_dist_12_estim_c_avg; // raw node current dist
 } rc_eps_dist_12;
 
 typedef struct rc_eps_dist_15 {
@@ -475,23 +475,23 @@ typedef struct rc_eps_dist_15 {
 
 typedef struct rc_eps_dist_10 {
     uint8_t rc_eps_dist_10_bdot_state; //  (No Units)
-    uint16_t rc_eps_dist_10_bdot_c_min; // raw node current dist
-    uint16_t rc_eps_dist_10_bdot_c_max; // raw node current dist
-    uint16_t rc_eps_dist_10_bdot_c_avg; // raw node current dist
+    int16_t rc_eps_dist_10_bdot_c_min; // raw node current dist
+    int16_t rc_eps_dist_10_bdot_c_max; // raw node current dist
+    int16_t rc_eps_dist_10_bdot_c_avg; // raw node current dist
 } rc_eps_dist_10;
 
 typedef struct rc_eps_dist_8 {
     uint8_t rc_eps_dist_8_rahs_state; //  (No Units)
-    uint16_t rc_eps_dist_8_rahs_c_min; // raw node current dist
-    uint16_t rc_eps_dist_8_rahs_c_max; // raw node current dist
-    uint16_t rc_eps_dist_8_rahs_c_avg; // raw node current dist
+    int16_t rc_eps_dist_8_rahs_c_min; // raw node current dist
+    int16_t rc_eps_dist_8_rahs_c_max; // raw node current dist
+    int16_t rc_eps_dist_8_rahs_c_avg; // raw node current dist
 } rc_eps_dist_8;
 
 typedef struct rc_eps_dist_4 {
     uint8_t rc_eps_dist_4_com1_state; //  (No Units)
-    uint16_t rc_eps_dist_4_com1_c_min; // raw node current dist
-    uint16_t rc_eps_dist_4_com1_c_max; // raw node current dist
-    uint16_t rc_eps_dist_4_com1_c_avg; // raw node current dist
+    int16_t rc_eps_dist_4_com1_c_min; // raw node current dist
+    int16_t rc_eps_dist_4_com1_c_max; // raw node current dist
+    int16_t rc_eps_dist_4_com1_c_avg; // raw node current dist
 } rc_eps_dist_4;
 
 typedef struct rc_eps_dist_1 {

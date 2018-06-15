@@ -726,9 +726,9 @@ void decoderc_eps_dist_16(CANPacket *input, rc_eps_dist_16 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_eps_dist_16_ppt_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-    output -> rc_eps_dist_16_ppt_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
-    output -> rc_eps_dist_16_ppt_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
-    output -> rc_eps_dist_16_ppt_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
+    output -> rc_eps_dist_16_ppt_c_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
+    output -> rc_eps_dist_16_ppt_c_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+    output -> rc_eps_dist_16_ppt_c_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
 }
 
 void encoderc_eps_dist_16(rc_eps_dist_16 *input, CANPacket *output){
@@ -791,9 +791,9 @@ void decoderc_eps_dist_6(CANPacket *input, rc_eps_dist_6 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_eps_dist_6_com2_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-    output -> rc_eps_dist_6_com2_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
-    output -> rc_eps_dist_6_com2_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
-    output -> rc_eps_dist_6_com2_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
+    output -> rc_eps_dist_6_com2_c_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
+    output -> rc_eps_dist_6_com2_c_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+    output -> rc_eps_dist_6_com2_c_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
 }
 
 void encoderc_eps_dist_6(rc_eps_dist_6 *input, CANPacket *output){
@@ -898,9 +898,9 @@ void decoderc_eps_dist_14(CANPacket *input, rc_eps_dist_14 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_eps_dist_14_eps_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-    output -> rc_eps_dist_14_eps_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
-    output -> rc_eps_dist_14_eps_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
-    output -> rc_eps_dist_14_eps_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
+    output -> rc_eps_dist_14_eps_c_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
+    output -> rc_eps_dist_14_eps_c_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+    output -> rc_eps_dist_14_eps_c_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
 }
 
 void encoderc_eps_dist_14(rc_eps_dist_14 *input, CANPacket *output){
@@ -963,9 +963,9 @@ void decoderc_eps_dist_12(CANPacket *input, rc_eps_dist_12 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_eps_dist_12_estim_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-    output -> rc_eps_dist_12_estim_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
-    output -> rc_eps_dist_12_estim_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
-    output -> rc_eps_dist_12_estim_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
+    output -> rc_eps_dist_12_estim_c_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
+    output -> rc_eps_dist_12_estim_c_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+    output -> rc_eps_dist_12_estim_c_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
 }
 
 void encoderc_eps_dist_12(rc_eps_dist_12 *input, CANPacket *output){
@@ -1007,9 +1007,9 @@ void decoderc_eps_dist_10(CANPacket *input, rc_eps_dist_10 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_eps_dist_10_bdot_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-    output -> rc_eps_dist_10_bdot_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
-    output -> rc_eps_dist_10_bdot_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
-    output -> rc_eps_dist_10_bdot_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
+    output -> rc_eps_dist_10_bdot_c_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
+    output -> rc_eps_dist_10_bdot_c_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+    output -> rc_eps_dist_10_bdot_c_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
 }
 
 void encoderc_eps_dist_10(rc_eps_dist_10 *input, CANPacket *output){
@@ -1030,9 +1030,9 @@ void decoderc_eps_dist_8(CANPacket *input, rc_eps_dist_8 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_eps_dist_8_rahs_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-    output -> rc_eps_dist_8_rahs_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
-    output -> rc_eps_dist_8_rahs_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
-    output -> rc_eps_dist_8_rahs_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
+    output -> rc_eps_dist_8_rahs_c_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
+    output -> rc_eps_dist_8_rahs_c_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+    output -> rc_eps_dist_8_rahs_c_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
 }
 
 void encoderc_eps_dist_8(rc_eps_dist_8 *input, CANPacket *output){
@@ -1053,9 +1053,9 @@ void decoderc_eps_dist_4(CANPacket *input, rc_eps_dist_4 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_eps_dist_4_com1_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-    output -> rc_eps_dist_4_com1_c_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
-    output -> rc_eps_dist_4_com1_c_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
-    output -> rc_eps_dist_4_com1_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
+    output -> rc_eps_dist_4_com1_c_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
+    output -> rc_eps_dist_4_com1_c_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
+    output -> rc_eps_dist_4_com1_c_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
 }
 
 void encoderc_eps_dist_4(rc_eps_dist_4 *input, CANPacket *output){
