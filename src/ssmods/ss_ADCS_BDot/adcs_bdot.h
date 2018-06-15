@@ -191,6 +191,7 @@ FILE_STATIC void process_sp_mag();
 FILE_STATIC void convert_mag_data_raw_to_teslas(MagnetometerData * mag);
 
 FILE_STATIC void determine_bdot_state();
+FILE_STATIC void determine_spam_axis();
 
 FILE_STATIC void read_magnetometer_data();
 FILE_STATIC void update_valid_mag_data();
