@@ -134,6 +134,14 @@ FILE_STATIC volatile int8_t pop_x = 0, pop_y = 0, pop_z = 0;
 #pragma PERSISTENT(pop_y)
 #pragma PERSISTENT(pop_z)
 
+// PMS "Permanent Magnet Setting"
+FILE_STATIC volatile int8_t pms_x = 0, pms_y = 0, pms_z = 0; 
+FILE_STATIC volatile int8_t pms_enable = 0;
+#pragma PERSISTENT(pms_x)
+#pragma PERSISTENT(pms_y)
+#pragma PERSISTENT(pms_z)
+#pragma PERSISTENT(pms_enable)
+
 //-----------COSMOS------------------
 
 // dooty packet 

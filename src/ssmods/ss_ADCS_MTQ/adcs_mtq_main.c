@@ -110,20 +110,26 @@ FILE_STATIC void fsw_actuation()
     }
 }
 
-// executes last received commands from bdot. 
+// executes last received commands from bdot or set values from ground. 
 // transitions to stabalize phase when the actuation timer has finished 
 FILE_STATIC void bdot_actuation() 
 {
-    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z) && is_bdot_still_alive())
+    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z) && is_bdot_still_alive() && !pms_enable)
     {
         set_pwm('x', bdot_command_x);
         set_pwm('y', bdot_command_y);
         set_pwm('z', bdot_command_z);
+    } else if (pms_enable && command_dipole_valid(pms_x, pms_y, pms_z)) 
+	{
+        set_pwm('x', pms_x);
+        set_pwm('y', pms_y);
+        set_pwm('z', pms_z);
     } else // invalid xyz command
     {
 		turn_off_coils(); 
     }
-    if(checkTimer(actuation_timer)) // finished actuation phase
+    
+	if(checkTimer(actuation_timer)) // finished actuation phase
     {
 		bdot_interrupt_received = 0;
         curr_state = STABILIZE;
@@ -367,6 +373,16 @@ FILE_STATIC void can_packet_rx_callback(CANPacket *packet)
 		pop_x = pop_packet.gcmd_mtq_pop_x; 
 		pop_y = pop_packet.gcmd_mtq_pop_y; 
 		pop_z = pop_packet.gcmd_mtq_pop_z; 
+	}
+	// permanent magnet setting packet 
+	if(packet->id == CAN_ID_GCMD_MTQ_PMS)
+	{
+		gcmd_mtq_pms pms_packet = {0};
+		decodegcmd_mtq_pms(packet, &pms_packet);
+		pms_enable = pms_packet.gcmd_mtq_pms_enable; 
+		pms_x = pms_packet.gcmd_mtq_pms_x; 
+		pms_y = pms_packet.gcmd_mtq_pms_y; 
+		pms_z = pms_packet.gcmd_mtq_pms_z; 
 	}
 }
 
