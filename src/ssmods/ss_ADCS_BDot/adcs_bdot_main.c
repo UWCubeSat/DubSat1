@@ -1,26 +1,3 @@
-/* BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT BDOT
- *
- * MAIN FUNCTIONALITY
- * - Reads magnetometer data using the i2c bus and feeds it into Simulink autocode rt_oneStep every 10hz.
- * - rt_oneStep will determine the xyz dipoles commands to send to the magnetorquer board (MTQ) via CAN.
- * - MTQ will send acknowledgement packets to Bdot via CAN that will inform Bdot of the current state of the magnetorquer (whether it is firing or not).
- * - Bdot only reads mangetometer data when MTQ is not firing.
- *
- * BEST FIT MAGNETOMETER
- * - Sensor Processing board (SP) will send two CAN packets, each with magnetometer readings from its own magnetometers.
- * - Upon first launch for a certain amount of time, Bdot will decide which magnetometer readings are most accurate relative to each other.
- * - After satellite has stabilized after launch, commands from ground will "lock" in one magnetometer as the best fit one.
- *
- * Detumble Safety Procedure Initialization (DESPIN)
- * - Bdot will determine/time how long the satellite has been tumbling for.
- * - If the amount of time is above a certain threshold, it is likely that the satellite will never de-tumble and that there are problems with hardware/software.
- * - Bdot will then initiate Detumble Safety Lockout, which mean it will send dipole commands to MTQ of zeros, effectively turning MTQ off.
- * - Commands from ground can be sent to exit this protocol and let Bdot function normally.
- *
- * rt_oneStep: Feed into rt onestep only VALID magnetometer data.
- *
- */
-
 #include <adcs_bdot.h>
 #include <msp430.h>
 #include <stddef.h>
@@ -86,6 +63,7 @@ FILE_STATIC mtq_info mtq_last_known_state;
 /* keeps track of the bdot's state */
 FILE_STATIC bdot_state_mode bdot_state = NORMAL_MODE;
 FILE_STATIC bdot_state_mode next_bdot_state = NORMAL_MODE;
+FILE_STATIC bdot_state_mode last_state_before_spam = NORMAL_MODE;
 
 /* holds magnetometer data read every 10 hz */
 FILE_STATIC MagnetometerData* continuous_bdot_mag_data;
@@ -133,7 +111,7 @@ FILE_STATIC uint32_t rtOneStep_us = 100000;
 /* this is the timer that will check go off when it's time to check
  * to see which magnetometer to use.
  */
-FILE_STATIC TIMER_HANDLE check_best_mag_timer;
+FILE_STATIC TIMER_HANDLE check_best_mag_timer = 100;
 FILE_STATIC uint32_t check_best_mag_timer_ms = 180000; // 3 min
 
 /* this is the timer that will check to see whether or not bdot has
@@ -141,11 +119,17 @@ FILE_STATIC uint32_t check_best_mag_timer_ms = 180000; // 3 min
  * If that time has reached, bdot should send dipoles of 0 to magnetorquer
  * until commands from ground are sent to "wake up" bdot OR rt onestep reports
  * not tumbling */
-FILE_STATIC TIMER_HANDLE check_nap_status_timer;
+FILE_STATIC TIMER_HANDLE check_nap_status_timer = 100;
 FILE_STATIC uint32_t check_nap_status_timer_ms = 1200000; // 20 min
 //FILE_STATIC uint32_t check_nap_status_timer_ms = 5000; // 5 sec
-
 FILE_STATIC uint8_t nap_status_timer_on_flag = 0;
+
+FILE_STATIC TIMER_HANDLE spam_timer = 100;
+FILE_STATIC uint32_t spam_off_timer_ms = 3600000; // 1 hour;
+FILE_STATIC uint32_t spam_on_timer_ms = 360000; // 6 minute;
+//FILE_STATIC uint32_t spam_off_timer_ms = 30000; // 1 hour;
+//FILE_STATIC uint32_t spam_on_timer_ms = 60000; // 6 minute;
+FILE_STATIC uint8_t spam_timer_on_flag = 0;
 /***************************************************************/
 
 
@@ -193,6 +177,7 @@ int main(void)
         {
             case NORMAL_MODE:
                 start_check_nap_status_timer();
+                start_spam_timer(spam_off_timer_ms);
                 uint8_t time_done_flag = 0;
                 if(checkTimer(check_nap_status_timer))
                 {
@@ -209,18 +194,50 @@ int main(void)
                     }
                 } else
                 {
-                    next_bdot_state = NORMAL_MODE;
-                    end_check_nap_status_timer();
+                    if(checkTimer(spam_timer))
+                    {
+                        last_state_before_spam = NORMAL_MODE;
+                        next_bdot_state = SPAM_MAG_SELF_TEST;
+                        __disable_interrupt();
+                        spam_timer_on_flag = 0;
+                        __enable_interrupt();
+                        start_spam_timer(spam_off_timer_ms);
+
+                    } else
+                    {
+                        next_bdot_state = NORMAL_MODE;
+                        end_check_nap_status_timer();
+                    }
                 }
                 break;
             case SLEEP_MODE:
                 end_check_nap_status_timer();
+                start_spam_timer(spam_off_timer_ms);
+                if(checkTimer(spam_timer))
+                {
+                    __disable_interrupt();
+                    spam_timer_on_flag = 0;
+                    __enable_interrupt();
+                    start_spam_timer(spam_off_timer_ms);
+                    last_state_before_spam = SLEEP_MODE;
+                    next_bdot_state = SPAM_MAG_SELF_TEST;
+                }
                 break;
             case SPAM_MAG_SELF_TEST:
+                end_check_nap_status_timer();
+                next_bdot_state = SPAM;
+                start_spam_timer(spam_on_timer_ms);
                 break;
             case SPAM:
-                end_check_nap_status_timer();
-            break;
+                if(checkTimer(spam_timer))
+                {
+                    __disable_interrupt();
+                    spam_timer_on_flag = 0;
+                    __enable_interrupt();
+                    next_bdot_state = last_state_before_spam;
+                    start_spam_timer(spam_off_timer_ms);
+                }
+                break;
         }
 
         process_sp_mag();
@@ -454,6 +471,24 @@ void calc_best_fit_mag()
 void start_check_best_mag_timer()
 {
     check_best_mag_timer = timerPollInitializer(check_best_mag_timer_ms);
+}
+
+void start_spam_timer(uint32_t spam_timer_ms)
+{
+    if(!spam_timer_on_flag)
+    {
+        spam_timer = timerPollInitializer(spam_timer_ms);
+        spam_timer_on_flag = 1;
+    }
+}
+
+void end_spam_timer()
+{
+    if(spam_timer_on_flag)
+    {
+        endPollingTimer(spam_timer);
+        spam_timer_on_flag = 0;
+    }
 }
 
 /* Start the timer that goes off when bdot has been tumbling for a certain amount of time */
@@ -731,6 +766,10 @@ void rt_OneStep(void)
 
 void select_mode_operation(uint8_t reading_mode_selection, uint16_t nap_check_time_min)
 {
+    if(bdot_state == SPAM_MAG_SELF_TEST || bdot_state == SPAM)
+    {
+        end_spam_timer();
+    }
     switch(reading_mode_selection)
     {
         case NORMAL_READING_OPERATION:

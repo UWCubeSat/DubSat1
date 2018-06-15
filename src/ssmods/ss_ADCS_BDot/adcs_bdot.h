@@ -129,6 +129,8 @@ FILE_STATIC void can_rx_callback(CANPacket *packet);
 FILE_STATIC void start_check_best_mag_timer();
 FILE_STATIC void start_check_nap_status_timer();
 FILE_STATIC void end_check_nap_status_timer();
+FILE_STATIC void start_spam_timer(uint32_t spam_timer_ms);
+FILE_STATIC void end_spam_timer();
 FILE_STATIC void simulink_compute();
 /*************************************************************************/
 
