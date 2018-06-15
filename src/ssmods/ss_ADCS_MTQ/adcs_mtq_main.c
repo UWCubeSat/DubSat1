@@ -2,15 +2,6 @@
 file: adcs_mtq_main.c 
 author: Eloise Perrochet
 description: software for magnetorquer subsystem 
-
-coil  pin   timer 
------------------
-X1 - P1_7 - TB0.4
-X2 - P1_6 - TB0.3
-Y1 - P3_7 - TB0.6
-Y2 - P3_6 - TB0.5
-Z1 - P2_2 - TB0.2
-Z2 - P2_6 - TB0.1
 */
 
 #include <msp430.h>
@@ -27,7 +18,7 @@ Z2 - P2_6 - TB0.1
 #include "core/agglib.h"
 #include "adcs_mtq.h"
 
-// prototypes and globals in adc_mtq.h
+// note that function prototypes and global variables in adc_mtq.h
 
 //==================================================================
 // Main 
@@ -35,21 +26,24 @@ Z2 - P2_6 - TB0.1
 // cntrl f DEBUG to see commented out sections 
 // add error messages for invalid commands 
 // confirm update_rollcall_aggregates() functionality and check for agg overflow
-// add descriptions for functions that don't have them 
+// add fsw ignore gcmd CAN packet 
+// change ack packet values during PMS mode 
 //==================================================================
 
 int main(void)
 {	
-    // general initialization
+    // initialization
     bspInit(__SUBSYSTEM_MODULE__); // BSP initialization
     mtq_sfr_init();                // MTQ specific SFR initialization
-    turn_off_coils();              // make sure coils are off post initialization
+    turn_off_coils();              // make sure coils are off (must come after sfr initialization)
     initializeTimer();             // timer A initialization
     cosmos_init();                 // COSMOS backchannel initialization
     can_init();                    // CAN initialization
     rc_agg_init();				   // aggregate initialization 
-	// reset mtq parameters 
-    restartMTQ();  
+	
+	// reset mtq parameters
+    restartMTQ();  				    
+	
 	// main loop 
     while (1)
     {
@@ -110,16 +104,16 @@ FILE_STATIC void fsw_actuation()
     }
 }
 
-// executes last received commands from bdot or set values from ground. 
-// transitions to stabalize phase when the actuation timer has finished 
+// executes last received commands from bdot or set values from ground if in pms mode. 
+// transitions when actuation timer is finished to stabalize phase or actuation if in pms mode.
 FILE_STATIC void bdot_actuation() 
 {
-    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z) && is_bdot_still_alive() && !pms_enable)
+    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z) && is_bdot_still_alive() && pms_enable != 1)
     {
         set_pwm('x', bdot_command_x);
         set_pwm('y', bdot_command_y);
         set_pwm('z', bdot_command_z);
-    } else if (pms_enable && command_dipole_valid(pms_x, pms_y, pms_z)) 
+    } else if (pms_enable == 1 && command_dipole_valid(pms_x, pms_y, pms_z)) 
 	{
         set_pwm('x', pms_x);
         set_pwm('y', pms_y);
@@ -131,10 +125,16 @@ FILE_STATIC void bdot_actuation()
     
 	if(checkTimer(actuation_timer)) // finished actuation phase
     {
-		bdot_interrupt_received = 0;
-        curr_state = STABILIZE;
-		send_CAN_ack_packet();
-        start_stabilize_timer();
+		bdot_interrupt_received = 0; 
+		if (pms_enable == 1) {
+			curr_state = BDOT_ACTUATION; 
+			send_CAN_ack_packet();
+	        start_actuation_timer();
+		} else {
+			curr_state = STABILIZE;
+			send_CAN_ack_packet();
+	        start_stabilize_timer();
+		}
     }
 }
 
@@ -318,6 +318,9 @@ FILE_STATIC void degauss_lol(void)
 	}	
 }
 
+// returns a 1 if the received interrupt flag is high to indidcate that 
+// bdot is still properly sending commands during measurement phase. 
+// otherwise returns a 0. 
 FILE_STATIC int is_bdot_still_alive(void)
 {
 	if (bdot_interrupt_received){   
@@ -631,7 +634,17 @@ FILE_STATIC void send_COSMOS_meta_packet(void)
 }
 
 //-------- sfr config --------	
-		
+
+/*
+coil  pin   timer 
+-----------------
+X1 - P1_7 - TB0.4
+X2 - P1_6 - TB0.3
+Y1 - P3_7 - TB0.6
+Y2 - P3_6 - TB0.5
+Z1 - P2_2 - TB0.2
+Z2 - P2_6 - TB0.1
+*/		
 // Configures special function registers to set up 
 // timers, pwm, and gpios for mtq 
 FILE_STATIC void mtq_sfr_init(void)
