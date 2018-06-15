@@ -38,12 +38,10 @@
 #define TLM_ID_CONTINUOUS_MAG 120
 #define TLM_ID_BDOT_STATE_STATUS 119
 
-#define OPCODE_MY_CMD 1
 #define OPCODE_MAG_SELECT_CMD 2
-#define OPCODE_NAP_WAKEUP_CMD 3
-#define OPCODE_MODE_OPERATION_CMD 4
-
-
+#define OPCODE_MODE_OPERATION_CMD 3
+#define OPCODE_MAX_TUMBLING_TIME_CMD 4
+#define OPCODE_SPAM_SETTINGS_CMD 5
 
 
 CMD_SEGMENT {
@@ -56,10 +54,17 @@ CMD_SEGMENT {
 
 CMD_SEGMENT {
     uint8_t select_mode_operation;
-    uint16_t nap_check_time_min;
 } mode_operation_cmd;
 
+CMD_SEGMENT {
+    uint16_t max_tumble_time_min;
+} max_tumble_time;
 
+CMD_SEGMENT {
+    uint16_t spam_off_time_min;
+    uint8_t spam_on_time_min;
+    uint8_t spam_switch; // ON = 1, OFF = 0
+} spam_control;
 
 TLM_SEGMENT {
     BcTlmHeader header;
@@ -129,6 +134,8 @@ FILE_STATIC void can_rx_callback(CANPacket *packet);
 FILE_STATIC void start_check_best_mag_timer();
 FILE_STATIC void start_check_nap_status_timer();
 FILE_STATIC void end_check_nap_status_timer();
+FILE_STATIC uint8_t check_check_nap_status_timer();
+FILE_STATIC uint8_t check_spam_timer();
 FILE_STATIC void start_spam_timer(uint32_t spam_timer_ms);
 FILE_STATIC void end_spam_timer();
 FILE_STATIC void simulink_compute();
@@ -168,8 +175,10 @@ FILE_STATIC void send_cosmos_telem();
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 
 FILE_STATIC void mag_select_switch(uint8_t mag_selection);
-FILE_STATIC void select_mode_operation(uint8_t reading_mode_selection, uint16_t nap_check_time_min);
+FILE_STATIC void select_mode_operation(uint8_t reading_mode_selection);
 FILE_STATIC void ground_cmd_bdot_nap_schedule(uint8_t nap_status);
+FILE_STATIC void change_max_tumble_time(uint16_t max_tumble_time_min);
+FILE_STATIC void spam_control_operation(uint16_t off_time_min, uint8_t on_time_min, uint8_t spam_switch);
 
 /***********************************************************************/
 
@@ -180,6 +189,8 @@ FILE_STATIC void calc_best_fit_mag();
 FILE_STATIC void process_sp_mag();
 
 FILE_STATIC void convert_mag_data_raw_to_teslas(MagnetometerData * mag);
+
+FILE_STATIC void determine_bdot_state();
 
 FILE_STATIC void read_magnetometer_data();
 FILE_STATIC void update_valid_mag_data();

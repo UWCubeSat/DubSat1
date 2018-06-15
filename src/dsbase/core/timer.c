@@ -168,17 +168,6 @@ desired_time convertTime(uint32_t ms)
     convert.counter = calc_counter;
     convert.TARval = calc_TAR;
     return convert;
-
-//    float microSec;
-//    uint32_t new_ms = ms;
-//    calc_counter = (uint16_t)(new_ms / 2000);
-//    new_ms = new_ms - (uint32_t)(calc_counter * 2000);
-//    // ms --> us
-//    microSec = (float) new_ms * 1000.0;
-//    calc_TAR = (uint16_t) (microSec / 30.517);
-//    convert.counter = calc_counter;
-//    convert.TARval = calc_TAR;
-//    return convert;
 }
 
 TIMER_HANDLE timerPollInitializer(uint32_t ms)
