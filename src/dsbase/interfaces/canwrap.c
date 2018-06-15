@@ -205,6 +205,99 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodegcmd_bdot_max_tumble(CANPacket *input, gcmd_bdot_max_tumble *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_bdot_max_tumble_time = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+}
+
+void encodegcmd_bdot_max_tumble(gcmd_bdot_max_tumble *input, CANPacket *output){
+    output -> id = 302252748;
+    output -> length = 2;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_max_tumble_time))) & 0xffff) << 48;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_bdot_spam(CANPacket *input, gcmd_bdot_spam *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_bdot_spam_time_on = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> gcmd_bdot_spam_time_off = (uint16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
+    output -> gcmd_bdot_spam_control = (uint8_t) (((fullData & ((uint64_t) 0x1 << 39)) >> 39));
+}
+
+void encodegcmd_bdot_spam(gcmd_bdot_spam *input, CANPacket *output){
+    output -> id = 302252747;
+    output -> length = 4;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_spam_time_on))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_spam_time_off))) & 0xffff) << 40;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_spam_control))) & 0x1) << 39;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_bdot_control(CANPacket *input, gcmd_bdot_control *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_bdot_control_mode = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
+}
+
+void encodegcmd_bdot_control(gcmd_bdot_control *input, CANPacket *output){
+    output -> id = 302252746;
+    output -> length = 1;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_control_mode))) & 0x1) << 63;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_bdot_mag_control(CANPacket *input, gcmd_bdot_mag_control *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_bdot_mag_control_mode = (uint8_t) (((fullData & ((uint64_t) 0x3 << 62)) >> 62));
+}
+
+void encodegcmd_bdot_mag_control(gcmd_bdot_mag_control *input, CANPacket *output){
+    output -> id = 302252745;
+    output -> length = 1;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_mag_control_mode))) & 0x3) << 62;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_bdot_pole_override(CANPacket *input, gcmd_bdot_pole_override *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_bdot_pole_override_z = (uint8_t) (((fullData & ((uint64_t) 0x3 << 58)) >> 58));
+    output -> gcmd_bdot_pole_override_y = (uint8_t) (((fullData & ((uint64_t) 0x3 << 60)) >> 60));
+    output -> gcmd_bdot_pole_override_x = (uint8_t) (((fullData & ((uint64_t) 0x3 << 62)) >> 62));
+}
+
+void encodegcmd_bdot_pole_override(gcmd_bdot_pole_override *input, CANPacket *output){
+    output -> id = 302252744;
+    output -> length = 1;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_pole_override_z))) & 0x3) << 58;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_pole_override_y))) & 0x3) << 60;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_pole_override_x))) & 0x3) << 62;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decodegcmd_gen_set_pt_state(CANPacket *input, gcmd_gen_set_pt_state *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);

@@ -3,6 +3,31 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket gcmd_bdot_max_tumble_packet = {0};
+	gcmd_bdot_max_tumble gcmd_bdot_max_tumble_info = {0};
+	encodegcmd_bdot_max_tumble(&gcmd_bdot_max_tumble_info, &gcmd_bdot_max_tumble_packet);
+	canSendPacket(&gcmd_bdot_max_tumble_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_bdot_spam_packet = {0};
+	gcmd_bdot_spam gcmd_bdot_spam_info = {0};
+	encodegcmd_bdot_spam(&gcmd_bdot_spam_info, &gcmd_bdot_spam_packet);
+	canSendPacket(&gcmd_bdot_spam_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_bdot_control_packet = {0};
+	gcmd_bdot_control gcmd_bdot_control_info = {0};
+	encodegcmd_bdot_control(&gcmd_bdot_control_info, &gcmd_bdot_control_packet);
+	canSendPacket(&gcmd_bdot_control_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_bdot_mag_control_packet = {0};
+	gcmd_bdot_mag_control gcmd_bdot_mag_control_info = {0};
+	encodegcmd_bdot_mag_control(&gcmd_bdot_mag_control_info, &gcmd_bdot_mag_control_packet);
+	canSendPacket(&gcmd_bdot_mag_control_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_bdot_pole_override_packet = {0};
+	gcmd_bdot_pole_override gcmd_bdot_pole_override_info = {0};
+	encodegcmd_bdot_pole_override(&gcmd_bdot_pole_override_info, &gcmd_bdot_pole_override_packet);
+	canSendPacket(&gcmd_bdot_pole_override_packet);
+
 	__delay_cycles(10000);	CANPacket gcmd_gen_set_pt_state_packet = {0};
 	gcmd_gen_set_pt_state gcmd_gen_set_pt_state_info = {0};
 	encodegcmd_gen_set_pt_state(&gcmd_gen_set_pt_state_info, &gcmd_gen_set_pt_state_packet);
