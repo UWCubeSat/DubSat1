@@ -205,12 +205,22 @@ FILE_STATIC void genBcSendHealth()
 void can_packet_rx_callback(CANPacket *packet)
 {
     cmd_rollcall rcPkt;
+    gcmd_gen_set_pt_state ptStatePkt;
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
             decodecmd_rollcall(packet, &rcPkt);
             updateMET(constructTimestamp(rcPkt.cmd_rollcall_met, rcPkt.cmd_rollcall_met_overflow));
             rcFlag = 9;
+            break;
+        case CAN_ID_GCMD_GEN_SET_PT_STATE:
+            decodegcmd_gen_set_pt_state(packet, &ptStatePkt);
+            if(ptStatePkt.gcmd_gen_set_pt_state_1 != CAN_ENUM_NBOOL_NULL)
+                genSetPowerTracker(1, ptStatePkt.gcmd_gen_set_pt_state_1);
+            if(ptStatePkt.gcmd_gen_set_pt_state_2 != CAN_ENUM_NBOOL_NULL)
+                genSetPowerTracker(2, ptStatePkt.gcmd_gen_set_pt_state_2);
+            if(ptStatePkt.gcmd_gen_set_pt_state_3 != CAN_ENUM_NBOOL_NULL)
+                genSetPowerTracker(3, ptStatePkt.gcmd_gen_set_pt_state_3);
             break;
         default:
             break;

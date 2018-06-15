@@ -44,7 +44,7 @@ FILE_STATIC float   domainShuntResistances[] =   { SHUNT_LOW_DRAW_DEVICE, SHUNT_
                                                    SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE };
 
 FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_LOW_DRAW_DEVICE, //COM1
-                                                      OCP_THRESH_VERY_HIGH_DRAW_DEVICE, //COM2
+                                                      3.0f, //COM2
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //RAHS
                                                       OCP_THRESH_VERY_HIGH_DRAW_DEVICE, //BDOT
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //ESTIM
@@ -704,9 +704,30 @@ void sendRC()
         rcFlag--;
     }
 }
+void setPowerSwitchFromCAN(uint8_t cmd, PowerDomainID pd)
+{
+    if(cmd) //0 is nochange
+    {
+        if(cmd == 1)
+            distDomainSwitch(pd, PD_CMD_Enable);
+        else if(cmd == 2)
+            distDomainSwitch(pd, PD_CMD_Disable);
+        else if(cmd == 3)
+            distDomainSwitch(pd, PD_CMD_Toggle);
+    }
+}
+
 
 void can_packet_rx_callback(CANPacket *packet)
 {
+    gcmd_dist_set_pd_state pdCmd;
+    gcmd_dist_set_pd_ovc_bdot ovcPktBDot;
+    gcmd_dist_set_pd_ovc_com1 ovcPktCom1;
+    gcmd_dist_set_pd_ovc_com2 ovcPktCom2;
+    gcmd_dist_set_pd_ovc_eps ovcPktEPS;
+    gcmd_dist_set_pd_ovc_estim ovcPktEstim;
+    gcmd_dist_set_pd_ovc_ppt ovcPktPPT;
+    gcmd_dist_set_pd_ovc_rahs ovcPktRAHS;
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
@@ -731,6 +752,45 @@ void can_packet_rx_callback(CANPacket *packet)
             break;
         case CAN_ID_RC_PPT_1:
             rcResponseFlag &= ~PD_PPT_FLAG;
+        case CAN_ID_GCMD_DIST_SET_PD_STATE:
+            decodegcmd_dist_set_pd_state(packet, &pdCmd);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_bdot, PD_BDOT);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_com1, PD_COM1);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_com2, PD_COM2);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_eps, PD_EPS);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_estim, PD_ESTIM);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_ppt, PD_PPT);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_rahs, PD_RAHS);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_wheels, PD_WHEELS);
+            break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_BDOT:
+            decodegcmd_dist_set_pd_ovc_bdot(packet, &ovcPktBDot);
+            distSetOCPThreshold(PD_BDOT, ovcPktBDot.gcmd_dist_set_pd_ovc_bdot_ovc);
+            break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_COM1:
+            decodegcmd_dist_set_pd_ovc_com1(packet, &ovcPktCom1);
+            distSetOCPThreshold(PD_COM1, ovcPktCom1.gcmd_dist_set_pd_ovc_com1_ovc);
+            break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_COM2:
+            decodegcmd_dist_set_pd_ovc_com2(packet, &ovcPktCom2);
+            distSetOCPThreshold(PD_COM2, ovcPktCom2.gcmd_dist_set_pd_ovc_com2_ovc);
+            break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_EPS:
+            decodegcmd_dist_set_pd_ovc_eps(packet, &ovcPktEPS);
+            distSetOCPThreshold(PD_EPS, ovcPktEPS.gcmd_dist_set_pd_ovc_eps_ovc);
+        break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_ESTIM:
+            decodegcmd_dist_set_pd_ovc_estim(packet, &ovcPktEstim);
+            distSetOCPThreshold(PD_ESTIM, ovcPktEstim.gcmd_dist_set_pd_ovc_estim_ovc);
+            break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_PPT:
+            decodegcmd_dist_set_pd_ovc_ppt(packet, &ovcPktPPT);
+            distSetOCPThreshold(PD_PPT, ovcPktPPT.gcmd_dist_set_pd_ovc_ppt_ovc);
+            break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_RAHS:
+            decodegcmd_dist_set_pd_ovc_rahs(packet, &ovcPktRAHS);
+            distSetOCPThreshold(PD_RAHS, ovcPktRAHS.gcmd_dist_set_pd_ovc_rahs_ovc);
+            break;
         default:
             break;
     }
