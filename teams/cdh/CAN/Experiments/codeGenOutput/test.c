@@ -3,6 +3,11 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket gcmd_mtq_pms_packet = {0};
+	gcmd_mtq_pms gcmd_mtq_pms_info = {0};
+	encodegcmd_mtq_pms(&gcmd_mtq_pms_info, &gcmd_mtq_pms_packet);
+	canSendPacket(&gcmd_mtq_pms_packet);
+
 	__delay_cycles(10000);	CANPacket gcmd_bdot_max_tumble_packet = {0};
 	gcmd_bdot_max_tumble gcmd_bdot_max_tumble_info = {0};
 	encodegcmd_bdot_max_tumble(&gcmd_bdot_max_tumble_info, &gcmd_bdot_max_tumble_packet);

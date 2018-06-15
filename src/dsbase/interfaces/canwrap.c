@@ -205,6 +205,29 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodegcmd_mtq_pms(CANPacket *input, gcmd_mtq_pms *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_mtq_pms_z = (int8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
+    output -> gcmd_mtq_pms_y = (int8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> gcmd_mtq_pms_x = (int8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> gcmd_mtq_pms_enable = (uint8_t) (((fullData & ((uint64_t) 0x3 << 38)) >> 38));
+}
+
+void encodegcmd_mtq_pms(gcmd_mtq_pms *input, CANPacket *output){
+    output -> id = 302252749;
+    output -> length = 4;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_mtq_pms_z))) & 0xff) << 40;
+    fullPacketData |= (((uint64_t)((input -> gcmd_mtq_pms_y))) & 0xff) << 48;
+    fullPacketData |= (((uint64_t)((input -> gcmd_mtq_pms_x))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> gcmd_mtq_pms_enable))) & 0x3) << 38;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decodegcmd_bdot_max_tumble(CANPacket *input, gcmd_bdot_max_tumble *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);

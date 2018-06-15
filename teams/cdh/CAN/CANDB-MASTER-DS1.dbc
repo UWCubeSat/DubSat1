@@ -48,6 +48,12 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2449736397 gcmd_mtq_pms: 4 Vector__XXX
+ SG_ gcmd_mtq_pms_z : 16|8@1- (1,0) [-127|127] "" Vector__XXX
+ SG_ gcmd_mtq_pms_y : 8|8@1- (1,0) [-127|127] "" Vector__XXX
+ SG_ gcmd_mtq_pms_x : 0|8@1- (1,0) [-127|127] "" Vector__XXX
+ SG_ gcmd_mtq_pms_enable : 24|2@1+ (1,0) [0|2] "" Vector__XXX
+
 BO_ 2449736396 gcmd_bdot_max_tumble: 2 Vector__XXX
  SG_ gcmd_bdot_max_tumble_time : 0|16@1+ (1,0) [0|65535] "minutes" Vector__XXX
 
@@ -813,6 +819,7 @@ BO_TX_BU_ 2452160531 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,
 
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2449736397 gcmd_mtq_pms_enable 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736395 gcmd_bdot_spam_control 1 "true" 0 "false" ;
 VAL_ 2449736394 gcmd_bdot_control_mode 1 "sleep mode" 0 "normal mode" ;
 VAL_ 2449736393 gcmd_bdot_mag_control_mode 3 "sp2 mode" 2 "sp1 mode" 1 "bdot mode" 0 "auto mode" ;
