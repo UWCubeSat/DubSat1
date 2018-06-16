@@ -48,6 +48,33 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2452161134 rc_eps_batt_h2: 1 Vector__XXX
+ SG_ rc_eps_batt_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2452161133 rc_adcs_bdot_h2: 1 Vector__XXX
+ SG_ rc_adcs_bdot_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2452161132 rc_eps_dist_h2: 1 Vector__XXX
+ SG_ rc_eps_dist_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2452161131 rc_adcs_mpc_h2: 8 Vector__XXX
+ SG_ rc_adcs_mpc_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2452161130 rc_adcs_estim_h2: 1 Vector__XXX
+ SG_ rc_adcs_estim_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2452161129 rc_adcs_sp_h2: 1 Vector__XXX
+ SG_ rc_adcs_sp_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2452161128 rc_eps_gen_h2: 8 Vector__XXX
+ SG_ rc_eps_gen_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2452161127 rc_adcs_mtq_h2: 1 Vector__XXX
+ SG_ rc_adcs_mtq_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2452161126 rc_ppt_h2: 1 Vector__XXX
+ SG_ rc_ppt_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
 BO_ 2452161125 rc_eps_batt_h1: 8 Vector__XXX
  SG_ rc_eps_batt_h1_temp_min : 0|16@1+ (1,0) [0|65535] "msp temp" Vector__XXX
  SG_ rc_eps_batt_h1_temp_max : 16|16@1+ (1,0) [0|65535] "msp temp" Vector__XXX
