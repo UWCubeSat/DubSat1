@@ -410,14 +410,14 @@ void canRxCallback(CANPacket *p)
 
 void rcPopulate1(CANPacket *out)
 {
-    rc_adcs_sp_1 rc;
-    rc.rc_adcs_sp_1_reset_count = bspGetResetCount();
-    rc.rc_adcs_sp_1_sysrstiv = SYSRSTIV;
-    rc.rc_adcs_sp_1_temp_avg = aggVec_avg_i_i(&rc_temp);
-    rc.rc_adcs_sp_1_temp_max = aggVec_max_i(&rc_temp);
-    rc.rc_adcs_sp_1_temp_min = aggVec_min_i(&rc_temp);
+    rc_adcs_sp_h1 rc;
+    rc.rc_adcs_sp_h1_reset_count = bspGetResetCount();
+    rc.rc_adcs_sp_h1_sysrstiv = SYSRSTIV;
+    rc.rc_adcs_sp_h1_temp_avg = aggVec_avg_i_i(&rc_temp);
+    rc.rc_adcs_sp_h1_temp_max = aggVec_max_i(&rc_temp);
+    rc.rc_adcs_sp_h1_temp_min = aggVec_min_i(&rc_temp);
     aggVec_reset((aggVec *) &rc_temp);
-    encoderc_adcs_sp_1(&rc, out);
+    encoderc_adcs_sp_h1(&rc, out);
 }
 
 void rcPopulate2(CANPacket *out)

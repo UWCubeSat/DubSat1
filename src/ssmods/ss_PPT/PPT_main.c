@@ -381,13 +381,13 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr) //this shoul
 
 void can_packet_rx_callback(CANPacket *packet)
 {
-    if(packet->id == CAN_ID_CMD_PPT_FIRE)
+    if(packet->id == CAN_ID_CMD_PPT_SINGLE_FIRE)
     {
-        cmd_ppt_fire pkt = {0};
-        decodecmd_ppt_fire(packet, &pkt);
-
-        withFiringPulse = (pkt.cmd_ppt_fire_fire) ? 1 : 0;
-        startFiring(1);
+//        cmd_ppt_single_fire pkt = {0};
+//        decodecmd_ppt_fire(packet, &pkt);
+//
+//        withFiringPulse = (pkt.cmd_ppt_fire_fire) ? 1 : 0;
+//        startFiring(1);
     }
 }
 

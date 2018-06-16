@@ -26,6 +26,15 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_RC_EPS_BATT_H1 304677477
+#define CAN_ID_RC_ADCS_BDOT_H1 304677476
+#define CAN_ID_RC_EPS_DIST_H1 304677475
+#define CAN_ID_RC_ADCS_MPC_H1 304677474
+#define CAN_ID_RC_ADCS_ESTIM_H1 304677473
+#define CAN_ID_RC_ADCS_SP_H1 304677472
+#define CAN_ID_RC_EPS_GEN_H1 304677471
+#define CAN_ID_RC_ADCS_MTQ_H1 304677470
+#define CAN_ID_RC_PPT_H1 304677469
 #define CAN_ID_GCMD_MTQ_PMS 302252749
 #define CAN_ID_GCMD_BDOT_MAX_TUMBLE 302252748
 #define CAN_ID_GCMD_BDOT_SPAM 302252747
@@ -264,6 +273,78 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct rc_eps_batt_h1 {
+    uint16_t rc_eps_batt_h1_temp_min; // msp temp
+    uint16_t rc_eps_batt_h1_temp_max; // msp temp
+    uint16_t rc_eps_batt_h1_temp_avg; // msp temp
+    uint8_t rc_eps_batt_h1_sysrstiv; //  (No Units)
+    uint8_t rc_eps_batt_h1_reset_count; //  (No Units)
+} rc_eps_batt_h1;
+
+typedef struct rc_adcs_bdot_h1 {
+    uint16_t rc_adcs_bdot_h1_temp_min; // dK
+    uint16_t rc_adcs_bdot_h1_temp_max; // dK
+    uint16_t rc_adcs_bdot_h1_temp_avg; // dK
+    uint8_t rc_adcs_bdot_h1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_bdot_h1_reset_count; //  (No Units)
+} rc_adcs_bdot_h1;
+
+typedef struct rc_eps_dist_h1 {
+    uint16_t rc_eps_dist_h1_temp_min; // msp temp
+    uint16_t rc_eps_dist_h1_temp_max; // msp temp
+    uint16_t rc_eps_dist_h1_temp_avg; // msp temp
+    uint8_t rc_eps_dist_h1_sysrstiv; //  (No Units)
+    uint8_t rc_eps_dist_h1_reset_count; //  (No Units)
+} rc_eps_dist_h1;
+
+typedef struct rc_adcs_mpc_h1 {
+    uint16_t rc_adcs_mpc_h1_temp_min; // dK
+    uint16_t rc_adcs_mpc_h1_temp_max; // dK
+    uint16_t rc_adcs_mpc_h1_temp_avg; // dK
+    uint8_t rc_adcs_mpc_h1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_mpc_h1_reset_count; //  (No Units)
+} rc_adcs_mpc_h1;
+
+typedef struct rc_adcs_estim_h1 {
+    uint16_t rc_adcs_estim_h1_temp_min; // dK
+    uint16_t rc_adcs_estim_h1_temp_max; // dK
+    uint16_t rc_adcs_estim_h1_temp_avg; // dK
+    uint8_t rc_adcs_estim_h1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_estim_h1_reset_count; //  (No Units)
+} rc_adcs_estim_h1;
+
+typedef struct rc_adcs_sp_h1 {
+    uint16_t rc_adcs_sp_h1_temp_min; // dK
+    uint16_t rc_adcs_sp_h1_temp_max; // dK
+    uint16_t rc_adcs_sp_h1_temp_avg; // dK
+    uint8_t rc_adcs_sp_h1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_sp_h1_reset_count; //  (No Units)
+} rc_adcs_sp_h1;
+
+typedef struct rc_eps_gen_h1 {
+    uint16_t rc_eps_gen_h1_temp_min; // msp temp
+    uint16_t rc_eps_gen_h1_temp_max; // msp temp
+    uint16_t rc_eps_gen_h1_temp_avg; // msp temp
+    uint8_t rc_eps_gen_h1_sysrstiv; //  (No Units)
+    uint8_t rc_eps_gen_h1_reset_count; //  (No Units)
+} rc_eps_gen_h1;
+
+typedef struct rc_adcs_mtq_h1 {
+    uint16_t rc_adcs_mtq_h1_temp_min; // dK
+    uint16_t rc_adcs_mtq_h1_temp_max; // dK
+    uint16_t rc_adcs_mtq_h1_temp_avg; // dK
+    uint8_t rc_adcs_mtq_h1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_mtq_h1_reset_count; //  (No Units)
+} rc_adcs_mtq_h1;
+
+typedef struct rc_ppt_h1 {
+    uint16_t rc_ppt_h1_temp_min; // dK
+    uint16_t rc_ppt_h1_temp_max; // dK
+    uint16_t rc_ppt_h1_temp_avg; // dK
+    uint8_t rc_ppt_h1_sysrstiv; //  (No Units)
+    uint8_t rc_ppt_h1_reset_count; //  (No Units)
+} rc_ppt_h1;
+
 typedef struct gcmd_mtq_pms {
     int8_t gcmd_mtq_pms_z; //  (No Units)
     int8_t gcmd_mtq_pms_y; //  (No Units)
@@ -393,9 +474,9 @@ typedef struct rc_adcs_estim_9 {
 
 typedef struct rc_eps_dist_16 {
     uint8_t rc_eps_dist_16_ppt_state; //  (No Units)
-    uint16_t rc_eps_dist_16_ppt_c_min; // raw node current dist
-    uint16_t rc_eps_dist_16_ppt_c_max; // raw node current dist
-    uint16_t rc_eps_dist_16_ppt_c_avg; // raw node current dist
+    int16_t rc_eps_dist_16_ppt_c_min; // raw node current dist
+    int16_t rc_eps_dist_16_ppt_c_max; // raw node current dist
+    int16_t rc_eps_dist_16_ppt_c_avg; // raw node current dist
 } rc_eps_dist_16;
 
 typedef struct rc_eps_dist_9 {
@@ -412,9 +493,9 @@ typedef struct rc_eps_dist_7 {
 
 typedef struct rc_eps_dist_6 {
     uint8_t rc_eps_dist_6_com2_state; //  (No Units)
-    uint16_t rc_eps_dist_6_com2_c_min; // raw node current dist
-    uint16_t rc_eps_dist_6_com2_c_max; // raw node current dist
-    uint16_t rc_eps_dist_6_com2_c_avg; // raw node current dist
+    int16_t rc_eps_dist_6_com2_c_min; // raw node current dist
+    int16_t rc_eps_dist_6_com2_c_max; // raw node current dist
+    int16_t rc_eps_dist_6_com2_c_avg; // raw node current dist
 } rc_eps_dist_6;
 
 typedef struct rc_eps_dist_5 {
@@ -443,9 +524,9 @@ typedef struct rc_eps_dist_17 {
 
 typedef struct rc_eps_dist_14 {
     uint8_t rc_eps_dist_14_eps_state; //  (No Units)
-    uint16_t rc_eps_dist_14_eps_c_min; // raw node current dist
-    uint16_t rc_eps_dist_14_eps_c_max; // raw node current dist
-    uint16_t rc_eps_dist_14_eps_c_avg; // raw node current dist
+    int16_t rc_eps_dist_14_eps_c_min; // raw node current dist
+    int16_t rc_eps_dist_14_eps_c_max; // raw node current dist
+    int16_t rc_eps_dist_14_eps_c_avg; // raw node current dist
 } rc_eps_dist_14;
 
 typedef struct rc_eps_dist_13 {
@@ -462,9 +543,9 @@ typedef struct rc_eps_dist_11 {
 
 typedef struct rc_eps_dist_12 {
     uint8_t rc_eps_dist_12_estim_state; //  (No Units)
-    uint16_t rc_eps_dist_12_estim_c_min; // raw node current dist
-    uint16_t rc_eps_dist_12_estim_c_max; // raw node current dist
-    uint16_t rc_eps_dist_12_estim_c_avg; // raw node current dist
+    int16_t rc_eps_dist_12_estim_c_min; // raw node current dist
+    int16_t rc_eps_dist_12_estim_c_max; // raw node current dist
+    int16_t rc_eps_dist_12_estim_c_avg; // raw node current dist
 } rc_eps_dist_12;
 
 typedef struct rc_eps_dist_15 {
@@ -475,31 +556,26 @@ typedef struct rc_eps_dist_15 {
 
 typedef struct rc_eps_dist_10 {
     uint8_t rc_eps_dist_10_bdot_state; //  (No Units)
-    uint16_t rc_eps_dist_10_bdot_c_min; // raw node current dist
-    uint16_t rc_eps_dist_10_bdot_c_max; // raw node current dist
-    uint16_t rc_eps_dist_10_bdot_c_avg; // raw node current dist
+    int16_t rc_eps_dist_10_bdot_c_min; // raw node current dist
+    int16_t rc_eps_dist_10_bdot_c_max; // raw node current dist
+    int16_t rc_eps_dist_10_bdot_c_avg; // raw node current dist
 } rc_eps_dist_10;
 
 typedef struct rc_eps_dist_8 {
     uint8_t rc_eps_dist_8_rahs_state; //  (No Units)
-    uint16_t rc_eps_dist_8_rahs_c_min; // raw node current dist
-    uint16_t rc_eps_dist_8_rahs_c_max; // raw node current dist
-    uint16_t rc_eps_dist_8_rahs_c_avg; // raw node current dist
+    int16_t rc_eps_dist_8_rahs_c_min; // raw node current dist
+    int16_t rc_eps_dist_8_rahs_c_max; // raw node current dist
+    int16_t rc_eps_dist_8_rahs_c_avg; // raw node current dist
 } rc_eps_dist_8;
 
 typedef struct rc_eps_dist_4 {
     uint8_t rc_eps_dist_4_com1_state; //  (No Units)
-    uint16_t rc_eps_dist_4_com1_c_min; // raw node current dist
-    uint16_t rc_eps_dist_4_com1_c_max; // raw node current dist
-    uint16_t rc_eps_dist_4_com1_c_avg; // raw node current dist
+    int16_t rc_eps_dist_4_com1_c_min; // raw node current dist
+    int16_t rc_eps_dist_4_com1_c_max; // raw node current dist
+    int16_t rc_eps_dist_4_com1_c_avg; // raw node current dist
 } rc_eps_dist_4;
 
 typedef struct rc_eps_dist_1 {
-    uint16_t rc_eps_dist_1_temp_min; // msp temp
-    uint16_t rc_eps_dist_1_temp_max; // msp temp
-    uint16_t rc_eps_dist_1_temp_avg; // msp temp
-    uint8_t rc_eps_dist_1_sysrstiv; //  (No Units)
-    uint8_t rc_eps_dist_1_reset_count; //  (No Units)
 } rc_eps_dist_1;
 
 typedef struct rc_adcs_mpc_11 {
@@ -560,11 +636,6 @@ typedef struct rc_adcs_mpc_2 {
 } rc_adcs_mpc_2;
 
 typedef struct rc_adcs_mpc_1 {
-    uint16_t rc_adcs_mpc_1_temp_min; // dK
-    uint16_t rc_adcs_mpc_1_temp_max; // dK
-    uint16_t rc_adcs_mpc_1_temp_avg; // dK
-    uint8_t rc_adcs_mpc_1_sysrstiv; //  (No Units)
-    uint8_t rc_adcs_mpc_1_reset_count; //  (No Units)
 } rc_adcs_mpc_1;
 
 typedef struct rc_adcs_estim_8 {
@@ -601,11 +672,6 @@ typedef struct rc_adcs_estim_3 {
 } rc_adcs_estim_3;
 
 typedef struct rc_adcs_estim_1 {
-    uint16_t rc_adcs_estim_1_temp_min; // dK
-    uint16_t rc_adcs_estim_1_temp_max; // dK
-    uint16_t rc_adcs_estim_1_temp_avg; // dK
-    uint8_t rc_adcs_estim_1_sysrstiv; //  (No Units)
-    uint8_t rc_adcs_estim_1_reset_count; //  (No Units)
 } rc_adcs_estim_1;
 
 typedef struct rc_adcs_sp_12 {
@@ -712,11 +778,6 @@ typedef struct rc_adcs_sp_2 {
 } rc_adcs_sp_2;
 
 typedef struct rc_adcs_sp_1 {
-    uint16_t rc_adcs_sp_1_temp_min; // dK
-    uint16_t rc_adcs_sp_1_temp_max; // dK
-    uint16_t rc_adcs_sp_1_temp_avg; // dK
-    uint8_t rc_adcs_sp_1_sysrstiv; //  (No Units)
-    uint8_t rc_adcs_sp_1_reset_count; //  (No Units)
 } rc_adcs_sp_1;
 
 typedef struct rc_adcs_bdot_4 {
@@ -739,11 +800,6 @@ typedef struct rc_adcs_bdot_2 {
 } rc_adcs_bdot_2;
 
 typedef struct rc_adcs_bdot_1 {
-    uint8_t rc_adcs_bdot_1_reset_count; //  (No Units)
-    uint16_t rc_adcs_bdot_1_temp_min; // dK
-    uint16_t rc_adcs_bdot_1_temp_max; // dK
-    uint16_t rc_adcs_bdot_1_temp_avg; // dK
-    uint8_t rc_adcs_bdot_1_sysrstiv; //  (No Units)
 } rc_adcs_bdot_1;
 
 typedef struct estim_sun_unit_z {
@@ -814,11 +870,6 @@ typedef struct rc_adcs_mtq_2 {
 } rc_adcs_mtq_2;
 
 typedef struct rc_adcs_mtq_1 {
-    uint8_t rc_adcs_mtq_1_reset_count; //  (No Units)
-    uint16_t rc_adcs_mtq_1_temp_min; // dK
-    uint16_t rc_adcs_mtq_1_temp_max; // dK
-    uint16_t rc_adcs_mtq_1_temp_avg; // dK
-    uint8_t rc_adcs_mtq_1_sysrstiv; //  (No Units)
 } rc_adcs_mtq_1;
 
 typedef struct rc_ppt_3 {
@@ -835,11 +886,6 @@ typedef struct rc_ppt_2 {
 } rc_ppt_2;
 
 typedef struct rc_ppt_1 {
-    uint8_t rc_ppt_1_reset_count; //  (No Units)
-    uint16_t rc_ppt_1_temp_min; // dK
-    uint16_t rc_ppt_1_temp_max; // dK
-    uint16_t rc_ppt_1_temp_avg; // dK
-    uint8_t rc_ppt_1_sysrstiv; //  (No Units)
 } rc_ppt_1;
 
 typedef struct rc_eps_gen_9 {
@@ -903,11 +949,6 @@ typedef struct rc_eps_gen_2 {
 } rc_eps_gen_2;
 
 typedef struct rc_eps_gen_1 {
-    uint8_t rc_eps_gen_1_reset_count; //  (No Units)
-    uint16_t rc_eps_gen_1_temp_min; // msp temp
-    uint16_t rc_eps_gen_1_temp_max; // msp temp
-    uint16_t rc_eps_gen_1_temp_avg; // msp temp
-    uint8_t rc_eps_gen_1_sysrstiv; //  (No Units)
 } rc_eps_gen_1;
 
 typedef struct rc_eps_batt_6 {
@@ -946,11 +987,6 @@ typedef struct rc_eps_batt_2 {
 } rc_eps_batt_2;
 
 typedef struct rc_eps_batt_1 {
-    uint8_t rc_eps_batt_1_reset_count; //  (No Units)
-    uint16_t rc_eps_batt_1_temp_min; // msp temp
-    uint16_t rc_eps_batt_1_temp_max; // msp temp
-    uint16_t rc_eps_batt_1_temp_avg; // msp temp
-    uint8_t rc_eps_batt_1_sysrstiv; //  (No Units)
 } rc_eps_batt_1;
 
 typedef struct cmd_ppt_set_count {
@@ -1187,6 +1223,33 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encoderc_eps_batt_h1(rc_eps_batt_h1 *input, CANPacket* output);
+void decoderc_eps_batt_h1(CANPacket *input, rc_eps_batt_h1 *output);
+
+void encoderc_adcs_bdot_h1(rc_adcs_bdot_h1 *input, CANPacket* output);
+void decoderc_adcs_bdot_h1(CANPacket *input, rc_adcs_bdot_h1 *output);
+
+void encoderc_eps_dist_h1(rc_eps_dist_h1 *input, CANPacket* output);
+void decoderc_eps_dist_h1(CANPacket *input, rc_eps_dist_h1 *output);
+
+void encoderc_adcs_mpc_h1(rc_adcs_mpc_h1 *input, CANPacket* output);
+void decoderc_adcs_mpc_h1(CANPacket *input, rc_adcs_mpc_h1 *output);
+
+void encoderc_adcs_estim_h1(rc_adcs_estim_h1 *input, CANPacket* output);
+void decoderc_adcs_estim_h1(CANPacket *input, rc_adcs_estim_h1 *output);
+
+void encoderc_adcs_sp_h1(rc_adcs_sp_h1 *input, CANPacket* output);
+void decoderc_adcs_sp_h1(CANPacket *input, rc_adcs_sp_h1 *output);
+
+void encoderc_eps_gen_h1(rc_eps_gen_h1 *input, CANPacket* output);
+void decoderc_eps_gen_h1(CANPacket *input, rc_eps_gen_h1 *output);
+
+void encoderc_adcs_mtq_h1(rc_adcs_mtq_h1 *input, CANPacket* output);
+void decoderc_adcs_mtq_h1(CANPacket *input, rc_adcs_mtq_h1 *output);
+
+void encoderc_ppt_h1(rc_ppt_h1 *input, CANPacket* output);
+void decoderc_ppt_h1(CANPacket *input, rc_ppt_h1 *output);
 
 void encodegcmd_mtq_pms(gcmd_mtq_pms *input, CANPacket* output);
 void decodegcmd_mtq_pms(CANPacket *input, gcmd_mtq_pms *output);
