@@ -80,6 +80,11 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode mode);
 void mag_self_test_config(hMag handle);
 void mag_normal_reading_operation_config(hMag handle);
 FILE_STATIC uint8_t mag_is_reading_valid(MagnetometerData* data);
+FILE_STATIC void self_test_add_samples(hMag handle, MagnetometerData* data);
+void start_self_test_calibration(hMag handle);
+void end_self_test_calibration(hMag handle);
+void enable_calibration(hMag handle);
+void disable_calibration(hMag handle);
 
 /**
  * Convert a raw mag reading to Teslas

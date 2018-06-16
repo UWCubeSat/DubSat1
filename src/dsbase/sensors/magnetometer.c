@@ -18,6 +18,9 @@
 #define NORMAL_OPERATION 1
 #define SELF_TEST_OPERATION 0
 
+#define CALIBRATION_ON  1
+#define CALIBRATION_OFF 0
+
 FILE_STATIC uint16_t SELF_TEST_NOMINAL_X = MAG_HMC5883L_SELF_TEST_GAUSS_FACTOR_X * MAG_HMC5883L_GAIN_1370_LSB_GAUSS;
 FILE_STATIC uint16_t SELF_TEST_NOMINAL_Y = MAG_HMC5883L_SELF_TEST_GAUSS_FACTOR_Y * MAG_HMC5883L_GAIN_1370_LSB_GAUSS;
 FILE_STATIC uint16_t SELF_TEST_NOMINAL_Z = MAG_HMC5883L_SELF_TEST_GAUSS_FACTOR_Z * MAG_HMC5883L_GAIN_1370_LSB_GAUSS;
@@ -43,6 +46,7 @@ typedef struct {
     uint16_t calibration_z[MAX_CALIBRATION_SAMPLES];
     uint8_t curr_calibration_index;
     uint8_t operation_mode;
+    uint8_t calibration_setting;
 } MagInternalData;
 #endif
 
@@ -56,13 +60,13 @@ hMag magInit(bus_instance_i2c bus)
 {
     i2cEnable(bus);
     hDev hSensor = i2cInit(bus, MAG_I2C_7BIT_ADDRESS);
-    MagnetometerData *mdata = &(mags[handle].data);
     mags[numRegistered].hSensor = hSensor;
     mags[numRegistered].curr_calibration_index = 0;
     mags[numRegistered].operation_mode = NORMAL_OPERATION;
-    mdata->calibration_factor_x = 1.0;
-    mdata->calibration_factor_x = 1.0;
-    mdata->calibration_factor_x = 1.0;
+    mags[numRegistered].data.calibration_factor_x = 1.0;
+    mags[numRegistered].data.calibration_factor_y = 1.0;
+    mags[numRegistered].data.calibration_factor_z = 1.0;
+    mags[numRegistered].calibration_setting = CALIBRATION_ON;
 
 #if defined(__BSP_HW_MAGTOM_HMC5883L__)  /* */
 
@@ -247,6 +251,11 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
     if(mags[handle].operation_mode == SELF_TEST_OPERATION)
     {
         self_test_add_samples(handle, mdata);
+    } else if (mags[handle].calibration_setting == CALIBRATION_ON)
+    {
+        mdata->convertedX = mdata->convertedX * mdata->calibration_factor_x;
+        mdata->convertedY = mdata->convertedY * mdata->calibration_factor_y;
+        mdata->convertedZ = mdata->convertedZ * mdata->calibration_factor_z;
     }
     return mdata;
 #endif
@@ -310,7 +319,9 @@ FILE_STATIC void self_test_add_samples(hMag handle, MagnetometerData* data)
 
 void end_self_test_calibration(hMag handle)
 {
+    mag_normal_reading_operation_config(handle);
     uint8_t curr_index = mags[handle].curr_calibration_index;
+    MagnetometerData* data = &(mags[handle].data);
     uint8_t i;
     if(curr_index == 0) return;
     float avg_x = 0;
@@ -326,8 +337,17 @@ void end_self_test_calibration(hMag handle)
     avg_x = avg_x / curr_index;
     avg_y = avg_y / curr_index;
     avg_y = avg_z / curr_index;
+    data->calibration_factor_x = SELF_TEST_NOMINAL_X / avg_x;
+    data->calibration_factor_y = SELF_TEST_NOMINAL_Y / avg_y;
+    data->calibration_factor_z = SELF_TEST_NOMINAL_Z / avg_z;
+}
 
-    mags[handle].
-    mag_normal_reading_operation_config(handle);
+void enable_calibration(hMag handle)
+{
+    mags[handle].calibration_setting = CALIBRATION_ON;
+}
 
+void disable_calibration(hMag handle)
+{
+    mags[handle].calibration_setting = CALIBRATION_OFF;
 }
