@@ -26,6 +26,15 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_RC_EPS_BATT_H2 304677486
+#define CAN_ID_RC_ADCS_BDOT_H2 304677485
+#define CAN_ID_RC_EPS_DIST_H2 304677484
+#define CAN_ID_RC_ADCS_MPC_H2 304677483
+#define CAN_ID_RC_ADCS_ESTIM_H2 304677482
+#define CAN_ID_RC_ADCS_SP_H2 304677481
+#define CAN_ID_RC_EPS_GEN_H2 304677480
+#define CAN_ID_RC_ADCS_MTQ_H2 304677479
+#define CAN_ID_RC_PPT_H2 304677478
 #define CAN_ID_RC_EPS_BATT_H1 304677477
 #define CAN_ID_RC_ADCS_BDOT_H1 304677476
 #define CAN_ID_RC_EPS_DIST_H1 304677475
@@ -273,6 +282,42 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct rc_eps_batt_h2 {
+    uint8_t rc_eps_batt_h2_canrxerror; //  (No Units)
+} rc_eps_batt_h2;
+
+typedef struct rc_adcs_bdot_h2 {
+    uint8_t rc_adcs_bdot_h2_canrxerror; //  (No Units)
+} rc_adcs_bdot_h2;
+
+typedef struct rc_eps_dist_h2 {
+    uint8_t rc_eps_dist_h2_canrxerror; //  (No Units)
+} rc_eps_dist_h2;
+
+typedef struct rc_adcs_mpc_h2 {
+    uint8_t rc_adcs_mpc_h2_canrxerror; //  (No Units)
+} rc_adcs_mpc_h2;
+
+typedef struct rc_adcs_estim_h2 {
+    uint8_t rc_adcs_estim_h2_canrxerror; //  (No Units)
+} rc_adcs_estim_h2;
+
+typedef struct rc_adcs_sp_h2 {
+    uint8_t rc_adcs_sp_h2_canrxerror; //  (No Units)
+} rc_adcs_sp_h2;
+
+typedef struct rc_eps_gen_h2 {
+    uint8_t rc_eps_gen_h2_canrxerror; //  (No Units)
+} rc_eps_gen_h2;
+
+typedef struct rc_adcs_mtq_h2 {
+    uint8_t rc_adcs_mtq_h2_canrxerror; //  (No Units)
+} rc_adcs_mtq_h2;
+
+typedef struct rc_ppt_h2 {
+    uint8_t rc_ppt_h2_canrxerror; //  (No Units)
+} rc_ppt_h2;
+
 typedef struct rc_eps_batt_h1 {
     uint16_t rc_eps_batt_h1_temp_min; // msp temp
     uint16_t rc_eps_batt_h1_temp_max; // msp temp
@@ -1223,6 +1268,33 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encoderc_eps_batt_h2(rc_eps_batt_h2 *input, CANPacket* output);
+void decoderc_eps_batt_h2(CANPacket *input, rc_eps_batt_h2 *output);
+
+void encoderc_adcs_bdot_h2(rc_adcs_bdot_h2 *input, CANPacket* output);
+void decoderc_adcs_bdot_h2(CANPacket *input, rc_adcs_bdot_h2 *output);
+
+void encoderc_eps_dist_h2(rc_eps_dist_h2 *input, CANPacket* output);
+void decoderc_eps_dist_h2(CANPacket *input, rc_eps_dist_h2 *output);
+
+void encoderc_adcs_mpc_h2(rc_adcs_mpc_h2 *input, CANPacket* output);
+void decoderc_adcs_mpc_h2(CANPacket *input, rc_adcs_mpc_h2 *output);
+
+void encoderc_adcs_estim_h2(rc_adcs_estim_h2 *input, CANPacket* output);
+void decoderc_adcs_estim_h2(CANPacket *input, rc_adcs_estim_h2 *output);
+
+void encoderc_adcs_sp_h2(rc_adcs_sp_h2 *input, CANPacket* output);
+void decoderc_adcs_sp_h2(CANPacket *input, rc_adcs_sp_h2 *output);
+
+void encoderc_eps_gen_h2(rc_eps_gen_h2 *input, CANPacket* output);
+void decoderc_eps_gen_h2(CANPacket *input, rc_eps_gen_h2 *output);
+
+void encoderc_adcs_mtq_h2(rc_adcs_mtq_h2 *input, CANPacket* output);
+void decoderc_adcs_mtq_h2(CANPacket *input, rc_adcs_mtq_h2 *output);
+
+void encoderc_ppt_h2(rc_ppt_h2 *input, CANPacket* output);
+void decoderc_ppt_h2(CANPacket *input, rc_ppt_h2 *output);
 
 void encoderc_eps_batt_h1(rc_eps_batt_h1 *input, CANPacket* output);
 void decoderc_eps_batt_h1(CANPacket *input, rc_eps_batt_h1 *output);
