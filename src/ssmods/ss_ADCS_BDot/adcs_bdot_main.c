@@ -67,6 +67,12 @@ typedef enum spam_control {
     SPAM_OFF
 } spam_control_state;
 
+typedef enum spam_axis {
+    SPAM_X,
+    SPAM_Y,
+    SPAM_Z
+} spam_axis;
+
 /******************COSMOS Telemetry******************************/
 FILE_STATIC health_segment hseg;
 FILE_STATIC meta_segment metaSeg;
@@ -99,6 +105,7 @@ FILE_STATIC mtq_phase mtq_state = MTQ_MEASUREMENT_PHASE;
 /* Stores the last info about the dipoles bdot sent to mtq. This is for
  * debugging purposes. */
 FILE_STATIC mtq_info bdot_perspective_mtq_info;
+/* Stores the last known state/dipoles that mtq is listening to */
 FILE_STATIC mtq_info mtq_last_known_state;
 /****************************************************************/
 
@@ -106,10 +113,18 @@ FILE_STATIC mtq_info mtq_last_known_state;
 /****************Magnetometer Variables*************************/
 /* keeps track of the bdot's state */
 FILE_STATIC bdot_state_mode bdot_state = NORMAL_MODE;
+/* stores the alst state bdot is in, disregarding SPAM states. This is
+ * used so that when you're exiting SPAM mode, you'll know what state to
+ * return to, NORMAL or SLEEP. */
 FILE_STATIC bdot_state_mode last_bdot_state = NORMAL_MODE;
+/* Stores the ground command bdot state */
 FILE_STATIC bdot_state_mode gcmd_next_bdot_state = NORMAL_MODE;
+/* Stores if there was a ground command */
 FILE_STATIC uint8_t gcmd_bdot_state_flag = 0;
-FILE_STATIC spam_control_state spam_control_switch = SPAM_ON;
+/* Stores the ground command to turn on or off SPAM */
+FILE_STATIC spam_control_state gcmd_spam_control_switch = SPAM_ON;
+
+FILE_STATIC spam_axis current_spam_axis = SPAM_X;
 
 /* holds magnetometer data read every 10 hz */
 FILE_STATIC MagnetometerData* continuous_bdot_mag_data;
@@ -117,13 +132,11 @@ FILE_STATIC MagnetometerData* continuous_bdot_mag_data;
 /* holds only the magnetometer that are "valid", meaning collected
  * only under valid conditions.
  * Valid conditions: 1. Magnetorquer is not on
- *                   2. Magnetometer  is set to be in normal configurations
- */
+ *                   2. Magnetometer  is set to be in normal configurations */
 FILE_STATIC MagnetometerData* valid_bdot_mag_data;
 
 /* sensor proc magnetometer data. These data were decided to be unfiltered data,
- * meaning the data can be data collected when the magnetorquer is on.
- */
+ * meaning the data can be data collected when the magnetorquer is on. */
 FILE_STATIC MagnetometerData* sp_mag1_data;
 FILE_STATIC MagnetometerData* sp_mag2_data;
 
@@ -152,8 +165,7 @@ FILE_STATIC TIMER_HANDLE rtOneStep_timer;
 FILE_STATIC uint32_t rtOneStep_us = 100000;
 
 /* this is the timer that will check go off when it's time to check
- * to see which magnetometer to use.
- */
+ * to see which magnetometer to use. */
 FILE_STATIC TIMER_HANDLE check_best_mag_timer = 100;
 FILE_STATIC uint32_t check_best_mag_timer_ms = 60000; // 3 min
 
@@ -167,12 +179,15 @@ FILE_STATIC uint32_t check_nap_status_timer_ms = 1200000; // 20 min
 //FILE_STATIC uint32_t check_nap_status_timer_ms = 5000; // 5 sec
 FILE_STATIC uint8_t nap_status_timer_on_flag = 0;
 
+/* this is the timer that will keep track of how long SPAM is */
 FILE_STATIC TIMER_HANDLE spam_timer = 100;
-//FILE_STATIC uint32_t spam_off_timer_ms = 3600000; // 1 hour;
-//FILE_STATIC uint32_t spam_on_timer_ms = 360000; // 6 minute;
-FILE_STATIC uint32_t spam_off_timer_ms = 15000; // 30 seconds;
-FILE_STATIC uint32_t spam_on_timer_ms = 20000; // 1 minute;
+FILE_STATIC uint32_t spam_off_timer_ms = 3600000; // 1 hour;
+FILE_STATIC uint32_t spam_on_timer_ms = 120000; // 6 minute;
+//FILE_STATIC uint32_t spam_off_timer_ms = 15000; // 30 seconds;
+//FILE_STATIC uint32_t spam_on_timer_ms = 20000; // 1 minute;
 FILE_STATIC uint8_t spam_timer_on_flag = 0;
+
+
 /***************************************************************/
 
 
@@ -209,21 +224,29 @@ int main(void)
     debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, handleDebugActionCallback);
 #endif  //  __DEBUG__
 
+    /* Sets up can, and all the other steps */
     initial_setup();
+    /* Turn on rt onestep callback timer */
     rtOneStep_timer = timerCallbackInitializer(&simulink_compute, rtOneStep_us); // 100 ms
     startCallback(rtOneStep_timer);
+    /* Turns on timer for checking best fit magnetometer */
     start_check_best_mag_timer();
+    /* Turns on spam timer for the time it will not be in spam mode */
     start_spam_timer(spam_off_timer_ms);
+    /* Turns on the timer that will report 1 if satellite is tumbling for too long */
     start_check_nap_status_timer();
+
     while (1)
     {
+        /* determine the state of bdot */
         determine_bdot_state();
+        /* update sensor proc magnetometer values */
         process_sp_mag();
+        /* determine the best magnetometer to listen to */
         determine_best_fit_mag();
 
         if(rt_flag)
         {
-            P3OUT ^= BIT5;
             /* read magnetometer data every 10hz, but only feed in magnetometer data to rt onestep
              * that's "valid".
              */
@@ -316,53 +339,74 @@ FILE_STATIC void initial_setup()
 
 void determine_bdot_state()
 {
+    /* if there was a command from ground. flag is only set when the command from ground is different
+     * from current bdot state */
     if(gcmd_bdot_state_flag)
     {
+        /* in any case, when there's a command sent from ground to change state to
+         * NORMAL or SLEEP, spam timer has to end and restart. */
         if(bdot_state == SPAM || bdot_state == SPAM_MAG_SELF_TEST)
         {
             end_spam_timer();
             start_spam_timer(spam_off_timer_ms);
         }
+
+        current_spam_axis = SPAM_X;
+
         end_check_nap_status_timer();
+
         last_bdot_state = bdot_state;
         bdot_state = gcmd_next_bdot_state;
+
+        /* if the next bdot state is not sleep mode, start the nap timer again */
         if(bdot_state != SLEEP_MODE)
         {
             start_check_nap_status_timer();
         }
+        /* reset flag */
         gcmd_bdot_state_flag = 0;
     }
     switch (bdot_state)
     {
         case NORMAL_MODE:
+            /* if rt onestep reports tumbling for too long, put bdot into sleep mode */
             if(check_check_nap_status_timer())
             {
                 bdot_state = SLEEP_MODE;
             }
+            /* if rt onestep reports not tumbling, restart check nap status timer */
+            /* if rt onestep does report tumbling, then there's no reason to go into SPAM mode */
             if(!rtY.tumble)
             {
                 end_check_nap_status_timer();
                 start_check_nap_status_timer();
-            }
-            if(spam_control_switch == SPAM_ON)
-            {
-                if(check_spam_timer())
+                /* ground commands determines that spam mode is enable, then check if spam timer is done */
+                if(gcmd_spam_control_switch == SPAM_ON)
                 {
-                    last_bdot_state = NORMAL_MODE;
-                    bdot_state = SPAM_MAG_SELF_TEST;
-                    start_spam_timer(spam_on_timer_ms);
+                    if(check_spam_timer())
+                    {
+                        last_bdot_state = NORMAL_MODE;
+                        bdot_state = SPAM_MAG_SELF_TEST;
+                        /* start timer to time how the amount of time spam is on */
+                        start_spam_timer(spam_on_timer_ms);
+                        current_spam_axis = SPAM_X;
+                    }
                 }
             }
             break;
         case SLEEP_MODE:
+            /* make sure nap timer is off. if it is off, then flag is 0 and the function does nothing */
             end_check_nap_status_timer();
-            if(spam_control_switch == SPAM_ON)
+            /* ground commands determines that spam mode is enable, then check if spam timer is done */
+            if(gcmd_spam_control_switch == SPAM_ON)
             {
                 if(check_spam_timer())
                 {
                     last_bdot_state = SLEEP_MODE;
                     bdot_state = SPAM_MAG_SELF_TEST;
+                    /* start timer to time how the amount of time spam is on */
                     start_spam_timer(spam_on_timer_ms);
+                    current_spam_axis = SPAM_X;
                 }
             }
             break;
@@ -371,16 +415,41 @@ void determine_bdot_state()
                 // TODO: do mag self test. talk to jeff to see if how he wants to do this.
             break;
         case SPAM:
+            /* if the amount of time spam is on is done, go back to last normal state (either NORMAL or SLEEP) */
             if(check_spam_timer())
             {
-                bdot_state = last_bdot_state;
-                last_bdot_state = SPAM;
-                start_spam_timer(spam_off_timer_ms);
+                determine_spam_axis();
+                // done spamming all three axis
+                if(current_spam_axis == SPAM_X)
+                {
+                    bdot_state = last_bdot_state;
+                    last_bdot_state = SPAM;
+                    /* start timer to time how long spam is off for */
+                    start_spam_timer(spam_off_timer_ms);
+                } else
+                {
+                    start_spam_timer(spam_on_timer_ms);
+                }
             }
             break;
     }
 }
 
+void determine_spam_axis()
+{
+    switch(current_spam_axis)
+    {
+        case SPAM_X:
+            current_spam_axis = SPAM_Y;
+            break;
+        case SPAM_Y:
+            current_spam_axis = SPAM_Z;
+            break;
+        case SPAM_Z:
+            current_spam_axis = SPAM_X;
+            break;
+    }
+}
 
 
 /* Update simulink information to send to rt onestep.
@@ -426,8 +495,11 @@ void update_simulink_info()
     }
 }
 
+/* determines the best fit magnetometer */
 void determine_best_fit_mag()
 {
+    /* if its time to check best fit mag, then restart the timer and if bdot state is in normal mode
+     * and mag selction mode is in auto, then do the calculations */
     if(checkTimer(check_best_mag_timer))
     {
         start_check_best_mag_timer();
@@ -519,6 +591,7 @@ void start_check_best_mag_timer()
 
 void start_spam_timer(uint32_t spam_timer_ms)
 {
+    /* if timer is not on, then turn it on, otherwise do nothing */
     if(!spam_timer_on_flag)
     {
         spam_timer = timerPollInitializer(spam_timer_ms);
@@ -528,6 +601,7 @@ void start_spam_timer(uint32_t spam_timer_ms)
 
 void end_spam_timer()
 {
+    /* if timer is on, then end it, otherwise if it's already off, then do nothing */
     if(spam_timer_on_flag)
     {
         endPollingTimer(spam_timer);
@@ -537,6 +611,7 @@ void end_spam_timer()
 
 uint8_t check_spam_timer()
 {
+    /* if timer is on, then check timer, otherwise if it's off, then do nothing */
     if(spam_timer_on_flag)
     {
         if(checkTimer(spam_timer))
@@ -614,9 +689,27 @@ void determine_mtq_commands()
             bdot_perspective_mtq_info.zDipole = 0;
             break;
         case SPAM:
-            bdot_perspective_mtq_info.xDipole = 100;
-            bdot_perspective_mtq_info.yDipole = 100;
-            bdot_perspective_mtq_info.zDipole = 100;
+            if(current_spam_axis == SPAM_X)
+            {
+                bdot_perspective_mtq_info.xDipole = 100;
+                bdot_perspective_mtq_info.yDipole = 0;
+                bdot_perspective_mtq_info.zDipole = 0;
+            } else if(current_spam_axis == SPAM_Y)
+            {
+                bdot_perspective_mtq_info.xDipole = 0;
+                bdot_perspective_mtq_info.yDipole = 100;
+                bdot_perspective_mtq_info.zDipole = 0;
+            } else if(current_spam_axis == SPAM_Z)
+            {
+                bdot_perspective_mtq_info.xDipole = 0;
+                bdot_perspective_mtq_info.yDipole = 0;
+                bdot_perspective_mtq_info.zDipole = 100;
+            } else
+            {
+                bdot_perspective_mtq_info.xDipole = 0;
+                bdot_perspective_mtq_info.yDipole = 0;
+                bdot_perspective_mtq_info.zDipole = 0;
+            }
             break;
         default:
             bdot_perspective_mtq_info.xDipole = 0;
@@ -687,9 +780,11 @@ void can_rx_callback(CANPacket *packet)
             decodemtq_ack(packet, &ack);
             if(!ack.mtq_ack_phase)
             {
+                P3OUT |= BIT5;
                 mtq_state = MTQ_MEASUREMENT_PHASE;
             } else
             {
+                P3OUT &= ~BIT5;
                 mtq_state = MTQ_ACTUATION_PHASE;
             }
             break;
@@ -849,6 +944,11 @@ void select_mode_operation(uint8_t reading_mode_selection)
             gcmd_next_bdot_state = SLEEP_MODE;
             gcmd_bdot_state_flag = 1;
             break;
+        case SPAM_OPERATION:
+            if(bdot_state == SPAM) return;
+            gcmd_next_bdot_state = SPAM;
+            gcmd_bdot_state_flag = 1;
+            break;
     }
 }
 
@@ -890,7 +990,7 @@ void spam_control_operation(uint16_t off_time_min, uint8_t on_time_min, uint8_t 
 {
     if(spam_switch == SPAM_OFF)
     {
-        spam_control_switch = SPAM_OFF;
+        gcmd_spam_control_switch = SPAM_OFF;
         if(bdot_state == SPAM || bdot_state == SPAM_MAG_SELF_TEST)
         {
             // go back to the previous state if current state is in spam: either normal or sleep.
@@ -900,7 +1000,7 @@ void spam_control_operation(uint16_t off_time_min, uint8_t on_time_min, uint8_t 
         return;
     }
     spam_off_timer_ms = ((uint32_t) off_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR);
-    spam_on_timer_ms = ((uint32_t) on_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR);
+    spam_on_timer_ms = ((uint32_t) on_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR) / 3; // divide by three for three axis
 }
 
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)

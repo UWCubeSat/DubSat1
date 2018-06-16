@@ -247,7 +247,7 @@ void sendRC()
             rollcallPkt5_info.rc_eps_batt_5_node_c_max = aggVec_max_i(&nodeCurrentAg);
             rollcallPkt5_info.rc_eps_batt_5_node_c_min = aggVec_min_i(&nodeCurrentAg);
             encoderc_eps_batt_5(&rollcallPkt5_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&nodeVoltageAg);
+            aggVec_as_reset((aggVec *)&nodeCurrentAg);
         }
         else if(rcFlag == 2)
         {
