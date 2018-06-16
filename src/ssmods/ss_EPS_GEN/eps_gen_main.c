@@ -224,12 +224,12 @@ void sendRC() //TODO: use if'else for each and do rc while once implemented on C
         CANPacket rollcallPkt = {0};
         if(rcFlag == 9)
         {
-            rc_eps_gen_1 rollcallPkt1_info = {0};
-            rollcallPkt1_info.rc_eps_gen_1_sysrstiv = bspGetResetCount();
-            rollcallPkt1_info.rc_eps_gen_1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
-            rollcallPkt1_info.rc_eps_gen_1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
-            rollcallPkt1_info.rc_eps_gen_1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
-            encoderc_eps_gen_1(&rollcallPkt1_info, &rollcallPkt);
+            rc_eps_gen_h1 rollcallPkt1_info = {0};
+            rollcallPkt1_info.rc_eps_gen_h1_sysrstiv = bspGetResetCount();
+            rollcallPkt1_info.rc_eps_gen_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_gen_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_gen_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
+            encoderc_eps_gen_h1(&rollcallPkt1_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&mspTempAg);
         }
         else if(rcFlag == 8)

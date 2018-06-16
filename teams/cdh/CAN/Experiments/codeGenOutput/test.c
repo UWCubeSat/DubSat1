@@ -3,6 +3,51 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rc_eps_batt_h1_packet = {0};
+	rc_eps_batt_h1 rc_eps_batt_h1_info = {0};
+	encoderc_eps_batt_h1(&rc_eps_batt_h1_info, &rc_eps_batt_h1_packet);
+	canSendPacket(&rc_eps_batt_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_h1_packet = {0};
+	rc_adcs_bdot_h1 rc_adcs_bdot_h1_info = {0};
+	encoderc_adcs_bdot_h1(&rc_adcs_bdot_h1_info, &rc_adcs_bdot_h1_packet);
+	canSendPacket(&rc_adcs_bdot_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_dist_h1_packet = {0};
+	rc_eps_dist_h1 rc_eps_dist_h1_info = {0};
+	encoderc_eps_dist_h1(&rc_eps_dist_h1_info, &rc_eps_dist_h1_packet);
+	canSendPacket(&rc_eps_dist_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mpc_h1_packet = {0};
+	rc_adcs_mpc_h1 rc_adcs_mpc_h1_info = {0};
+	encoderc_adcs_mpc_h1(&rc_adcs_mpc_h1_info, &rc_adcs_mpc_h1_packet);
+	canSendPacket(&rc_adcs_mpc_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_estim_h1_packet = {0};
+	rc_adcs_estim_h1 rc_adcs_estim_h1_info = {0};
+	encoderc_adcs_estim_h1(&rc_adcs_estim_h1_info, &rc_adcs_estim_h1_packet);
+	canSendPacket(&rc_adcs_estim_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_h1_packet = {0};
+	rc_adcs_sp_h1 rc_adcs_sp_h1_info = {0};
+	encoderc_adcs_sp_h1(&rc_adcs_sp_h1_info, &rc_adcs_sp_h1_packet);
+	canSendPacket(&rc_adcs_sp_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_h1_packet = {0};
+	rc_eps_gen_h1 rc_eps_gen_h1_info = {0};
+	encoderc_eps_gen_h1(&rc_eps_gen_h1_info, &rc_eps_gen_h1_packet);
+	canSendPacket(&rc_eps_gen_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_h1_packet = {0};
+	rc_adcs_mtq_h1 rc_adcs_mtq_h1_info = {0};
+	encoderc_adcs_mtq_h1(&rc_adcs_mtq_h1_info, &rc_adcs_mtq_h1_packet);
+	canSendPacket(&rc_adcs_mtq_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_ppt_h1_packet = {0};
+	rc_ppt_h1 rc_ppt_h1_info = {0};
+	encoderc_ppt_h1(&rc_ppt_h1_info, &rc_ppt_h1_packet);
+	canSendPacket(&rc_ppt_h1_packet);
+
 	__delay_cycles(10000);	CANPacket gcmd_mtq_pms_packet = {0};
 	gcmd_mtq_pms gcmd_mtq_pms_info = {0};
 	encodegcmd_mtq_pms(&gcmd_mtq_pms_info, &gcmd_mtq_pms_packet);

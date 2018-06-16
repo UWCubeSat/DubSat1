@@ -447,12 +447,12 @@ FILE_STATIC void send_CAN_ack_packet(void)
 
 // TODO: description 
 void rcPopulate1(CANPacket *out){
-    rc_adcs_mtq_1 rc = {0};
-    rc.rc_adcs_mtq_1_sysrstiv = 0;
-    rc.rc_adcs_mtq_1_temp_avg =0;//asensorReadIntTempC(); //TODO: update for actual temperature 
-    rc.rc_adcs_mtq_1_temp_max =0;
-    rc.rc_adcs_mtq_1_temp_min =0;
-    encoderc_adcs_mtq_1(&rc, out);
+    rc_adcs_mtq_h1 rc = {0};
+    rc.rc_adcs_mtq_h1_sysrstiv = 0;
+    rc.rc_adcs_mtq_h1_temp_avg =0;//asensorReadIntTempC(); //TODO: update for actual temperature
+    rc.rc_adcs_mtq_h1_temp_max =0;
+    rc.rc_adcs_mtq_h1_temp_min =0;
+    encoderc_adcs_mtq_h1(&rc, out);
 }
 
 // TODO: description 

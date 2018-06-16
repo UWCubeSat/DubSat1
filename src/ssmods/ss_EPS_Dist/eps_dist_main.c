@@ -542,13 +542,13 @@ void sendRC()
         CANPacket rollcallPkt = {0};
         if(rcFlag == 17)
         {
-            rc_eps_dist_1 rollcallPkt1_info = {0};
-            rollcallPkt1_info.rc_eps_dist_1_reset_count = bspGetResetCount();
-            rollcallPkt1_info.rc_eps_dist_1_sysrstiv = SYSRSTIV;
-            rollcallPkt1_info.rc_eps_dist_1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
-            rollcallPkt1_info.rc_eps_dist_1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
-            rollcallPkt1_info.rc_eps_dist_1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
-            encoderc_eps_dist_1(&rollcallPkt1_info, &rollcallPkt);
+            rc_eps_dist_h1 rollcallPkt1_info = {0};
+            rollcallPkt1_info.rc_eps_dist_h1_reset_count = bspGetResetCount();
+            rollcallPkt1_info.rc_eps_dist_h1_sysrstiv = SYSRSTIV;
+            rollcallPkt1_info.rc_eps_dist_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_dist_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_dist_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
+            encoderc_eps_dist_h1(&rollcallPkt1_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&mspTempAg);
         }
         else if(rcFlag == 16)
