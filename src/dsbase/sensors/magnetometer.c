@@ -18,9 +18,6 @@
 #define NORMAL_OPERATION 1
 #define SELF_TEST_OPERATION 0
 
-#define CALIBRATION_ON  1
-#define CALIBRATION_OFF 0
-
 FILE_STATIC uint16_t SELF_TEST_NOMINAL_X = MAG_HMC5883L_SELF_TEST_GAUSS_FACTOR_X * MAG_HMC5883L_GAIN_1370_LSB_GAUSS;
 FILE_STATIC uint16_t SELF_TEST_NOMINAL_Y = MAG_HMC5883L_SELF_TEST_GAUSS_FACTOR_Y * MAG_HMC5883L_GAIN_1370_LSB_GAUSS;
 FILE_STATIC uint16_t SELF_TEST_NOMINAL_Z = MAG_HMC5883L_SELF_TEST_GAUSS_FACTOR_Z * MAG_HMC5883L_GAIN_1370_LSB_GAUSS;
@@ -323,7 +320,7 @@ void end_self_test_calibration(hMag handle)
     uint8_t curr_index = mags[handle].curr_calibration_index;
     MagnetometerData* data = &(mags[handle].data);
     uint8_t i;
-    if(curr_index == 0) return;
+    if(curr_index != MAX_CALIBRATION_SAMPLES) return;
     float avg_x = 0;
     float avg_y = 0;
     float avg_z = 0;

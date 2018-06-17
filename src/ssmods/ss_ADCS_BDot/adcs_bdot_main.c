@@ -126,6 +126,8 @@ FILE_STATIC spam_control_state gcmd_spam_control_switch = SPAM_ON;
 
 FILE_STATIC spam_axis current_spam_axis = SPAM_X;
 
+FILE_STATIC uint8_t calibration_switch = CALIBRATION_ON;
+
 /* holds magnetometer data read every 10 hz */
 FILE_STATIC MagnetometerData* continuous_bdot_mag_data;
 
@@ -204,7 +206,7 @@ FILE_STATIC const rollcall_fn rollcallFunctions[] =
 
 
 /***************************************************************/
-/*******************Agg Library***********************************/
+/***********************Agg Library*****************************/
 /***************************************************************/
 
 
@@ -345,15 +347,26 @@ void determine_bdot_state()
     {
         /* in any case, when there's a command sent from ground to change state to
          * NORMAL or SLEEP, spam timer has to end and restart. */
-        if(bdot_state == SPAM || bdot_state == SPAM_MAG_SELF_TEST)
+        if(bdot_state == SPAM)
         {
             end_spam_timer();
             start_spam_timer(spam_off_timer_ms);
         }
 
         current_spam_axis = SPAM_X;
-
         end_check_nap_status_timer();
+
+        if(gcmd_next_bdot_state == SPAM_MAG_SELF_TEST)
+        {
+            if(bdot_state != SPAM_MAG_SELF_TEST)
+            {
+                start_self_test_calibration(mag_num);
+            }
+        }
+        if(bdot_state == SPAM_MAG_SELF_TEST && gcmd_next_bdot_state != SPAM_MAG_SELF_TEST)
+        {
+            end_self_test_calibration(mag_num);
+        }
 
         last_bdot_state = bdot_state;
         bdot_state = gcmd_next_bdot_state;
@@ -411,7 +424,6 @@ void determine_bdot_state()
             }
             break;
         case SPAM_MAG_SELF_TEST:
-                bdot_state = SPAM;
                 // TODO: do mag self test. talk to jeff to see if how he wants to do this.
             break;
         case SPAM:
@@ -881,6 +893,7 @@ void send_bdot_state_status_cosmos()
     bdot_state_cosmos.state_status = bdot_state;
     bdot_state_cosmos.mag_selection_mode = mag_selection_mode;
     bdot_state_cosmos.current_listening_mag = current_listening_mag;
+    bdot_state_cosmos.mag_calibration_mode = calibration_switch;
     bcbinSendPacket((uint8_t *) &bdot_state_cosmos, sizeof(bdot_state_cosmos));
 }
 
@@ -935,7 +948,6 @@ void select_mode_operation(uint8_t reading_mode_selection)
     {
         case NORMAL_READING_OPERATION:
             if(bdot_state == NORMAL_MODE) return;
-            mag_normal_reading_operation_config(mag_num);
             gcmd_next_bdot_state = NORMAL_MODE;
             gcmd_bdot_state_flag = 1;
             break;
@@ -1003,13 +1015,31 @@ void spam_control_operation(uint16_t off_time_min, uint8_t on_time_min, uint8_t 
     spam_on_timer_ms = ((uint32_t) on_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR) / 3; // divide by three for three axis
 }
 
+void mag_calibration_control_operation(uint8_t calibration_switch_cmd)
+{
+    switch(calibration_switch_cmd)
+    {
+        case CALIBRATION_ON:
+            enable_calibration(mag_num);
+            calibration_switch = CALIBRATION_ON;
+            break;
+        case CALIBRATION_OFF:
+            disable_calibration(mag_num);
+            calibration_switch = CALIBRATION_OFF;
+            break;
+        default:
+            enable_calibration(mag_num);
+            calibration_switch = CALIBRATION_ON;
+    }
+}
+
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     mag_select_cmd* mag_select;
     mode_operation_cmd* mode_operation_select;
     max_tumble_time* max_tumble_time_select;
     spam_control* spam_control_select;
-
+    mag_calibration_cmd* mag_calibration_control_select;
     if (mode == Mode_BinaryStreaming)
     {
         switch(cmdstr[0])
@@ -1030,6 +1060,9 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
                 spam_control_select = (spam_control *) (cmdstr + 1);
                 spam_control_operation(spam_control_select->spam_off_time_min, spam_control_select->spam_on_time_min, spam_control_select->spam_switch);
                 break;
+            case OPCODE_MAG_CALIBRATION_SETTING_CMD:
+                mag_calibration_control_select = (mag_calibration_cmd*) (cmdstr + 1);
+                mag_calibration_control_operation(mag_calibration_control_select->calibration_switch);
             case OPCODE_COMMONCMD:
                 break;
             default:

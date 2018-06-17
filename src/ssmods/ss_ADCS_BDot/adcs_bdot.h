@@ -42,7 +42,7 @@
 #define OPCODE_MODE_OPERATION_CMD 3
 #define OPCODE_MAX_TUMBLING_TIME_CMD 4
 #define OPCODE_SPAM_SETTINGS_CMD 5
-
+#define OPCODE_MAG_CALIBRATION_SETTING_CMD 6
 
 CMD_SEGMENT {
     uint8_t enable;
@@ -66,11 +66,16 @@ CMD_SEGMENT {
     uint8_t spam_switch; // ON = 1, OFF = 0
 } spam_control;
 
+CMD_SEGMENT {
+    uint8_t calibration_switch;
+} mag_calibration_cmd;
+
 TLM_SEGMENT {
     BcTlmHeader header;
     uint8_t state_status;
     uint8_t mag_selection_mode;
     uint8_t current_listening_mag;
+    uint8_t mag_calibration_mode;
 } bdot_state_status;
 
 TLM_SEGMENT {
@@ -179,6 +184,7 @@ FILE_STATIC void select_mode_operation(uint8_t reading_mode_selection);
 FILE_STATIC void ground_cmd_bdot_nap_schedule(uint8_t nap_status);
 FILE_STATIC void change_max_tumble_time(uint16_t max_tumble_time_min);
 FILE_STATIC void spam_control_operation(uint16_t off_time_min, uint8_t on_time_min, uint8_t spam_switch);
+FILE_STATIC void mag_calibration_control_operation(uint8_t calibration_switch_cmd);
 
 /***********************************************************************/
 
