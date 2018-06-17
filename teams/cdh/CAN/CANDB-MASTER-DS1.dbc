@@ -329,22 +329,22 @@ BO_ 2452161094 rc_eps_dist_4: 7 Vector__XXX
 BO_ 2452161091 rc_eps_dist_1: 8 Vector__XXX
 
 BO_ 2452161086 rc_adcs_mpc_11: 8 Vector__XXX
- SG_ rc_adcs_mpc_11_omega_y_avg : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+ SG_ rc_adcs_mpc_11_omega_z : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
 
 BO_ 2452161082 rc_adcs_mpc_7: 8 Vector__XXX
- SG_ rc_adcs_mpc_7_omega_x_max : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+ SG_ rc_adcs_mpc_7_omega_max : 0|64@1- (1,0) [0|10] "r/s" Vector__XXX
 
 BO_ 2452161083 rc_adcs_mpc_8: 8 Vector__XXX
- SG_ rc_adcs_mpc_8_omega_x_avg : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+ SG_ rc_adcs_mpc_8_omega_avg : 0|64@1- (1,0) [0|10] "r/s" Vector__XXX
 
 BO_ 2452161084 rc_adcs_mpc_9: 8 Vector__XXX
- SG_ rc_adcs_mpc_9_omega_y_min : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+ SG_ rc_adcs_mpc_9_omega_x : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
 
 BO_ 2452161080 rc_adcs_mpc_5: 8 Vector__XXX
  SG_ rc_adcs_mpc_5_sc_quat_4 : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
 
 BO_ 2452161081 rc_adcs_mpc_6: 8 Vector__XXX
- SG_ rc_adcs_mpc_6_omega_x_min : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+ SG_ rc_adcs_mpc_6_omega_min : 0|64@1- (1,0) [0|10] "r/s" Vector__XXX
 
 BO_ 2452161079 rc_adcs_mpc_4: 8 Vector__XXX
  SG_ rc_adcs_mpc_4_sc_quat_3 : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
@@ -357,16 +357,13 @@ BO_ 2452161090 rc_adcs_mpc_15: 2 Vector__XXX
  SG_ rc_adcs_mpc_15_point_true : 8|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161087 rc_adcs_mpc_12: 8 Vector__XXX
- SG_ rc_adcs_mpc_12_omega_z_min : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
 
 BO_ 2452161088 rc_adcs_mpc_13: 8 Vector__XXX
- SG_ rc_adcs_mpc_13_omega_z_max : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
 
 BO_ 2452161089 rc_adcs_mpc_14: 8 Vector__XXX
- SG_ rc_adcs_mpc_14_omega_z_avg : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
 
 BO_ 2452161085 rc_adcs_mpc_10: 8 Vector__XXX
- SG_ rc_adcs_mpc_10_omega_y_max : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
+ SG_ rc_adcs_mpc_10_omega_y : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
 
 BO_ 2452161077 rc_adcs_mpc_2: 8 Vector__XXX
  SG_ rc_adcs_mpc_2_sc_quat_1 : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
@@ -862,6 +859,9 @@ BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,
 BO_TX_BU_ 2452160531 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ BO_ 2452161087 "deprecated";
+CM_ BO_ 2452161088 "deprecated";
+CM_ BO_ 2452161089 "deprecated";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
 VAL_ 2449736397 gcmd_mtq_pms_enable 2 "null" 1 "true" 0 "false" ;
@@ -947,18 +947,15 @@ SIG_VALTYPE_ 2452161111 rc_adcs_estim_12_mag_x : 2;
 SIG_VALTYPE_ 2452161110 rc_adcs_estim_11_sun_z : 2;
 SIG_VALTYPE_ 2452161109 rc_adcs_estim_10_sun_y : 2;
 SIG_VALTYPE_ 2452161108 rc_adcs_estim_9_sun_x : 2;
-SIG_VALTYPE_ 2452161086 rc_adcs_mpc_11_omega_y_avg : 2;
-SIG_VALTYPE_ 2452161082 rc_adcs_mpc_7_omega_x_max : 2;
-SIG_VALTYPE_ 2452161083 rc_adcs_mpc_8_omega_x_avg : 2;
-SIG_VALTYPE_ 2452161084 rc_adcs_mpc_9_omega_y_min : 2;
+SIG_VALTYPE_ 2452161086 rc_adcs_mpc_11_omega_z : 2;
+SIG_VALTYPE_ 2452161082 rc_adcs_mpc_7_omega_max : 2;
+SIG_VALTYPE_ 2452161083 rc_adcs_mpc_8_omega_avg : 2;
+SIG_VALTYPE_ 2452161084 rc_adcs_mpc_9_omega_x : 2;
 SIG_VALTYPE_ 2452161080 rc_adcs_mpc_5_sc_quat_4 : 2;
-SIG_VALTYPE_ 2452161081 rc_adcs_mpc_6_omega_x_min : 2;
+SIG_VALTYPE_ 2452161081 rc_adcs_mpc_6_omega_min : 2;
 SIG_VALTYPE_ 2452161079 rc_adcs_mpc_4_sc_quat_3 : 2;
 SIG_VALTYPE_ 2452161078 rc_adcs_mpc_3_sc_quat_2 : 2;
-SIG_VALTYPE_ 2452161087 rc_adcs_mpc_12_omega_z_min : 2;
-SIG_VALTYPE_ 2452161088 rc_adcs_mpc_13_omega_z_max : 2;
-SIG_VALTYPE_ 2452161089 rc_adcs_mpc_14_omega_z_avg : 2;
-SIG_VALTYPE_ 2452161085 rc_adcs_mpc_10_omega_y_max : 2;
+SIG_VALTYPE_ 2452161085 rc_adcs_mpc_10_omega_y : 2;
 SIG_VALTYPE_ 2452161077 rc_adcs_mpc_2_sc_quat_1 : 2;
 SIG_VALTYPE_ 2452161074 rc_adcs_estim_7_vel_z : 2;
 SIG_VALTYPE_ 2452161073 rc_adcs_estim_6_vel_y : 2;
