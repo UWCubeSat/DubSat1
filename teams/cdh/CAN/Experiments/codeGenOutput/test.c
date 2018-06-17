@@ -3,6 +3,51 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rc_eps_batt_h2_packet = {0};
+	rc_eps_batt_h2 rc_eps_batt_h2_info = {0};
+	encoderc_eps_batt_h2(&rc_eps_batt_h2_info, &rc_eps_batt_h2_packet);
+	canSendPacket(&rc_eps_batt_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_h2_packet = {0};
+	rc_adcs_bdot_h2 rc_adcs_bdot_h2_info = {0};
+	encoderc_adcs_bdot_h2(&rc_adcs_bdot_h2_info, &rc_adcs_bdot_h2_packet);
+	canSendPacket(&rc_adcs_bdot_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_dist_h2_packet = {0};
+	rc_eps_dist_h2 rc_eps_dist_h2_info = {0};
+	encoderc_eps_dist_h2(&rc_eps_dist_h2_info, &rc_eps_dist_h2_packet);
+	canSendPacket(&rc_eps_dist_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mpc_h2_packet = {0};
+	rc_adcs_mpc_h2 rc_adcs_mpc_h2_info = {0};
+	encoderc_adcs_mpc_h2(&rc_adcs_mpc_h2_info, &rc_adcs_mpc_h2_packet);
+	canSendPacket(&rc_adcs_mpc_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_estim_h2_packet = {0};
+	rc_adcs_estim_h2 rc_adcs_estim_h2_info = {0};
+	encoderc_adcs_estim_h2(&rc_adcs_estim_h2_info, &rc_adcs_estim_h2_packet);
+	canSendPacket(&rc_adcs_estim_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_h2_packet = {0};
+	rc_adcs_sp_h2 rc_adcs_sp_h2_info = {0};
+	encoderc_adcs_sp_h2(&rc_adcs_sp_h2_info, &rc_adcs_sp_h2_packet);
+	canSendPacket(&rc_adcs_sp_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_h2_packet = {0};
+	rc_eps_gen_h2 rc_eps_gen_h2_info = {0};
+	encoderc_eps_gen_h2(&rc_eps_gen_h2_info, &rc_eps_gen_h2_packet);
+	canSendPacket(&rc_eps_gen_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_h2_packet = {0};
+	rc_adcs_mtq_h2 rc_adcs_mtq_h2_info = {0};
+	encoderc_adcs_mtq_h2(&rc_adcs_mtq_h2_info, &rc_adcs_mtq_h2_packet);
+	canSendPacket(&rc_adcs_mtq_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_ppt_h2_packet = {0};
+	rc_ppt_h2 rc_ppt_h2_info = {0};
+	encoderc_ppt_h2(&rc_ppt_h2_info, &rc_ppt_h2_packet);
+	canSendPacket(&rc_ppt_h2_packet);
+
 	__delay_cycles(10000);	CANPacket rc_eps_batt_h1_packet = {0};
 	rc_eps_batt_h1 rc_eps_batt_h1_info = {0};
 	encoderc_eps_batt_h1(&rc_eps_batt_h1_info, &rc_eps_batt_h1_packet);
