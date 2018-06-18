@@ -211,16 +211,31 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_CMD_ROLLCALL:
             decodecmd_rollcall(packet, &rcPkt);
             updateMET(constructTimestamp(rcPkt.cmd_rollcall_met, rcPkt.cmd_rollcall_met_overflow));
-            rcFlag = 9;
+            rcFlag = 10;
             break;
         case CAN_ID_GCMD_GEN_SET_PT_STATE:
             decodegcmd_gen_set_pt_state(packet, &ptStatePkt);
             if(ptStatePkt.gcmd_gen_set_pt_state_1 != CAN_ENUM_NBOOL_NULL)
-                genSetPowerTracker(1, ptStatePkt.gcmd_gen_set_pt_state_1);
+                genSetPowerTracker(PowerTracker1, ptStatePkt.gcmd_gen_set_pt_state_1);
             if(ptStatePkt.gcmd_gen_set_pt_state_2 != CAN_ENUM_NBOOL_NULL)
-                genSetPowerTracker(2, ptStatePkt.gcmd_gen_set_pt_state_2);
+                genSetPowerTracker(PowerTracker2, ptStatePkt.gcmd_gen_set_pt_state_2);
             if(ptStatePkt.gcmd_gen_set_pt_state_3 != CAN_ENUM_NBOOL_NULL)
-                genSetPowerTracker(3, ptStatePkt.gcmd_gen_set_pt_state_3);
+                genSetPowerTracker(PowerTracker3, ptStatePkt.gcmd_gen_set_pt_state_3);
+            break;
+        case CAN_ID_GCMD_RESET_MINMAX:
+            aggVec_reset((aggVec *)&mspTempAg);
+            aggVec_reset((aggVec *)&panel1VoltageAg);
+            aggVec_reset((aggVec *)&panel2VoltageAg);
+            aggVec_reset((aggVec *)&panel3VoltageAg);
+            aggVec_reset((aggVec *)&panel1CurrentAg);
+            aggVec_reset((aggVec *)&panel2CurrentAg);
+            aggVec_reset((aggVec *)&panel3CurrentAg);
+            aggVec_reset((aggVec *)&panel1PwrAg);
+            aggVec_reset((aggVec *)&panel2PwrAg);
+            aggVec_reset((aggVec *)&panel3PwrAg);
+            aggVec_reset((aggVec *)&panel1TempAg);
+            aggVec_reset((aggVec *)&panel2TempAg);
+            aggVec_reset((aggVec *)&panel3TempAg);
             break;
         default:
             break;
@@ -232,15 +247,22 @@ void sendRC() //TODO: use if'else for each and do rc while once implemented on C
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
     {
         CANPacket rollcallPkt = {0};
-        if(rcFlag == 9)
+        if(rcFlag == 10)
         {
             rc_eps_gen_h1 rollcallPkt1_info = {0};
-            rollcallPkt1_info.rc_eps_gen_h1_sysrstiv = bspGetResetCount();
+            rollcallPkt1_info.rc_eps_gen_h1_sysrstiv = SYSRSTIV;
+            rollcallPkt1_info.rc_eps_gen_h1_reset_count = bspGetResetCount();
             rollcallPkt1_info.rc_eps_gen_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
             rollcallPkt1_info.rc_eps_gen_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
             rollcallPkt1_info.rc_eps_gen_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
             encoderc_eps_gen_h1(&rollcallPkt1_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&mspTempAg);
+        }
+        else if(rcFlag == 9)
+        {
+            rc_eps_gen_h2 rc ={0};
+            rc.rc_eps_gen_h2_canrxerror = canRxErrorCheck();
+            encoderc_eps_gen_h2(&rc, &rollcallPkt);
         }
         else if(rcFlag == 8)
         {

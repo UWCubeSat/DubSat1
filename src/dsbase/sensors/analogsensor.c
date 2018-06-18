@@ -428,9 +428,9 @@ void asensorUpdateAllSensors()
     return;
 }
 
-uint16_t compressMSPTemp(float raw)
+int16_t compressMSPTemp(float raw)
 {
-    return (uint16_t)(raw * 1000);
+    return (int16_t)(raw * 100);
 }
 
 #pragma vector=ADC12_B_VECTOR

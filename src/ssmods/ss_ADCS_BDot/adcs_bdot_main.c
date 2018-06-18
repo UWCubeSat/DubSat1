@@ -123,6 +123,7 @@ FILE_STATIC bdot_state_mode gcmd_next_bdot_state = NORMAL_MODE;
 FILE_STATIC uint8_t gcmd_bdot_state_flag = 0;
 /* Stores the ground command to turn on or off SPAM */
 FILE_STATIC spam_control_state gcmd_spam_control_switch = SPAM_ON;
+#pragma PERSISTENT(gcmd_spam_control_switch)
 
 FILE_STATIC spam_axis current_spam_axis = SPAM_X;
 
@@ -178,6 +179,7 @@ FILE_STATIC TIMER_HANDLE check_nap_status_timer = 100;
 FILE_STATIC uint32_t check_nap_status_timer_ms = 1200000; // 20 min
 //FILE_STATIC uint32_t check_nap_status_timer_ms = 5000; // 5 sec
 FILE_STATIC uint8_t nap_status_timer_on_flag = 0;
+#pragma PERSISTENT(check_nap_status_timer_ms);
 
 /* this is the timer that will keep track of how long SPAM is */
 FILE_STATIC TIMER_HANDLE spam_timer = 100;
@@ -187,18 +189,20 @@ FILE_STATIC uint32_t spam_on_timer_ms = 120000; // 6 minute;
 //FILE_STATIC uint32_t spam_on_timer_ms = 20000; // 1 minute;
 FILE_STATIC uint8_t spam_timer_on_flag = 0;
 
+#pragma PERSISTENT(spam_off_timer_ms)
+#pragma PERSISTENT(spam_on_timer_ms)
 
 /***************************************************************/
 
 
 /*******************RollCall***********************************/
-FILE_STATIC aggVec_i rc_temp;
+FILE_STATIC aggVec_f rc_temp;
 FILE_STATIC aggVec_i magX;
 FILE_STATIC aggVec_i magY;
 FILE_STATIC aggVec_i magZ;
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4
+ rcPopulate1, rcPopulateH2, rcPopulate2, rcPopulate3, rcPopulate4
 };
 /**************************************************************/
 
@@ -325,7 +329,7 @@ FILE_STATIC void initial_setup()
     bcbinPopulateHeader(&polling_timer_info.header, TLM_ID_POLLING_TIMER, sizeof(polling_timer_info));
 
     /* TODO: Add comment */
-    aggVec_init_i(&rc_temp);
+    aggVec_init_f(&rc_temp);
     aggVec_init_i(&magX);
     aggVec_init_i(&magY);
     aggVec_init_i(&magZ);
@@ -775,6 +779,8 @@ void can_rx_callback(CANPacket *packet)
     mtq_ack ack = {0};
     sensorproc_mag mag1 = {0};
     sensorproc_mag2 mag2 = {0};
+    gcmd_bdot_spam spam = {0};
+    gcmd_bdot_max_tumble tumble = {0};
 
     switch(packet->id)
     {
@@ -814,6 +820,27 @@ void can_rx_callback(CANPacket *packet)
             break;
         case CAN_ID_CMD_ROLLCALL:
             rollcallStart();
+            break;
+        case CAN_ID_GCMD_BDOT_SPAM:
+            decodegcmd_bdot_spam(packet, &spam);
+            spam_on_timer_ms = spam.gcmd_bdot_spam_time_on;
+            spam_off_timer_ms = spam.gcmd_bdot_spam_time_off;
+            gcmd_spam_control_switch = spam.gcmd_bdot_spam_control;
+            break;
+        case CAN_ID_GCMD_BDOT_MAX_TUMBLE:
+            decodegcmd_bdot_max_tumble(packet, &tumble);
+            check_nap_status_timer_ms = tumble.gcmd_bdot_max_tumble_time * 60000; //convert minutes to ms
+            if(nap_status_timer_on_flag)
+            {
+                end_check_nap_status_timer();
+                start_check_nap_status_timer();
+            }
+            break;
+        case CAN_ID_GCMD_RESET_MINMAX:
+            aggVec_reset((aggVec *)&rc_temp);
+            aggVec_reset((aggVec *)&magX);
+            aggVec_reset((aggVec *)&magY);
+            aggVec_reset((aggVec *)&magZ);
             break;
     }
 }
@@ -913,7 +940,7 @@ void updateRCData()
     aggVec_push_i(&magX, continuous_bdot_mag_data->rawX);
     aggVec_push_i(&magY, continuous_bdot_mag_data->rawY);
     aggVec_push_i(&magZ, continuous_bdot_mag_data->rawZ);
-    aggVec_push_i(&rc_temp, asensorReadIntTempRawC());
+    aggVec_push_f(&rc_temp, asensorReadIntTempC());
 }
 
 
@@ -1048,12 +1075,19 @@ void rcPopulate1(CANPacket *out)
     rc_adcs_bdot_h1 rc;
     rc.rc_adcs_bdot_h1_reset_count = bspGetResetCount();
     rc.rc_adcs_bdot_h1_sysrstiv = SYSRSTIV;
-    rc.rc_adcs_bdot_h1_temp_avg = aggVec_avg_i_i(&rc_temp);
-    rc.rc_adcs_bdot_h1_temp_max = aggVec_max_i(&rc_temp);
-    rc.rc_adcs_bdot_h1_temp_min = aggVec_min_i(&rc_temp);
+    rc.rc_adcs_bdot_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&rc_temp));
+    rc.rc_adcs_bdot_h1_temp_max = compressMSPTemp(aggVec_max_f(&rc_temp));
+    rc.rc_adcs_bdot_h1_temp_min = compressMSPTemp(aggVec_min_f(&rc_temp));
     rc.rc_adcs_bdot_h1_reset_count = 0;
     aggVec_reset((aggVec *)&rc_temp);
     encoderc_adcs_bdot_h1(&rc, out);
+}
+
+void rcPopulateH2(CANPacket *out)
+{
+    rc_adcs_bdot_h2 rc;
+    rc.rc_adcs_bdot_h2_canrxerror = canRxErrorCheck();
+    encoderc_adcs_bdot_h2(&rc, out);
 }
 
 void rcPopulate2(CANPacket *out)
@@ -1063,7 +1097,7 @@ void rcPopulate2(CANPacket *out)
     rc.rc_adcs_bdot_2_mag_x_max = aggVec_max_i(&magX);
     rc.rc_adcs_bdot_2_mag_x_avg = aggVec_avg_i_i(&magX);
     rc.rc_adcs_bdot_2_mag_y_min = aggVec_min_i(&magY);
-    aggVec_reset((aggVec *)&magX);
+    aggVec_as_reset((aggVec *)&magX);
     encoderc_adcs_bdot_2(&rc, out);
 }
 
@@ -1074,7 +1108,7 @@ void rcPopulate3(CANPacket *out)
     rc.rc_adcs_bdot_3_mag_y_avg = aggVec_avg_i_i(&magY);
     rc.rc_adcs_bdot_3_mag_z_min = aggVec_min_i(&magZ);
     rc.rc_adcs_bdot_3_mag_z_max = aggVec_max_i(&magZ);
-    aggVec_reset((aggVec *)&magY);
+    aggVec_as_reset((aggVec *)&magY);
     encoderc_adcs_bdot_3(&rc, out);
 }
 
@@ -1084,7 +1118,7 @@ void rcPopulate4(CANPacket *out)
     rc_adcs_bdot_4 rc = {0};
     rc.rc_adcs_bdot_4_mag_z_avg = aggVec_avg_i_i(&magZ);
     rc.rc_adcs_bdot_4_tumble = rtY.tumble;
-    aggVec_reset((aggVec *)&magZ);
+    aggVec_as_reset((aggVec *)&magZ);
     encoderc_adcs_bdot_4(&rc, out);
 }
 

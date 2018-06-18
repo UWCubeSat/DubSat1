@@ -184,7 +184,16 @@ void can_packet_rx_callback(CANPacket *packet)
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            rcFlag = 7;
+            rcFlag = 8;
+            break;
+        case CAN_ID_GCMD_RESET_MINMAX:
+            aggVec_reset((aggVec *)&mspTempAg);
+            aggVec_reset((aggVec *)&tempAg);
+            aggVec_reset((aggVec *)&voltageAg);
+            aggVec_reset((aggVec *)&currentAg);
+            aggVec_reset((aggVec *)&nodeVoltageAg);
+            aggVec_reset((aggVec *)&nodeCurrentAg);
+            aggVec_reset((aggVec *)&accChargeAg);
             break;
         default:
             break;
@@ -196,16 +205,24 @@ void sendRC()
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
     {
         CANPacket rollcallPkt = {0};
-        if(rcFlag == 7)
+        if(rcFlag == 8)
         {
             rc_eps_batt_h1 rollcallPkt1_info = {0};
             float newVal = asensorReadIntTempC();
-            rollcallPkt1_info.rc_eps_batt_h1_sysrstiv = bspGetResetCount();
+            rollcallPkt1_info.rc_eps_batt_h1_sysrstiv = SYSRSTIV;
+            rollcallPkt1_info.rc_eps_batt_h1_reset_count = bspGetResetCount();
             rollcallPkt1_info.rc_eps_batt_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
             rollcallPkt1_info.rc_eps_batt_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
             rollcallPkt1_info.rc_eps_batt_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_batt_h1_reset_count = bspGetResetCount();
             encoderc_eps_batt_h1(&rollcallPkt1_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&mspTempAg);
+        }
+        else if(rcFlag == 7)
+        {
+            rc_eps_batt_h2 healthPkt2 = {0};
+            healthPkt2.rc_eps_batt_h2_canrxerror = canRxErrorCheck();
+            encoderc_eps_batt_h2(&healthPkt2, &rollcallPkt);
         }
         else if(rcFlag == 6)
         {

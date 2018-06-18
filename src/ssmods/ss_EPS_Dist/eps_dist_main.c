@@ -76,9 +76,6 @@ FILE_STATIC uint16_t startupDelay = 1800;
 FILE_STATIC uint8_t rcFlag = 0; //use this one for sending own rollcall
 FILE_STATIC uint8_t rcSendFlag = 0;  //use this one for sending rcCmd
 
-FILE_STATIC uint8_t subSystemsToToggle[16] = {0};
-FILE_STATIC int rcTimerID = 0;
-
 
 //**********Data Stuff**********************
 FILE_STATIC uint8_t rebootCount = 60;
@@ -535,6 +532,18 @@ void sendRCCmd()
     //distDomainSwitch(PD_WHEELS, PD_CMD_Disable);
 }
 
+uint8_t getPDState(PowerDomainID pd)
+{
+    if(distQueryDomainSwitch(pd))
+        return 0; //on
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] & (PD_CMD_Disable | PD_CMD_Toggle))
+        return 1; //off manual
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] & PD_CMD_OCLatch)
+        return 2; //overcurrent latch
+    else
+        return 3; //batt_undervoltage or other
+}
+
 void sendRC()
 {
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
@@ -574,7 +583,7 @@ void sendRC()
             rollcallPkt4_info.rc_eps_dist_4_com1_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
             rollcallPkt4_info.rc_eps_dist_4_com1_c_max = aggVec_max_i(&ssCurrAgs[PD_COM1]);
             rollcallPkt4_info.rc_eps_dist_4_com1_c_min = aggVec_min_i(&ssCurrAgs[PD_COM1]);
-            rollcallPkt4_info.rc_eps_dist_4_com1_state = distQueryDomainSwitch(PD_COM1);
+            rollcallPkt4_info.rc_eps_dist_4_com1_state = getPDState(PD_COM1);
             encoderc_eps_dist_4(&rollcallPkt4_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
         }
@@ -593,7 +602,7 @@ void sendRC()
             rollcallPkt6_info.rc_eps_dist_6_com2_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM2]);
             rollcallPkt6_info.rc_eps_dist_6_com2_c_max = aggVec_max_i(&ssCurrAgs[PD_COM2]);
             rollcallPkt6_info.rc_eps_dist_6_com2_c_min = aggVec_min_i(&ssCurrAgs[PD_COM2]);
-            rollcallPkt6_info.rc_eps_dist_6_com2_state = distQueryDomainSwitch(PD_COM2);
+            rollcallPkt6_info.rc_eps_dist_6_com2_state = getPDState(PD_COM2);
             encoderc_eps_dist_6(&rollcallPkt6_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM2]);
         }
@@ -611,7 +620,7 @@ void sendRC()
             rollcallPkt8_info.rc_eps_dist_8_rahs_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_RAHS]);
             rollcallPkt8_info.rc_eps_dist_8_rahs_c_max = aggVec_max_i(&ssCurrAgs[PD_RAHS]);
             rollcallPkt8_info.rc_eps_dist_8_rahs_c_min = aggVec_min_i(&ssCurrAgs[PD_RAHS]);
-            rollcallPkt8_info.rc_eps_dist_8_rahs_state = distQueryDomainSwitch(PD_RAHS);
+            rollcallPkt8_info.rc_eps_dist_8_rahs_state = getPDState(PD_RAHS);
             encoderc_eps_dist_8(&rollcallPkt8_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_RAHS]);
         }
@@ -630,7 +639,7 @@ void sendRC()
             rollcallPkt10_info.rc_eps_dist_10_bdot_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_BDOT]);
             rollcallPkt10_info.rc_eps_dist_10_bdot_c_max = aggVec_max_i(&ssCurrAgs[PD_BDOT]);
             rollcallPkt10_info.rc_eps_dist_10_bdot_c_min = aggVec_min_i(&ssCurrAgs[PD_BDOT]);
-            rollcallPkt10_info.rc_eps_dist_10_bdot_state = distQueryDomainSwitch(PD_BDOT);
+            rollcallPkt10_info.rc_eps_dist_10_bdot_state = getPDState(PD_BDOT);
             encoderc_eps_dist_10(&rollcallPkt10_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_BDOT]);
         }
@@ -649,7 +658,7 @@ void sendRC()
             rollcallPkt12_info.rc_eps_dist_12_estim_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_ESTIM]);
             rollcallPkt12_info.rc_eps_dist_12_estim_c_max = aggVec_max_i(&ssCurrAgs[PD_ESTIM]);
             rollcallPkt12_info.rc_eps_dist_12_estim_c_min = aggVec_min_i(&ssCurrAgs[PD_ESTIM]);
-            rollcallPkt12_info.rc_eps_dist_12_estim_state = distQueryDomainSwitch(PD_ESTIM);
+            rollcallPkt12_info.rc_eps_dist_12_estim_state = getPDState(PD_ESTIM);
             encoderc_eps_dist_12(&rollcallPkt12_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_ESTIM]);
         }
@@ -668,7 +677,7 @@ void sendRC()
             rollcallPkt14_info.rc_eps_dist_14_eps_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_EPS]);
             rollcallPkt14_info.rc_eps_dist_14_eps_c_max = aggVec_max_i(&ssCurrAgs[PD_EPS]);
             rollcallPkt14_info.rc_eps_dist_14_eps_c_min = aggVec_min_i(&ssCurrAgs[PD_EPS]);
-            rollcallPkt14_info.rc_eps_dist_14_eps_state = distQueryDomainSwitch(PD_EPS);
+            rollcallPkt14_info.rc_eps_dist_14_eps_state = getPDState(PD_EPS);
             encoderc_eps_dist_14(&rollcallPkt14_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_EPS]);
         }
@@ -687,7 +696,7 @@ void sendRC()
             rollcallPkt16_info.rc_eps_dist_16_ppt_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_PPT]);
             rollcallPkt16_info.rc_eps_dist_16_ppt_c_max = aggVec_max_i(&ssCurrAgs[PD_PPT]);
             rollcallPkt16_info.rc_eps_dist_16_ppt_c_min = aggVec_min_i(&ssCurrAgs[PD_PPT]);
-            rollcallPkt16_info.rc_eps_dist_16_ppt_state = distQueryDomainSwitch(PD_PPT);
+            rollcallPkt16_info.rc_eps_dist_16_ppt_state = getPDState(PD_PPT);
             encoderc_eps_dist_16(&rollcallPkt16_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_PPT]);
         }
@@ -728,6 +737,7 @@ void can_packet_rx_callback(CANPacket *packet)
     gcmd_dist_set_pd_ovc_estim ovcPktEstim;
     gcmd_dist_set_pd_ovc_ppt ovcPktPPT;
     gcmd_dist_set_pd_ovc_rahs ovcPktRAHS;
+    cmd_reboot_request rebootRequest;
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
@@ -790,6 +800,23 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_GCMD_DIST_SET_PD_OVC_RAHS:
             decodegcmd_dist_set_pd_ovc_rahs(packet, &ovcPktRAHS);
             distSetOCPThreshold(PD_RAHS, ovcPktRAHS.gcmd_dist_set_pd_ovc_rahs_ovc);
+            break;
+        case CAN_ID_CMD_REBOOT_REQUEST:
+            decodecmd_reboot_request(packet, &rebootRequest);
+            setPowerSwitchFromCAN(PD_CMD_Disable, rebootRequest.cmd_reboot_request_domain);
+            __delay_cycles(1000); //TODO: verify/move this wait
+            setPowerSwitchFromCAN(PD_CMD_Enable, rebootRequest.cmd_reboot_request_domain);
+            break;
+        case CAN_ID_GCMD_RESET_MINMAX:
+            aggVec_reset((aggVec *)&mspTempAg);
+            aggVec_reset((aggVec *)&battVAg);
+            aggVec_reset((aggVec *)&coulombCounterAg);
+            uint8_t i;
+            for(i = NUM_POWER_DOMAINS; i; i--)
+            {
+                aggVec_reset((aggVec*)&ssCurrAgs[i - 1]);
+                aggVec_reset((aggVec *)&ssBusVAgs[i - 1]);
+            }
             break;
         default:
             break;
