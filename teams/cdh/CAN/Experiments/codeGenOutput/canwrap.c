@@ -362,9 +362,9 @@ void decoderc_eps_batt_h1(CANPacket *input, rc_eps_batt_h1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_eps_batt_h1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_eps_batt_h1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_eps_batt_h1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_eps_batt_h1_temp_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_batt_h1_temp_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_eps_batt_h1_temp_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_eps_batt_h1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> rc_eps_batt_h1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
@@ -387,9 +387,9 @@ void decoderc_adcs_bdot_h1(CANPacket *input, rc_adcs_bdot_h1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_bdot_h1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_adcs_bdot_h1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_adcs_bdot_h1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_bdot_h1_temp_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_adcs_bdot_h1_temp_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_adcs_bdot_h1_temp_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_adcs_bdot_h1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> rc_adcs_bdot_h1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
@@ -412,9 +412,9 @@ void decoderc_eps_dist_h1(CANPacket *input, rc_eps_dist_h1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_eps_dist_h1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_eps_dist_h1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_eps_dist_h1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_eps_dist_h1_temp_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_dist_h1_temp_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_eps_dist_h1_temp_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_eps_dist_h1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> rc_eps_dist_h1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
@@ -437,9 +437,9 @@ void decoderc_adcs_mpc_h1(CANPacket *input, rc_adcs_mpc_h1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_mpc_h1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_adcs_mpc_h1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_adcs_mpc_h1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_mpc_h1_temp_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_adcs_mpc_h1_temp_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_adcs_mpc_h1_temp_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_adcs_mpc_h1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> rc_adcs_mpc_h1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
@@ -462,9 +462,9 @@ void decoderc_adcs_estim_h1(CANPacket *input, rc_adcs_estim_h1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_estim_h1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_adcs_estim_h1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_adcs_estim_h1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_estim_h1_temp_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_adcs_estim_h1_temp_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_adcs_estim_h1_temp_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_adcs_estim_h1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> rc_adcs_estim_h1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
@@ -487,9 +487,9 @@ void decoderc_adcs_sp_h1(CANPacket *input, rc_adcs_sp_h1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_sp_h1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_adcs_sp_h1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_adcs_sp_h1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_sp_h1_temp_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_adcs_sp_h1_temp_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_adcs_sp_h1_temp_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_adcs_sp_h1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> rc_adcs_sp_h1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
@@ -512,9 +512,9 @@ void decoderc_eps_gen_h1(CANPacket *input, rc_eps_gen_h1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_eps_gen_h1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_eps_gen_h1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_eps_gen_h1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_eps_gen_h1_temp_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_eps_gen_h1_temp_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_eps_gen_h1_temp_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_eps_gen_h1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> rc_eps_gen_h1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
@@ -537,9 +537,9 @@ void decoderc_adcs_mtq_h1(CANPacket *input, rc_adcs_mtq_h1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_mtq_h1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_adcs_mtq_h1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_adcs_mtq_h1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_mtq_h1_temp_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_adcs_mtq_h1_temp_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_adcs_mtq_h1_temp_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_adcs_mtq_h1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> rc_adcs_mtq_h1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
@@ -562,9 +562,9 @@ void decoderc_ppt_h1(CANPacket *input, rc_ppt_h1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_ppt_h1_temp_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_ppt_h1_temp_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_ppt_h1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_ppt_h1_temp_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_ppt_h1_temp_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_ppt_h1_temp_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_ppt_h1_sysrstiv = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> rc_ppt_h1_reset_count = (uint8_t) (((fullData & ((uint64_t) 0xff))));
 }
@@ -3822,7 +3822,7 @@ void decodemsp_temp(CANPacket *input, msp_temp *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> msp_temp_temp = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> msp_temp_temp = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
 
 void encodemsp_temp(msp_temp *input, CANPacket *output){
