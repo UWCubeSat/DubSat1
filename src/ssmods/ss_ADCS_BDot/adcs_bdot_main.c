@@ -137,8 +137,8 @@ FILE_STATIC MagnetometerData* valid_bdot_mag_data;
 
 /* sensor proc magnetometer data. These data were decided to be unfiltered data,
  * meaning the data can be data collected when the magnetorquer is on. */
-FILE_STATIC MagnetometerData* sp_mag1_data;
-FILE_STATIC MagnetometerData* sp_mag2_data;
+FILE_STATIC MagnetometerData sp_mag1_data;
+FILE_STATIC MagnetometerData sp_mag2_data;
 
 /* flag set to see when new magnetometer data are sent over to bdot from sensorproc */
 FILE_STATIC uint8_t sp_mag1_new_data_flag;
@@ -473,16 +473,16 @@ void update_simulink_info()
             rtU.MT_on = 0;
             break;
         case SP_MAG1:
-            rtU.B_body_in_T[0] = sp_mag1_data->convertedX;
-            rtU.B_body_in_T[1] = sp_mag1_data->convertedY;
-            rtU.B_body_in_T[2] = sp_mag1_data->convertedZ;
+            rtU.B_body_in_T[0] = sp_mag1_data.convertedX;
+            rtU.B_body_in_T[1] = sp_mag1_data.convertedY;
+            rtU.B_body_in_T[2] = sp_mag1_data.convertedZ;
             rtU.B_meas_valid = (bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST);
             rtU.MT_on = 0;
             break;
         case SP_MAG2:
-            rtU.B_body_in_T[0] = sp_mag2_data->convertedX;
-            rtU.B_body_in_T[1] = sp_mag2_data->convertedY;
-            rtU.B_body_in_T[2] = sp_mag2_data->convertedZ;
+            rtU.B_body_in_T[0] = sp_mag2_data.convertedX;
+            rtU.B_body_in_T[1] = sp_mag2_data.convertedY;
+            rtU.B_body_in_T[2] = sp_mag2_data.convertedZ;
             rtU.B_meas_valid = (bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST);
             rtU.MT_on = 0;
             break;
@@ -514,7 +514,7 @@ void process_sp_mag()
     {
         if (mtq_state == MTQ_MEASUREMENT_PHASE)
         {
-            convert_mag_data_raw_to_teslas(sp_mag1_data);
+            convert_mag_data_raw_to_teslas(&sp_mag1_data);
         }
         sp_mag1_new_data_flag = 0;
     }
@@ -522,7 +522,7 @@ void process_sp_mag()
     {
         if (mtq_state == MTQ_MEASUREMENT_PHASE)
         {
-            convert_mag_data_raw_to_teslas(sp_mag2_data);
+            convert_mag_data_raw_to_teslas(&sp_mag2_data);
         }
         sp_mag2_new_data_flag = 0;
     }
@@ -546,6 +546,10 @@ void update_valid_mag_data()
         valid_bdot_mag_data->convertedX = continuous_bdot_mag_data->convertedX;
         valid_bdot_mag_data->convertedY = continuous_bdot_mag_data->convertedY;
         valid_bdot_mag_data->convertedZ = continuous_bdot_mag_data->convertedZ;
+        if(valid_bdot_mag_data->convertedY > 1000000)
+        {
+            P3OUT |= BIT5;
+        }
     }
 }
 
@@ -562,9 +566,9 @@ void convert_mag_data_raw_to_teslas(MagnetometerData * mag)
 void calc_best_fit_mag()
 {
     // find the median of the norm to determine best magnetometer to use. TODO: Think of a better, less costly method
-    float bdot_mag_norm = sqrt(abs(continuous_bdot_mag_data->convertedX)^2 + abs(continuous_bdot_mag_data->convertedY)^2 + abs(continuous_bdot_mag_data->convertedZ)^2);
-    float sp_mag1_norm =  sqrt(abs(sp_mag1_data->convertedX)^2 + abs(sp_mag1_data->convertedY)^2 + abs(sp_mag1_data->convertedZ)^2);
-    float sp_mag2_norm = sqrt(abs(sp_mag2_data->convertedX)^2 + abs(sp_mag2_data->convertedY)^2 + abs(sp_mag2_data->convertedZ)^2);
+    float bdot_mag_norm = sqrt(abs(valid_bdot_mag_data->convertedX)^2 + abs(valid_bdot_mag_data->convertedY)^2 + abs(valid_bdot_mag_data->convertedZ)^2);
+    float sp_mag1_norm =  sqrt(abs(sp_mag1_data.convertedX)^2 + abs(sp_mag1_data.convertedY)^2 + abs(sp_mag1_data.convertedZ)^2);
+    float sp_mag2_norm = sqrt(abs(sp_mag2_data.convertedX)^2 + abs(sp_mag2_data.convertedY)^2 + abs(sp_mag2_data.convertedZ)^2);
 
     if(bdot_mag_norm <= sp_mag1_norm && sp_mag1_norm <= sp_mag2_norm)
     {
@@ -792,9 +796,9 @@ void can_rx_callback(CANPacket *packet)
             decodesensorproc_mag(packet, &mag1);
             if(mag1.sensorproc_mag_valid)
             {
-                sp_mag1_data->rawX = mag1.sensorproc_mag_x;
-                sp_mag1_data->rawY = mag1.sensorproc_mag_y;
-                sp_mag1_data->rawZ = mag1.sensorproc_mag_z;
+                sp_mag1_data.rawX = mag1.sensorproc_mag_x;
+                sp_mag1_data.rawY = mag1.sensorproc_mag_y;
+                sp_mag1_data.rawZ = mag1.sensorproc_mag_z;
                 sp_mag1_new_data_flag = 1;
             }
             break;
@@ -802,9 +806,9 @@ void can_rx_callback(CANPacket *packet)
             decodesensorproc_mag2(packet, &mag2);
             if(mag2.sensorproc_mag2_valid)
             {
-                sp_mag2_data->rawX = mag2.sensorproc_mag2_x;
-                sp_mag2_data->rawY = mag2.sensorproc_mag2_y;
-                sp_mag2_data->rawZ = mag2.sensorproc_mag2_z;
+                sp_mag2_data.rawX = mag2.sensorproc_mag2_x;
+                sp_mag2_data.rawY = mag2.sensorproc_mag2_y;
+                sp_mag2_data.rawZ = mag2.sensorproc_mag2_z;
                 sp_mag2_new_data_flag = 1;
             }
             break;
@@ -849,9 +853,9 @@ void send_bdot_mag_reading_cosmos()
 /* send magnetometer reading segment through backchannel */
 void send_sp_mag1_reading_cosmos()
 {
-    sp_mag1_data_cosmos.xMag = sp_mag1_data->convertedX * 1e9;
-    sp_mag1_data_cosmos.yMag = sp_mag1_data->convertedY * 1e9;
-    sp_mag1_data_cosmos.zMag = sp_mag1_data->convertedZ * 1e9;
+    sp_mag1_data_cosmos.xMag = sp_mag1_data.convertedX * 1e9;
+    sp_mag1_data_cosmos.yMag = sp_mag1_data.convertedY * 1e9;
+    sp_mag1_data_cosmos.zMag = sp_mag1_data.convertedZ * 1e9;
 
     bcbinSendPacket((uint8_t *) &sp_mag1_data_cosmos, sizeof(sp_mag1_data_cosmos));
 }
@@ -859,9 +863,9 @@ void send_sp_mag1_reading_cosmos()
 /* send magnetometer reading segment through backchannel */
 void send_sp_mag2_reading_cosmos()
 {
-    sp_mag2_data_cosmos.xMag = sp_mag2_data->convertedX * 1e9;
-    sp_mag2_data_cosmos.yMag = sp_mag2_data->convertedY * 1e9;
-    sp_mag2_data_cosmos.zMag = sp_mag2_data->convertedZ * 1e9;
+    sp_mag2_data_cosmos.xMag = sp_mag2_data.convertedX * 1e9;
+    sp_mag2_data_cosmos.yMag = sp_mag2_data.convertedY * 1e9;
+    sp_mag2_data_cosmos.zMag = sp_mag2_data.convertedZ * 1e9;
 
     bcbinSendPacket((uint8_t *) &sp_mag2_data_cosmos, sizeof(sp_mag2_data_cosmos));
 }
