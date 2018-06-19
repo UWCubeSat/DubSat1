@@ -594,7 +594,7 @@ void sendRC()
             rollcallPkt5_info.rc_eps_dist_5_com1_v_max = aggVec_max_i(&ssBusVAgs[PD_COM1]);
             rollcallPkt5_info.rc_eps_dist_5_com1_v_min = aggVec_min_i(&ssBusVAgs[PD_COM1]);
             encoderc_eps_dist_5(&rollcallPkt5_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&ssBusVAgs);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_COM1]);
         }
         else if(rcFlag == 12)
         {
@@ -613,6 +613,7 @@ void sendRC()
             rollcallPkt7_info.rc_eps_dist_7_com2_v_max = aggVec_max_i(&ssBusVAgs[PD_COM2]);
             rollcallPkt7_info.rc_eps_dist_7_com2_v_min = aggVec_min_i(&ssBusVAgs[PD_COM2]);
             encoderc_eps_dist_7(&rollcallPkt7_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_COM2]);
         }
         else if(rcFlag == 10)
         {
@@ -631,7 +632,7 @@ void sendRC()
             rollcallPkt9_info.rc_eps_dist_9_rahs_v_max = aggVec_max_i(&ssBusVAgs[PD_RAHS]);
             rollcallPkt9_info.rc_eps_dist_9_rahs_v_min = aggVec_min_i(&ssBusVAgs[PD_RAHS]);
             encoderc_eps_dist_9(&rollcallPkt9_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_RAHS]);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_RAHS]);
         }
         else if(rcFlag == 8)
         {
@@ -650,7 +651,7 @@ void sendRC()
             rollcallPkt11_info.rc_eps_dist_11_bdot_v_max = aggVec_max_i(&ssBusVAgs[PD_BDOT]);
             rollcallPkt11_info.rc_eps_dist_11_bdot_v_min = aggVec_min_i(&ssBusVAgs[PD_BDOT]);
             encoderc_eps_dist_11(&rollcallPkt11_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_BDOT]);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_BDOT]);
         }
         else if(rcFlag == 6)
         {
@@ -688,7 +689,7 @@ void sendRC()
             rollcallPkt15_info.rc_eps_dist_15_eps_v_max = aggVec_max_i(&ssBusVAgs[PD_EPS]);
             rollcallPkt15_info.rc_eps_dist_15_eps_v_min = aggVec_min_i(&ssBusVAgs[PD_EPS]);
             encoderc_eps_dist_15(&rollcallPkt15_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_EPS]);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_EPS]);
         }
         else if(rcFlag == 2)
         {
@@ -707,7 +708,7 @@ void sendRC()
             rollcallPkt17_info.rc_eps_dist_17_ppt_v_max = aggVec_max_i(&ssBusVAgs[PD_PPT]);
             rollcallPkt17_info.rc_eps_dist_17_ppt_v_min = aggVec_min_i(&ssBusVAgs[PD_PPT]);
             encoderc_eps_dist_17(&rollcallPkt17_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_PPT]);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_PPT]);
         }
         canSendPacket(&rollcallPkt);
         rcFlag--;

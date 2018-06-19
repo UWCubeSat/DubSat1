@@ -118,19 +118,19 @@ FILE_STATIC void genMonitorPanels()
     aggVec_push_i(&panel1VoltageAg, pdata->rawBusVoltage);
     aggVec_push_i(&panel1CurrentAg, pdata->rawCurrent);
     aggVec_push_i(&panel1PwrAg, pdata->rawPower);
-    //addData_uint16_t(panel1Temp, asensorGetLastValueV(hTempSensors[0]));
+    aggVec_push_i(&panel1TempAg, asensorReadSingleSensorV(hTempSensors[0]) * 100);
 
     pdata = pcvsensorRead(panels[1].hpcvsensor, Read_CurrentA | Read_BusV | Read_PowerW);
     aggVec_push_i(&panel2VoltageAg, pdata->rawBusVoltage);
     aggVec_push_i(&panel2CurrentAg, pdata->rawCurrent);
     aggVec_push_i(&panel2PwrAg, pdata->rawPower);
-    //addData_uint16_t(panel2Temp, asensorGetLastValueV(hTempSensors[1]));
+    aggVec_push_i(&panel2TempAg, asensorReadSingleSensorV(hTempSensors[1]) * 100);
 
     pdata = pcvsensorRead(panels[2].hpcvsensor, Read_CurrentA | Read_BusV | Read_PowerW);
     aggVec_push_i(&panel3VoltageAg, pdata->rawBusVoltage);
     aggVec_push_i(&panel3CurrentAg, pdata->rawCurrent);
     aggVec_push_i(&panel3PwrAg, pdata->rawPower);
-    //addData_uint16_t(panel3Temp, asensorGetLastValueV(hTempSensors[2]));
+    aggVec_push_i(&panel3TempAg, asensorReadSingleSensorV(hTempSensors[2]) * 100);
 
     for (i=0; i < NUM_PANELS; i++)
     {
@@ -278,6 +278,7 @@ void sendRC() //TODO: use if'else for each and do rc while once implemented on C
         {
             rc_eps_gen_3 rollcallPkt3_info = {0};
             rollcallPkt3_info.rc_eps_gen_3_pnl_2_voltage_avg = aggVec_avg_i_i(&panel2VoltageAg);
+            rollcallPkt3_info.rc_eps_gen_3_pnl_2_voltage_max = aggVec_max_i(&panel2VoltageAg);
             rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_max = aggVec_max_i(&panel2VoltageAg);
             rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_min = aggVec_min_i(&panel2VoltageAg);
             encoderc_eps_gen_3(&rollcallPkt3_info, &rollcallPkt);
@@ -328,7 +329,7 @@ void sendRC() //TODO: use if'else for each and do rc while once implemented on C
         else if(rcFlag == 2)
         {
             rc_eps_gen_8 rollcallPkt8_info = {0};
-            rollcallPkt8_info.rc_eps_gen_8_pnl_1_temp_min = 0;
+            rollcallPkt8_info.rc_eps_gen_8_pnl_1_temp_min = aggVec_min_i(&panel1TempAg);
             rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_avg = aggVec_avg_i_i(&panel3PwrAg);
             rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_max = aggVec_max_i(&panel3PwrAg);
             rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_min = aggVec_min_i(&panel3PwrAg);
@@ -338,15 +339,18 @@ void sendRC() //TODO: use if'else for each and do rc while once implemented on C
         else if(rcFlag == 1)
         {
             rc_eps_gen_9 rollcallPkt9_info = {0};
-            rollcallPkt9_info.rc_eps_gen_9_pnl_1_temp_avg = 0;
-            rollcallPkt9_info.rc_eps_gen_9_pnl_1_temp_max = 0;
-            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_avg = 0;
-            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_max = 0;
-            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_min = 0;
-            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_avg = 0;
-            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_max = 0;
-            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_min = 0;
+            rollcallPkt9_info.rc_eps_gen_9_pnl_1_temp_avg = aggVec_avg_i_i(&panel1TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_1_temp_max = aggVec_max_i(&panel1TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_avg = aggVec_avg_i_i(&panel2TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_max = aggVec_max_i(&panel2TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_min = aggVec_min_i(&panel2TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_avg = aggVec_avg_i_i(&panel3TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_max = aggVec_max_i(&panel3TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_min = aggVec_min_i(&panel3TempAg);
             encoderc_eps_gen_9(&rollcallPkt9_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&panel1TempAg);
+            aggVec_as_reset((aggVec *)&panel2TempAg);
+            aggVec_as_reset((aggVec *)&panel3TempAg);
         }
         canSendPacket(&rollcallPkt);
         rcFlag--;

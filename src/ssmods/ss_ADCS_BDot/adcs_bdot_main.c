@@ -817,17 +817,43 @@ void can_rx_callback(CANPacket *packet)
             break;
         case CAN_ID_GCMD_BDOT_SPAM:
             decodegcmd_bdot_spam(packet, &spam);
-            spam_on_timer_ms = spam.gcmd_bdot_spam_time_on;
-            spam_off_timer_ms = spam.gcmd_bdot_spam_time_off;
+            if(spam.gcmd_bdot_spam_time_on)
+            {
+                spam_on_timer_ms = spam.gcmd_bdot_spam_time_on * 60000; //times are received in minutes
+
+                if(bdot_state == SPAM)
+                {
+                    end_spam_timer();
+                    start_spam_timer(spam_on_timer_ms);
+                }
+            }
+            if(spam.gcmd_bdot_spam_time_off)
+            {
+                spam_off_timer_ms = spam.gcmd_bdot_spam_time_off * 60000;
+
+                if(bdot_state != SPAM)
+                {
+                    end_spam_timer();
+                    start_spam_timer(spam_off_timer_ms);
+                }
+            }
             gcmd_spam_control_switch = (spam_control_state)spam.gcmd_bdot_spam_control;
+            if(gcmd_spam_control_switch == SPAM_OFF && bdot_state == SPAM)
+            {
+                gcmd_next_bdot_state = last_bdot_state;
+                gcmd_bdot_state_flag = 1;
+            }
             break;
         case CAN_ID_GCMD_BDOT_MAX_TUMBLE:
             decodegcmd_bdot_max_tumble(packet, &tumble);
-            check_nap_status_timer_ms = tumble.gcmd_bdot_max_tumble_time * 60000; //convert minutes to ms
-            if(nap_status_timer_on_flag)
+            if(tumble.gcmd_bdot_max_tumble_time)
             {
-                end_check_nap_status_timer();
-                start_check_nap_status_timer();
+                check_nap_status_timer_ms = tumble.gcmd_bdot_max_tumble_time * 60000; //convert minutes to ms
+                if(nap_status_timer_on_flag)
+                {
+                    end_check_nap_status_timer();
+                    start_check_nap_status_timer();
+                }
             }
             break;
         case CAN_ID_GCMD_RESET_MINMAX:

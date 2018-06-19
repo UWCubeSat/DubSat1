@@ -174,7 +174,7 @@ void readTempSensor(){
     //sseg.battTemp = ((tempVoltageV/100.0) - 500) / 10.0; //Temp in Celcius
     //conversion from voltage to temperatur, has a slope of 10mv per degree celcius
     //and an intercept of 50 degrees at 0 voltsx
-    aggVec_push_i(&tempAg, tempVoltageV); //TODO: get raw values here
+    aggVec_push_i(&tempAg, (tempVoltageV /0.010));
 
     sseg.battTemp = (tempVoltageV /0.010) - 50;
 }
@@ -373,8 +373,6 @@ int main(void)
 
             battBcSendGeneral();
             battBcSendHealth();
-
-            aggVec_push_i(&tempAg, asensorReadIntTempRawC());
 
             if(isChecking)
             {
