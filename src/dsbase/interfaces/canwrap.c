@@ -1468,16 +1468,16 @@ void decoderc_adcs_mpc_11(CANPacket *input, rc_adcs_mpc_11 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t temprc_adcs_mpc_11_omega_y_avg = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
-output -> rc_adcs_mpc_11_omega_y_avg = (*((double *)(&(temprc_adcs_mpc_11_omega_y_avg))));
+    uint64_t temprc_adcs_mpc_11_omega_z = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> rc_adcs_mpc_11_omega_z = (*((double *)(&(temprc_adcs_mpc_11_omega_z))));
 }
 
 void encoderc_adcs_mpc_11(rc_adcs_mpc_11 *input, CANPacket *output){
     output -> id = 304677438;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    const double temprc_adcs_mpc_11_omega_y_avg = ((input -> rc_adcs_mpc_11_omega_y_avg));
-    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_11_omega_y_avg)))));
+    const double temprc_adcs_mpc_11_omega_z = ((input -> rc_adcs_mpc_11_omega_z));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_11_omega_z)))));
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -1487,16 +1487,16 @@ void decoderc_adcs_mpc_7(CANPacket *input, rc_adcs_mpc_7 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t temprc_adcs_mpc_7_omega_x_max = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
-output -> rc_adcs_mpc_7_omega_x_max = (*((double *)(&(temprc_adcs_mpc_7_omega_x_max))));
+    uint64_t temprc_adcs_mpc_7_omega_max = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> rc_adcs_mpc_7_omega_max = (*((double *)(&(temprc_adcs_mpc_7_omega_max))));
 }
 
 void encoderc_adcs_mpc_7(rc_adcs_mpc_7 *input, CANPacket *output){
     output -> id = 304677434;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    const double temprc_adcs_mpc_7_omega_x_max = ((input -> rc_adcs_mpc_7_omega_x_max));
-    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_7_omega_x_max)))));
+    const double temprc_adcs_mpc_7_omega_max = ((input -> rc_adcs_mpc_7_omega_max));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_7_omega_max)))));
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -1506,16 +1506,16 @@ void decoderc_adcs_mpc_8(CANPacket *input, rc_adcs_mpc_8 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t temprc_adcs_mpc_8_omega_x_avg = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
-output -> rc_adcs_mpc_8_omega_x_avg = (*((double *)(&(temprc_adcs_mpc_8_omega_x_avg))));
+    uint64_t temprc_adcs_mpc_8_omega_avg = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> rc_adcs_mpc_8_omega_avg = (*((double *)(&(temprc_adcs_mpc_8_omega_avg))));
 }
 
 void encoderc_adcs_mpc_8(rc_adcs_mpc_8 *input, CANPacket *output){
     output -> id = 304677435;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    const double temprc_adcs_mpc_8_omega_x_avg = ((input -> rc_adcs_mpc_8_omega_x_avg));
-    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_8_omega_x_avg)))));
+    const double temprc_adcs_mpc_8_omega_avg = ((input -> rc_adcs_mpc_8_omega_avg));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_8_omega_avg)))));
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -1525,16 +1525,16 @@ void decoderc_adcs_mpc_9(CANPacket *input, rc_adcs_mpc_9 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t temprc_adcs_mpc_9_omega_y_min = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
-output -> rc_adcs_mpc_9_omega_y_min = (*((double *)(&(temprc_adcs_mpc_9_omega_y_min))));
+    uint64_t temprc_adcs_mpc_9_omega_x = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> rc_adcs_mpc_9_omega_x = (*((double *)(&(temprc_adcs_mpc_9_omega_x))));
 }
 
 void encoderc_adcs_mpc_9(rc_adcs_mpc_9 *input, CANPacket *output){
     output -> id = 304677436;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    const double temprc_adcs_mpc_9_omega_y_min = ((input -> rc_adcs_mpc_9_omega_y_min));
-    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_9_omega_y_min)))));
+    const double temprc_adcs_mpc_9_omega_x = ((input -> rc_adcs_mpc_9_omega_x));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_9_omega_x)))));
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -1563,16 +1563,16 @@ void decoderc_adcs_mpc_6(CANPacket *input, rc_adcs_mpc_6 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t temprc_adcs_mpc_6_omega_x_min = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
-output -> rc_adcs_mpc_6_omega_x_min = (*((double *)(&(temprc_adcs_mpc_6_omega_x_min))));
+    uint64_t temprc_adcs_mpc_6_omega_min = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> rc_adcs_mpc_6_omega_min = (*((double *)(&(temprc_adcs_mpc_6_omega_min))));
 }
 
 void encoderc_adcs_mpc_6(rc_adcs_mpc_6 *input, CANPacket *output){
     output -> id = 304677433;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    const double temprc_adcs_mpc_6_omega_x_min = ((input -> rc_adcs_mpc_6_omega_x_min));
-    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_6_omega_x_min)))));
+    const double temprc_adcs_mpc_6_omega_min = ((input -> rc_adcs_mpc_6_omega_min));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_6_omega_min)))));
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -1639,16 +1639,12 @@ void decoderc_adcs_mpc_12(CANPacket *input, rc_adcs_mpc_12 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t temprc_adcs_mpc_12_omega_z_min = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
-output -> rc_adcs_mpc_12_omega_z_min = (*((double *)(&(temprc_adcs_mpc_12_omega_z_min))));
 }
 
 void encoderc_adcs_mpc_12(rc_adcs_mpc_12 *input, CANPacket *output){
     output -> id = 304677439;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    const double temprc_adcs_mpc_12_omega_z_min = ((input -> rc_adcs_mpc_12_omega_z_min));
-    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_12_omega_z_min)))));
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -1658,16 +1654,12 @@ void decoderc_adcs_mpc_13(CANPacket *input, rc_adcs_mpc_13 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t temprc_adcs_mpc_13_omega_z_max = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
-output -> rc_adcs_mpc_13_omega_z_max = (*((double *)(&(temprc_adcs_mpc_13_omega_z_max))));
 }
 
 void encoderc_adcs_mpc_13(rc_adcs_mpc_13 *input, CANPacket *output){
     output -> id = 304677440;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    const double temprc_adcs_mpc_13_omega_z_max = ((input -> rc_adcs_mpc_13_omega_z_max));
-    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_13_omega_z_max)))));
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -1677,16 +1669,12 @@ void decoderc_adcs_mpc_14(CANPacket *input, rc_adcs_mpc_14 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t temprc_adcs_mpc_14_omega_z_avg = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
-output -> rc_adcs_mpc_14_omega_z_avg = (*((double *)(&(temprc_adcs_mpc_14_omega_z_avg))));
 }
 
 void encoderc_adcs_mpc_14(rc_adcs_mpc_14 *input, CANPacket *output){
     output -> id = 304677441;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    const double temprc_adcs_mpc_14_omega_z_avg = ((input -> rc_adcs_mpc_14_omega_z_avg));
-    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_14_omega_z_avg)))));
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -1696,16 +1684,16 @@ void decoderc_adcs_mpc_10(CANPacket *input, rc_adcs_mpc_10 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    uint64_t temprc_adcs_mpc_10_omega_y_max = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
-output -> rc_adcs_mpc_10_omega_y_max = (*((double *)(&(temprc_adcs_mpc_10_omega_y_max))));
+    uint64_t temprc_adcs_mpc_10_omega_y = (uint64_t) ((fullData & ((uint64_t) 0xffffffffffffffff)));
+output -> rc_adcs_mpc_10_omega_y = (*((double *)(&(temprc_adcs_mpc_10_omega_y))));
 }
 
 void encoderc_adcs_mpc_10(rc_adcs_mpc_10 *input, CANPacket *output){
     output -> id = 304677437;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    const double temprc_adcs_mpc_10_omega_y_max = ((input -> rc_adcs_mpc_10_omega_y_max));
-    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_10_omega_y_max)))));
+    const double temprc_adcs_mpc_10_omega_y = ((input -> rc_adcs_mpc_10_omega_y));
+    fullPacketData |= ((uint64_t)(*((uint64_t *)(&(temprc_adcs_mpc_10_omega_y)))));
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);

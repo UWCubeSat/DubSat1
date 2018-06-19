@@ -204,64 +204,64 @@
 #define CAN_ID_MSP_TEMP 304676883
 #define CAN_ID_GRND_EPOCH 302449337
 
-#define CAN_ENUM_BDOT_MAG_MODE_SP2MODE 3
-#define CAN_ENUM_BDOT_MAG_MODE_SP1MODE 2
-#define CAN_ENUM_BDOT_MAG_MODE_BDOTMODE 1
-#define CAN_ENUM_BDOT_MAG_MODE_AUTOMODE 0
-#define CAN_ENUM_BDOT_CONTROL_MODE_SLEEPMODE 1
-#define CAN_ENUM_BDOT_CONTROL_MODE_NORMALMODE 0
-#define CAN_ENUM_DOMAIN_STATE_OFF_BATT_UNDERVOLTAGE 3
-#define CAN_ENUM_DOMAIN_STATE_OFF_OVERCURRENT 2
-#define CAN_ENUM_DOMAIN_STATE_OFF_MANUAL 1
-#define CAN_ENUM_DOMAIN_STATE_ON 0
-#define CAN_ENUM_NBOOL_NULL 2
-#define CAN_ENUM_NBOOL_TRUE 1
-#define CAN_ENUM_NBOOL_FALSE 0
-#define CAN_ENUM_FIRE_STATE_NODISCHARGE 3
-#define CAN_ENUM_FIRE_STATE_NOCHARGE 2
-#define CAN_ENUM_FIRE_STATE_FIREOVERRIDDEN 1
 #define CAN_ENUM_FIRE_STATE_FIRESUCCESSFUL 0
-#define CAN_ENUM_UV_STATE_UNDERVOLTAGE 1
+#define CAN_ENUM_FIRE_STATE_FIREOVERRIDDEN 1
+#define CAN_ENUM_FIRE_STATE_NOCHARGE 2
+#define CAN_ENUM_FIRE_STATE_NODISCHARGE 3
 #define CAN_ENUM_UV_STATE_NORMAL 0
-#define CAN_ENUM_MODE_LOWPOWER 4
-#define CAN_ENUM_MODE_POINTING 3
-#define CAN_ENUM_MODE_BDOT 1
+#define CAN_ENUM_UV_STATE_UNDERVOLTAGE 1
 #define CAN_ENUM_MODE_FSWOFF 0
-#define CAN_ENUM_PWR_DOMAIN_UNK 8
-#define CAN_ENUM_PWR_DOMAIN_COM1 7
-#define CAN_ENUM_PWR_DOMAIN_COM2 6
-#define CAN_ENUM_PWR_DOMAIN_RAHS 5
-#define CAN_ENUM_PWR_DOMAIN_BDOT 4
-#define CAN_ENUM_PWR_DOMAIN_ESTIM 3
-#define CAN_ENUM_PWR_DOMAIN_WHEEL 2
-#define CAN_ENUM_PWR_DOMAIN_EPS 1
-#define CAN_ENUM_PWR_DOMAIN_PPT 0
-#define CAN_ENUM_SAT_STATE_GOOD 1
-#define CAN_ENUM_SAT_STATE_BAD 0
-#define CAN_ENUM_NODE_RAHS 15
-#define CAN_ENUM_NODE_COM_2 14
-#define CAN_ENUM_NODE_COM_1 13
-#define CAN_ENUM_NODE_ADCS_MTQ 12
-#define CAN_ENUM_NODE_ADCS_SENSORPROC 11
-#define CAN_ENUM_NODE_ADCS_MPC 10
-#define CAN_ENUM_NODE_ADCS_ESTIM 9
-#define CAN_ENUM_NODE_EPS_BATT 8
-#define CAN_ENUM_NODE_EPS_GEN 7
-#define CAN_ENUM_NODE_EPS_DIST 6
-#define CAN_ENUM_NODE_PPT 5
-#define CAN_ENUM_NODE_ADCS_RWZ 4
-#define CAN_ENUM_NODE_ADCS_RWY 3
-#define CAN_ENUM_NODE_ADCS_RWX 2
-#define CAN_ENUM_NODE_ADCS_BDOT 1
-#define CAN_ENUM_NODE_TEST 0
-#define CAN_ENUM_AGG_SUM 5
-#define CAN_ENUM_AGG_MAX 4
-#define CAN_ENUM_AGG_MIN 3
-#define CAN_ENUM_AGG_COUNT 2
-#define CAN_ENUM_AGG_AVG 1
+#define CAN_ENUM_MODE_BDOT 1
+#define CAN_ENUM_MODE_POINTING 3
+#define CAN_ENUM_MODE_LOWPOWER 4
 #define CAN_ENUM_AGG_NONE 0
-#define CAN_ENUM_BOOL_TRUE 1
+#define CAN_ENUM_AGG_AVG 1
+#define CAN_ENUM_AGG_COUNT 2
+#define CAN_ENUM_AGG_MIN 3
+#define CAN_ENUM_AGG_MAX 4
+#define CAN_ENUM_AGG_SUM 5
+#define CAN_ENUM_SAT_STATE_BAD 0
+#define CAN_ENUM_SAT_STATE_GOOD 1
+#define CAN_ENUM_BDOT_CONTROL_MODE_NORMALMODE 0
+#define CAN_ENUM_BDOT_CONTROL_MODE_SLEEPMODE 1
 #define CAN_ENUM_BOOL_FALSE 0
+#define CAN_ENUM_BOOL_TRUE 1
+#define CAN_ENUM_DOMAIN_STATE_ON 0
+#define CAN_ENUM_DOMAIN_STATE_OFF_MANUAL 1
+#define CAN_ENUM_DOMAIN_STATE_OFF_OVERCURRENT 2
+#define CAN_ENUM_DOMAIN_STATE_OFF_BATT_UNDERVOLTAGE 3
+#define CAN_ENUM_BDOT_MAG_MODE_AUTOMODE 0
+#define CAN_ENUM_BDOT_MAG_MODE_BDOTMODE 1
+#define CAN_ENUM_BDOT_MAG_MODE_SP1MODE 2
+#define CAN_ENUM_BDOT_MAG_MODE_SP2MODE 3
+#define CAN_ENUM_NBOOL_FALSE 0
+#define CAN_ENUM_NBOOL_TRUE 1
+#define CAN_ENUM_NBOOL_NULL 2
+#define CAN_ENUM_PWR_DOMAIN_PPT 0
+#define CAN_ENUM_PWR_DOMAIN_EPS 1
+#define CAN_ENUM_PWR_DOMAIN_WHEEL 2
+#define CAN_ENUM_PWR_DOMAIN_ESTIM 3
+#define CAN_ENUM_PWR_DOMAIN_BDOT 4
+#define CAN_ENUM_PWR_DOMAIN_RAHS 5
+#define CAN_ENUM_PWR_DOMAIN_COM2 6
+#define CAN_ENUM_PWR_DOMAIN_COM1 7
+#define CAN_ENUM_PWR_DOMAIN_UNK 8
+#define CAN_ENUM_NODE_TEST 0
+#define CAN_ENUM_NODE_ADCS_BDOT 1
+#define CAN_ENUM_NODE_ADCS_RWX 2
+#define CAN_ENUM_NODE_ADCS_RWY 3
+#define CAN_ENUM_NODE_ADCS_RWZ 4
+#define CAN_ENUM_NODE_PPT 5
+#define CAN_ENUM_NODE_EPS_DIST 6
+#define CAN_ENUM_NODE_EPS_GEN 7
+#define CAN_ENUM_NODE_EPS_BATT 8
+#define CAN_ENUM_NODE_ADCS_ESTIM 9
+#define CAN_ENUM_NODE_ADCS_MPC 10
+#define CAN_ENUM_NODE_ADCS_SENSORPROC 11
+#define CAN_ENUM_NODE_ADCS_MTQ 12
+#define CAN_ENUM_NODE_COM_1 13
+#define CAN_ENUM_NODE_COM_2 14
+#define CAN_ENUM_NODE_RAHS 15
 
 typedef struct CANPacket {
    uint32_t id; // Actual physical ID of the packet
@@ -624,19 +624,19 @@ typedef struct rc_eps_dist_1 {
 } rc_eps_dist_1;
 
 typedef struct rc_adcs_mpc_11 {
-    double rc_adcs_mpc_11_omega_y_avg; // r/s
+    double rc_adcs_mpc_11_omega_z; // r/s
 } rc_adcs_mpc_11;
 
 typedef struct rc_adcs_mpc_7 {
-    double rc_adcs_mpc_7_omega_x_max; // r/s
+    double rc_adcs_mpc_7_omega_max; // r/s
 } rc_adcs_mpc_7;
 
 typedef struct rc_adcs_mpc_8 {
-    double rc_adcs_mpc_8_omega_x_avg; // r/s
+    double rc_adcs_mpc_8_omega_avg; // r/s
 } rc_adcs_mpc_8;
 
 typedef struct rc_adcs_mpc_9 {
-    double rc_adcs_mpc_9_omega_y_min; // r/s
+    double rc_adcs_mpc_9_omega_x; // r/s
 } rc_adcs_mpc_9;
 
 typedef struct rc_adcs_mpc_5 {
@@ -644,7 +644,7 @@ typedef struct rc_adcs_mpc_5 {
 } rc_adcs_mpc_5;
 
 typedef struct rc_adcs_mpc_6 {
-    double rc_adcs_mpc_6_omega_x_min; // r/s
+    double rc_adcs_mpc_6_omega_min; // r/s
 } rc_adcs_mpc_6;
 
 typedef struct rc_adcs_mpc_4 {
@@ -661,19 +661,16 @@ typedef struct rc_adcs_mpc_15 {
 } rc_adcs_mpc_15;
 
 typedef struct rc_adcs_mpc_12 {
-    double rc_adcs_mpc_12_omega_z_min; // r/s
 } rc_adcs_mpc_12;
 
 typedef struct rc_adcs_mpc_13 {
-    double rc_adcs_mpc_13_omega_z_max; // r/s
 } rc_adcs_mpc_13;
 
 typedef struct rc_adcs_mpc_14 {
-    double rc_adcs_mpc_14_omega_z_avg; // r/s
 } rc_adcs_mpc_14;
 
 typedef struct rc_adcs_mpc_10 {
-    double rc_adcs_mpc_10_omega_y_max; // r/s
+    double rc_adcs_mpc_10_omega_y; // r/s
 } rc_adcs_mpc_10;
 
 typedef struct rc_adcs_mpc_2 {
