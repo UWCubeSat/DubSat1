@@ -184,7 +184,7 @@ FILE_STATIC uint8_t nap_status_timer_on_flag = 0;
 /* this is the timer that will keep track of how long SPAM is */
 FILE_STATIC TIMER_HANDLE spam_timer = 100;
 FILE_STATIC uint32_t spam_off_timer_ms = 3600000; // 1 hour;
-FILE_STATIC uint32_t spam_on_timer_ms = 120000; // 6 minute;
+FILE_STATIC uint32_t spam_on_timer_ms = 120000; // 6 minute (2 minutes each axis);
 //FILE_STATIC uint32_t spam_off_timer_ms = 15000; // 30 seconds;
 //FILE_STATIC uint32_t spam_on_timer_ms = 20000; // 1 minute;
 FILE_STATIC uint8_t spam_timer_on_flag = 0;
@@ -222,7 +222,6 @@ int main(void)
     /* ----- INITIALIZATION -----*/
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
-    mod_status.startup_type = coreStartup(handlePPTFiringNotification, NULL);  // <<DO NOT DELETE or MOVE>>
 
 #if defined(__DEBUG__)
     debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, handleDebugActionCallback);
@@ -252,8 +251,7 @@ int main(void)
         if(rt_flag)
         {
             /* read magnetometer data every 10hz, but only feed in magnetometer data to rt onestep
-             * that's "valid".
-             */
+             * that's "valid". */
             read_magnetometer_data();
 
             update_valid_mag_data();
@@ -550,10 +548,6 @@ void update_valid_mag_data()
         valid_bdot_mag_data->convertedX = continuous_bdot_mag_data->convertedX;
         valid_bdot_mag_data->convertedY = continuous_bdot_mag_data->convertedY;
         valid_bdot_mag_data->convertedZ = continuous_bdot_mag_data->convertedZ;
-        if(valid_bdot_mag_data->convertedY > 1000000)
-        {
-            P3OUT |= BIT5;
-        }
     }
 }
 
@@ -825,7 +819,7 @@ void can_rx_callback(CANPacket *packet)
             decodegcmd_bdot_spam(packet, &spam);
             spam_on_timer_ms = spam.gcmd_bdot_spam_time_on;
             spam_off_timer_ms = spam.gcmd_bdot_spam_time_off;
-            gcmd_spam_control_switch = spam.gcmd_bdot_spam_control;
+            gcmd_spam_control_switch = (spam_control_state)spam.gcmd_bdot_spam_control;
             break;
         case CAN_ID_GCMD_BDOT_MAX_TUMBLE:
             decodegcmd_bdot_max_tumble(packet, &tumble);
@@ -937,9 +931,12 @@ void send_all_polling_timers_segment_cosmos()
 /* update rollcall packet */
 void updateRCData()
 {
-    aggVec_push_i(&magX, continuous_bdot_mag_data->rawX);
-    aggVec_push_i(&magY, continuous_bdot_mag_data->rawY);
-    aggVec_push_i(&magZ, continuous_bdot_mag_data->rawZ);
+    if ((mtq_state == MTQ_MEASUREMENT_PHASE) && (bdot_state == NORMAL_MODE || bdot_state == SLEEP_MODE))
+    {
+        aggVec_push_i(&magX, continuous_bdot_mag_data->rawX);
+        aggVec_push_i(&magY, continuous_bdot_mag_data->rawY);
+        aggVec_push_i(&magZ, continuous_bdot_mag_data->rawZ);
+    }
     aggVec_push_f(&rc_temp, asensorReadIntTempC());
 }
 
@@ -1029,6 +1026,10 @@ void spam_control_operation(uint16_t off_time_min, uint8_t on_time_min, uint8_t 
             last_bdot_state = SPAM;
         }
         return;
+    }
+    else
+    {
+        gcmd_spam_control_switch = SPAM_ON;
     }
     spam_off_timer_ms = ((uint32_t) off_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR);
     spam_on_timer_ms = ((uint32_t) on_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR) / 3; // divide by three for three axis
