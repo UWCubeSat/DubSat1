@@ -319,73 +319,73 @@ typedef struct rc_ppt_h2 {
 } rc_ppt_h2;
 
 typedef struct rc_eps_batt_h1 {
-    uint16_t rc_eps_batt_h1_temp_min; // msp temp
-    uint16_t rc_eps_batt_h1_temp_max; // msp temp
-    uint16_t rc_eps_batt_h1_temp_avg; // msp temp
+    int16_t rc_eps_batt_h1_temp_min; // cC
+    int16_t rc_eps_batt_h1_temp_max; // cC
+    int16_t rc_eps_batt_h1_temp_avg; // cC
     uint8_t rc_eps_batt_h1_sysrstiv; //  (No Units)
     uint8_t rc_eps_batt_h1_reset_count; //  (No Units)
 } rc_eps_batt_h1;
 
 typedef struct rc_adcs_bdot_h1 {
-    uint16_t rc_adcs_bdot_h1_temp_min; // dK
-    uint16_t rc_adcs_bdot_h1_temp_max; // dK
-    uint16_t rc_adcs_bdot_h1_temp_avg; // dK
+    int16_t rc_adcs_bdot_h1_temp_min; // cC
+    int16_t rc_adcs_bdot_h1_temp_max; // cC
+    int16_t rc_adcs_bdot_h1_temp_avg; // cC
     uint8_t rc_adcs_bdot_h1_sysrstiv; //  (No Units)
     uint8_t rc_adcs_bdot_h1_reset_count; //  (No Units)
 } rc_adcs_bdot_h1;
 
 typedef struct rc_eps_dist_h1 {
-    uint16_t rc_eps_dist_h1_temp_min; // msp temp
-    uint16_t rc_eps_dist_h1_temp_max; // msp temp
-    uint16_t rc_eps_dist_h1_temp_avg; // msp temp
+    int16_t rc_eps_dist_h1_temp_min; // cC
+    int16_t rc_eps_dist_h1_temp_max; // cC
+    int16_t rc_eps_dist_h1_temp_avg; // cC
     uint8_t rc_eps_dist_h1_sysrstiv; //  (No Units)
     uint8_t rc_eps_dist_h1_reset_count; //  (No Units)
 } rc_eps_dist_h1;
 
 typedef struct rc_adcs_mpc_h1 {
-    uint16_t rc_adcs_mpc_h1_temp_min; // dK
-    uint16_t rc_adcs_mpc_h1_temp_max; // dK
-    uint16_t rc_adcs_mpc_h1_temp_avg; // dK
+    int16_t rc_adcs_mpc_h1_temp_min; // cC
+    int16_t rc_adcs_mpc_h1_temp_max; // cC
+    int16_t rc_adcs_mpc_h1_temp_avg; // cC
     uint8_t rc_adcs_mpc_h1_sysrstiv; //  (No Units)
     uint8_t rc_adcs_mpc_h1_reset_count; //  (No Units)
 } rc_adcs_mpc_h1;
 
 typedef struct rc_adcs_estim_h1 {
-    uint16_t rc_adcs_estim_h1_temp_min; // dK
-    uint16_t rc_adcs_estim_h1_temp_max; // dK
-    uint16_t rc_adcs_estim_h1_temp_avg; // dK
+    int16_t rc_adcs_estim_h1_temp_min; // cC
+    int16_t rc_adcs_estim_h1_temp_max; // cC
+    int16_t rc_adcs_estim_h1_temp_avg; // cC
     uint8_t rc_adcs_estim_h1_sysrstiv; //  (No Units)
     uint8_t rc_adcs_estim_h1_reset_count; //  (No Units)
 } rc_adcs_estim_h1;
 
 typedef struct rc_adcs_sp_h1 {
-    uint16_t rc_adcs_sp_h1_temp_min; // dK
-    uint16_t rc_adcs_sp_h1_temp_max; // dK
-    uint16_t rc_adcs_sp_h1_temp_avg; // dK
+    int16_t rc_adcs_sp_h1_temp_min; // cC
+    int16_t rc_adcs_sp_h1_temp_max; // cC
+    int16_t rc_adcs_sp_h1_temp_avg; // cC
     uint8_t rc_adcs_sp_h1_sysrstiv; //  (No Units)
     uint8_t rc_adcs_sp_h1_reset_count; //  (No Units)
 } rc_adcs_sp_h1;
 
 typedef struct rc_eps_gen_h1 {
-    uint16_t rc_eps_gen_h1_temp_min; // msp temp
-    uint16_t rc_eps_gen_h1_temp_max; // msp temp
-    uint16_t rc_eps_gen_h1_temp_avg; // msp temp
+    int16_t rc_eps_gen_h1_temp_min; // cC
+    int16_t rc_eps_gen_h1_temp_max; // cC
+    int16_t rc_eps_gen_h1_temp_avg; // cC
     uint8_t rc_eps_gen_h1_sysrstiv; //  (No Units)
     uint8_t rc_eps_gen_h1_reset_count; //  (No Units)
 } rc_eps_gen_h1;
 
 typedef struct rc_adcs_mtq_h1 {
-    uint16_t rc_adcs_mtq_h1_temp_min; // dK
-    uint16_t rc_adcs_mtq_h1_temp_max; // dK
-    uint16_t rc_adcs_mtq_h1_temp_avg; // dK
+    int16_t rc_adcs_mtq_h1_temp_min; // cC
+    int16_t rc_adcs_mtq_h1_temp_max; // cC
+    int16_t rc_adcs_mtq_h1_temp_avg; // cC
     uint8_t rc_adcs_mtq_h1_sysrstiv; //  (No Units)
     uint8_t rc_adcs_mtq_h1_reset_count; //  (No Units)
 } rc_adcs_mtq_h1;
 
 typedef struct rc_ppt_h1 {
-    uint16_t rc_ppt_h1_temp_min; // dK
-    uint16_t rc_ppt_h1_temp_max; // dK
-    uint16_t rc_ppt_h1_temp_avg; // dK
+    int16_t rc_ppt_h1_temp_min; // cC
+    int16_t rc_ppt_h1_temp_max; // cC
+    int16_t rc_ppt_h1_temp_avg; // cC
     uint8_t rc_ppt_h1_sysrstiv; //  (No Units)
     uint8_t rc_ppt_h1_reset_count; //  (No Units)
 } rc_ppt_h1;
@@ -1261,7 +1261,7 @@ typedef struct sync_1 {
 } sync_1;
 
 typedef struct msp_temp {
-    uint16_t msp_temp_temp; // dK
+    int16_t msp_temp_temp; // cC
 } msp_temp;
 
 typedef struct grnd_epoch {

@@ -76,65 +76,65 @@ BO_ 2452161126 rc_ppt_h2: 1 Vector__XXX
  SG_ rc_ppt_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161125 rc_eps_batt_h1: 8 Vector__XXX
- SG_ rc_eps_batt_h1_temp_min : 0|16@1+ (1,0) [0|65535] "msp temp" Vector__XXX
- SG_ rc_eps_batt_h1_temp_max : 16|16@1+ (1,0) [0|65535] "msp temp" Vector__XXX
- SG_ rc_eps_batt_h1_temp_avg : 32|16@1+ (1,0) [0|65535] "msp temp" Vector__XXX
+ SG_ rc_eps_batt_h1_temp_min : 0|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_eps_batt_h1_temp_max : 16|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_eps_batt_h1_temp_avg : 32|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
  SG_ rc_eps_batt_h1_sysrstiv : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_eps_batt_h1_reset_count : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161124 rc_adcs_bdot_h1: 8 Vector__XXX
- SG_ rc_adcs_bdot_h1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_adcs_bdot_h1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_adcs_bdot_h1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_bdot_h1_temp_min : 0|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_adcs_bdot_h1_temp_max : 16|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_adcs_bdot_h1_temp_avg : 32|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
  SG_ rc_adcs_bdot_h1_sysrstiv : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_adcs_bdot_h1_reset_count : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161123 rc_eps_dist_h1: 8 Vector__XXX
- SG_ rc_eps_dist_h1_temp_min : 0|16@1+ (1,0) [0|65535] "msp temp" Vector__XXX
- SG_ rc_eps_dist_h1_temp_max : 16|16@1+ (1,0) [0|65535] "msp temp" Vector__XXX
- SG_ rc_eps_dist_h1_temp_avg : 32|16@1+ (1,0) [0|65535] "msp temp" Vector__XXX
+ SG_ rc_eps_dist_h1_temp_min : 0|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_eps_dist_h1_temp_max : 16|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_eps_dist_h1_temp_avg : 32|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
  SG_ rc_eps_dist_h1_sysrstiv : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_eps_dist_h1_reset_count : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161122 rc_adcs_mpc_h1: 8 Vector__XXX
- SG_ rc_adcs_mpc_h1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_adcs_mpc_h1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_adcs_mpc_h1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_mpc_h1_temp_min : 0|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_adcs_mpc_h1_temp_max : 16|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_adcs_mpc_h1_temp_avg : 32|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
  SG_ rc_adcs_mpc_h1_sysrstiv : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_adcs_mpc_h1_reset_count : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161121 rc_adcs_estim_h1: 8 Vector__XXX
- SG_ rc_adcs_estim_h1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_adcs_estim_h1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_adcs_estim_h1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_estim_h1_temp_min : 0|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_adcs_estim_h1_temp_max : 16|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_adcs_estim_h1_temp_avg : 32|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
  SG_ rc_adcs_estim_h1_sysrstiv : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_adcs_estim_h1_reset_count : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161120 rc_adcs_sp_h1: 8 Vector__XXX
- SG_ rc_adcs_sp_h1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_adcs_sp_h1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_adcs_sp_h1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_sp_h1_temp_min : 0|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_adcs_sp_h1_temp_max : 16|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_adcs_sp_h1_temp_avg : 32|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
  SG_ rc_adcs_sp_h1_sysrstiv : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_adcs_sp_h1_reset_count : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161119 rc_eps_gen_h1: 8 Vector__XXX
- SG_ rc_eps_gen_h1_temp_min : 0|16@1+ (1,0) [0|65535] "msp temp" Vector__XXX
- SG_ rc_eps_gen_h1_temp_max : 16|16@1+ (1,0) [0|65535] "msp temp" Vector__XXX
- SG_ rc_eps_gen_h1_temp_avg : 32|16@1+ (1,0) [0|65535] "msp temp" Vector__XXX
+ SG_ rc_eps_gen_h1_temp_min : 0|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_eps_gen_h1_temp_max : 16|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_eps_gen_h1_temp_avg : 32|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
  SG_ rc_eps_gen_h1_sysrstiv : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_eps_gen_h1_reset_count : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161118 rc_adcs_mtq_h1: 8 Vector__XXX
- SG_ rc_adcs_mtq_h1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_adcs_mtq_h1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_adcs_mtq_h1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_adcs_mtq_h1_temp_min : 0|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_adcs_mtq_h1_temp_max : 16|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_adcs_mtq_h1_temp_avg : 32|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
  SG_ rc_adcs_mtq_h1_sysrstiv : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_adcs_mtq_h1_reset_count : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161117 rc_ppt_h1: 8 Vector__XXX
- SG_ rc_ppt_h1_temp_min : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_ppt_h1_temp_max : 16|16@1+ (1,0) [0|65535] "dK" Vector__XXX
- SG_ rc_ppt_h1_temp_avg : 32|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ rc_ppt_h1_temp_min : 0|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_ppt_h1_temp_max : 16|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
+ SG_ rc_ppt_h1_temp_avg : 32|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
  SG_ rc_ppt_h1_sysrstiv : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_ppt_h1_reset_count : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
@@ -852,7 +852,7 @@ BO_ 2147549202 sync_2: 0 eps_gen
 BO_ 2147549201 sync_1: 0 ppt
 
 BO_ 2452160531 msp_temp: 2 rahs
- SG_ msp_temp_temp : 0|16@1+ (1,0) [0|65535] "dK" Vector__XXX
+ SG_ msp_temp_temp : 0|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
 
 BO_ 2449932985 grnd_epoch: 5 Vector__XXX
  SG_ grnd_epoch_val_overflow : 32|8@1+ (1,0) [0|255] "" Vector__XXX
