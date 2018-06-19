@@ -44,6 +44,7 @@ FILE_STATIC void send_CAN_health_packet(void);
 FILE_STATIC void send_CAN_ack_packet(void);
 FILE_STATIC void send_CAN_rollCall(); 
 FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulate0(CANPacket *out);
 FILE_STATIC void rcPopulate2(CANPacket *out);
 FILE_STATIC void rcPopulate3(CANPacket *out);
 FILE_STATIC void rcPopulate4(CANPacket *out);
@@ -112,6 +113,7 @@ FILE_STATIC meta_segment metaSeg;
 FILE_STATIC health_segment healthSeg;
 
 // roll call packet 
+FILE_STATIC aggVec_f mspTemp_agg;
 FILE_STATIC aggVec_i bdot_x_agg;
 FILE_STATIC aggVec_i bdot_y_agg;
 FILE_STATIC aggVec_i bdot_z_agg;
@@ -125,7 +127,7 @@ FILE_STATIC aggVec_i duty_y2_agg;
 FILE_STATIC aggVec_i duty_z1_agg;
 FILE_STATIC aggVec_i duty_z2_agg;
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
-	{rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5};
+	{rcPopulate1, rcPopulate0, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5};
 
 // ignore flight software 
 FILE_STATIC volatile uint8_t fsw_ignore = 1;

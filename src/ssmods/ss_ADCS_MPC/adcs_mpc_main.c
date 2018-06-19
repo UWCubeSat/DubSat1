@@ -34,10 +34,11 @@ FILE_STATIC estim_mag_unit_z tmpEMagz;
 
 // rollcall
 FILE_STATIC aggVec_i rc_pointTrue;
-FILE_STATIC aggVec_i rc_mspTemp;
+FILE_STATIC aggVec_f rc_mspTemp;
 FILE_STATIC aggVec_d rc_omega;
 
 FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulate0(CANPacket *out);
 FILE_STATIC void rcPopulate2(CANPacket *out);
 FILE_STATIC void rcPopulate3(CANPacket *out);
 FILE_STATIC void rcPopulate4(CANPacket *out);
@@ -52,7 +53,7 @@ FILE_STATIC void rcPopulate15(CANPacket *out);
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
+ rcPopulate1, rcPopulate0, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
  rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10,
  rcPopulate11, rcPopulate15
 };
@@ -111,7 +112,7 @@ int main(void)
     // init rollcall
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
     aggVec_init_i(&rc_pointTrue);
-    aggVec_init_i(&rc_mspTemp);
+    aggVec_init_f(&rc_mspTemp);
     aggVec_init_d(&rc_omega);
 
     // init autocode
@@ -258,6 +259,11 @@ void canRxCallback(CANPacket *p)
     case CAN_ID_ESTIM_SUN_UNIT_Z:
         decodeestim_sun_unit_z(p, &tmpESunz);
         break;
+    case CAN_ID_GCMD_RESET_MINMAX:
+        aggVec_reset((aggVec *)&rc_mspTemp);
+        aggVec_reset((aggVec *)&rc_pointTrue);
+        aggVec_reset((aggVec *)&rc_omega);
+        break;
     }
 }
 
@@ -358,13 +364,12 @@ void sendHealthSegment()
     // TODO determine overall health based on querying sensors for their health
     hseg.oms = OMS_Unknown;
 
-    uint16_t inttemp = asensorReadIntTempRawC();
-    hseg.inttemp = inttemp;
+    hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
     // update temperature
-    aggVec_push_i(&rc_mspTemp, inttemp);
+    aggVec_push_f(&rc_mspTemp, hseg.inttemp);
 }
 
 void sendMetaSegment()
@@ -384,11 +389,18 @@ FILE_STATIC void rcPopulate1(CANPacket *out)
     rc_adcs_mpc_h1 rc;
     rc.rc_adcs_mpc_h1_reset_count = bspGetResetCount();
     rc.rc_adcs_mpc_h1_sysrstiv = SYSRSTIV;
-    rc.rc_adcs_mpc_h1_temp_min = aggVec_min_i(&rc_mspTemp);
-    rc.rc_adcs_mpc_h1_temp_max = aggVec_max_i(&rc_mspTemp);
-    rc.rc_adcs_mpc_h1_temp_avg = aggVec_avg_i_i(&rc_mspTemp);
+    rc.rc_adcs_mpc_h1_temp_min = compressMSPTemp(aggVec_min_f(&rc_mspTemp));
+    rc.rc_adcs_mpc_h1_temp_max = compressMSPTemp(aggVec_max_f(&rc_mspTemp));
+    rc.rc_adcs_mpc_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&rc_mspTemp));
     aggVec_reset((aggVec *) &rc_mspTemp);
     encoderc_adcs_mpc_h1(&rc, out);
+}
+
+FILE_STATIC void rcPopulate0(CANPacket *out)
+{
+    rc_adcs_mpc_h2 rc;
+    rc.rc_adcs_mpc_h2_canrxerror = canRxErrorCheck();
+    encoderc_adcs_mtq_h2(&rc, out);
 }
 
 FILE_STATIC void rcPopulate2(CANPacket *out)

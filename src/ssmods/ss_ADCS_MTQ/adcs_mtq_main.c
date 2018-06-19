@@ -387,6 +387,22 @@ FILE_STATIC void can_packet_rx_callback(CANPacket *packet)
 		pms_y = pms_packet.gcmd_mtq_pms_y; 
 		pms_z = pms_packet.gcmd_mtq_pms_z; 
 	}
+	if(packet->id == CAN_ID_GCMD_RESET_MINMAX)
+	{
+	    aggVec_reset((aggVec *)&mspTemp_agg);
+        aggVec_reset((aggVec *)&bdot_x_agg);
+        aggVec_reset((aggVec *)&bdot_y_agg);
+        aggVec_reset((aggVec *)&bdot_z_agg);
+        aggVec_reset((aggVec *)&fsw_x_agg);
+        aggVec_reset((aggVec *)&fsw_y_agg);
+        aggVec_reset((aggVec *)&fsw_z_agg);
+        aggVec_reset((aggVec *)&duty_x1_agg);
+        aggVec_reset((aggVec *)&duty_x2_agg);
+        aggVec_reset((aggVec *)&duty_y1_agg);
+        aggVec_reset((aggVec *)&duty_y2_agg);
+        aggVec_reset((aggVec *)&duty_z1_agg);
+        aggVec_reset((aggVec *)&duty_z2_agg);
+	}
 }
 
 // can initialization 
@@ -398,6 +414,7 @@ FILE_STATIC void can_init(void)
 
 // roll call aggregate initialization 
 FILE_STATIC void rc_agg_init() {
+    aggVec_init_f(&mspTemp_agg);
     aggVec_init_i(&bdot_x_agg);
     aggVec_init_i(&bdot_y_agg);
     aggVec_init_i(&bdot_z_agg);
@@ -451,11 +468,19 @@ FILE_STATIC void send_CAN_ack_packet(void)
 // TODO: description 
 void rcPopulate1(CANPacket *out){
     rc_adcs_mtq_h1 rc = {0};
-    rc.rc_adcs_mtq_h1_sysrstiv = 0;
-    rc.rc_adcs_mtq_h1_temp_avg =0;//asensorReadIntTempC(); //TODO: update for actual temperature
-    rc.rc_adcs_mtq_h1_temp_max =0;
-    rc.rc_adcs_mtq_h1_temp_min =0;
+    rc.rc_adcs_mtq_h1_sysrstiv = SYSRSTIV;
+    rc.rc_adcs_mtq_h1_reset_count = bspGetResetCount();
+    rc.rc_adcs_mtq_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTemp_agg));
+    rc.rc_adcs_mtq_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTemp_agg));
+    rc.rc_adcs_mtq_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTemp_agg));
     encoderc_adcs_mtq_h1(&rc, out);
+    aggVec_as_reset((aggVec *)&mspTemp_agg);
+}
+
+void rcPopulate0(CANPacket *out){
+    rc_adcs_mtq_h2 rc;
+    rc.rc_adcs_mtq_h2_canrxerror = canRxErrorCheck();
+    encoderc_adcs_mtq_h2(&rc, out);
 }
 
 // TODO: description 
@@ -469,8 +494,8 @@ void rcPopulate2(CANPacket *out){
     rc.rc_adcs_mtq_2_bdot_y_avg = aggVec_avg_i_i(&bdot_y_agg);
     rc.rc_adcs_mtq_2_bdot_z_max = aggVec_max_i(&bdot_z_agg);
     rc.rc_adcs_mtq_2_bdot_z_avg = aggVec_avg_i_i(&bdot_z_agg);
-    aggVec_reset((aggVec *) &bdot_x_agg);
-    aggVec_reset((aggVec *) &bdot_y_agg);
+    aggVec_as_reset((aggVec *) &bdot_x_agg);
+    aggVec_as_reset((aggVec *) &bdot_y_agg);
     encoderc_adcs_mtq_2(&rc, out);
 }
 
@@ -485,9 +510,9 @@ void rcPopulate3(CANPacket *out){
     rc.rc_adcs_mtq_3_fsw_y_max = aggVec_max_i(&fsw_y_agg);
     rc.rc_adcs_mtq_3_fsw_y_avg = aggVec_avg_i_i(&fsw_y_agg);
     rc.rc_adcs_mtq_3_fsw_z_avg = aggVec_avg_i_i(&fsw_z_agg);
-    aggVec_reset((aggVec *) &bdot_z_agg);
-    aggVec_reset((aggVec *) &fsw_x_agg);
-    aggVec_reset((aggVec *) &fsw_y_agg);
+    aggVec_as_reset((aggVec *) &bdot_z_agg);
+    aggVec_as_reset((aggVec *) &fsw_x_agg);
+    aggVec_as_reset((aggVec *) &fsw_y_agg);
     encoderc_adcs_mtq_3(&rc, out);
 
 }
@@ -503,13 +528,13 @@ void rcPopulate4(CANPacket *out){
     rc.rc_adcs_mtq_4_duty_y2_avg = aggVec_avg_i_i(&duty_y2_agg);
     rc.rc_adcs_mtq_4_duty_z1_avg = aggVec_avg_i_i(&duty_z1_agg);
     rc.rc_adcs_mtq_4_duty_z2_avg = aggVec_avg_i_i(&duty_z2_agg);
-    aggVec_reset((aggVec *) &fsw_z_agg);
-    aggVec_reset((aggVec *) &duty_x1_agg);
-    aggVec_reset((aggVec *) &duty_x2_agg);
-    aggVec_reset((aggVec *) &duty_y1_agg);
-    aggVec_reset((aggVec *) &duty_y2_agg);
-    aggVec_reset((aggVec *) &duty_z1_agg);
-    aggVec_reset((aggVec *) &duty_z2_agg);
+    aggVec_as_reset((aggVec *) &fsw_z_agg);
+    aggVec_as_reset((aggVec *) &duty_x1_agg);
+    aggVec_as_reset((aggVec *) &duty_x2_agg);
+    aggVec_as_reset((aggVec *) &duty_y1_agg);
+    aggVec_as_reset((aggVec *) &duty_y2_agg);
+    aggVec_as_reset((aggVec *) &duty_z1_agg);
+    aggVec_as_reset((aggVec *) &duty_z2_agg);
     encoderc_adcs_mtq_4(&rc, out);
 }
 
@@ -594,6 +619,7 @@ FILE_STATIC void send_COSMOS_health_packet()
 {
     healthSeg.oms = OMS_Unknown;
     healthSeg.inttemp = asensorReadIntTempC();
+    aggVec_push_f(&mspTemp_agg, healthSeg.inttemp);
 	healthSeg.reset_count = bspGetResetCount(); 
     bcbinSendPacket((uint8_t *) &healthSeg, sizeof(healthSeg));
     //debugInvokeStatusHandler(Entity_UART); // send uart bus status over backchannel
