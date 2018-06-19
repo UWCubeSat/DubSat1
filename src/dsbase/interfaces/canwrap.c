@@ -205,6 +205,21 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodegcmd_reset_minmax(CANPacket *input, gcmd_reset_minmax *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+}
+
+void encodegcmd_reset_minmax(gcmd_reset_minmax *input, CANPacket *output){
+    output -> id = 302252750;
+    output -> length = 0;
+    uint64_t fullPacketData = 0x0000000000000000;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decoderc_eps_batt_h2(CANPacket *input, rc_eps_batt_h2 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
