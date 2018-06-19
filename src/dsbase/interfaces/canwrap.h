@@ -935,21 +935,21 @@ typedef struct rc_ppt_1 {
 } rc_ppt_1;
 
 typedef struct rc_eps_gen_9 {
-    int8_t rc_eps_gen_9_pnl_3_temp_min; // C
-    int8_t rc_eps_gen_9_pnl_3_temp_max; // C
-    int8_t rc_eps_gen_9_pnl_3_temp_avg; // C
-    int8_t rc_eps_gen_9_pnl_2_temp_min; // C
-    int8_t rc_eps_gen_9_pnl_2_temp_max; // C
-    int8_t rc_eps_gen_9_pnl_2_temp_avg; // C
-    int8_t rc_eps_gen_9_pnl_1_temp_max; // C
-    int8_t rc_eps_gen_9_pnl_1_temp_avg; // C
+    int8_t rc_eps_gen_9_pnl_3_temp_min; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_3_temp_max; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_3_temp_avg; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_2_temp_min; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_2_temp_max; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_2_temp_avg; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_1_temp_max; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_1_temp_avg; // raw tmp36
 } rc_eps_gen_9;
 
 typedef struct rc_eps_gen_8 {
     int16_t rc_eps_gen_8_pnl_3_power_min; // raw power gen
     int16_t rc_eps_gen_8_pnl_3_power_max; // raw power gen
     int16_t rc_eps_gen_8_pnl_3_power_avg; // raw power gen
-    int8_t rc_eps_gen_8_pnl_1_temp_min; // C
+    int8_t rc_eps_gen_8_pnl_1_temp_min; // raw tmp36
 } rc_eps_gen_8;
 
 typedef struct rc_eps_gen_7 {
@@ -1007,8 +1007,8 @@ typedef struct rc_eps_batt_5 {
     int16_t rc_eps_batt_5_node_c_min; // raw node current batt
     int16_t rc_eps_batt_5_node_c_max; // raw node current batt
     int16_t rc_eps_batt_5_node_c_avg; // raw node current batt
-    int8_t rc_eps_batt_5_batt_temp_min; // deg C
-    int8_t rc_eps_batt_5_batt_temp_max; // deg C
+    int8_t rc_eps_batt_5_batt_temp_min; // raw tmp36
+    int8_t rc_eps_batt_5_batt_temp_max; // raw tmp36
 } rc_eps_batt_5;
 
 typedef struct rc_eps_batt_4 {
@@ -1023,7 +1023,7 @@ typedef struct rc_eps_batt_3 {
     uint16_t rc_eps_batt_3_current_min; // raw current batt
     uint16_t rc_eps_batt_3_current_max; // raw current batt
     uint16_t rc_eps_batt_3_current_avg; // raw current batt
-    int8_t rc_eps_batt_3_batt_temp_avg; // deg C
+    int8_t rc_eps_batt_3_batt_temp_avg; // raw tmp36
 } rc_eps_batt_3;
 
 typedef struct rc_eps_batt_2 {
