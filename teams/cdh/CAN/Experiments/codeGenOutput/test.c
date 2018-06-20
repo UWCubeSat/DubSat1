@@ -3,6 +3,11 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_5_packet = {0};
+	rc_adcs_bdot_5 rc_adcs_bdot_5_info = {0};
+	encoderc_adcs_bdot_5(&rc_adcs_bdot_5_info, &rc_adcs_bdot_5_packet);
+	canSendPacket(&rc_adcs_bdot_5_packet);
+
 	__delay_cycles(10000);	CANPacket gcmd_reset_minmax_packet = {0};
 	gcmd_reset_minmax gcmd_reset_minmax_info = {0};
 	encodegcmd_reset_minmax(&gcmd_reset_minmax_info, &gcmd_reset_minmax_packet);

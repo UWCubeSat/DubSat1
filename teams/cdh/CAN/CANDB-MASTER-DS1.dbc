@@ -48,6 +48,11 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2452161116 rc_adcs_bdot_5: 6 Vector__XXX
+ SG_ rc_adcs_bdot_5_last_spam_z_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_5_last_spam_z_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_5_last_spam_z_mtq_x : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+
 BO_ 2449736398 gcmd_reset_minmax: 0 Vector__XXX
 
 BO_ 2452161134 rc_eps_batt_h2: 1 Vector__XXX
@@ -489,9 +494,11 @@ BO_ 2452161052 rc_adcs_sp_2: 8 Vector__XXX
 
 BO_ 2452161051 rc_adcs_sp_1: 8 Vector__XXX
 
-BO_ 2452161050 rc_adcs_bdot_4: 3 Vector__XXX
+BO_ 2452161050 rc_adcs_bdot_4: 7 Vector__XXX
+ SG_ rc_adcs_bdot_4_last_spam_y_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_4_last_spam_y_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_4_mag_z_avg : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
- SG_ rc_adcs_bdot_4_tumble : 16|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_adcs_bdot_4_tumble : 48|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2452161049 rc_adcs_bdot_3: 8 Vector__XXX
  SG_ rc_adcs_bdot_3_mag_z_min : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
@@ -506,6 +513,10 @@ BO_ 2452161031 rc_adcs_bdot_2: 8 Vector__XXX
  SG_ rc_adcs_bdot_2_mag_x_max : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
 
 BO_ 2452161030 rc_adcs_bdot_1: 8 Vector__XXX
+ SG_ rc_adcs_bdot_1_last_spam_y_mtq_x : 48|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_1_last_spam_x_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_1_last_spam_x_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_1_last_spam_x_mtq_x : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
 
 BO_ 2449932980 estim_sun_unit_z: 8 Vector__XXX
  SG_ estim_sun_unit_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "u" Vector__XXX
@@ -652,9 +663,9 @@ BO_ 2452161027 rc_eps_batt_4: 7 eps_batt
  SG_ rc_eps_batt_4_balancer_state : 48|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2452161026 rc_eps_batt_3: 7 eps_batt
- SG_ rc_eps_batt_3_current_min : 0|16@1- (1,0) [0|65535] "raw current batt" Vector__XXX
- SG_ rc_eps_batt_3_current_max : 16|16@1- (1,0) [0|65535] "raw current batt" Vector__XXX
- SG_ rc_eps_batt_3_current_avg : 32|16@1- (1,0) [0|65535] "raw current batt" Vector__XXX
+ SG_ rc_eps_batt_3_current_min : 0|16@1+ (1,0) [0|65535] "raw current batt" Vector__XXX
+ SG_ rc_eps_batt_3_current_max : 16|16@1+ (1,0) [0|65535] "raw current batt" Vector__XXX
+ SG_ rc_eps_batt_3_current_avg : 32|16@1+ (1,0) [0|65535] "raw current batt" Vector__XXX
  SG_ rc_eps_batt_3_batt_temp_avg : 48|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
 
 BO_ 2452161025 rc_eps_batt_2: 6 eps_batt

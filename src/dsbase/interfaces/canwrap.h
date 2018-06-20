@@ -26,6 +26,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_RC_ADCS_BDOT_5 304677468
 #define CAN_ID_GCMD_RESET_MINMAX 302252750
 #define CAN_ID_RC_EPS_BATT_H2 304677486
 #define CAN_ID_RC_ADCS_BDOT_H2 304677485
@@ -283,6 +284,12 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct rc_adcs_bdot_5 {
+    int16_t rc_adcs_bdot_5_last_spam_z_mtq_z; // 1/73 nT
+    int16_t rc_adcs_bdot_5_last_spam_z_mtq_y; // 1/73 nT
+    int16_t rc_adcs_bdot_5_last_spam_z_mtq_x; // 1/73 nT
+} rc_adcs_bdot_5;
+
 typedef struct gcmd_reset_minmax {
 } gcmd_reset_minmax;
 
@@ -827,6 +834,8 @@ typedef struct rc_adcs_sp_1 {
 } rc_adcs_sp_1;
 
 typedef struct rc_adcs_bdot_4 {
+    int16_t rc_adcs_bdot_4_last_spam_y_mtq_z; // 1/73 nT
+    int16_t rc_adcs_bdot_4_last_spam_y_mtq_y; // 1/73 nT
     int16_t rc_adcs_bdot_4_mag_z_avg; // 1/73 nT
     uint8_t rc_adcs_bdot_4_tumble; //  (No Units)
 } rc_adcs_bdot_4;
@@ -846,6 +855,10 @@ typedef struct rc_adcs_bdot_2 {
 } rc_adcs_bdot_2;
 
 typedef struct rc_adcs_bdot_1 {
+    int16_t rc_adcs_bdot_1_last_spam_y_mtq_x; // 1/73 nT
+    int16_t rc_adcs_bdot_1_last_spam_x_mtq_z; // 1/73 nT
+    int16_t rc_adcs_bdot_1_last_spam_x_mtq_y; // 1/73 nT
+    int16_t rc_adcs_bdot_1_last_spam_x_mtq_x; // 1/73 nT
 } rc_adcs_bdot_1;
 
 typedef struct estim_sun_unit_z {
@@ -1269,6 +1282,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encoderc_adcs_bdot_5(rc_adcs_bdot_5 *input, CANPacket* output);
+void decoderc_adcs_bdot_5(CANPacket *input, rc_adcs_bdot_5 *output);
 
 void encodegcmd_reset_minmax(gcmd_reset_minmax *input, CANPacket* output);
 void decodegcmd_reset_minmax(CANPacket *input, gcmd_reset_minmax *output);
