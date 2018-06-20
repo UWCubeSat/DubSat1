@@ -1,5 +1,11 @@
-/*
+/* MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ 
+
 file: adcs_mtq.h
+author: Eloise Perrochet
+description: header file for magnetorquer subsystem 
+			 contains function prototypes, 
+			 global variables, and macros
+
 */
 
 #ifndef ADCS_MTQ_H_
@@ -11,7 +17,7 @@ file: adcs_mtq.h
 
 // state machine
 
-FILE_STATIC void restartMTQ();
+FILE_STATIC void resetMTQ();
 FILE_STATIC void measurement();
 FILE_STATIC void fsw_actuation();
 FILE_STATIC void bdot_actuation();
@@ -88,7 +94,7 @@ typedef enum MTQState {
 } eMTQState;
 // This table contains a pointer to the function to call in each state 
 void (* const state_table[])() = {measurement, fsw_actuation, bdot_actuation, stabilize}; 
-eMTQState curr_state; // camera state declaration 
+eMTQState curr_state; // current state declaration 
 
 //----------- CAN mtq/bdot/fsw handshake ------------------
 

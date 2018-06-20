@@ -1,8 +1,13 @@
-/*
+/* MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ 
+
 file: adcs_mtq_main.c 
 author: Eloise Perrochet
-description: software for magnetorquer subsystem 
+description: main software for magnetorquer subsystem 
+
 */
+
+// TODO  
+// confirm update_rollcall_aggregates() functionality and check for agg overflow
 
 #include <msp430.h>
 #include "core/utils.h"
@@ -18,16 +23,8 @@ description: software for magnetorquer subsystem
 #include "core/agglib.h"
 #include "adcs_mtq.h"
 
-// note that function prototypes and global variables in adc_mtq.h
-
 //==================================================================
 // Main 
-// TODO 
-// cntrl f DEBUG to see commented out sections 
-// add error messages for invalid commands 
-// confirm update_rollcall_aggregates() functionality and check for agg overflow
-// add fsw ignore gcmd CAN packet 
-// change ack packet values during PMS mode 
 //==================================================================
 
 int main(void)
@@ -42,13 +39,13 @@ int main(void)
     rc_agg_init();				   // aggregate initialization 
 	
 	// reset mtq parameters
-    restartMTQ();  				    
+    resetMTQ();  				    
 	
 	// main loop 
     while (1)
     {
 		blink_LED(); // TODO comment out for flight 
-        state_table[curr_state](); // update the state machine function pointer table 
+        state_table[curr_state](); // call a function in the the state machine function pointer table 
 		manage_telemetry(); // send periodic cosmos telemetry
 		update_rollcall_aggregates(); // add to rollcall aggregates
 		rollcallUpdate(); // handle rollcall updates 
@@ -108,7 +105,8 @@ FILE_STATIC void fsw_actuation()
 // transitions when actuation timer is finished to stabalize phase or actuation if in pms mode.
 FILE_STATIC void bdot_actuation() 
 {
-    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z) && is_bdot_still_alive() && pms_enable != 1)
+    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z) 
+		&& is_bdot_still_alive() && pms_enable != 1)
     {
         set_pwm('x', bdot_command_x);
         set_pwm('y', bdot_command_y);
@@ -155,7 +153,7 @@ FILE_STATIC void stabilize()
 //------------- helper functions --------------
 
 // initializes mtq parameters at startup 
-FILE_STATIC void restartMTQ()
+FILE_STATIC void resetMTQ()
 { 
 	// turn off coils 
 	turn_off_coils();
@@ -219,7 +217,8 @@ FILE_STATIC uint8_t fsw_is_valid(void)
 // returns 1 for valid commands 
 FILE_STATIC uint8_t command_dipole_valid(int command_x, int command_y, int command_z)
 {
-	if (command_x > 100 || command_y > 100 || command_z > 100 || command_x < -100 || command_y < -100 || command_z < -100)
+	if (command_x > 100 || command_y > 100 || command_z > 100 || 
+		command_x < -100 || command_y < -100 || command_z < -100)
 	{
 		return 0; // invalid
 	} else 
@@ -298,8 +297,10 @@ FILE_STATIC void set_pwm(char axis, int pwm_percent)
 	}
 }
 
-// outputs a (very shitty) discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
-// note: HuskySat1 has only aircores so this function is never used; It's just for future reference. 
+// outputs a (very shitty) discreet sine wave of decreasing 
+// amplitude with frequency 1/(delay_cycles*2)
+// note: HuskySat1 has only aircores so this function is 
+// never used; It's just for future reference. 
 FILE_STATIC void degauss_lol(void)
 {
 	int sine_table_ish[] = {0,50,100,50,0,-50,-100,-50,
@@ -446,10 +447,12 @@ FILE_STATIC void send_CAN_health_packet(void)
 // executed by mtq 
 FILE_STATIC void send_CAN_ack_packet(void)
 { 
-	if (curr_state == MEASUREMENT){
+	if (pms_enable == 1){
+		which_phase = PMS_PHASE; 
+	} else if (curr_state == MEASUREMENT){
 		which_phase = MEASUREMENT_PHASE; 
-	} else {
-		which_phase = ACTUATION_PHASE; 
+	} else { // either in actuation or stabalize state 
+		which_phase = ACTUATION_PHASE;
 	}
 	mtq_ack ack = {0};
 	ack.mtq_ack_phase = which_phase;
@@ -607,8 +610,6 @@ FILE_STATIC void manage_telemetry(void)
     if (checkTimer(telem_timer))
     {
 		send_COSMOS_health_packet();
-		// commented out for DEBUG
-		//send_COSMOS_dooty_packet();
 		send_COSMOS_meta_packet();
         start_telem_timer(); // reset timer 
     }
