@@ -145,8 +145,9 @@ FILE_STATIC void simulink_compute();
 /*************************** CAN/Rollcall ********************************/
 FILE_STATIC void send_dipole_packet(int8_t x, int8_t y, int8_t z);
 FILE_STATIC void updateRCData();
-FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulateH1(CANPacket *out);
 FILE_STATIC void rcPopulateH2(CANPacket *out);
+FILE_STATIC void rcPopulate1(CANPacket *out);
 FILE_STATIC void rcPopulate2(CANPacket *out);
 FILE_STATIC void rcPopulate3(CANPacket *out);
 FILE_STATIC void rcPopulate4(CANPacket *out);
