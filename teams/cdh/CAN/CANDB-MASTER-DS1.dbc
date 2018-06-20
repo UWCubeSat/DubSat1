@@ -146,9 +146,9 @@ BO_ 2452161117 rc_ppt_h1: 8 Vector__XXX
  SG_ rc_ppt_h1_reset_count : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2449736397 gcmd_mtq_pms: 4 Vector__XXX
- SG_ gcmd_mtq_pms_z : 16|8@1- (1,0) [-127|127] "" Vector__XXX
- SG_ gcmd_mtq_pms_y : 8|8@1- (1,0) [-127|127] "" Vector__XXX
- SG_ gcmd_mtq_pms_x : 0|8@1- (1,0) [-127|127] "" Vector__XXX
+ SG_ gcmd_mtq_pms_z : 16|8@1- (1,0) [-100|100] "" Vector__XXX
+ SG_ gcmd_mtq_pms_y : 8|8@1- (1,0) [-100|100] "" Vector__XXX
+ SG_ gcmd_mtq_pms_x : 0|8@1- (1,0) [-100|100] "" Vector__XXX
  SG_ gcmd_mtq_pms_enable : 24|2@1+ (1,0) [0|2] "" Vector__XXX
 
 BO_ 2449736396 gcmd_bdot_max_tumble: 2 Vector__XXX
