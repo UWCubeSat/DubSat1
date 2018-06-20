@@ -50,8 +50,8 @@ int main(void)
 		blink_LED(); // TODO comment out for flight 
         state_table[curr_state](); // update the state machine function pointer table 
 		manage_telemetry(); // send periodic cosmos telemetry
+		update_rollcall_aggregates(); // add to rollcall aggregates
 		rollcallUpdate(); // handle rollcall updates 
-		update_rollcall_aggregates(); // add to rollcall aggregates 
     }
 		
 	return 0;
@@ -496,6 +496,7 @@ void rcPopulate2(CANPacket *out){
     rc.rc_adcs_mtq_2_bdot_z_avg = aggVec_avg_i_i(&bdot_z_agg);
     aggVec_as_reset((aggVec *) &bdot_x_agg);
     aggVec_as_reset((aggVec *) &bdot_y_agg);
+    aggVec_as_reset((aggVec *) &bdot_z_agg);
     encoderc_adcs_mtq_2(&rc, out);
 }
 
@@ -510,9 +511,9 @@ void rcPopulate3(CANPacket *out){
     rc.rc_adcs_mtq_3_fsw_y_max = aggVec_max_i(&fsw_y_agg);
     rc.rc_adcs_mtq_3_fsw_y_avg = aggVec_avg_i_i(&fsw_y_agg);
     rc.rc_adcs_mtq_3_fsw_z_avg = aggVec_avg_i_i(&fsw_z_agg);
-    aggVec_as_reset((aggVec *) &bdot_z_agg);
     aggVec_as_reset((aggVec *) &fsw_x_agg);
     aggVec_as_reset((aggVec *) &fsw_y_agg);
+    aggVec_as_reset((aggVec *) &fsw_z_agg);
     encoderc_adcs_mtq_3(&rc, out);
 
 }
@@ -528,7 +529,6 @@ void rcPopulate4(CANPacket *out){
     rc.rc_adcs_mtq_4_duty_y2_avg = aggVec_avg_i_i(&duty_y2_agg);
     rc.rc_adcs_mtq_4_duty_z1_avg = aggVec_avg_i_i(&duty_z1_agg);
     rc.rc_adcs_mtq_4_duty_z2_avg = aggVec_avg_i_i(&duty_z2_agg);
-    aggVec_as_reset((aggVec *) &fsw_z_agg);
     aggVec_as_reset((aggVec *) &duty_x1_agg);
     aggVec_as_reset((aggVec *) &duty_x2_agg);
     aggVec_as_reset((aggVec *) &duty_y1_agg);
