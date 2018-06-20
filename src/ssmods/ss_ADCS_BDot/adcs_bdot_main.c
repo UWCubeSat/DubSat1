@@ -188,9 +188,11 @@ FILE_STATIC uint32_t spam_on_timer_ms = 120000; // 6 minute (2 minutes each axis
 //FILE_STATIC uint32_t spam_off_timer_ms = 15000; // 30 seconds;
 //FILE_STATIC uint32_t spam_on_timer_ms = 20000; // 1 minute;
 FILE_STATIC uint8_t spam_timer_on_flag = 0;
-
 #pragma PERSISTENT(spam_off_timer_ms)
 #pragma PERSISTENT(spam_on_timer_ms)
+
+FILE_STATIC TIMER_HANDLE spam_avg_timer = 100;
+FILE_STATIC uint32_t spam_avg_timer_us = 1000000; //0.1s
 
 /***************************************************************/
 
@@ -200,9 +202,12 @@ FILE_STATIC aggVec_f rc_temp;
 FILE_STATIC aggVec_i magX;
 FILE_STATIC aggVec_i magY;
 FILE_STATIC aggVec_i magZ;
+FILE_STATIC aggVec_i spamAvgAgs[3][3]; //for both of these, the first is spam axis, the second is mag axis
+FILE_STATIC int16_t spamAvgs[3][3];
+
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulate1, rcPopulateH2, rcPopulate2, rcPopulate3, rcPopulate4
+ rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4
 };
 /**************************************************************/
 
@@ -216,6 +221,7 @@ FILE_STATIC const rollcall_fn rollcallFunctions[] =
 FILE_STATIC ModuleStatus mod_status;
 /***************************************************************/
 
+void handleSpamAverage();
 
 int main(void)
 {
@@ -238,6 +244,9 @@ int main(void)
     start_spam_timer(spam_off_timer_ms);
     /* Turns on the timer that will report 1 if satellite is tumbling for too long */
     start_check_nap_status_timer();
+
+    //callback timer, so only needs to be reinitialized if the time changes
+    spam_avg_timer = timerCallbackInitializer(&handleSpamAverage, spam_avg_timer_us);
 
     while (1)
     {
@@ -331,6 +340,11 @@ FILE_STATIC void initial_setup()
     aggVec_init_i(&magX);
     aggVec_init_i(&magY);
     aggVec_init_i(&magZ);
+    int i;
+    int j;
+    for(i = 0; i < sizeof(spamAvgAgs) / sizeof(aggVec_i[sizeof(spamAvgAgs[i]) / sizeof(aggVec_i)]); i++) //initialize all spam aggregates
+        for(j = 0; j < sizeof(spamAvgAgs[i]) / sizeof(aggVec_i); j++)
+            aggVec_init_i(&spamAvgAgs[i][j]);
 
     /* initialize rollcall */
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
@@ -439,6 +453,12 @@ void determine_bdot_state()
 
 void determine_spam_axis()
 {
+    int i;
+    for(i = 0; i < sizeof(spamAvgAgs[current_spam_axis]) / sizeof(aggVec_i); i++) //average each axis when done
+    {
+        spamAvgs[current_spam_axis][i] = aggVec_avg_i_i(&spamAvgAgs[current_spam_axis][i]);
+        aggVec_reset((aggVec *)&spamAvgAgs[current_spam_axis][i]);
+    }
     switch(current_spam_axis)
     {
         case SPAM_X:
@@ -657,6 +677,20 @@ uint8_t check_check_nap_status_timer()
     return 0;
 }
 
+void handleSpamAverage()
+{
+    aggVec_push_i(&spamAvgAgs[current_spam_axis][0], continuous_bdot_mag_data->rawX);
+    aggVec_push_i(&spamAvgAgs[current_spam_axis][1], continuous_bdot_mag_data->rawY);
+    aggVec_push_i(&spamAvgAgs[current_spam_axis][2], continuous_bdot_mag_data->rawZ);
+    stopCallback(spam_avg_timer);
+    spam_avg_timer = timerCallbackInitializer(&handleSpamAverage, spam_avg_timer_us);
+}
+
+void start_spam_avg_timer()
+{
+    startCallback(spam_avg_timer);
+}
+
 /* determine that dipoles to send to mtq */
 void determine_mtq_commands()
 {
@@ -784,12 +818,15 @@ void can_rx_callback(CANPacket *packet)
             decodemtq_ack(packet, &ack);
             if(!ack.mtq_ack_phase)
             {
-                P3OUT |= BIT5;
+                P3OUT |= BIT5; //LED on in measurement
                 mtq_state = MTQ_MEASUREMENT_PHASE;
-            } else
+            }
+            else
             {
-                P3OUT &= ~BIT5;
+                P3OUT &= ~BIT5; //LED off in actuation
                 mtq_state = MTQ_ACTUATION_PHASE;
+                if(bdot_state == SPAM)
+                    start_spam_avg_timer();
             }
             break;
         case CAN_ID_SENSORPROC_MAG:
@@ -1097,7 +1134,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
     return 1;
 }
 
-void rcPopulate1(CANPacket *out)
+void rcPopulateH1(CANPacket *out)
 {
     rc_adcs_bdot_h1 rc;
     rc.rc_adcs_bdot_h1_reset_count = bspGetResetCount();
@@ -1115,6 +1152,16 @@ void rcPopulateH2(CANPacket *out)
     rc_adcs_bdot_h2 rc;
     rc.rc_adcs_bdot_h2_canrxerror = canRxErrorCheck();
     encoderc_adcs_bdot_h2(&rc, out);
+}
+
+void rcPopulate1(CANPacket *out)
+{
+    rc_adcs_bdot_1 rc;
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_x = spamAvgs[0][0];
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_y = spamAvgs[0][1];
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_z = spamAvgs[0][2];
+    rc.rc_adcs_bdot_1_last_spam_y_mtq_x = spamAvgs[1][0];
+    encoderc_adcs_bdot_1(&rc, out);
 }
 
 void rcPopulate2(CANPacket *out)
@@ -1145,8 +1192,19 @@ void rcPopulate4(CANPacket *out)
     rc_adcs_bdot_4 rc = {0};
     rc.rc_adcs_bdot_4_mag_z_avg = aggVec_avg_i_i(&magZ);
     rc.rc_adcs_bdot_4_tumble = rtY.tumble;
+    rc.rc_adcs_bdot_4_last_spam_y_mtq_y = spamAvgs[1][1];
+    rc.rc_adcs_bdot_4_last_spam_y_mtq_z = spamAvgs[1][2];
     aggVec_as_reset((aggVec *)&magZ);
     encoderc_adcs_bdot_4(&rc, out);
+}
+
+void rcPopulate5(CANPacket *out)
+{
+    rc_adcs_bdot_5 rc = {0};
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_x = spamAvgs[2][0];
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_y = spamAvgs[2][1];
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_z = spamAvgs[2][2];
+    encoderc_adcs_bdot_5(&rc, out);
 }
 
 
