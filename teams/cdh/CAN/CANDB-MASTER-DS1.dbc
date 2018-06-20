@@ -34,6 +34,7 @@ NS_ :
 BS_:
 
 BU_: ppt eps_batt eps_dist eps_gen adcs_rwz adcs_rwy adcs_rwx adcs_mtq rahs adcs_sensorproc adcs_mpc adcs_estim adcs_bdot com_1 com_2
+VAL_TABLE_ mtq_phase 2 "pms_phase" 1 "actuation_phase" 0 "measurement_phase" ;
 VAL_TABLE_ bdot_mag_mode 3 "sp2 mode" 2 "sp1 mode" 1 "bdot mode" 0 "auto mode" ;
 VAL_TABLE_ bdot_control_mode 1 "sleep mode" 0 "normal mode" ;
 VAL_TABLE_ domain_state 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
@@ -936,6 +937,7 @@ VAL_ 2451701984 eps_domain_output_oc_trip 1 "true" 0 "false" ;
 VAL_ 2451701984 eps_domain_output_num 8 "unk" 7 "com1" 6 "com2" 5 "rahs" 4 "bdot" 3 "estim" 2 "wheel" 1 "eps" 0 "ppt" ;
 VAL_ 2483355714 sensorproc_imu_valid 1 "true" 0 "false" ;
 VAL_ 2483355715 sensorproc_mag_valid 1 "true" 0 "false" ;
+VAL_ 2449932336 mtq_ack_phase 2 "pms_phase" 1 "actuation_phase" 0 "measurement_phase" ;
 VAL_ 2452160723 gen_panel_temp_agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_ 2450784528 cmd_gen_rst_confirm 1 "true" 0 "false" ;
 VAL_ 2450784512 cmd_ppt_single_fire_override 1 "true" 0 "false" ;
