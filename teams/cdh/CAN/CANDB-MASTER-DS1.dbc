@@ -279,9 +279,9 @@ BO_ 2452161092 rc_eps_dist_2: 6 Vector__XXX
  SG_ rc_eps_dist_2_met : 8|32@1+ (1,0) [0|4294967296] "2^-8 s" Vector__XXX
 
 BO_ 2452161107 rc_eps_dist_17: 6 Vector__XXX
- SG_ rc_eps_dist_17_ppt_v_min : 0|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
- SG_ rc_eps_dist_17_ppt_v_max : 16|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
- SG_ rc_eps_dist_17_ppt_v_avg : 32|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
+ SG_ rc_eps_dist_17_ppt_v_min : 0|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
+ SG_ rc_eps_dist_17_ppt_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
+ SG_ rc_eps_dist_17_ppt_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
 BO_ 2452161104 rc_eps_dist_14: 8 Vector__XXX
  SG_ rc_eps_dist_14_eps_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
@@ -290,14 +290,14 @@ BO_ 2452161104 rc_eps_dist_14: 8 Vector__XXX
  SG_ rc_eps_dist_14_eps_c_avg : 40|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
 
 BO_ 2452161103 rc_eps_dist_13: 6 Vector__XXX
- SG_ rc_eps_dist_13_estim_v_min : 0|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
- SG_ rc_eps_dist_13_estim_v_max : 16|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
- SG_ rc_eps_dist_13_estim_v_avg : 32|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
+ SG_ rc_eps_dist_13_estim_v_min : 0|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
+ SG_ rc_eps_dist_13_estim_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
+ SG_ rc_eps_dist_13_estim_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
 BO_ 2452161101 rc_eps_dist_11: 6 Vector__XXX
- SG_ rc_eps_dist_11_bdot_v_min : 0|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
- SG_ rc_eps_dist_11_bdot_v_max : 16|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
- SG_ rc_eps_dist_11_bdot_v_avg : 32|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
+ SG_ rc_eps_dist_11_bdot_v_min : 0|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
+ SG_ rc_eps_dist_11_bdot_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
+ SG_ rc_eps_dist_11_bdot_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
 BO_ 2452161102 rc_eps_dist_12: 7 Vector__XXX
  SG_ rc_eps_dist_12_estim_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
@@ -306,9 +306,9 @@ BO_ 2452161102 rc_eps_dist_12: 7 Vector__XXX
  SG_ rc_eps_dist_12_estim_c_avg : 40|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
 
 BO_ 2452161105 rc_eps_dist_15: 6 Vector__XXX
- SG_ rc_eps_dist_15_eps_v_min : 0|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
- SG_ rc_eps_dist_15_eps_v_max : 16|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
- SG_ rc_eps_dist_15_eps_v_avg : 32|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
+ SG_ rc_eps_dist_15_eps_v_min : 0|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
+ SG_ rc_eps_dist_15_eps_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
+ SG_ rc_eps_dist_15_eps_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
 BO_ 2452161100 rc_eps_dist_10: 7 Vector__XXX
  SG_ rc_eps_dist_10_bdot_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX

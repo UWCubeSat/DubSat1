@@ -566,9 +566,9 @@ typedef struct rc_eps_dist_2 {
 } rc_eps_dist_2;
 
 typedef struct rc_eps_dist_17 {
-    uint16_t rc_eps_dist_17_ppt_v_min; // raw voltage
-    uint16_t rc_eps_dist_17_ppt_v_max; // raw voltage
-    uint16_t rc_eps_dist_17_ppt_v_avg; // raw voltage
+    uint16_t rc_eps_dist_17_ppt_v_min; // raw node voltage
+    uint16_t rc_eps_dist_17_ppt_v_max; // raw node voltage
+    uint16_t rc_eps_dist_17_ppt_v_avg; // raw node voltage
 } rc_eps_dist_17;
 
 typedef struct rc_eps_dist_14 {
@@ -579,15 +579,15 @@ typedef struct rc_eps_dist_14 {
 } rc_eps_dist_14;
 
 typedef struct rc_eps_dist_13 {
-    uint16_t rc_eps_dist_13_estim_v_min; // raw voltage
-    uint16_t rc_eps_dist_13_estim_v_max; // raw voltage
-    uint16_t rc_eps_dist_13_estim_v_avg; // raw voltage
+    uint16_t rc_eps_dist_13_estim_v_min; // raw node voltage
+    uint16_t rc_eps_dist_13_estim_v_max; // raw node voltage
+    uint16_t rc_eps_dist_13_estim_v_avg; // raw node voltage
 } rc_eps_dist_13;
 
 typedef struct rc_eps_dist_11 {
-    uint16_t rc_eps_dist_11_bdot_v_min; // raw voltage
-    uint16_t rc_eps_dist_11_bdot_v_max; // raw voltage
-    uint16_t rc_eps_dist_11_bdot_v_avg; // raw voltage
+    uint16_t rc_eps_dist_11_bdot_v_min; // raw node voltage
+    uint16_t rc_eps_dist_11_bdot_v_max; // raw node voltage
+    uint16_t rc_eps_dist_11_bdot_v_avg; // raw node voltage
 } rc_eps_dist_11;
 
 typedef struct rc_eps_dist_12 {
@@ -598,9 +598,9 @@ typedef struct rc_eps_dist_12 {
 } rc_eps_dist_12;
 
 typedef struct rc_eps_dist_15 {
-    uint16_t rc_eps_dist_15_eps_v_min; // raw voltage
-    uint16_t rc_eps_dist_15_eps_v_max; // raw voltage
-    uint16_t rc_eps_dist_15_eps_v_avg; // raw voltage
+    uint16_t rc_eps_dist_15_eps_v_min; // raw node voltage
+    uint16_t rc_eps_dist_15_eps_v_max; // raw node voltage
+    uint16_t rc_eps_dist_15_eps_v_avg; // raw node voltage
 } rc_eps_dist_15;
 
 typedef struct rc_eps_dist_10 {
