@@ -121,6 +121,7 @@ FILE_STATIC bdot_state_mode last_bdot_state = NORMAL_MODE;
 FILE_STATIC bdot_state_mode gcmd_next_bdot_state = NORMAL_MODE;
 /* Stores if there was a ground command */
 FILE_STATIC uint8_t gcmd_bdot_state_flag = 0;
+FILE_STATIC uint8_t spam_control_flag = 0;
 /* Stores the ground command to turn on or off SPAM */
 FILE_STATIC spam_control_state gcmd_spam_control_switch = SPAM_ON;
 #pragma PERSISTENT(gcmd_spam_control_switch)
@@ -220,8 +221,6 @@ FILE_STATIC const rollcall_fn rollcallFunctions[] =
 /*******************Miscellaneous*******************************/
 FILE_STATIC ModuleStatus mod_status;
 /***************************************************************/
-
-void handleSpamAverage();
 
 int main(void)
 {
@@ -357,7 +356,7 @@ void determine_bdot_state()
 {
     /* if there was a command from ground. flag is only set when the command from ground is different
      * from current bdot state */
-    if(gcmd_bdot_state_flag)
+    if(gcmd_bdot_state_flag && !spam_control_flag)
     {
         /* in any case, when there's a command sent from ground to change state to
          * NORMAL or SLEEP, spam timer has to end and restart. */
@@ -366,7 +365,6 @@ void determine_bdot_state()
             end_spam_timer();
             start_spam_timer(spam_off_timer_ms);
         }
-
         current_spam_axis = SPAM_X;
 
         end_check_nap_status_timer();
@@ -375,12 +373,25 @@ void determine_bdot_state()
         bdot_state = gcmd_next_bdot_state;
 
         /* if the next bdot state is not sleep mode, start the nap timer again */
-        if(bdot_state != SLEEP_MODE)
+        if(bdot_state == NORMAL_MODE)
         {
             start_check_nap_status_timer();
         }
         /* reset flag */
         gcmd_bdot_state_flag = 0;
+    }
+    if(spam_control_flag)
+    {
+        end_spam_timer();
+        if(gcmd_spam_control_switch == SPAM_ON)
+        {
+            start_spam_timer(spam_on_timer_ms);
+            bdot_state = SPAM;
+        } else if(gcmd_spam_control_switch == SPAM_OFF)
+        {
+            bdot_state = last_bdot_state;
+        }
+        spam_control_flag = 0;
     }
     switch (bdot_state)
     {
@@ -454,6 +465,7 @@ void determine_bdot_state()
 void determine_spam_axis()
 {
     int i;
+    // can you put this in another function please? I don't understand what this is.
     for(i = 0; i < sizeof(spamAvgAgs[current_spam_axis]) / sizeof(aggVec_i); i++) //average each axis when done
     {
         spamAvgs[current_spam_axis][i] = aggVec_avg_i_i(&spamAvgAgs[current_spam_axis][i]);
@@ -826,7 +838,9 @@ void can_rx_callback(CANPacket *packet)
                 P3OUT &= ~BIT5; //LED off in actuation
                 mtq_state = MTQ_ACTUATION_PHASE;
                 if(bdot_state == SPAM)
+                {
                     start_spam_avg_timer();
+                }
             }
             break;
         case CAN_ID_SENSORPROC_MAG:
@@ -854,44 +868,11 @@ void can_rx_callback(CANPacket *packet)
             break;
         case CAN_ID_GCMD_BDOT_SPAM:
             decodegcmd_bdot_spam(packet, &spam);
-            if(spam.gcmd_bdot_spam_time_on)
-            {
-                spam_on_timer_ms = spam.gcmd_bdot_spam_time_on * 60000; //times are received in minutes
-
-                if(bdot_state == SPAM)
-                {
-                    end_spam_timer();
-                    start_spam_timer(spam_on_timer_ms);
-                }
-            }
-            if(spam.gcmd_bdot_spam_time_off)
-            {
-                spam_off_timer_ms = spam.gcmd_bdot_spam_time_off * 60000;
-
-                if(bdot_state != SPAM)
-                {
-                    end_spam_timer();
-                    start_spam_timer(spam_off_timer_ms);
-                }
-            }
-            gcmd_spam_control_switch = (spam_control_state)spam.gcmd_bdot_spam_control;
-            if(gcmd_spam_control_switch == SPAM_OFF && bdot_state == SPAM)
-            {
-                gcmd_next_bdot_state = last_bdot_state;
-                gcmd_bdot_state_flag = 1;
-            }
+            spam_control_operation(spam.gcmd_bdot_spam_time_off, spam.gcmd_bdot_spam_time_on, spam.gcmd_bdot_spam_control);
             break;
         case CAN_ID_GCMD_BDOT_MAX_TUMBLE:
             decodegcmd_bdot_max_tumble(packet, &tumble);
-            if(tumble.gcmd_bdot_max_tumble_time)
-            {
-                check_nap_status_timer_ms = tumble.gcmd_bdot_max_tumble_time * 60000; //convert minutes to ms
-                if(nap_status_timer_on_flag)
-                {
-                    end_check_nap_status_timer();
-                    start_check_nap_status_timer();
-                }
-            }
+            change_max_tumble_time(tumble.gcmd_bdot_max_tumble_time);
             break;
         case CAN_ID_GCMD_RESET_MINMAX:
             aggVec_reset((aggVec *)&rc_temp);
@@ -1079,6 +1060,7 @@ void change_max_tumble_time(uint16_t max_tumble_time_min)
 
 void spam_control_operation(uint16_t off_time_min, uint8_t on_time_min, uint8_t spam_switch)
 {
+    spam_control_flag = 1;
     if(spam_switch == SPAM_OFF)
     {
         gcmd_spam_control_switch = SPAM_OFF;
@@ -1086,7 +1068,6 @@ void spam_control_operation(uint16_t off_time_min, uint8_t on_time_min, uint8_t 
         {
             // go back to the previous state if current state is in spam: either normal or sleep.
             bdot_state = last_bdot_state;
-            last_bdot_state = SPAM;
         }
         return;
     }
@@ -1094,8 +1075,11 @@ void spam_control_operation(uint16_t off_time_min, uint8_t on_time_min, uint8_t 
     {
         gcmd_spam_control_switch = SPAM_ON;
     }
-    spam_off_timer_ms = ((uint32_t) off_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR);
-    spam_on_timer_ms = ((uint32_t) on_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR) / 3; // divide by three for three axis
+    if (off_time_min > 0 && on_time_min > 0 && spam_switch == SPAM_ON)
+    {
+        spam_off_timer_ms = ((uint32_t) off_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR);
+        spam_on_timer_ms = ((uint32_t) on_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR) / 3; // divide by three for three axis
+    }
 }
 
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
