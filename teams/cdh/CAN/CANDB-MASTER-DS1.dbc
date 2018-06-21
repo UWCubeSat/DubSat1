@@ -49,6 +49,10 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2449736399 gcmd_eps_batt_fulldef: 8 Vector__XXX
+ SG_ gcmd_eps_batt_fulldef_const_volt : 0|32@1- (1,0) [0|8] "V" Vector__XXX
+ SG_ gcmd_eps_batt_fulldef_chg_curr : 32|32@1- (1,0) [0|1] "Amps" Vector__XXX
+
 BO_ 2452161116 rc_adcs_bdot_5: 6 Vector__XXX
  SG_ rc_adcs_bdot_5_last_spam_z_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_5_last_spam_z_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
@@ -951,6 +955,8 @@ VAL_ 2450653378 eps_batt_state_bal 1 "true" 0 "false" ;
 VAL_ 2450653378 eps_batt_state_heat 1 "true" 0 "false" ;
 VAL_ 2483355713 sensorproc_sun_valid 1 "true" 0 "false" ;
 VAL_ 2449932320 bdot_tumble_status_status 1 "true" 0 "false" ;
+SIG_VALTYPE_ 2449736399 gcmd_eps_batt_fulldef_const_volt : 1;
+SIG_VALTYPE_ 2449736399 gcmd_eps_batt_fulldef_chg_curr : 1;
 SIG_VALTYPE_ 2449736389 gcmd_dist_set_pd_ovc_ppt_ovc : 1;
 SIG_VALTYPE_ 2449736388 gcmd_dist_set_pd_ovc_eps_ovc : 1;
 SIG_VALTYPE_ 2449736387 gcmd_dist_set_pd_ovc_wheels_ovc : 1;

@@ -205,6 +205,29 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodegcmd_eps_batt_fulldef(CANPacket *input, gcmd_eps_batt_fulldef *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    uint32_t tempgcmd_eps_batt_fulldef_const_volt = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
+    output -> gcmd_eps_batt_fulldef_const_volt = (*((float *)(&(tempgcmd_eps_batt_fulldef_const_volt))));
+    uint32_t tempgcmd_eps_batt_fulldef_chg_curr = (uint32_t) ((fullData & ((uint64_t) 0xffffffff)));
+    output -> gcmd_eps_batt_fulldef_chg_curr = (*((float *)(&(tempgcmd_eps_batt_fulldef_chg_curr))));
+}
+
+void encodegcmd_eps_batt_fulldef(gcmd_eps_batt_fulldef *input, CANPacket *output){
+    output -> id = 302252751;
+    output -> length = 8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    const float tempgcmd_eps_batt_fulldef_const_volt = ((input -> gcmd_eps_batt_fulldef_const_volt));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_eps_batt_fulldef_const_volt))))) << 32;
+    const float tempgcmd_eps_batt_fulldef_chg_curr = ((input -> gcmd_eps_batt_fulldef_chg_curr));
+    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_eps_batt_fulldef_chg_curr)))));
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decoderc_adcs_bdot_5(CANPacket *input, rc_adcs_bdot_5 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);

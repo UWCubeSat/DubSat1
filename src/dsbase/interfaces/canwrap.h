@@ -27,6 +27,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_EPS_BATT_FULLDEF 302252751
 #define CAN_ID_RC_ADCS_BDOT_5 304677468
 #define CAN_ID_GCMD_RESET_MINMAX 302252750
 #define CAN_ID_RC_EPS_BATT_H2 304677486
@@ -288,6 +289,11 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_eps_batt_fulldef {
+    float gcmd_eps_batt_fulldef_const_volt; // V
+    float gcmd_eps_batt_fulldef_chg_curr; // Amps
+} gcmd_eps_batt_fulldef;
+
 typedef struct rc_adcs_bdot_5 {
     int16_t rc_adcs_bdot_5_last_spam_z_mtq_z; // 1/73 nT
     int16_t rc_adcs_bdot_5_last_spam_z_mtq_y; // 1/73 nT
@@ -1289,6 +1295,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_eps_batt_fulldef(gcmd_eps_batt_fulldef *input, CANPacket* output);
+void decodegcmd_eps_batt_fulldef(CANPacket *input, gcmd_eps_batt_fulldef *output);
 
 void encoderc_adcs_bdot_5(rc_adcs_bdot_5 *input, CANPacket* output);
 void decoderc_adcs_bdot_5(CANPacket *input, rc_adcs_bdot_5 *output);
