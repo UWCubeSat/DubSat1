@@ -121,7 +121,6 @@ FILE_STATIC bdot_state_mode last_bdot_state = NORMAL_MODE;
 FILE_STATIC bdot_state_mode gcmd_next_bdot_state = NORMAL_MODE;
 /* Stores if there was a ground command */
 FILE_STATIC uint8_t gcmd_bdot_state_flag = 0;
-FILE_STATIC uint8_t spam_control_flag = 0;
 /* Stores the ground command to turn on or off SPAM */
 FILE_STATIC spam_control_state gcmd_spam_control_switch = SPAM_ON;
 #pragma PERSISTENT(gcmd_spam_control_switch)
@@ -356,14 +355,20 @@ void determine_bdot_state()
 {
     /* if there was a command from ground. flag is only set when the command from ground is different
      * from current bdot state */
-    if(gcmd_bdot_state_flag && !spam_control_flag)
+    if(gcmd_bdot_state_flag)
     {
         /* in any case, when there's a command sent from ground to change state to
          * NORMAL or SLEEP, spam timer has to end and restart. */
         if(bdot_state == SPAM || bdot_state == SPAM_MAG_SELF_TEST)
         {
             end_spam_timer();
-            start_spam_timer(spam_off_timer_ms);
+            if(gcmd_next_bdot_state == SPAM)
+            {
+                start_spam_timer(spam_on_timer_ms);
+            } else
+            {
+                start_spam_timer(spam_off_timer_ms);
+            }
         }
         current_spam_axis = SPAM_X;
 
@@ -379,19 +384,6 @@ void determine_bdot_state()
         }
         /* reset flag */
         gcmd_bdot_state_flag = 0;
-    }
-    if(spam_control_flag)
-    {
-        end_spam_timer();
-        if(gcmd_spam_control_switch == SPAM_ON)
-        {
-            start_spam_timer(spam_on_timer_ms);
-            bdot_state = SPAM;
-        } else if(gcmd_spam_control_switch == SPAM_OFF)
-        {
-            bdot_state = last_bdot_state;
-        }
-        spam_control_flag = 0;
     }
     switch (bdot_state)
     {
@@ -1007,7 +999,6 @@ void select_mode_operation(uint8_t reading_mode_selection)
     {
         case NORMAL_READING_OPERATION:
             if(bdot_state == NORMAL_MODE) return;
-            mag_normal_reading_operation_config(mag_num);
             gcmd_next_bdot_state = NORMAL_MODE;
             gcmd_bdot_state_flag = 1;
             break;
@@ -1060,7 +1051,6 @@ void change_max_tumble_time(uint16_t max_tumble_time_min)
 
 void spam_control_operation(uint16_t off_time_min, uint8_t on_time_min, uint8_t spam_switch)
 {
-    spam_control_flag = 1;
     if(spam_switch == SPAM_OFF)
     {
         gcmd_spam_control_switch = SPAM_OFF;
