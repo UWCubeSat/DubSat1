@@ -663,18 +663,24 @@ void decodegcmd_bdot_spam(CANPacket *input, gcmd_bdot_spam *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> gcmd_bdot_spam_time_on = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-    output -> gcmd_bdot_spam_time_off = (uint16_t) (((fullData & ((uint64_t) 0xffff << 40)) >> 40));
-    output -> gcmd_bdot_spam_control = (uint8_t) (((fullData & ((uint64_t) 0x1 << 39)) >> 39));
+    output -> gcmd_bdot_spam_magnitude_z = (int8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> gcmd_bdot_spam_magnitude_y = (int8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+    output -> gcmd_bdot_spam_magnitude_x = (int8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
+    output -> gcmd_bdot_spam_time_on = (uint8_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> gcmd_bdot_spam_time_off = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> gcmd_bdot_spam_control = (uint8_t) (((fullData & ((uint64_t) 0x3 << 6)) >> 6));
 }
 
 void encodegcmd_bdot_spam(gcmd_bdot_spam *input, CANPacket *output){
     output -> id = 302252747;
-    output -> length = 4;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_spam_time_on))) & 0xff) << 56;
-    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_spam_time_off))) & 0xffff) << 40;
-    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_spam_control))) & 0x1) << 39;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_spam_magnitude_z))) & 0xff) << 8;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_spam_magnitude_y))) & 0xff) << 16;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_spam_magnitude_x))) & 0xff) << 24;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_spam_time_on))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_spam_time_off))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_spam_control))) & 0x3) << 6;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);

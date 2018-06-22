@@ -155,10 +155,13 @@ BO_ 2449736397 gcmd_mtq_pms: 4 Vector__XXX
 BO_ 2449736396 gcmd_bdot_max_tumble: 2 Vector__XXX
  SG_ gcmd_bdot_max_tumble_time : 0|16@1+ (1,0) [0|65535] "minutes" Vector__XXX
 
-BO_ 2449736395 gcmd_bdot_spam: 4 Vector__XXX
- SG_ gcmd_bdot_spam_time_on : 0|8@1+ (1,0) [0|255] "minutes" Vector__XXX
- SG_ gcmd_bdot_spam_time_off : 8|16@1+ (1,0) [0|65535] "minutes" Vector__XXX
- SG_ gcmd_bdot_spam_control : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+BO_ 2449736395 gcmd_bdot_spam: 8 Vector__XXX
+ SG_ gcmd_bdot_spam_magnitude_z : 48|8@1- (1,0) [-100|100] "" Vector__XXX
+ SG_ gcmd_bdot_spam_magnitude_y : 40|8@1- (1,0) [-100|100] "" Vector__XXX
+ SG_ gcmd_bdot_spam_magnitude_x : 32|8@1- (1,0) [-100|100] "" Vector__XXX
+ SG_ gcmd_bdot_spam_time_on : 0|16@1+ (1,0) [0|255] "minutes" Vector__XXX
+ SG_ gcmd_bdot_spam_time_off : 16|16@1+ (1,0) [0|65535] "minutes" Vector__XXX
+ SG_ gcmd_bdot_spam_control : 56|2@1+ (1,0) [0|2] "" Vector__XXX
 
 BO_ 2449736394 gcmd_bdot_control: 1 Vector__XXX
  SG_ gcmd_bdot_control_mode : 0|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -879,7 +882,7 @@ CM_ BO_ 2452161089 "deprecated";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
 VAL_ 2449736397 gcmd_mtq_pms_enable 2 "null" 1 "true" 0 "false" ;
-VAL_ 2449736395 gcmd_bdot_spam_control 1 "true" 0 "false" ;
+VAL_ 2449736395 gcmd_bdot_spam_control 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736394 gcmd_bdot_control_mode 1 "sleep mode" 0 "normal mode" ;
 VAL_ 2449736393 gcmd_bdot_mag_control_mode 3 "sp2 mode" 2 "sp1 mode" 1 "bdot mode" 0 "auto mode" ;
 VAL_ 2449736392 gcmd_bdot_pole_override_z 2 "null" 1 "true" 0 "false" ;

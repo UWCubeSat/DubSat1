@@ -417,6 +417,9 @@ typedef struct gcmd_bdot_max_tumble {
 } gcmd_bdot_max_tumble;
 
 typedef struct gcmd_bdot_spam {
+    int8_t gcmd_bdot_spam_magnitude_z; //  (No Units)
+    int8_t gcmd_bdot_spam_magnitude_y; //  (No Units)
+    int8_t gcmd_bdot_spam_magnitude_x; //  (No Units)
     uint8_t gcmd_bdot_spam_time_on; // minutes
     uint16_t gcmd_bdot_spam_time_off; // minutes
     uint8_t gcmd_bdot_spam_control; //  (No Units)
