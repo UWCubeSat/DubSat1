@@ -689,7 +689,7 @@ void decodegcmd_bdot_spam(CANPacket *input, gcmd_bdot_spam *output){
     output -> gcmd_bdot_spam_magnitude_z = (int8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> gcmd_bdot_spam_magnitude_y = (int8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
     output -> gcmd_bdot_spam_magnitude_x = (int8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
-    output -> gcmd_bdot_spam_time_on = (uint8_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> gcmd_bdot_spam_time_on = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> gcmd_bdot_spam_time_off = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> gcmd_bdot_spam_control = (uint8_t) (((fullData & ((uint64_t) 0x3 << 6)) >> 6));
 }

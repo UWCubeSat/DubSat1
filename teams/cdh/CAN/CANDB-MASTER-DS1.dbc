@@ -163,7 +163,7 @@ BO_ 2449736395 gcmd_bdot_spam: 8 Vector__XXX
  SG_ gcmd_bdot_spam_magnitude_z : 48|8@1- (1,0) [-100|100] "" Vector__XXX
  SG_ gcmd_bdot_spam_magnitude_y : 40|8@1- (1,0) [-100|100] "" Vector__XXX
  SG_ gcmd_bdot_spam_magnitude_x : 32|8@1- (1,0) [-100|100] "" Vector__XXX
- SG_ gcmd_bdot_spam_time_on : 0|16@1+ (1,0) [0|255] "minutes" Vector__XXX
+ SG_ gcmd_bdot_spam_time_on : 0|16@1+ (1,0) [0|65535] "minutes" Vector__XXX
  SG_ gcmd_bdot_spam_time_off : 16|16@1+ (1,0) [0|65535] "minutes" Vector__XXX
  SG_ gcmd_bdot_spam_control : 56|2@1+ (1,0) [0|2] "" Vector__XXX
 
