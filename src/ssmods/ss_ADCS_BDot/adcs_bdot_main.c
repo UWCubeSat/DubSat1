@@ -63,8 +63,8 @@ typedef enum bdot_state_mode {
 } bdot_state_mode;
 
 typedef enum spam_control {
-    SPAM_OFF,
-    SPAM_ON
+    SPAM_ON,
+    SPAM_OFF
 } spam_control_state;
 
 typedef enum spam_axis {
@@ -125,6 +125,7 @@ FILE_STATIC uint8_t gcmd_bdot_state_flag = 0;
 FILE_STATIC spam_control_state gcmd_spam_control_switch = SPAM_ON;
 #pragma PERSISTENT(gcmd_spam_control_switch)
 
+FILE_STATIC uint8_t spam_control_time_change_flag = 0;
 FILE_STATIC spam_axis current_spam_axis = SPAM_X;
 
 /* holds magnetometer data read every 10 hz */
@@ -207,7 +208,7 @@ FILE_STATIC int16_t spamAvgs[3][3];
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5
+ rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4
 };
 /**************************************************************/
 
@@ -353,6 +354,19 @@ FILE_STATIC void initial_setup()
 
 void determine_bdot_state()
 {
+    if(spam_control_time_change_flag)
+    {
+        end_spam_timer();
+        if(bdot_state == SPAM)
+        {
+            start_spam_timer(spam_on_timer_ms);
+            current_spam_axis = SPAM_X;
+        } else if(bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST)
+        {
+            start_spam_timer(spam_off_timer_ms);
+        }
+        spam_control_time_change_flag = 0;
+    }
     /* if there was a command from ground. flag is only set when the command from ground is different
      * from current bdot state */
     if(gcmd_bdot_state_flag)
@@ -385,6 +399,7 @@ void determine_bdot_state()
         /* reset flag */
         gcmd_bdot_state_flag = 0;
     }
+
     switch (bdot_state)
     {
         case NORMAL_MODE:
@@ -813,7 +828,7 @@ void can_rx_callback(CANPacket *packet)
     sensorproc_mag2 mag2 = {0};
     gcmd_bdot_spam spam = {0};
     gcmd_bdot_max_tumble tumble = {0};
-
+    gcmd_bdot_control control_bdot_state = {0};
     switch(packet->id)
     {
         case CAN_ID_MTQ_ACK:
@@ -855,8 +870,9 @@ void can_rx_callback(CANPacket *packet)
                 sp_mag2_new_data_flag = 1;
             }
             break;
-        case CAN_ID_CMD_ROLLCALL:
-            rollcallStart();
+        case CAN_ID_GCMD_BDOT_CONTROL:
+            decodegcmd_bdot_control(packet, &control_bdot_state);
+            select_mode_operation((bdot_state_mode) control_bdot_state.gcmd_bdot_control_mode);
             break;
         case CAN_ID_GCMD_BDOT_SPAM:
             decodegcmd_bdot_spam(packet, &spam);
@@ -865,6 +881,9 @@ void can_rx_callback(CANPacket *packet)
         case CAN_ID_GCMD_BDOT_MAX_TUMBLE:
             decodegcmd_bdot_max_tumble(packet, &tumble);
             change_max_tumble_time(tumble.gcmd_bdot_max_tumble_time);
+            break;
+        case CAN_ID_CMD_ROLLCALL:
+            rollcallStart();
             break;
         case CAN_ID_GCMD_RESET_MINMAX:
             aggVec_reset((aggVec *)&rc_temp);
@@ -1061,12 +1080,13 @@ void spam_control_operation(uint16_t off_time_min, uint8_t on_time_min, uint8_t 
         }
         return;
     }
-    else
+    else if(spam_switch == SPAM_ON)
     {
         gcmd_spam_control_switch = SPAM_ON;
     }
     if (off_time_min > 0 && on_time_min > 0 && spam_switch == SPAM_ON)
     {
+        spam_control_time_change_flag = 1;
         spam_off_timer_ms = ((uint32_t) off_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR);
         spam_on_timer_ms = ((uint32_t) on_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR) / 3; // divide by three for three axis
     }
