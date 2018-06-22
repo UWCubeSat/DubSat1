@@ -36,7 +36,7 @@ BS_:
 BU_: ppt eps_batt eps_dist eps_gen adcs_rwz adcs_rwy adcs_rwx adcs_mtq rahs adcs_sensorproc adcs_mpc adcs_estim adcs_bdot com_1 com_2
 VAL_TABLE_ mtq_phase 2 "pms_phase" 1 "actuation_phase" 0 "measurement_phase" ;
 VAL_TABLE_ bdot_mag_mode 3 "sp2 mode" 2 "sp1 mode" 1 "bdot mode" 0 "auto mode" ;
-VAL_TABLE_ bdot_control_mode 1 "sleep mode" 0 "normal mode" ;
+VAL_TABLE_ bdot_control_mode 3 "spam" 2 "spam mag self test" 1 "sleep mode" 0 "normal mode" ;
 VAL_TABLE_ domain_state 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
 VAL_TABLE_ nbool 2 "null" 1 "true" 0 "false" ;
 VAL_TABLE_ fire_state 3 "no discharge" 2 "no charge" 1 "fire overridden" 0 "fire successful" ;
@@ -168,7 +168,7 @@ BO_ 2449736395 gcmd_bdot_spam: 8 Vector__XXX
  SG_ gcmd_bdot_spam_control : 56|2@1+ (1,0) [0|2] "" Vector__XXX
 
 BO_ 2449736394 gcmd_bdot_control: 1 Vector__XXX
- SG_ gcmd_bdot_control_mode : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ gcmd_bdot_control_mode : 0|2@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2449736393 gcmd_bdot_mag_control: 1 Vector__XXX
  SG_ gcmd_bdot_mag_control_mode : 0|2@1+ (1,0) [0|3] "" Vector__XXX

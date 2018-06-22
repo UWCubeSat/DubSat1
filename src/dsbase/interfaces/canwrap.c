@@ -713,14 +713,14 @@ void decodegcmd_bdot_control(CANPacket *input, gcmd_bdot_control *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> gcmd_bdot_control_mode = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
+    output -> gcmd_bdot_control_mode = (uint8_t) (((fullData & ((uint64_t) 0x3 << 62)) >> 62));
 }
 
 void encodegcmd_bdot_control(gcmd_bdot_control *input, CANPacket *output){
     output -> id = 302252746;
     output -> length = 1;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_control_mode))) & 0x1) << 63;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_control_mode))) & 0x3) << 62;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
