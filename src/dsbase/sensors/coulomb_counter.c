@@ -3,6 +3,23 @@
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 FILE_STATIC deviceContextCoulombCounter sensor;
 
+FILE_STATIC float full_voltage = 6.9f;
+FILE_STATIC float full_current = 0.10f;
+#pragma PERSISTENT(full_voltage)
+#pragma PERSISTENT(full_current)
+
+void setControl(CC_Control_ADCmode ADCmode, CC_Control_PrescaleFactor m, CC_Control_ALCCConfiguration ALCC, CC_Control_Shutdown shutdown );
+
+void CCSetFullCurrent(float current)
+{
+    full_current = current;
+}
+
+void CCSetFullVoltage(float voltage)
+{
+    full_voltage = voltage;
+}
+
 void LTC2943Init(bus_instance_i2c bus, float rShunt) {
 
     hDev hSensor = i2cInit(bus, LTC2943_ADDRESS);
@@ -43,7 +60,7 @@ float rawCurrentToFloat(int16_t raw) {
 BOOL checkForFullState(float voltage, float current) {
     //full state is defined as 7.2 volts with the LTC2943 limiting the current into the batteries to .1A
     // +- .02 volt margin with +-.1A margin
-    return (voltage >= 7.18 && voltage <= 7.22) && (current <= 0.11 && current >= 0.09);
+    return (voltage >= full_voltage && current <= full_current && current >= 0);
 }
 
 void calibrate(hDev hSensor) {

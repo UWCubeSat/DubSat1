@@ -63,8 +63,8 @@ typedef enum bdot_state_mode {
 } bdot_state_mode;
 
 typedef enum spam_control {
-    SPAM_ON,
-    SPAM_OFF
+    SPAM_OFF,
+    SPAM_ON
 } spam_control_state;
 
 typedef enum spam_axis {
@@ -207,7 +207,7 @@ FILE_STATIC int16_t spamAvgs[3][3];
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4
+ rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5
 };
 /**************************************************************/
 

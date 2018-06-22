@@ -181,6 +181,7 @@ void readTempSensor(){
 
 void can_packet_rx_callback(CANPacket *packet)
 {
+    gcmd_eps_batt_fulldef fullDefPkt;
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
@@ -194,6 +195,11 @@ void can_packet_rx_callback(CANPacket *packet)
             aggVec_reset((aggVec *)&nodeVoltageAg);
             aggVec_reset((aggVec *)&nodeCurrentAg);
             aggVec_reset((aggVec *)&accChargeAg);
+            break;
+        case CAN_ID_GCMD_EPS_BATT_FULLDEF:
+            decodegcmd_eps_batt_fulldef(packet, &fullDefPkt);
+            CCSetFullCurrent(fullDefPkt.gcmd_eps_batt_fulldef_chg_curr);
+            CCSetFullVoltage(fullDefPkt.gcmd_eps_batt_fulldef_const_volt);
             break;
         default:
             break;
