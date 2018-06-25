@@ -1326,8 +1326,7 @@ CM_ SG_ 2483355713 sensorproc_sun_y "Sun Angle y";
 CM_ SG_ 2483355713 sensorproc_sun_x "Sun Angle x";
 CM_ SG_ 2452029473 cmd_mtq_bdot_z "bdot command for z direction";
 CM_ SG_ 2452029473 cmd_mtq_bdot_y "bdot command for y direction";
-CM_ SG_ 2452029473 cmd_mtq_bdot_x "command bdot
-bdot command for x direction";
+CM_ SG_ 2452029473 cmd_mtq_bdot_x "bdot command for x direction";
 CM_ SG_ 2449932320 bdot_tumble_status_status "bdot tumble status boolean";
 CM_ SG_ 2452160531 msp_temp_temp "temp of msp";
 CM_ SG_ 2449932985 grnd_epoch_val_overflow "Overflow of epoch (time between millenium and when we launched)";
