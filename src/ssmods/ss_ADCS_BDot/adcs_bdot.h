@@ -37,11 +37,13 @@
 #define TLM_ID_SP_MAG2 121
 #define TLM_ID_CONTINUOUS_MAG 120
 #define TLM_ID_BDOT_STATE_STATUS 119
+#define TLM_ID_BDOT_CALIBRATION_STATUS 118
 
 #define OPCODE_MAG_SELECT_CMD 2
 #define OPCODE_MODE_OPERATION_CMD 3
 #define OPCODE_MAX_TUMBLING_TIME_CMD 4
 #define OPCODE_SPAM_SETTINGS_CMD 5
+#define OPCODE_MAG_CALIBRATION_SETTING_CMD 6
 
 
 CMD_SEGMENT {
@@ -65,6 +67,18 @@ CMD_SEGMENT {
     uint8_t spam_on_time_min;
     uint8_t spam_switch; // ON = 1, OFF = 0
 } spam_control;
+
+CMD_SEGMENT {
+    uint8_t mag_calibration_switch; // ON = 1, OFF = 0
+} gcmd_mag_calibration_cmd;
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint8_t calibration_switch_status;
+    float calibration_factor_x;
+    float calibration_factor_y;
+    float calibration_factor_z;
+} bdot_calibration_status;
 
 TLM_SEGMENT {
     BcTlmHeader header;
@@ -134,15 +148,23 @@ FILE_STATIC void reset_spam_avg_agg();
 
 /*******************************Timers************************************/
 FILE_STATIC void start_check_best_mag_timer();
+
 FILE_STATIC void start_check_nap_status_timer();
 FILE_STATIC void end_check_nap_status_timer();
 FILE_STATIC uint8_t check_check_nap_status_timer();
+
 FILE_STATIC uint8_t check_spam_timer();
 FILE_STATIC void start_spam_timer(uint32_t spam_timer_ms);
 FILE_STATIC void end_spam_timer();
+
+FILE_STATIC void start_spam_mag_self_test_timer();
+FILE_STATIC void end_spam_mag_self_test_timer();
+FILE_STATIC uint8_t check_spam_mag_self_test_timer();
+
 FILE_STATIC void start_spam_avg_timer();
 FILE_STATIC void end_spam_avg_timer();
 FILE_STATIC uint8_t check_spam_avg_timer();
+
 FILE_STATIC void simulink_compute();
 /*************************************************************************/
 
@@ -174,6 +196,7 @@ FILE_STATIC void send_all_polling_timers_segment_cosmos();
 FILE_STATIC void send_health_segment_cosmos();
 
 FILE_STATIC void send_bdot_state_status_cosmos();
+FILE_STATIC void send_bdot_calibration_status_cosmos();
 
 FILE_STATIC void send_cosmos_telem();
 /************************************************************************/
