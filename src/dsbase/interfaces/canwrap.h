@@ -442,6 +442,9 @@ typedef struct gcmd_bdot_mag_control {
 } gcmd_bdot_mag_control;
 
 typedef struct gcmd_bdot_pole_override {
+    uint8_t gcmd_bdot_pole_override_gain_z; // pct
+    uint8_t gcmd_bdot_pole_override_gain_y; // pct
+    uint8_t gcmd_bdot_pole_override_gain_x; // pct
     uint8_t gcmd_bdot_pole_override_z; //  (No Units)
     uint8_t gcmd_bdot_pole_override_y; //  (No Units)
     uint8_t gcmd_bdot_pole_override_x; //  (No Units)

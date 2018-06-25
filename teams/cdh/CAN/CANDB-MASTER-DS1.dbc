@@ -173,10 +173,13 @@ BO_ 2449736394 gcmd_bdot_control: 1 Vector__XXX
 BO_ 2449736393 gcmd_bdot_mag_control: 1 Vector__XXX
  SG_ gcmd_bdot_mag_control_mode : 0|2@1+ (1,0) [0|3] "" Vector__XXX
 
-BO_ 2449736392 gcmd_bdot_pole_override: 1 Vector__XXX
- SG_ gcmd_bdot_pole_override_z : 4|2@1+ (1,0) [0|2] "" Vector__XXX
- SG_ gcmd_bdot_pole_override_y : 2|2@1+ (1,0) [0|2] "" Vector__XXX
- SG_ gcmd_bdot_pole_override_x : 0|2@1+ (1,0) [0|2] "" Vector__XXX
+BO_ 2449736392 gcmd_bdot_pole_override: 4 Vector__XXX
+ SG_ gcmd_bdot_pole_override_gain_z : 16|8@1+ (1,0) [0|255] "pct" Vector__XXX
+ SG_ gcmd_bdot_pole_override_gain_y : 8|8@1+ (1,0) [0|255] "pct" Vector__XXX
+ SG_ gcmd_bdot_pole_override_gain_x : 0|8@1+ (1,0) [0|255] "pct" Vector__XXX
+ SG_ gcmd_bdot_pole_override_z : 28|2@1+ (1,0) [0|2] "" Vector__XXX
+ SG_ gcmd_bdot_pole_override_y : 26|2@1+ (1,0) [0|2] "" Vector__XXX
+ SG_ gcmd_bdot_pole_override_x : 24|2@1+ (1,0) [0|2] "" Vector__XXX
 
 BO_ 2449736390 gcmd_gen_set_pt_state: 1 Vector__XXX
  SG_ gcmd_gen_set_pt_state_3 : 4|2@1+ (1,0) [0|3] "" Vector__XXX
@@ -951,6 +954,9 @@ CM_ SG_ 2449736395 gcmd_bdot_spam_time_off "Chooses the amount of time SPAM shou
 CM_ SG_ 2449736395 gcmd_bdot_spam_control "Turn spam on or off";
 CM_ SG_ 2449736394 gcmd_bdot_control_mode "Chooses mode that bdot is in: 0 = NORMAL_MODE , 1 = SLEEP_MODE";
 CM_ SG_ 2449736393 gcmd_bdot_mag_control_mode "Choose the best fit magnetometer from ground. 0 = Auto, 1 = BDOT, 2 = SP1, 3 = SP2";
+CM_ SG_ 2449736392 gcmd_bdot_pole_override_gain_z "Percentage dipole gain on z axis";
+CM_ SG_ 2449736392 gcmd_bdot_pole_override_gain_y "Percentage dipole gain on y axis";
+CM_ SG_ 2449736392 gcmd_bdot_pole_override_gain_x "Percentage dipole gain on x axis";
 CM_ SG_ 2449736392 gcmd_bdot_pole_override_z "Flips the dipole signs on bdot z axis before sending command to mtq";
 CM_ SG_ 2449736392 gcmd_bdot_pole_override_y "Flips the dipole signs on bdot y axis before sending command to mtq";
 CM_ SG_ 2449736392 gcmd_bdot_pole_override_x "Flips the dipole signs on bdot x axis before sending command to mtq";

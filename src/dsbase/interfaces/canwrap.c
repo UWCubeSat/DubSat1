@@ -747,18 +747,24 @@ void decodegcmd_bdot_pole_override(CANPacket *input, gcmd_bdot_pole_override *ou
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> gcmd_bdot_pole_override_z = (uint8_t) (((fullData & ((uint64_t) 0x3 << 58)) >> 58));
-    output -> gcmd_bdot_pole_override_y = (uint8_t) (((fullData & ((uint64_t) 0x3 << 60)) >> 60));
-    output -> gcmd_bdot_pole_override_x = (uint8_t) (((fullData & ((uint64_t) 0x3 << 62)) >> 62));
+    output -> gcmd_bdot_pole_override_gain_z = (uint8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
+    output -> gcmd_bdot_pole_override_gain_y = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> gcmd_bdot_pole_override_gain_x = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> gcmd_bdot_pole_override_z = (uint8_t) (((fullData & ((uint64_t) 0x3 << 34)) >> 34));
+    output -> gcmd_bdot_pole_override_y = (uint8_t) (((fullData & ((uint64_t) 0x3 << 36)) >> 36));
+    output -> gcmd_bdot_pole_override_x = (uint8_t) (((fullData & ((uint64_t) 0x3 << 38)) >> 38));
 }
 
 void encodegcmd_bdot_pole_override(gcmd_bdot_pole_override *input, CANPacket *output){
     output -> id = 302252744;
-    output -> length = 1;
+    output -> length = 4;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_pole_override_z))) & 0x3) << 58;
-    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_pole_override_y))) & 0x3) << 60;
-    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_pole_override_x))) & 0x3) << 62;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_pole_override_gain_z))) & 0xff) << 40;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_pole_override_gain_y))) & 0xff) << 48;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_pole_override_gain_x))) & 0xff) << 56;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_pole_override_z))) & 0x3) << 34;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_pole_override_y))) & 0x3) << 36;
+    fullPacketData |= (((uint64_t)((input -> gcmd_bdot_pole_override_x))) & 0x3) << 38;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
