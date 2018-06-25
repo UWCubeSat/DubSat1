@@ -206,11 +206,10 @@ FILE_STATIC uint8_t spam_timer_on_flag = 0;
 #pragma PERSISTENT(spam_off_timer_ms)
 #pragma PERSISTENT(spam_on_timer_ms)
 
-FILE_STATIC uint8_t spam_avg_timer_on_flag = 0;
+/* this is the timer that will indicate when to collect spam */
 FILE_STATIC TIMER_HANDLE spam_avg_timer = 100;
-FILE_STATIC uint32_t spam_avg_timer_ms = 1000;
-//FILE_STATIC TIMER_HANDLE spam_avg_timer_callback = 100;
-//FILE_STATIC uint32_t spam_avg_timer_us = 1000000; //0.1s
+FILE_STATIC uint8_t spam_avg_timer_on_flag = 0;
+FILE_STATIC uint32_t spam_avg_timer_ms = 500;
 /***************************************************************/
 
 
@@ -230,7 +229,7 @@ FILE_STATIC int16_t spam_z_avg[3];
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4
+ rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5
 };
 /**************************************************************/
 
@@ -280,6 +279,8 @@ int main(void)
 
         if(rt_flag)
         {
+            P3OUT ^= BIT5;
+
             /* read magnetometer data every 10hz, but only feed in magnetometer data to rt onestep
              * that's "valid". */
             read_magnetometer_data();
@@ -373,6 +374,7 @@ void determine_bdot_state()
         if(bdot_state == SPAM)
         {
             start_spam_timer(spam_on_timer_ms);
+            reset_spam_avg_agg();
             current_spam_axis = SPAM_X;
         } else if(bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST)
         {
@@ -392,6 +394,7 @@ void determine_bdot_state()
             end_spam_timer();
             if(gcmd_next_bdot_state == SPAM)
             {
+                reset_spam_avg_agg();
                 start_spam_timer(spam_on_timer_ms);
             } else
             {
@@ -437,6 +440,7 @@ void determine_bdot_state()
                         bdot_state = SPAM_MAG_SELF_TEST;
                         /* start timer to time how the amount of time spam is on */
                         start_spam_timer(spam_on_timer_ms);
+                        reset_spam_avg_agg();
                         current_spam_axis = SPAM_X;
                     }
                 }
@@ -452,6 +456,7 @@ void determine_bdot_state()
                 {
                     last_bdot_state = SLEEP_MODE;
                     bdot_state = SPAM_MAG_SELF_TEST;
+                    reset_spam_avg_agg();
                     /* start timer to time how the amount of time spam is on */
                     start_spam_timer(spam_on_timer_ms);
                     current_spam_axis = SPAM_X;
@@ -465,7 +470,6 @@ void determine_bdot_state()
         case SPAM:
             if(check_spam_avg_timer() && mtq_state == MTQ_ACTUATION_PHASE)
             {
-                P3OUT ^= BIT5;
                 handle_spam_average();
             }
             /* if the amount of time spam is on is done, go back to last normal state (either NORMAL or SLEEP) */
@@ -497,7 +501,6 @@ void determine_spam_axis()
             for(i = 0; i < 3; i++)
             {
                 spam_x_avg[i] = aggVec_avg_i_i(&spam_x_avg_agg[i]);
-                aggVec_reset((aggVec *) &spam_x_avg_agg[i]);
             }
             current_spam_axis = SPAM_Y;
             break;
@@ -505,7 +508,6 @@ void determine_spam_axis()
             for(i = 0; i < 3; i++)
             {
                 spam_y_avg[i] = aggVec_avg_i_i(&spam_y_avg_agg[i]);
-                aggVec_reset((aggVec *) &spam_y_avg_agg[i]);
             }
             current_spam_axis = SPAM_Z;
             break;
@@ -513,10 +515,20 @@ void determine_spam_axis()
             for(i = 0; i < 3; i++)
             {
                 spam_z_avg[i] = aggVec_avg_i_i(&spam_z_avg_agg[i]);
-                aggVec_reset((aggVec *) &spam_z_avg_agg[i]);
             }
             current_spam_axis = SPAM_X;
             break;
+    }
+}
+
+void reset_spam_avg_agg()
+{
+    uint8_t i;
+    for(i = 0; i < 3; i++)
+    {
+        aggVec_reset((aggVec *) &spam_x_avg_agg[i]);
+        aggVec_reset((aggVec *) &spam_y_avg_agg[i]);
+        aggVec_reset((aggVec *) &spam_z_avg_agg[i]);
     }
 }
 
@@ -759,7 +771,6 @@ void handle_spam_average()
     switch(current_spam_axis)
     {
         case SPAM_X:
-            aggVec_push_i(&spam_x_avg_agg[0], continuous_bdot_mag_data->rawX);
             aggVec_push_i(&spam_x_avg_agg[1], continuous_bdot_mag_data->rawY);
             aggVec_push_i(&spam_x_avg_agg[2], continuous_bdot_mag_data->rawZ);
             break;
@@ -1255,10 +1266,9 @@ void rcPopulateH1(CANPacket *out)
     rc.rc_adcs_bdot_h1_reset_count = bspGetResetCount();
     rc.rc_adcs_bdot_h1_sysrstiv = SYSRSTIV;
     rc.rc_adcs_bdot_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&rc_temp));
-    rc.rc_adcs_bdot_h1_temp_max = compressMSPTemp(aggVec_max_f(&rc_temp));
     rc.rc_adcs_bdot_h1_temp_min = compressMSPTemp(aggVec_min_f(&rc_temp));
     rc.rc_adcs_bdot_h1_reset_count = 0;
-    aggVec_reset((aggVec *)&rc_temp);
+    aggVec_as_reset((aggVec *)&rc_temp);
     encoderc_adcs_bdot_h1(&rc, out);
 }
 

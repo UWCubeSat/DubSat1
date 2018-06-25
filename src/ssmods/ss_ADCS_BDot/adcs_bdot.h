@@ -128,6 +128,7 @@ typedef struct _module_status {
 FILE_STATIC void initial_setup();
 FILE_STATIC void can_rx_callback(CANPacket *packet);
 FILE_STATIC void initialize_aggregate();
+FILE_STATIC void reset_spam_avg_agg();
 /**************************************************************************/
 
 
