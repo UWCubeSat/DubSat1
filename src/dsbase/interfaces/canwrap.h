@@ -27,6 +27,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_MTQ_PWM_TIME 302252752
 #define CAN_ID_GCMD_EPS_BATT_FULLDEF 302252751
 #define CAN_ID_RC_ADCS_BDOT_5 304677468
 #define CAN_ID_GCMD_RESET_MINMAX 302252750
@@ -291,6 +292,11 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_mtq_pwm_time {
+    uint8_t gcmd_mtq_pwm_time_measurement; // seconds
+    uint8_t gcmd_mtq_pwm_time_actuation; // seconds
+} gcmd_mtq_pwm_time;
+
 typedef struct gcmd_eps_batt_fulldef {
     float gcmd_eps_batt_fulldef_const_volt; // V
     float gcmd_eps_batt_fulldef_chg_curr; // Amps
@@ -1300,6 +1306,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_mtq_pwm_time(gcmd_mtq_pwm_time *input, CANPacket* output);
+void decodegcmd_mtq_pwm_time(CANPacket *input, gcmd_mtq_pwm_time *output);
 
 void encodegcmd_eps_batt_fulldef(gcmd_eps_batt_fulldef *input, CANPacket* output);
 void decodegcmd_eps_batt_fulldef(CANPacket *input, gcmd_eps_batt_fulldef *output);

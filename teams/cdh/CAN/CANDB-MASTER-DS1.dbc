@@ -49,6 +49,10 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2449736400 gcmd_mtq_pwm_time: 2 Vector__XXX
+ SG_ gcmd_mtq_pwm_time_measurement : 8|8@1+ (1,0) [0|255] "seconds" Vector__XXX
+ SG_ gcmd_mtq_pwm_time_actuation : 0|8@1+ (1,0) [0|255] "seconds" Vector__XXX
+
 BO_ 2449736399 gcmd_eps_batt_fulldef: 8 Vector__XXX
  SG_ gcmd_eps_batt_fulldef_const_volt : 0|32@1- (1,0) [0|8] "V" Vector__XXX
  SG_ gcmd_eps_batt_fulldef_chg_curr : 32|32@1- (1,0) [0|1] "Amps" Vector__XXX
