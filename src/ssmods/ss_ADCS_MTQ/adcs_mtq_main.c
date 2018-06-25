@@ -99,7 +99,7 @@ FILE_STATIC int actuation_timer = 0;
 FILE_STATIC int actuation_time_ms = 2000;
 #pragma PERSISTENT(actuation_time_ms)
 FILE_STATIC int measurement_timer = 0;
-FILE_STATIC int measurement_time_ms = 2000;
+FILE_STATIC int measurement_time_ms = 1;
 #pragma PERSISTENT(measurement_time_ms)
 FILE_STATIC int stabilize_timer = 0;
 FILE_STATIC int stabilize_time_ms = 100;
@@ -176,16 +176,8 @@ void measurement()
 
     if(checkTimer(measurement_timer)) // finished measurement phase
     {
-
-        if((sc_mode ==0||sc_mode ==1) && fsw_is_valid())
-        {
-            curr_state = FSW_ACTUATION;
-        } else
-        {
-            curr_state = BDOT_ACTUATION;
-        }
         send_CAN_ack_packet();
-        start_actuation_timer();
+        start_measurement_timer();
     }
 }
 
@@ -506,6 +498,7 @@ void send_CAN_ack_packet(void)
     ack.mtq_ack_last_fsw_z = fsw_command_z;
     CANPacket mtq_ack_packet;
     encodemtq_ack(&ack, &mtq_ack_packet);
+    while(canTxCheck()==CAN_TX_BUSY){}
     canSendPacket(&mtq_ack_packet);
     sent++;
 }
