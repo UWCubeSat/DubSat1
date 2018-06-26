@@ -39,6 +39,7 @@
 
 #define NORMAL_READING_OPERATION 0
 #define NAP_OPERATION 1
+#define SPAM_MAG_SELF_TEST_OPERATION 2
 #define SPAM_OPERATION 3
 
 #define POP_ON CAN_ENUM_BOOL_TRUE
@@ -49,7 +50,6 @@
 
 #define MINUTES_TO_MILLISEC_CONVERSION_FACTOR 60000
 
-
 typedef enum mag_src {
     BDOT_MAG,
     SP_MAG1,
@@ -58,7 +58,8 @@ typedef enum mag_src {
 
 typedef enum mtq_phase {
     MTQ_MEASUREMENT_PHASE,
-    MTQ_ACTUATION_PHASE
+    MTQ_ACTUATION_PHASE,
+    MTQ_PMS_PHASE
 } mtq_phase;
 
 typedef enum bdot_state_mode {
@@ -100,6 +101,8 @@ FILE_STATIC simulink_segment mySimulink;
 FILE_STATIC polling_timer_info_segment polling_timer_info;
 /* Stores the last state that bdot is in */
 FILE_STATIC bdot_state_status bdot_state_cosmos;
+
+FILE_STATIC bdot_calibration_status bdot_calibration_cosmos;
 /****************************************************************/
 
 /******************COSMOS Commands*******************************/
@@ -139,8 +142,14 @@ FILE_STATIC int8_t override_factor_x = POP_OFF_SCALE_FACTOR;
 FILE_STATIC int8_t override_factor_y = POP_OFF_SCALE_FACTOR;
 FILE_STATIC int8_t override_factor_z = POP_OFF_SCALE_FACTOR;
 
+FILE_STATIC uint8_t gcmd_dipole_gain_factor_x = 1;
+FILE_STATIC uint8_t gcmd_dipole_gain_factor_y = 1;
+FILE_STATIC uint8_t gcmd_dipole_gain_factor_z = 1;
+
 FILE_STATIC uint8_t spam_control_time_change_flag = 0;
 FILE_STATIC spam_axis current_spam_axis = SPAM_X;
+
+FILE_STATIC uint8_t calibration_switch = CALIBRATION_ON;
 
 /* holds magnetometer data read every 10 hz */
 FILE_STATIC MagnetometerData* continuous_bdot_mag_data;
@@ -199,12 +208,16 @@ FILE_STATIC uint8_t nap_status_timer_on_flag = 0;
 /* this is the timer that will keep track of how long SPAM is */
 FILE_STATIC TIMER_HANDLE spam_timer = 100;
 //FILE_STATIC uint32_t spam_off_timer_ms = 3600000; // 1 hour;
-//FILE_STATIC uint32_t spam_on_timer_ms = 120000; // 6 minute (2 minutes each axis);
-FILE_STATIC uint32_t spam_off_timer_ms = 15000;
-FILE_STATIC uint32_t spam_on_timer_ms = 20000;
+//FILE_STATIC uint32_t spam_on_timer_ms = 120000; // 6 min
+FILE_STATIC uint32_t spam_off_timer_ms = 120000; // 2 min
+FILE_STATIC uint32_t spam_on_timer_ms = 20000; // 20 secs
 FILE_STATIC uint8_t spam_timer_on_flag = 0;
 #pragma PERSISTENT(spam_off_timer_ms)
 #pragma PERSISTENT(spam_on_timer_ms)
+
+FILE_STATIC TIMER_HANDLE spam_mag_self_test_timer = 100;
+FILE_STATIC uint32_t spam_mag_self_test_timer_ms = 4000;
+FILE_STATIC uint8_t spam_mag_self_test_timer_on_flag = 0;
 
 /* this is the timer that will indicate when to collect spam */
 FILE_STATIC TIMER_HANDLE spam_avg_timer = 100;
@@ -264,9 +277,6 @@ int main(void)
     start_spam_timer(spam_off_timer_ms);
     /* Turns on the timer that will report 1 if satellite is tumbling for too long */
     start_check_nap_status_timer();
-
-//    callback timer, so only needs to be reinitialized if the time changes
-//    spam_avg_timer_callback = timerCallbackInitializer(&handle_spam_average, spam_avg_timer_us);
 
     while (1)
     {
@@ -351,6 +361,7 @@ FILE_STATIC void initial_setup()
     bcbinPopulateHeader(&sp_mag2_data_cosmos.header, TLM_ID_SP_MAG2, sizeof(sp_mag2_data_cosmos));
     bcbinPopulateHeader(&cosmos_bdot_persp_mtq_info.header, TLM_ID_MTQ_INFO, sizeof(cosmos_bdot_persp_mtq_info));
     bcbinPopulateHeader(&bdot_state_cosmos.header, TLM_ID_BDOT_STATE_STATUS, sizeof(bdot_state_cosmos));
+    bcbinPopulateHeader(&bdot_calibration_cosmos.header, TLM_ID_BDOT_CALIBRATION_STATUS, sizeof(bdot_calibration_cosmos));
     bcbinPopulateMeta(&metaSeg, sizeof(metaSeg));
 
     // not using these right now
@@ -389,19 +400,23 @@ void determine_bdot_state()
     {
         /* in any case, when there's a command sent from ground to change state to
          * NORMAL or SLEEP, spam timer has to end and restart. */
-        if(bdot_state == SPAM || bdot_state == SPAM_MAG_SELF_TEST)
+        if(bdot_state == SPAM)
         {
             end_spam_timer();
-            if(gcmd_next_bdot_state == SPAM)
-            {
-                reset_spam_avg_agg();
-                start_spam_timer(spam_on_timer_ms);
-            } else
-            {
-                start_spam_timer(spam_off_timer_ms);
-            }
         }
-        current_spam_axis = SPAM_X;
+        if(bdot_state == SPAM_MAG_SELF_TEST)
+        {
+            end_spam_mag_self_test_timer();
+            end_self_test_calibration(mag_num);
+        }
+        if(gcmd_next_bdot_state == SPAM_MAG_SELF_TEST)
+        {
+            start_spam_mag_self_test_timer();
+            start_self_test_calibration(mag_num);
+        } else
+        {
+            start_spam_timer(spam_off_timer_ms);
+        }
 
         end_check_nap_status_timer();
 
@@ -438,10 +453,8 @@ void determine_bdot_state()
                     {
                         last_bdot_state = NORMAL_MODE;
                         bdot_state = SPAM_MAG_SELF_TEST;
-                        /* start timer to time how the amount of time spam is on */
-                        start_spam_timer(spam_on_timer_ms);
-                        reset_spam_avg_agg();
-                        current_spam_axis = SPAM_X;
+                        start_spam_mag_self_test_timer();
+                        start_self_test_calibration(mag_num);
                     }
                 }
             }
@@ -456,16 +469,20 @@ void determine_bdot_state()
                 {
                     last_bdot_state = SLEEP_MODE;
                     bdot_state = SPAM_MAG_SELF_TEST;
-                    reset_spam_avg_agg();
-                    /* start timer to time how the amount of time spam is on */
-                    start_spam_timer(spam_on_timer_ms);
-                    current_spam_axis = SPAM_X;
+                    start_spam_mag_self_test_timer();
+                    start_self_test_calibration(mag_num);
                 }
             }
             break;
         case SPAM_MAG_SELF_TEST:
+            if(check_spam_mag_self_test_timer())
+            {
+                end_self_test_calibration(mag_num);
+                current_spam_axis = SPAM_X;
+                reset_spam_avg_agg();
                 bdot_state = SPAM;
-                // TODO: do mag self test. talk to jeff to see if how he wants to do this.
+                start_spam_timer(spam_on_timer_ms);
+            }
             break;
         case SPAM:
             if(check_spam_avg_timer() && mtq_state == MTQ_ACTUATION_PHASE)
@@ -614,6 +631,11 @@ void process_sp_mag()
 void read_magnetometer_data()
 {
    continuous_bdot_mag_data = magReadXYZData(mag_num, ConvertToTeslas);
+   if(bdot_state == SPAM_MAG_SELF_TEST && mtq_state == MTQ_MEASUREMENT_PHASE)
+   {
+       self_test_add_samples(mag_num, continuous_bdot_mag_data);
+   }
+
 }
 
 
@@ -622,9 +644,19 @@ void update_valid_mag_data()
 {
     if ((mtq_state == MTQ_MEASUREMENT_PHASE) && (bdot_state == NORMAL_MODE || bdot_state == SLEEP_MODE))
     {
-        valid_bdot_mag_data->convertedX = continuous_bdot_mag_data->convertedX;
-        valid_bdot_mag_data->convertedY = continuous_bdot_mag_data->convertedY;
-        valid_bdot_mag_data->convertedZ = continuous_bdot_mag_data->convertedZ;
+        switch(calibration_switch)
+        {
+            case CALIBRATION_OFF:
+                valid_bdot_mag_data->convertedX = continuous_bdot_mag_data->convertedX;
+                valid_bdot_mag_data->convertedY = continuous_bdot_mag_data->convertedY;
+                valid_bdot_mag_data->convertedZ = continuous_bdot_mag_data->convertedZ;
+            break;
+            case CALIBRATION_ON:
+                valid_bdot_mag_data->convertedX = continuous_bdot_mag_data->convertedX * continuous_bdot_mag_data->calibration_factor_x;
+                valid_bdot_mag_data->convertedY = continuous_bdot_mag_data->convertedY * continuous_bdot_mag_data->calibration_factor_y;
+                valid_bdot_mag_data->convertedZ = continuous_bdot_mag_data->convertedZ * continuous_bdot_mag_data->calibration_factor_z;
+            break;
+        }
     }
 }
 
@@ -696,6 +728,37 @@ uint8_t check_spam_timer()
         if(checkTimer(spam_timer))
         {
             spam_timer_on_flag = 0;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void start_spam_mag_self_test_timer()
+{
+    if(!spam_mag_self_test_timer_on_flag)
+    {
+        spam_mag_self_test_timer = timerPollInitializer(spam_mag_self_test_timer_ms);
+        spam_mag_self_test_timer_on_flag = 1;
+    }
+}
+
+void end_spam_mag_self_test_timer()
+{
+    if(spam_mag_self_test_timer_on_flag)
+    {
+        endPollingTimer(spam_mag_self_test_timer);
+        spam_mag_self_test_timer_on_flag = 0;
+    }
+}
+
+uint8_t check_spam_mag_self_test_timer()
+{
+    if(spam_mag_self_test_timer_on_flag)
+    {
+        if(checkTimer(spam_mag_self_test_timer))
+        {
+            spam_mag_self_test_timer_on_flag = 0;
             return 1;
         }
     }
@@ -867,6 +930,7 @@ void send_cosmos_telem()
     send_mtq_info_segment_cosmos();
     send_bdot_state_status_cosmos();
     send_simulink_segment_cosmos();
+    send_bdot_calibration_status_cosmos();
 //    send_sp_mag1_reading_cosmos();
 //    send_sp_mag2_reading_cosmos();
     bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
@@ -913,20 +977,21 @@ void can_rx_callback(CANPacket *packet)
             // measurement_phase = 0;
             // actuation_phase = 1;
             decodemtq_ack(packet, &ack);
-            if(!ack.mtq_ack_phase)
+            if(ack.mtq_ack_phase == CAN_ENUM_MTQ_PHASE_MEASUREMENT_PHASE)
             {
-//                P3OUT |= BIT5; //LED on in measurement
                 mtq_state = MTQ_MEASUREMENT_PHASE;
             }
-            else
+            else if(ack.mtq_ack_phase == CAN_ENUM_MTQ_PHASE_ACTUATION_PHASE)
             {
-//                P3OUT &= ~BIT5; //LED off in actuation
                 mtq_state = MTQ_ACTUATION_PHASE;
                 if(bdot_state == SPAM)
                 {
                     end_spam_avg_timer();
                     start_spam_avg_timer();
                 }
+            } else if(ack.mtq_ack_phase == CAN_ENUM_MTQ_PHASE_PMS_PHASE)
+            {
+                mtq_state = MTQ_PMS_PHASE;
             }
             break;
         case CAN_ID_SENSORPROC_MAG:
@@ -1048,6 +1113,15 @@ void send_bdot_state_status_cosmos()
     bcbinSendPacket((uint8_t *) &bdot_state_cosmos, sizeof(bdot_state_cosmos));
 }
 
+void send_bdot_calibration_status_cosmos()
+{
+    bdot_calibration_cosmos.calibration_factor_x = continuous_bdot_mag_data->calibration_factor_x;
+    bdot_calibration_cosmos.calibration_factor_y = continuous_bdot_mag_data->calibration_factor_y;
+    bdot_calibration_cosmos.calibration_factor_z = continuous_bdot_mag_data->calibration_factor_z;
+    bdot_calibration_cosmos.calibration_switch_status = calibration_switch;
+    bcbinSendPacket((uint8_t *) &bdot_calibration_cosmos, sizeof(bdot_calibration_cosmos));
+}
+
 /* Send rt onestep output */
 void send_simulink_segment_cosmos()
 {
@@ -1111,8 +1185,8 @@ void select_mode_operation(uint8_t reading_mode_selection)
             gcmd_bdot_state_flag = 1;
             break;
         case SPAM_OPERATION:
-            if(bdot_state == SPAM) return;
-            gcmd_next_bdot_state = SPAM;
+            if(bdot_state == SPAM_MAG_SELF_TEST) return;
+            gcmd_next_bdot_state = SPAM_MAG_SELF_TEST;
             gcmd_bdot_state_flag = 1;
             break;
     }
@@ -1207,13 +1281,28 @@ void bdot_pop_operation(uint8_t pop_control_x, uint8_t pop_control_y, uint8_t po
     }
 }
 
+void mag_calibration_control_operation(uint8_t calibration_switch_cmd)
+{
+    switch(calibration_switch_cmd)
+    {
+        case CALIBRATION_ON:
+            calibration_switch = CALIBRATION_ON;
+            break;
+        case CALIBRATION_OFF:
+            calibration_switch = CALIBRATION_OFF;
+            break;
+        default:
+            calibration_switch = CALIBRATION_ON;
+    }
+}
+
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     mag_select_cmd* mag_select;
     mode_operation_cmd* mode_operation_select;
     max_tumble_time* max_tumble_time_select;
     gcmd_bdot_spam* spam_control_select;
-
+    gcmd_mag_calibration_cmd* mag_calibration_control_select;
     if (mode == Mode_BinaryStreaming)
     {
         switch(cmdstr[0])
@@ -1234,6 +1323,10 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
                 spam_control_select = (gcmd_bdot_spam *) (cmdstr + 1);
                 spam_control_operation(spam_control_select->gcmd_bdot_spam_time_off, spam_control_select->gcmd_bdot_spam_time_on, spam_control_select->gcmd_bdot_spam_control,
                                        spam_control_select->gcmd_bdot_spam_magnitude_x, spam_control_select->gcmd_bdot_spam_magnitude_y, spam_control_select->gcmd_bdot_spam_magnitude_z);
+                break;
+            case OPCODE_MAG_CALIBRATION_SETTING_CMD:
+                mag_calibration_control_select = (gcmd_mag_calibration_cmd*) (cmdstr + 1);
+                mag_calibration_control_operation(mag_calibration_control_select->mag_calibration_switch);
                 break;
             case OPCODE_COMMONCMD:
                 break;
