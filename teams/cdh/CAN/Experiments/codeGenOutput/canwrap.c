@@ -205,6 +205,25 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodegcmd_ppt_multiple_fire(CANPacket *input, gcmd_ppt_multiple_fire *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_ppt_multiple_fire_override = (uint8_t) (((fullData & ((uint64_t) 0x1 << 55)) >> 55));
+    output -> gcmd_ppt_multiple_fire_count = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+}
+
+void encodegcmd_ppt_multiple_fire(gcmd_ppt_multiple_fire *input, CANPacket *output){
+    output -> id = 302252753;
+    output -> length = 2;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_ppt_multiple_fire_override))) & 0x1) << 55;
+    fullPacketData |= (((uint64_t)((input -> gcmd_ppt_multiple_fire_count))) & 0xff) << 56;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decodegcmd_mtq_pwm_time(CANPacket *input, gcmd_mtq_pwm_time *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);

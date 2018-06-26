@@ -49,6 +49,10 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2449736401 gcmd_ppt_multiple_fire: 2 Vector__XXX
+ SG_ gcmd_ppt_multiple_fire_override : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ gcmd_ppt_multiple_fire_count : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
 BO_ 2449736400 gcmd_mtq_pwm_time: 2 Vector__XXX
  SG_ gcmd_mtq_pwm_time_measurement : 8|8@1+ (1,0) [0|255] "seconds" Vector__XXX
  SG_ gcmd_mtq_pwm_time_actuation : 0|8@1+ (1,0) [0|255] "seconds" Vector__XXX
@@ -887,6 +891,8 @@ BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,
 BO_TX_BU_ 2452160531 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ SG_ 2449736401 gcmd_ppt_multiple_fire_override "Ppt fire override";
+CM_ SG_ 2449736401 gcmd_ppt_multiple_fire_count "How many times to fire";
 CM_ SG_ 2449736399 gcmd_eps_batt_fulldef_const_volt "Limits for detecting a full state on the battery (voltage must be greater than this value)";
 CM_ SG_ 2449736399 gcmd_eps_batt_fulldef_chg_curr "Limits for detecting a full state on the battery (current must be less than this value)";
 CM_ SG_ 2452161116 rc_adcs_bdot_5_last_spam_z_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
@@ -1342,6 +1348,7 @@ CM_ SG_ 2452160531 msp_temp_temp "temp of msp";
 CM_ SG_ 2449932985 grnd_epoch_val_overflow "Overflow of epoch (time between millenium and when we launched)";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2449736401 gcmd_ppt_multiple_fire_override 1 "true" 0 "false" ;
 VAL_ 2449736397 gcmd_mtq_pms_enable 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736395 gcmd_bdot_spam_control 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736394 gcmd_bdot_control_mode 3 "spam" 2 "spam mag self test" 1 "sleep mode" 0 "normal mode" ;

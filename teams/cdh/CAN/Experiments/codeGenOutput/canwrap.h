@@ -27,6 +27,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_PPT_MULTIPLE_FIRE 302252753
 #define CAN_ID_GCMD_MTQ_PWM_TIME 302252752
 #define CAN_ID_GCMD_EPS_BATT_FULLDEF 302252751
 #define CAN_ID_RC_ADCS_BDOT_5 304677468
@@ -292,6 +293,11 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_ppt_multiple_fire {
+    uint8_t gcmd_ppt_multiple_fire_override; //  (No Units)
+    uint8_t gcmd_ppt_multiple_fire_count; //  (No Units)
+} gcmd_ppt_multiple_fire;
+
 typedef struct gcmd_mtq_pwm_time {
     uint8_t gcmd_mtq_pwm_time_measurement; // seconds
     uint8_t gcmd_mtq_pwm_time_actuation; // seconds
@@ -1306,6 +1312,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_ppt_multiple_fire(gcmd_ppt_multiple_fire *input, CANPacket* output);
+void decodegcmd_ppt_multiple_fire(CANPacket *input, gcmd_ppt_multiple_fire *output);
 
 void encodegcmd_mtq_pwm_time(gcmd_mtq_pwm_time *input, CANPacket* output);
 void decodegcmd_mtq_pwm_time(CANPacket *input, gcmd_mtq_pwm_time *output);
