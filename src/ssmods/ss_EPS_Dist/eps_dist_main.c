@@ -8,6 +8,7 @@
 #include "core/dataArray.h"
 #include "interfaces/rollcall.h"
 #include "core/agglib.h"
+#include "core/autosequence.h"
 
 #define WDT_CONFIG WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_2
 
@@ -916,7 +917,8 @@ int main(void)
     // and then control is returned to this main loop
 
     // Autostart the EPS power domain for now
-    autoStart();
+    //autoStart();
+    seqInit();
 
     initializeTimer();
     initData();
@@ -950,6 +952,8 @@ int main(void)
         if(rcSendFlag && (canTxCheck() != CAN_TX_BUSY))
             sendRCCmd();
         sendRC();
+        seqUpdateMET((uint32_t)(metConvertToInt(getMETTimestamp()) >> 8));
+        checkSequence();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!

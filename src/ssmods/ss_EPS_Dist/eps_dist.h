@@ -17,6 +17,7 @@
 #include "sensors/pcvsensor.h"
 #include "bsp/bsp.h"
 #include "core/debugtools.h"
+#include "interfaces/canwrap.h"
 
 // Configure power domains
 #define NUM_POWER_DOMAINS  8
@@ -211,5 +212,7 @@ uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 
 void distInitializeOCPThresholds();
+
+void can_packet_rx_callback(CANPacket *packet);
 
 #endif /* EPS_DIST_H_ */
