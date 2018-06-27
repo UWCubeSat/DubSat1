@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'MSP_FSW'.
  *
- * Model version                  : 1.369
+ * Model version                  : 1.384
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Tue May  1 19:12:57 2018
+ * C/C++ source code generated on : Mon Jun 25 21:15:08 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -48,7 +48,8 @@ typedef struct tag_RTM RT_MODEL;
 #define DEFINED_TYPEDEF_FOR_sp2fsw_
 
 typedef struct {
-  real32_T mag_vec_body_T[4];
+  real32_T mag1_vec_body_T[4];
+  real32_T mag2_vec_body_T[4];
   real32_T gyro_omega_body_radps[4];
   real32_T sun_vec_body_sunsensor[4];
 } sp2fsw;
@@ -83,19 +84,39 @@ typedef struct {
 
 #endif
 
+/* Block signals and states (auto storage) for system '<S6>/sun_point_lib' */
+typedef struct {
+  real_T UnitDelay_DSTATE[3];          /* '<S38>/Unit Delay' */
+  real_T UnitDelay_DSTATE_b[3];        /* '<S53>/Unit Delay' */
+} DW_sun_point_lib;
+
 /* Block signals and states (auto storage) for system '<Root>' */
 typedef struct {
+  DW_sun_point_lib sun_point_lib_j;    /* '<S6>/sun_point_lib' */
   real_T UnitDelay_DSTATE[4];          /* '<S3>/Unit Delay' */
   real_T UnitDelay1_DSTATE[3];         /* '<S3>/Unit Delay1' */
   real_T UnitDelay2_DSTATE[36];        /* '<S3>/Unit Delay2' */
-  real_T UnitDelay_DSTATE_a[3];        /* '<S36>/Unit Delay' */
-  int32_T clockTickCounter;            /* '<S36>/MT_on' */
-  int8_T UnitDelay_DSTATE_ao;          /* '<S7>/Unit Delay' */
-  boolean_T Relay_Mode;                /* '<S7>/Relay' */
+  int8_T UnitDelay_DSTATE_a;           /* '<S8>/Unit Delay' */
+  boolean_T Relay_Mode;                /* '<S8>/Relay' */
 } DW;
 
 /* Constant parameters (auto storage) */
 typedef struct {
+  /* Expression: fsw_params.bus.solar_panel_unit
+   * Referenced by: '<S38>/Constant'
+   */
+  real_T Constant_Value[3];
+
+  /* Expression: fsw_params.control.sun_point.prop_gain
+   * Referenced by: '<S38>/prop_gain'
+   */
+  real_T prop_gain_Gain[9];
+
+  /* Expression: fsw_params.control.sun_point.drv_gain
+   * Referenced by: '<S38>/drv_gain'
+   */
+  real_T drv_gain_Gain[9];
+
   /* Expression: fsw_params.estimation.ic.error_cov
    * Referenced by: '<S3>/Unit Delay2'
    */
@@ -106,23 +127,28 @@ typedef struct {
    */
   real_T Constant1_Value[36];
 
-  /* Expression: fsw_params.actuators.reaction_wheel.inertia_matrix
-   * Referenced by: '<S36>/MoI'
+  /* Expression: fsw_params.control.mag_pd_controller.p_gain
+   * Referenced by: '<S37>/p-gain'
    */
-  real_T MoI_Value[9];
+  real_T pgain_Value[9];
+
+  /* Expression: fsw_params.control.mag_pd_controller.d_gain
+   * Referenced by: '<S37>/d-gain'
+   */
+  real_T dgain_Value[9];
 
   /* Expression: fsw_params.estimation.G
-   * Referenced by: '<S21>/G'
+   * Referenced by: '<S20>/G'
    */
   real_T G_Value[36];
 
   /* Expression: fsw_params.estimation.proc_cov
-   * Referenced by: '<S21>/Constant3'
+   * Referenced by: '<S20>/Constant3'
    */
   real_T Constant3_Value[36];
 
   /* Computed Parameter: r_SEA_Value
-   * Referenced by: '<S11>/r_SEA'
+   * Referenced by: '<S10>/r_SEA'
    */
   real32_T r_SEA_Value[3];
 } ConstP;
@@ -135,10 +161,12 @@ typedef struct {
   boolean_T sc_above_gs;               /* '<Root>/sc_above_gs' */
   real_T sc2sun_unit[3];               /* '<Root>/sc2sun_unit' */
   real_T mag_eci_unit[3];              /* '<Root>/mag_eci_unit' */
-  real32_T mag_vec_body_T[4];          /* '<Root>/mag_vec_body_T' */
+  real32_T mag1_vec_body_T[4];         /* '<Root>/mag1_vec_body_T' */
+  real32_T mag2_vec_body_T[4];         /* '<Root>/mag2_vec_body_T' */
   real32_T gyro_omega_body_radps[4];   /* '<Root>/gyro_omega_body_radps' */
   real32_T sun_vec_body_sunsensor[4];  /* '<Root>/sun_vec_body_sunsensor' */
   int8_T CAN_IN[5];                    /* '<Root>/CAN_IN' */
+  real32_T solar_panel_power_W[3];     /* '<Root>/solar_panel_power_W' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with auto storage) */
@@ -180,11 +208,16 @@ extern RT_MODEL *const rtM;
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
- * Block '<S12>/Constant1' : Unused code path elimination
- * Block '<S12>/Constant2' : Unused code path elimination
- * Block '<S12>/Constant26' : Unused code path elimination
- * Block '<S12>/Constant4' : Unused code path elimination
- * Block '<S12>/Constant5' : Unused code path elimination
+ * Block '<S11>/Constant1' : Unused code path elimination
+ * Block '<S11>/Constant2' : Unused code path elimination
+ * Block '<S11>/Constant26' : Unused code path elimination
+ * Block '<S11>/Constant4' : Unused code path elimination
+ * Block '<S11>/Constant5' : Unused code path elimination
+ * Block '<S16>/Product' : Unused code path elimination
+ * Block '<S16>/Product1' : Unused code path elimination
+ * Block '<S16>/Product2' : Unused code path elimination
+ * Block '<S16>/Product3' : Unused code path elimination
+ * Block '<S16>/Sum' : Unused code path elimination
  * Block '<S17>/Product' : Unused code path elimination
  * Block '<S17>/Product1' : Unused code path elimination
  * Block '<S17>/Product2' : Unused code path elimination
@@ -195,20 +228,13 @@ extern RT_MODEL *const rtM;
  * Block '<S18>/Product2' : Unused code path elimination
  * Block '<S18>/Product3' : Unused code path elimination
  * Block '<S18>/Sum' : Unused code path elimination
- * Block '<S19>/Product' : Unused code path elimination
- * Block '<S19>/Product1' : Unused code path elimination
- * Block '<S19>/Product2' : Unused code path elimination
- * Block '<S19>/Product3' : Unused code path elimination
- * Block '<S19>/Sum' : Unused code path elimination
  * Block '<S3>/Rate Transition10' : Unused code path elimination
  * Block '<S3>/Reshape2' : Unused code path elimination
  * Block '<S3>/Reshape3' : Unused code path elimination
  * Block '<S4>/Rate Transition3' : Unused code path elimination
  * Block '<S5>/Constant26' : Unused code path elimination
  * Block '<S5>/Constant6' : Unused code path elimination
- * Block '<S11>/Data Type Conversion1' : Unused code path elimination
- * Block '<S11>/Rate Transition2' : Unused code path elimination
- * Block '<S11>/Rate Transition8' : Unused code path elimination
+ * Block '<S10>/Rate Transition8' : Unused code path elimination
  * Block '<S3>/ ' : Eliminated since input and output rates are identical
  * Block '<S3>/ 1' : Eliminated since input and output rates are identical
  * Block '<S3>/ 11' : Eliminated since input and output rates are identical
@@ -221,19 +247,23 @@ extern RT_MODEL *const rtM;
  * Block '<S3>/ 8' : Eliminated since input and output rates are identical
  * Block '<S3>/Rate Transition2' : Eliminated since input and output rates are identical
  * Block '<S3>/Rate Transition3' : Eliminated since input and output rates are identical
- * Block '<S3>/Reshape1' : Reshape block reduction
  * Block '<S3>/Reshape4' : Reshape block reduction
  * Block '<S4>/Rate Transition4' : Eliminated since input and output rates are identical
- * Block '<S36>/Rate Transition' : Eliminated since input and output rates are identical
- * Block '<S36>/Rate Transition1' : Eliminated since input and output rates are identical
- * Block '<S36>/Rate Transition2' : Eliminated since input and output rates are identical
- * Block '<S36>/Rate Transition3' : Eliminated since input and output rates are identical
- * Block '<S36>/Rate Transition4' : Eliminated since input and output rates are identical
- * Block '<S36>/Rate Transition5' : Eliminated since input and output rates are identical
- * Block '<S7>/Data Type Conversion' : Eliminate redundant data type conversion
- * Block '<S11>/Rate Transition' : Eliminated since input and output rates are identical
- * Block '<S11>/Rate Transition1' : Eliminated since input and output rates are identical
- * Block '<S11>/Rate Transition6' : Eliminated since input and output rates are identical
+ * Block '<S37>/Rate Transition' : Eliminated since input and output rates are identical
+ * Block '<S37>/Rate Transition1' : Eliminated since input and output rates are identical
+ * Block '<S37>/Rate Transition2' : Eliminated since input and output rates are identical
+ * Block '<S37>/Rate Transition3' : Eliminated since input and output rates are identical
+ * Block '<S37>/Rate Transition4' : Eliminated since input and output rates are identical
+ * Block '<S37>/Rate Transition5' : Eliminated since input and output rates are identical
+ * Block '<S38>/Rate Transition1' : Eliminated since input and output rates are identical
+ * Block '<S38>/Rate Transition2' : Eliminated since input and output rates are identical
+ * Block '<S38>/Rate Transition3' : Eliminated since input and output rates are identical
+ * Block '<S8>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S10>/Data Type Conversion1' : Eliminate redundant data type conversion
+ * Block '<S10>/Rate Transition' : Eliminated since input and output rates are identical
+ * Block '<S10>/Rate Transition1' : Eliminated since input and output rates are identical
+ * Block '<S10>/Rate Transition2' : Eliminated since input and output rates are identical
+ * Block '<S10>/Rate Transition6' : Eliminated since input and output rates are identical
  */
 
 /*-
@@ -260,22 +290,22 @@ extern RT_MODEL *const rtM;
  * '<S4>'   : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/actuator_processing'
  * '<S5>'   : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/bus_stub_fsw2mt'
  * '<S6>'   : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation'
- * '<S7>'   : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/mode_selecction'
- * '<S8>'   : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/single_2_bool'
- * '<S9>'   : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/single_2_bool1'
- * '<S10>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/single_2_bool2'
- * '<S11>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/target_generation_lib'
- * '<S12>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/bus_stub_CAN_OUT'
- * '<S13>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib'
- * '<S14>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib/Quaternion Conjugate'
- * '<S15>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib/Quaternion Multiplication'
- * '<S16>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib/Quaternion Multiplication/q0'
- * '<S17>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib/Quaternion Multiplication/q1'
- * '<S18>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib/Quaternion Multiplication/q2'
- * '<S19>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib/Quaternion Multiplication/q3'
- * '<S20>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/Estimation_EKF /3_sig_bnd '
- * '<S21>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/Estimation_EKF /Propagate Step '
- * '<S22>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/Estimation_EKF /Update Step '
+ * '<S7>'   : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/mag_logic_lib'
+ * '<S8>'   : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/mode_selecction'
+ * '<S9>'   : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/single_2_bool'
+ * '<S10>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/target_generation_lib'
+ * '<S11>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/bus_stub_CAN_OUT'
+ * '<S12>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib'
+ * '<S13>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib/Quaternion Conjugate'
+ * '<S14>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib/Quaternion Multiplication'
+ * '<S15>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib/Quaternion Multiplication/q0'
+ * '<S16>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib/Quaternion Multiplication/q1'
+ * '<S17>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib/Quaternion Multiplication/q2'
+ * '<S18>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/CAN_out_lib/quat_degerr_check_lib/Quaternion Multiplication/q3'
+ * '<S19>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/Estimation_EKF /3_sig_bnd '
+ * '<S20>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/Estimation_EKF /Propagate Step '
+ * '<S21>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/Estimation_EKF /Update Step '
+ * '<S22>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/Estimation_EKF /single_2_bool2'
  * '<S23>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/Estimation_EKF /Propagate Step /Quaternion Normalize'
  * '<S24>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/Estimation_EKF /Propagate Step /propagate_quat'
  * '<S25>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/Estimation_EKF /Propagate Step /state_transition'
@@ -289,13 +319,30 @@ extern RT_MODEL *const rtM;
  * '<S33>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/Estimation_EKF /Update Step /If Action Subsystem/observation_matrix'
  * '<S34>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/Estimation_EKF /Update Step /If Action Subsystem/update_state '
  * '<S35>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/Control Selection'
- * '<S36>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/Momentum unloading'
- * '<S37>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/command_processing'
- * '<S38>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/Control Selection/control_selection'
- * '<S39>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/Momentum unloading/Cross Product'
+ * '<S36>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/command_processing'
+ * '<S37>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/mag_PD_control_lib '
+ * '<S38>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/sun_point_lib'
+ * '<S39>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/Control Selection/control_selection'
  * '<S40>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/command_processing/dipole-2-digVal'
- * '<S41>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/mode_selecction/MATLAB Function'
- * '<S42>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/target_generation_lib/TARG_GEN'
+ * '<S41>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/mag_PD_control_lib /Cross Product'
+ * '<S42>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/mag_PD_control_lib /Normalize Vector'
+ * '<S43>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/mag_PD_control_lib /Quaternion Inverse'
+ * '<S44>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/mag_PD_control_lib /Quaternion Multiplication'
+ * '<S45>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/mag_PD_control_lib /Quaternion Inverse/Quaternion Conjugate'
+ * '<S46>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/mag_PD_control_lib /Quaternion Inverse/Quaternion Norm'
+ * '<S47>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/mag_PD_control_lib /Quaternion Multiplication/q0'
+ * '<S48>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/mag_PD_control_lib /Quaternion Multiplication/q1'
+ * '<S49>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/mag_PD_control_lib /Quaternion Multiplication/q2'
+ * '<S50>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/mag_PD_control_lib /Quaternion Multiplication/q3'
+ * '<S51>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/sun_point_lib/Cross Product'
+ * '<S52>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/sun_point_lib/MATLAB Function'
+ * '<S53>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/sun_point_lib/compute_error'
+ * '<S54>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/sun_point_lib/compute_error/3x3 Cross Product'
+ * '<S55>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/sun_point_lib/compute_error/3x3 Cross Product/Subsystem'
+ * '<S56>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/command_generation/sun_point_lib/compute_error/3x3 Cross Product/Subsystem1'
+ * '<S57>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/mag_logic_lib/single_2_bool1'
+ * '<S58>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/mode_selecction/MATLAB Function'
+ * '<S59>'  : 'adcs_sim_main/Flightsoftware/adcs_main/MSP_FSW/target_generation_lib/TARG_GEN'
  */
 #endif                                 /* RTW_HEADER_MSP_FSW_h_ */
 

@@ -200,11 +200,13 @@ void rt_OneStep(void)
 
 void canRxCallback(CANPacket *p)
 {
-    sensorproc_mag mag;
+    sensorproc_mag mag1;
+    sensorproc_mag2 mag2;
     sensorproc_imu imu;
     sensorproc_sun sun;
 
-    real32_T *tmp_mag = tmpSP2FSW.mag_vec_body_T;
+    real32_T *tmp_mag1 = tmpSP2FSW.mag1_vec_body_T;
+    real32_T *tmp_mag2 = tmpSP2FSW.mag2_vec_body_T;
     real32_T *tmp_imu = tmpSP2FSW.gyro_omega_body_radps;
     real32_T *tmp_sun = tmpSP2FSW.sun_vec_body_sunsensor;
 
@@ -214,11 +216,18 @@ void canRxCallback(CANPacket *p)
         rollcallStart();
         break;
     case CAN_ID_SENSORPROC_MAG:
-        decodesensorproc_mag(p, &mag);
-        tmp_mag[0] = magConvertRawToTeslas(mag.sensorproc_mag_x);
-        tmp_mag[1] = magConvertRawToTeslas(mag.sensorproc_mag_y);
-        tmp_mag[2] = magConvertRawToTeslas(mag.sensorproc_mag_z);
-        tmp_mag[3] = mag.sensorproc_mag_valid;
+        decodesensorproc_mag(p, &mag1);
+        tmp_mag1[0] = magConvertRawToTeslas(mag1.sensorproc_mag_x);
+        tmp_mag1[1] = magConvertRawToTeslas(mag1.sensorproc_mag_y);
+        tmp_mag1[2] = magConvertRawToTeslas(mag1.sensorproc_mag_z);
+        tmp_mag1[3] = mag1.sensorproc_mag_valid;
+        break;
+    case CAN_ID_SENSORPROC_MAG2:
+        decodesensorproc_mag2(p, &mag2);
+        tmp_mag2[0] = magConvertRawToTeslas(mag2.sensorproc_mag2_x);
+        tmp_mag2[1] = magConvertRawToTeslas(mag2.sensorproc_mag2_y);
+        tmp_mag2[2] = magConvertRawToTeslas(mag2.sensorproc_mag2_z);
+        tmp_mag2[3] = mag2.sensorproc_mag2_valid;
         break;
     case CAN_ID_SENSORPROC_IMU:
         decodesensorproc_imu(p, &imu);
@@ -271,8 +280,10 @@ void canRxCallback(CANPacket *p)
 void acceptInputs()
 {
     // sensor proc outputs
-    memcpy(rtU.mag_vec_body_T, tmpSP2FSW.mag_vec_body_T,
-           4 * sizeof(tmpSP2FSW.mag_vec_body_T[0]));
+    memcpy(rtU.mag1_vec_body_T, tmpSP2FSW.mag1_vec_body_T,
+           4 * sizeof(tmpSP2FSW.mag1_vec_body_T[0]));
+    memcpy(rtU.mag2_vec_body_T, tmpSP2FSW.mag2_vec_body_T,
+               4 * sizeof(tmpSP2FSW.mag2_vec_body_T[0]));
     memcpy(rtU.gyro_omega_body_radps, tmpSP2FSW.gyro_omega_body_radps,
            4 * sizeof(tmpSP2FSW.gyro_omega_body_radps[0]));
     memcpy(rtU.sun_vec_body_sunsensor, tmpSP2FSW.sun_vec_body_sunsensor,
@@ -400,7 +411,7 @@ FILE_STATIC void rcPopulate0(CANPacket *out)
 {
     rc_adcs_mpc_h2 rc;
     rc.rc_adcs_mpc_h2_canrxerror = canRxErrorCheck();
-    encoderc_adcs_mtq_h2(&rc, out);
+    encoderc_adcs_mpc_h2(&rc, out);
 }
 
 FILE_STATIC void rcPopulate2(CANPacket *out)

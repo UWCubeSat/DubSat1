@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'MSP_FSW'.
  *
- * Model version                  : 1.369
+ * Model version                  : 1.384
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Tue May  1 19:12:57 2018
+ * C/C++ source code generated on : Mon Jun 25 21:15:08 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -23,6 +23,25 @@
 
 /* Constant parameters (auto storage) */
 const ConstP rtConstP = {
+  /* Expression: fsw_params.bus.solar_panel_unit
+   * Referenced by: '<S38>/Constant'
+   */
+  { 0.0, 1.0, 0.0 },
+
+  /* Expression: fsw_params.control.sun_point.prop_gain
+   * Referenced by: '<S38>/prop_gain'
+   */
+  { -7.15925376030017E-16, -2.9518306409416E-5, -1.16471856520801E-5,
+    2.95183064103284E-5, 6.91389624109808E-16, -6.39736541290793E-6,
+    1.16471856488024E-5, 6.3973654111362E-6, 1.52865094782168E-17 },
+
+  /* Expression: fsw_params.control.sun_point.drv_gain
+   * Referenced by: '<S38>/drv_gain'
+   */
+  { -1.13493695706464E-9, -3.0013255295274E-5, -1.18422341375943E-5,
+    3.00242063478115E-5, 7.31311204065323E-10, -6.50671819922309E-6,
+    1.16904253272767E-5, 6.42213829448181E-6, 4.03625743741717E-10 },
+
   /* Expression: fsw_params.estimation.ic.error_cov
    * Referenced by: '<S3>/Unit Delay2'
    */
@@ -39,20 +58,25 @@ const ConstP rtConstP = {
     0.0, 0.0, 0.010000000000000002, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
     0.010000000000000002, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.010000000000000002 },
 
-  /* Expression: fsw_params.actuators.reaction_wheel.inertia_matrix
-   * Referenced by: '<S36>/MoI'
+  /* Expression: fsw_params.control.mag_pd_controller.p_gain
+   * Referenced by: '<S37>/p-gain'
    */
-  { 1.788E-6, 0.0, 0.0, 0.0, 1.788E-6, 0.0, 0.0, 0.0, 1.788E-6 },
+  { 0.03, -0.0, -0.0, -0.0, 0.03, -0.0, -0.0, -0.0, 0.15 },
+
+  /* Expression: fsw_params.control.mag_pd_controller.d_gain
+   * Referenced by: '<S37>/d-gain'
+   */
+  { 21.0, -0.0, -0.0, -0.0, 21.0, -0.0, -0.0, -0.0, 35.0 },
 
   /* Expression: fsw_params.estimation.G
-   * Referenced by: '<S21>/G'
+   * Referenced by: '<S20>/G'
    */
   { -1.0, -0.0, -0.0, 0.0, 0.0, 0.0, -0.0, -1.0, -0.0, 0.0, 0.0, 0.0, -0.0, -0.0,
     -1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 },
 
   /* Expression: fsw_params.estimation.proc_cov
-   * Referenced by: '<S21>/Constant3'
+   * Referenced by: '<S20>/Constant3'
    */
   { 1.0033333333333333E-7, 0.0, 0.0, -5.0000000000000009E-9, -0.0, -0.0, 0.0,
     1.0033333333333333E-7, 0.0, -0.0, -5.0000000000000009E-9, -0.0, 0.0, 0.0,
@@ -62,7 +86,7 @@ const ConstP rtConstP = {
     -5.0000000000000009E-9, 0.0, 0.0, 1.0E-7 },
 
   /* Computed Parameter: r_SEA_Value
-   * Referenced by: '<S11>/r_SEA'
+   * Referenced by: '<S10>/r_SEA'
    */
   { 0.409930646F, -0.538629532F, 0.736094475F }
 };
