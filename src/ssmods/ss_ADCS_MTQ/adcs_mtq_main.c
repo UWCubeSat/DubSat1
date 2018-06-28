@@ -431,16 +431,6 @@ FILE_STATIC void rc_agg_init() {
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
 }	
 
-// sends mtq temperature to CAN 
-FILE_STATIC void send_CAN_health_packet(void)
-{
-    // send CAN packet of temperature (in deci-Kelvin)
-    msp_temp temp = { (healthSeg.inttemp + 273.15) * 10 };
-    CANPacket packet;
-    encodemsp_temp(&temp, &packet);
-    canSendPacket(&packet);
-}
-
 // sends acknowledgement to CAN 
 // contains information about the current mtq phase, the 
 // source of the last received command, and the last command
@@ -544,8 +534,8 @@ void rcPopulate4(CANPacket *out){
 // TODO: description 
 void rcPopulate5(CANPacket *out){
     rc_adcs_mtq_5 rc = {0};
-    rc.rc_adcs_mtq_5_fsw_ignore=0;
-    rc.rc_adcs_mtq_5_reset_counts=0;
+    rc.rc_adcs_mtq_5_fsw_ignore = fsw_ignore;
+    rc.rc_adcs_mtq_5_reset_counts = bspGetResetCount();
     encoderc_adcs_mtq_5(&rc, out);
 }
 
