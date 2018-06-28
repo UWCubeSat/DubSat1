@@ -19,8 +19,6 @@
 #define LED_OUT P1OUT
 #define LED_BIT_IDLE BIT0
 #define LED_BIT_FIRING BIT1
-#define IGN_DONE_DIR P2DIR
-#define IGN_DONE_BIT BIT5
 #define CHARGE_DIR P4DIR
 #define CHARGE_OUT P4OUT
 #define MAIN_CHARGE_BIT BIT3
@@ -69,6 +67,10 @@ FILE_STATIC timing currTiming;
 
 aggVec_i ignDoneAg;
 aggVec_f mspTempAg;
+#pragma PERSISTENT(fireCount)
+uint16_t fireCount = 0;
+#pragma PERSISTENT(faultCount)
+uint16_t faultCount = 0;
 
 void initData()
 {
@@ -126,7 +128,6 @@ FILE_STATIC void sendSync1()
 void initPins()
 {
     LED_DIR |= (LED_BIT_FIRING | LED_BIT_IDLE);
-    IGN_DONE_DIR &= ~IGN_DONE_BIT;
     CHARGE_DIR |= (FIRE_BIT | IGN_CHARGE_BIT| MAIN_CHARGE_BIT);
 
     //ign done ping interrupt
@@ -161,7 +162,7 @@ void sendRC()
         else if(sendRcFlag == 2)
         {
             rc_ppt_2 rc = {0};
-            rc.rc_ppt_2_total_fire_count = 0; //TODO: this ag
+            rc.rc_ppt_2_total_fire_count = fireCount;
             encoderc_ppt_2(&rc, &pkt);
         }
         else if(sendRcFlag == 1)
@@ -392,7 +393,6 @@ void can_packet_rx_callback(CANPacket *packet)
             break;
         case CAN_ID_GCMD_PPT_MULTIPLE_FIRE:
             decodegcmd_ppt_multiple_fire(packet, &pktMultFire);
-            pktMultFire.gcmd_ppt_multiple_fire_count;
             if(pktMultFire.gcmd_ppt_multiple_fire_override || readyToFire())
                 startFiring(pktMultFire.gcmd_ppt_multiple_fire_count);
             break;
@@ -402,20 +402,6 @@ void can_packet_rx_callback(CANPacket *packet)
 BOOL readyToFire() //okay to fire
 {
     return aboveGrndStation & battChargeOK;
-}
-
-#pragma vector=PORT2_VECTOR
-__interrupt void Port_2(void)
-{
-    switch(P2IV)
-    {
-        case P2IV__P2IFG5:
-            sendIgniterDone();
-            break;
-        default:
-            break;
-    }
-    P2IFG = 0; //clear the interrupt flag
 }
 
 void fire()
@@ -449,18 +435,39 @@ __interrupt void Timer0_B1_ISR (void)
                     TB0CCR1 += igniterChargeTime;
                     break;
                 case State_Igniter_Charging:
-                    if(withFiringPulse)
-                        fire();
-                    if(currTimeout)
-                    {
-                        currTimeout--;
-                        if(currTimeout)
-                            sendSync1Flag = 1;
-                        mod_status.ss_state = State_Cooldown;
-                        TB0CCR1 += cooldownTime;
-                    }
-                    else
-                        stopFiring();
+                	if(CHARGE_OUT & SMT_OUT_BIT) //smt trigger high
+                	{
+                		if(!withFiringPulse)
+                			stopFiring();
+                		else
+                		{
+                			fire();
+                			fireCount++;
+							if(CHARGE_OUT & SMT_OUT_BIT) //fault: main didn't discharge
+							{
+								stopFiring();
+								faultCount++;
+							}
+							else
+							{
+								if(currTimeout)
+								{
+									currTimeout--;
+									if(currTimeout)
+										sendSync1Flag = 1;
+									mod_status.ss_state = State_Cooldown;
+									TB0CCR1 += cooldownTime;
+								}
+								else
+									stopFiring();
+							}
+                		}
+                	}
+                	else //fault: main didn't charge
+                	{
+                		faultCount++;
+                		stopFiring();
+                	}
                     break;
                 case State_Cooldown:
                     CHARGE_OUT |= MAIN_CHARGE_BIT;
