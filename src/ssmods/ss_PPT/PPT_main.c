@@ -72,6 +72,9 @@ uint16_t fireCount = 0;
 #pragma PERSISTENT(faultCount)
 uint16_t faultCount = 0;
 
+uint32_t totalFireCount = 0;
+#pragma PERSISTENT(totalFireCount)
+
 void initData()
 {
     aggVec_init_i(&ignDoneAg);
@@ -81,9 +84,14 @@ void initData()
 FILE_STATIC void sendIgniterDone()
 {
     if(mod_status.ss_state == State_Igniter_Charging)
+    {
         igniterDone.timeDone = TB0R - TB0CCR1; //TODO: check this
+        aggVec_push_i(&ignDoneAg, igniterDone.timeDone);
+    }
     else
+    {
         igniterDone.timeDone = 0;
+    }
     bcbinSendPacket((uint8_t *) &igniterDone, sizeof(igniterDone));
 }
 
@@ -99,6 +107,8 @@ FILE_STATIC void sendHealth()
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
     hseg.reset_count = bspGetResetCount();
+    hseg.inttemp = asensorReadIntTempC();
+    aggVec_push_f(&mspTempAg, hseg.inttemp);
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
 }
 
@@ -207,7 +217,8 @@ int main(void)
     // SubsystemModulePaths (a string name) in systeminfo.c/.h
     //bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     bspInit(Module_PPT);
-
+    asensorInit(Ref_2p5V);
+    canWrapInitWithFilter();
     // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
     // Also hooks up sync pulse handlers.  Note that actual pulse interrupt handlers will update the
@@ -219,6 +230,7 @@ int main(void)
     setCANPacketRxCallback(can_packet_rx_callback);
 
     initPins();
+    initData();
 
     TB0CTL = TBSSEL__ACLK | MC__CONTINOUS | TBCLR | TBIE;
 
@@ -268,6 +280,7 @@ int main(void)
         }
         if(sendSync1Flag)
             sendSync1();
+        sendRC();
         counter++;
     }
 }
@@ -282,6 +295,7 @@ void startFiring(uint8_t timeout)
         mod_status.ss_state = State_Cooldown;
         TB0CCR1 = TB0R + cooldownTime;
         TB0CCTL1 = CCIE;
+        firing = 1;
     }
 }
 
@@ -351,15 +365,14 @@ void can_packet_rx_callback(CANPacket *packet)
     gcmd_ppt_multiple_fire pktMultFire = {0};
     switch(packet->id)
     {
+        case CAN_ID_CMD_ROLLCALL:
+            sendRcFlag = 4;
+            break;
         case CAN_ID_CMD_PPT_HALT:
             //stop firing, but with a flag
             decodecmd_ppt_halt(packet, &pktHalt);
             if(pktHalt.cmd_ppt_halt_confirm)
                 stopFiring();
-            break;
-        case CAN_ID_CMD_PPT_SET_COUNT:
-            //number of timer the ppt fires
-
             break;
         case CAN_ID_CMD_PPT_SINGLE_FIRE:
             //fire once, with flags for pulse and override
@@ -413,6 +426,7 @@ void fire()
     __delay_cycles(FIRING_PULSE_WIDTH);
     //fire low
     CHARGE_OUT &= ~FIRE_BIT;
+    totalFireCount++;
 }
 
 #pragma vector = TIMER0_B1_VECTOR

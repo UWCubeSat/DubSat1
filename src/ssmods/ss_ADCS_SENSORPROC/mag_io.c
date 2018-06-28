@@ -70,13 +70,12 @@ void magioSendBackchannel(MagIO *magio, uint8_t tlmId, uint8_t tlmIdP)
 
 void magioInit1()
 {
-	magioInit(&mag1, rtU.mag1_vec_body_T, rtY.mag_body_processed_T, MAG1_I2CBUS);
+	magioInit(&mag1, rtU.mag1_vec_body_T, rtY.mag1_body_processed_T, MAG1_I2CBUS);
 }
 
 void magioInit2()
 {
-	// TODO use mag2 rtY
-	magioInit(&mag2, rtU.mag2_vec_body_T, rtY.mag_body_processed_T, MAG2_I2CBUS);
+	magioInit(&mag2, rtU.mag2_vec_body_T, rtY.mag2_body_processed_T, MAG2_I2CBUS);
 }
 
 void magioUpdate1()
@@ -110,9 +109,7 @@ FILE_STATIC void updateProcessedRollcall(MagIO *mag)
 void magioSendCAN1()
 {
     // send packet
-
-	// TODO switch to using mag1.output when autocode is updated
-	real32_T *output = mag1.input;
+	real32_T *output = mag1.output;
 
     sensorproc_mag p;
     p.sensorproc_mag_x = magConvertTeslasToRaw(output[0]);
@@ -130,9 +127,7 @@ void magioSendCAN1()
 void magioSendCAN2()
 {
     // send packet
-
-	// TODO switch to using mag2.output when autocode is updated
-	real32_T *output = mag2.input;
+	real32_T *output = mag2.output;
 
     sensorproc_mag2 p;
     p.sensorproc_mag2_x = magConvertTeslasToRaw(output[0]);

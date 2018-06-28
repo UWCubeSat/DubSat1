@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'MSP_SP'.
  *
- * Model version                  : 1.380
+ * Model version                  : 1.383
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Mon May 21 16:28:33 2018
+ * C/C++ source code generated on : Mon Jun 25 20:17:33 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
