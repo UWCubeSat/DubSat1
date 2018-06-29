@@ -116,341 +116,6 @@ void distDeployInit()
     DEPLOY_ENABLE_OUT = 0;
 }
 
-void distFireDeploy()
-{
-    DEPLOY_ENABLE_OUT |= DEPLOY_ENABLE_BIT;
-}
-
-// Sets up all the power domain switch GPIO pins to be ready to enable/disable
-void distDomainInit()
-{
-    // Set initial thresholds for undervoltage monitoring
-    gseg.undervoltagethreshold = BATT_DEFAULT_FULL_THRESH;
-
-    // Setup GPIO pin used to turn on all INA219's and turn them on
-    DOMAIN_ENABLE_CURRENT_SENSORS_DIR |= DOMAIN_ENABLE_CURRENT_SENSORS_BIT;
-
-    // Setup GPIO pins used to turn off/on each power domain
-    DOMAIN_ENABLE_COM2_DIR  |=  DOMAIN_ENABLE_COM2_BIT;
-    DOMAIN_ENABLE_PPT_DIR   |=  DOMAIN_ENABLE_PPT_BIT;
-    DOMAIN_ENABLE_BDOT_DIR  |=  DOMAIN_ENABLE_BDOT_BIT;
-    DOMAIN_ENABLE_COM1_DIR  |=  DOMAIN_ENABLE_COM1_BIT;
-    DOMAIN_ENABLE_RAHS_DIR  |=  DOMAIN_ENABLE_RAHS_BIT;
-    DOMAIN_ENABLE_ESTIM_DIR |=  DOMAIN_ENABLE_ESTIM_BIT;
-    DOMAIN_ENABLE_EPS_DIR   |=  DOMAIN_ENABLE_EPS_BIT;
-    DOMAIN_ENABLE_WHEELS_DIR |= DOMAIN_ENABLE_WHEELS_BIT;
-
-    DOMAIN_ENABLE_CURRENT_SENSORS_OUT |= DOMAIN_ENABLE_CURRENT_SENSORS_BIT;
-    __delay_cycles(0.1 * SEC);  // This timing is important, to allow time for the main sensor switch (which
-                                // powers all the INA219's) to turn on fully
-
-    int d;
-    for (d = 0; d < NUM_POWER_DOMAINS; d++)
-    {
-        powerdomains[d].id = (PowerDomainID)d;
-        powerdomains[d].i2caddr = domainsSensorAddresses[d];
-        powerdomains[d].hpcvsensor = pcvsensorInit(I2CBus2, powerdomains[d].i2caddr, domainShuntResistances[d], 16.0f);
-        __delay_cycles(1000);  // Helps make sure the initialization is received properly
-    }
-
-    distInitializeOCPThresholds();
-}
-
-// Uses the actual GPIO output value to determine what is "actually" happening with the switch
-PowerDomainSwitchState distQueryDomainSwitch(PowerDomainID domain)
-{
-    BOOL enabled = FALSE;
-
-    switch (domain)
-    {
-        case PD_COM2:
-            enabled = ((DOMAIN_ENABLE_COM2_OUT & DOMAIN_ENABLE_COM2_BIT) != 0);
-            break;
-        case PD_PPT:
-            enabled = ((DOMAIN_ENABLE_PPT_OUT & DOMAIN_ENABLE_PPT_BIT) != 0);
-            break;
-        case PD_BDOT:
-            enabled = ((DOMAIN_ENABLE_BDOT_OUT & DOMAIN_ENABLE_BDOT_BIT) != 0);
-            break;
-        case PD_COM1:
-            enabled = ((DOMAIN_ENABLE_COM1_OUT & DOMAIN_ENABLE_COM1_BIT) != 0);
-            break;
-        case PD_RAHS:
-            enabled = ((DOMAIN_ENABLE_RAHS_OUT & DOMAIN_ENABLE_RAHS_BIT) != 0);
-            break;
-        case PD_ESTIM:
-            enabled = ((DOMAIN_ENABLE_ESTIM_OUT & DOMAIN_ENABLE_ESTIM_BIT) != 0);
-            break;
-        case PD_EPS:
-            enabled = ((DOMAIN_ENABLE_EPS_OUT & DOMAIN_ENABLE_EPS_BIT) != 0);
-            break;
-        case PD_WHEELS:
-            enabled = ((DOMAIN_ENABLE_WHEELS_OUT & DOMAIN_ENABLE_WHEELS_BIT) != 0);
-            break;
-        default:
-            break;
-    }
-
-    return ( enabled == TRUE ? Switch_Enabled : Switch_Disabled);
-}
-
-// Turns on/off switches for indicated domain
-void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
-{
-    // Record last command for each domain
-    gseg.powerdomainlastcmds[(uint8_t)domain] = (uint8_t)cmd;
-
-    // Overcurrent latching  or low batt commands only useful as a "special" disable for reporting purposes
-    if (cmd == PD_CMD_OCLatch || cmd == PD_CMD_BattVLow)
-        cmd = PD_CMD_Disable;
-
-    // Similarly, autostart is a just a "special" enable
-    if (cmd == PD_CMD_AutoStart)
-        cmd = PD_CMD_Enable;
-
-    if (cmd == PD_CMD_NoChange)
-        return;
-
-    switch (domain)
-    {
-        case PD_COM2:
-            if (cmd == PD_CMD_Enable)
-                DOMAIN_ENABLE_COM2_OUT |= DOMAIN_ENABLE_COM2_BIT;
-            else if (cmd == PD_CMD_Disable)
-                DOMAIN_ENABLE_COM2_OUT &= ~DOMAIN_ENABLE_COM2_BIT;
-            else if (cmd == PD_CMD_Toggle)
-                DOMAIN_ENABLE_COM2_OUT ^= DOMAIN_ENABLE_COM2_BIT;
-            break;
-        case PD_PPT:
-            if (cmd == PD_CMD_Enable)
-                DOMAIN_ENABLE_PPT_OUT |= DOMAIN_ENABLE_PPT_BIT;
-            else if (cmd == PD_CMD_Disable)
-                DOMAIN_ENABLE_PPT_OUT &= ~DOMAIN_ENABLE_PPT_BIT;
-            else if (cmd == PD_CMD_Toggle)
-                DOMAIN_ENABLE_PPT_OUT ^= DOMAIN_ENABLE_PPT_BIT;
-            break;
-        case PD_BDOT:
-            if (cmd == PD_CMD_Enable)
-                DOMAIN_ENABLE_BDOT_OUT |= DOMAIN_ENABLE_BDOT_BIT;
-            else if (cmd == PD_CMD_Disable)
-                DOMAIN_ENABLE_BDOT_OUT &= ~DOMAIN_ENABLE_BDOT_BIT;
-            else if (cmd == PD_CMD_Toggle)
-                DOMAIN_ENABLE_BDOT_OUT ^= DOMAIN_ENABLE_BDOT_BIT;
-            break;
-        case PD_COM1:
-            if (cmd == PD_CMD_Enable)
-                DOMAIN_ENABLE_COM1_OUT |= DOMAIN_ENABLE_COM1_BIT;
-            else if (cmd == PD_CMD_Disable)
-                DOMAIN_ENABLE_COM1_OUT &= ~DOMAIN_ENABLE_COM1_BIT;
-            else if (cmd == PD_CMD_Toggle)
-                DOMAIN_ENABLE_COM1_OUT ^= DOMAIN_ENABLE_COM1_BIT;
-            break;
-        case PD_RAHS:
-            if (cmd == PD_CMD_Enable)
-                DOMAIN_ENABLE_RAHS_OUT |= DOMAIN_ENABLE_RAHS_BIT;
-            else if (cmd == PD_CMD_Disable)
-                DOMAIN_ENABLE_RAHS_OUT &= ~DOMAIN_ENABLE_RAHS_BIT;
-            else if (cmd == PD_CMD_Toggle)
-                DOMAIN_ENABLE_RAHS_OUT ^= DOMAIN_ENABLE_RAHS_BIT;
-            break;
-        case PD_ESTIM:
-            if (cmd == PD_CMD_Enable)
-                DOMAIN_ENABLE_ESTIM_OUT |= DOMAIN_ENABLE_ESTIM_BIT;
-            else if (cmd == PD_CMD_Disable)
-                DOMAIN_ENABLE_ESTIM_OUT &= ~DOMAIN_ENABLE_ESTIM_BIT;
-            else if (cmd == PD_CMD_Toggle)
-                DOMAIN_ENABLE_ESTIM_OUT ^= DOMAIN_ENABLE_ESTIM_BIT;
-            break;
-        case PD_EPS:
-            if (cmd == PD_CMD_Enable)
-                DOMAIN_ENABLE_EPS_OUT |= DOMAIN_ENABLE_EPS_BIT;
-            else if (cmd == PD_CMD_Disable)
-                DOMAIN_ENABLE_EPS_OUT &= ~DOMAIN_ENABLE_EPS_BIT;
-            else if (cmd == PD_CMD_Toggle)
-                DOMAIN_ENABLE_EPS_OUT ^= DOMAIN_ENABLE_EPS_BIT;
-            break;
-        case PD_WHEELS:
-            if (cmd == PD_CMD_Enable)
-                DOMAIN_ENABLE_WHEELS_OUT |= DOMAIN_ENABLE_WHEELS_BIT;
-            else if (cmd == PD_CMD_Disable)
-                DOMAIN_ENABLE_WHEELS_OUT &= ~DOMAIN_ENABLE_WHEELS_BIT;
-            else if (cmd == PD_CMD_Toggle)
-                DOMAIN_ENABLE_WHEELS_OUT ^= DOMAIN_ENABLE_WHEELS_BIT;
-            break;
-        default:
-            break;
-    }
-
-    // Clear the current-limited flag if turning on
-    if (distQueryDomainSwitch(domain) == Switch_Enabled)
-        sseg.powerdomaincurrentlimited[(uint8_t)domain] = 0;
-}
-
-// Make a pass through all the sensors
-FILE_STATIC void distMonitorDomains()
-{
-    int i;
-    PCVSensorData *pdata;
-    for (i=0; i < NUM_POWER_DOMAINS; i++)
-    {
-        pdata = pcvsensorRead(powerdomains[i].hpcvsensor, Read_CurrentA | Read_BusV);
-        aggVec_push_i(&ssCurrAgs[i], pdata->rawCurrent);
-        aggVec_push_i(&ssBusVAgs[i], pdata->rawBusVoltage);
-
-        if (pdata->calcdCurrentA >= gseg.powerdomainocpthreshold[i])
-        {
-            distDomainSwitch((PowerDomainID)i, PD_CMD_OCLatch);  // Yes, this means Disable is ALWAYS sent if current too high
-            if (sseg.powerdomaincurrentlimited[i] != 1)
-            {
-                sseg.powerdomaincurrentlimited[i] = 1;
-                gseg.powerdomaincurrentlimitedcount[i] += 1;
-            }
-        }
-
-        // Save data for each sensor, regardless of threshold
-        sseg.currents[i] = pdata->calcdCurrentA;
-        sseg.busV[i] = pdata->busVoltageV;
-    }
-}
-
-// TODO: commands to change threshold on the fly
-FILE_STATIC void distMonitorBattery()
-{
-    int i;
-    aggVec_push_i(&battVAg, asensorReadSingleSensorRaw(hBattV)); //adds raw voltage to battV array
-    float predivV = asensorReadSingleSensorV(hBattV);
-    float newbattV = BATTV_CONV_FACTOR * predivV;
-    float prevBattV = gseg.battV;
-    gseg.battV = newbattV;
-
-    uint8_t prevMode = (uint8_t)gseg.uvmode;
-
-    if (newbattV <= gseg.undervoltagethreshold && prevBattV <= gseg.undervoltagethreshold)
-        gseg.uvmode = (uint8_t)UV_FullShutdown;
-    else
-        gseg.uvmode = (uint8_t)UV_InRange;
-
-    //shut down everything (COM1 is hard-wired to never shut down)
-    if (gseg.uvmode != (uint8_t)UV_InRange && prevMode == (uint8_t)UV_InRange)
-        for (i = NUM_POWER_DOMAINS; i; i--)
-            if(i != PD_COM1)
-                distDomainSwitch((PowerDomainID)(i - 1), PD_CMD_BattVLow);
-}
-
-// Packetizes and sends backchannel GENERAL packet
-FILE_STATIC void distBcSendGeneral()
-{
-    int i;
-
-    for (i=0; i < NUM_POWER_DOMAINS; i++)
-    {
-        gseg.powerdomainswitchstate[i] = (uint8_t)distQueryDomainSwitch((PowerDomainID)i);
-
-    }
-
-    // Other packet fields filled out in other locations
-
-    bcbinSendPacket((uint8_t *) &gseg, sizeof(gseg));
-}
-
-// Packetizes and sends backchannel GENERAL packet
-FILE_STATIC void distBcSendHealth()
-{
-    // TODO:  Add call through debug registrations for STATUS on subentities (like the buses)
-
-    // TODO:  Determine overall health based on querying various entities for their health
-    // For now, everythingis always marginal ...
-    hseg.oms = OMS_Unknown;
-    hseg.inttemp = asensorReadIntTempC();
-    aggVec_push_f(&mspTempAg, hseg.inttemp);
-    hseg.reset_count = bspGetResetCount();
-    bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
-    debugInvokeStatusHandlers();
-}
-
-// Packetizes and sends backchannel SENSORDAT packet
-FILE_STATIC void distBcSendSensorDat()
-{
-    bcbinSendPacket((uint8_t *) &sseg, sizeof(sseg));
-}
-
-FILE_STATIC void distBcSendMeta()
-{
-    // TODO:  Add call through debug registrations for INFO on subentities (like the buses)
-    bcbinPopulateMeta(&mseg, sizeof(mseg));
-    bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
-}
-
-void distSetOCPThreshold(PowerDomainID domain, float newval)
-{
-    int i;
-
-    // 0.0f means don't change current value
-    if (newval == 0.0f)
-        return;
-
-    gseg.powerdomainocpthreshold[(uint8_t)domain] = newval;
-}
-
-void distInitializeOCPThresholds()
-{
-    int i;
-    for (i = 0; i < NUM_POWER_DOMAINS; i++)
-    {
-        distSetOCPThreshold((PowerDomainID)i, domainCurrentThresholdInitial[i]);
-    }
-}
-
-// Called when command routing infrastructure detects a command "addressed" to the subsystem
-uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
-{
-    domaincmd_segment *dsegment;
-    commoncmd_segment *csegment;
-    ocpthresh_segment *osegment;
-    firedeploy_segment *fsegment;
-
-    int i;
-    float newval;
-
-    if (mode == Mode_BinaryStreaming)
-    {
-        // Handle the cmdstr as binary values
-        switch (cmdstr[0])
-        {
-            case OPCODE_DOMAINSWITCH:
-                dsegment = (domaincmd_segment *) &cmdstr[1];
-                for (i = 0; i < NUM_POWER_DOMAINS; i++)
-                {
-                    distDomainSwitch((PowerDomainID)i, (PowerDomainCmd)(dsegment->pd_cmds[i]));
-                }
-                break;
-            case OPCODE_COMMONCMD:
-                csegment = (commoncmd_segment *) &cmdstr[1];
-                LED_OUT ^= LED_BIT;
-                break;
-            case OPCODE_OCPTHRESH:
-                osegment = (ocpthresh_segment *) &cmdstr[1];
-                if(osegment->newBattVThreshold)
-                    gseg.undervoltagethreshold = osegment->newBattVThreshold;
-
-                for (i = 0; i < NUM_POWER_DOMAINS; i++)
-                {
-                    if(osegment->newCurrentThreshold[i])
-                        distSetOCPThreshold((PowerDomainID)i, osegment->newCurrentThreshold[i]);
-                }
-                break;
-            case OPCODE_FIREDEPLOY:
-                fsegment = (firedeploy_segment *) &cmdstr[1];
-                if (fsegment->key == DEPLOYMENT_SYSTEM_KEY)
-                    distFireDeploy();
-                break;
-            default:
-                break;
-        }
-    }
-    return 1;
-}
-
 void sendRollCallHandler()
 {
     rcSendFlag = 1;
@@ -475,75 +140,10 @@ void sendRCCmd()
         //WDTCTL = 0; //reboot
     }
 
-    //TODO: uncomment this when automatic shutoff is ready to go!
-    /*if(rcResponseFlag)
-    {
-        if(rcResponseFlag & PD_COM1_FLAG)
-        {
-            distDomainSwitch(PD_COM1, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_COM1_FLAG;
-        }
-        if(rcResponseFlag & PD_COM2_FLAG)
-        {
-            distDomainSwitch(PD_COM2, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_COM2_FLAG;
-        }
-        if(rcResponseFlag & PD_RAHS_FLAG)
-        {
-            distDomainSwitch(PD_RAHS, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_RAHS_FLAG;
-        }
-        if(rcResponseFlag & PD_BDOT_FLAG)
-        {
-            distDomainSwitch(PD_BDOT, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_BDOT_FLAG;
-        }
-        if(rcResponseFlag & PD_ESTIM_FLAG)
-        {
-            distDomainSwitch(PD_ESTIM, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_ESTIM_FLAG;
-        }
-        if(rcResponseFlag & PD_EPS_FLAG)
-        {
-            distDomainSwitch(PD_EPS, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_EPS_FLAG;
-        }
-        if(rcResponseFlag & PD_PPT_FLAG)
-        {
-            distDomainSwitch(PD_PPT, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_PPT_FLAG;
-        }
-    }*/
-
-    if(distQueryDomainSwitch(PD_COM1))
-        rcResponseFlag |= PD_COM1_FLAG;
-    if(distQueryDomainSwitch(PD_COM2))
-        rcResponseFlag |= PD_COM2_FLAG;
-    if(distQueryDomainSwitch(PD_RAHS))
-        rcResponseFlag |= PD_RAHS_FLAG;
-    if(distQueryDomainSwitch(PD_BDOT))
-        rcResponseFlag |= PD_BDOT_FLAG;
-    if(distQueryDomainSwitch(PD_ESTIM))
-        rcResponseFlag |= PD_ESTIM_FLAG;
-    if(distQueryDomainSwitch(PD_EPS))
-        rcResponseFlag |= PD_EPS_FLAG;
-    if(distQueryDomainSwitch(PD_PPT))
-        rcResponseFlag |= PD_PPT_FLAG;
     rcSendFlag = 0;
     //distDomainSwitch(PD_WHEELS, PD_CMD_Disable);
 }
 
-uint8_t getPDState(PowerDomainID pd)
-{
-    if(distQueryDomainSwitch(pd))
-        return 0; //on
-    else if(gseg.powerdomainlastcmds[(uint8_t)pd] & (PD_CMD_Disable | PD_CMD_Toggle))
-        return 1; //off manual
-    else if(gseg.powerdomainlastcmds[(uint8_t)pd] & PD_CMD_OCLatch)
-        return 2; //overcurrent latch
-    else
-        return 3; //batt_undervoltage or other
-}
 
 void sendRC()
 {
@@ -584,7 +184,7 @@ void sendRC()
             rollcallPkt4_info.rc_eps_dist_4_com1_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
             rollcallPkt4_info.rc_eps_dist_4_com1_c_max = aggVec_max_i(&ssCurrAgs[PD_COM1]);
             rollcallPkt4_info.rc_eps_dist_4_com1_c_min = aggVec_min_i(&ssCurrAgs[PD_COM1]);
-            rollcallPkt4_info.rc_eps_dist_4_com1_state = getPDState(PD_COM1);
+            rollcallPkt4_info.rc_eps_dist_4_com1_state = 0;
             encoderc_eps_dist_4(&rollcallPkt4_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
         }
@@ -603,7 +203,7 @@ void sendRC()
             rollcallPkt6_info.rc_eps_dist_6_com2_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM2]);
             rollcallPkt6_info.rc_eps_dist_6_com2_c_max = aggVec_max_i(&ssCurrAgs[PD_COM2]);
             rollcallPkt6_info.rc_eps_dist_6_com2_c_min = aggVec_min_i(&ssCurrAgs[PD_COM2]);
-            rollcallPkt6_info.rc_eps_dist_6_com2_state = getPDState(PD_COM2);
+            rollcallPkt6_info.rc_eps_dist_6_com2_state = 0;
             encoderc_eps_dist_6(&rollcallPkt6_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM2]);
         }
@@ -622,7 +222,7 @@ void sendRC()
             rollcallPkt8_info.rc_eps_dist_8_rahs_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_RAHS]);
             rollcallPkt8_info.rc_eps_dist_8_rahs_c_max = aggVec_max_i(&ssCurrAgs[PD_RAHS]);
             rollcallPkt8_info.rc_eps_dist_8_rahs_c_min = aggVec_min_i(&ssCurrAgs[PD_RAHS]);
-            rollcallPkt8_info.rc_eps_dist_8_rahs_state = getPDState(PD_RAHS);
+            rollcallPkt8_info.rc_eps_dist_8_rahs_state = 0;
             encoderc_eps_dist_8(&rollcallPkt8_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_RAHS]);
         }
@@ -641,7 +241,7 @@ void sendRC()
             rollcallPkt10_info.rc_eps_dist_10_bdot_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_BDOT]);
             rollcallPkt10_info.rc_eps_dist_10_bdot_c_max = aggVec_max_i(&ssCurrAgs[PD_BDOT]);
             rollcallPkt10_info.rc_eps_dist_10_bdot_c_min = aggVec_min_i(&ssCurrAgs[PD_BDOT]);
-            rollcallPkt10_info.rc_eps_dist_10_bdot_state = getPDState(PD_BDOT);
+            rollcallPkt10_info.rc_eps_dist_10_bdot_state = 0;
             encoderc_eps_dist_10(&rollcallPkt10_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_BDOT]);
         }
@@ -660,7 +260,7 @@ void sendRC()
             rollcallPkt12_info.rc_eps_dist_12_estim_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_ESTIM]);
             rollcallPkt12_info.rc_eps_dist_12_estim_c_max = aggVec_max_i(&ssCurrAgs[PD_ESTIM]);
             rollcallPkt12_info.rc_eps_dist_12_estim_c_min = aggVec_min_i(&ssCurrAgs[PD_ESTIM]);
-            rollcallPkt12_info.rc_eps_dist_12_estim_state = getPDState(PD_ESTIM);
+            rollcallPkt12_info.rc_eps_dist_12_estim_state = 0;
             encoderc_eps_dist_12(&rollcallPkt12_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_ESTIM]);
         }
@@ -679,7 +279,7 @@ void sendRC()
             rollcallPkt14_info.rc_eps_dist_14_eps_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_EPS]);
             rollcallPkt14_info.rc_eps_dist_14_eps_c_max = aggVec_max_i(&ssCurrAgs[PD_EPS]);
             rollcallPkt14_info.rc_eps_dist_14_eps_c_min = aggVec_min_i(&ssCurrAgs[PD_EPS]);
-            rollcallPkt14_info.rc_eps_dist_14_eps_state = getPDState(PD_EPS);
+            rollcallPkt14_info.rc_eps_dist_14_eps_state = 0;
             encoderc_eps_dist_14(&rollcallPkt14_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_EPS]);
         }
@@ -698,7 +298,7 @@ void sendRC()
             rollcallPkt16_info.rc_eps_dist_16_ppt_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_PPT]);
             rollcallPkt16_info.rc_eps_dist_16_ppt_c_max = aggVec_max_i(&ssCurrAgs[PD_PPT]);
             rollcallPkt16_info.rc_eps_dist_16_ppt_c_min = aggVec_min_i(&ssCurrAgs[PD_PPT]);
-            rollcallPkt16_info.rc_eps_dist_16_ppt_state = getPDState(PD_PPT);
+            rollcallPkt16_info.rc_eps_dist_16_ppt_state =0;
             encoderc_eps_dist_16(&rollcallPkt16_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_PPT]);
         }
@@ -713,18 +313,6 @@ void sendRC()
         }
         canSendPacket(&rollcallPkt);
         rcFlag--;
-    }
-}
-void setPowerSwitchFromCAN(uint8_t cmd, PowerDomainID pd)
-{
-    if(cmd) //0 is nochange
-    {
-        if(cmd == 1)
-            distDomainSwitch(pd, PD_CMD_Enable);
-        else if(cmd == 2)
-            distDomainSwitch(pd, PD_CMD_Disable);
-        else if(cmd == 3)
-            distDomainSwitch(pd, PD_CMD_Toggle);
     }
 }
 
@@ -766,48 +354,32 @@ void can_packet_rx_callback(CANPacket *packet)
             rcResponseFlag &= ~PD_PPT_FLAG;
         case CAN_ID_GCMD_DIST_SET_PD_STATE:
             decodegcmd_dist_set_pd_state(packet, &pdCmd);
-            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_bdot, PD_BDOT);
-            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_com1, PD_COM1);
-            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_com2, PD_COM2);
-            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_eps, PD_EPS);
-            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_estim, PD_ESTIM);
-            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_ppt, PD_PPT);
-            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_rahs, PD_RAHS);
-            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_wheels, PD_WHEELS);
+
             break;
         case CAN_ID_GCMD_DIST_SET_PD_OVC_BDOT:
             decodegcmd_dist_set_pd_ovc_bdot(packet, &ovcPktBDot);
-            distSetOCPThreshold(PD_BDOT, ovcPktBDot.gcmd_dist_set_pd_ovc_bdot_ovc);
             break;
         case CAN_ID_GCMD_DIST_SET_PD_OVC_COM1:
             decodegcmd_dist_set_pd_ovc_com1(packet, &ovcPktCom1);
-            distSetOCPThreshold(PD_COM1, ovcPktCom1.gcmd_dist_set_pd_ovc_com1_ovc);
             break;
         case CAN_ID_GCMD_DIST_SET_PD_OVC_COM2:
             decodegcmd_dist_set_pd_ovc_com2(packet, &ovcPktCom2);
-            distSetOCPThreshold(PD_COM2, ovcPktCom2.gcmd_dist_set_pd_ovc_com2_ovc);
             break;
         case CAN_ID_GCMD_DIST_SET_PD_OVC_EPS:
             decodegcmd_dist_set_pd_ovc_eps(packet, &ovcPktEPS);
-            distSetOCPThreshold(PD_EPS, ovcPktEPS.gcmd_dist_set_pd_ovc_eps_ovc);
         break;
         case CAN_ID_GCMD_DIST_SET_PD_OVC_ESTIM:
             decodegcmd_dist_set_pd_ovc_estim(packet, &ovcPktEstim);
-            distSetOCPThreshold(PD_ESTIM, ovcPktEstim.gcmd_dist_set_pd_ovc_estim_ovc);
             break;
         case CAN_ID_GCMD_DIST_SET_PD_OVC_PPT:
             decodegcmd_dist_set_pd_ovc_ppt(packet, &ovcPktPPT);
-            distSetOCPThreshold(PD_PPT, ovcPktPPT.gcmd_dist_set_pd_ovc_ppt_ovc);
             break;
         case CAN_ID_GCMD_DIST_SET_PD_OVC_RAHS:
             decodegcmd_dist_set_pd_ovc_rahs(packet, &ovcPktRAHS);
-            distSetOCPThreshold(PD_RAHS, ovcPktRAHS.gcmd_dist_set_pd_ovc_rahs_ovc);
             break;
         case CAN_ID_CMD_REBOOT_REQUEST:
             decodecmd_reboot_request(packet, &rebootRequest);
-            setPowerSwitchFromCAN(PD_CMD_Disable, rebootRequest.cmd_reboot_request_domain);
             __delay_cycles(1000); //TODO: verify/move this wait
-            setPowerSwitchFromCAN(PD_CMD_Enable, rebootRequest.cmd_reboot_request_domain);
             break;
         case CAN_ID_GCMD_RESET_MINMAX:
             aggVec_reset((aggVec *)&mspTempAg);
@@ -823,26 +395,6 @@ void can_packet_rx_callback(CANPacket *packet)
         default:
             break;
     }
-}
-
-void autoStart()
-{
-    __delay_cycles(2 * SEC);
-    distDomainSwitch(PD_EPS, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_BDOT, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_COM1, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_COM2, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_ESTIM, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_RAHS, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    //distDomainSwitch(PD_WHEELS, PD_CMD_AutoStart);
-    __delay_cycles(0.5 * SEC);
-    distDomainSwitch(PD_PPT, PD_CMD_AutoStart);
 }
 
 void intermediateRollcall()
@@ -879,8 +431,6 @@ int main(void)
     // Spin up the ADC, for the temp sensor and battery voltage
     asensorInit(Ref_2p5V);
     hBattV = asensorActivateChannel(CHAN_A0, Type_GeneralV);
-    distDomainInit();
-    distDeployInit();
     canWrapInit();
     setCANPacketRxCallback(can_packet_rx_callback);
 
@@ -896,7 +446,7 @@ int main(void)
 #if defined(__DEBUG__)
 
     // Register to handle telecommands
-    debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, distActionCallback);
+//    debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, distActionCallback);
     __delay_cycles(0.5 * SEC);
 
 #else  //  __DEBUG__
@@ -922,12 +472,11 @@ int main(void)
 
     initializeTimer();
     initData();
-    startCallback(timerCallbackInitializer(&sendRollCallHandler, 6000000)); //TODO: was 6000000 for 6s
+    startCallback(timerCallbackInitializer(&sendRollCallHandler, 500000)); //TODO: was 6000000 for 6s
     //TODO: this is test code:
     bcbinPopulateHeader(&(rcCount.header), 25, sizeof(rcCount));
     startCallback(timerCallbackInitializer(&intermediateRollcall, 1000000));
 
-    uint16_t counter = 0;
     while (1)
     {
         //TODO: uncomment this
@@ -937,18 +486,6 @@ int main(void)
         __delay_cycles(0.1 * SEC);
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
-        distMonitorDomains();
-
-        counter++;
-        distBcSendSensorDat();
-        if (counter % 8 == 0)
-        {
-            distBcSendGeneral();
-            distBcSendHealth();
-            distMonitorBattery();
-        }
-        if (counter % 64 == 0)
-            distBcSendMeta();
         if(rcSendFlag && (canTxCheck() != CAN_TX_BUSY))
             sendRCCmd();
         sendRC();
