@@ -73,4 +73,6 @@ inline float tleRaan(struct tle *tle) { return tle->tle4.tle_4_raan; }
  */
 inline double tleMnm(struct tle *tle) { return tle->tle5.tle_5_mnm; }
 
+inline uint8_t tleId(struct tle *tle) { return tle->_id; }
+
 #endif /* TLE_H_ */

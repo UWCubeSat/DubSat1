@@ -38,9 +38,8 @@ typedef struct
     uint16_t user_id;
 } user_timer_callback_info;
 
-int getErikCount();
 void initializeTimer();
-TIMER_HANDLE timerPollInitializer(uint16_t ms);
+TIMER_HANDLE timerPollInitializer(uint32_t ms);
 int checkTimer(TIMER_HANDLE timerNumber);
 void endPollingTimer(TIMER_HANDLE timerNumber);
 TIMER_HANDLE timerCallbackInitializer(void (*waitFunc)(), uint32_t us);
@@ -51,6 +50,6 @@ void stopCallback(TIMER_HANDLE n);
 //user_timer_callback_info getCallbackTimerInfo(uint16_t user_id);
 TIMER_HANDLE timerCallbackInitializer_userID(void (*waitFunc)(), uint32_t us, uint16_t user_id);
 TIMER_HANDLE timerPollInitializer_userID(uint16_t ms, uint16_t user_id);
-void get_polling_timer_info(user_timer_polling_info * user_timer_info);
-void get_callback_timer_info(user_timer_callback_info * user_timer_info);
+void debug_polling_timer_info(user_timer_polling_info * user_timer_info);
+void debug_callback_timer_info(user_timer_callback_info * user_timer_info);
 #endif /* TIMER_H_ */

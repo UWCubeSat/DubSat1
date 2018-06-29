@@ -17,6 +17,7 @@
 #include "sensors/pcvsensor.h"
 #include "bsp/bsp.h"
 #include "core/debugtools.h"
+#include "interfaces/canwrap.h"
 
 // Configure power domains
 #define NUM_POWER_DOMAINS  8
@@ -27,6 +28,7 @@
 #define OCP_THRESH_LOW_DRAW_DEVICE  0.300f
 #define OCP_THRESH_MED_DRAW_DEVICE  0.500f
 #define OCP_THRESH_HIGH_DRAW_DEVICE 0.700f
+#define OCP_THRESH_VERY_HIGH_DRAW_DEVICE  1.0f
 
 // Configure power domain control pins
 #define DOMAIN_ENABLE_COM2_DIR  P7DIR
@@ -142,6 +144,11 @@ TLM_SEGMENT {
     float busV[NUM_POWER_DOMAINS];
 } sensordat_segment;
 
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint8_t timeSinceRC;
+} rcCount_segment;
+
 CMD_SEGMENT {
     uint8_t pd_cmds[NUM_POWER_DOMAINS];
 } domaincmd_segment;
@@ -205,5 +212,7 @@ uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 
 void distInitializeOCPThresholds();
+
+void can_packet_rx_callback(CANPacket *packet);
 
 #endif /* EPS_DIST_H_ */

@@ -27,9 +27,9 @@
 #define HEATER_ENABLE_BIT       BIT5
 
 // LED pins
-#define LED_DIR  P2DIR
-#define LED_OUT  P2OUT
-#define LED_BIT  BIT2
+#define LED_DIR  P3DIR
+#define LED_OUT  P3OUT
+#define LED_BIT  BIT5
 
 // COSMOS telem and cmd packets
 #define TLM_ID_EPS_BATT_GENERAL    TLM_ID_SHARED_SSGENERAL  // == 0x02  <--- standard message ID

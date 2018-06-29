@@ -112,6 +112,11 @@ static uint16_t invalid_timer_id = 0;
 static uint16_t invalid_timer_inUse = 0;
 
 
+void no_op_func()
+{
+    __no_operation();
+}
+
 
 void initializeTimer()
 {
@@ -119,7 +124,8 @@ void initializeTimer()
     {
         return;
     }
-//    // ACLK has frequency of 32768 Hz, which means one "tick" is .00003051757 s = 30.51757 us
+
+    // ACLK has frequency of 32768 Hz, which means one "tick" is .00003051757 s = 30.51757 us
     TA0CTL = TASSEL__ACLK | TAIE | MC__CONTINUOUS | ID__1;
     __bis_SR_register(GIE);
     uint16_t i;
@@ -139,35 +145,36 @@ void initializeTimer()
         callback[i].current_count = 0;
         callback[i].tar = 0;
         callback[i].user_id = 0;
-//        callback[i].fxPtr = 0; // TODO: Ask what to set to
+        callback[i].fxPtr = &no_op_func;
     }
     initialized = 1;
 }
 
-desired_time convertTime(uint16_t ms)
+desired_time convertTime(uint32_t ms)
 {
     // 1 desired_counter_dif = 2 seconds; 1 desired_TAR_dif = 1/32768 = 30.5us.
     desired_time convert;
-    uint16_t calc_counter;
+    uint16_t calc_counter = 0;
     uint16_t calc_TAR;
     float microSec;
-    uint16_t new_ms = ms;
-    calc_counter = new_ms / 2000;
-    new_ms = new_ms - calc_counter * 2000;
-    // ms --> us
+    uint32_t new_ms = ms;
+    while(new_ms >= 2000)
+    {
+    	calc_counter++;
+    	new_ms -= 2000;
+    }
     microSec = (float) new_ms * 1000.0;
-    calc_TAR = (uint16_t) (microSec / 30.517);
+    calc_TAR = (uint16_t) (microSec / 30.517578125);
     convert.counter = calc_counter;
     convert.TARval = calc_TAR;
     return convert;
 }
 
-TIMER_HANDLE timerPollInitializer(uint16_t ms)
+TIMER_HANDLE timerPollInitializer(uint32_t ms)
 {
     desired_time convert = convertTime(ms);
-    uint16_t start_counter = timer_counter;
-    uint16_t start_TAR_;
-    do {start_TAR_ = TA0R;} while (start_TAR_ != TA0R);
+    uint16_t current_counter = timer_counter;
+    uint16_t current_TAR = TA0R;
     int i;
     for (i = 0; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
     {
@@ -178,8 +185,8 @@ TIMER_HANDLE timerPollInitializer(uint16_t ms)
             __enable_interrupt();
             polling[i].counter_dif = convert.counter;
             polling[i].tar_dif = convert.TARval;
-            polling[i].start_timer_counter = start_counter;
-            polling[i].start_TAR = start_TAR_;
+            polling[i].start_timer_counter = current_counter;
+            polling[i].start_TAR = current_TAR;
             polling[i].user_id = 0;
             return i;
         }
@@ -297,9 +304,7 @@ void startCallback(TIMER_HANDLE n)
         TA0CCTL1 = CCIE;
     }
 }
-int getErikCount(){
-    return invalid_timer_id;
-}
+
 
 /** \fn stopCallback() stops callback for specified interrupt
  * \param n the interrupt to stop
@@ -325,6 +330,7 @@ void stopCallback(TIMER_HANDLE n)
     callback[n].tar = 0;
     callback[n].fxPtr = 0;
 }
+
 int checkValidPollingID(TIMER_HANDLE timerNumber)
 {
     if(timerNumber >= NUM_SUPPORTED_DURATIONS_POLLING || timerNumber < 0)
@@ -350,13 +356,10 @@ int checkTimer(TIMER_HANDLE timerNumber)
     uint16_t end_TAR;
     do {end_TAR = TA0R;} while (end_TAR != TA0R);
 
-    // timer overflow already happened, will deal with this case later
-
     uint16_t calc_tar;
     uint16_t calc_counter;
     if(end_counter < polling[timerNumber].start_timer_counter) {
         calc_counter = 65535 - polling[timerNumber].start_timer_counter + end_counter;
-        P1OUT ^= BIT6;
     }
     else {
         calc_counter = end_counter - polling[timerNumber].start_timer_counter;
@@ -372,18 +375,15 @@ int checkTimer(TIMER_HANDLE timerNumber)
         }
         calc_counter--;
         calc_tar = 65535 - polling[timerNumber].start_TAR + end_TAR;
-        P3OUT ^= BIT7;
     }
     if(calc_counter > polling[timerNumber].counter_dif)
     {
         endPollingTimer(timerNumber);
-        P3OUT ^= BIT6;
         return 1;
     }
     if(calc_counter == polling[timerNumber].counter_dif && calc_tar >= polling[timerNumber].tar_dif)
     {
         endPollingTimer(timerNumber);
-        P2OUT ^= BIT2;
         return 1;
     }
     return 0;
@@ -409,6 +409,40 @@ int checkValidCallbackID(TIMER_HANDLE timerNumber)
     }
     return 1;
 }
+
+void debug_polling_timer_info(user_timer_polling_info * user_timer_info)
+{
+    user_timer_polling_info timer_info[NUM_SUPPORTED_DURATIONS_POLLING];
+    uint8_t i;
+    for(i = 0 ; i < NUM_SUPPORTED_DURATIONS_POLLING; i++)
+    {
+        timer_info[i].user_id = polling[i].user_id;
+        timer_info[i].timer_id = i;
+        timer_info[i].counter_dif = polling[i].counter_dif;
+        timer_info[i].tar_dif = polling[i].tar_dif;
+        timer_info[i].start_TAR = polling[i].start_TAR;
+        timer_info[i].start_timer_counter = polling[i].start_timer_counter;
+        timer_info[i].inUse = polling[i].inUse;
+    }
+    user_timer_info = timer_info;
+}
+
+void debug_callback_timer_info(user_timer_callback_info * user_timer_info)
+{
+    user_timer_callback_info timer_info[NUM_SUPPORTED_DURATIONS_CALLBACK];
+    uint8_t i;
+    for(i = 0; i < NUM_SUPPORTED_DURATIONS_CALLBACK; i++)
+    {
+        timer_info[i].user_id = callback[i].user_id;
+        timer_info[i].timer_id = i;
+        timer_info[i].count = callback[i].count;
+        timer_info[i].current_count = callback[i].current_count;
+        timer_info[i].tar = callback[i].tar;
+        timer_info[i].inUse = callback[i].inUse;
+    }
+    user_timer_info = timer_info;
+}
+
 #pragma vector = TIMER0_A1_VECTOR
 __interrupt void Timer0_A1_ISR(void)
 {
@@ -446,5 +480,6 @@ __interrupt void Timer0_A1_ISR(void)
         default: break;
     }
 }
+
 
 

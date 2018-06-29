@@ -134,8 +134,8 @@ int main(void)
     LED_DIR |= LED_BIT;
 
     // Fix phantom power over uart
-    P3DIR |= BIT4;
-    P3OUT |= BIT4;
+	P3DIR |= BIT4;
+	P3OUT |= BIT4;
 
     // populate segment headers
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
@@ -173,7 +173,7 @@ int main(void)
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
-    return 0;
+	return 0;
 }
 
 void rt_OneStep(void)
@@ -291,7 +291,7 @@ FILE_STATIC void sendTelemOverBackchannel()
  */
 FILE_STATIC void waitAndSendCAN(CANPacket *p)
 {
-    while(canSendPacket(p));
+	while(canSendPacket(p));
 }
 
 FILE_STATIC void sendTelemOverCAN()
@@ -508,3 +508,4 @@ FILE_STATIC void rcPopulate14(CANPacket *out)
     rc.rc_adcs_estim_14_mag_z = rtY.mag_eci_unit[2];
     encoderc_adcs_estim_14(&rc, out);
 }
+

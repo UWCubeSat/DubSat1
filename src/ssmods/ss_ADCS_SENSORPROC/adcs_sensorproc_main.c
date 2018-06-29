@@ -28,53 +28,44 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
      sunsensorioUpdate,
      sunsensorioSendBackchannel,
      sunsensorioSendCAN,
+	 NULL,
     },
+#if ENABLE_MAG1
     {
-     magioInit,
-     magioUpdate,
-     magioSendBackchannel,
-     magioSendCAN,
+     magioInit1,
+     magioUpdate1,
+     magioSendBackchannel1,
+     magioSendCAN1,
+     NULL,
     },
+#endif /* ENABLE_MAG1 */
+#if ENABLE_MAG2
+    {
+     magioInit2,
+     magioUpdate2,
+     magioSendBackchannel2,
+     magioSendCAN2,
+     NULL,
+    },
+#endif /* ENABLE_MAG2 */
     {
      imuioInit,
      imuioUpdate,
      imuioSendBackchannel,
      imuioSendCAN,
+	 NULL,
     },
 };
 
 #define NUM_INTERFACES (sizeof(sensorInterfaces) / sizeof(SensorInterface))
 
-FILE_STATIC void initSensorInterfaces();
-FILE_STATIC void updateSensorInterfaces();
-FILE_STATIC void sendSensorBackchannel();
-FILE_STATIC void sendSensorCAN();
-
 /* Rollcall */
-
-FILE_STATIC void rcPopulate1(CANPacket *out);
-FILE_STATIC void rcPopulate2(CANPacket *out);
-FILE_STATIC void rcPopulate3(CANPacket *out);
-FILE_STATIC void rcPopulate4(CANPacket *out);
-FILE_STATIC void rcPopulate5(CANPacket *out);
-FILE_STATIC void rcPopulate6(CANPacket *out);
-FILE_STATIC void rcPopulate8(CANPacket *out);
-FILE_STATIC void rcPopulate9(CANPacket *out);
-FILE_STATIC void rcPopulate10(CANPacket *out);
-FILE_STATIC void rcPopulate11(CANPacket *out);
-FILE_STATIC void rcPopulate12(CANPacket *out);
-FILE_STATIC void rcPopulate13(CANPacket *out);
-FILE_STATIC void rcPopulate14(CANPacket *out);
-FILE_STATIC void rcPopulate15(CANPacket *out);
-FILE_STATIC void rcPopulate16(CANPacket *out);
-FILE_STATIC void rcPopulate17(CANPacket *out);
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
  rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
- rcPopulate6, rcPopulate8, rcPopulate9, rcPopulate10, rcPopulate11,
- rcPopulate12, rcPopulate13, rcPopulate14, rcPopulate15, rcPopulate16,
- rcPopulate17
+ rcPopulate6, rcPopulate9, rcPopulate10, rcPopulate11, rcPopulate12,
+ rcPopulate13, rcPopulate14, rcPopulate15, rcPopulate16, rcPopulate17
 };
 
 FILE_STATIC aggVec_f rc_temp;
@@ -84,11 +75,13 @@ FILE_STATIC aggVec_f rc_temp;
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 
-/* Autcode */
+/* Autocode */
 
 FILE_STATIC flag_t triggerStepFlag = FALSE;
-FILE_STATIC void triggerStep();
-FILE_STATIC void step();
+
+/**
+ * Takes one step of autocode.
+ */
 FILE_STATIC void rt_OneStep();
 
 int main(void)
@@ -100,7 +93,7 @@ int main(void)
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
     // Also hooks up special notification handlers.  Note that actual pulse interrupt handlers will update the
     // firing state structures before calling the provided handler function pointers.
-    StartupType starttype = coreStartup(handlePPTFiringNotification, NULL);  // <<DO NOT DELETE or MOVE>>
+    StartupType starttype = coreStartup(NULL, NULL);  // <<DO NOT DELETE or MOVE>>
 
 #if defined(__DEBUG__)
     debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, NULL);
@@ -108,8 +101,17 @@ int main(void)
 
     LED_DIR |= LED_BIT;
 
+    // Fix phantom power over uart
+    P3DIR |= BIT4;
+    P3OUT |= BIT4;
+
     // Setup segments to be able to serve as COSMOS telemetry packets
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
+
+    // initialize sensors
+	initSensorInterfaces();
+	asensorInit(Ref_2p5V); // temperature sensor
+	aggVec_init_f(&rc_temp);
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
     canWrapInitWithFilter();
@@ -118,11 +120,6 @@ int main(void)
     /* ----- SUBSYSTEM LOGIC -----*/
     // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
     // and then control is returned to this main loop
-
-    // initialize sensors
-    initSensorInterfaces();
-    asensorInit(Ref_2p5V); // temperature sensor
-    aggVec_init(&rc_temp);
 
     // initialize rollcall
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
@@ -156,27 +153,30 @@ int main(void)
 	return 0;
 }
 
-FILE_STATIC void triggerStep()
+void triggerStep()
 {
     triggerStepFlag = TRUE;
 }
 
-FILE_STATIC void step()
+void step()
 {
     // counter to trigger operations that don't happen every step
     static uint16_t i = 0;
     i++;
 
     // send periodic backchannel telemetry and blink LED
-    if (i % 40 == 0) // 10 Hz
+    if (i % 4 == 0) // 10 Hz
     {
         // blink LED
         LED_OUT ^= LED_BIT;
 
-        sendHealthSegment();
-        sendMetaSegment();
+        if (i % 40 == 0) // 1 Hz
+        {
+        	sendHealthSegment();
+			sendMetaSegment();
+        }
+
         sendSensorBackchannel();
-        magioSendBackchannelVector();
     }
 
     rollcallUpdate();
@@ -194,7 +194,7 @@ FILE_STATIC void step()
  * Step function originally copied from autocode/ert_main.c, now with inputs
  * and outputs filled out
  */
-void rt_OneStep(void)
+FILE_STATIC void rt_OneStep(void)
 {
   static boolean_T OverrunFlags[3] = { 0, 0, 0 };
 
@@ -287,7 +287,12 @@ void rt_OneStep(void)
       /* Step the model for subrate "i" */
       switch (i) {
        case 1 :
-        magioUpdate();
+#if ENABLE_MAG1
+        magioUpdate1();
+#endif /* ENABLE_MAG1 */
+#if ENABLE_MAG2
+        magioUpdate2();
+#endif /* ENABLE_MAG2 */
         /*
          * rate: 20 Hz
          * inputs: mag
@@ -329,12 +334,6 @@ void rt_OneStep(void)
   /* Enable interrupts here */
 }
 
-// Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
-void handlePPTFiringNotification()
-{
-    __no_operation();
-}
-
 // Packetizes and sends backchannel health packet
 // also invokes uart status handler
 void sendHealthSegment()
@@ -346,8 +345,8 @@ void sendHealthSegment()
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
-    // update rollcall temperature (in deci-Kelvin)
-    aggVec_f_push(&rc_temp, (hseg.inttemp + 273.15f) * 10);
+    // update rollcall temperature
+    aggVec_push_f(&rc_temp, hseg.inttemp);
 }
 
 void sendMetaSegment()
@@ -356,7 +355,7 @@ void sendMetaSegment()
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
-FILE_STATIC void initSensorInterfaces()
+void initSensorInterfaces()
 {
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
@@ -365,7 +364,7 @@ FILE_STATIC void initSensorInterfaces()
     }
 }
 
-FILE_STATIC void updateSensorInterfaces()
+void updateSensorInterfaces()
 {
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
@@ -374,7 +373,7 @@ FILE_STATIC void updateSensorInterfaces()
     }
 }
 
-FILE_STATIC void sendSensorBackchannel()
+void sendSensorBackchannel()
 {
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
@@ -383,7 +382,7 @@ FILE_STATIC void sendSensorBackchannel()
     }
 }
 
-FILE_STATIC void sendSensorCAN()
+void sendSensorCAN()
 {
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
@@ -398,18 +397,26 @@ void canRxCallback(CANPacket *p)
     {
         rollcallStart();
     }
+    uint8_t i = NUM_INTERFACES;
+    while (i-- != 0)
+    {
+    	if (sensorInterfaces[i].handleCan)
+    	{
+        	sensorInterfaces[i].handleCan(p);
+    	}
+    }
 }
 
 void rcPopulate1(CANPacket *out)
 {
-    rc_adcs_sp_1 rc;
-    rc.rc_adcs_sp_1_reset_count = bspGetResetCount();
-    rc.rc_adcs_sp_1_sysrstiv = SYSRSTIV;
-    rc.rc_adcs_sp_1_temp_avg = aggVec_f_avg_f(&rc_temp);
-    rc.rc_adcs_sp_1_temp_max = aggVec_f_max(&rc_temp);
-    rc.rc_adcs_sp_1_temp_min = aggVec_f_min(&rc_temp);
-    aggVec_reset(&rc_temp);
-    encoderc_adcs_sp_1(&rc, out);
+    rc_adcs_sp_h1 rc;
+    rc.rc_adcs_sp_h1_reset_count = bspGetResetCount();
+    rc.rc_adcs_sp_h1_sysrstiv = SYSRSTIV;
+    rc.rc_adcs_sp_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&rc_temp));
+    rc.rc_adcs_sp_h1_temp_max = compressMSPTemp(aggVec_max_f(&rc_temp));
+    rc.rc_adcs_sp_h1_temp_min = compressMSPTemp(aggVec_min_f(&rc_temp));
+    aggVec_as_reset((aggVec *) &rc_temp);
+    encoderc_adcs_sp_h1(&rc, out);
 }
 
 void rcPopulate2(CANPacket *out)
@@ -443,59 +450,60 @@ void rcPopulate5(CANPacket *out)
 
 void rcPopulate6(CANPacket *out)
 {
-    rc_adcs_sp_6 rc;
+    rc_adcs_sp_6 rc = { 0 };
     sunsensorioRcPopulate6(&rc);
-    magioRcPopulate6(&rc);
+#if ENABLE_MAG1
+    magio1RcPopulate6(&rc);
+#endif
+#if ENABLE_MAG2
+    magio2RcPopulate6(&rc);
+#endif
     encoderc_adcs_sp_6(&rc, out);
-}
-
-void rcPopulate7(CANPacket *out)
-{
-    rc_adcs_sp_7 rc;
-    magioRcPopulate7(&rc);
-    encoderc_adcs_sp_7(&rc, out);
-}
-
-void rcPopulate8(CANPacket *out)
-{
-    rc_adcs_sp_8 rc;
-    magioRcPopulate8(&rc);
-    encoderc_adcs_sp_8(&rc, out);
 }
 
 void rcPopulate9(CANPacket *out)
 {
-    rc_adcs_sp_9 rc;
-    magioRcPopulate9(&rc);
+    rc_adcs_sp_9 rc = { 0 };
+#if ENABLE_MAG1
+    magio1RcPopulate9(&rc);
+#endif
     encoderc_adcs_sp_9(&rc, out);
 }
 
 void rcPopulate10(CANPacket *out)
 {
-    rc_adcs_sp_10 rc;
-    magioRcPopulate10(&rc);
+    rc_adcs_sp_10 rc = { 0 };
+#if ENABLE_MAG1
+    magio1RcPopulate10(&rc);
+#endif
     encoderc_adcs_sp_10(&rc, out);
 }
 
 void rcPopulate11(CANPacket *out)
 {
-    rc_adcs_sp_11 rc;
-    magioRcPopulate11(&rc);
+    rc_adcs_sp_11 rc = { 0 };
+#if ENABLE_MAG2
+    magio2RcPopulate11(&rc);
+#endif
     encoderc_adcs_sp_11(&rc, out);
 }
 
 void rcPopulate12(CANPacket *out)
 {
-    rc_adcs_sp_12 rc;
-    magioRcPopulate12(&rc);
+    rc_adcs_sp_12 rc = { 0 };
+#if ENABLE_MAG2
+    magio2RcPopulate12(&rc);
+#endif
     encoderc_adcs_sp_12(&rc, out);
 }
 
 void rcPopulate13(CANPacket *out)
 {
-    rc_adcs_sp_13 rc;
+    rc_adcs_sp_13 rc = { 0 };
     sunsensorioRcPopulate13(&rc);
-    magioRcPopulate13(&rc);
+#if ENABLE_MAG2
+    magio2RcPopulate13(&rc);
+#endif
     encoderc_adcs_sp_13(&rc, out);
 }
 
@@ -503,7 +511,6 @@ void rcPopulate14(CANPacket *out)
 {
     rc_adcs_sp_14 rc;
     sunsensorioRcPopulate14(&rc);
-    magioRcPopulate14(&rc);
     encoderc_adcs_sp_14(&rc, out);
 }
 

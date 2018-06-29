@@ -6,12 +6,11 @@
 #include "sensors/coulomb_counter.h" //Coulomb counter
 #include "core/i2c.h"
 #include "interfaces/canwrap.h"
-#include "core/dataArray.h"
 #include "core/MET.h"
+#include "core/agglib.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
-FILE_STATIC ModuleStatus mod_status;
 FILE_STATIC volatile SubsystemState ss_state    = State_FirstState;
 FILE_STATIC volatile SubsystemMode ss_mode      = Mode_FirstMode;
 
@@ -38,26 +37,13 @@ FILE_STATIC float previousTemp;
 
 FILE_STATIC volatile int autoHeating = 1;
 
-FILE_STATIC uint16_t tempAg;
-FILE_STATIC uint16_t voltageAg;
-FILE_STATIC uint16_t currentAg;
-FILE_STATIC uint16_t nodeVoltageAg;
-FILE_STATIC uint16_t nodeCurrentAg;
-FILE_STATIC uint16_t SOCAg;
-
-FILE_STATIC float tempAgArray[480] = {0};
-FILE_STATIC float voltageAgArray[480] = {0};
-FILE_STATIC float currentAgArray[480] = {0};
-FILE_STATIC float nodeVoltageAgArray[480] = {0};
-FILE_STATIC float nodeCurrentAgArray[480] = {0};
-FILE_STATIC float SOCAgArray[480] = {0};
-
-#pragma PERSISTENT(tempAgArray);
-#pragma PERSISTENT(voltageAgArray);
-#pragma PERSISTENT(currentAgArray);
-#pragma PERSISTENT(nodeVoltageAgArray);
-#pragma PERSISTENT(nodeCurrentAgArray);
-#pragma PERSISTENT(SOCAgArray);
+FILE_STATIC aggVec_f mspTempAg;
+FILE_STATIC aggVec_i tempAg;
+FILE_STATIC aggVec_i voltageAg;
+FILE_STATIC aggVec_i currentAg;
+FILE_STATIC aggVec_i nodeVoltageAg;
+FILE_STATIC aggVec_i nodeCurrentAg;
+FILE_STATIC aggVec_i accChargeAg;
 
 FILE_STATIC uint64_t lastFullChargeTime = 0;
 #pragma PERSISTENT(lastFullChargeTime);
@@ -139,6 +125,7 @@ FILE_STATIC void battBcSendHealth()
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
     hseg.inttemp = asensorReadIntTempC();
+    aggVec_push_f(&mspTempAg, hseg.inttemp);
     hseg.reset_count = bspGetResetCount();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandlers();
@@ -166,11 +153,11 @@ void readCC (){
     sseg.battCharge = CCData.battCharge;
     sseg.accumulatedCharge = CCData.totalAccumulatedCharge;
 
-    addData_float(voltageAg, CCData.busVoltageV);
-    addData_float(currentAg, CCData.calcdCurrentA);
-    addData_float(SOCAg, CCData.SOC);
-    /*if(CCData.fullCharge)
-        lastFullChargeTime = getTimeStampInt();*/
+    aggVec_push_i(&voltageAg, CCReadRawVoltage());
+    aggVec_push_i(&currentAg, CCReadRawCurrent());
+    aggVec_push_i(&accChargeAg, CCReadRawAccumulatedCharge());
+    if(CCData.fullCharge)
+        lastFullChargeTime = metConvertToInt(getMETTimestamp());
 }
 
 void readINA(hDev hSensor){
@@ -178,28 +165,132 @@ void readINA(hDev hSensor){
     INAData = pcvsensorRead(hSensor, Read_BusV | Read_CurrentA);
     sseg.battNodeVolt = INAData->busVoltageV;
     sseg.battNodeCurr = INAData->calcdCurrentA;
-    addData_float(nodeCurrentAg, INAData->calcdCurrentA);
-    addData_float(nodeVoltageAg, INAData-> busVoltageV);
+    aggVec_push_i(&nodeCurrentAg, INAData->rawCurrent); //TODO: get raw values here
+    aggVec_push_i(&nodeVoltageAg, INAData->rawBusVoltage);
 }
 
 void readTempSensor(){
     float tempVoltageV =  asensorReadSingleSensorV(hTempC); //Assuming in V (not mV)
     //sseg.battTemp = ((tempVoltageV/100.0) - 500) / 10.0; //Temp in Celcius
     //conversion from voltage to temperatur, has a slope of 10mv per degree celcius
-    //and an intercept of 50 degrees at 0 volts
-    addData_float(tempAg, tempVoltageV);
+    //and an intercept of 50 degrees at 0 voltsx
+    aggVec_push_i(&tempAg, (tempVoltageV /0.010));
+
     sseg.battTemp = (tempVoltageV /0.010) - 50;
 }
 
 void can_packet_rx_callback(CANPacket *packet)
 {
+    gcmd_eps_batt_fulldef fullDefPkt;
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            rcFlag = 2;
+            rcFlag = 8;
+            break;
+        case CAN_ID_GCMD_RESET_MINMAX:
+            aggVec_reset((aggVec *)&mspTempAg);
+            aggVec_reset((aggVec *)&tempAg);
+            aggVec_reset((aggVec *)&voltageAg);
+            aggVec_reset((aggVec *)&currentAg);
+            aggVec_reset((aggVec *)&nodeVoltageAg);
+            aggVec_reset((aggVec *)&nodeCurrentAg);
+            aggVec_reset((aggVec *)&accChargeAg);
+            break;
+        case CAN_ID_GCMD_EPS_BATT_FULLDEF:
+            decodegcmd_eps_batt_fulldef(packet, &fullDefPkt);
+            CCSetFullCurrent(fullDefPkt.gcmd_eps_batt_fulldef_chg_curr);
+            CCSetFullVoltage(fullDefPkt.gcmd_eps_batt_fulldef_const_volt);
             break;
         default:
             break;
+    }
+}
+
+void sendRC()
+{
+    while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
+    {
+        CANPacket rollcallPkt = {0};
+        if(rcFlag == 8)
+        {
+            rc_eps_batt_h1 rollcallPkt1_info = {0};
+            float newVal = asensorReadIntTempC();
+            rollcallPkt1_info.rc_eps_batt_h1_sysrstiv = SYSRSTIV;
+            rollcallPkt1_info.rc_eps_batt_h1_reset_count = bspGetResetCount();
+            rollcallPkt1_info.rc_eps_batt_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_batt_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_batt_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_batt_h1_reset_count = bspGetResetCount();
+            encoderc_eps_batt_h1(&rollcallPkt1_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&mspTempAg);
+        }
+        else if(rcFlag == 7)
+        {
+            rc_eps_batt_h2 healthPkt2 = {0};
+            healthPkt2.rc_eps_batt_h2_canrxerror = canRxErrorCheck();
+            encoderc_eps_batt_h2(&healthPkt2, &rollcallPkt);
+        }
+        else if(rcFlag == 6)
+        {
+            rc_eps_batt_2 rollcallPkt2_info = {0};
+            rollcallPkt2_info.rc_eps_batt_2_node_v_avg = aggVec_avg_i_i(&nodeVoltageAg);
+            rollcallPkt2_info.rc_eps_batt_2_node_v_max = aggVec_max_i(&nodeVoltageAg);
+            rollcallPkt2_info.rc_eps_batt_2_node_v_min = aggVec_min_i(&nodeVoltageAg);
+            encoderc_eps_batt_2(&rollcallPkt2_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&nodeVoltageAg);
+        }
+        else if(rcFlag == 5)
+        {
+            rc_eps_batt_3 rollcallPkt3_info = {0};
+            rollcallPkt3_info.rc_eps_batt_3_batt_temp_avg = aggVec_avg_i_i(&tempAg);
+            rollcallPkt3_info.rc_eps_batt_3_current_avg = aggVec_avg_i_i(&currentAg);
+            rollcallPkt3_info.rc_eps_batt_3_current_max = aggVec_max_i(&currentAg);
+            rollcallPkt3_info.rc_eps_batt_3_current_min = aggVec_min_i(&currentAg);
+            encoderc_eps_batt_3(&rollcallPkt3_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&tempAg);
+            aggVec_as_reset((aggVec *)&currentAg);
+        }
+        else if(rcFlag == 4)
+        {
+            rc_eps_batt_4 rollcallPkt4_info = {0};
+            rollcallPkt4_info.rc_eps_batt_4_balancer_state = (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) != 0;
+            rollcallPkt4_info.rc_eps_batt_4_heater_state = (HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) != 0;
+            rollcallPkt4_info.rc_eps_batt_4_voltage_avg = aggVec_avg_i_i(&voltageAg);
+            rollcallPkt4_info.rc_eps_batt_4_voltage_max = aggVec_max_i(&voltageAg);
+            rollcallPkt4_info.rc_eps_batt_4_voltage_min = aggVec_min_i(&voltageAg);
+            encoderc_eps_batt_4(&rollcallPkt4_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&voltageAg);
+        }
+        else if(rcFlag == 3)
+        {
+            rc_eps_batt_5 rollcallPkt5_info = {0};
+            rollcallPkt5_info.rc_eps_batt_5_batt_temp_max = aggVec_max_i(&tempAg);
+            rollcallPkt5_info.rc_eps_batt_5_batt_temp_min = aggVec_min_i(&tempAg);
+            rollcallPkt5_info.rc_eps_batt_5_node_c_avg = aggVec_avg_i_i(&nodeCurrentAg);
+            rollcallPkt5_info.rc_eps_batt_5_node_c_max = aggVec_max_i(&nodeCurrentAg);
+            rollcallPkt5_info.rc_eps_batt_5_node_c_min = aggVec_min_i(&nodeCurrentAg);
+            encoderc_eps_batt_5(&rollcallPkt5_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&nodeCurrentAg);
+        }
+        else if(rcFlag == 2)
+        {
+            rc_eps_batt_6 rollcallPkt6_info = {0};
+            rollcallPkt6_info.rc_eps_batt_6_last_charge = lastFullChargeTime;
+            rollcallPkt6_info.rc_eps_batt_6_status = CCGetStatusReg();
+            rollcallPkt6_info.rc_eps_batt_6_ctrl = CCGetControlReg();
+            encoderc_eps_batt_6(&rollcallPkt6_info, &rollcallPkt);
+        }
+        else if(rcFlag == 1)
+        {
+            rc_eps_batt_7 rollcallPkt7_info = {0};
+            rollcallPkt7_info.rc_eps_batt_7_acc_charge_avg = aggVec_avg_i_i(&accChargeAg);
+            rollcallPkt7_info.rc_eps_batt_7_acc_charge_max = aggVec_max_i(&accChargeAg);
+            rollcallPkt7_info.rc_eps_batt_7_acc_charge_min = aggVec_min_i(&accChargeAg);
+            encoderc_eps_batt_7(&rollcallPkt7_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&accChargeAg);
+        }
+        canSendPacket(&rollcallPkt);
+        rcFlag--;
     }
 }
 
@@ -209,7 +300,9 @@ void can_packet_rx_callback(CANPacket *packet)
 
 int main(void)
 {
-    /* ----- INITIALIZATION -----*/\
+    P3DIR |= BIT4; //this is for Paul's backpower fix
+    P3OUT |= BIT4;
+    /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     asensorInit(Ref_2p5V);
     battInit();
@@ -220,9 +313,6 @@ int main(void)
 
     /* ------COULOMB COUNTER---- */
     LTC2943Init(I2CBus2, 6.0);
-
-    canWrapInitWithFilter();
-    setCANPacketRxCallback(can_packet_rx_callback);
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
@@ -248,12 +338,17 @@ int main(void)
     battControlBalancer(Cmd_AutoEnable);
     //battControlHeater(Cmd_AutoEnable);
 
-    tempAg = init_float(tempAgArray, 480);
-    voltageAg = init_float(voltageAgArray, 480);
-    currentAg = init_float(currentAgArray, 480);
-    nodeVoltageAg = init_float(nodeVoltageAgArray, 480);
-    nodeCurrentAg = init_float(nodeCurrentAgArray, 480);
-    SOCAg = init_float(SOCAgArray, 480);
+    aggVec_init_f(&mspTempAg);
+    aggVec_init_i(&tempAg);
+    aggVec_init_i(&voltageAg);
+    aggVec_init_i(&currentAg);
+    aggVec_init_i(&nodeVoltageAg);
+    aggVec_init_i(&nodeCurrentAg);
+    aggVec_init_i(&accChargeAg);
+
+    //canWrapInitWithFilter();
+    canWrapInit();
+    setCANPacketRxCallback(can_packet_rx_callback);
 
     previousTemp = asensorReadSingleSensorV(hTempC);
     uint16_t counter;
@@ -282,8 +377,8 @@ int main(void)
             readCoulombCounterControl();
             gseg.CC_ControlReg = CCData.controlReg;
 
-            //battBcSendGeneral();
-            //battBcSendHealth();
+            battBcSendGeneral();
+            battBcSendHealth();
 
             if(isChecking)
             {
@@ -302,79 +397,6 @@ int main(void)
         {
             battBcSendMeta();
         }
-        if(rcFlag)
-        {
-            CANPacket rollcallPkt1 = {0};
-            rc_eps_batt_1 rollcallPkt1_info = {0};
-            CANPacket rollcallPkt2 = {0};
-            rc_eps_batt_2 rollcallPkt2_info = {0};
-            CANPacket rollcallPkt3 = {0};
-            rc_eps_batt_3 rollcallPkt3_info = {0};
-            CANPacket rollcallPkt4 = {0};
-            rc_eps_batt_4 rollcallPkt4_info = {0};
-            CANPacket rollcallPkt5 = {0};
-            rc_eps_batt_5 rollcallPkt5_info = {0};
-            CANPacket rollcallPkt6 = {0};
-            rc_eps_batt_6 rollcallPkt6_info = {0};
-            switch(rcFlag)
-            {
-                case 1:
-                    rollcallPkt1_info.rc_eps_batt_1_sysrstiv = bspGetResetCount();
-                    rollcallPkt1_info.rc_eps_batt_1_temp_avg = 0;//asensorReadIntTempC(); //TODO: this
-                    rollcallPkt1_info.rc_eps_batt_1_temp_max = 0;//asensorReadIntTempC(); //TODO: this
-                    rollcallPkt1_info.rc_eps_batt_1_temp_min = 0;//asensorReadIntTempC(); //TODO: this
-                    encoderc_eps_batt_1(&rollcallPkt1_info, &rollcallPkt1);
-                    canSendPacket(&rollcallPkt1);
-
-                    rollcallPkt2_info.rc_eps_batt_2_node_v_avg = getAvg_float(nodeVoltageAg);
-                    rollcallPkt2_info.rc_eps_batt_2_node_v_max = getMax_float(nodeVoltageAg);
-                    rollcallPkt2_info.rc_eps_batt_2_node_v_min = getMin_float(nodeVoltageAg);
-                    encoderc_eps_batt_2(&rollcallPkt2_info, &rollcallPkt2);
-                    canSendPacket(&rollcallPkt2);
-                    resetAvg_float(nodeVoltageAg);
-
-                    rollcallPkt3_info.rc_eps_batt_3_batt_temp_avg = getAvg_float(tempAg);
-                    rollcallPkt3_info.rc_eps_batt_3_current_avg = getAvg_float(currentAg);
-                    rollcallPkt3_info.rc_eps_batt_3_current_max = getMax_float(currentAg);
-                    rollcallPkt3_info.rc_eps_batt_3_current_min = getMin_float(currentAg);
-                    encoderc_eps_batt_3(&rollcallPkt3_info, &rollcallPkt3);
-                    canSendPacket(&rollcallPkt3);
-                    resetAvg_float(tempAg);
-                    resetAvg_float(currentAg);
-                    resetAvg_float(nodeCurrentAg);
-                    break;
-                case 2:
-                    rollcallPkt4_info.rc_eps_batt_4_balancer_state = (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) != 0;
-                    rollcallPkt4_info.rc_eps_batt_4_heater_state = (HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) != 0;
-                    rollcallPkt4_info.rc_eps_batt_4_voltage_avg = getAvg_float(voltageAg);
-                    rollcallPkt4_info.rc_eps_batt_4_voltage_max = getMax_float(voltageAg);
-                    rollcallPkt4_info.rc_eps_batt_4_voltage_min = getMin_float(voltageAg);
-                    encoderc_eps_batt_4(&rollcallPkt4_info, &rollcallPkt4);
-                    canSendPacket(&rollcallPkt4);
-                    resetAvg_float(voltageAg);
-
-                    rollcallPkt5_info.rc_eps_batt_5_batt_temp_max = getMax_float(tempAg);
-                    rollcallPkt5_info.rc_eps_batt_5_batt_temp_min = getMin_float(tempAg);
-                    rollcallPkt5_info.rc_eps_batt_5_node_c_avg = getAvg_float(nodeVoltageAg);
-                    rollcallPkt5_info.rc_eps_batt_5_node_c_max = getMax_float(nodeVoltageAg);
-                    rollcallPkt5_info.rc_eps_batt_5_node_c_min = getMin_float(nodeVoltageAg);
-                    encoderc_eps_batt_5(&rollcallPkt5_info, &rollcallPkt5);
-                    canSendPacket(&rollcallPkt5);
-
-                    rollcallPkt6_info.rc_eps_batt_6_last_charge = lastFullChargeTime;
-                    rollcallPkt6_info.rc_eps_batt_6_soc_avg = getAvg_float(SOCAg);
-                    rollcallPkt6_info.rc_eps_batt_6_soc_max = getMax_float(SOCAg);
-                    rollcallPkt6_info.rc_eps_batt_6_soc_min = getMin_float(SOCAg);
-                    encoderc_eps_batt_6(&rollcallPkt6_info, &rollcallPkt6);
-                    canSendPacket(&rollcallPkt6);
-                    resetAvg_float(SOCAg);
-                    break;
-            }
-            rcFlag--;
-        }
+        sendRC();
      }
-
-    // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
-
-    return 0;
 }

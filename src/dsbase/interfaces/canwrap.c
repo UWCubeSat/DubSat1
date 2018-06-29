@@ -151,13 +151,13 @@ void canWrapInitWithFilter(){
         filter_two = 0x03;
         filter_three = 0x04;
         filter_four = 0x04;
-    }
-    setTheFilter(CAN_MASK_0, (uint32_t) 0x1e000000);
-    setTheFilter(CAN_FILTER_0, (uint32_t) 0x00);
-    setTheFilter(CAN_FILTER_1, (uint32_t) 0x00);
+  	}
+  	setTheFilter(CAN_MASK_0, (uint32_t) 0x1e000000);
+   	setTheFilter(CAN_FILTER_0, (uint32_t) 0x00);
+   	setTheFilter(CAN_FILTER_1, (uint32_t) 0x00);
 
-    setTheFilter(CAN_MASK_1, (uint32_t) 0xf0000);
-    setTheFilter(CAN_FILTER_2, (uint32_t) filter_one << 16);
+   	setTheFilter(CAN_MASK_1, (uint32_t) 0xf0000);
+   	setTheFilter(CAN_FILTER_2, (uint32_t) filter_one << 16);
     setTheFilter(CAN_FILTER_3, (uint32_t) filter_two << 16);
     setTheFilter(CAN_FILTER_4, (uint32_t) filter_three << 16);
     setTheFilter(CAN_FILTER_5, (uint32_t) filter_four << 16);
@@ -3974,3 +3974,4 @@ void encodegrnd_epoch(grnd_epoch *input, CANPacket *output){
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
 }
+

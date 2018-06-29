@@ -17,7 +17,7 @@
 // the initial value assigned to the coils before commands are received
 #define ELOISE_UNKNOWN -128 
 // what phase the mtq is in (needed by fsw and bdot)
-#define MEASUREMENT_PHASE CAN_ENUM_MTQ_PHASE_MEASUREMENT_PHASE
+#define MEASUREMENT_PHASE CAN_ENUM_MTQ_PHASE_MEASUREMENT_PHASE 
 #define ACTUATION_PHASE CAN_ENUM_MTQ_PHASE_ACTUATION_PHASE
 #define PMS_PHASE CAN_ENUM_MTQ_PHASE_PMS_PHASE
 #define FROM_FSW_IS_ZERO 0

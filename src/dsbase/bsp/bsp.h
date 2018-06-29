@@ -116,6 +116,7 @@ SubsystemModule bspGetModule();
 hwsw_match_state bspGetHWSWMatchState();
 uint64_t bspGetChipID();
 uint32_t bspGetResetCount();
+void bspBackpowerPulldown();
 
 // Hard-wired assignments for a given board are stashed in these #if defined(...)
 // blocks

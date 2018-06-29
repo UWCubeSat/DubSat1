@@ -10,20 +10,18 @@
 #ifndef ADCS_SENSORPROC_IDS_H_
 #define ADCS_SENSORPROC_IDS_H_
 
-#define ENABLE_SUNSENSOR   0
-#define ENABLE_MAG1        0
-#define ENABLE_MAG2        0
-#define ENABLE_IMU         0
-
-// size of rollcall buffers for min/max/averaging
-#define RC_BUFFER_SIZE 60
+#define ENABLE_SUNSENSOR   1
+#define ENABLE_MAG1        1
+#define ENABLE_MAG2        1
+#define ENABLE_IMU         1
 
 // COSMOS telemetry IDs
 #define TLM_ID_SUNSENSOR_RAW    121
 #define TLM_ID_SUNSENSOR_VECTOR 114
 #define TLM_ID_MAG1_RAW         117
 #define TLM_ID_MAG2_RAW         115
-#define TLM_ID_MAG_VECTOR       113
+#define TLM_ID_MAG1_FILTERED    113
+#define TLM_ID_MAG2_FILTERED    111
 #define TLM_ID_IMU_RAW          116
 #define TLM_ID_IMU_VECTOR       112
 

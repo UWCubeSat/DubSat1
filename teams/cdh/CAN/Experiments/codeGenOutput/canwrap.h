@@ -17,8 +17,9 @@
 // the initial value assigned to the coils before commands are received
 #define ELOISE_UNKNOWN -128 
 // what phase the mtq is in (needed by fsw and bdot)
-#define MEASUREMENT_PHASE CAN_ENUM_BOOL_FALSE 
-#define ACTUATION_PHASE CAN_ENUM_BOOL_TRUE
+#define MEASUREMENT_PHASE CAN_ENUM_MTQ_PHASE_MEASUREMENT_PHASE 
+#define ACTUATION_PHASE CAN_ENUM_MTQ_PHASE_ACTUATION_PHASE
+#define PMS_PHASE CAN_ENUM_MTQ_PHASE_PMS_PHASE
 #define FROM_FSW_IS_ZERO 0
 #define FROM_BDOT_IS_ONE 1
 #define FROM_FSW FROM_FSW_IS_ZERO
@@ -26,7 +27,72 @@
 
 // BEGIN GENERATOR MACROS
 
-#define CAN_ID_VECTOR__INDEPENDENT_SIG_MSG 1073741824
+#define CAN_ID_GCMD_PPT_MULTIPLE_FIRE 302252753
+#define CAN_ID_GCMD_MTQ_PWM_TIME 302252752
+#define CAN_ID_GCMD_EPS_BATT_FULLDEF 302252751
+#define CAN_ID_RC_ADCS_BDOT_5 304677468
+#define CAN_ID_GCMD_RESET_MINMAX 302252750
+#define CAN_ID_RC_EPS_BATT_H2 304677486
+#define CAN_ID_RC_ADCS_BDOT_H2 304677485
+#define CAN_ID_RC_EPS_DIST_H2 304677484
+#define CAN_ID_RC_ADCS_MPC_H2 304677483
+#define CAN_ID_RC_ADCS_ESTIM_H2 304677482
+#define CAN_ID_RC_ADCS_SP_H2 304677481
+#define CAN_ID_RC_EPS_GEN_H2 304677480
+#define CAN_ID_RC_ADCS_MTQ_H2 304677479
+#define CAN_ID_RC_PPT_H2 304677478
+#define CAN_ID_RC_EPS_BATT_H1 304677477
+#define CAN_ID_RC_ADCS_BDOT_H1 304677476
+#define CAN_ID_RC_EPS_DIST_H1 304677475
+#define CAN_ID_RC_ADCS_MPC_H1 304677474
+#define CAN_ID_RC_ADCS_ESTIM_H1 304677473
+#define CAN_ID_RC_ADCS_SP_H1 304677472
+#define CAN_ID_RC_EPS_GEN_H1 304677471
+#define CAN_ID_RC_ADCS_MTQ_H1 304677470
+#define CAN_ID_RC_PPT_H1 304677469
+#define CAN_ID_GCMD_MTQ_PMS 302252749
+#define CAN_ID_GCMD_BDOT_MAX_TUMBLE 302252748
+#define CAN_ID_GCMD_BDOT_SPAM 302252747
+#define CAN_ID_GCMD_BDOT_CONTROL 302252746
+#define CAN_ID_GCMD_BDOT_MAG_CONTROL 302252745
+#define CAN_ID_GCMD_BDOT_POLE_OVERRIDE 302252744
+#define CAN_ID_GCMD_GEN_SET_PT_STATE 302252742
+#define CAN_ID_GCMD_SP_SET_THRESH 302252743
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_PPT 302252741
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_EPS 302252740
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_WHEELS 302252739
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_ESTIM 302252738
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_BDOT 302252737
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_RAHS 302252736
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_COM2 302252735
+#define CAN_ID_GCMD_DIST_SET_PD_OVC_COM1 302252734
+#define CAN_ID_GCMD_DIST_SET_PD_STATE 302252733
+#define CAN_ID_GCMD_MTQ_POP 302449340
+#define CAN_ID_RC_EPS_BATT_7 304677466
+#define CAN_ID_SENSORPROC_MAG2 335872068
+#define CAN_ID_RC_ADCS_ESTIM_14 304677465
+#define CAN_ID_RC_ADCS_ESTIM_13 304677464
+#define CAN_ID_RC_ADCS_ESTIM_12 304677463
+#define CAN_ID_RC_ADCS_ESTIM_11 304677462
+#define CAN_ID_RC_ADCS_ESTIM_10 304677461
+#define CAN_ID_RC_ADCS_ESTIM_9 304677460
+#define CAN_ID_RC_EPS_DIST_16 304677458
+#define CAN_ID_RC_EPS_DIST_9 304677451
+#define CAN_ID_RC_EPS_DIST_7 304677449
+#define CAN_ID_RC_EPS_DIST_6 304677448
+#define CAN_ID_RC_EPS_DIST_5 304677447
+#define CAN_ID_RC_EPS_DIST_3 304677445
+#define CAN_ID_RC_EPS_DIST_2 304677444
+#define CAN_ID_RC_EPS_DIST_17 304677459
+#define CAN_ID_RC_EPS_DIST_14 304677456
+#define CAN_ID_RC_EPS_DIST_13 304677455
+#define CAN_ID_RC_EPS_DIST_11 304677453
+#define CAN_ID_RC_EPS_DIST_12 304677454
+#define CAN_ID_RC_EPS_DIST_15 304677457
+#define CAN_ID_RC_EPS_DIST_10 304677452
+#define CAN_ID_RC_EPS_DIST_8 304677450
+#define CAN_ID_RC_EPS_DIST_4 304677446
+#define CAN_ID_RC_EPS_DIST_1 304677443
 #define CAN_ID_RC_ADCS_MPC_11 304677438
 #define CAN_ID_RC_ADCS_MPC_7 304677434
 #define CAN_ID_RC_ADCS_MPC_8 304677435
@@ -125,25 +191,40 @@
 #define CAN_ID_SENSORPROC_IMU 335872066
 #define CAN_ID_SENSORPROC_MAG 335872067
 #define CAN_ID_CMD_ROLLCALL 1114132
-#define CAN_ID_MTQ_ACK 34013232
-#define CAN_ID_GEN_PANEL_TEMP 36241619
-#define CAN_ID_CMD_GEN_RST 34865424
-#define CAN_ID_CMD_PPT_SINGLE_FIRE 34865408
-#define CAN_ID_GEN_PANEL_PWR 35782866
-#define CAN_ID_GEN_PANEL_CURRENT 35782865
-#define CAN_ID_GEN_PANEL_VOLTAGE 34734288
-#define CAN_ID_MPC_VP 37158946
-#define CAN_ID_EPS_BATT_STATE 35782850
-#define CAN_ID_EPS_BATT_CURRENT 35782849
-#define CAN_ID_EPS_BATT_VOLTAGE 35782848
+#define CAN_ID_MTQ_ACK 302448688
+#define CAN_ID_GEN_PANEL_TEMP 304677075
+#define CAN_ID_CMD_GEN_RST 303300880
+#define CAN_ID_CMD_PPT_SINGLE_FIRE 303300864
+#define CAN_ID_GEN_PANEL_PWR 304218322
+#define CAN_ID_GEN_PANEL_CURRENT 304218321
+#define CAN_ID_GEN_PANEL_VOLTAGE 303169744
+#define CAN_ID_MPC_VP 305594402
+#define CAN_ID_EPS_BATT_STATE 303169730
+#define CAN_ID_EPS_BATT_CURRENT 303169729
+#define CAN_ID_EPS_BATT_VOLTAGE 303169728
 #define CAN_ID_SENSORPROC_SUN 335872065
 #define CAN_ID_CMD_MTQ_BDOT 304545825
-#define CAN_ID_BDOT_TUMBLE_STATUS 34013216
+#define CAN_ID_BDOT_TUMBLE_STATUS 302448672
 #define CAN_ID_SYNC_2 65554
 #define CAN_ID_SYNC_1 65553
-#define CAN_ID_MSP_TEMP 36241427
+#define CAN_ID_MSP_TEMP 304676883
 #define CAN_ID_GRND_EPOCH 302449337
 
+#define CAN_ENUM_MTQ_PHASE_PMS_PHASE 2
+#define CAN_ENUM_MTQ_PHASE_ACTUATION_PHASE 1
+#define CAN_ENUM_MTQ_PHASE_MEASUREMENT_PHASE 0
+#define CAN_ENUM_BDOT_MAG_MODE_SP2MODE 3
+#define CAN_ENUM_BDOT_MAG_MODE_SP1MODE 2
+#define CAN_ENUM_BDOT_MAG_MODE_BDOTMODE 1
+#define CAN_ENUM_BDOT_MAG_MODE_AUTOMODE 0
+#define CAN_ENUM_BDOT_CONTROL_MODE_SPAM 3
+#define CAN_ENUM_BDOT_CONTROL_MODE_SPAMMAGSELFTEST 2
+#define CAN_ENUM_BDOT_CONTROL_MODE_SLEEPMODE 1
+#define CAN_ENUM_BDOT_CONTROL_MODE_NORMALMODE 0
+#define CAN_ENUM_DOMAIN_STATE_OFF_BATT_UNDERVOLTAGE 3
+#define CAN_ENUM_DOMAIN_STATE_OFF_OVERCURRENT 2
+#define CAN_ENUM_DOMAIN_STATE_OFF_MANUAL 1
+#define CAN_ENUM_DOMAIN_STATE_ON 0
 #define CAN_ENUM_NBOOL_NULL 2
 #define CAN_ENUM_NBOOL_TRUE 1
 #define CAN_ENUM_NBOOL_FALSE 0
@@ -212,94 +293,407 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
-typedef struct VECTOR__INDEPENDENT_SIG_MSG {
-    uint8_t rc_eps_dist_met; //  (No Units)
-    uint32_t rc_eps_dist_met_overflow; //  (No Units)
-    uint16_t rc_eps_dist_batt_v_min; // mV
-    uint16_t rc_eps_dist_batt_v_max; // mV
-    uint16_t rc_eps_dist_batt_v_avg; // mV
-    uint8_t rc_eps_dist_uv_state; //  (No Units)
-    uint8_t rc_eps_dist_com1_state; //  (No Units)
-    uint16_t rc_eps_dist_com1_c_min; // mA
-    uint16_t rc_eps_dist_com1_c_max; // mA
-    uint16_t rc_eps_dist_com1_c_avg; // mA
-    uint16_t rc_eps_dist_com1_v_min; // mV
-    uint16_t rc_eps_dist_com1_v_max; // mV
-    uint16_t rc_eps_dist_com1_v_avg; // mV
-    uint8_t rc_eps_dist_com2_state; //  (No Units)
-    uint16_t rc_eps_dist_com2_c_min; // mA
-    uint16_t rc_eps_dist_com2_c_max; // mA
-    uint16_t rc_eps_dist_com2_c_avg; // mA
-    uint16_t rc_eps_dist_com2_v_min; // mV
-    uint16_t rc_eps_dist_com2_v_max; // mV
-    uint16_t rc_eps_dist_com2_v_avg; // mV
-    uint8_t rc_eps_dist_rahs_state; //  (No Units)
-    uint16_t rc_eps_dist_rahs_c_min; // mA
-    uint16_t rc_eps_dist_rahs_c_max; // mA
-    uint16_t rc_eps_dist_rahs_c_avg; // mA
-    uint16_t rc_eps_dist_rahs_v_min; // mV
-    uint16_t rc_eps_dist_rahs_v_max; // mV
-    uint16_t rc_eps_dist_rahs_v_avg; // mV
-    uint8_t rc_eps_dist_bdot_state; //  (No Units)
-    uint16_t rc_eps_dist_bdot_c_min; // mA
-    uint16_t rc_eps_dist_bdot_c_max; // mA
-    uint16_t rc_eps_dist_bdot_c_avg; // mA
-    uint16_t rc_eps_dist_bdot_v_min; // mV
-    uint16_t rc_eps_dist_bdot_v_max; // mV
-    uint16_t rc_eps_dist_bdot_v_avg; // mV
-    uint8_t rc_eps_dist_estim_state; //  (No Units)
-    uint16_t rc_eps_dist_estim_c_min; // mA
-    uint16_t rc_eps_dist_estim_c_max; // mA
-    uint16_t rc_eps_dist_estim_c_avg; // mA
-    uint16_t rc_eps_dist_estim_v_min; // mV
-    uint16_t rc_eps_dist_estim_v_max; // mV
-    uint16_t rc_eps_dist_estim_v_avg; // mV
-    uint8_t rc_eps_dist_eps_state; //  (No Units)
-    uint16_t rc_eps_dist_eps_c_min; // mA
-    uint16_t rc_eps_dist_eps_c_max; // mA
-    uint16_t rc_eps_dist_eps_c_avg; // mA
-    uint16_t rc_eps_dist_eps_v_min; // mV
-    uint16_t rc_eps_dist_eps_v_max; // mV
-    uint16_t rc_eps_dist_eps_v_avg; // mV
-    uint8_t rc_eps_dist_ppt_state; //  (No Units)
-    uint16_t rc_eps_dist_ppt_c_min; // mA
-    uint16_t rc_eps_dist_ppt_c_max; // mA
-    uint16_t rc_eps_dist_ppt_c_avg; // mA
-    uint16_t rc_eps_dist_ppt_v_min; // mV
-    uint16_t rc_eps_dist_ppt_v_max; // mV
-    uint16_t rc_eps_dist_ppt_v_avg; // mV
-} VECTOR__INDEPENDENT_SIG_MSG;
+typedef struct gcmd_ppt_multiple_fire {
+    uint8_t gcmd_ppt_multiple_fire_override; //  (No Units)
+    uint8_t gcmd_ppt_multiple_fire_count; //  (No Units)
+} gcmd_ppt_multiple_fire;
+
+typedef struct gcmd_mtq_pwm_time {
+    uint8_t gcmd_mtq_pwm_time_measurement; // seconds
+    uint8_t gcmd_mtq_pwm_time_actuation; // seconds
+} gcmd_mtq_pwm_time;
+
+typedef struct gcmd_eps_batt_fulldef {
+    float gcmd_eps_batt_fulldef_const_volt; // V
+    float gcmd_eps_batt_fulldef_chg_curr; // Amps
+} gcmd_eps_batt_fulldef;
+
+typedef struct rc_adcs_bdot_5 {
+    int16_t rc_adcs_bdot_5_last_spam_z_mtq_z; // 1/73 nT
+    int16_t rc_adcs_bdot_5_last_spam_z_mtq_y; // 1/73 nT
+    int16_t rc_adcs_bdot_5_last_spam_z_mtq_x; // 1/73 nT
+} rc_adcs_bdot_5;
+
+typedef struct gcmd_reset_minmax {
+} gcmd_reset_minmax;
+
+typedef struct rc_eps_batt_h2 {
+    uint8_t rc_eps_batt_h2_canrxerror; //  (No Units)
+} rc_eps_batt_h2;
+
+typedef struct rc_adcs_bdot_h2 {
+    uint8_t rc_adcs_bdot_h2_canrxerror; //  (No Units)
+} rc_adcs_bdot_h2;
+
+typedef struct rc_eps_dist_h2 {
+    uint8_t rc_eps_dist_h2_canrxerror; //  (No Units)
+} rc_eps_dist_h2;
+
+typedef struct rc_adcs_mpc_h2 {
+    uint8_t rc_adcs_mpc_h2_canrxerror; //  (No Units)
+} rc_adcs_mpc_h2;
+
+typedef struct rc_adcs_estim_h2 {
+    uint8_t rc_adcs_estim_h2_canrxerror; //  (No Units)
+} rc_adcs_estim_h2;
+
+typedef struct rc_adcs_sp_h2 {
+    uint8_t rc_adcs_sp_h2_canrxerror; //  (No Units)
+} rc_adcs_sp_h2;
+
+typedef struct rc_eps_gen_h2 {
+    uint8_t rc_eps_gen_h2_canrxerror; //  (No Units)
+} rc_eps_gen_h2;
+
+typedef struct rc_adcs_mtq_h2 {
+    uint8_t rc_adcs_mtq_h2_canrxerror; //  (No Units)
+} rc_adcs_mtq_h2;
+
+typedef struct rc_ppt_h2 {
+    uint8_t rc_ppt_h2_canrxerror; //  (No Units)
+} rc_ppt_h2;
+
+typedef struct rc_eps_batt_h1 {
+    int16_t rc_eps_batt_h1_temp_min; // cC
+    int16_t rc_eps_batt_h1_temp_max; // cC
+    int16_t rc_eps_batt_h1_temp_avg; // cC
+    uint8_t rc_eps_batt_h1_sysrstiv; //  (No Units)
+    uint8_t rc_eps_batt_h1_reset_count; //  (No Units)
+} rc_eps_batt_h1;
+
+typedef struct rc_adcs_bdot_h1 {
+    int16_t rc_adcs_bdot_h1_temp_min; // cC
+    int16_t rc_adcs_bdot_h1_temp_max; // cC
+    int16_t rc_adcs_bdot_h1_temp_avg; // cC
+    uint8_t rc_adcs_bdot_h1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_bdot_h1_reset_count; //  (No Units)
+} rc_adcs_bdot_h1;
+
+typedef struct rc_eps_dist_h1 {
+    int16_t rc_eps_dist_h1_temp_min; // cC
+    int16_t rc_eps_dist_h1_temp_max; // cC
+    int16_t rc_eps_dist_h1_temp_avg; // cC
+    uint8_t rc_eps_dist_h1_sysrstiv; //  (No Units)
+    uint8_t rc_eps_dist_h1_reset_count; //  (No Units)
+} rc_eps_dist_h1;
+
+typedef struct rc_adcs_mpc_h1 {
+    int16_t rc_adcs_mpc_h1_temp_min; // cC
+    int16_t rc_adcs_mpc_h1_temp_max; // cC
+    int16_t rc_adcs_mpc_h1_temp_avg; // cC
+    uint8_t rc_adcs_mpc_h1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_mpc_h1_reset_count; //  (No Units)
+} rc_adcs_mpc_h1;
+
+typedef struct rc_adcs_estim_h1 {
+    int16_t rc_adcs_estim_h1_temp_min; // cC
+    int16_t rc_adcs_estim_h1_temp_max; // cC
+    int16_t rc_adcs_estim_h1_temp_avg; // cC
+    uint8_t rc_adcs_estim_h1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_estim_h1_reset_count; //  (No Units)
+} rc_adcs_estim_h1;
+
+typedef struct rc_adcs_sp_h1 {
+    int16_t rc_adcs_sp_h1_temp_min; // cC
+    int16_t rc_adcs_sp_h1_temp_max; // cC
+    int16_t rc_adcs_sp_h1_temp_avg; // cC
+    uint8_t rc_adcs_sp_h1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_sp_h1_reset_count; //  (No Units)
+} rc_adcs_sp_h1;
+
+typedef struct rc_eps_gen_h1 {
+    int16_t rc_eps_gen_h1_temp_min; // cC
+    int16_t rc_eps_gen_h1_temp_max; // cC
+    int16_t rc_eps_gen_h1_temp_avg; // cC
+    uint8_t rc_eps_gen_h1_sysrstiv; //  (No Units)
+    uint8_t rc_eps_gen_h1_reset_count; //  (No Units)
+} rc_eps_gen_h1;
+
+typedef struct rc_adcs_mtq_h1 {
+    int16_t rc_adcs_mtq_h1_temp_min; // cC
+    int16_t rc_adcs_mtq_h1_temp_max; // cC
+    int16_t rc_adcs_mtq_h1_temp_avg; // cC
+    uint8_t rc_adcs_mtq_h1_sysrstiv; //  (No Units)
+    uint8_t rc_adcs_mtq_h1_reset_count; //  (No Units)
+} rc_adcs_mtq_h1;
+
+typedef struct rc_ppt_h1 {
+    int16_t rc_ppt_h1_temp_min; // cC
+    int16_t rc_ppt_h1_temp_max; // cC
+    int16_t rc_ppt_h1_temp_avg; // cC
+    uint8_t rc_ppt_h1_sysrstiv; //  (No Units)
+    uint8_t rc_ppt_h1_reset_count; //  (No Units)
+} rc_ppt_h1;
+
+typedef struct gcmd_mtq_pms {
+    int8_t gcmd_mtq_pms_z; //  (No Units)
+    int8_t gcmd_mtq_pms_y; //  (No Units)
+    int8_t gcmd_mtq_pms_x; //  (No Units)
+    uint8_t gcmd_mtq_pms_enable; //  (No Units)
+} gcmd_mtq_pms;
+
+typedef struct gcmd_bdot_max_tumble {
+    uint16_t gcmd_bdot_max_tumble_time; // minutes
+} gcmd_bdot_max_tumble;
+
+typedef struct gcmd_bdot_spam {
+    int8_t gcmd_bdot_spam_magnitude_z; //  (No Units)
+    int8_t gcmd_bdot_spam_magnitude_y; //  (No Units)
+    int8_t gcmd_bdot_spam_magnitude_x; //  (No Units)
+    uint16_t gcmd_bdot_spam_time_on; // minutes
+    uint16_t gcmd_bdot_spam_time_off; // minutes
+    uint8_t gcmd_bdot_spam_control; //  (No Units)
+} gcmd_bdot_spam;
+
+typedef struct gcmd_bdot_control {
+    uint8_t gcmd_bdot_control_mode; //  (No Units)
+} gcmd_bdot_control;
+
+typedef struct gcmd_bdot_mag_control {
+    uint8_t gcmd_bdot_mag_control_mode; //  (No Units)
+} gcmd_bdot_mag_control;
+
+typedef struct gcmd_bdot_pole_override {
+    uint8_t gcmd_bdot_pole_override_gain_z; // pct
+    uint8_t gcmd_bdot_pole_override_gain_y; // pct
+    uint8_t gcmd_bdot_pole_override_gain_x; // pct
+    uint8_t gcmd_bdot_pole_override_z; //  (No Units)
+    uint8_t gcmd_bdot_pole_override_y; //  (No Units)
+    uint8_t gcmd_bdot_pole_override_x; //  (No Units)
+} gcmd_bdot_pole_override;
+
+typedef struct gcmd_gen_set_pt_state {
+    uint8_t gcmd_gen_set_pt_state_3; //  (No Units)
+    uint8_t gcmd_gen_set_pt_state_2; //  (No Units)
+    uint8_t gcmd_gen_set_pt_state_1; //  (No Units)
+} gcmd_gen_set_pt_state;
+
+typedef struct gcmd_sp_set_thresh {
+    uint16_t gcmd_sp_set_thresh_thresh; // 1/73 nanoTeslas
+} gcmd_sp_set_thresh;
+
+typedef struct gcmd_dist_set_pd_ovc_ppt {
+    float gcmd_dist_set_pd_ovc_ppt_ovc; // A
+} gcmd_dist_set_pd_ovc_ppt;
+
+typedef struct gcmd_dist_set_pd_ovc_eps {
+    float gcmd_dist_set_pd_ovc_eps_ovc; // A
+} gcmd_dist_set_pd_ovc_eps;
+
+typedef struct gcmd_dist_set_pd_ovc_wheels {
+    float gcmd_dist_set_pd_ovc_wheels_ovc; // A
+} gcmd_dist_set_pd_ovc_wheels;
+
+typedef struct gcmd_dist_set_pd_ovc_estim {
+    float gcmd_dist_set_pd_ovc_estim_ovc; // A
+} gcmd_dist_set_pd_ovc_estim;
+
+typedef struct gcmd_dist_set_pd_ovc_bdot {
+    float gcmd_dist_set_pd_ovc_bdot_ovc; // A
+} gcmd_dist_set_pd_ovc_bdot;
+
+typedef struct gcmd_dist_set_pd_ovc_rahs {
+    float gcmd_dist_set_pd_ovc_rahs_ovc; // A
+} gcmd_dist_set_pd_ovc_rahs;
+
+typedef struct gcmd_dist_set_pd_ovc_com2 {
+    float gcmd_dist_set_pd_ovc_com2_ovc; // A
+} gcmd_dist_set_pd_ovc_com2;
+
+typedef struct gcmd_dist_set_pd_ovc_com1 {
+    float gcmd_dist_set_pd_ovc_com1_ovc; // A
+} gcmd_dist_set_pd_ovc_com1;
+
+typedef struct gcmd_dist_set_pd_state {
+    uint8_t gcmd_dist_set_pd_state_wheels; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_rahs; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_ppt; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_estim; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_eps; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_com2; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_com1; //  (No Units)
+    uint8_t gcmd_dist_set_pd_state_bdot; //  (No Units)
+} gcmd_dist_set_pd_state;
+
+typedef struct gcmd_mtq_pop {
+    uint8_t gcmd_mtq_pop_z; //  (No Units)
+    uint8_t gcmd_mtq_pop_y; //  (No Units)
+    uint8_t gcmd_mtq_pop_x; //  (No Units)
+} gcmd_mtq_pop;
+
+typedef struct rc_eps_batt_7 {
+    uint16_t rc_eps_batt_7_acc_charge_min; // 22.588 mAh
+    uint16_t rc_eps_batt_7_acc_charge_max; // 22.588 mAh
+    uint16_t rc_eps_batt_7_acc_charge_avg; // 22.588 mAh
+} rc_eps_batt_7;
+
+typedef struct sensorproc_mag2 {
+    int16_t sensorproc_mag2_z; // 73 nanoTeslas
+    int16_t sensorproc_mag2_y; // 73 nanoTeslas
+    int16_t sensorproc_mag2_x; // 73 nanoTeslas
+    uint8_t sensorproc_mag2_valid; // bool
+} sensorproc_mag2;
+
+typedef struct rc_adcs_estim_14 {
+    double rc_adcs_estim_14_mag_z; // u
+} rc_adcs_estim_14;
+
+typedef struct rc_adcs_estim_13 {
+    double rc_adcs_estim_13_mag_y; // u
+} rc_adcs_estim_13;
+
+typedef struct rc_adcs_estim_12 {
+    double rc_adcs_estim_12_mag_x; // u
+} rc_adcs_estim_12;
+
+typedef struct rc_adcs_estim_11 {
+    double rc_adcs_estim_11_sun_z; // u
+} rc_adcs_estim_11;
+
+typedef struct rc_adcs_estim_10 {
+    double rc_adcs_estim_10_sun_y; // u
+} rc_adcs_estim_10;
+
+typedef struct rc_adcs_estim_9 {
+    double rc_adcs_estim_9_sun_x; // u
+} rc_adcs_estim_9;
+
+typedef struct rc_eps_dist_16 {
+    uint8_t rc_eps_dist_16_ppt_state; //  (No Units)
+    int16_t rc_eps_dist_16_ppt_c_min; // raw node current dist
+    int16_t rc_eps_dist_16_ppt_c_max; // raw node current dist
+    int16_t rc_eps_dist_16_ppt_c_avg; // raw node current dist
+} rc_eps_dist_16;
+
+typedef struct rc_eps_dist_9 {
+    uint16_t rc_eps_dist_9_rahs_v_min; // raw node voltage
+    uint16_t rc_eps_dist_9_rahs_v_max; // raw node voltage
+    uint16_t rc_eps_dist_9_rahs_v_avg; // raw node voltage
+} rc_eps_dist_9;
+
+typedef struct rc_eps_dist_7 {
+    uint16_t rc_eps_dist_7_com2_v_min; // raw node voltage
+    uint16_t rc_eps_dist_7_com2_v_max; // raw node voltage
+    uint16_t rc_eps_dist_7_com2_v_avg; // raw node voltage
+} rc_eps_dist_7;
+
+typedef struct rc_eps_dist_6 {
+    uint8_t rc_eps_dist_6_com2_state; //  (No Units)
+    int16_t rc_eps_dist_6_com2_c_min; // raw node current dist
+    int16_t rc_eps_dist_6_com2_c_max; // raw node current dist
+    int16_t rc_eps_dist_6_com2_c_avg; // raw node current dist
+} rc_eps_dist_6;
+
+typedef struct rc_eps_dist_5 {
+    uint16_t rc_eps_dist_5_com1_v_min; // raw node voltage
+    uint16_t rc_eps_dist_5_com1_v_max; // raw node voltage
+    uint16_t rc_eps_dist_5_com1_v_avg; // raw node voltage
+} rc_eps_dist_5;
+
+typedef struct rc_eps_dist_3 {
+    uint16_t rc_eps_dist_3_batt_v_avg; // raw dist battery voltage
+    uint16_t rc_eps_dist_3_batt_v_max; // raw dist battery voltage
+    uint16_t rc_eps_dist_3_batt_v_min; // raw dist battery voltage
+} rc_eps_dist_3;
+
+typedef struct rc_eps_dist_2 {
+    uint8_t rc_eps_dist_2_uv_state; //  (No Units)
+    uint8_t rc_eps_dist_2_met_overflow; //  (No Units)
+    uint64_t rc_eps_dist_2_met; // 2^-8 s
+} rc_eps_dist_2;
+
+typedef struct rc_eps_dist_17 {
+    uint16_t rc_eps_dist_17_ppt_v_min; // raw node voltage
+    uint16_t rc_eps_dist_17_ppt_v_max; // raw node voltage
+    uint16_t rc_eps_dist_17_ppt_v_avg; // raw node voltage
+} rc_eps_dist_17;
+
+typedef struct rc_eps_dist_14 {
+    uint8_t rc_eps_dist_14_eps_state; //  (No Units)
+    int16_t rc_eps_dist_14_eps_c_min; // raw node current dist
+    int16_t rc_eps_dist_14_eps_c_max; // raw node current dist
+    int16_t rc_eps_dist_14_eps_c_avg; // raw node current dist
+} rc_eps_dist_14;
+
+typedef struct rc_eps_dist_13 {
+    uint16_t rc_eps_dist_13_estim_v_min; // raw node voltage
+    uint16_t rc_eps_dist_13_estim_v_max; // raw node voltage
+    uint16_t rc_eps_dist_13_estim_v_avg; // raw node voltage
+} rc_eps_dist_13;
+
+typedef struct rc_eps_dist_11 {
+    uint16_t rc_eps_dist_11_bdot_v_min; // raw node voltage
+    uint16_t rc_eps_dist_11_bdot_v_max; // raw node voltage
+    uint16_t rc_eps_dist_11_bdot_v_avg; // raw node voltage
+} rc_eps_dist_11;
+
+typedef struct rc_eps_dist_12 {
+    uint8_t rc_eps_dist_12_estim_state; //  (No Units)
+    int16_t rc_eps_dist_12_estim_c_min; // raw node current dist
+    int16_t rc_eps_dist_12_estim_c_max; // raw node current dist
+    int16_t rc_eps_dist_12_estim_c_avg; // raw node current dist
+} rc_eps_dist_12;
+
+typedef struct rc_eps_dist_15 {
+    uint16_t rc_eps_dist_15_eps_v_min; // raw node voltage
+    uint16_t rc_eps_dist_15_eps_v_max; // raw node voltage
+    uint16_t rc_eps_dist_15_eps_v_avg; // raw node voltage
+} rc_eps_dist_15;
+
+typedef struct rc_eps_dist_10 {
+    uint8_t rc_eps_dist_10_bdot_state; //  (No Units)
+    int16_t rc_eps_dist_10_bdot_c_min; // raw node current dist
+    int16_t rc_eps_dist_10_bdot_c_max; // raw node current dist
+    int16_t rc_eps_dist_10_bdot_c_avg; // raw node current dist
+} rc_eps_dist_10;
+
+typedef struct rc_eps_dist_8 {
+    uint8_t rc_eps_dist_8_rahs_state; //  (No Units)
+    int16_t rc_eps_dist_8_rahs_c_min; // raw node current dist
+    int16_t rc_eps_dist_8_rahs_c_max; // raw node current dist
+    int16_t rc_eps_dist_8_rahs_c_avg; // raw node current dist
+} rc_eps_dist_8;
+
+typedef struct rc_eps_dist_4 {
+    uint8_t rc_eps_dist_4_com1_state; //  (No Units)
+    int16_t rc_eps_dist_4_com1_c_min; // raw node current dist
+    int16_t rc_eps_dist_4_com1_c_max; // raw node current dist
+    int16_t rc_eps_dist_4_com1_c_avg; // raw node current dist
+} rc_eps_dist_4;
+
+typedef struct rc_eps_dist_1 {
+} rc_eps_dist_1;
 
 typedef struct rc_adcs_mpc_11 {
-    double rc_adcs_mpc_11_omega_y_avg; // r/s
+    double rc_adcs_mpc_11_omega_z; // r/s
 } rc_adcs_mpc_11;
 
 typedef struct rc_adcs_mpc_7 {
-    double rc_adcs_mpc_7_omega_x_max; // r/s
+    double rc_adcs_mpc_7_omega_max; // r/s
 } rc_adcs_mpc_7;
 
 typedef struct rc_adcs_mpc_8 {
-    double rc_adcs_mpc_8_omega_x_avg; // r/s
+    double rc_adcs_mpc_8_omega_avg; // r/s
 } rc_adcs_mpc_8;
 
 typedef struct rc_adcs_mpc_9 {
-    double rc_adcs_mpc_9_omega_y_min; // r/s
+    double rc_adcs_mpc_9_omega_x; // r/s
 } rc_adcs_mpc_9;
 
 typedef struct rc_adcs_mpc_5 {
-    double rc_adcs_mpc_5_sc_quat_4; //  (No Units)
+    double rc_adcs_mpc_5_sc_quat_4; // u
 } rc_adcs_mpc_5;
 
 typedef struct rc_adcs_mpc_6 {
-    double rc_adcs_mpc_6_omega_x_min; // r/s
+    double rc_adcs_mpc_6_omega_min; // r/s
 } rc_adcs_mpc_6;
 
 typedef struct rc_adcs_mpc_4 {
-    double rc_adcs_mpc_4_sc_quat_3; //  (No Units)
+    double rc_adcs_mpc_4_sc_quat_3; // u
 } rc_adcs_mpc_4;
 
 typedef struct rc_adcs_mpc_3 {
-    double rc_adcs_mpc_3_sc_quat_2; //  (No Units)
+    double rc_adcs_mpc_3_sc_quat_2; // u
 } rc_adcs_mpc_3;
 
 typedef struct rc_adcs_mpc_15 {
@@ -308,39 +702,32 @@ typedef struct rc_adcs_mpc_15 {
 } rc_adcs_mpc_15;
 
 typedef struct rc_adcs_mpc_12 {
-    double rc_adcs_mpc_12_omega_z_min; // r/s
 } rc_adcs_mpc_12;
 
 typedef struct rc_adcs_mpc_13 {
-    double rc_adcs_mpc_13_omega_z_max; // r/s
 } rc_adcs_mpc_13;
 
 typedef struct rc_adcs_mpc_14 {
-    double rc_adcs_mpc_14_omega_z_avg; // r/s
 } rc_adcs_mpc_14;
 
 typedef struct rc_adcs_mpc_10 {
-    double rc_adcs_mpc_10_omega_y_max; // r/s
+    double rc_adcs_mpc_10_omega_y; // r/s
 } rc_adcs_mpc_10;
 
 typedef struct rc_adcs_mpc_2 {
-    double rc_adcs_mpc_2_sc_quat_1; //  (No Units)
+    double rc_adcs_mpc_2_sc_quat_1; // u
 } rc_adcs_mpc_2;
 
 typedef struct rc_adcs_mpc_1 {
-    uint16_t rc_adcs_mpc_1_temp_min; // dK
-    uint16_t rc_adcs_mpc_1_temp_max; // dK
-    uint16_t rc_adcs_mpc_1_temp_avg; // dK
-    uint16_t rc_adcs_mpc_1_sysrstiv; //  (No Units)
-    uint16_t rc_adcs_mpc_1_reset_count; //  (No Units)
 } rc_adcs_mpc_1;
 
 typedef struct rc_adcs_estim_8 {
+    uint8_t rc_adcs_estim_8_tle_id; //  (No Units)
     int8_t rc_adcs_estim_8_sgp4_flag; //  (No Units)
     uint8_t rc_adcs_estim_8_sc_in_sun; //  (No Units)
     uint8_t rc_adcs_estim_8_sc_above_gs; //  (No Units)
-    uint16_t rc_adcs_estim_8_epoch_overflow; // s^-8 since J2000 
-    uint32_t rc_adcs_estim_8_epoch; // s^-8 since J2000 
+    uint8_t rc_adcs_estim_8_epoch_overflow; //  (No Units)
+    uint32_t rc_adcs_estim_8_epoch; // 2^-8 s
 } rc_adcs_estim_8;
 
 typedef struct rc_adcs_estim_7 {
@@ -368,39 +755,31 @@ typedef struct rc_adcs_estim_3 {
 } rc_adcs_estim_3;
 
 typedef struct rc_adcs_estim_1 {
-    uint16_t rc_adcs_estim_1_temp_min; // dK
-    uint16_t rc_adcs_estim_1_temp_max; // dK
-    uint16_t rc_adcs_estim_1_temp_avg; // dK
-    uint16_t rc_adcs_estim_1_sysrstiv; //  (No Units)
-    uint16_t rc_adcs_estim_1_reset_count; //  (No Units)
 } rc_adcs_estim_1;
 
 typedef struct rc_adcs_sp_12 {
-    int16_t rc_adcs_sp_12_mag2_z_min; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_12_mag2_z_max; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_12_mag2_y_max; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_12_mag2_y_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_12_mag2_z_min; // 73 nanoTeslas
+    int16_t rc_adcs_sp_12_mag2_z_max; // 73 nanoTeslas
+    int16_t rc_adcs_sp_12_mag2_y_max; // 73 nanoTeslas
+    int16_t rc_adcs_sp_12_mag2_y_avg; // 73 nanoTeslas
 } rc_adcs_sp_12;
 
 typedef struct rc_adcs_sp_11 {
-    int16_t rc_adcs_sp_11_mag2_x_avg; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_11_mag2_x_max; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_11_mag2_x_min; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_11_mag2_y_min; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_11_mag2_x_avg; // 73 nanoTeslas
+    int16_t rc_adcs_sp_11_mag2_x_max; // 73 nanoTeslas
+    int16_t rc_adcs_sp_11_mag2_x_min; // 73 nanoTeslas
+    int16_t rc_adcs_sp_11_mag2_y_min; // 73 nanoTeslas
 } rc_adcs_sp_11;
 
 typedef struct rc_adcs_sp_7 {
-    int16_t rc_adcs_sp_7_magp_y_min; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_7_magp_y_max; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_7_magp_y_avg; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_7_magp_x_avg; // 1/73 nanoTeslas
 } rc_adcs_sp_7;
 
 typedef struct rc_adcs_sp_6 {
+    uint8_t rc_adcs_sp_6_mag2_valid; //  (No Units)
+    int16_t rc_adcs_sp_6_mag1_x_min; // 73 nanoTeslas
+    uint8_t rc_adcs_sp_6_mag1_valid; //  (No Units)
     int16_t rc_adcs_sp_6_sun_z_max; // 1/32768 units
     int16_t rc_adcs_sp_6_sun_z_avg; // 1/32768 units
-    int16_t rc_adcs_sp_6_magp_x_min; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_6_magp_x_max; // 1/73 nanoTeslas
 } rc_adcs_sp_6;
 
 typedef struct rc_adcs_sp_17 {
@@ -416,31 +795,27 @@ typedef struct rc_adcs_sp_16 {
 } rc_adcs_sp_16;
 
 typedef struct rc_adcs_sp_10 {
-    int16_t rc_adcs_sp_10_mag1_z_min; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_10_mag1_z_max; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_10_mag1_z_avg; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_10_mag1_y_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_10_mag1_z_min; // 73 nanoTeslas
+    int16_t rc_adcs_sp_10_mag1_z_max; // 73 nanoTeslas
+    int16_t rc_adcs_sp_10_mag1_z_avg; // 73 nanoTeslas
+    int16_t rc_adcs_sp_10_mag1_y_avg; // 73 nanoTeslas
 } rc_adcs_sp_10;
 
 typedef struct rc_adcs_sp_8 {
-    int16_t rc_adcs_sp_8_magp_z_min; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_8_magp_z_max; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_8_magp_z_avg; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_8_mag1_x_min; // 1/73 nanoTeslas
 } rc_adcs_sp_8;
 
 typedef struct rc_adcs_sp_9 {
-    int16_t rc_adcs_sp_9_mag1_y_min; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_9_mag1_y_max; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_9_mag1_x_max; // 1/73 nanoTeslas
-    int16_t rc_adcs_sp_9_mag1_x_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_9_mag1_y_min; // 73 nanoTeslas
+    int16_t rc_adcs_sp_9_mag1_y_max; // 73 nanoTeslas
+    int16_t rc_adcs_sp_9_mag1_x_max; // 73 nanoTeslas
+    int16_t rc_adcs_sp_9_mag1_x_avg; // 73 nanoTeslas
 } rc_adcs_sp_9;
 
 typedef struct rc_adcs_sp_13 {
     int16_t rc_adcs_sp_13_suna_min; // 60/32767 degrees
     int16_t rc_adcs_sp_13_suna_max; // 60/32767 degrees
     int16_t rc_adcs_sp_13_suna_avg; // 60/32767 degrees
-    int16_t rc_adcs_sp_13_mag2_z_avg; // 1/73 nanoTeslas
+    int16_t rc_adcs_sp_13_mag2_z_avg; // 73 nanoTeslas
 } rc_adcs_sp_13;
 
 typedef struct rc_adcs_sp_15 {
@@ -455,7 +830,6 @@ typedef struct rc_adcs_sp_14 {
     int16_t rc_adcs_sp_14_sunb_max; // 60/32767 degrees
     int16_t rc_adcs_sp_14_sunb_avg; // 60/32767 degrees
     uint8_t rc_adcs_sp_14_sun_valid; //  (No Units)
-    uint8_t rc_adcs_sp_14_magp_valid; //  (No Units)
 } rc_adcs_sp_14;
 
 typedef struct rc_adcs_sp_5 {
@@ -487,14 +861,11 @@ typedef struct rc_adcs_sp_2 {
 } rc_adcs_sp_2;
 
 typedef struct rc_adcs_sp_1 {
-    uint16_t rc_adcs_sp_1_temp_min; // dK
-    uint16_t rc_adcs_sp_1_temp_max; // dK
-    uint16_t rc_adcs_sp_1_temp_avg; // dK
-    uint16_t rc_adcs_sp_1_sysrstiv; //  (No Units)
-    uint16_t rc_adcs_sp_1_reset_count; //  (No Units)
 } rc_adcs_sp_1;
 
 typedef struct rc_adcs_bdot_4 {
+    int16_t rc_adcs_bdot_4_last_spam_y_mtq_z; // 1/73 nT
+    int16_t rc_adcs_bdot_4_last_spam_y_mtq_y; // 1/73 nT
     int16_t rc_adcs_bdot_4_mag_z_avg; // 1/73 nT
     uint8_t rc_adcs_bdot_4_tumble; //  (No Units)
 } rc_adcs_bdot_4;
@@ -514,35 +885,34 @@ typedef struct rc_adcs_bdot_2 {
 } rc_adcs_bdot_2;
 
 typedef struct rc_adcs_bdot_1 {
-    uint16_t rc_adcs_bdot_1_reset_count; //  (No Units)
-    uint16_t rc_adcs_bdot_1_temp_min; // dK
-    uint16_t rc_adcs_bdot_1_temp_max; // dK
-    uint16_t rc_adcs_bdot_1_temp_avg; // dK
-    uint16_t rc_adcs_bdot_1_sysrstiv; //  (No Units)
+    int16_t rc_adcs_bdot_1_last_spam_y_mtq_x; // 1/73 nT
+    int16_t rc_adcs_bdot_1_last_spam_x_mtq_z; // 1/73 nT
+    int16_t rc_adcs_bdot_1_last_spam_x_mtq_y; // 1/73 nT
+    int16_t rc_adcs_bdot_1_last_spam_x_mtq_x; // 1/73 nT
 } rc_adcs_bdot_1;
 
 typedef struct estim_sun_unit_z {
-    double estim_sun_unit_z_val; //  (No Units)
+    double estim_sun_unit_z_val; // u
 } estim_sun_unit_z;
 
 typedef struct estim_sun_unit_y {
-    double estim_sun_unit_y_val; //  (No Units)
+    double estim_sun_unit_y_val; // u
 } estim_sun_unit_y;
 
 typedef struct estim_sun_unit_x {
-    double estim_sun_unit_x_val; //  (No Units)
+    double estim_sun_unit_x_val; // u
 } estim_sun_unit_x;
 
 typedef struct estim_mag_unit_z {
-    double estim_mag_unit_z_val; //  (No Units)
+    double estim_mag_unit_z_val; // u
 } estim_mag_unit_z;
 
 typedef struct estim_mag_unit_y {
-    double estim_mag_unit_y_val; //  (No Units)
+    double estim_mag_unit_y_val; // u
 } estim_mag_unit_y;
 
 typedef struct estim_mag_unit_x {
-    double estim_mag_unit_x_val; //  (No Units)
+    double estim_mag_unit_x_val; // u
 } estim_mag_unit_x;
 
 typedef struct estim_state {
@@ -589,11 +959,6 @@ typedef struct rc_adcs_mtq_2 {
 } rc_adcs_mtq_2;
 
 typedef struct rc_adcs_mtq_1 {
-    uint16_t rc_adcs_mtq_1_reset_count; //  (No Units)
-    uint16_t rc_adcs_mtq_1_temp_min; // dK
-    uint16_t rc_adcs_mtq_1_temp_max; // dK
-    uint16_t rc_adcs_mtq_1_temp_avg; // dK
-    uint16_t rc_adcs_mtq_1_sysrstiv; //  (No Units)
 } rc_adcs_mtq_1;
 
 typedef struct rc_ppt_3 {
@@ -610,123 +975,107 @@ typedef struct rc_ppt_2 {
 } rc_ppt_2;
 
 typedef struct rc_ppt_1 {
-    uint16_t rc_ppt_1_reset_count; //  (No Units)
-    uint16_t rc_ppt_1_temp_min; // dK
-    uint16_t rc_ppt_1_temp_max; // dK
-    uint16_t rc_ppt_1_temp_avg; // dK
-    uint16_t rc_ppt_1_sysrstiv; //  (No Units)
 } rc_ppt_1;
 
 typedef struct rc_eps_gen_9 {
-    int8_t rc_eps_gen_9_pnl_3_temp_min; // C
-    int8_t rc_eps_gen_9_pnl_3_temp_max; // C
-    int8_t rc_eps_gen_9_pnl_3_temp_avg; // C
-    int8_t rc_eps_gen_9_pnl_2_temp_min; // C
-    int8_t rc_eps_gen_9_pnl_2_temp_max; // C
-    int8_t rc_eps_gen_9_pnl_2_temp_avg; // C
-    int8_t rc_eps_gen_9_pnl_1_temp_max; // C
-    int8_t rc_eps_gen_9_pnl_1_temp_avg; // C
+    int8_t rc_eps_gen_9_pnl_3_temp_min; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_3_temp_max; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_3_temp_avg; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_2_temp_min; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_2_temp_max; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_2_temp_avg; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_1_temp_max; // raw tmp36
+    int8_t rc_eps_gen_9_pnl_1_temp_avg; // raw tmp36
 } rc_eps_gen_9;
 
 typedef struct rc_eps_gen_8 {
-    uint16_t rc_eps_gen_8_pnl_3_power_min; // mW
-    uint16_t rc_eps_gen_8_pnl_3_power_max; // mW
-    uint16_t rc_eps_gen_8_pnl_3_power_avg; // mW
-    int8_t rc_eps_gen_8_pnl_1_temp_min; // C
+    int16_t rc_eps_gen_8_pnl_3_power_min; // raw power gen
+    int16_t rc_eps_gen_8_pnl_3_power_max; // raw power gen
+    int16_t rc_eps_gen_8_pnl_3_power_avg; // raw power gen
+    int8_t rc_eps_gen_8_pnl_1_temp_min; // raw tmp36
 } rc_eps_gen_8;
 
 typedef struct rc_eps_gen_7 {
-    uint16_t rc_eps_gen_7_pnl_2_power_min; // mW
-    uint16_t rc_eps_gen_7_pnl_2_power_max; // mW
-    uint16_t rc_eps_gen_7_pnl_2_power_avg; // mW
-    uint16_t rc_eps_gen_7_pnl_1_power_avg; // mW
+    int16_t rc_eps_gen_7_pnl_2_power_min; // raw power gen
+    int16_t rc_eps_gen_7_pnl_2_power_max; // raw power gen
+    int16_t rc_eps_gen_7_pnl_2_power_avg; // raw power gen
+    int16_t rc_eps_gen_7_pnl_1_power_avg; // raw power gen
 } rc_eps_gen_7;
 
 typedef struct rc_eps_gen_6 {
-    uint16_t rc_eps_gen_6_pnl_3_current_max; // mA
-    uint16_t rc_eps_gen_6_pnl_3_current_avg; // mA
-    uint16_t rc_eps_gen_6_pnl_1_power_min; // mW
-    uint16_t rc_eps_gen_6_pnl_1_power_max; // mW
+    int16_t rc_eps_gen_6_pnl_3_current_max; // raw node current gen
+    int16_t rc_eps_gen_6_pnl_3_current_avg; // raw node current gen
+    int16_t rc_eps_gen_6_pnl_1_power_min; // raw power gen
+    int16_t rc_eps_gen_6_pnl_1_power_max; // raw power gen
 } rc_eps_gen_6;
 
 typedef struct rc_eps_gen_5 {
-    uint16_t rc_eps_gen_5_pnl_3_current_min; // mA
-    uint16_t rc_eps_gen_5_pnl_2_current_min; // mA
-    uint16_t rc_eps_gen_5_pnl_2_current_max; // mA
-    uint16_t rc_eps_gen_5_pnl_2_current_avg; // mA
+    int16_t rc_eps_gen_5_pnl_3_current_min; // raw node current gen
+    int16_t rc_eps_gen_5_pnl_2_current_min; // raw node current gen
+    int16_t rc_eps_gen_5_pnl_2_current_max; // raw node current gen
+    int16_t rc_eps_gen_5_pnl_2_current_avg; // raw node current gen
 } rc_eps_gen_5;
 
 typedef struct rc_eps_gen_4 {
-    uint16_t rc_eps_gen_4_pnl_3_voltage_avg; // mV
-    uint16_t rc_eps_gen_4_pnl_1_current_min; // mA
-    uint16_t rc_eps_gen_4_pnl_1_current_max; // mA
-    uint16_t rc_eps_gen_4_pnl_1_current_avg; // mA
+    uint16_t rc_eps_gen_4_pnl_3_voltage_avg; // raw node voltage
+    int16_t rc_eps_gen_4_pnl_1_current_min; // raw node current gen
+    int16_t rc_eps_gen_4_pnl_1_current_max; // raw node current gen
+    int16_t rc_eps_gen_4_pnl_1_current_avg; // raw node current gen
 } rc_eps_gen_4;
 
 typedef struct rc_eps_gen_3 {
-    uint16_t rc_eps_gen_3_pnl_3_voltage_min; // mV
-    uint16_t rc_eps_gen_3_pnl_3_voltage_max; // mV
-    uint16_t rc_eps_gen_3_pnl_2_voltage_max; // mV
-    uint16_t rc_eps_gen_3_pnl_2_voltage_avg; // mV
+    uint16_t rc_eps_gen_3_pnl_3_voltage_min; // raw node voltage
+    uint16_t rc_eps_gen_3_pnl_3_voltage_max; // raw node voltage
+    uint16_t rc_eps_gen_3_pnl_2_voltage_max; // raw node voltage
+    uint16_t rc_eps_gen_3_pnl_2_voltage_avg; // raw node voltage
 } rc_eps_gen_3;
 
 typedef struct rc_eps_gen_2 {
-    uint16_t rc_eps_gen_2_pnl_2_voltage_min; // mV
-    uint16_t rc_eps_gen_2_pnl_1_voltage_min; // mV
-    uint16_t rc_eps_gen_2_pnl_1_voltage_max; // mV
-    uint16_t rc_eps_gen_2_pnl_1_voltage_avg; // mV
+    uint16_t rc_eps_gen_2_pnl_2_voltage_min; // raw node voltage
+    uint16_t rc_eps_gen_2_pnl_1_voltage_min; // raw node voltage
+    uint16_t rc_eps_gen_2_pnl_1_voltage_max; // raw node voltage
+    uint16_t rc_eps_gen_2_pnl_1_voltage_avg; // raw node voltage
 } rc_eps_gen_2;
 
 typedef struct rc_eps_gen_1 {
-    uint16_t rc_eps_gen_1_reset_count; //  (No Units)
-    uint16_t rc_eps_gen_1_temp_min; // dK
-    uint16_t rc_eps_gen_1_temp_max; // dK
-    uint16_t rc_eps_gen_1_temp_avg; // dK
-    uint16_t rc_eps_gen_1_sysrstiv; //  (No Units)
 } rc_eps_gen_1;
 
 typedef struct rc_eps_batt_6 {
-    uint8_t rc_eps_batt_6_soc_min; // pct
-    uint8_t rc_eps_batt_6_soc_max; // pct
-    uint8_t rc_eps_batt_6_soc_avg; // pct
+    uint8_t rc_eps_batt_6_status; //  (No Units)
+    uint8_t rc_eps_batt_6_ctrl; //  (No Units)
     uint64_t rc_eps_batt_6_last_charge; // 2^-8 seconds
 } rc_eps_batt_6;
 
 typedef struct rc_eps_batt_5 {
-    int16_t rc_eps_batt_5_node_c_min; // dmA
-    int16_t rc_eps_batt_5_node_c_max; // dmA
-    int16_t rc_eps_batt_5_node_c_avg; // dmA
-    int8_t rc_eps_batt_5_batt_temp_min; // deg C
-    int8_t rc_eps_batt_5_batt_temp_max; // deg C
+    int16_t rc_eps_batt_5_node_c_min; // raw node current batt
+    int16_t rc_eps_batt_5_node_c_max; // raw node current batt
+    int16_t rc_eps_batt_5_node_c_avg; // raw node current batt
+    int8_t rc_eps_batt_5_batt_temp_min; // raw tmp36
+    int8_t rc_eps_batt_5_batt_temp_max; // raw tmp36
 } rc_eps_batt_5;
 
 typedef struct rc_eps_batt_4 {
-    uint16_t rc_eps_batt_4_voltage_min; // mV
-    uint16_t rc_eps_batt_4_voltage_max; // mV
-    uint16_t rc_eps_batt_4_voltage_avg; // mV
+    uint16_t rc_eps_batt_4_voltage_min; // raw voltage
+    uint16_t rc_eps_batt_4_voltage_max; // raw voltage
+    uint16_t rc_eps_batt_4_voltage_avg; // raw voltage
     uint8_t rc_eps_batt_4_heater_state; //  (No Units)
     uint8_t rc_eps_batt_4_balancer_state; //  (No Units)
 } rc_eps_batt_4;
 
 typedef struct rc_eps_batt_3 {
-    int16_t rc_eps_batt_3_current_min; // cA
-    int16_t rc_eps_batt_3_current_max; // cA
-    int16_t rc_eps_batt_3_current_avg; // cA
-    int8_t rc_eps_batt_3_batt_temp_avg; // deg C
+    uint16_t rc_eps_batt_3_current_min; // raw current batt
+    uint16_t rc_eps_batt_3_current_max; // raw current batt
+    uint16_t rc_eps_batt_3_current_avg; // raw current batt
+    int8_t rc_eps_batt_3_batt_temp_avg; // raw tmp36
 } rc_eps_batt_3;
 
 typedef struct rc_eps_batt_2 {
-    uint16_t rc_eps_batt_2_node_v_min; // mV
-    uint16_t rc_eps_batt_2_node_v_max; // mV
-    uint16_t rc_eps_batt_2_node_v_avg; // mV
+    uint16_t rc_eps_batt_2_node_v_min; // raw node voltage
+    uint16_t rc_eps_batt_2_node_v_max; // raw node voltage
+    uint16_t rc_eps_batt_2_node_v_avg; // raw node voltage
 } rc_eps_batt_2;
 
 typedef struct rc_eps_batt_1 {
-    uint16_t rc_eps_batt_1_reset_count; //  (No Units)
-    uint16_t rc_eps_batt_1_temp_min; // dK
-    uint16_t rc_eps_batt_1_temp_max; // dK
-    uint16_t rc_eps_batt_1_temp_avg; // dK
-    uint16_t rc_eps_batt_1_sysrstiv; //  (No Units)
 } rc_eps_batt_1;
 
 typedef struct cmd_ppt_set_count {
@@ -841,23 +1190,23 @@ typedef struct eps_domain_output {
 } eps_domain_output;
 
 typedef struct sensorproc_imu {
-    int16_t sensorproc_imu_z; //  (No Units)
-    int16_t sensorproc_imu_y; //  (No Units)
-    int16_t sensorproc_imu_x; //  (No Units)
+    int16_t sensorproc_imu_z; // 0.004375 deg/s
+    int16_t sensorproc_imu_y; // 0.004375 deg/s
+    int16_t sensorproc_imu_x; // 0.004375 deg/s
     uint8_t sensorproc_imu_valid; // bool
 } sensorproc_imu;
 
 typedef struct sensorproc_mag {
-    int16_t sensorproc_mag_z; //  (No Units)
-    int16_t sensorproc_mag_y; //  (No Units)
-    int16_t sensorproc_mag_x; //  (No Units)
+    int16_t sensorproc_mag_z; // 73 nanoTeslas
+    int16_t sensorproc_mag_y; // 73 nanoTeslas
+    int16_t sensorproc_mag_x; // 73 nanoTeslas
     uint8_t sensorproc_mag_valid; // bool
 } sensorproc_mag;
 
 typedef struct cmd_rollcall {
     uint8_t cmd_rollcall_type; //  (No Units)
     uint8_t cmd_rollcall_met_overflow; //  (No Units)
-    uint32_t cmd_rollcall_met; //  (No Units)
+    uint32_t cmd_rollcall_met; // 2^-8 s
     uint8_t cmd_rollcall_msp; //  (No Units)
 } cmd_rollcall;
 
@@ -956,7 +1305,7 @@ typedef struct sync_1 {
 } sync_1;
 
 typedef struct msp_temp {
-    uint16_t msp_temp_temp; // dK
+    int16_t msp_temp_temp; // cC
 } msp_temp;
 
 typedef struct grnd_epoch {
@@ -964,8 +1313,203 @@ typedef struct grnd_epoch {
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
 
-void encodeVECTOR__INDEPENDENT_SIG_MSG(VECTOR__INDEPENDENT_SIG_MSG *input, CANPacket* output);
-void decodeVECTOR__INDEPENDENT_SIG_MSG(CANPacket *input, VECTOR__INDEPENDENT_SIG_MSG *output);
+void encodegcmd_ppt_multiple_fire(gcmd_ppt_multiple_fire *input, CANPacket* output);
+void decodegcmd_ppt_multiple_fire(CANPacket *input, gcmd_ppt_multiple_fire *output);
+
+void encodegcmd_mtq_pwm_time(gcmd_mtq_pwm_time *input, CANPacket* output);
+void decodegcmd_mtq_pwm_time(CANPacket *input, gcmd_mtq_pwm_time *output);
+
+void encodegcmd_eps_batt_fulldef(gcmd_eps_batt_fulldef *input, CANPacket* output);
+void decodegcmd_eps_batt_fulldef(CANPacket *input, gcmd_eps_batt_fulldef *output);
+
+void encoderc_adcs_bdot_5(rc_adcs_bdot_5 *input, CANPacket* output);
+void decoderc_adcs_bdot_5(CANPacket *input, rc_adcs_bdot_5 *output);
+
+void encodegcmd_reset_minmax(gcmd_reset_minmax *input, CANPacket* output);
+void decodegcmd_reset_minmax(CANPacket *input, gcmd_reset_minmax *output);
+
+void encoderc_eps_batt_h2(rc_eps_batt_h2 *input, CANPacket* output);
+void decoderc_eps_batt_h2(CANPacket *input, rc_eps_batt_h2 *output);
+
+void encoderc_adcs_bdot_h2(rc_adcs_bdot_h2 *input, CANPacket* output);
+void decoderc_adcs_bdot_h2(CANPacket *input, rc_adcs_bdot_h2 *output);
+
+void encoderc_eps_dist_h2(rc_eps_dist_h2 *input, CANPacket* output);
+void decoderc_eps_dist_h2(CANPacket *input, rc_eps_dist_h2 *output);
+
+void encoderc_adcs_mpc_h2(rc_adcs_mpc_h2 *input, CANPacket* output);
+void decoderc_adcs_mpc_h2(CANPacket *input, rc_adcs_mpc_h2 *output);
+
+void encoderc_adcs_estim_h2(rc_adcs_estim_h2 *input, CANPacket* output);
+void decoderc_adcs_estim_h2(CANPacket *input, rc_adcs_estim_h2 *output);
+
+void encoderc_adcs_sp_h2(rc_adcs_sp_h2 *input, CANPacket* output);
+void decoderc_adcs_sp_h2(CANPacket *input, rc_adcs_sp_h2 *output);
+
+void encoderc_eps_gen_h2(rc_eps_gen_h2 *input, CANPacket* output);
+void decoderc_eps_gen_h2(CANPacket *input, rc_eps_gen_h2 *output);
+
+void encoderc_adcs_mtq_h2(rc_adcs_mtq_h2 *input, CANPacket* output);
+void decoderc_adcs_mtq_h2(CANPacket *input, rc_adcs_mtq_h2 *output);
+
+void encoderc_ppt_h2(rc_ppt_h2 *input, CANPacket* output);
+void decoderc_ppt_h2(CANPacket *input, rc_ppt_h2 *output);
+
+void encoderc_eps_batt_h1(rc_eps_batt_h1 *input, CANPacket* output);
+void decoderc_eps_batt_h1(CANPacket *input, rc_eps_batt_h1 *output);
+
+void encoderc_adcs_bdot_h1(rc_adcs_bdot_h1 *input, CANPacket* output);
+void decoderc_adcs_bdot_h1(CANPacket *input, rc_adcs_bdot_h1 *output);
+
+void encoderc_eps_dist_h1(rc_eps_dist_h1 *input, CANPacket* output);
+void decoderc_eps_dist_h1(CANPacket *input, rc_eps_dist_h1 *output);
+
+void encoderc_adcs_mpc_h1(rc_adcs_mpc_h1 *input, CANPacket* output);
+void decoderc_adcs_mpc_h1(CANPacket *input, rc_adcs_mpc_h1 *output);
+
+void encoderc_adcs_estim_h1(rc_adcs_estim_h1 *input, CANPacket* output);
+void decoderc_adcs_estim_h1(CANPacket *input, rc_adcs_estim_h1 *output);
+
+void encoderc_adcs_sp_h1(rc_adcs_sp_h1 *input, CANPacket* output);
+void decoderc_adcs_sp_h1(CANPacket *input, rc_adcs_sp_h1 *output);
+
+void encoderc_eps_gen_h1(rc_eps_gen_h1 *input, CANPacket* output);
+void decoderc_eps_gen_h1(CANPacket *input, rc_eps_gen_h1 *output);
+
+void encoderc_adcs_mtq_h1(rc_adcs_mtq_h1 *input, CANPacket* output);
+void decoderc_adcs_mtq_h1(CANPacket *input, rc_adcs_mtq_h1 *output);
+
+void encoderc_ppt_h1(rc_ppt_h1 *input, CANPacket* output);
+void decoderc_ppt_h1(CANPacket *input, rc_ppt_h1 *output);
+
+void encodegcmd_mtq_pms(gcmd_mtq_pms *input, CANPacket* output);
+void decodegcmd_mtq_pms(CANPacket *input, gcmd_mtq_pms *output);
+
+void encodegcmd_bdot_max_tumble(gcmd_bdot_max_tumble *input, CANPacket* output);
+void decodegcmd_bdot_max_tumble(CANPacket *input, gcmd_bdot_max_tumble *output);
+
+void encodegcmd_bdot_spam(gcmd_bdot_spam *input, CANPacket* output);
+void decodegcmd_bdot_spam(CANPacket *input, gcmd_bdot_spam *output);
+
+void encodegcmd_bdot_control(gcmd_bdot_control *input, CANPacket* output);
+void decodegcmd_bdot_control(CANPacket *input, gcmd_bdot_control *output);
+
+void encodegcmd_bdot_mag_control(gcmd_bdot_mag_control *input, CANPacket* output);
+void decodegcmd_bdot_mag_control(CANPacket *input, gcmd_bdot_mag_control *output);
+
+void encodegcmd_bdot_pole_override(gcmd_bdot_pole_override *input, CANPacket* output);
+void decodegcmd_bdot_pole_override(CANPacket *input, gcmd_bdot_pole_override *output);
+
+void encodegcmd_gen_set_pt_state(gcmd_gen_set_pt_state *input, CANPacket* output);
+void decodegcmd_gen_set_pt_state(CANPacket *input, gcmd_gen_set_pt_state *output);
+
+void encodegcmd_sp_set_thresh(gcmd_sp_set_thresh *input, CANPacket* output);
+void decodegcmd_sp_set_thresh(CANPacket *input, gcmd_sp_set_thresh *output);
+
+void encodegcmd_dist_set_pd_ovc_ppt(gcmd_dist_set_pd_ovc_ppt *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_ppt(CANPacket *input, gcmd_dist_set_pd_ovc_ppt *output);
+
+void encodegcmd_dist_set_pd_ovc_eps(gcmd_dist_set_pd_ovc_eps *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_eps(CANPacket *input, gcmd_dist_set_pd_ovc_eps *output);
+
+void encodegcmd_dist_set_pd_ovc_wheels(gcmd_dist_set_pd_ovc_wheels *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_wheels(CANPacket *input, gcmd_dist_set_pd_ovc_wheels *output);
+
+void encodegcmd_dist_set_pd_ovc_estim(gcmd_dist_set_pd_ovc_estim *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_estim(CANPacket *input, gcmd_dist_set_pd_ovc_estim *output);
+
+void encodegcmd_dist_set_pd_ovc_bdot(gcmd_dist_set_pd_ovc_bdot *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_bdot(CANPacket *input, gcmd_dist_set_pd_ovc_bdot *output);
+
+void encodegcmd_dist_set_pd_ovc_rahs(gcmd_dist_set_pd_ovc_rahs *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_rahs(CANPacket *input, gcmd_dist_set_pd_ovc_rahs *output);
+
+void encodegcmd_dist_set_pd_ovc_com2(gcmd_dist_set_pd_ovc_com2 *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_com2(CANPacket *input, gcmd_dist_set_pd_ovc_com2 *output);
+
+void encodegcmd_dist_set_pd_ovc_com1(gcmd_dist_set_pd_ovc_com1 *input, CANPacket* output);
+void decodegcmd_dist_set_pd_ovc_com1(CANPacket *input, gcmd_dist_set_pd_ovc_com1 *output);
+
+void encodegcmd_dist_set_pd_state(gcmd_dist_set_pd_state *input, CANPacket* output);
+void decodegcmd_dist_set_pd_state(CANPacket *input, gcmd_dist_set_pd_state *output);
+
+void encodegcmd_mtq_pop(gcmd_mtq_pop *input, CANPacket* output);
+void decodegcmd_mtq_pop(CANPacket *input, gcmd_mtq_pop *output);
+
+void encoderc_eps_batt_7(rc_eps_batt_7 *input, CANPacket* output);
+void decoderc_eps_batt_7(CANPacket *input, rc_eps_batt_7 *output);
+
+void encodesensorproc_mag2(sensorproc_mag2 *input, CANPacket* output);
+void decodesensorproc_mag2(CANPacket *input, sensorproc_mag2 *output);
+
+void encoderc_adcs_estim_14(rc_adcs_estim_14 *input, CANPacket* output);
+void decoderc_adcs_estim_14(CANPacket *input, rc_adcs_estim_14 *output);
+
+void encoderc_adcs_estim_13(rc_adcs_estim_13 *input, CANPacket* output);
+void decoderc_adcs_estim_13(CANPacket *input, rc_adcs_estim_13 *output);
+
+void encoderc_adcs_estim_12(rc_adcs_estim_12 *input, CANPacket* output);
+void decoderc_adcs_estim_12(CANPacket *input, rc_adcs_estim_12 *output);
+
+void encoderc_adcs_estim_11(rc_adcs_estim_11 *input, CANPacket* output);
+void decoderc_adcs_estim_11(CANPacket *input, rc_adcs_estim_11 *output);
+
+void encoderc_adcs_estim_10(rc_adcs_estim_10 *input, CANPacket* output);
+void decoderc_adcs_estim_10(CANPacket *input, rc_adcs_estim_10 *output);
+
+void encoderc_adcs_estim_9(rc_adcs_estim_9 *input, CANPacket* output);
+void decoderc_adcs_estim_9(CANPacket *input, rc_adcs_estim_9 *output);
+
+void encoderc_eps_dist_16(rc_eps_dist_16 *input, CANPacket* output);
+void decoderc_eps_dist_16(CANPacket *input, rc_eps_dist_16 *output);
+
+void encoderc_eps_dist_9(rc_eps_dist_9 *input, CANPacket* output);
+void decoderc_eps_dist_9(CANPacket *input, rc_eps_dist_9 *output);
+
+void encoderc_eps_dist_7(rc_eps_dist_7 *input, CANPacket* output);
+void decoderc_eps_dist_7(CANPacket *input, rc_eps_dist_7 *output);
+
+void encoderc_eps_dist_6(rc_eps_dist_6 *input, CANPacket* output);
+void decoderc_eps_dist_6(CANPacket *input, rc_eps_dist_6 *output);
+
+void encoderc_eps_dist_5(rc_eps_dist_5 *input, CANPacket* output);
+void decoderc_eps_dist_5(CANPacket *input, rc_eps_dist_5 *output);
+
+void encoderc_eps_dist_3(rc_eps_dist_3 *input, CANPacket* output);
+void decoderc_eps_dist_3(CANPacket *input, rc_eps_dist_3 *output);
+
+void encoderc_eps_dist_2(rc_eps_dist_2 *input, CANPacket* output);
+void decoderc_eps_dist_2(CANPacket *input, rc_eps_dist_2 *output);
+
+void encoderc_eps_dist_17(rc_eps_dist_17 *input, CANPacket* output);
+void decoderc_eps_dist_17(CANPacket *input, rc_eps_dist_17 *output);
+
+void encoderc_eps_dist_14(rc_eps_dist_14 *input, CANPacket* output);
+void decoderc_eps_dist_14(CANPacket *input, rc_eps_dist_14 *output);
+
+void encoderc_eps_dist_13(rc_eps_dist_13 *input, CANPacket* output);
+void decoderc_eps_dist_13(CANPacket *input, rc_eps_dist_13 *output);
+
+void encoderc_eps_dist_11(rc_eps_dist_11 *input, CANPacket* output);
+void decoderc_eps_dist_11(CANPacket *input, rc_eps_dist_11 *output);
+
+void encoderc_eps_dist_12(rc_eps_dist_12 *input, CANPacket* output);
+void decoderc_eps_dist_12(CANPacket *input, rc_eps_dist_12 *output);
+
+void encoderc_eps_dist_15(rc_eps_dist_15 *input, CANPacket* output);
+void decoderc_eps_dist_15(CANPacket *input, rc_eps_dist_15 *output);
+
+void encoderc_eps_dist_10(rc_eps_dist_10 *input, CANPacket* output);
+void decoderc_eps_dist_10(CANPacket *input, rc_eps_dist_10 *output);
+
+void encoderc_eps_dist_8(rc_eps_dist_8 *input, CANPacket* output);
+void decoderc_eps_dist_8(CANPacket *input, rc_eps_dist_8 *output);
+
+void encoderc_eps_dist_4(rc_eps_dist_4 *input, CANPacket* output);
+void decoderc_eps_dist_4(CANPacket *input, rc_eps_dist_4 *output);
+
+void encoderc_eps_dist_1(rc_eps_dist_1 *input, CANPacket* output);
+void decoderc_eps_dist_1(CANPacket *input, rc_eps_dist_1 *output);
 
 void encoderc_adcs_mpc_11(rc_adcs_mpc_11 *input, CANPacket* output);
 void decoderc_adcs_mpc_11(CANPacket *input, rc_adcs_mpc_11 *output);

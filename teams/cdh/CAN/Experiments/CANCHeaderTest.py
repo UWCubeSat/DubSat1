@@ -115,8 +115,9 @@ def createCHeader(candb, cFileName, floatList):
 // the initial value assigned to the coils before commands are received
 #define ELOISE_UNKNOWN -128 
 // what phase the mtq is in (needed by fsw and bdot)
-#define MEASUREMENT_PHASE CAN_ENUM_BOOL_FALSE 
-#define ACTUATION_PHASE CAN_ENUM_BOOL_TRUE
+#define MEASUREMENT_PHASE CAN_ENUM_MTQ_PHASE_MEASUREMENT_PHASE 
+#define ACTUATION_PHASE CAN_ENUM_MTQ_PHASE_ACTUATION_PHASE
+#define PMS_PHASE CAN_ENUM_MTQ_PHASE_PMS_PHASE
 #define FROM_FSW_IS_ZERO 0
 #define FROM_BDOT_IS_ONE 1
 #define FROM_FSW FROM_FSW_IS_ZERO
@@ -401,9 +402,9 @@ void canWrapInitWithFilter(){
         break;
       case Module_ADCS_MPC :
         filter_one = 0x01;
-        filter_two = 0x03;
-        filter_three = 0x04;
-        filter_four = 0x04;
+        filter_two = 0x04;
+        filter_three = 0x05;
+        filter_four = 0x07;
         break;
       case Module_ADCS_SensorProc :
         filter_one = 0x01;

@@ -2,6 +2,7 @@
 #include <msp430fr5994.h>
 #include <stdint.h>
 #include "MET.h"
+#include "utils.h"
 
 uint8_t confirmed;
 
@@ -24,8 +25,6 @@ void METInit(uint8_t _isDist)
 	RTCCNT3 = 0;
 	RTCCNT4 = 0;
 
-	RTCCTL13 &= ~(RTCHOLD);                 // Start RTC
-
 	isDist = _isDist;
 	if(isDist)
 	{
@@ -38,15 +37,17 @@ void METInit(uint8_t _isDist)
 	}
 	else
 	    confirmed = 0;
+
+	RTCCTL13 &= ~(RTCHOLD);                 // Start RTC
 }
 
 uint32_t getMETPrimary()
 {
     timeStamp t = getMETTimestamp();
-    uint32_t res = (uint32_t) RTCCNT1;
-    res |= ((uint32_t) RTCCNT2) << 8;
-    res |= ((uint32_t) RTCCNT3) << 16;
-    res |= ((uint32_t) RTCCNT4) << 24;
+    uint32_t res = (uint32_t) t.count1;
+    res |= ((uint32_t) t.count2) << 8;
+    res |= ((uint32_t) t.count3) << 16;
+    res |= ((uint32_t) t.count4) << 24;
     return res;
 }
 
@@ -71,10 +72,10 @@ void updateMET(timeStamp newTime)
 timeStamp getMETTimestamp()
 {
 	timeStamp now = {0};
-	now.count1 |= RTCCNT1; //TODO: these reads are unpredictable
-	now.count2 |= RTCCNT2;
-	now.count3 |= RTCCNT3;
-	now.count4 |= RTCCNT4;
+	safeRead(RTCCNT1, now.count1);
+	safeRead(RTCCNT2, now.count2);
+	safeRead(RTCCNT3, now.count3);
+	safeRead(RTCCNT4, now.count4);
 	now.count5 |= recentTime.count5;
 
 	return now;
@@ -92,7 +93,18 @@ uint64_t metConvertToInt(timeStamp t)
 
 double metConvertToSeconds(timeStamp t)
 {
-    return ((double) metConvertToInt(t)) / 256.0;
+    return metConvertFromIntToSeconds(metConvertToInt(t));
+}
+
+double metConvertFromIntToSeconds(int64_t t)
+{
+    return ((double) t) / 256.0;
+}
+
+void metFromInt(int64_t t, uint32_t *primary, uint8_t *overflow)
+{
+    *primary = t;
+    *overflow = t >> 32;
 }
 
 timeStamp constructTimestamp(uint32_t primary, uint8_t overflow)
@@ -112,15 +124,11 @@ __interrupt void RTC_ISR(void)
     switch(__even_in_range(RTCIV, RTCIV__RT1PSIFG))
     {
         case RTCIV__RTCTEVIFG: // RTCEVIFG
-            if(isDist)
-                //RTCCNT1 not necessary b/c always 0
-                recentTime.count2 = RTCCNT2;
-                recentTime.count3 = RTCCNT3;
-                recentTime.count4 = RTCCNT4;
-                recentTime.count5 = recentTime.count5;
-                if (!(RTCCNT1 | RTCCNT2 | RTCCNT3 | RTCCNT4))
-                    recentTime.count5++;
-            else
+            //RTCCNT1 not necessary b/c always 0
+            safeRead(RTCCNT2, recentTime.count2);
+            safeRead(RTCCNT3, recentTime.count3);
+            safeRead(RTCCNT4, recentTime.count4);
+            if (!(recentTime.count2 | recentTime.count3 | recentTime.count4))
                 recentTime.count5++;
             break;
 

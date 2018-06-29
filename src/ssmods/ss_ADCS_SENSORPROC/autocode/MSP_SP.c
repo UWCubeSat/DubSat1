@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'MSP_SP'.
  *
- * Model version                  : 1.359
+ * Model version                  : 1.383
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Fri Apr 27 17:45:09 2018
+ * C/C++ source code generated on : Mon Jun 25 20:17:33 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -20,6 +20,7 @@
  */
 
 #include "MSP_SP.h"
+#define NumBitsPerChar                 8U
 
 /* Block signals and states (auto storage) */
 DW rtDW;
@@ -33,23 +34,194 @@ ExtY rtY;
 /* Real-time model */
 RT_MODEL rtM_;
 RT_MODEL *const rtM = &rtM_;
-extern real32_T rt_roundf_snf(real32_T u);
-real32_T rt_roundf_snf(real32_T u)
+extern real_T rtGetInf(void);
+extern real32_T rtGetInfF(void);
+extern real_T rtGetMinusInf(void);
+extern real32_T rtGetMinusInfF(void);
+extern real_T rtGetNaN(void);
+extern real32_T rtGetNaNF(void);
+extern real_T rtInf;
+extern real_T rtMinusInf;
+extern real_T rtNaN;
+extern real32_T rtInfF;
+extern real32_T rtMinusInfF;
+extern real32_T rtNaNF;
+extern void rt_InitInfAndNaN(size_t realSize);
+extern boolean_T rtIsInf(real_T value);
+extern boolean_T rtIsInfF(real32_T value);
+extern boolean_T rtIsNaN(real_T value);
+extern boolean_T rtIsNaNF(real32_T value);
+typedef struct {
+  struct {
+    uint32_T wordH;
+    uint32_T wordL;
+  } words;
+} BigEndianIEEEDouble;
+
+typedef struct {
+  struct {
+    uint32_T wordL;
+    uint32_T wordH;
+  } words;
+} LittleEndianIEEEDouble;
+
+typedef struct {
+  union {
+    real32_T wordLreal;
+    uint32_T wordLuint;
+  } wordL;
+} IEEESingle;
+
+real_T rtInf;
+real_T rtMinusInf;
+real_T rtNaN;
+real32_T rtInfF;
+real32_T rtMinusInfF;
+real32_T rtNaNF;
+
+/*
+ * Initialize rtInf needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+real_T rtGetInf(void)
 {
-  real32_T y;
-  if ((real32_T)fabs(u) < 8.388608E+6F) {
-    if (u >= 0.5F) {
-      y = (real32_T)floor(u + 0.5F);
-    } else if (u > -0.5F) {
-      y = u * 0.0F;
-    } else {
-      y = (real32_T)ceil(u - 0.5F);
-    }
+  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+  real_T inf = 0.0;
+  if (bitsPerReal == 32U) {
+    inf = rtGetInfF();
   } else {
-    y = u;
+    union {
+      LittleEndianIEEEDouble bitVal;
+      real_T fltVal;
+    } tmpVal;
+
+    tmpVal.bitVal.words.wordH = 0x7FF00000U;
+    tmpVal.bitVal.words.wordL = 0x00000000U;
+    inf = tmpVal.fltVal;
   }
 
-  return y;
+  return inf;
+}
+
+/*
+ * Initialize rtInfF needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+real32_T rtGetInfF(void)
+{
+  IEEESingle infF;
+  infF.wordL.wordLuint = 0x7F800000U;
+  return infF.wordL.wordLreal;
+}
+
+/*
+ * Initialize rtMinusInf needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+real_T rtGetMinusInf(void)
+{
+  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+  real_T minf = 0.0;
+  if (bitsPerReal == 32U) {
+    minf = rtGetMinusInfF();
+  } else {
+    union {
+      LittleEndianIEEEDouble bitVal;
+      real_T fltVal;
+    } tmpVal;
+
+    tmpVal.bitVal.words.wordH = 0xFFF00000U;
+    tmpVal.bitVal.words.wordL = 0x00000000U;
+    minf = tmpVal.fltVal;
+  }
+
+  return minf;
+}
+
+/*
+ * Initialize rtMinusInfF needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+real32_T rtGetMinusInfF(void)
+{
+  IEEESingle minfF;
+  minfF.wordL.wordLuint = 0xFF800000U;
+  return minfF.wordL.wordLreal;
+}
+
+/*
+ * Initialize rtNaN needed by the generated code.
+ * NaN is initialized as non-signaling. Assumes IEEE.
+ */
+real_T rtGetNaN(void)
+{
+  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+  real_T nan = 0.0;
+  if (bitsPerReal == 32U) {
+    nan = rtGetNaNF();
+  } else {
+    union {
+      LittleEndianIEEEDouble bitVal;
+      real_T fltVal;
+    } tmpVal;
+
+    tmpVal.bitVal.words.wordH = 0xFFF80000U;
+    tmpVal.bitVal.words.wordL = 0x00000000U;
+    nan = tmpVal.fltVal;
+  }
+
+  return nan;
+}
+
+/*
+ * Initialize rtNaNF needed by the generated code.
+ * NaN is initialized as non-signaling. Assumes IEEE.
+ */
+real32_T rtGetNaNF(void)
+{
+  IEEESingle nanF = { { 0 } };
+
+  nanF.wordL.wordLuint = 0xFFC00000U;
+  return nanF.wordL.wordLreal;
+}
+
+/*
+ * Initialize the rtInf, rtMinusInf, and rtNaN needed by the
+ * generated code. NaN is initialized as non-signaling. Assumes IEEE.
+ */
+void rt_InitInfAndNaN(size_t realSize)
+{
+  (void) (realSize);
+  rtNaN = rtGetNaN();
+  rtNaNF = rtGetNaNF();
+  rtInf = rtGetInf();
+  rtInfF = rtGetInfF();
+  rtMinusInf = rtGetMinusInf();
+  rtMinusInfF = rtGetMinusInfF();
+}
+
+/* Test if value is infinite */
+boolean_T rtIsInf(real_T value)
+{
+  return (boolean_T)((value==rtInf || value==rtMinusInf) ? 1U : 0U);
+}
+
+/* Test if single-precision value is infinite */
+boolean_T rtIsInfF(real32_T value)
+{
+  return (boolean_T)(((value)==rtInfF || (value)==rtMinusInfF) ? 1U : 0U);
+}
+
+/* Test if value is not a number */
+boolean_T rtIsNaN(real_T value)
+{
+  return (boolean_T)((value!=value) ? 1U : 0U);
+}
+
+/* Test if single-precision value is not a number */
+boolean_T rtIsNaNF(real32_T value)
+{
+  return (boolean_T)(((value!=value) ? 1U : 0U));
 }
 
 /* Model step function for TID0 */
@@ -129,11 +301,11 @@ void MSP_SP_step0(void)                /* Sample time: [0.025s, 0.0s] */
        *  DiscreteTransferFcn: '<S2>/Discrete Transfer Fcn1'
        *  Product: '<S2>/Product'
        */
-      rtY.omega_radps_processed[i] = rtConstP.pooled1[i + 6] * denAccum +
-        (rtConstP.pooled1[i + 3] * rtb_DiscreteTransferFcn1_idx_1 +
-         rtConstP.pooled1[i] * rtb_DiscreteTransferFcn1_idx_0);
+      rtY.omega_radps_processed[i] = rtConstP.pooled3[i + 6] * denAccum +
+        (rtConstP.pooled3[i + 3] * rtb_DiscreteTransferFcn1_idx_1 +
+         rtConstP.pooled3[i] * rtb_DiscreteTransferFcn1_idx_0);
 
-      /* RateTransition: '<S5>/Rate Transition1' incorporates:
+      /* RateTransition: '<S4>/Rate Transition1' incorporates:
        *  Inport: '<Root>/sun_vec_body_angles'
        */
       rtDW.RateTransition1_m[i] = rtU.sun_vec_body_sunsensor[i];
@@ -156,12 +328,11 @@ void MSP_SP_step0(void)                /* Sample time: [0.025s, 0.0s] */
 /* Model step function for TID1 */
 void MSP_SP_step1(void)                /* Sample time: [0.05s, 0.0s] */
 {
-  boolean_T rtb_LogicalOperator_o;
-  real32_T rtb_Switch2;
+  real32_T denAccum;
+  real32_T rtb_Product1_j[3];
+  real32_T rtb_Product1_l[3];
   real32_T tmp[3];
   int16_T i;
-  real32_T rtb_Switch_idx_0;
-  real32_T rtb_Switch_idx_1;
 
   /* Update the flag to indicate when data transfers from
    *  Sample time: [0.05s, 0.0s] to Sample time: [0.1s, 0.0s]  */
@@ -170,212 +341,261 @@ void MSP_SP_step1(void)                /* Sample time: [0.05s, 0.0s] */
     rtM->Timing.RateInteraction.TID1_2 = 0;
   }
 
-  /* DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn' */
-  rtb_Switch_idx_0 = 0.0608986318F * rtDW.DiscreteTransferFcn_states[0L];
-  rtb_Switch_idx_1 = 0.0608986318F * rtDW.DiscreteTransferFcn_states[1L];
-  rtb_Switch2 = 0.0608986318F * rtDW.DiscreteTransferFcn_states[2L];
+  /* DiscreteTransferFcn: '<S5>/Discrete Transfer Fcn' */
+  rtb_Product1_j[0L] = 0.0608986318F * rtDW.DiscreteTransferFcn_states[0L];
+  rtb_Product1_j[1L] = 0.0608986318F * rtDW.DiscreteTransferFcn_states[1L];
+  denAccum = 0.0608986318F * rtDW.DiscreteTransferFcn_states[2L];
 
-  /* Logic: '<S3>/Logical Operator' */
-  rtb_LogicalOperator_o = ((rtDW.RateTransition2[3] != 0.0F) ||
-    (rtDW.RateTransition[3] != 0.0F));
+  /* Product: '<S5>/Product' incorporates:
+   *  Constant: '<S5>/process_matrix'
+   *  DiscreteTransferFcn: '<S5>/Discrete Transfer Fcn'
+   */
+  for (i = 0; i < 3; i++) {
+    rtb_Product1_l[i] = rtConstP.pooled3[i + 6] * denAccum + (rtConstP.pooled3[i
+      + 3] * rtb_Product1_j[1] + rtConstP.pooled3[i] * rtb_Product1_j[0]);
+  }
 
-  /* RateTransition: '<S3>/Rate Transition1' */
+  /* End of Product: '<S5>/Product' */
+
+  /* Product: '<S5>/Product1' incorporates:
+   *  Constant: '<S5>/sensor2body'
+   */
+  for (i = 0; i < 3; i++) {
+    rtb_Product1_j[i] = rtConstP.pooled3[i + 6] * rtb_Product1_l[2] +
+      (rtConstP.pooled3[i + 3] * rtb_Product1_l[1] + rtConstP.pooled3[i] *
+       rtb_Product1_l[0]);
+  }
+
+  /* End of Product: '<S5>/Product1' */
+
+  /* DiscreteTransferFcn: '<S6>/Discrete Transfer Fcn' */
+  rtb_Product1_l[0L] = 0.0608986318F * rtDW.DiscreteTransferFcn_states_f[0L];
+  rtb_Product1_l[1L] = 0.0608986318F * rtDW.DiscreteTransferFcn_states_f[1L];
+  denAccum = 0.0608986318F * rtDW.DiscreteTransferFcn_states_f[2L];
+
+  /* RateTransition: '<S3>/Rate Transition3' */
   if (rtM->Timing.RateInteraction.TID1_2 == 1) {
-    /* Product: '<S3>/Product' incorporates:
-     *  Constant: '<S3>/process_matrix'
-     *  DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn'
-     *  Product: '<S3>/Product1'
+    /* Product: '<S6>/Product' incorporates:
+     *  Constant: '<S6>/process_matrix'
+     *  DiscreteTransferFcn: '<S6>/Discrete Transfer Fcn'
+     *  Product: '<S6>/Product1'
      */
     for (i = 0; i < 3; i++) {
-      tmp[i] = rtConstP.pooled1[i + 6] * rtb_Switch2 + (rtConstP.pooled1[i + 3] *
-        rtb_Switch_idx_1 + rtConstP.pooled1[i] * rtb_Switch_idx_0);
+      tmp[i] = rtConstP.pooled3[i + 6] * denAccum + (rtConstP.pooled3[i + 3] *
+        rtb_Product1_l[1] + rtConstP.pooled3[i] * rtb_Product1_l[0]);
     }
 
-    /* End of Product: '<S3>/Product' */
+    /* End of Product: '<S6>/Product' */
 
-    /* Product: '<S3>/Product1' */
+    /* Outport: '<Root>/mag2_body_processed_T' */
+    rtY.mag2_body_processed_T[3] = rtDW.RateTransition2[3];
     for (i = 0; i < 3; i++) {
-      /* Outport: '<Root>/mag_body_processed_T' incorporates:
-       *  Constant: '<S3>/sensor2body'
+      /* Outport: '<Root>/mag2_body_processed_T' incorporates:
+       *  Constant: '<S6>/sensor2body'
+       *  Product: '<S6>/Product1'
        */
-      rtY.mag_body_processed_T[i] = rtConstP.pooled1[i + 6] * tmp[2] +
-        (rtConstP.pooled1[i + 3] * tmp[1] + rtConstP.pooled1[i] * tmp[0]);
+      rtY.mag2_body_processed_T[i] = rtConstP.pooled3[i + 6] * tmp[2] +
+        (rtConstP.pooled3[i + 3] * tmp[1] + rtConstP.pooled3[i] * tmp[0]);
+
+      /* Outport: '<Root>/mag1_body_processed_T' incorporates:
+       *  RateTransition: '<S3>/Rate Transition1'
+       */
+      rtY.mag1_body_processed_T[i] = rtb_Product1_j[i];
     }
 
-    /* Outport: '<Root>/mag_body_processed_T' incorporates:
-     *  DataTypeConversion: '<S3>/Data Type Conversion'
+    /* Outport: '<Root>/mag1_body_processed_T' incorporates:
+     *  RateTransition: '<S3>/Rate Transition1'
      */
-    rtY.mag_body_processed_T[3] = rtb_LogicalOperator_o;
+    rtY.mag1_body_processed_T[3] = rtDW.RateTransition[3];
   }
 
-  /* End of RateTransition: '<S3>/Rate Transition1' */
+  /* End of RateTransition: '<S3>/Rate Transition3' */
 
-  /* Switch: '<S3>/Switch2' incorporates:
-   *  Constant: '<S3>/1'
-   *  Constant: '<S3>/2'
-   */
-  if (rtb_LogicalOperator_o) {
-    rtb_Switch2 = 2.0F;
-  } else {
-    rtb_Switch2 = 1.0F;
-  }
+  /* Update for DiscreteTransferFcn: '<S5>/Discrete Transfer Fcn' */
+  rtDW.DiscreteTransferFcn_states[0L] = rtDW.RateTransition[0L] - -0.939101338F *
+    rtDW.DiscreteTransferFcn_states[0L];
+  rtDW.DiscreteTransferFcn_states[1L] = rtDW.RateTransition[1L] - -0.939101338F *
+    rtDW.DiscreteTransferFcn_states[1L];
+  rtDW.DiscreteTransferFcn_states[2L] = rtDW.RateTransition[2L] - -0.939101338F *
+    rtDW.DiscreteTransferFcn_states[2L];
 
-  /* End of Switch: '<S3>/Switch2' */
-
-  /* Switch: '<S3>/Switch1' */
-  if (rtDW.RateTransition[3] != 0.0F) {
-    rtb_Switch_idx_0 = rtDW.RateTransition[0];
-  } else {
-    rtb_Switch_idx_0 = 0.0F;
-  }
-
-  /* Switch: '<S3>/Switch' */
-  if (rtDW.RateTransition2[3] != 0.0F) {
-    rtb_Switch_idx_1 = rtDW.RateTransition2[0];
-  } else {
-    rtb_Switch_idx_1 = 0.0F;
-  }
-
-  /* Update for DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn' incorporates:
-   *  Product: '<S3>/Divide'
-   *  Sum: '<S3>/Sum1'
-   */
-  rtDW.DiscreteTransferFcn_states[0L] = (rtb_Switch_idx_0 + rtb_Switch_idx_1) /
-    rtb_Switch2 - -0.939101338F * rtDW.DiscreteTransferFcn_states[0L];
-
-  /* Switch: '<S3>/Switch1' */
-  if (rtDW.RateTransition[3] != 0.0F) {
-    rtb_Switch_idx_0 = rtDW.RateTransition[1];
-  } else {
-    rtb_Switch_idx_0 = 0.0F;
-  }
-
-  /* Switch: '<S3>/Switch' */
-  if (rtDW.RateTransition2[3] != 0.0F) {
-    rtb_Switch_idx_1 = rtDW.RateTransition2[1];
-  } else {
-    rtb_Switch_idx_1 = 0.0F;
-  }
-
-  /* Update for DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn' incorporates:
-   *  Product: '<S3>/Divide'
-   *  Sum: '<S3>/Sum1'
-   */
-  rtDW.DiscreteTransferFcn_states[1L] = (rtb_Switch_idx_0 + rtb_Switch_idx_1) /
-    rtb_Switch2 - -0.939101338F * rtDW.DiscreteTransferFcn_states[1L];
-
-  /* Switch: '<S3>/Switch1' */
-  if (rtDW.RateTransition[3] != 0.0F) {
-    rtb_Switch_idx_0 = rtDW.RateTransition[2];
-  } else {
-    rtb_Switch_idx_0 = 0.0F;
-  }
-
-  /* Switch: '<S3>/Switch' */
-  if (rtDW.RateTransition2[3] != 0.0F) {
-    rtb_Switch_idx_1 = rtDW.RateTransition2[2];
-  } else {
-    rtb_Switch_idx_1 = 0.0F;
-  }
-
-  /* Update for DiscreteTransferFcn: '<S3>/Discrete Transfer Fcn' incorporates:
-   *  Product: '<S3>/Divide'
-   *  Sum: '<S3>/Sum1'
-   */
-  rtDW.DiscreteTransferFcn_states[2L] = (rtb_Switch_idx_0 + rtb_Switch_idx_1) /
-    rtb_Switch2 - -0.939101338F * rtDW.DiscreteTransferFcn_states[2L];
+  /* Update for DiscreteTransferFcn: '<S6>/Discrete Transfer Fcn' */
+  rtDW.DiscreteTransferFcn_states_f[0L] = rtDW.RateTransition2[0L] -
+    -0.939101338F * rtDW.DiscreteTransferFcn_states_f[0L];
+  rtDW.DiscreteTransferFcn_states_f[1L] = rtDW.RateTransition2[1L] -
+    -0.939101338F * rtDW.DiscreteTransferFcn_states_f[1L];
+  rtDW.DiscreteTransferFcn_states_f[2L] = rtDW.RateTransition2[2L] -
+    -0.939101338F * rtDW.DiscreteTransferFcn_states_f[2L];
 }
 
 /* Model step function for TID2 */
 void MSP_SP_step2(void)                /* Sample time: [0.1s, 0.0s] */
 {
-  real32_T rtb_Abs;
-  real32_T rtb_TrigonometricFunction;
-  real32_T rtb_Abs1;
-  real32_T rtb_TrigonometricFunction1;
+  real32_T rtb_DataTypeConversion2;
+  real32_T rtb_DataTypeConversion1;
+  real_T rtb_ReciprocalSqrt;
+  int8_T rtPrevAction;
+  int8_T rtAction;
+  real32_T rtb_Switch;
   real32_T tmp[3];
   int16_T i;
-  real32_T u0;
 
-  /* Gain: '<S7>/deg2rad' */
-  rtb_Abs = 0.0174532924F * rtDW.RateTransition1_m[0];
-
-  /* Trigonometry: '<S7>/Trigonometric Function' */
-  rtb_TrigonometricFunction = (real32_T)sin(rtb_Abs);
-
-  /* Gain: '<S7>/deg2rad ' */
-  rtb_Abs1 = 0.0174532924F * rtDW.RateTransition1_m[1];
-
-  /* Trigonometry: '<S7>/Trigonometric Function1' */
-  rtb_TrigonometricFunction1 = (real32_T)sin(rtb_Abs1);
-
-  /* Abs: '<S7>/Abs' */
-  rtb_Abs = (real32_T)fabs(rtb_Abs);
-
-  /* Abs: '<S7>/Abs1' */
-  rtb_Abs1 = (real32_T)fabs(rtb_Abs1);
-
-  /* Sqrt: '<S7>/Sqrt' incorporates:
-   *  Constant: '<S7>/Constant'
-   *  Math: '<S7>/Math Function'
-   *  Math: '<S7>/Math Function1'
-   *  Saturate: '<S7>/Saturation'
-   *  Sum: '<S7>/Sum'
+  /* Trigonometry: '<S9>/Trigonometric Function' incorporates:
+   *  Gain: '<S9>/deg2rad'
    */
-  /* MATLAB Function 'sunsensor_processing_lib/MATLAB Function': '<S6>:1' */
-  /* '<S6>:1:4' flag_bool = logical(round(flag_float)); */
-  u0 = (1.0F - rtb_TrigonometricFunction * rtb_TrigonometricFunction) -
-    rtb_TrigonometricFunction1 * rtb_TrigonometricFunction1;
-  if (u0 > 1.0F) {
-    u0 = 1.0F;
-  } else {
-    if (u0 < 0.0F) {
-      u0 = 0.0F;
+  rtb_DataTypeConversion2 = (real32_T)tan(0.0174532924F *
+    rtDW.RateTransition1_m[0]);
+
+  /* Trigonometry: '<S9>/Trigonometric Function1' incorporates:
+   *  Gain: '<S9>/deg2rad '
+   */
+  rtb_DataTypeConversion1 = (real32_T)tan(0.0174532924F *
+    rtDW.RateTransition1_m[1]);
+
+  /* Sum: '<S9>/Sum' incorporates:
+   *  Constant: '<S9>/Constant'
+   *  Math: '<S9>/Math Function'
+   *  Math: '<S9>/Math Function1'
+   */
+  rtb_ReciprocalSqrt = ((real_T)(rtb_DataTypeConversion2 *
+    rtb_DataTypeConversion2) + rtb_DataTypeConversion1 * rtb_DataTypeConversion1)
+    + 1.0;
+
+  /* Sqrt: '<S9>/Reciprocal Sqrt' */
+  if (rtb_ReciprocalSqrt > 0.0) {
+    if (rtIsInf(rtb_ReciprocalSqrt)) {
+      rtb_ReciprocalSqrt = 0.0;
+    } else {
+      rtb_ReciprocalSqrt = 1.0 / sqrt(rtb_ReciprocalSqrt);
     }
+  } else if (rtb_ReciprocalSqrt == 0.0) {
+    rtb_ReciprocalSqrt = (rtInf);
+  } else {
+    rtb_ReciprocalSqrt = (rtNaN);
   }
 
-  /* Sum: '<S5>/Sum' incorporates:
-   *  Sqrt: '<S7>/Sqrt'
-   */
-  u0 = (real32_T)sqrt(u0);
+  /* End of Sqrt: '<S9>/Reciprocal Sqrt' */
 
-  /* Product: '<S5>/Product' incorporates:
-   *  Constant: '<S5>/process_matrix'
-   *  Product: '<S5>/Product1'
-   *  Sum: '<S5>/Sum'
+  /* DataTypeConversion: '<S9>/Data Type Conversion2' incorporates:
+   *  Product: '<S9>/Product1'
+   */
+  rtb_DataTypeConversion2 = (real32_T)(rtb_DataTypeConversion2 *
+    rtb_ReciprocalSqrt);
+
+  /* DataTypeConversion: '<S9>/Data Type Conversion1' incorporates:
+   *  Product: '<S9>/Product'
+   */
+  rtb_DataTypeConversion1 = (real32_T)(rtb_DataTypeConversion1 *
+    rtb_ReciprocalSqrt);
+
+  /* If: '<S4>/If' incorporates:
+   *  Inport: '<S8>/ss_flag'
+   */
+  rtPrevAction = rtDW.If_ActiveSubsystem;
+  rtAction = (int8_T)!(rtDW.RateTransition1_m[2] > 0.0F);
+  rtDW.If_ActiveSubsystem = rtAction;
+  switch (rtAction) {
+   case 0:
+    if (rtAction != rtPrevAction) {
+      /* InitializeConditions for IfAction SubSystem: '<S4>/If Action Subsystem' incorporates:
+       *  InitializeConditions for ActionPort: '<S7>/Action Port'
+       */
+      /* InitializeConditions for If: '<S4>/If' incorporates:
+       *  InitializeConditions for UnitDelay: '<S7>/Unit Delay'
+       */
+      rtDW.UnitDelay_DSTATE = 2.0F;
+
+      /* End of InitializeConditions for SubSystem: '<S4>/If Action Subsystem' */
+    }
+
+    /* Outputs for IfAction SubSystem: '<S4>/If Action Subsystem' incorporates:
+     *  ActionPort: '<S7>/Action Port'
+     */
+    /* Switch: '<S7>/Switch' incorporates:
+     *  Constant: '<S10>/Lower Limit'
+     *  Constant: '<S10>/Upper Limit'
+     *  Constant: '<S11>/Lower Limit'
+     *  Constant: '<S11>/Upper Limit'
+     *  Logic: '<S10>/AND'
+     *  Logic: '<S11>/AND'
+     *  Logic: '<S7>/Logical Operator'
+     *  RelationalOperator: '<S10>/Lower Test'
+     *  RelationalOperator: '<S10>/Upper Test'
+     *  RelationalOperator: '<S11>/Lower Test'
+     *  RelationalOperator: '<S11>/Upper Test'
+     *  UnitDelay: '<S7>/Unit Delay'
+     */
+    if ((-20.0F <= rtDW.RateTransition1_m[0]) && (rtDW.RateTransition1_m[0] <=
+         20.0F) && ((-20.0F <= rtDW.RateTransition1_m[1]) &&
+                    (rtDW.RateTransition1_m[1] <= 20.0F))) {
+      rtb_Switch = rtDW.RateTransition1_m[2];
+    } else {
+      rtb_Switch = rtDW.UnitDelay_DSTATE;
+    }
+
+    /* End of Switch: '<S7>/Switch' */
+
+    /* Update for UnitDelay: '<S7>/Unit Delay' */
+    rtDW.UnitDelay_DSTATE = rtb_Switch;
+
+    /* End of Outputs for SubSystem: '<S4>/If Action Subsystem' */
+    break;
+
+   case 1:
+    /* Outputs for IfAction SubSystem: '<S4>/Switch Case Action Subsystem' incorporates:
+     *  ActionPort: '<S8>/Action Port'
+     */
+    rtb_Switch = rtDW.RateTransition1_m[2];
+
+    /* End of Outputs for SubSystem: '<S4>/Switch Case Action Subsystem' */
+    break;
+  }
+
+  /* End of If: '<S4>/If' */
+
+  /* Product: '<S4>/Product' incorporates:
+   *  Constant: '<S4>/process_matrix'
+   *  DataTypeConversion: '<S9>/Data Type Conversion'
+   *  Product: '<S4>/Product1'
+   *  Sum: '<S4>/Sum'
    */
   for (i = 0; i < 3; i++) {
-    tmp[i] = rtConstP.pooled1[i + 6] * u0 + (rtConstP.pooled1[i + 3] *
-      rtb_TrigonometricFunction1 + rtConstP.pooled1[i] *
-      rtb_TrigonometricFunction);
+    tmp[i] = rtConstP.pooled3[i + 6] * (real32_T)rtb_ReciprocalSqrt +
+      (rtConstP.pooled3[i + 3] * rtb_DataTypeConversion1 + rtConstP.pooled3[i] *
+       rtb_DataTypeConversion2);
   }
 
-  /* End of Product: '<S5>/Product' */
+  /* End of Product: '<S4>/Product' */
   for (i = 0; i < 3; i++) {
     /* Outport: '<Root>/sun_vec_body' incorporates:
-     *  Constant: '<S5>/sensor2body'
-     *  Product: '<S5>/Product1'
+     *  Constant: '<S4>/sensor2body'
+     *  Product: '<S4>/Product1'
      */
-    rtY.sun_vec_body[i] = rtConstP.pooled1[i + 6] * tmp[2] + (rtConstP.pooled1[i
-      + 3] * tmp[1] + rtConstP.pooled1[i] * tmp[0]);
+    rtY.sun_vec_body[i] = rtConstP.sensor2body_Value[i + 6] * tmp[2] +
+      (rtConstP.sensor2body_Value[i + 3] * tmp[1] + rtConstP.sensor2body_Value[i]
+       * tmp[0]);
   }
 
-  /* Outport: '<Root>/sun_vec_body' incorporates:
-   *  DataTypeConversion: '<S5>/Data Type Conversion'
-   *  Logic: '<S5>/Logical Operator'
-   *  Logic: '<S7>/Logical Operator'
-   *  MATLAB Function: '<S5>/MATLAB Function'
-   *  Switch: '<S7>/Switch'
-   *  Switch: '<S7>/Switch1'
-   */
-  rtY.sun_vec_body[3] = ((!(rtb_Abs > 1.04719758F)) && (!(rtb_Abs1 > 1.04719758F))
-    && (rt_roundf_snf(rtDW.RateTransition1_m[2]) != 0.0F));
+  /* Outport: '<Root>/sun_vec_body' */
+  rtY.sun_vec_body[3] = rtb_Switch;
 }
 
 /* Model initialize function */
 void MSP_SP_initialize(void)
 {
-  /* (no initialization code required) */
+  /* Registration code */
+
+  /* initialize non-finites */
+  rt_InitInfAndNaN(sizeof(real_T));
+
+  /* Start for If: '<S4>/If' */
+  rtDW.If_ActiveSubsystem = -1;
+
+  /* SystemInitialize for IfAction SubSystem: '<S4>/If Action Subsystem' */
+  /* InitializeConditions for UnitDelay: '<S7>/Unit Delay' */
+  rtDW.UnitDelay_DSTATE = 2.0F;
+
+  /* End of SystemInitialize for SubSystem: '<S4>/If Action Subsystem' */
 }
 
 /* Model terminate function */
