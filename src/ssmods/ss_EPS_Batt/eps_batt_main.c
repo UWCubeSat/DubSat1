@@ -31,7 +31,8 @@ FILE_STATIC PCVSensorData *INAData;
 FILE_STATIC CoulombCounterData CCData;
 FILE_STATIC hDev hTempC;
 
-FILE_STATIC volatile uint8_t isChecking;
+FILE_STATIC volatile uint8_t heaterIsChecking;
+FILE_STATIC volatile uint8_t balancerIsChecking;
 
 FILE_STATIC float previousTemp;
 
@@ -102,7 +103,7 @@ FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
                 break;
 
             case OPCODE_SET_CHECK_STATE:
-                isChecking = ((setCheckState_segment *) &cmdstr[1])->isChecking;
+                heaterIsChecking = ((setCheckState_segment *) &cmdstr[1])->isChecking;
                 break;
         }
     }
@@ -112,7 +113,7 @@ FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
 // Packetizes and sends backchannel GENERAL packet
 FILE_STATIC void battBcSendGeneral()
 {
-    gseg.isChecking = isChecking;
+    gseg.isChecking = heaterIsChecking;
     bcbinSendPacket((uint8_t *) &gseg, sizeof(gseg));
 }
 
@@ -152,6 +153,17 @@ void readCC (){
     sseg.battCurr = CCData.calcdCurrentA;
     sseg.battCharge = CCData.battCharge;
     sseg.accumulatedCharge = CCData.totalAccumulatedCharge;
+
+    if(balancerIsChecking)
+    {
+    	if((BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) && CCData.busVoltageV <= 6.1f)
+			battControlBalancer(Cmd_ExplicitDisable);
+    	//TODO: check for on conditions here; add more off conditions (max current)
+    }
+    else if(BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT)
+    {
+    	battControlBalancer(Cmd_ExplicitDisable);
+    }
 
     aggVec_push_i(&voltageAg, CCReadRawVoltage());
     aggVec_push_i(&currentAg, CCReadRawCurrent());
@@ -380,7 +392,7 @@ int main(void)
             battBcSendGeneral();
             battBcSendHealth();
 
-            if(isChecking)
+            if(heaterIsChecking)
             {
                 float temp = asensorReadSingleSensorV(hTempC); //<-- this is batt temp
                 if(previousTemp >= 0.5f && temp < 0.5f) //not heating & < 0C
