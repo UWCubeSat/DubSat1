@@ -10,7 +10,8 @@ typedef struct timeStamp{
 	uint8_t count5;
 } timeStamp;
 
-void METInit(uint8_t _isDist);
+void METInit();
+void METInitWithTime(timeStamp t);
 
 //returns the current MET timeStamp
 timeStamp getMETTimestamp();
@@ -19,9 +20,9 @@ timeStamp getMETTimestamp();
 uint64_t metConvertToInt(timeStamp ts);
 
 // convert an MET timeStamp to seconds
-double metConvertToSeconds(timeStamp ts);
+uint32_t metConvertToSeconds(timeStamp ts);
 
-double metConvertFromIntToSeconds(int64_t t);
+uint32_t metConvertFromIntToSeconds(int64_t t);
 
 void metFromInt(int64_t t, uint32_t *primary, uint8_t *overflow);
 

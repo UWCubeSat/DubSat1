@@ -147,7 +147,8 @@ void bspInit(SubsystemModule mod)
       SFRIFG1 &= ~OFIFG;
     } while (SFRIFG1 & OFIFG);              // Test oscillator fault flag
 
-    METInit((mod == Module_EPS_Dist) ? 1 : 0);
+    if(mod != Module_EPS_Dist)
+    	METInit();
  
     CSCTL0_H = 0;                           // Lock CS Registers
 

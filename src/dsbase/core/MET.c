@@ -5,13 +5,32 @@
 #include "utils.h"
 
 uint8_t confirmed;
-
-timeStamp recentTime = {0};
-#pragma PERSISTENT(recentTime)
-
 uint8_t isDist;
 
-void METInit(uint8_t _isDist)
+timeStamp recentTime = {0};
+
+void METInitWithTime(timeStamp t)
+{
+	RTCCTL0_H = RTCKEY_H;                   // Unlock RTC
+
+	RTCCTL0_L = RTCTEVIE_L;                 // RTC event interrupt enable
+	RTCCTL1 = RTCSSEL_2 | RTCTEV_3 | RTCHOLD; // Counter Mode, RTC1PS, 8-bit ovf, 32-bit interrupt
+	RTCPS0CTL = RT0PSDIV1 | RT1PSDIV1;                  // ACLK, /8
+	RTCPS1CTL = RT1SSEL1 | RT1PSDIV__16; // out from RT0PS, /16; increment ~= 4 ms
+
+	RTCCNT1 = t.count1;
+	RTCCNT2 = t.count2;
+	RTCCNT3 = t.count3;
+	RTCCNT4 = t.count4;
+	recentTime = t;
+
+	isDist = 1;
+	confirmed = 1;
+
+	RTCCTL13 &= ~(RTCHOLD);                 // Start RTC
+}
+
+void METInit()
 {
 	RTCCTL0_H = RTCKEY_H;                   // Unlock RTC
 
@@ -25,18 +44,8 @@ void METInit(uint8_t _isDist)
 	RTCCNT3 = 0;
 	RTCCNT4 = 0;
 
-	isDist = _isDist;
-	if(isDist)
-	{
-	    RTCCNT1 = recentTime.count1;
-        RTCCNT2 = recentTime.count2;
-        RTCCNT3 = recentTime.count3;
-        RTCCNT4 = recentTime.count4;
-	    //TODO: load time from memory
-	    confirmed = 1;
-	}
-	else
-	    confirmed = 0;
+	confirmed = 0;
+	isDist = 0;
 
 	RTCCTL13 &= ~(RTCHOLD);                 // Start RTC
 }
@@ -91,14 +100,14 @@ uint64_t metConvertToInt(timeStamp t)
     return res;
 }
 
-double metConvertToSeconds(timeStamp t)
+uint32_t metConvertToSeconds(timeStamp t)
 {
     return metConvertFromIntToSeconds(metConvertToInt(t));
 }
 
-double metConvertFromIntToSeconds(int64_t t)
+uint32_t metConvertFromIntToSeconds(int64_t t)
 {
-    return ((double) t) / 256.0;
+    return (uint32_t)(t >> 8);
 }
 
 void metFromInt(int64_t t, uint32_t *primary, uint8_t *overflow)

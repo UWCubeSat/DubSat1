@@ -106,6 +106,13 @@ FILE_STATIC aggVec_i ssBusVAgs[NUM_POWER_DOMAINS];
 
 #define PD_PPT_FLAG 1024
 
+#pragma PERSISTENT(persistentTime)
+timeStamp persistentTime = {0};
+#pragma PERSISTENT(persistentEvents)
+sequenceEvent persistentEvents[100] = {0};
+#pragma PERSISTENT(eventsInitialized)
+uint8_t eventsInitialized = 0;
+
 FILE_STATIC uint16_t rcResponseFlag = 0; //this is zero when no responses are pending
 
 void distDeployInit()
@@ -864,6 +871,48 @@ void initData()
     }
 }
 
+void initializeEvents()
+{
+	CANPacket pkt;
+	uint8_t i;
+	for(i = 0; i < NUM_POWER_DOMAINS; i++)
+	{
+		gcmd_dist_set_pd_state cmd = {0};
+		switch(i)
+		{
+			case 0:
+				cmd.gcmd_dist_set_pd_state_bdot = 3;
+				break;
+			case 1:
+				cmd.gcmd_dist_set_pd_state_com1 = 3;
+				break;
+			case 2:
+				cmd.gcmd_dist_set_pd_state_com2 = 3;
+				break;
+			case 3:
+				cmd.gcmd_dist_set_pd_state_eps = 3;
+				break;
+			case 4:
+				cmd.gcmd_dist_set_pd_state_estim = 3;
+				break;
+			case 5:
+				cmd.gcmd_dist_set_pd_state_ppt = 3;
+				break;
+			case 6:
+				cmd.gcmd_dist_set_pd_state_rahs = 3;
+				break;
+			case 7:
+				cmd.gcmd_dist_set_pd_state_wheels = 3;
+				break;
+		}
+		encodegcmd_dist_set_pd_state(&cmd, &pkt);
+		persistentEvents[i].pkt = pkt;
+		persistentEvents[i].sendFlag = 0;
+		persistentEvents[i].time = i + 1; //sequentially activated
+	}
+	eventsInitialized = 1;
+}
+
 /*
  * main.c
  */
@@ -873,6 +922,8 @@ int main(void)
     //WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this when watchdog goes in
     WDTCTL = WDTPW | WDTHOLD;
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
+    METInitWithTime(persistentTime);
+
     P3DIR |= BIT4 | BIT7; //this is Paul's backpower fix
     P3OUT |= BIT4 | BIT7;
 
@@ -917,8 +968,12 @@ int main(void)
     // and then control is returned to this main loop
 
     // Autostart the EPS power domain for now
-    //autoStart();
-    seqInit();
+    if(!eventsInitialized)
+    	initializeEvents();
+    else
+    	autoStart(); //TODO: remove autostart for flight
+
+    seqInit(persistentEvents, sizeof(persistentEvents) / sizeof(persistentEvents[0]));
 
     initializeTimer();
     initData();
@@ -952,7 +1007,8 @@ int main(void)
         if(rcSendFlag && (canTxCheck() != CAN_TX_BUSY))
             sendRCCmd();
         sendRC();
-        seqUpdateMET((uint32_t)(metConvertToInt(getMETTimestamp()) >> 8));
+        persistentTime = getMETTimestamp();
+        seqUpdateMET(metConvertToSeconds(persistentTime));
         checkSequence();
     }
 

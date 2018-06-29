@@ -2,8 +2,8 @@
 #include "MET.h"
 #include "../ssmods/ss_EPS_Dist/eps_dist.h"
 
-sequenceEvent events[NUM_POWER_DOMAINS]; //TODO: increase this as necessary
-//#pragma PERSISTENT(events)
+sequenceEvent *events; //TODO: increase this as necessary
+uint8_t eventSize;
 
 uint32_t recentMET;
 uint8_t metUpdatedFlag = 0;
@@ -55,16 +55,17 @@ void seqUpdateMET(uint32_t met)
     metUpdatedFlag = 1;
 }
 
-void seqInit()
+void seqInit(sequenceEvent *initEvents, uint8_t size)
 {
-    populateDefaultValues();
+	events = initEvents;
+	eventSize = size;
+    //populateDefaultValues();
 }
 
 uint8_t seqAddEvent(sequenceEvent e)
 {
     uint8_t i;
-    uint8_t numElem = sizeof(events) / sizeof(sequenceEvent);
-    for(i = 0; i < numElem; i++)
+    for(i = 0; i < eventSize; i++)
     {
         if(!events[i].time) //time is not in use
         {
@@ -80,20 +81,20 @@ void checkSequence()
     if(metUpdatedFlag)
     {
         uint8_t i;
-        for(i = sizeof(events) / sizeof(sequenceEvent); i; i--) //use (i - 1)
+        for(i = 0; i < eventSize; i++)
         {
-            if(events[i-1].time && events[i-1].time <= recentMET)
+            if(events[i].time && events[i].time <= recentMET)
             {
-                if(events[i-1].sendFlag) //actually send
+                if(events[i].sendFlag) //actually send
                 {
                     while(canTxCheck() == CAN_TX_BUSY);
-                    canSendPacket(&events[i-1].pkt);
+                    canSendPacket(&events[i].pkt);
                 }
                 else
                 {
-                	can_packet_rx_callback(&events[i-1].pkt);
+                	can_packet_rx_callback(&events[i].pkt);
                 }
-                events[i-1].time = 0;
+                events[i].time = 0;
             }
         }
         metUpdatedFlag = 0;
@@ -108,7 +109,7 @@ void removeEventAtIndex(uint8_t index)
 void removeEventsWithID(uint32_t canPktId)
 {
     uint8_t i;
-    for(i = sizeof(events) / sizeof(sequenceEvent) - 1; i + 1; i--)
+    for(i = 0; i < eventSize; i++)
         if (events[i].pkt.id == canPktId)
             removeEventAtIndex(i);
 }

@@ -20,6 +20,6 @@ void removeEventsWithID(uint32_t canPktId); //removes all events that send a CAN
 
 //these should be called from MET.c
 void seqUpdateMET(uint32_t met);
-void seqInit();
+void seqInit(sequenceEvent *initEvents, uint8_t size);
 
 #endif
