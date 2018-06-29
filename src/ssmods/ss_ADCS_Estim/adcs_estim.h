@@ -9,9 +9,9 @@
 #define ADCS_ESTIM_H_
 
 // Debug LED
-#define LED_DIR P1DIR
-#define LED_OUT P1OUT
-#define LED_BIT BIT0
+#define LED_DIR P3DIR
+#define LED_OUT P3OUT
+#define LED_BIT BIT5
 
 #define TLM_ID_INPUT_TLE 2
 #define TLM_ID_INPUT_MET 3

@@ -11,7 +11,7 @@
 FILE_STATIC uint8_t rcFlag;
 
 FILE_STATIC const rollcall_fn *functions;
-FILE_STATIC const CANPacket *packets = NULL;
+FILE_STATIC CANPacket *packets = NULL;
 FILE_STATIC uint8_t numFunctions;
 
 void rollcallInit(const rollcall_fn *fns, uint8_t num)
@@ -41,7 +41,7 @@ FILE_STATIC uint8_t hasPacketBuffer()
  * Use each function populate to populate a CAN packet in the buffer.
  * Only do this if we have a packet buffer.
  */
-FILE_STATIC populateAll()
+FILE_STATIC void populateAll()
 {
     uint8_t i = numFunctions;
     while (i-- > 0)
@@ -50,20 +50,21 @@ FILE_STATIC populateAll()
     }
 }
 
-void rollcallUpdate()
+uint8_t rollcallUpdate()
 {
-    /*
-     * if there is a packet buffer and this is the first update, populate the
-     * packets
-     */
-    if (hasPacketBuffer() && rcFlag == numFunctions)
-    {
-        populateAll();
-    }
-
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
     {
-        uint8_t idx = rcFlag - 1;
+        /*
+         * if there is a packet buffer and this is the first update, populate
+         * the packets
+         */
+        if (hasPacketBuffer() && rcFlag == numFunctions)
+        {
+            populateAll();
+        }
+
+        // decrement to move on to next packet
+        rcFlag--;
 
         /*
          * Get the next CAN packet. If there's a buffer, take from the buffer.
@@ -73,26 +74,25 @@ void rollcallUpdate()
         if (hasPacketBuffer())
         {
             // take a packet from the buffer
-            pPtr = &packets[idx];
+            pPtr = &packets[rcFlag];
         }
         else
         {
             // populate the next rollcall packet
             CANPacket p;
-            functions[idx](&p);
+            functions[rcFlag](&p);
             pPtr = &p;
         }
 
         // send the packet
-        // If the packet fails to send, keep trying until it works or until CAN
-        // says it's busy.
-        uint8_t notSent;
-        do
-        {
-            notSent = canSendPacket(pPtr);
-        } while (notSent && (canTxCheck() != CAN_TX_BUSY));
-
-        // decrement to move on to next packet
-        rcFlag--;
+        // shouldn't fail because canTxCheck() says there is room in the buffer
+        canSendPacket(pPtr);
     }
+
+    return rollcallQueueLength();
+}
+
+uint8_t rollcallQueueLength()
+{
+    return rcFlag;
 }
