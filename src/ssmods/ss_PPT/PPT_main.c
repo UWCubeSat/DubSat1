@@ -60,11 +60,12 @@ FILE_STATIC uint16_t mainIgniterDelay = 32;
 FILE_STATIC uint16_t igniterChargeTime = 1000;
 FILE_STATIC uint16_t cooldownTime = 28461;
 
-FILE_STATIC ppt_igniter_done igniterDone;
+FILE_STATIC ppt_main_done mainDone;
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 FILE_STATIC timing currTiming;
 
+aggVec_i mainDoneAg;
 aggVec_i ignDoneAg;
 aggVec_f mspTempAg;
 #pragma PERSISTENT(fireCount)
@@ -78,21 +79,21 @@ uint32_t totalFireCount = 0;
 void initData()
 {
     aggVec_init_i(&ignDoneAg);
+    aggVec_init_i(&mainDoneAg);
     aggVec_init_f(&mspTempAg);
 }
 
-FILE_STATIC void sendIgniterDone()
+FILE_STATIC void sendMainDone()
 {
-    if(mod_status.ss_state == State_Igniter_Charging)
-    {
-        igniterDone.timeDone = TB0R - TB0CCR1; //TODO: check this
-        aggVec_push_i(&ignDoneAg, igniterDone.timeDone);
-    }
-    else
-    {
-        igniterDone.timeDone = 0;
-    }
-    bcbinSendPacket((uint8_t *) &igniterDone, sizeof(igniterDone));
+	if(mod_status.ss_state == State_Main_Charging)
+	{
+		mainDone.timeDone = TB0R - TB0CCR1;
+		aggVec_push_i(&mainDoneAg, mainDone.timeDone);
+	}
+	else
+	{
+		mainDone.timeDone = 0;
+	}
 }
 
 FILE_STATIC void sendMeta()
@@ -144,7 +145,7 @@ void initPins()
     P2IFG = 0; //clear the interrupt
     P2REN |= BIT5;
     P2IES |= BIT1; //this represents capture mode (rising/falling/both)
-    P2IE |= (BIT5 | BIT6);
+    P2IE |= BIT6;
 }
 
 void sendRC()
@@ -172,6 +173,9 @@ void sendRC()
         else if(sendRcFlag == 2)
         {
             rc_ppt_2 rc = {0};
+            rc.rc_ppt_2_main_chg_avg = 0;
+			rc.rc_ppt_2_main_chg_max = 0;
+			rc.rc_ppt_2_main_chg_min = 0;
             rc.rc_ppt_2_total_fire_count = fireCount;
             encoderc_ppt_2(&rc, &pkt);
         }
@@ -212,7 +216,7 @@ int main(void)
 
     /* ----- INITIALIZATION -----*/
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code, as
-    // it sets up critical hardware settings for board specified by the __BSP_Board... defintion used.
+    // it sets up critical hardware settings for board specified by the __BSP_Board... definition used.
     // If module not yet available in enum, add to SubsystemModule enumeration AND
     // SubsystemModulePaths (a string name) in systeminfo.c/.h
     //bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
@@ -263,6 +267,7 @@ int main(void)
 
     bcbinPopulateHeader(&currTiming.header, 5, sizeof(currTiming));
     bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
+    bcbinPopulateHeader(&mainDone.header, 3, sizeof(mainDone));
 
     withFiringPulse = 1;
 
@@ -415,6 +420,20 @@ void can_packet_rx_callback(CANPacket *packet)
 BOOL readyToFire() //okay to fire
 {
     return aboveGrndStation & battChargeOK;
+}
+
+#pragma vector=PORT2_VECTOR
+__interrupt void Port_2(void)
+{
+    switch(P2IV)
+    {
+        case P2IV__P2IFG6:
+        	sendMainDone();
+        	break;
+        default:
+            break;
+    }
+    P2IFG = 0; //clear the interrupt flag
 }
 
 void fire()
