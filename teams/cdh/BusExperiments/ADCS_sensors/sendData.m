@@ -11,6 +11,7 @@ fopen(u);
 dataDir = 'C:\dubsat_data\';
 spDataDir = [dataDir, 'sp\'];
 bdotDataDir = [dataDir, 'bdot\'];
+estimDataDir = [dataDir, 'estim\'];
 
 % define sensors
 
@@ -61,6 +62,23 @@ sp_imu_out.opcode = 6;
 sp_sun_out.name = 'sp-sun-out';
 sp_sun_out.opcode = 7;
 
+estim_state_out.name = 'estim-state-out';
+estim_state_out.opcode = 11;
+
+estim_sun_out.name = 'estim-sun-out';
+estim_sun_out.opcode = 12;
+
+estim_mag_out.name = 'estim-mag-out';
+estim_mag_out.opcode = 13;
+
+estim_pos_out.name = 'estim-pos-out';
+estim_pos_out.opcode = 14;
+
+estim_vel_out.name = 'estim-vel-out';
+estim_vel_out.opcode = 15;
+
+% the 2 orbit data for estim is outdated in format and missing some
+% columns, so it's commented out here. It does work using estim-short.
 udp_data = [
     bdot_ang_vec
     sp_ang_vec
@@ -68,6 +86,11 @@ udp_data = [
     sp_mag_out
     sp_imu_out
     sp_sun_out
+    % estim_state_out
+    % estim_sun_out
+    % estim_mag_out
+    % estim_pos_out
+    % estim_vel_out
 ];
 
 % load aardvark library
@@ -221,6 +244,21 @@ for i=1:length(udp_data)
             udp_data(i).bytes = [sp_imu_out_x_msb sp_mag_out_x_lsb sp_imu_out_y_msb sp_mag_out_y_lsb sp_imu_out_z_msb sp_mag_out_z_lsb];
         case sp_sun_out.opcode
             udp_data(i).bytes = dlmread([spDataDir, 'out_sun.dat']);
+        case estim_state_out.opcode
+            load([estimDataDir, 'out_state.mat']);
+            udp_data(i).bytes = out_state;
+        case estim_sun_out.opcode
+            load([estimDataDir, 'out_sun.mat']);
+            udp_data(i).bytes = out_sun;
+        case estim_mag_out.opcode
+            load([estimDataDir, 'out_mag.mat']);
+            udp_data(i).bytes = out_mag;
+        case estim_pos_out.opcode
+            load([estimDataDir, 'out_pos.mat']);
+            udp_data(i).bytes = out_pos;
+        case estim_vel_out.opcode
+            load([estimDataDir, 'out_vel.mat']);
+            udp_data(i).bytes = out_vel;
         otherwise
             error('%s with id %i not recognized!', udp_data(i).name, udp_data(i).id);
     end

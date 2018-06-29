@@ -23,6 +23,9 @@
 #define MAG_CONVERSION_FACTOR_RAW_TO_NANOTESLAS     HMC5883L_CONVERSION_FACTOR_RAW_TO_NANOTESLAS
 #define MAG_CONVERSION_FACTOR_RAW_TO_TESLAS         HMC5883L_CONVERSION_FACTOR_RAW_TO_TESLAS
 
+#define CALIBRATION_ON  1
+#define CALIBRATION_OFF 0
+
 #elif defined(__BSP_HW_MAGTOM_MAG3110__)  // Freescale MAG3110
 
 #include "MAG3110_Magnetometer.h"
@@ -60,6 +63,10 @@ typedef struct  {
     float convertedX;
     float convertedY;
     float convertedZ;
+    uint8_t isValid;
+    float calibration_factor_x;
+    float calibration_factor_y;
+    float calibration_factor_z;
 } MagnetometerData;
 
 typedef uint8_t hMag;
@@ -75,6 +82,12 @@ hMag magInit(bus_instance_i2c bus);
 MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode mode);
 void mag_self_test_config(hMag handle);
 void mag_normal_reading_operation_config(hMag handle);
+FILE_STATIC uint8_t mag_is_reading_valid(MagnetometerData* data);
+void self_test_add_samples(hMag handle, MagnetometerData* data);
+void start_self_test_calibration(hMag handle);
+uint8_t end_self_test_calibration(hMag handle);
+void enable_calibration(hMag handle);
+void disable_calibration(hMag handle);
 
 /**
  * Convert a raw mag reading to Teslas

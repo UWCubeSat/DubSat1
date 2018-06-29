@@ -1,17 +1,13 @@
-/*
+/* MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ MTQ 
+
 file: adcs_mtq_main.c 
 author: Eloise Perrochet
-description: software for magnetorquer subsystem 
+description: main software for magnetorquer subsystem 
 
-coil  pin   timer 
------------------
-X1 - P1_7 - TB0.4
-X2 - P1_6 - TB0.3
-Y1 - P3_7 - TB0.6
-Y2 - P3_6 - TB0.5
-Z1 - P2_2 - TB0.2
-Z2 - P2_6 - TB0.1
 */
+
+// TODO  
+// confirm update_rollcall_aggregates() functionality and check for agg overflow
 
 #include <msp430.h>
 #include "core/utils.h"
@@ -27,35 +23,32 @@ Z2 - P2_6 - TB0.1
 #include "core/agglib.h"
 #include "adcs_mtq.h"
 
-
 //==================================================================
 // Main 
-// TODO 
-// cntrl f DEBUG to see commented out sections 
-// add error messages for invalid commands 
-// confirm update_rollcall_aggregates() functionality and check for agg overflow
 //==================================================================
 
 int main(void)
 {	
-    // general initialization
+    // initialization
     bspInit(__SUBSYSTEM_MODULE__); // BSP initialization
     mtq_sfr_init();                // MTQ specific SFR initialization
-    turn_off_coils();              // make sure coils are off post initialization
+    turn_off_coils();              // make sure coils are off (must come after sfr initialization)
     initializeTimer();             // timer A initialization
     cosmos_init();                 // COSMOS backchannel initialization
     can_init();                    // CAN initialization
-    rc_agg_init();
-
-    restartMTQ(); // restart 
-
+    rc_agg_init();				   // aggregate initialization 
+	
+	// reset mtq parameters
+    resetMTQ();  				    
+	
+	// main loop 
     while (1)
     {
-		blink_LED(); 
-        state_table[curr_state](); // mtq control loop
-		manage_telemetry(); // send periodic telemetry
-		rollcallUpdate(); 
-		update_rollcall_aggregates(); // add to rollcall aggregates 
+		blink_LED(); // TODO comment out for flight 
+        state_table[curr_state](); // call a function in the the state machine function pointer table 
+		manage_telemetry(); // send periodic cosmos telemetry
+		update_rollcall_aggregates(); // add to rollcall aggregates
+		rollcallUpdate(); // handle rollcall updates 
     }
 		
 	return 0;
@@ -67,6 +60,8 @@ int main(void)
 
 //---------- state machine ------------------
 
+// transitions to either bdot actuation or fsw actiation phase when 
+// the measurement timer has finished. 
 FILE_STATIC void measurement()
 {
 	
@@ -85,6 +80,8 @@ FILE_STATIC void measurement()
     }
 }
 
+// executes last received commands from fsw. 
+// transitions to stabalize phase when the actuation timer has finished.
 FILE_STATIC void fsw_actuation()
 {
     if (command_dipole_valid(fsw_command_x, fsw_command_y, fsw_command_z))
@@ -104,26 +101,43 @@ FILE_STATIC void fsw_actuation()
     }
 }
 
+// executes last received commands from bdot or set values from ground if in pms mode. 
+// transitions when actuation timer is finished to stabalize phase or actuation if in pms mode.
 FILE_STATIC void bdot_actuation() 
 {
-    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z) && is_bdot_still_alive())
+    if (command_dipole_valid(bdot_command_x, bdot_command_y, bdot_command_z) 
+		&& is_bdot_still_alive() && pms_enable != 1)
     {
         set_pwm('x', bdot_command_x);
         set_pwm('y', bdot_command_y);
         set_pwm('z', bdot_command_z);
+    } else if (pms_enable == 1 && command_dipole_valid(pms_x, pms_y, pms_z)) 
+	{
+        set_pwm('x', pms_x);
+        set_pwm('y', pms_y);
+        set_pwm('z', pms_z);
     } else // invalid xyz command
     {
 		turn_off_coils(); 
     }
-    if(checkTimer(actuation_timer)) // finished actuation phase
+    
+	if(checkTimer(actuation_timer)) // finished actuation phase
     {
-		bdot_interrupt_received = 0;
-        curr_state = STABILIZE;
-		send_CAN_ack_packet();
-        start_stabilize_timer();
+		bdot_interrupt_received = 0; 
+		if (pms_enable == 1) {
+			curr_state = BDOT_ACTUATION; 
+			send_CAN_ack_packet();
+	        start_actuation_timer();
+		} else {
+			curr_state = STABILIZE;
+			send_CAN_ack_packet();
+	        start_stabilize_timer();
+		}
     }
 }
 
+// turns off the coils.
+// transitions to measurement phase when the stabalize timer has finished. 
 FILE_STATIC void stabilize()
 {
 	turn_off_coils();
@@ -138,7 +152,8 @@ FILE_STATIC void stabilize()
 
 //------------- helper functions --------------
 
-FILE_STATIC void restartMTQ()
+// initializes mtq parameters at startup 
+FILE_STATIC void resetMTQ()
 { 
 	// turn off coils 
 	turn_off_coils();
@@ -158,6 +173,7 @@ FILE_STATIC void restartMTQ()
 	start_measurement_timer(); 
 }
 
+// functions for starting various timers 
 FILE_STATIC void start_actuation_timer(void)
 {
     actuation_timer = timerPollInitializer(actuation_time_ms);
@@ -184,25 +200,8 @@ FILE_STATIC void start_cosmos_commands_timer(void)
 	cosmos_commands_timer = timerPollInitializer(cosmos_commands_time_ms);
 }
 
-FILE_STATIC void manage_telemetry(void)
-{ 
-	// send_CAN_rollCall(); commented out because of potential memory leaks 
-	
-	if (checkTimer(cosmos_commands_timer)){
-		send_COSMOS_commands_packet(); 
-		start_cosmos_commands_timer(); 
-	}
-	
-    if (checkTimer(telem_timer))
-    {
-		send_COSMOS_health_packet();
-		// commented out for DEBUG
-		//send_COSMOS_dooty_packet();
-		send_COSMOS_meta_packet();
-        start_telem_timer(); // reset timer 
-    }
-}
-
+// returns 0 to indicate fsw commands should not be executed 
+// returns 1 if fsw should not be ignored 
 FILE_STATIC uint8_t fsw_is_valid(void)
 {
 	if(fsw_ignore == 1)
@@ -214,10 +213,12 @@ FILE_STATIC uint8_t fsw_is_valid(void)
 	}
 }
 
+// returns 0 to indicate invalid if cmmands are outside of the valid -100 to 100 range
+// returns 1 for valid commands 
 FILE_STATIC uint8_t command_dipole_valid(int command_x, int command_y, int command_z)
 {
-	// check to make sure commands are in the range -100 - 100
-	if (command_x > 100 || command_y > 100 || command_z > 100 || command_x < -100 || command_y < -100 || command_z < -100)
+	if (command_x > 100 || command_y > 100 || command_z > 100 || 
+		command_x < -100 || command_y < -100 || command_z < -100)
 	{
 		return 0; // invalid
 	} else 
@@ -226,6 +227,7 @@ FILE_STATIC uint8_t command_dipole_valid(int command_x, int command_y, int comma
 	}
 }
 
+// turns off all mtq coils 
 FILE_STATIC void turn_off_coils(void) 
 {
 	set_pwm('x', 0); 
@@ -233,6 +235,7 @@ FILE_STATIC void turn_off_coils(void)
 	set_pwm('z', 0); 
 }
 
+// toggles LED
 FILE_STATIC void blink_LED(void)
 {
 	if (checkTimer(LED_timer)){
@@ -245,6 +248,11 @@ FILE_STATIC void blink_LED(void)
 // on the A3903 driver chip data sheet description for chopping mode 
 FILE_STATIC void set_pwm(char axis, int pwm_percent)  
 {
+	// POP "polarity override protocol"
+	if (axis == 'x' && pop_x || axis == 'y' && pop_y || axis == 'z' && pop_z){
+		pwm_percent = -pwm_percent; 
+	}
+	
 	// set duty cycles based on driver chopping mode 
 	int duty_1 = (pwm_percent >= 0) ? (100-pwm_percent) : 100;
 	int duty_2 = (pwm_percent < 0) ? (100-(-pwm_percent)): 100;
@@ -289,8 +297,10 @@ FILE_STATIC void set_pwm(char axis, int pwm_percent)
 	}
 }
 
-// outputs a (very shitty) discreet sine wave of decreasing amplitude with frequency 1/(delay_cycles*2)
-// note: HuskySat1 has only aircores so this function is never used; It's just for future reference. 
+// outputs a (very shitty) discreet sine wave of decreasing 
+// amplitude with frequency 1/(delay_cycles*2)
+// note: HuskySat1 has only aircores so this function is 
+// never used; It's just for future reference. 
 FILE_STATIC void degauss_lol(void)
 {
 	int sine_table_ish[] = {0,50,100,50,0,-50,-100,-50,
@@ -309,6 +319,9 @@ FILE_STATIC void degauss_lol(void)
 	}	
 }
 
+// returns a 1 if the received interrupt flag is high to indidcate that 
+// bdot is still properly sending commands during measurement phase. 
+// otherwise returns a 0. 
 FILE_STATIC int is_bdot_still_alive(void)
 {
 	if (bdot_interrupt_received){   
@@ -320,6 +333,79 @@ FILE_STATIC int is_bdot_still_alive(void)
 
 //-------- CAN --------
 
+// ISR callback for receiving CAN packets 
+FILE_STATIC void can_packet_rx_callback(CANPacket *packet)
+{  
+	// bdot command packet 
+	if (packet->id == CAN_ID_CMD_MTQ_BDOT){
+		bdot_interrupt_received = 1; 
+		command_source = FROM_BDOT; 
+		// update global bdot command variables
+		cmd_mtq_bdot bdot_packet = {0};
+        decodecmd_mtq_bdot(packet, &bdot_packet);
+        bdot_command_x = bdot_packet.cmd_mtq_bdot_x;
+        bdot_command_y = bdot_packet.cmd_mtq_bdot_y;
+        bdot_command_z = bdot_packet.cmd_mtq_bdot_z;
+	}
+	// flight software command packet 
+	if (packet->id == CAN_ID_CMD_MTQ_FSW){
+		command_source = FROM_FSW; 
+		// update global fsw command variables
+		cmd_mtq_fsw fsw_packet = {0};
+        decodecmd_mtq_fsw(packet, &fsw_packet);
+        fsw_command_x = fsw_packet.cmd_mtq_fsw_x;
+        fsw_command_y = fsw_packet.cmd_mtq_fsw_y;
+        fsw_command_z = fsw_packet.cmd_mtq_fsw_z;
+        sc_mode = fsw_packet.cmd_mtq_fsw_sc_mode;
+	}
+	// ignore flight software packet 
+	if (packet->id == CAN_ID_CMD_IGNORE_FSW){
+		cmd_ignore_fsw ignore = {0};
+	    decodecmd_ignore_fsw(packet, &ignore);
+		fsw_ignore = ignore.cmd_ignore_fsw_ignore;
+	} 
+	// rollcall packet 
+	if(packet->id == CAN_ID_CMD_ROLLCALL)
+    {
+		rollcallStart();
+    }
+	// polarity override protocol packet 
+	if(packet->id == CAN_ID_GCMD_MTQ_POP)
+	{
+		gcmd_mtq_pop pop_packet = {0};
+		decodegcmd_mtq_pop(packet, &pop_packet);
+		pop_x = pop_packet.gcmd_mtq_pop_x; 
+		pop_y = pop_packet.gcmd_mtq_pop_y; 
+		pop_z = pop_packet.gcmd_mtq_pop_z; 
+	}
+	// permanent magnet setting packet 
+	if(packet->id == CAN_ID_GCMD_MTQ_PMS)
+	{
+		gcmd_mtq_pms pms_packet = {0};
+		decodegcmd_mtq_pms(packet, &pms_packet);
+		pms_enable = pms_packet.gcmd_mtq_pms_enable; 
+		pms_x = pms_packet.gcmd_mtq_pms_x; 
+		pms_y = pms_packet.gcmd_mtq_pms_y; 
+		pms_z = pms_packet.gcmd_mtq_pms_z; 
+	}
+	if(packet->id == CAN_ID_GCMD_RESET_MINMAX)
+	{
+	    aggVec_reset((aggVec *)&mspTemp_agg);
+        aggVec_reset((aggVec *)&bdot_x_agg);
+        aggVec_reset((aggVec *)&bdot_y_agg);
+        aggVec_reset((aggVec *)&bdot_z_agg);
+        aggVec_reset((aggVec *)&fsw_x_agg);
+        aggVec_reset((aggVec *)&fsw_y_agg);
+        aggVec_reset((aggVec *)&fsw_z_agg);
+        aggVec_reset((aggVec *)&duty_x1_agg);
+        aggVec_reset((aggVec *)&duty_x2_agg);
+        aggVec_reset((aggVec *)&duty_y1_agg);
+        aggVec_reset((aggVec *)&duty_y2_agg);
+        aggVec_reset((aggVec *)&duty_z1_agg);
+        aggVec_reset((aggVec *)&duty_z2_agg);
+	}
+}
+
 // can initialization 
 FILE_STATIC void can_init(void)
 {
@@ -329,6 +415,7 @@ FILE_STATIC void can_init(void)
 
 // roll call aggregate initialization 
 FILE_STATIC void rc_agg_init() {
+    aggVec_init_f(&mspTemp_agg);
     aggVec_init_i(&bdot_x_agg);
     aggVec_init_i(&bdot_y_agg);
     aggVec_init_i(&bdot_z_agg);
@@ -342,59 +429,20 @@ FILE_STATIC void rc_agg_init() {
     aggVec_init_i(&duty_z1_agg);
     aggVec_init_i(&duty_z2_agg);
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
-}
-
-// Interrupt service routine callback 
-FILE_STATIC void can_packet_rx_callback(CANPacket *packet)
-{  
-	if (packet->id == CAN_ID_CMD_MTQ_BDOT){
-		bdot_interrupt_received = 1; 
-		command_source = FROM_BDOT; 
-		// update global bdot command variables
-		cmd_mtq_bdot bdot_packet = {0};
-        decodecmd_mtq_bdot(packet, &bdot_packet);
-        bdot_command_x = bdot_packet.cmd_mtq_bdot_x;
-        bdot_command_y = bdot_packet.cmd_mtq_bdot_y;
-        bdot_command_z = bdot_packet.cmd_mtq_bdot_z;
-	}
-	if (packet->id == CAN_ID_CMD_MTQ_FSW){
-		command_source = FROM_FSW; 
-		// update global fsw command variables
-		cmd_mtq_fsw fsw_packet = {0};
-        decodecmd_mtq_fsw(packet, &fsw_packet);
-        fsw_command_x = fsw_packet.cmd_mtq_fsw_x;
-        fsw_command_y = fsw_packet.cmd_mtq_fsw_y;
-        fsw_command_z = fsw_packet.cmd_mtq_fsw_z;
-        sc_mode = fsw_packet.cmd_mtq_fsw_sc_mode;
-		// for rollcall 
-	}
-	if (packet->id == CAN_ID_CMD_IGNORE_FSW){
-		cmd_ignore_fsw ignore = {0};
-	    decodecmd_ignore_fsw(packet, &ignore);
-		fsw_ignore = ignore.cmd_ignore_fsw_ignore;
-	} 
-	// TODO Garrett add rollcall ID. delete old stuff 
-	if(packet->id == CAN_ID_CMD_ROLLCALL)
-    {
-		rollcallStart();
-    }
 }	
 
-FILE_STATIC void send_CAN_health_packet(void)
-{
-    // send CAN packet of temperature (in deci-Kelvin)
-    msp_temp temp = { (healthSeg.inttemp + 273.15) * 10 };
-    CANPacket packet;
-    encodemsp_temp(&temp, &packet);
-    canSendPacket(&packet);
-}
-
+// sends acknowledgement to CAN 
+// contains information about the current mtq phase, the 
+// source of the last received command, and the last command
+// executed by mtq 
 FILE_STATIC void send_CAN_ack_packet(void)
 { 
-	if (curr_state == MEASUREMENT){
+	if (pms_enable == 1){
+		which_phase = PMS_PHASE; 
+	} else if (curr_state == MEASUREMENT){
 		which_phase = MEASUREMENT_PHASE; 
-	} else {
-		which_phase = ACTUATION_PHASE; 
+	} else { // either in actuation or stabalize state 
+		which_phase = ACTUATION_PHASE;
 	}
 	mtq_ack ack = {0};
 	ack.mtq_ack_phase = which_phase;
@@ -410,15 +458,25 @@ FILE_STATIC void send_CAN_ack_packet(void)
 	canSendPacket(&mtq_ack_packet);
 }
 
-// TODO Garrett enter rollcall definitions here. Delete old ones 
+// TODO: description 
 void rcPopulate1(CANPacket *out){
-    rc_adcs_mtq_1 rc = {0};
-    rc.rc_adcs_mtq_1_sysrstiv = 0;
-    rc.rc_adcs_mtq_1_temp_avg =0;//asensorReadIntTempC(); //TODO: update for actual temperature 
-    rc.rc_adcs_mtq_1_temp_max =0;
-    rc.rc_adcs_mtq_1_temp_min =0;
-    encoderc_adcs_mtq_1(&rc, out);
+    rc_adcs_mtq_h1 rc = {0};
+    rc.rc_adcs_mtq_h1_sysrstiv = SYSRSTIV;
+    rc.rc_adcs_mtq_h1_reset_count = bspGetResetCount();
+    rc.rc_adcs_mtq_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTemp_agg));
+    rc.rc_adcs_mtq_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTemp_agg));
+    rc.rc_adcs_mtq_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTemp_agg));
+    encoderc_adcs_mtq_h1(&rc, out);
+    aggVec_as_reset((aggVec *)&mspTemp_agg);
 }
+
+void rcPopulate0(CANPacket *out){
+    rc_adcs_mtq_h2 rc;
+    rc.rc_adcs_mtq_h2_canrxerror = canRxErrorCheck();
+    encoderc_adcs_mtq_h2(&rc, out);
+}
+
+// TODO: description 
 void rcPopulate2(CANPacket *out){
     rc_adcs_mtq_2 rc = {0};
     rc.rc_adcs_mtq_2_bdot_x_min = aggVec_min_i(&bdot_x_agg);
@@ -429,10 +487,13 @@ void rcPopulate2(CANPacket *out){
     rc.rc_adcs_mtq_2_bdot_y_avg = aggVec_avg_i_i(&bdot_y_agg);
     rc.rc_adcs_mtq_2_bdot_z_max = aggVec_max_i(&bdot_z_agg);
     rc.rc_adcs_mtq_2_bdot_z_avg = aggVec_avg_i_i(&bdot_z_agg);
-    aggVec_reset((aggVec *) &bdot_x_agg);
-    aggVec_reset((aggVec *) &bdot_y_agg);
+    aggVec_as_reset((aggVec *) &bdot_x_agg);
+    aggVec_as_reset((aggVec *) &bdot_y_agg);
+    aggVec_as_reset((aggVec *) &bdot_z_agg);
     encoderc_adcs_mtq_2(&rc, out);
 }
+
+// TODO: description 
 void rcPopulate3(CANPacket *out){
     rc_adcs_mtq_3 rc = {0};
     rc.rc_adcs_mtq_3_bdot_z_min = aggVec_min_i(&bdot_z_agg);
@@ -443,12 +504,14 @@ void rcPopulate3(CANPacket *out){
     rc.rc_adcs_mtq_3_fsw_y_max = aggVec_max_i(&fsw_y_agg);
     rc.rc_adcs_mtq_3_fsw_y_avg = aggVec_avg_i_i(&fsw_y_agg);
     rc.rc_adcs_mtq_3_fsw_z_avg = aggVec_avg_i_i(&fsw_z_agg);
-    aggVec_reset((aggVec *) &bdot_z_agg);
-    aggVec_reset((aggVec *) &fsw_x_agg);
-    aggVec_reset((aggVec *) &fsw_y_agg);
+    aggVec_as_reset((aggVec *) &fsw_x_agg);
+    aggVec_as_reset((aggVec *) &fsw_y_agg);
+    aggVec_as_reset((aggVec *) &fsw_z_agg);
     encoderc_adcs_mtq_3(&rc, out);
 
 }
+
+// TODO: description 
 void rcPopulate4(CANPacket *out){
     rc_adcs_mtq_4 rc = {0};
     rc.rc_adcs_mtq_4_fsw_z_min = aggVec_min_i(&fsw_z_agg);
@@ -459,22 +522,24 @@ void rcPopulate4(CANPacket *out){
     rc.rc_adcs_mtq_4_duty_y2_avg = aggVec_avg_i_i(&duty_y2_agg);
     rc.rc_adcs_mtq_4_duty_z1_avg = aggVec_avg_i_i(&duty_z1_agg);
     rc.rc_adcs_mtq_4_duty_z2_avg = aggVec_avg_i_i(&duty_z2_agg);
-    aggVec_reset((aggVec *) &fsw_z_agg);
-    aggVec_reset((aggVec *) &duty_x1_agg);
-    aggVec_reset((aggVec *) &duty_x2_agg);
-    aggVec_reset((aggVec *) &duty_y1_agg);
-    aggVec_reset((aggVec *) &duty_y2_agg);
-    aggVec_reset((aggVec *) &duty_z1_agg);
-    aggVec_reset((aggVec *) &duty_z2_agg);
+    aggVec_as_reset((aggVec *) &duty_x1_agg);
+    aggVec_as_reset((aggVec *) &duty_x2_agg);
+    aggVec_as_reset((aggVec *) &duty_y1_agg);
+    aggVec_as_reset((aggVec *) &duty_y2_agg);
+    aggVec_as_reset((aggVec *) &duty_z1_agg);
+    aggVec_as_reset((aggVec *) &duty_z2_agg);
     encoderc_adcs_mtq_4(&rc, out);
 }
+
+// TODO: description 
 void rcPopulate5(CANPacket *out){
     rc_adcs_mtq_5 rc = {0};
-    rc.rc_adcs_mtq_5_fsw_ignore=0;
-    rc.rc_adcs_mtq_5_reset_counts=0;
+    rc.rc_adcs_mtq_5_fsw_ignore = fsw_ignore;
+    rc.rc_adcs_mtq_5_reset_counts = bspGetResetCount();
     encoderc_adcs_mtq_5(&rc, out);
 }
 
+// TODO: description 
 FILE_STATIC void update_rollcall_aggregates()
 {
 	aggVec_push_i(&bdot_x_agg, bdot_command_x);
@@ -488,7 +553,8 @@ FILE_STATIC void update_rollcall_aggregates()
 	aggVec_push_i(&duty_y1_agg, duty_y1);      
 	aggVec_push_i(&duty_y2_agg, duty_y2);      
 	aggVec_push_i(&duty_z1_agg, duty_z1);      
-	aggVec_push_i(&duty_z2_agg, duty_z2);	  
+	aggVec_push_i(&duty_z2_agg, duty_z2);	 
+	// TODO: remove old stuff  
 	//
 	// if (aggVec_push_i(&bdot_x_agg, bdot_command_x) |
 	// 	aggVec_push_i(&bdot_y_agg, bdot_command_y) |
@@ -505,8 +571,7 @@ FILE_STATIC void update_rollcall_aggregates()
 	//  	{
 	//
 	// }
-	
-	
+		
 }
 
 //-------- COSMOS --------
@@ -523,15 +588,36 @@ FILE_STATIC void cosmos_init(void)
     telem_timer = timerPollInitializer(telem_time_ms);
 }
 
+// periodically sends telemenry over cosmos
+FILE_STATIC void manage_telemetry(void)
+{ 
+	
+	if (checkTimer(cosmos_commands_timer)){
+		send_COSMOS_commands_packet(); 
+		start_cosmos_commands_timer(); 
+	}
+	
+    if (checkTimer(telem_timer))
+    {
+		send_COSMOS_health_packet();
+		send_COSMOS_meta_packet();
+        start_telem_timer(); // reset timer 
+    }
+}
+
+// send mtq temperature and reset count over COSMOS 
 FILE_STATIC void send_COSMOS_health_packet()
 {
     healthSeg.oms = OMS_Unknown;
     healthSeg.inttemp = asensorReadIntTempC();
+    aggVec_push_f(&mspTemp_agg, healthSeg.inttemp);
 	healthSeg.reset_count = bspGetResetCount(); 
     bcbinSendPacket((uint8_t *) &healthSeg, sizeof(healthSeg));
     //debugInvokeStatusHandler(Entity_UART); // send uart bus status over backchannel
 }
 
+// send last bdot commands and fsw commands received as well as last 
+// executed command by MTQ over COSMOS 
 FILE_STATIC void send_COSMOS_commands_packet()
 {
     cosmos_commandy_commands.last_bdot_x = bdot_command_x;
@@ -546,6 +632,7 @@ FILE_STATIC void send_COSMOS_commands_packet()
     bcbinSendPacket((uint8_t *) &cosmos_commandy_commands, sizeof(cosmos_commandy_commands));
 }
 
+// sends the current duty percent for the MTQ coils over COSMOS 
 FILE_STATIC void send_COSMOS_dooty_packet()
 {
     cosmos_dooty.x1 = duty_x1;
@@ -557,14 +644,26 @@ FILE_STATIC void send_COSMOS_dooty_packet()
 	bcbinSendPacket((uint8_t *) &cosmos_dooty, sizeof(cosmos_dooty));
 }
 
+// sends a mtq meta packet over COSMOS 
 FILE_STATIC void send_COSMOS_meta_packet(void)
 {
     bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
 }
 
 //-------- sfr config --------	
-		
-// used to configure special function registers for mtq
+
+/*
+coil  pin   timer 
+-----------------
+X1 - P1_7 - TB0.4
+X2 - P1_6 - TB0.3
+Y1 - P3_7 - TB0.6
+Y2 - P3_6 - TB0.5
+Z1 - P2_2 - TB0.2
+Z2 - P2_6 - TB0.1
+*/		
+// Configures special function registers to set up 
+// timers, pwm, and gpios for mtq 
 FILE_STATIC void mtq_sfr_init(void)
 {	
 	//---------GPIO initialization--------------------------
@@ -573,6 +672,11 @@ FILE_STATIC void mtq_sfr_init(void)
 	P3DIR |= BIT5;
 	P3SEL0 &= ~BIT5;
 	P3SEL1 &= ~BIT5;
+	// P3.4 - uart pin 
+	P3OUT |= BIT4; // power on state
+	P3DIR |= BIT4;
+	P3SEL0 &= ~BIT4;
+	P3SEL1 &= ~BIT4;
 	// P1.7 - TB0.4 - x1
 	P1DIR |= BIT7;
     P1SEL0 |= BIT7;

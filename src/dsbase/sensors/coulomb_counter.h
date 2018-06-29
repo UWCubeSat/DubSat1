@@ -109,4 +109,7 @@ uint16_t CCReadRawAccumulatedCharge();
 uint8_t CCGetControlReg();
 uint8_t CCGetStatusReg();
 
+void CCSetFullCurrent(float current);
+void CCSetFullVoltage(float voltage);
+
 #endif /* POWER_LTC2943_COULOMBCOUNTER_H_ */

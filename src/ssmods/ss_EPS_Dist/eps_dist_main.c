@@ -8,6 +8,7 @@
 #include "core/dataArray.h"
 #include "interfaces/rollcall.h"
 #include "core/agglib.h"
+#include "core/autosequence.h"
 
 #define WDT_CONFIG WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_2
 
@@ -44,7 +45,7 @@ FILE_STATIC float   domainShuntResistances[] =   { SHUNT_LOW_DRAW_DEVICE, SHUNT_
                                                    SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE };
 
 FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_LOW_DRAW_DEVICE, //COM1
-                                                      OCP_THRESH_VERY_HIGH_DRAW_DEVICE, //COM2
+                                                      3.0f, //COM2
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //RAHS
                                                       OCP_THRESH_VERY_HIGH_DRAW_DEVICE, //BDOT
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //ESTIM
@@ -76,14 +77,11 @@ FILE_STATIC uint16_t startupDelay = 1800;
 FILE_STATIC uint8_t rcFlag = 0; //use this one for sending own rollcall
 FILE_STATIC uint8_t rcSendFlag = 0;  //use this one for sending rcCmd
 
-FILE_STATIC uint8_t subSystemsToToggle[16] = {0};
-FILE_STATIC int rcTimerID = 0;
-
 
 //**********Data Stuff**********************
 FILE_STATIC uint8_t rebootCount = 60;
 
-FILE_STATIC aggVec_i tempAg;
+FILE_STATIC aggVec_f mspTempAg;
 FILE_STATIC aggVec_i battVAg;
 FILE_STATIC aggVec_i coulombCounterAg;
 FILE_STATIC aggVec_i ssCurrAgs[NUM_POWER_DOMAINS];
@@ -364,6 +362,7 @@ FILE_STATIC void distBcSendHealth()
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
     hseg.inttemp = asensorReadIntTempC();
+    aggVec_push_f(&mspTempAg, hseg.inttemp);
     hseg.reset_count = bspGetResetCount();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandlers();
@@ -534,6 +533,18 @@ void sendRCCmd()
     //distDomainSwitch(PD_WHEELS, PD_CMD_Disable);
 }
 
+uint8_t getPDState(PowerDomainID pd)
+{
+    if(distQueryDomainSwitch(pd))
+        return 0; //on
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] & (PD_CMD_Disable | PD_CMD_Toggle))
+        return 1; //off manual
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] & PD_CMD_OCLatch)
+        return 2; //overcurrent latch
+    else
+        return 3; //batt_undervoltage or other
+}
+
 void sendRC()
 {
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
@@ -541,11 +552,14 @@ void sendRC()
         CANPacket rollcallPkt = {0};
         if(rcFlag == 17)
         {
-            rc_eps_dist_1 rollcallPkt1_info = {0};
-            rollcallPkt1_info.rc_eps_dist_1_reset_count = bspGetResetCount();
-            rollcallPkt1_info.rc_eps_dist_1_sysrstiv = SYSRSTIV;
-            rollcallPkt1_info.rc_eps_dist_1_temp_avg = 0;
-            encoderc_eps_dist_1(&rollcallPkt1_info, &rollcallPkt);
+            rc_eps_dist_h1 rollcallPkt1_info = {0};
+            rollcallPkt1_info.rc_eps_dist_h1_reset_count = bspGetResetCount();
+            rollcallPkt1_info.rc_eps_dist_h1_sysrstiv = SYSRSTIV;
+            rollcallPkt1_info.rc_eps_dist_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_dist_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_dist_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
+            encoderc_eps_dist_h1(&rollcallPkt1_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&mspTempAg);
         }
         else if(rcFlag == 16)
         {
@@ -570,7 +584,7 @@ void sendRC()
             rollcallPkt4_info.rc_eps_dist_4_com1_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
             rollcallPkt4_info.rc_eps_dist_4_com1_c_max = aggVec_max_i(&ssCurrAgs[PD_COM1]);
             rollcallPkt4_info.rc_eps_dist_4_com1_c_min = aggVec_min_i(&ssCurrAgs[PD_COM1]);
-            rollcallPkt4_info.rc_eps_dist_4_com1_state = distQueryDomainSwitch(PD_COM1);
+            rollcallPkt4_info.rc_eps_dist_4_com1_state = getPDState(PD_COM1);
             encoderc_eps_dist_4(&rollcallPkt4_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
         }
@@ -581,7 +595,7 @@ void sendRC()
             rollcallPkt5_info.rc_eps_dist_5_com1_v_max = aggVec_max_i(&ssBusVAgs[PD_COM1]);
             rollcallPkt5_info.rc_eps_dist_5_com1_v_min = aggVec_min_i(&ssBusVAgs[PD_COM1]);
             encoderc_eps_dist_5(&rollcallPkt5_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&ssBusVAgs);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_COM1]);
         }
         else if(rcFlag == 12)
         {
@@ -589,7 +603,7 @@ void sendRC()
             rollcallPkt6_info.rc_eps_dist_6_com2_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM2]);
             rollcallPkt6_info.rc_eps_dist_6_com2_c_max = aggVec_max_i(&ssCurrAgs[PD_COM2]);
             rollcallPkt6_info.rc_eps_dist_6_com2_c_min = aggVec_min_i(&ssCurrAgs[PD_COM2]);
-            rollcallPkt6_info.rc_eps_dist_6_com2_state = distQueryDomainSwitch(PD_COM2);
+            rollcallPkt6_info.rc_eps_dist_6_com2_state = getPDState(PD_COM2);
             encoderc_eps_dist_6(&rollcallPkt6_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM2]);
         }
@@ -600,7 +614,7 @@ void sendRC()
             rollcallPkt7_info.rc_eps_dist_7_com2_v_max = aggVec_max_i(&ssBusVAgs[PD_COM2]);
             rollcallPkt7_info.rc_eps_dist_7_com2_v_min = aggVec_min_i(&ssBusVAgs[PD_COM2]);
             encoderc_eps_dist_7(&rollcallPkt7_info, &rollcallPkt);
-            aggVec_as_reset((aggVec*)&ssCurrAgs[PD_COM2]);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_COM2]);
         }
         else if(rcFlag == 10)
         {
@@ -608,7 +622,7 @@ void sendRC()
             rollcallPkt8_info.rc_eps_dist_8_rahs_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_RAHS]);
             rollcallPkt8_info.rc_eps_dist_8_rahs_c_max = aggVec_max_i(&ssCurrAgs[PD_RAHS]);
             rollcallPkt8_info.rc_eps_dist_8_rahs_c_min = aggVec_min_i(&ssCurrAgs[PD_RAHS]);
-            rollcallPkt8_info.rc_eps_dist_8_rahs_state = distQueryDomainSwitch(PD_RAHS);
+            rollcallPkt8_info.rc_eps_dist_8_rahs_state = getPDState(PD_RAHS);
             encoderc_eps_dist_8(&rollcallPkt8_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_RAHS]);
         }
@@ -619,7 +633,7 @@ void sendRC()
             rollcallPkt9_info.rc_eps_dist_9_rahs_v_max = aggVec_max_i(&ssBusVAgs[PD_RAHS]);
             rollcallPkt9_info.rc_eps_dist_9_rahs_v_min = aggVec_min_i(&ssBusVAgs[PD_RAHS]);
             encoderc_eps_dist_9(&rollcallPkt9_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_RAHS]);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_RAHS]);
         }
         else if(rcFlag == 8)
         {
@@ -627,7 +641,7 @@ void sendRC()
             rollcallPkt10_info.rc_eps_dist_10_bdot_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_BDOT]);
             rollcallPkt10_info.rc_eps_dist_10_bdot_c_max = aggVec_max_i(&ssCurrAgs[PD_BDOT]);
             rollcallPkt10_info.rc_eps_dist_10_bdot_c_min = aggVec_min_i(&ssCurrAgs[PD_BDOT]);
-            rollcallPkt10_info.rc_eps_dist_10_bdot_state = distQueryDomainSwitch(PD_BDOT);
+            rollcallPkt10_info.rc_eps_dist_10_bdot_state = getPDState(PD_BDOT);
             encoderc_eps_dist_10(&rollcallPkt10_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_BDOT]);
         }
@@ -638,7 +652,7 @@ void sendRC()
             rollcallPkt11_info.rc_eps_dist_11_bdot_v_max = aggVec_max_i(&ssBusVAgs[PD_BDOT]);
             rollcallPkt11_info.rc_eps_dist_11_bdot_v_min = aggVec_min_i(&ssBusVAgs[PD_BDOT]);
             encoderc_eps_dist_11(&rollcallPkt11_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_BDOT]);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_BDOT]);
         }
         else if(rcFlag == 6)
         {
@@ -646,7 +660,7 @@ void sendRC()
             rollcallPkt12_info.rc_eps_dist_12_estim_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_ESTIM]);
             rollcallPkt12_info.rc_eps_dist_12_estim_c_max = aggVec_max_i(&ssCurrAgs[PD_ESTIM]);
             rollcallPkt12_info.rc_eps_dist_12_estim_c_min = aggVec_min_i(&ssCurrAgs[PD_ESTIM]);
-            rollcallPkt12_info.rc_eps_dist_12_estim_state = distQueryDomainSwitch(PD_ESTIM);
+            rollcallPkt12_info.rc_eps_dist_12_estim_state = getPDState(PD_ESTIM);
             encoderc_eps_dist_12(&rollcallPkt12_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_ESTIM]);
         }
@@ -665,7 +679,7 @@ void sendRC()
             rollcallPkt14_info.rc_eps_dist_14_eps_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_EPS]);
             rollcallPkt14_info.rc_eps_dist_14_eps_c_max = aggVec_max_i(&ssCurrAgs[PD_EPS]);
             rollcallPkt14_info.rc_eps_dist_14_eps_c_min = aggVec_min_i(&ssCurrAgs[PD_EPS]);
-            rollcallPkt14_info.rc_eps_dist_14_eps_state = distQueryDomainSwitch(PD_EPS);
+            rollcallPkt14_info.rc_eps_dist_14_eps_state = getPDState(PD_EPS);
             encoderc_eps_dist_14(&rollcallPkt14_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_EPS]);
         }
@@ -676,7 +690,7 @@ void sendRC()
             rollcallPkt15_info.rc_eps_dist_15_eps_v_max = aggVec_max_i(&ssBusVAgs[PD_EPS]);
             rollcallPkt15_info.rc_eps_dist_15_eps_v_min = aggVec_min_i(&ssBusVAgs[PD_EPS]);
             encoderc_eps_dist_15(&rollcallPkt15_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_EPS]);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_EPS]);
         }
         else if(rcFlag == 2)
         {
@@ -684,7 +698,7 @@ void sendRC()
             rollcallPkt16_info.rc_eps_dist_16_ppt_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_PPT]);
             rollcallPkt16_info.rc_eps_dist_16_ppt_c_max = aggVec_max_i(&ssCurrAgs[PD_PPT]);
             rollcallPkt16_info.rc_eps_dist_16_ppt_c_min = aggVec_min_i(&ssCurrAgs[PD_PPT]);
-            rollcallPkt16_info.rc_eps_dist_16_ppt_state = distQueryDomainSwitch(PD_PPT);
+            rollcallPkt16_info.rc_eps_dist_16_ppt_state = getPDState(PD_PPT);
             encoderc_eps_dist_16(&rollcallPkt16_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_PPT]);
         }
@@ -695,15 +709,37 @@ void sendRC()
             rollcallPkt17_info.rc_eps_dist_17_ppt_v_max = aggVec_max_i(&ssBusVAgs[PD_PPT]);
             rollcallPkt17_info.rc_eps_dist_17_ppt_v_min = aggVec_min_i(&ssBusVAgs[PD_PPT]);
             encoderc_eps_dist_17(&rollcallPkt17_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&ssCurrAgs[PD_PPT]);
+            aggVec_as_reset((aggVec *)&ssBusVAgs[PD_PPT]);
         }
         canSendPacket(&rollcallPkt);
         rcFlag--;
     }
 }
+void setPowerSwitchFromCAN(uint8_t cmd, PowerDomainID pd)
+{
+    if(cmd) //0 is nochange
+    {
+        if(cmd == 1)
+            distDomainSwitch(pd, PD_CMD_Enable);
+        else if(cmd == 2)
+            distDomainSwitch(pd, PD_CMD_Disable);
+        else if(cmd == 3)
+            distDomainSwitch(pd, PD_CMD_Toggle);
+    }
+}
+
 
 void can_packet_rx_callback(CANPacket *packet)
 {
+    gcmd_dist_set_pd_state pdCmd;
+    gcmd_dist_set_pd_ovc_bdot ovcPktBDot;
+    gcmd_dist_set_pd_ovc_com1 ovcPktCom1;
+    gcmd_dist_set_pd_ovc_com2 ovcPktCom2;
+    gcmd_dist_set_pd_ovc_eps ovcPktEPS;
+    gcmd_dist_set_pd_ovc_estim ovcPktEstim;
+    gcmd_dist_set_pd_ovc_ppt ovcPktPPT;
+    gcmd_dist_set_pd_ovc_rahs ovcPktRAHS;
+    cmd_reboot_request rebootRequest;
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
@@ -728,6 +764,62 @@ void can_packet_rx_callback(CANPacket *packet)
             break;
         case CAN_ID_RC_PPT_1:
             rcResponseFlag &= ~PD_PPT_FLAG;
+        case CAN_ID_GCMD_DIST_SET_PD_STATE:
+            decodegcmd_dist_set_pd_state(packet, &pdCmd);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_bdot, PD_BDOT);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_com1, PD_COM1);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_com2, PD_COM2);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_eps, PD_EPS);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_estim, PD_ESTIM);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_ppt, PD_PPT);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_rahs, PD_RAHS);
+            setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_wheels, PD_WHEELS);
+            break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_BDOT:
+            decodegcmd_dist_set_pd_ovc_bdot(packet, &ovcPktBDot);
+            distSetOCPThreshold(PD_BDOT, ovcPktBDot.gcmd_dist_set_pd_ovc_bdot_ovc);
+            break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_COM1:
+            decodegcmd_dist_set_pd_ovc_com1(packet, &ovcPktCom1);
+            distSetOCPThreshold(PD_COM1, ovcPktCom1.gcmd_dist_set_pd_ovc_com1_ovc);
+            break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_COM2:
+            decodegcmd_dist_set_pd_ovc_com2(packet, &ovcPktCom2);
+            distSetOCPThreshold(PD_COM2, ovcPktCom2.gcmd_dist_set_pd_ovc_com2_ovc);
+            break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_EPS:
+            decodegcmd_dist_set_pd_ovc_eps(packet, &ovcPktEPS);
+            distSetOCPThreshold(PD_EPS, ovcPktEPS.gcmd_dist_set_pd_ovc_eps_ovc);
+        break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_ESTIM:
+            decodegcmd_dist_set_pd_ovc_estim(packet, &ovcPktEstim);
+            distSetOCPThreshold(PD_ESTIM, ovcPktEstim.gcmd_dist_set_pd_ovc_estim_ovc);
+            break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_PPT:
+            decodegcmd_dist_set_pd_ovc_ppt(packet, &ovcPktPPT);
+            distSetOCPThreshold(PD_PPT, ovcPktPPT.gcmd_dist_set_pd_ovc_ppt_ovc);
+            break;
+        case CAN_ID_GCMD_DIST_SET_PD_OVC_RAHS:
+            decodegcmd_dist_set_pd_ovc_rahs(packet, &ovcPktRAHS);
+            distSetOCPThreshold(PD_RAHS, ovcPktRAHS.gcmd_dist_set_pd_ovc_rahs_ovc);
+            break;
+        case CAN_ID_CMD_REBOOT_REQUEST:
+            decodecmd_reboot_request(packet, &rebootRequest);
+            setPowerSwitchFromCAN(PD_CMD_Disable, rebootRequest.cmd_reboot_request_domain);
+            __delay_cycles(1000); //TODO: verify/move this wait
+            setPowerSwitchFromCAN(PD_CMD_Enable, rebootRequest.cmd_reboot_request_domain);
+            break;
+        case CAN_ID_GCMD_RESET_MINMAX:
+            aggVec_reset((aggVec *)&mspTempAg);
+            aggVec_reset((aggVec *)&battVAg);
+            aggVec_reset((aggVec *)&coulombCounterAg);
+            uint8_t i;
+            for(i = NUM_POWER_DOMAINS; i; i--)
+            {
+                aggVec_reset((aggVec*)&ssCurrAgs[i - 1]);
+                aggVec_reset((aggVec *)&ssBusVAgs[i - 1]);
+            }
+            break;
         default:
             break;
     }
@@ -761,7 +853,7 @@ void intermediateRollcall()
 
 void initData()
 {
-    aggVec_init_i(&tempAg);
+    aggVec_init_f(&mspTempAg);
     aggVec_init_i(&battVAg);
     aggVec_init_i(&coulombCounterAg);
     uint8_t i;
@@ -781,8 +873,8 @@ int main(void)
     //WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this when watchdog goes in
     WDTCTL = WDTPW | WDTHOLD;
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
-    P3DIR |= BIT4; //this is Paul's fix
-    P3OUT |= BIT4;
+    P3DIR |= BIT4 | BIT7; //this is Paul's backpower fix
+    P3OUT |= BIT4 | BIT7;
 
     // Spin up the ADC, for the temp sensor and battery voltage
     asensorInit(Ref_2p5V);
@@ -825,7 +917,8 @@ int main(void)
     // and then control is returned to this main loop
 
     // Autostart the EPS power domain for now
-    autoStart();
+    //autoStart();
+    seqInit();
 
     initializeTimer();
     initData();
@@ -859,6 +952,8 @@ int main(void)
         if(rcSendFlag && (canTxCheck() != CAN_TX_BUSY))
             sendRCCmd();
         sendRC();
+        seqUpdateMET((uint32_t)(metConvertToInt(getMETTimestamp()) >> 8));
+        checkSequence();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!

@@ -6,7 +6,6 @@
 #include "sensors/coulomb_counter.h" //Coulomb counter
 #include "core/i2c.h"
 #include "interfaces/canwrap.h"
-#include "core/dataArray.h"
 #include "core/MET.h"
 #include "core/agglib.h"
 
@@ -38,6 +37,7 @@ FILE_STATIC float previousTemp;
 
 FILE_STATIC volatile int autoHeating = 1;
 
+FILE_STATIC aggVec_f mspTempAg;
 FILE_STATIC aggVec_i tempAg;
 FILE_STATIC aggVec_i voltageAg;
 FILE_STATIC aggVec_i currentAg;
@@ -125,6 +125,7 @@ FILE_STATIC void battBcSendHealth()
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
     hseg.inttemp = asensorReadIntTempC();
+    aggVec_push_f(&mspTempAg, hseg.inttemp);
     hseg.reset_count = bspGetResetCount();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandlers();
@@ -164,8 +165,8 @@ void readINA(hDev hSensor){
     INAData = pcvsensorRead(hSensor, Read_BusV | Read_CurrentA);
     sseg.battNodeVolt = INAData->busVoltageV;
     sseg.battNodeCurr = INAData->calcdCurrentA;
-    aggVec_push_i(&nodeCurrentAg, INAData->calcdCurrentA); //TODO: get raw values here
-    aggVec_push_i(&nodeVoltageAg, INAData->busVoltageV);
+    aggVec_push_i(&nodeCurrentAg, INAData->rawCurrent); //TODO: get raw values here
+    aggVec_push_i(&nodeVoltageAg, INAData->rawBusVoltage);
 }
 
 void readTempSensor(){
@@ -173,17 +174,32 @@ void readTempSensor(){
     //sseg.battTemp = ((tempVoltageV/100.0) - 500) / 10.0; //Temp in Celcius
     //conversion from voltage to temperatur, has a slope of 10mv per degree celcius
     //and an intercept of 50 degrees at 0 voltsx
-    aggVec_push_i(&tempAg, tempVoltageV); //TODO: get raw values here
+    aggVec_push_i(&tempAg, (tempVoltageV /0.010));
 
     sseg.battTemp = (tempVoltageV /0.010) - 50;
 }
 
 void can_packet_rx_callback(CANPacket *packet)
 {
+    gcmd_eps_batt_fulldef fullDefPkt;
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            rcFlag = 7;
+            rcFlag = 8;
+            break;
+        case CAN_ID_GCMD_RESET_MINMAX:
+            aggVec_reset((aggVec *)&mspTempAg);
+            aggVec_reset((aggVec *)&tempAg);
+            aggVec_reset((aggVec *)&voltageAg);
+            aggVec_reset((aggVec *)&currentAg);
+            aggVec_reset((aggVec *)&nodeVoltageAg);
+            aggVec_reset((aggVec *)&nodeCurrentAg);
+            aggVec_reset((aggVec *)&accChargeAg);
+            break;
+        case CAN_ID_GCMD_EPS_BATT_FULLDEF:
+            decodegcmd_eps_batt_fulldef(packet, &fullDefPkt);
+            CCSetFullCurrent(fullDefPkt.gcmd_eps_batt_fulldef_chg_curr);
+            CCSetFullVoltage(fullDefPkt.gcmd_eps_batt_fulldef_const_volt);
             break;
         default:
             break;
@@ -195,15 +211,24 @@ void sendRC()
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
     {
         CANPacket rollcallPkt = {0};
-        if(rcFlag == 7)
+        if(rcFlag == 8)
         {
-            rc_eps_batt_1 rollcallPkt1_info = {0};
+            rc_eps_batt_h1 rollcallPkt1_info = {0};
             float newVal = asensorReadIntTempC();
-            rollcallPkt1_info.rc_eps_batt_1_sysrstiv = bspGetResetCount();
-            rollcallPkt1_info.rc_eps_batt_1_temp_avg = asensorReadIntTempRawC();
-            rollcallPkt1_info.rc_eps_batt_1_temp_max = asensorReadIntTempRawC();
-            rollcallPkt1_info.rc_eps_batt_1_temp_min = asensorReadIntTempRawC();
-            encoderc_eps_batt_1(&rollcallPkt1_info, &rollcallPkt);
+            rollcallPkt1_info.rc_eps_batt_h1_sysrstiv = SYSRSTIV;
+            rollcallPkt1_info.rc_eps_batt_h1_reset_count = bspGetResetCount();
+            rollcallPkt1_info.rc_eps_batt_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_batt_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_batt_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_batt_h1_reset_count = bspGetResetCount();
+            encoderc_eps_batt_h1(&rollcallPkt1_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&mspTempAg);
+        }
+        else if(rcFlag == 7)
+        {
+            rc_eps_batt_h2 healthPkt2 = {0};
+            healthPkt2.rc_eps_batt_h2_canrxerror = canRxErrorCheck();
+            encoderc_eps_batt_h2(&healthPkt2, &rollcallPkt);
         }
         else if(rcFlag == 6)
         {
@@ -224,7 +249,6 @@ void sendRC()
             encoderc_eps_batt_3(&rollcallPkt3_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&tempAg);
             aggVec_as_reset((aggVec *)&currentAg);
-            aggVec_as_reset((aggVec *)&nodeCurrentAg);
         }
         else if(rcFlag == 4)
         {
@@ -242,11 +266,11 @@ void sendRC()
             rc_eps_batt_5 rollcallPkt5_info = {0};
             rollcallPkt5_info.rc_eps_batt_5_batt_temp_max = aggVec_max_i(&tempAg);
             rollcallPkt5_info.rc_eps_batt_5_batt_temp_min = aggVec_min_i(&tempAg);
-            rollcallPkt5_info.rc_eps_batt_5_node_c_avg = aggVec_avg_i_i(&nodeVoltageAg);
-            rollcallPkt5_info.rc_eps_batt_5_node_c_max = aggVec_max_i(&nodeVoltageAg);
-            rollcallPkt5_info.rc_eps_batt_5_node_c_min = aggVec_min_i(&nodeVoltageAg);
+            rollcallPkt5_info.rc_eps_batt_5_node_c_avg = aggVec_avg_i_i(&nodeCurrentAg);
+            rollcallPkt5_info.rc_eps_batt_5_node_c_max = aggVec_max_i(&nodeCurrentAg);
+            rollcallPkt5_info.rc_eps_batt_5_node_c_min = aggVec_min_i(&nodeCurrentAg);
             encoderc_eps_batt_5(&rollcallPkt5_info, &rollcallPkt);
-            aggVec_as_reset((aggVec *)&nodeVoltageAg);
+            aggVec_as_reset((aggVec *)&nodeCurrentAg);
         }
         else if(rcFlag == 2)
         {
@@ -314,6 +338,7 @@ int main(void)
     battControlBalancer(Cmd_AutoEnable);
     //battControlHeater(Cmd_AutoEnable);
 
+    aggVec_init_f(&mspTempAg);
     aggVec_init_i(&tempAg);
     aggVec_init_i(&voltageAg);
     aggVec_init_i(&currentAg);
@@ -354,8 +379,6 @@ int main(void)
 
             battBcSendGeneral();
             battBcSendHealth();
-
-            aggVec_push_i(&tempAg, asensorReadIntTempRawC());
 
             if(isChecking)
             {

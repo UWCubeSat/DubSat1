@@ -18,12 +18,18 @@
  * Vector Struct
  */
 
+typedef enum {
+    TYPE_DOUBLE,
+    TYPE_FLOAT,
+    TYPE_INT,
+} vector_type;
+
 // DO NOT INITIALIZE THIS STRUCT.
 typedef struct {
     uint16_t avgSumCount;
     uint16_t minCount;
     uint16_t maxCount;
-    uint8_t type;
+    vector_type type;
 } aggVec;
 
 // INITIALIZE ONE OF THE 3 BELOW AND CAST.

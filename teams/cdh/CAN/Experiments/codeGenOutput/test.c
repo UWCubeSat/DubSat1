@@ -3,6 +3,151 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket gcmd_ppt_multiple_fire_packet = {0};
+	gcmd_ppt_multiple_fire gcmd_ppt_multiple_fire_info = {0};
+	encodegcmd_ppt_multiple_fire(&gcmd_ppt_multiple_fire_info, &gcmd_ppt_multiple_fire_packet);
+	canSendPacket(&gcmd_ppt_multiple_fire_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_mtq_pwm_time_packet = {0};
+	gcmd_mtq_pwm_time gcmd_mtq_pwm_time_info = {0};
+	encodegcmd_mtq_pwm_time(&gcmd_mtq_pwm_time_info, &gcmd_mtq_pwm_time_packet);
+	canSendPacket(&gcmd_mtq_pwm_time_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_eps_batt_fulldef_packet = {0};
+	gcmd_eps_batt_fulldef gcmd_eps_batt_fulldef_info = {0};
+	encodegcmd_eps_batt_fulldef(&gcmd_eps_batt_fulldef_info, &gcmd_eps_batt_fulldef_packet);
+	canSendPacket(&gcmd_eps_batt_fulldef_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_5_packet = {0};
+	rc_adcs_bdot_5 rc_adcs_bdot_5_info = {0};
+	encoderc_adcs_bdot_5(&rc_adcs_bdot_5_info, &rc_adcs_bdot_5_packet);
+	canSendPacket(&rc_adcs_bdot_5_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_reset_minmax_packet = {0};
+	gcmd_reset_minmax gcmd_reset_minmax_info = {0};
+	encodegcmd_reset_minmax(&gcmd_reset_minmax_info, &gcmd_reset_minmax_packet);
+	canSendPacket(&gcmd_reset_minmax_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_batt_h2_packet = {0};
+	rc_eps_batt_h2 rc_eps_batt_h2_info = {0};
+	encoderc_eps_batt_h2(&rc_eps_batt_h2_info, &rc_eps_batt_h2_packet);
+	canSendPacket(&rc_eps_batt_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_h2_packet = {0};
+	rc_adcs_bdot_h2 rc_adcs_bdot_h2_info = {0};
+	encoderc_adcs_bdot_h2(&rc_adcs_bdot_h2_info, &rc_adcs_bdot_h2_packet);
+	canSendPacket(&rc_adcs_bdot_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_dist_h2_packet = {0};
+	rc_eps_dist_h2 rc_eps_dist_h2_info = {0};
+	encoderc_eps_dist_h2(&rc_eps_dist_h2_info, &rc_eps_dist_h2_packet);
+	canSendPacket(&rc_eps_dist_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mpc_h2_packet = {0};
+	rc_adcs_mpc_h2 rc_adcs_mpc_h2_info = {0};
+	encoderc_adcs_mpc_h2(&rc_adcs_mpc_h2_info, &rc_adcs_mpc_h2_packet);
+	canSendPacket(&rc_adcs_mpc_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_estim_h2_packet = {0};
+	rc_adcs_estim_h2 rc_adcs_estim_h2_info = {0};
+	encoderc_adcs_estim_h2(&rc_adcs_estim_h2_info, &rc_adcs_estim_h2_packet);
+	canSendPacket(&rc_adcs_estim_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_h2_packet = {0};
+	rc_adcs_sp_h2 rc_adcs_sp_h2_info = {0};
+	encoderc_adcs_sp_h2(&rc_adcs_sp_h2_info, &rc_adcs_sp_h2_packet);
+	canSendPacket(&rc_adcs_sp_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_h2_packet = {0};
+	rc_eps_gen_h2 rc_eps_gen_h2_info = {0};
+	encoderc_eps_gen_h2(&rc_eps_gen_h2_info, &rc_eps_gen_h2_packet);
+	canSendPacket(&rc_eps_gen_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_h2_packet = {0};
+	rc_adcs_mtq_h2 rc_adcs_mtq_h2_info = {0};
+	encoderc_adcs_mtq_h2(&rc_adcs_mtq_h2_info, &rc_adcs_mtq_h2_packet);
+	canSendPacket(&rc_adcs_mtq_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_ppt_h2_packet = {0};
+	rc_ppt_h2 rc_ppt_h2_info = {0};
+	encoderc_ppt_h2(&rc_ppt_h2_info, &rc_ppt_h2_packet);
+	canSendPacket(&rc_ppt_h2_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_batt_h1_packet = {0};
+	rc_eps_batt_h1 rc_eps_batt_h1_info = {0};
+	encoderc_eps_batt_h1(&rc_eps_batt_h1_info, &rc_eps_batt_h1_packet);
+	canSendPacket(&rc_eps_batt_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_h1_packet = {0};
+	rc_adcs_bdot_h1 rc_adcs_bdot_h1_info = {0};
+	encoderc_adcs_bdot_h1(&rc_adcs_bdot_h1_info, &rc_adcs_bdot_h1_packet);
+	canSendPacket(&rc_adcs_bdot_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_dist_h1_packet = {0};
+	rc_eps_dist_h1 rc_eps_dist_h1_info = {0};
+	encoderc_eps_dist_h1(&rc_eps_dist_h1_info, &rc_eps_dist_h1_packet);
+	canSendPacket(&rc_eps_dist_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mpc_h1_packet = {0};
+	rc_adcs_mpc_h1 rc_adcs_mpc_h1_info = {0};
+	encoderc_adcs_mpc_h1(&rc_adcs_mpc_h1_info, &rc_adcs_mpc_h1_packet);
+	canSendPacket(&rc_adcs_mpc_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_estim_h1_packet = {0};
+	rc_adcs_estim_h1 rc_adcs_estim_h1_info = {0};
+	encoderc_adcs_estim_h1(&rc_adcs_estim_h1_info, &rc_adcs_estim_h1_packet);
+	canSendPacket(&rc_adcs_estim_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_sp_h1_packet = {0};
+	rc_adcs_sp_h1 rc_adcs_sp_h1_info = {0};
+	encoderc_adcs_sp_h1(&rc_adcs_sp_h1_info, &rc_adcs_sp_h1_packet);
+	canSendPacket(&rc_adcs_sp_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_eps_gen_h1_packet = {0};
+	rc_eps_gen_h1 rc_eps_gen_h1_info = {0};
+	encoderc_eps_gen_h1(&rc_eps_gen_h1_info, &rc_eps_gen_h1_packet);
+	canSendPacket(&rc_eps_gen_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_mtq_h1_packet = {0};
+	rc_adcs_mtq_h1 rc_adcs_mtq_h1_info = {0};
+	encoderc_adcs_mtq_h1(&rc_adcs_mtq_h1_info, &rc_adcs_mtq_h1_packet);
+	canSendPacket(&rc_adcs_mtq_h1_packet);
+
+	__delay_cycles(10000);	CANPacket rc_ppt_h1_packet = {0};
+	rc_ppt_h1 rc_ppt_h1_info = {0};
+	encoderc_ppt_h1(&rc_ppt_h1_info, &rc_ppt_h1_packet);
+	canSendPacket(&rc_ppt_h1_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_mtq_pms_packet = {0};
+	gcmd_mtq_pms gcmd_mtq_pms_info = {0};
+	encodegcmd_mtq_pms(&gcmd_mtq_pms_info, &gcmd_mtq_pms_packet);
+	canSendPacket(&gcmd_mtq_pms_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_bdot_max_tumble_packet = {0};
+	gcmd_bdot_max_tumble gcmd_bdot_max_tumble_info = {0};
+	encodegcmd_bdot_max_tumble(&gcmd_bdot_max_tumble_info, &gcmd_bdot_max_tumble_packet);
+	canSendPacket(&gcmd_bdot_max_tumble_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_bdot_spam_packet = {0};
+	gcmd_bdot_spam gcmd_bdot_spam_info = {0};
+	encodegcmd_bdot_spam(&gcmd_bdot_spam_info, &gcmd_bdot_spam_packet);
+	canSendPacket(&gcmd_bdot_spam_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_bdot_control_packet = {0};
+	gcmd_bdot_control gcmd_bdot_control_info = {0};
+	encodegcmd_bdot_control(&gcmd_bdot_control_info, &gcmd_bdot_control_packet);
+	canSendPacket(&gcmd_bdot_control_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_bdot_mag_control_packet = {0};
+	gcmd_bdot_mag_control gcmd_bdot_mag_control_info = {0};
+	encodegcmd_bdot_mag_control(&gcmd_bdot_mag_control_info, &gcmd_bdot_mag_control_packet);
+	canSendPacket(&gcmd_bdot_mag_control_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_bdot_pole_override_packet = {0};
+	gcmd_bdot_pole_override gcmd_bdot_pole_override_info = {0};
+	encodegcmd_bdot_pole_override(&gcmd_bdot_pole_override_info, &gcmd_bdot_pole_override_packet);
+	canSendPacket(&gcmd_bdot_pole_override_packet);
+
 	__delay_cycles(10000);	CANPacket gcmd_gen_set_pt_state_packet = {0};
 	gcmd_gen_set_pt_state gcmd_gen_set_pt_state_info = {0};
 	encodegcmd_gen_set_pt_state(&gcmd_gen_set_pt_state_info, &gcmd_gen_set_pt_state_packet);

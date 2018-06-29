@@ -21,11 +21,12 @@ FILE_STATIC ModuleStatus mod_status;
 
 /* rollcall */
 
-FILE_STATIC aggVec_i rc_mspTemp;
+FILE_STATIC aggVec_f rc_mspTemp;
 FILE_STATIC uint64_t metEpoch = 0;
 FILE_STATIC uint64_t lastUsedMET = 0;
 
 FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulateH2(CANPacket *out);
 FILE_STATIC void rcPopulate2(CANPacket *out);
 FILE_STATIC void rcPopulate3(CANPacket *out);
 FILE_STATIC void rcPopulate4(CANPacket *out);
@@ -42,7 +43,7 @@ FILE_STATIC void rcPopulate14(CANPacket *out);
 
 FILE_STATIC rollcall_fn rollcallFunctions[] =
 {
- rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
+ rcPopulate1, rcPopulateH2, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
  rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10,
  rcPopulate11, rcPopulate12, rcPopulate13, rcPopulate14
 };
@@ -144,7 +145,7 @@ int main(void)
 
     // init rollcall
     rollcallInitWithBuffer(rollcallFunctions, rcCANPackets, NUM_ROLLCALL_PACKETS);
-    aggVec_init_i(&rc_mspTemp);
+    aggVec_init_f(&rc_mspTemp);
 
     // init autocode
     MSP_env_estim0_initialize();
@@ -341,19 +342,22 @@ void canRxCallback(CANPacket *p)
 
     switch (p->id)
     {
-    case CAN_ID_CMD_ROLLCALL:
-        decodecmd_rollcall(p, &rc);
-        t = constructTimestamp(rc.cmd_rollcall_met,
-                               rc.cmd_rollcall_met_overflow);
-        updateMET(t);
-        rollcallStart();
-        break;
-    case CAN_ID_GRND_EPOCH:
-        decodegrnd_epoch(p, &ep);
-        t = constructTimestamp(ep.grnd_epoch_val, ep.grnd_epoch_val_overflow);
-        metEpoch = metConvertToInt(t);
-        rtU.MET_epoch = metConvertFromIntToSeconds(metEpoch);
-        break;
+        case CAN_ID_CMD_ROLLCALL:
+            decodecmd_rollcall(p, &rc);
+            t = constructTimestamp(rc.cmd_rollcall_met,
+                                   rc.cmd_rollcall_met_overflow);
+            updateMET(t);
+            rollcallStart();
+            break;
+        case CAN_ID_GRND_EPOCH:
+            decodegrnd_epoch(p, &ep);
+            t = constructTimestamp(ep.grnd_epoch_val, ep.grnd_epoch_val_overflow);
+            metEpoch = metConvertToInt(t);
+            rtU.MET_epoch = metConvertFromIntToSeconds(metEpoch);
+            break;
+        case CAN_ID_GCMD_RESET_MINMAX:
+            aggVec_reset((aggVec *)&rc_mspTemp);
+            break;
     }
 }
 
@@ -366,13 +370,12 @@ FILE_STATIC void sendHealthSegment()
     // TODO determine overall health based on querying sensors for their health
     hseg.oms = OMS_Unknown;
 
-    uint16_t inttemp = asensorReadIntTempRawC();
-    hseg.inttemp = inttemp;
+    hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
     // update temperature (in deci-Kelvin)
-    aggVec_push_i(&rc_mspTemp, inttemp);
+    aggVec_push_f(&rc_mspTemp, hseg.inttemp);
 }
 
 FILE_STATIC void sendMetaSegment()
@@ -383,14 +386,21 @@ FILE_STATIC void sendMetaSegment()
 
 FILE_STATIC void rcPopulate1(CANPacket *out)
 {
-    rc_adcs_estim_1 rc;
-    rc.rc_adcs_estim_1_reset_count = bspGetResetCount();
-    rc.rc_adcs_estim_1_sysrstiv = SYSRSTIV;
-    rc.rc_adcs_estim_1_temp_min = aggVec_min_i(&rc_mspTemp);
-    rc.rc_adcs_estim_1_temp_max = aggVec_max_i(&rc_mspTemp);
-    rc.rc_adcs_estim_1_temp_avg = aggVec_avg_i_i(&rc_mspTemp);
+    rc_adcs_estim_h1 rc;
+    rc.rc_adcs_estim_h1_reset_count = bspGetResetCount();
+    rc.rc_adcs_estim_h1_sysrstiv = SYSRSTIV;
+    rc.rc_adcs_estim_h1_temp_min = compressMSPTemp(aggVec_min_f(&rc_mspTemp));
+    rc.rc_adcs_estim_h1_temp_max = compressMSPTemp(aggVec_max_f(&rc_mspTemp));
+    rc.rc_adcs_estim_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&rc_mspTemp));
     aggVec_reset((aggVec *) &rc_mspTemp);
-    encoderc_adcs_estim_1(&rc, out);
+    encoderc_adcs_estim_h1(&rc, out);
+}
+
+FILE_STATIC void rcPopulateH2(CANPacket *out)
+{
+    rc_adcs_estim_h2 rc;
+    rc.rc_adcs_estim_h2_canrxerror = canRxErrorCheck();
+    encoderc_adcs_estim_h2(&rc, out);
 }
 
 FILE_STATIC void rcPopulate2(CANPacket *out)

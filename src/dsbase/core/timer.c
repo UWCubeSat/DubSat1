@@ -150,25 +150,27 @@ void initializeTimer()
     initialized = 1;
 }
 
-desired_time convertTime(uint16_t ms)
+desired_time convertTime(uint32_t ms)
 {
     // 1 desired_counter_dif = 2 seconds; 1 desired_TAR_dif = 1/32768 = 30.5us.
     desired_time convert;
-    uint16_t calc_counter;
+    uint16_t calc_counter = 0;
     uint16_t calc_TAR;
     float microSec;
-    uint16_t new_ms = ms;
-    calc_counter = new_ms / 2000;
-    new_ms = new_ms - calc_counter * 2000;
-    // ms --> us
+    uint32_t new_ms = ms;
+    while(new_ms >= 2000)
+    {
+    	calc_counter++;
+    	new_ms -= 2000;
+    }
     microSec = (float) new_ms * 1000.0;
-    calc_TAR = (uint16_t) (microSec / 30.517);
+    calc_TAR = (uint16_t) (microSec / 30.517578125);
     convert.counter = calc_counter;
     convert.TARval = calc_TAR;
     return convert;
 }
 
-TIMER_HANDLE timerPollInitializer(uint16_t ms)
+TIMER_HANDLE timerPollInitializer(uint32_t ms)
 {
     desired_time convert = convertTime(ms);
     uint16_t current_counter = timer_counter;

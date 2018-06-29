@@ -34,10 +34,11 @@ FILE_STATIC estim_mag_unit_z tmpEMagz;
 
 // rollcall
 FILE_STATIC aggVec_i rc_pointTrue;
-FILE_STATIC aggVec_i rc_mspTemp;
+FILE_STATIC aggVec_f rc_mspTemp;
 FILE_STATIC aggVec_d rc_omega;
 
 FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulate0(CANPacket *out);
 FILE_STATIC void rcPopulate2(CANPacket *out);
 FILE_STATIC void rcPopulate3(CANPacket *out);
 FILE_STATIC void rcPopulate4(CANPacket *out);
@@ -52,7 +53,7 @@ FILE_STATIC void rcPopulate15(CANPacket *out);
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
+ rcPopulate1, rcPopulate0, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
  rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10,
  rcPopulate11, rcPopulate15
 };
@@ -111,7 +112,7 @@ int main(void)
     // init rollcall
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
     aggVec_init_i(&rc_pointTrue);
-    aggVec_init_i(&rc_mspTemp);
+    aggVec_init_f(&rc_mspTemp);
     aggVec_init_d(&rc_omega);
 
     // init autocode
@@ -199,11 +200,13 @@ void rt_OneStep(void)
 
 void canRxCallback(CANPacket *p)
 {
-    sensorproc_mag mag;
+    sensorproc_mag mag1;
+    sensorproc_mag2 mag2;
     sensorproc_imu imu;
     sensorproc_sun sun;
 
-    real32_T *tmp_mag = tmpSP2FSW.mag_vec_body_T;
+    real32_T *tmp_mag1 = tmpSP2FSW.mag1_vec_body_T;
+    real32_T *tmp_mag2 = tmpSP2FSW.mag2_vec_body_T;
     real32_T *tmp_imu = tmpSP2FSW.gyro_omega_body_radps;
     real32_T *tmp_sun = tmpSP2FSW.sun_vec_body_sunsensor;
 
@@ -213,11 +216,18 @@ void canRxCallback(CANPacket *p)
         rollcallStart();
         break;
     case CAN_ID_SENSORPROC_MAG:
-        decodesensorproc_mag(p, &mag);
-        tmp_mag[0] = magConvertRawToTeslas(mag.sensorproc_mag_x);
-        tmp_mag[1] = magConvertRawToTeslas(mag.sensorproc_mag_y);
-        tmp_mag[2] = magConvertRawToTeslas(mag.sensorproc_mag_z);
-        tmp_mag[3] = mag.sensorproc_mag_valid;
+        decodesensorproc_mag(p, &mag1);
+        tmp_mag1[0] = magConvertRawToTeslas(mag1.sensorproc_mag_x);
+        tmp_mag1[1] = magConvertRawToTeslas(mag1.sensorproc_mag_y);
+        tmp_mag1[2] = magConvertRawToTeslas(mag1.sensorproc_mag_z);
+        tmp_mag1[3] = mag1.sensorproc_mag_valid;
+        break;
+    case CAN_ID_SENSORPROC_MAG2:
+        decodesensorproc_mag2(p, &mag2);
+        tmp_mag2[0] = magConvertRawToTeslas(mag2.sensorproc_mag2_x);
+        tmp_mag2[1] = magConvertRawToTeslas(mag2.sensorproc_mag2_y);
+        tmp_mag2[2] = magConvertRawToTeslas(mag2.sensorproc_mag2_z);
+        tmp_mag2[3] = mag2.sensorproc_mag2_valid;
         break;
     case CAN_ID_SENSORPROC_IMU:
         decodesensorproc_imu(p, &imu);
@@ -258,6 +268,11 @@ void canRxCallback(CANPacket *p)
     case CAN_ID_ESTIM_SUN_UNIT_Z:
         decodeestim_sun_unit_z(p, &tmpESunz);
         break;
+    case CAN_ID_GCMD_RESET_MINMAX:
+        aggVec_reset((aggVec *)&rc_mspTemp);
+        aggVec_reset((aggVec *)&rc_pointTrue);
+        aggVec_reset((aggVec *)&rc_omega);
+        break;
     }
 }
 
@@ -265,8 +280,10 @@ void canRxCallback(CANPacket *p)
 void acceptInputs()
 {
     // sensor proc outputs
-    memcpy(rtU.mag_vec_body_T, tmpSP2FSW.mag_vec_body_T,
-           4 * sizeof(tmpSP2FSW.mag_vec_body_T[0]));
+    memcpy(rtU.mag1_vec_body_T, tmpSP2FSW.mag1_vec_body_T,
+           4 * sizeof(tmpSP2FSW.mag1_vec_body_T[0]));
+    memcpy(rtU.mag2_vec_body_T, tmpSP2FSW.mag2_vec_body_T,
+               4 * sizeof(tmpSP2FSW.mag2_vec_body_T[0]));
     memcpy(rtU.gyro_omega_body_radps, tmpSP2FSW.gyro_omega_body_radps,
            4 * sizeof(tmpSP2FSW.gyro_omega_body_radps[0]));
     memcpy(rtU.sun_vec_body_sunsensor, tmpSP2FSW.sun_vec_body_sunsensor,
@@ -358,13 +375,12 @@ void sendHealthSegment()
     // TODO determine overall health based on querying sensors for their health
     hseg.oms = OMS_Unknown;
 
-    uint16_t inttemp = asensorReadIntTempRawC();
-    hseg.inttemp = inttemp;
+    hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 
     // update temperature
-    aggVec_push_i(&rc_mspTemp, inttemp);
+    aggVec_push_f(&rc_mspTemp, hseg.inttemp);
 }
 
 void sendMetaSegment()
@@ -381,14 +397,21 @@ void handlePPTFiringNotification()
 
 FILE_STATIC void rcPopulate1(CANPacket *out)
 {
-    rc_adcs_mpc_1 rc;
-    rc.rc_adcs_mpc_1_reset_count = bspGetResetCount();
-    rc.rc_adcs_mpc_1_sysrstiv = SYSRSTIV;
-    rc.rc_adcs_mpc_1_temp_min = aggVec_min_i(&rc_mspTemp);
-    rc.rc_adcs_mpc_1_temp_max = aggVec_max_i(&rc_mspTemp);
-    rc.rc_adcs_mpc_1_temp_avg = aggVec_avg_i_i(&rc_mspTemp);
+    rc_adcs_mpc_h1 rc;
+    rc.rc_adcs_mpc_h1_reset_count = bspGetResetCount();
+    rc.rc_adcs_mpc_h1_sysrstiv = SYSRSTIV;
+    rc.rc_adcs_mpc_h1_temp_min = compressMSPTemp(aggVec_min_f(&rc_mspTemp));
+    rc.rc_adcs_mpc_h1_temp_max = compressMSPTemp(aggVec_max_f(&rc_mspTemp));
+    rc.rc_adcs_mpc_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&rc_mspTemp));
     aggVec_reset((aggVec *) &rc_mspTemp);
-    encoderc_adcs_mpc_1(&rc, out);
+    encoderc_adcs_mpc_h1(&rc, out);
+}
+
+FILE_STATIC void rcPopulate0(CANPacket *out)
+{
+    rc_adcs_mpc_h2 rc;
+    rc.rc_adcs_mpc_h2_canrxerror = canRxErrorCheck();
+    encoderc_adcs_mpc_h2(&rc, out);
 }
 
 FILE_STATIC void rcPopulate2(CANPacket *out)

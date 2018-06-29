@@ -42,7 +42,7 @@ FILE_STATIC uint8_t isValid()
 
 FILE_STATIC int16_t rawToShort(float a)
 {
-    return a * (((float) INT16_MAX) / 120.0);
+    return a * (((float) INT16_MAX) / 60.0);
 }
 
 void sunsensorioInit()
@@ -168,6 +168,6 @@ void sunsensorioRcPopulate14(rc_adcs_sp_14 *rc)
     rc->rc_adcs_sp_14_sunb_max = aggVec_max_i(&rc_sunb);
     rc->rc_adcs_sp_14_sunb_avg = aggVec_avg_i_i(&rc_sunb);
     aggVec_reset((aggVec * ) &rc_sunb);
-    rc->rc_adcs_sp_14_sun_valid = aggVec_sum_i(&rc_sunValid);
+    rc->rc_adcs_sp_14_sun_valid = (aggVec_sum_i(&rc_sunValid) / ((float) aggVec_as_count((aggVec *) &rc_sunValid))) * 255;
     aggVec_reset((aggVec * ) &rc_sunValid);
 }

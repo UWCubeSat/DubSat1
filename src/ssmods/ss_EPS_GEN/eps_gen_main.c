@@ -3,7 +3,7 @@
 
 #include "bsp/bsp.h"
 #include "sensors/pcvsensor.h"
-#include "core/dataArray.h"
+#include "core/agglib.h"
 #include "interfaces/canwrap.h"
 #include "core/MET.h"
 
@@ -31,47 +31,19 @@ FILE_STATIC general_segment gseg;
 FILE_STATIC sensordat_segment sseg;
 FILE_STATIC health_segment hseg;
 
-FILE_STATIC uint16_t mspTempArray[480] = {0};
-FILE_STATIC uint16_t panel1VoltageArray[480] = {0};
-FILE_STATIC uint16_t panel2VoltageArray[480] = {0};
-FILE_STATIC uint16_t panel3VoltageArray[480] = {0};
-FILE_STATIC uint16_t panel1CurrentArray[480] = {0};
-FILE_STATIC uint16_t panel2CurrentArray[480] = {0};
-FILE_STATIC uint16_t panel3CurrentArray[480] = {0};
-FILE_STATIC uint16_t panel1PwrArray[480] = {0};
-FILE_STATIC uint16_t panel2PwrArray[480] = {0};
-FILE_STATIC uint16_t panel3PwrArray[480] = {0};
-FILE_STATIC uint16_t panel1TempArray[480] = {0};
-FILE_STATIC uint16_t panel2TempArray[480] = {0};
-FILE_STATIC uint16_t panel3TempArray[480] = {0};
-
-#pragma PERSISTENT(mspTempArray);
-#pragma PERSISTENT(panel1VoltageArray);
-#pragma PERSISTENT(panel2VoltageArray);
-#pragma PERSISTENT(panel3VoltageArray);
-#pragma PERSISTENT(panel1CurrentArray);
-#pragma PERSISTENT(panel2CurrentArray);
-#pragma PERSISTENT(panel3CurrentArray);
-#pragma PERSISTENT(panel1PwrArray);
-#pragma PERSISTENT(panel2PwrArray);
-#pragma PERSISTENT(panel3PwrArray);
-#pragma PERSISTENT(panel1TempArray);
-#pragma PERSISTENT(panel2TempArray);
-#pragma PERSISTENT(panel3TempArray);
-
-FILE_STATIC uint16_t mspTemp;
-FILE_STATIC uint16_t panel1Voltage;
-FILE_STATIC uint16_t panel2Voltage;
-FILE_STATIC uint16_t panel3Voltage;
-FILE_STATIC uint16_t panel1Current;
-FILE_STATIC uint16_t panel2Current;
-FILE_STATIC uint16_t panel3Current;
-FILE_STATIC uint16_t panel1Pwr;
-FILE_STATIC uint16_t panel2Pwr;
-FILE_STATIC uint16_t panel3Pwr;
-FILE_STATIC uint16_t panel1Temp;
-FILE_STATIC uint16_t panel2Temp;
-FILE_STATIC uint16_t panel3Temp;
+FILE_STATIC aggVec_f mspTempAg;
+FILE_STATIC aggVec_i panel1VoltageAg;
+FILE_STATIC aggVec_i panel2VoltageAg;
+FILE_STATIC aggVec_i panel3VoltageAg;
+FILE_STATIC aggVec_i panel1CurrentAg;
+FILE_STATIC aggVec_i panel2CurrentAg;
+FILE_STATIC aggVec_i panel3CurrentAg;
+FILE_STATIC aggVec_i panel1PwrAg;
+FILE_STATIC aggVec_i panel2PwrAg;
+FILE_STATIC aggVec_i panel3PwrAg;
+FILE_STATIC aggVec_i panel1TempAg;
+FILE_STATIC aggVec_i panel2TempAg;
+FILE_STATIC aggVec_i panel3TempAg;
 
 FILE_STATIC uint8_t rcFlag = 0;
 
@@ -139,27 +111,26 @@ FILE_STATIC void genMonitorPanels()
 {
     int i;
     PCVSensorData *pdata;
-    float temp;
 
     asensorUpdateAllSensors();
 
     pdata = pcvsensorRead(panels[0].hpcvsensor, Read_CurrentA | Read_BusV | Read_PowerW);
-    addData_uint16_t(panel1Voltage, pdata->busVoltageV);
-    addData_uint16_t(panel1Current, pdata->calcdCurrentA);
-    addData_uint16_t(panel1Pwr, pdata->calcdPowerW);
-    addData_uint16_t(panel1Temp, asensorGetLastValueV(hTempSensors[0]));
+    aggVec_push_i(&panel1VoltageAg, pdata->rawBusVoltage);
+    aggVec_push_i(&panel1CurrentAg, pdata->rawCurrent);
+    aggVec_push_i(&panel1PwrAg, pdata->rawPower);
+    aggVec_push_i(&panel1TempAg, asensorReadSingleSensorV(hTempSensors[0]) * 100);
 
     pdata = pcvsensorRead(panels[1].hpcvsensor, Read_CurrentA | Read_BusV | Read_PowerW);
-    addData_uint16_t(panel2Voltage, pdata->busVoltageV);
-    addData_uint16_t(panel2Current, pdata->calcdCurrentA);
-    addData_uint16_t(panel2Pwr, pdata->calcdPowerW);
-    addData_uint16_t(panel2Temp, asensorGetLastValueV(hTempSensors[1]));
+    aggVec_push_i(&panel2VoltageAg, pdata->rawBusVoltage);
+    aggVec_push_i(&panel2CurrentAg, pdata->rawCurrent);
+    aggVec_push_i(&panel2PwrAg, pdata->rawPower);
+    aggVec_push_i(&panel2TempAg, asensorReadSingleSensorV(hTempSensors[1]) * 100);
 
     pdata = pcvsensorRead(panels[2].hpcvsensor, Read_CurrentA | Read_BusV | Read_PowerW);
-    addData_uint16_t(panel3Voltage, pdata->busVoltageV);
-    addData_uint16_t(panel3Current, pdata->calcdCurrentA);
-    addData_uint16_t(panel3Pwr, pdata->calcdPowerW);
-    addData_uint16_t(panel3Temp, asensorGetLastValueV(hTempSensors[2]));
+    aggVec_push_i(&panel3VoltageAg, pdata->rawBusVoltage);
+    aggVec_push_i(&panel3CurrentAg, pdata->rawCurrent);
+    aggVec_push_i(&panel3PwrAg, pdata->rawPower);
+    aggVec_push_i(&panel3TempAg, asensorReadSingleSensorV(hTempSensors[2]) * 100);
 
     for (i=0; i < NUM_PANELS; i++)
     {
@@ -225,8 +196,8 @@ FILE_STATIC void genBcSendHealth()
     // TODO:  Determine overall health based on querying various entities for their health
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
-    hseg.reset_count = bspGetResetCount();
     hseg.inttemp = asensorReadIntTempC();
+    aggVec_push_f(&mspTempAg, hseg.inttemp);
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandlers();
 }
@@ -234,12 +205,37 @@ FILE_STATIC void genBcSendHealth()
 void can_packet_rx_callback(CANPacket *packet)
 {
     cmd_rollcall rcPkt;
+    gcmd_gen_set_pt_state ptStatePkt;
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
             decodecmd_rollcall(packet, &rcPkt);
             updateMET(constructTimestamp(rcPkt.cmd_rollcall_met, rcPkt.cmd_rollcall_met_overflow));
-            rcFlag = 9;
+            rcFlag = 10;
+            break;
+        case CAN_ID_GCMD_GEN_SET_PT_STATE:
+            decodegcmd_gen_set_pt_state(packet, &ptStatePkt);
+            if(ptStatePkt.gcmd_gen_set_pt_state_1 != CAN_ENUM_NBOOL_NULL)
+                genSetPowerTracker(PowerTracker1, ptStatePkt.gcmd_gen_set_pt_state_1);
+            if(ptStatePkt.gcmd_gen_set_pt_state_2 != CAN_ENUM_NBOOL_NULL)
+                genSetPowerTracker(PowerTracker2, ptStatePkt.gcmd_gen_set_pt_state_2);
+            if(ptStatePkt.gcmd_gen_set_pt_state_3 != CAN_ENUM_NBOOL_NULL)
+                genSetPowerTracker(PowerTracker3, ptStatePkt.gcmd_gen_set_pt_state_3);
+            break;
+        case CAN_ID_GCMD_RESET_MINMAX:
+            aggVec_reset((aggVec *)&mspTempAg);
+            aggVec_reset((aggVec *)&panel1VoltageAg);
+            aggVec_reset((aggVec *)&panel2VoltageAg);
+            aggVec_reset((aggVec *)&panel3VoltageAg);
+            aggVec_reset((aggVec *)&panel1CurrentAg);
+            aggVec_reset((aggVec *)&panel2CurrentAg);
+            aggVec_reset((aggVec *)&panel3CurrentAg);
+            aggVec_reset((aggVec *)&panel1PwrAg);
+            aggVec_reset((aggVec *)&panel2PwrAg);
+            aggVec_reset((aggVec *)&panel3PwrAg);
+            aggVec_reset((aggVec *)&panel1TempAg);
+            aggVec_reset((aggVec *)&panel2TempAg);
+            aggVec_reset((aggVec *)&panel3TempAg);
             break;
         default:
             break;
@@ -251,103 +247,110 @@ void sendRC() //TODO: use if'else for each and do rc while once implemented on C
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
     {
         CANPacket rollcallPkt = {0};
-        if(rcFlag == 9)
+        if(rcFlag == 10)
         {
-            rc_eps_gen_1 rollcallPkt1_info = {0};
-            rollcallPkt1_info.rc_eps_gen_1_sysrstiv = bspGetResetCount();
-            rollcallPkt1_info.rc_eps_gen_1_temp_avg = getAvg_uint16_t(mspTemp);
-            rollcallPkt1_info.rc_eps_gen_1_temp_max = getMax_uint16_t(mspTemp);
-            rollcallPkt1_info.rc_eps_gen_1_temp_min = getMin_uint16_t(mspTemp);
-            encoderc_eps_gen_1(&rollcallPkt1_info, &rollcallPkt);
-            resetAvg_uint16_t(mspTemp);
+            rc_eps_gen_h1 rollcallPkt1_info = {0};
+            rollcallPkt1_info.rc_eps_gen_h1_sysrstiv = SYSRSTIV;
+            rollcallPkt1_info.rc_eps_gen_h1_reset_count = bspGetResetCount();
+            rollcallPkt1_info.rc_eps_gen_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_gen_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
+            rollcallPkt1_info.rc_eps_gen_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
+            encoderc_eps_gen_h1(&rollcallPkt1_info, &rollcallPkt);
+            aggVec_as_reset((aggVec *)&mspTempAg);
+        }
+        else if(rcFlag == 9)
+        {
+            rc_eps_gen_h2 rc ={0};
+            rc.rc_eps_gen_h2_canrxerror = canRxErrorCheck();
+            encoderc_eps_gen_h2(&rc, &rollcallPkt);
         }
         else if(rcFlag == 8)
         {
             rc_eps_gen_2 rollcallPkt2_info = {0};
-            rollcallPkt2_info.rc_eps_gen_2_pnl_1_voltage_avg = getAvg_uint16_t(panel1Voltage);
-            rollcallPkt2_info.rc_eps_gen_2_pnl_1_voltage_max = getMax_uint16_t(panel1Voltage);
-            rollcallPkt2_info.rc_eps_gen_2_pnl_1_voltage_min = getMin_uint16_t(panel1Voltage);
-            rollcallPkt2_info.rc_eps_gen_2_pnl_2_voltage_min = getMin_uint16_t(panel2Voltage);
+            rollcallPkt2_info.rc_eps_gen_2_pnl_1_voltage_avg = aggVec_avg_i_i(&panel1VoltageAg);
+            rollcallPkt2_info.rc_eps_gen_2_pnl_1_voltage_max = aggVec_max_i(&panel1VoltageAg);
+            rollcallPkt2_info.rc_eps_gen_2_pnl_1_voltage_min = aggVec_min_i(&panel1VoltageAg);
+            rollcallPkt2_info.rc_eps_gen_2_pnl_2_voltage_min = aggVec_min_i(&panel2VoltageAg);
             encoderc_eps_gen_2(&rollcallPkt2_info, &rollcallPkt);
-            resetAvg_uint16_t(panel1Voltage);
+            aggVec_as_reset((aggVec *)&panel1VoltageAg);
         }
         else if(rcFlag == 7)
         {
             rc_eps_gen_3 rollcallPkt3_info = {0};
-            rollcallPkt3_info.rc_eps_gen_3_pnl_2_voltage_avg = getAvg_uint16_t(panel2Voltage);
-            rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_max = getMax_uint16_t(panel2Voltage);
-            rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_max = getMax_uint16_t(panel3Voltage);
-            rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_min = getMin_uint16_t(panel3Voltage);
+            rollcallPkt3_info.rc_eps_gen_3_pnl_2_voltage_avg = aggVec_avg_i_i(&panel2VoltageAg);
+            rollcallPkt3_info.rc_eps_gen_3_pnl_2_voltage_max = aggVec_max_i(&panel2VoltageAg);
+            rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_max = aggVec_max_i(&panel2VoltageAg);
+            rollcallPkt3_info.rc_eps_gen_3_pnl_3_voltage_min = aggVec_min_i(&panel2VoltageAg);
             encoderc_eps_gen_3(&rollcallPkt3_info, &rollcallPkt);
-            resetAvg_uint16_t(panel2Voltage);
+            aggVec_as_reset((aggVec *)&panel2VoltageAg);
         }
         else if(rcFlag == 6)
         {
             rc_eps_gen_4 rollcallPkt4_info = {0};
-            rollcallPkt4_info.rc_eps_gen_4_pnl_1_current_avg = getAvg_uint16_t(panel1Current);
-            rollcallPkt4_info.rc_eps_gen_4_pnl_1_current_max = getMax_uint16_t(panel1Current);
-            rollcallPkt4_info.rc_eps_gen_4_pnl_1_current_min = getMin_uint16_t(panel1Current);
-            rollcallPkt4_info.rc_eps_gen_4_pnl_3_voltage_avg = getAvg_uint16_t(panel3Voltage);
+            rollcallPkt4_info.rc_eps_gen_4_pnl_1_current_avg = aggVec_avg_i_i(&panel1CurrentAg);
+            rollcallPkt4_info.rc_eps_gen_4_pnl_1_current_max = aggVec_max_i(&panel1CurrentAg);
+            rollcallPkt4_info.rc_eps_gen_4_pnl_1_current_min = aggVec_min_i(&panel1CurrentAg);
+            rollcallPkt4_info.rc_eps_gen_4_pnl_3_voltage_avg = aggVec_avg_i_i(&panel3VoltageAg);
             encoderc_eps_gen_4(&rollcallPkt4_info, &rollcallPkt);
-            resetAvg_uint16_t(panel1Current);
-            resetAvg_uint16_t(panel3Voltage);
+            aggVec_as_reset((aggVec *)&panel1CurrentAg);
+            aggVec_as_reset((aggVec *)&panel3VoltageAg);
         }
         else if(rcFlag == 5)
         {
             rc_eps_gen_5 rollcallPkt5_info = {0};
-            rollcallPkt5_info.rc_eps_gen_5_pnl_2_current_avg = getAvg_uint16_t(panel2Current);
-            rollcallPkt5_info.rc_eps_gen_5_pnl_2_current_max = getMax_uint16_t(panel2Current);
-            rollcallPkt5_info.rc_eps_gen_5_pnl_2_current_min = getMin_uint16_t(panel2Current);
-            rollcallPkt5_info.rc_eps_gen_5_pnl_3_current_min = getMin_uint16_t(panel3Current);
+            rollcallPkt5_info.rc_eps_gen_5_pnl_2_current_avg = aggVec_avg_i_i(&panel2CurrentAg);
+            rollcallPkt5_info.rc_eps_gen_5_pnl_2_current_max = aggVec_max_i(&panel2CurrentAg);
+            rollcallPkt5_info.rc_eps_gen_5_pnl_2_current_min = aggVec_min_i(&panel2CurrentAg);
+            rollcallPkt5_info.rc_eps_gen_5_pnl_3_current_min = aggVec_min_i(&panel3CurrentAg);
             encoderc_eps_gen_5(&rollcallPkt5_info, &rollcallPkt);
-            resetAvg_uint16_t(panel2Current);
+            aggVec_as_reset((aggVec *)&panel2CurrentAg);
         }
         else if(rcFlag == 4)
         {
             rc_eps_gen_6 rollcallPkt6_info = {0};
-            rollcallPkt6_info.rc_eps_gen_6_pnl_1_power_max = getMax_uint16_t(panel1Pwr);
-            rollcallPkt6_info.rc_eps_gen_6_pnl_1_power_min = getMin_uint16_t(panel1Pwr);
-            rollcallPkt6_info.rc_eps_gen_6_pnl_3_current_avg = getAvg_uint16_t(panel3Current);
-            rollcallPkt6_info.rc_eps_gen_6_pnl_3_current_max = getMax_uint16_t(panel3Current);
+            rollcallPkt6_info.rc_eps_gen_6_pnl_1_power_max = aggVec_max_i(&panel1PwrAg);
+            rollcallPkt6_info.rc_eps_gen_6_pnl_1_power_min = aggVec_min_i(&panel1PwrAg);
+            rollcallPkt6_info.rc_eps_gen_6_pnl_3_current_avg = aggVec_avg_i_i(&panel3CurrentAg);
+            rollcallPkt6_info.rc_eps_gen_6_pnl_3_current_max = aggVec_max_i(&panel3CurrentAg);
             encoderc_eps_gen_6(&rollcallPkt6_info, &rollcallPkt);
-            resetAvg_uint16_t(panel3Current);
+            aggVec_as_reset((aggVec *)&panel3CurrentAg);
         }
         else if(rcFlag == 3)
         {
             rc_eps_gen_7 rollcallPkt7_info = {0};
-            rollcallPkt7_info.rc_eps_gen_7_pnl_1_power_avg = getAvg_uint16_t(panel1Pwr);
-            rollcallPkt7_info.rc_eps_gen_7_pnl_2_power_avg = getAvg_uint16_t(panel2Pwr);
-            rollcallPkt7_info.rc_eps_gen_7_pnl_2_power_max = getMax_uint16_t(panel2Pwr);
-            rollcallPkt7_info.rc_eps_gen_7_pnl_2_power_min = getMin_uint16_t(panel2Pwr);
+            rollcallPkt7_info.rc_eps_gen_7_pnl_1_power_avg = aggVec_avg_i_i(&panel1PwrAg);
+            rollcallPkt7_info.rc_eps_gen_7_pnl_2_power_avg = aggVec_avg_i_i(&panel2PwrAg);
+            rollcallPkt7_info.rc_eps_gen_7_pnl_2_power_max = aggVec_max_i(&panel2PwrAg);
+            rollcallPkt7_info.rc_eps_gen_7_pnl_2_power_min = aggVec_min_i(&panel2PwrAg);
             encoderc_eps_gen_7(&rollcallPkt7_info, &rollcallPkt);
-            resetAvg_uint16_t(panel1Pwr);
-            resetAvg_uint16_t(panel2Pwr);
+            aggVec_as_reset((aggVec *)&panel1PwrAg);
+            aggVec_as_reset((aggVec *)&panel2PwrAg);
         }
         else if(rcFlag == 2)
         {
             rc_eps_gen_8 rollcallPkt8_info = {0};
-            rollcallPkt8_info.rc_eps_gen_8_pnl_1_temp_min = getMin_uint16_t(panel1Temp);
-            rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_avg = getAvg_uint16_t(panel3Pwr);
-            rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_max = getMax_uint16_t(panel3Pwr);
-            rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_min = getMin_uint16_t(panel3Pwr);
+            rollcallPkt8_info.rc_eps_gen_8_pnl_1_temp_min = aggVec_min_i(&panel1TempAg);
+            rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_avg = aggVec_avg_i_i(&panel3PwrAg);
+            rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_max = aggVec_max_i(&panel3PwrAg);
+            rollcallPkt8_info.rc_eps_gen_8_pnl_3_power_min = aggVec_min_i(&panel3PwrAg);
             encoderc_eps_gen_8(&rollcallPkt8_info, &rollcallPkt);
-            resetAvg_uint16_t(panel3Pwr);
+            aggVec_as_reset((aggVec *)&panel3PwrAg);
         }
         else if(rcFlag == 1)
         {
             rc_eps_gen_9 rollcallPkt9_info = {0};
-            rollcallPkt9_info.rc_eps_gen_9_pnl_1_temp_avg = getAvg_uint16_t(panel1Temp);
-            rollcallPkt9_info.rc_eps_gen_9_pnl_1_temp_max = getMax_uint16_t(panel1Temp);
-            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_avg = getAvg_uint16_t(panel2Temp);
-            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_max = getMax_uint16_t(panel2Temp);
-            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_min = getMin_uint16_t(panel2Temp);
-            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_avg = getAvg_uint16_t(panel3Temp);
-            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_max = getMax_uint16_t(panel3Temp);
-            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_min = getMin_uint16_t(panel3Temp);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_1_temp_avg = aggVec_avg_i_i(&panel1TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_1_temp_max = aggVec_max_i(&panel1TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_avg = aggVec_avg_i_i(&panel2TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_max = aggVec_max_i(&panel2TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_2_temp_min = aggVec_min_i(&panel2TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_avg = aggVec_avg_i_i(&panel3TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_max = aggVec_max_i(&panel3TempAg);
+            rollcallPkt9_info.rc_eps_gen_9_pnl_3_temp_min = aggVec_min_i(&panel3TempAg);
             encoderc_eps_gen_9(&rollcallPkt9_info, &rollcallPkt);
-            resetAvg_uint16_t(panel1Temp);
-            resetAvg_uint16_t(panel2Temp);
-            resetAvg_uint16_t(panel3Temp);
+            aggVec_as_reset((aggVec *)&panel1TempAg);
+            aggVec_as_reset((aggVec *)&panel2TempAg);
+            aggVec_as_reset((aggVec *)&panel3TempAg);
         }
         canSendPacket(&rollcallPkt);
         rcFlag--;
@@ -362,8 +365,7 @@ int main(void)
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     //mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
-    P3DIR |= BIT4;
-    P3OUT |= BIT4;
+    bspBackpowerPulldown();
 
     genTempSensorsInit();
     genPCVSensorsInit();
@@ -375,20 +377,6 @@ int main(void)
     bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
     bcbinPopulateHeader(&(gseg.header), TLM_ID_EPS_GEN_GENERAL, sizeof(gseg));
     bcbinPopulateHeader(&(sseg.header), TLM_ID_EPS_GEN_SENSORDAT, sizeof(sseg));
-
-    mspTemp = init_uint16_t(mspTempArray, 480);
-    panel1Voltage = init_uint16_t(panel1VoltageArray, 480);
-    panel2Voltage = init_uint16_t(panel2VoltageArray, 480);
-    panel3Voltage = init_uint16_t(panel3VoltageArray, 480);
-    panel1Current = init_uint16_t(panel1CurrentArray, 480);
-    panel2Current = init_uint16_t(panel2CurrentArray, 480);
-    panel3Current = init_uint16_t(panel3CurrentArray, 480);
-    panel1Pwr = init_uint16_t(panel1PwrArray, 480);
-    panel2Pwr = init_uint16_t(panel2PwrArray, 480);
-    panel3Pwr = init_uint16_t(panel3PwrArray, 480);
-    panel1Temp = init_uint16_t(panel1TempArray, 480);
-    panel2Temp = init_uint16_t(panel2TempArray, 480);
-    panel3Temp = init_uint16_t(panel3TempArray, 480);
 
 #if defined(__DEBUG__)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
@@ -415,6 +403,19 @@ int main(void)
 //    genSetPowerTracker(PowerTracker1, FALSE);
 //    genSetPowerTracker(PowerTracker2, FALSE);
 //    genSetPowerTracker(PowerTracker3, FALSE);
+    aggVec_init_f(&mspTempAg);
+    aggVec_init_i(&panel1VoltageAg);
+    aggVec_init_i(&panel2VoltageAg);
+    aggVec_init_i(&panel3VoltageAg);
+    aggVec_init_i(&panel1CurrentAg);
+    aggVec_init_i(&panel2CurrentAg);
+    aggVec_init_i(&panel3CurrentAg);
+    aggVec_init_i(&panel1PwrAg);
+    aggVec_init_i(&panel2PwrAg);
+    aggVec_init_i(&panel3PwrAg);
+    aggVec_init_i(&panel1TempAg);
+    aggVec_init_i(&panel2TempAg);
+    aggVec_init_i(&panel3TempAg);
 
     //canWrapInitWithFilter();
     canWrapInit();
