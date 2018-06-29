@@ -391,10 +391,14 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_CMD_PPT_TIME_UPD:
             //updates all times
             decodecmd_ppt_time_upd(packet, &pktTime);
-            mainChargeTime = pktTime.cmd_ppt_time_upd_charge;
-            mainIgniterDelay = pktTime.cmd_ppt_time_upd_ign_delay;
-            igniterChargeTime = pktTime.cmd_ppt_time_upd_ign_charge;
-            cooldownTime = pktTime.cmd_ppt_time_upd_cooldown;
+            if(pktTime.cmd_ppt_time_upd_charge)
+                mainChargeTime = pktTime.cmd_ppt_time_upd_charge;
+            if(pktTime.cmd_ppt_time_upd_ign_delay)
+                mainIgniterDelay = pktTime.cmd_ppt_time_upd_ign_delay;
+            if(pktTime.cmd_ppt_time_upd_ign_charge)
+                igniterChargeTime = pktTime.cmd_ppt_time_upd_ign_charge;
+            if(pktTime.cmd_ppt_time_upd_cooldown)
+                cooldownTime = pktTime.cmd_ppt_time_upd_cooldown;
             break;
         case CAN_ID_RC_ADCS_ESTIM_8:
             decoderc_adcs_estim_8(packet, &pktEstim);
@@ -468,8 +472,8 @@ __interrupt void Timer0_B1_ISR (void)
                     TB0CCR1 += igniterChargeTime;
                     break;
                 case State_Igniter_Charging:
-                	if(CHARGE_OUT & SMT_OUT_BIT) //smt trigger high
-                	{
+                	//if(CHARGE_OUT & SMT_OUT_BIT) //smt trigger high
+                	//{
                 		if(!withFiringPulse)
                 			stopFiring();
                 		else
@@ -495,12 +499,12 @@ __interrupt void Timer0_B1_ISR (void)
 									stopFiring();
 							}
                 		}
-                	}
-                	else //fault: main didn't charge
+                	//}
+                	/*else //fault: main didn't charge
                 	{
                 		faultCount++;
                 		stopFiring();
-                	}
+                	}*/
                     break;
                 case State_Cooldown:
                     CHARGE_OUT |= MAIN_CHARGE_BIT;
