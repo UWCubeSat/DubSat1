@@ -98,12 +98,13 @@ void magioSendBackchannel2()
 	magioSendBackchannel(&mag2, TLM_ID_MAG2_RAW, TLM_ID_MAG2_FILTERED);
 }
 
-FILE_STATIC void updateProcessedRollcall(MagIO *mag)
+FILE_STATIC void updateProcessedRollcall(MagIO *mag, int16_t x, int16_t y,
+		int16_t z, uint8_t valid)
 {
-    aggVec_push_i(&mag->agg_x, mag->output[0]);
-    aggVec_push_i(&mag->agg_y, mag->output[1]);
-    aggVec_push_i(&mag->agg_z, mag->output[2]);
-    aggVec_push_i(&mag->agg_valid, mag->output[3]);
+    aggVec_push_i(&mag->agg_x, x);
+    aggVec_push_i(&mag->agg_y, y);
+    aggVec_push_i(&mag->agg_z, z);
+    aggVec_push_i(&mag->agg_valid, valid);
 }
 
 void magioSendCAN1()
@@ -121,7 +122,8 @@ void magioSendCAN1()
     canSendPacket(&packet);
 
     // update rollcall arrays
-    updateProcessedRollcall(&mag1);
+    updateProcessedRollcall(&mag1, p.sensorproc_mag_x, p.sensorproc_mag_y,
+    		p.sensorproc_mag_z, p.sensorproc_mag_valid);
 }
 
 void magioSendCAN2()
@@ -139,7 +141,8 @@ void magioSendCAN2()
     canSendPacket(&packet);
 
     // update rollcall arrays
-    updateProcessedRollcall(&mag2);
+    updateProcessedRollcall(&mag2, p.sensorproc_mag2_x, p.sensorproc_mag2_y,
+        		p.sensorproc_mag2_z, p.sensorproc_mag2_valid);
 }
 
 void magio1RcPopulate6(rc_adcs_sp_6 *r)
