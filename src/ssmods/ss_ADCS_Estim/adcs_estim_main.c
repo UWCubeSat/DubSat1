@@ -64,9 +64,6 @@ FILE_STATIC health_segment hseg;
 #pragma PERSISTENT(tle)
 FILE_STATIC struct tle tle = { 0 };
 
-// store the ID of the last *complete* TLE to report in rollcall
-FILE_STATIC uint8_t lastTleId;
-
 /* functions */
 
 FILE_STATIC void setInputs();
@@ -120,7 +117,6 @@ int main(void)
     tle.tle4.tle_4_aop = 245.3514;
     tle.tle4.tle_4_raan = 67.1301;
     tle.tle5.tle_5_mnm = 14.56154823;
-    lastTleId = tleId(&tle);
 
     rtU.MET_epoch = tle.tle2.tle_2_day * 24 * 60 * 60;
 #endif
@@ -238,7 +234,6 @@ FILE_STATIC void setInputs()
         rtU.orbit_tle[6] = tleAop(&tle);
         rtU.orbit_tle[7] = tleMna(&tle);
         rtU.orbit_tle[8] = tleMnm(&tle);
-        lastTleId = tleId(&tle);
     }
     __enable_interrupt();
 }
@@ -256,7 +251,7 @@ FILE_STATIC void sendTelemOverBackchannel()
     tleSeg.aop = rtU.orbit_tle[6];
     tleSeg.mna = rtU.orbit_tle[7];
     tleSeg.mnm = rtU.orbit_tle[8];
-    tleSeg.id = tle._id;
+    tleSeg.ack = tleAck(&tle);
     bcbinPopulateHeader(&tleSeg.header, TLM_ID_INPUT_TLE, sizeof(tleSeg));
     bcbinSendPacket((uint8_t *) &tleSeg, sizeof(tleSeg));
 
@@ -461,7 +456,7 @@ FILE_STATIC void rcPopulate8(CANPacket *out)
     rc.rc_adcs_estim_8_sc_above_gs = rtY.sc_above_gs;
     rc.rc_adcs_estim_8_sc_in_sun = rtY.sc_in_sun;
     rc.rc_adcs_estim_8_sgp4_flag = rtY.SGP4_flag;
-    rc.rc_adcs_estim_8_tle_id = lastTleId;
+    rc.rc_adcs_estim_8_tle_id = tleAck(&tle);
 
     encoderc_adcs_estim_8(&rc, out);
 }

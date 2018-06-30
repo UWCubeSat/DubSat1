@@ -42,7 +42,7 @@ TLM_SEGMENT {
     float aop;
     float mna;
     float mnm;
-    uint8_t id;
+    uint8_t ack;
 } input_tle_segment;
 
 TLM_SEGMENT {

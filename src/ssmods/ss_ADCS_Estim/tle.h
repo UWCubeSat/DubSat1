@@ -20,8 +20,9 @@ struct tle {
     tle_3 tle3;
     tle_4 tle4;
     tle_5 tle5;
-    uint32_t _present; // bit set for which packets are present
-    uint8_t _id;       // the ID matching between each packet
+    uint8_t _present; // bit set for which packets are present
+    uint8_t _id;      // the ID matching between each packet
+    uint8_t _prevId;  // the ID of the last complete packet
 };
 
 void tleInit(struct tle *tle, BOOL isPrepopulated);
@@ -32,6 +33,22 @@ void tleInit(struct tle *tle, BOOL isPrepopulated);
 void tleUpdate(CANPacket *p, struct tle *tle);
 
 BOOL tleIsComplete(struct tle *tle);
+
+/**
+ * Returns an acknowledgment byte that encodes the status of reading a TLE.
+ *
+ * Starting from the least significant bit:
+ *
+ * 0: ID of the current TLE
+ * 1: tle1 packet received (waiting for other packets to come in)
+ * 2: tle2 packet received
+ * 3: tle3 packet received
+ * 4: tle4 packet received
+ * 5: tle5 packet received
+ * 6: ID of the incoming TLE
+ * 7: No meaning
+ */
+uint8_t tleAck(struct tle *tle);
 
 /**
  * Mean anomaly (degrees)
@@ -74,5 +91,7 @@ inline float tleRaan(struct tle *tle) { return tle->tle4.tle_4_raan; }
 inline double tleMnm(struct tle *tle) { return tle->tle5.tle_5_mnm; }
 
 inline uint8_t tleId(struct tle *tle) { return tle->_id; }
+
+inline uint8_t tleLastId(struct tle *tle) { return tle->_prevId; }
 
 #endif /* TLE_H_ */
