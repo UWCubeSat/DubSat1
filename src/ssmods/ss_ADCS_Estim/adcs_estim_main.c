@@ -122,8 +122,7 @@ int main(void)
     tle.tle5.tle_5_mnm = 14.56154823;
     lastTleId = tleId(&tle);
 
-    // guess at the epoch
-    rtU.MET_epoch = (8 * 365.24 + tle.tle2.tle_2_day) * 24 * 60 * 60;
+    rtU.MET_epoch = tle.tle2.tle_2_day * 24 * 60 * 60;
 #endif
     tleInit(&tle, MOCK_TLE);
     canWrapInitWithFilter();
