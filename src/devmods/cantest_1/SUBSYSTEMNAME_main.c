@@ -38,13 +38,18 @@ uint64_t sentCount=0;
 
 void bdotrcPopulateH1(CANPacket *out)
 {
-    rc_adcs_bdot_h1 rc;
-    rc.rc_adcs_bdot_h1_reset_count = 0;
-    rc.rc_adcs_bdot_h1_sysrstiv = 0;
-    rc.rc_adcs_bdot_h1_temp_avg = 0;
-    rc.rc_adcs_bdot_h1_temp_min = 0;
-    rc.rc_adcs_bdot_h1_reset_count = 0;
-    encoderc_adcs_bdot_h1(&rc, out);
+    rc_adcs_bdot_2 rc ;
+    rc.rc_adcs_bdot_2_mag_x_min = 0;
+    rc.rc_adcs_bdot_2_mag_x_max = 0;
+    rc.rc_adcs_bdot_2_mag_x_avg = 0;
+    rc.rc_adcs_bdot_2_mag_y_min = 0;
+    encoderc_adcs_bdot_2(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void bdotrcPopulateH2(CANPacket *out)
@@ -52,50 +57,78 @@ void bdotrcPopulateH2(CANPacket *out)
     rc_adcs_bdot_h2 rc;
     rc.rc_adcs_bdot_h2_canrxerror = 0;
     encoderc_adcs_bdot_h2(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void bdotrcPopulate1(CANPacket *out)
 {
-
     rc_adcs_bdot_1 rc;
     rc.rc_adcs_bdot_1_last_spam_x_mtq_x = 0;
     rc.rc_adcs_bdot_1_last_spam_x_mtq_y = 0;
     rc.rc_adcs_bdot_1_last_spam_x_mtq_z = 0;
-
     rc.rc_adcs_bdot_1_last_spam_y_mtq_x = 0;
-
     encoderc_adcs_bdot_1(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
-
 void bdotrcPopulate2(CANPacket *out)
 {
     rc_adcs_bdot_2 rc ;
-    rc.rc_adcs_bdot_2_mag_x_min = 0;
-    rc.rc_adcs_bdot_2_mag_x_max = 0;
-    rc.rc_adcs_bdot_2_mag_x_avg = 0;
-    rc.rc_adcs_bdot_2_mag_y_min = 0;
-    encoderc_adcs_bdot_2(&rc, out);
+      rc.rc_adcs_bdot_2_mag_x_min = 0;
+      rc.rc_adcs_bdot_2_mag_x_max = 0;
+      rc.rc_adcs_bdot_2_mag_x_avg = 0;
+      rc.rc_adcs_bdot_2_mag_y_min = 0;
+      encoderc_adcs_bdot_2(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void bdotrcPopulate3(CANPacket *out)
 {
     rc_adcs_bdot_3 rc = {0};
-    rc.rc_adcs_bdot_3_mag_y_max = 0;
-    rc.rc_adcs_bdot_3_mag_y_avg = 0;
-    rc.rc_adcs_bdot_3_mag_z_min = 0;
-    rc.rc_adcs_bdot_3_mag_z_max = 0;
-    encoderc_adcs_bdot_3(&rc, out);
+      rc.rc_adcs_bdot_3_mag_y_max = 0;
+      rc.rc_adcs_bdot_3_mag_y_avg = 0;
+      rc.rc_adcs_bdot_3_mag_z_min = 0;
+      rc.rc_adcs_bdot_3_mag_z_max = 0;
+      encoderc_adcs_bdot_3(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 
 void bdotrcPopulate4(CANPacket *out)
 {
     rc_adcs_bdot_4 rc = {0};
-    rc.rc_adcs_bdot_4_mag_z_avg = 0;
-    rc.rc_adcs_bdot_4_tumble = 0;
-    rc.rc_adcs_bdot_4_last_spam_y_mtq_y = 0;
-    rc.rc_adcs_bdot_4_last_spam_y_mtq_z = 0;
-    encoderc_adcs_bdot_4(&rc, out);
+      rc.rc_adcs_bdot_4_mag_z_avg = 0;
+      rc.rc_adcs_bdot_4_tumble = 0;
+      rc.rc_adcs_bdot_4_last_spam_y_mtq_y = 0;
+      rc.rc_adcs_bdot_4_last_spam_y_mtq_z = 0;
+      encoderc_adcs_bdot_4(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
+
 }
 
 void bdotrcPopulate5(CANPacket *out)
@@ -105,230 +138,378 @@ void bdotrcPopulate5(CANPacket *out)
     rc.rc_adcs_bdot_5_last_spam_z_mtq_y = 0;
     rc.rc_adcs_bdot_5_last_spam_z_mtq_z = 0;
     encoderc_adcs_bdot_5(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void mtqrcPopulate1(CANPacket *out){
     rc_adcs_mtq_h1 rc = {0};
-    rc.rc_adcs_mtq_h1_sysrstiv = 0;
-    rc.rc_adcs_mtq_h1_reset_count = 0;
-    rc.rc_adcs_mtq_h1_temp_avg = 0;
-    rc.rc_adcs_mtq_h1_temp_max = 0;
-    rc.rc_adcs_mtq_h1_temp_min = 0;
-    encoderc_adcs_mtq_h1(&rc, out);
+       rc.rc_adcs_mtq_h1_sysrstiv = 0;
+       rc.rc_adcs_mtq_h1_reset_count = 0;
+       rc.rc_adcs_mtq_h1_temp_avg = 0;
+       rc.rc_adcs_mtq_h1_temp_max = 0;
+       rc.rc_adcs_mtq_h1_temp_min = 0;
+       encoderc_adcs_mtq_h1(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void mtqrcPopulate0(CANPacket *out){
     rc_adcs_mtq_h2 rc;
-    rc.rc_adcs_mtq_h2_canrxerror = 0;
-    encoderc_adcs_mtq_h2(&rc, out);
+       rc.rc_adcs_mtq_h2_canrxerror = 0;
+       encoderc_adcs_mtq_h2(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 // TODO: description
 void mtqrcPopulate2(CANPacket *out){
     rc_adcs_mtq_2 rc = {0};
-    rc.rc_adcs_mtq_2_bdot_x_min = 0;
-    rc.rc_adcs_mtq_2_bdot_x_max = 0;
-    rc.rc_adcs_mtq_2_bdot_x_avg = 0;
-    rc.rc_adcs_mtq_2_bdot_y_min = 0;
-    rc.rc_adcs_mtq_2_bdot_y_max = 0;
-    rc.rc_adcs_mtq_2_bdot_y_avg = 0;
-    rc.rc_adcs_mtq_2_bdot_z_max = 0;
-    rc.rc_adcs_mtq_2_bdot_z_avg = 0;
-    encoderc_adcs_mtq_2(&rc, out);
+       rc.rc_adcs_mtq_2_bdot_x_min = 0;
+       rc.rc_adcs_mtq_2_bdot_x_max = 0;
+       rc.rc_adcs_mtq_2_bdot_x_avg = 0;
+       rc.rc_adcs_mtq_2_bdot_y_min = 0;
+       rc.rc_adcs_mtq_2_bdot_y_max = 0;
+       rc.rc_adcs_mtq_2_bdot_y_avg = 0;
+       rc.rc_adcs_mtq_2_bdot_z_max = 0;
+       rc.rc_adcs_mtq_2_bdot_z_avg = 0;
+       encoderc_adcs_mtq_2(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
+
+
 }
 
 // TODO: description
 void mtqrcPopulate3(CANPacket *out){
     rc_adcs_mtq_3 rc = {0};
-    rc.rc_adcs_mtq_3_bdot_z_min = 0;
-    rc.rc_adcs_mtq_3_fsw_x_min = 0;
-    rc.rc_adcs_mtq_3_fsw_x_max = 0;
-    rc.rc_adcs_mtq_3_fsw_x_avg = 0;
-    rc.rc_adcs_mtq_3_fsw_y_min = 0;
-    rc.rc_adcs_mtq_3_fsw_y_max = 0;
-    rc.rc_adcs_mtq_3_fsw_y_avg = 0;
-    rc.rc_adcs_mtq_3_fsw_z_avg = 0;
-    encoderc_adcs_mtq_3(&rc, out);
+        rc.rc_adcs_mtq_3_bdot_z_min = 0;
+        rc.rc_adcs_mtq_3_fsw_x_min = 0;
+        rc.rc_adcs_mtq_3_fsw_x_max = 0;
+        rc.rc_adcs_mtq_3_fsw_x_avg = 0;
+        rc.rc_adcs_mtq_3_fsw_y_min = 0;
+        rc.rc_adcs_mtq_3_fsw_y_max = 0;
+        rc.rc_adcs_mtq_3_fsw_y_avg = 0;
+        rc.rc_adcs_mtq_3_fsw_z_avg = 0;
+        encoderc_adcs_mtq_3(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 
 }
 
 // TODO: description
 void mtqrcPopulate4(CANPacket *out){
     rc_adcs_mtq_4 rc = {0};
-    rc.rc_adcs_mtq_4_fsw_z_min = 0;
-    rc.rc_adcs_mtq_4_fsw_y_max = 0;
-    rc.rc_adcs_mtq_4_duty_x1_avg = 0;
-    rc.rc_adcs_mtq_4_duty_x2_avg = 0;
-    rc.rc_adcs_mtq_4_duty_y1_avg = 0;
-    rc.rc_adcs_mtq_4_duty_y2_avg = 0;
-    rc.rc_adcs_mtq_4_duty_z1_avg = 0;
-    rc.rc_adcs_mtq_4_duty_z2_avg = 0;
-    encoderc_adcs_mtq_4(&rc, out);
+       rc.rc_adcs_mtq_4_fsw_z_min = 0;
+       rc.rc_adcs_mtq_4_fsw_y_max = 0;
+       rc.rc_adcs_mtq_4_duty_x1_avg = 0;
+       rc.rc_adcs_mtq_4_duty_x2_avg = 0;
+       rc.rc_adcs_mtq_4_duty_y1_avg = 0;
+       rc.rc_adcs_mtq_4_duty_y2_avg = 0;
+       rc.rc_adcs_mtq_4_duty_z1_avg = 0;
+       rc.rc_adcs_mtq_4_duty_z2_avg = 0;
+       encoderc_adcs_mtq_4(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 // TODO: description
 void mtqrcPopulate5(CANPacket *out){
     rc_adcs_mtq_5 rc = {0};
-    rc.rc_adcs_mtq_5_fsw_ignore = 0;
-    rc.rc_adcs_mtq_5_reset_counts = 0;
-    encoderc_adcs_mtq_5(&rc, out);
+      rc.rc_adcs_mtq_5_fsw_ignore = 0;
+      rc.rc_adcs_mtq_5_reset_counts = 0;
+      encoderc_adcs_mtq_5(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
+
 }
 
 void sprcPopulate1(CANPacket *out)
 {
     rc_adcs_sp_h1 rc;
-    rc.rc_adcs_sp_h1_reset_count = 0;
-    rc.rc_adcs_sp_h1_sysrstiv = 0;
-    rc.rc_adcs_sp_h1_temp_avg = 0;
-    rc.rc_adcs_sp_h1_temp_max = 0;
-    rc.rc_adcs_sp_h1_temp_min = 0;
-    encoderc_adcs_sp_h1(&rc, out);
+       rc.rc_adcs_sp_h1_reset_count = 0;
+       rc.rc_adcs_sp_h1_sysrstiv = 0;
+       rc.rc_adcs_sp_h1_temp_avg = 0;
+       rc.rc_adcs_sp_h1_temp_max = 0;
+       rc.rc_adcs_sp_h1_temp_min = 0;
+       encoderc_adcs_sp_h1(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate2(CANPacket *out)
 {
     rc_adcs_sp_2 rc;
-    encoderc_adcs_sp_2(&rc, out);
+       encoderc_adcs_sp_2(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate3(CANPacket *out)
 {
     rc_adcs_sp_3 rc;
-    encoderc_adcs_sp_3(&rc, out);
+     encoderc_adcs_sp_3(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate4(CANPacket *out)
 {
     rc_adcs_sp_4 rc;
-    encoderc_adcs_sp_4(&rc, out);
+     encoderc_adcs_sp_4(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate5(CANPacket *out)
 {
+
     rc_adcs_sp_5 rc;
-    encoderc_adcs_sp_5(&rc, out);
+     encoderc_adcs_sp_5(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate6(CANPacket *out)
 {
-    rc_adcs_sp_6 rc = { 0 };
-    encoderc_adcs_sp_6(&rc, out);
+
+    rc_adcs_sp_6 rc;
+     encoderc_adcs_sp_6(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate9(CANPacket *out)
 {
-    rc_adcs_sp_9 rc = { 0 };
-    encoderc_adcs_sp_9(&rc, out);
+
+    rc_adcs_sp_9 rc;
+     encoderc_adcs_sp_9(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate10(CANPacket *out)
 {
-    rc_adcs_sp_10 rc = { 0 };
-    encoderc_adcs_sp_10(&rc, out);
+
+    rc_adcs_sp_10 rc;
+     encoderc_adcs_sp_10(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate11(CANPacket *out)
 {
-    rc_adcs_sp_11 rc = { 0 };
-    encoderc_adcs_sp_11(&rc, out);
+
+    rc_adcs_sp_11 rc;
+     encoderc_adcs_sp_11(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate12(CANPacket *out)
 {
-    rc_adcs_sp_12 rc = { 0 };
-    encoderc_adcs_sp_12(&rc, out);
+
+    rc_adcs_sp_12 rc;
+     encoderc_adcs_sp_12(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate13(CANPacket *out)
 {
-    rc_adcs_sp_13 rc = { 0 };
-    encoderc_adcs_sp_13(&rc, out);
+
+    rc_adcs_sp_13 rc;
+     encoderc_adcs_sp_13(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate14(CANPacket *out)
 {
+
     rc_adcs_sp_14 rc;
-    encoderc_adcs_sp_14(&rc, out);
+     encoderc_adcs_sp_14(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate15(CANPacket *out)
 {
+
     rc_adcs_sp_15 rc;
-    encoderc_adcs_sp_15(&rc, out);
+     encoderc_adcs_sp_15(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate16(CANPacket *out)
 {
+
     rc_adcs_sp_16 rc;
-    encoderc_adcs_sp_16(&rc, out);
+     encoderc_adcs_sp_16(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void sprcPopulate17(CANPacket *out)
 {
+
     rc_adcs_sp_17 rc;
-    encoderc_adcs_sp_17(&rc, out);
+     encoderc_adcs_sp_17(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void battrcPopulateH1(CANPacket *out)
 {
     rc_adcs_bdot_h1 rc;
-    rc.rc_adcs_bdot_h1_reset_count = 0;
-    rc.rc_adcs_bdot_h1_sysrstiv = 0;
-    rc.rc_adcs_bdot_h1_temp_avg = 0;
-    rc.rc_adcs_bdot_h1_temp_min = 0;
-    rc.rc_adcs_bdot_h1_reset_count = 0;
-    encoderc_adcs_bdot_h1(&rc, out);
-}
-
-void battrcPopulateH2(CANPacket *out)
-{
-    rc_adcs_bdot_h2 rc;
-    rc.rc_adcs_bdot_h2_canrxerror = 0;
-    encoderc_adcs_bdot_h2(&rc, out);
-}
-
-void battrcPopulate1(CANPacket *out)
-{
-
-    rc_adcs_bdot_1 rc;
-    rc.rc_adcs_bdot_1_last_spam_x_mtq_x = 0;
-    rc.rc_adcs_bdot_1_last_spam_x_mtq_y = 0;
-    rc.rc_adcs_bdot_1_last_spam_x_mtq_z = 0;
-
-    rc.rc_adcs_bdot_1_last_spam_y_mtq_x = 0;
-
-    encoderc_adcs_bdot_1(&rc, out);
-}
-
-void battrcPopulate2(CANPacket *out)
-{
-    rc_adcs_bdot_2 rc ;
-    rc.rc_adcs_bdot_2_mag_x_min = 0;
-    rc.rc_adcs_bdot_2_mag_x_max = 0;
-    rc.rc_adcs_bdot_2_mag_x_avg = 0;
-    rc.rc_adcs_bdot_2_mag_y_min = 0;
-    encoderc_adcs_bdot_2(&rc, out);
+       rc.rc_adcs_bdot_h1_reset_count = 0;
+       rc.rc_adcs_bdot_h1_sysrstiv = 0;
+       rc.rc_adcs_bdot_h1_temp_avg = 0;
+       rc.rc_adcs_bdot_h1_temp_min = 0;
+       rc.rc_adcs_bdot_h1_reset_count = 0;
+       encoderc_adcs_bdot_h1(&rc, out);
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
 }
 
 void battrcPopulate3(CANPacket *out)
 {
     rc_adcs_bdot_3 rc = {0};
-    rc.rc_adcs_bdot_3_mag_y_max = 0;
-    rc.rc_adcs_bdot_3_mag_y_avg = 0;
-    rc.rc_adcs_bdot_3_mag_z_min = 0;
-    rc.rc_adcs_bdot_3_mag_z_max = 0;
-    encoderc_adcs_bdot_3(&rc, out);
+      rc.rc_adcs_bdot_3_mag_y_max = 0;
+      rc.rc_adcs_bdot_3_mag_y_avg = 0;
+      rc.rc_adcs_bdot_3_mag_z_min = 0;
+      rc.rc_adcs_bdot_3_mag_z_max = 0;
+      encoderc_adcs_bdot_3(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
+
 }
 
 
 void battrcPopulate4(CANPacket *out)
 {
     rc_adcs_bdot_4 rc = {0};
-    rc.rc_adcs_bdot_4_mag_z_avg = 0;
-    rc.rc_adcs_bdot_4_tumble = 0;
-    rc.rc_adcs_bdot_4_last_spam_y_mtq_y = 0;
-    rc.rc_adcs_bdot_4_last_spam_y_mtq_z = 0;
-    encoderc_adcs_bdot_4(&rc, out);
+       rc.rc_adcs_bdot_4_mag_z_avg = 0;
+       rc.rc_adcs_bdot_4_tumble = 0;
+       rc.rc_adcs_bdot_4_last_spam_y_mtq_y = 0;
+       rc.rc_adcs_bdot_4_last_spam_y_mtq_z = 0;
+       encoderc_adcs_bdot_4(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
+
 }
 
 void battrcPopulate5(CANPacket *out)
@@ -338,6 +519,14 @@ void battrcPopulate5(CANPacket *out)
     rc.rc_adcs_bdot_5_last_spam_z_mtq_y = 0;
     rc.rc_adcs_bdot_5_last_spam_z_mtq_z = 0;
     encoderc_adcs_bdot_5(&rc, out);
+
+    out->length=8;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((sentCount))));
+    uint64_t *thePointer = (uint64_t *) (&(out -> data));
+    *thePointer = fullPacketData;
+    reverseArrah((out->data), 0, 7);
+
 }
 
 
@@ -348,7 +537,7 @@ FILE_STATIC const rollcall_fn rollcallFunctions[] =
  sprcPopulate1, sprcPopulate2, sprcPopulate3, sprcPopulate4, sprcPopulate5,
  sprcPopulate6, sprcPopulate9, sprcPopulate10, sprcPopulate11, sprcPopulate12,
  sprcPopulate13, sprcPopulate14, sprcPopulate15, sprcPopulate16, sprcPopulate17,
- battrcPopulateH1, battrcPopulateH2, battrcPopulate2, battrcPopulate3, battrcPopulate4,
+ battrcPopulateH1, battrcPopulate3, battrcPopulate4,
  battrcPopulate5
 
 };
@@ -359,6 +548,7 @@ void rxCb(CANPacket *p){
     // PPT Single Fire
     if(p -> id == CAN_ID_CMD_ROLLCALL){
         rollcallStart();
+        sentCount++;
     }
 }
 
