@@ -5,7 +5,7 @@
 #include "core/can.h"
 #include "interfaces/canwrap.h"
 #include "core/agglib.h"
-
+#include "interfaces/rollcall.h"
 
 // Directives for timer stuff.
 #include "core/timers.h"
@@ -24,13 +24,6 @@ FILE_STATIC uint32_t overflowCount = 0;
  * main.c
  */
 // Send back the same reply
-
-void pause(uint64_t i){
-    uint64_t j=0;
-    for(j=0; j <i; j++){
-        __delay_cycles(1);
-    }
-}
 void reverseArrah(uint8_t arr[], uint8_t start, uint8_t end) {
     uint8_t temp;
     if (start >= end)
@@ -41,18 +34,331 @@ void reverseArrah(uint8_t arr[], uint8_t start, uint8_t end) {
     reverseArrah(arr, start+1, end-1);
 }
 
+uint64_t sentCount=0;
+
+void bdotrcPopulateH1(CANPacket *out)
+{
+    rc_adcs_bdot_h1 rc;
+    rc.rc_adcs_bdot_h1_reset_count = 0;
+    rc.rc_adcs_bdot_h1_sysrstiv = 0;
+    rc.rc_adcs_bdot_h1_temp_avg = 0;
+    rc.rc_adcs_bdot_h1_temp_min = 0;
+    rc.rc_adcs_bdot_h1_reset_count = 0;
+    encoderc_adcs_bdot_h1(&rc, out);
+}
+
+void bdotrcPopulateH2(CANPacket *out)
+{
+    rc_adcs_bdot_h2 rc;
+    rc.rc_adcs_bdot_h2_canrxerror = 0;
+    encoderc_adcs_bdot_h2(&rc, out);
+}
+
+void bdotrcPopulate1(CANPacket *out)
+{
+
+    rc_adcs_bdot_1 rc;
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_x = 0;
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_y = 0;
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_z = 0;
+
+    rc.rc_adcs_bdot_1_last_spam_y_mtq_x = 0;
+
+    encoderc_adcs_bdot_1(&rc, out);
+}
+
+void bdotrcPopulate2(CANPacket *out)
+{
+    rc_adcs_bdot_2 rc ;
+    rc.rc_adcs_bdot_2_mag_x_min = 0;
+    rc.rc_adcs_bdot_2_mag_x_max = 0;
+    rc.rc_adcs_bdot_2_mag_x_avg = 0;
+    rc.rc_adcs_bdot_2_mag_y_min = 0;
+    encoderc_adcs_bdot_2(&rc, out);
+}
+
+void bdotrcPopulate3(CANPacket *out)
+{
+    rc_adcs_bdot_3 rc = {0};
+    rc.rc_adcs_bdot_3_mag_y_max = 0;
+    rc.rc_adcs_bdot_3_mag_y_avg = 0;
+    rc.rc_adcs_bdot_3_mag_z_min = 0;
+    rc.rc_adcs_bdot_3_mag_z_max = 0;
+    encoderc_adcs_bdot_3(&rc, out);
+}
+
+
+void bdotrcPopulate4(CANPacket *out)
+{
+    rc_adcs_bdot_4 rc = {0};
+    rc.rc_adcs_bdot_4_mag_z_avg = 0;
+    rc.rc_adcs_bdot_4_tumble = 0;
+    rc.rc_adcs_bdot_4_last_spam_y_mtq_y = 0;
+    rc.rc_adcs_bdot_4_last_spam_y_mtq_z = 0;
+    encoderc_adcs_bdot_4(&rc, out);
+}
+
+void bdotrcPopulate5(CANPacket *out)
+{
+    rc_adcs_bdot_5 rc = {0};
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_x = 0;
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_y = 0;
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_z = 0;
+    encoderc_adcs_bdot_5(&rc, out);
+}
+
+void mtqrcPopulate1(CANPacket *out){
+    rc_adcs_mtq_h1 rc = {0};
+    rc.rc_adcs_mtq_h1_sysrstiv = 0;
+    rc.rc_adcs_mtq_h1_reset_count = 0;
+    rc.rc_adcs_mtq_h1_temp_avg = 0;
+    rc.rc_adcs_mtq_h1_temp_max = 0;
+    rc.rc_adcs_mtq_h1_temp_min = 0;
+    encoderc_adcs_mtq_h1(&rc, out);
+}
+
+void mtqrcPopulate0(CANPacket *out){
+    rc_adcs_mtq_h2 rc;
+    rc.rc_adcs_mtq_h2_canrxerror = 0;
+    encoderc_adcs_mtq_h2(&rc, out);
+}
+
+// TODO: description
+void mtqrcPopulate2(CANPacket *out){
+    rc_adcs_mtq_2 rc = {0};
+    rc.rc_adcs_mtq_2_bdot_x_min = 0;
+    rc.rc_adcs_mtq_2_bdot_x_max = 0;
+    rc.rc_adcs_mtq_2_bdot_x_avg = 0;
+    rc.rc_adcs_mtq_2_bdot_y_min = 0;
+    rc.rc_adcs_mtq_2_bdot_y_max = 0;
+    rc.rc_adcs_mtq_2_bdot_y_avg = 0;
+    rc.rc_adcs_mtq_2_bdot_z_max = 0;
+    rc.rc_adcs_mtq_2_bdot_z_avg = 0;
+    encoderc_adcs_mtq_2(&rc, out);
+}
+
+// TODO: description
+void mtqrcPopulate3(CANPacket *out){
+    rc_adcs_mtq_3 rc = {0};
+    rc.rc_adcs_mtq_3_bdot_z_min = 0;
+    rc.rc_adcs_mtq_3_fsw_x_min = 0;
+    rc.rc_adcs_mtq_3_fsw_x_max = 0;
+    rc.rc_adcs_mtq_3_fsw_x_avg = 0;
+    rc.rc_adcs_mtq_3_fsw_y_min = 0;
+    rc.rc_adcs_mtq_3_fsw_y_max = 0;
+    rc.rc_adcs_mtq_3_fsw_y_avg = 0;
+    rc.rc_adcs_mtq_3_fsw_z_avg = 0;
+    encoderc_adcs_mtq_3(&rc, out);
+
+}
+
+// TODO: description
+void mtqrcPopulate4(CANPacket *out){
+    rc_adcs_mtq_4 rc = {0};
+    rc.rc_adcs_mtq_4_fsw_z_min = 0;
+    rc.rc_adcs_mtq_4_fsw_y_max = 0;
+    rc.rc_adcs_mtq_4_duty_x1_avg = 0;
+    rc.rc_adcs_mtq_4_duty_x2_avg = 0;
+    rc.rc_adcs_mtq_4_duty_y1_avg = 0;
+    rc.rc_adcs_mtq_4_duty_y2_avg = 0;
+    rc.rc_adcs_mtq_4_duty_z1_avg = 0;
+    rc.rc_adcs_mtq_4_duty_z2_avg = 0;
+    encoderc_adcs_mtq_4(&rc, out);
+}
+
+// TODO: description
+void mtqrcPopulate5(CANPacket *out){
+    rc_adcs_mtq_5 rc = {0};
+    rc.rc_adcs_mtq_5_fsw_ignore = 0;
+    rc.rc_adcs_mtq_5_reset_counts = 0;
+    encoderc_adcs_mtq_5(&rc, out);
+}
+
+void sprcPopulate1(CANPacket *out)
+{
+    rc_adcs_sp_h1 rc;
+    rc.rc_adcs_sp_h1_reset_count = 0;
+    rc.rc_adcs_sp_h1_sysrstiv = 0;
+    rc.rc_adcs_sp_h1_temp_avg = 0;
+    rc.rc_adcs_sp_h1_temp_max = 0;
+    rc.rc_adcs_sp_h1_temp_min = 0;
+    encoderc_adcs_sp_h1(&rc, out);
+}
+
+void sprcPopulate2(CANPacket *out)
+{
+    rc_adcs_sp_2 rc;
+    encoderc_adcs_sp_2(&rc, out);
+}
+
+void sprcPopulate3(CANPacket *out)
+{
+    rc_adcs_sp_3 rc;
+    encoderc_adcs_sp_3(&rc, out);
+}
+
+void sprcPopulate4(CANPacket *out)
+{
+    rc_adcs_sp_4 rc;
+    encoderc_adcs_sp_4(&rc, out);
+}
+
+void sprcPopulate5(CANPacket *out)
+{
+    rc_adcs_sp_5 rc;
+    encoderc_adcs_sp_5(&rc, out);
+}
+
+void sprcPopulate6(CANPacket *out)
+{
+    rc_adcs_sp_6 rc = { 0 };
+    encoderc_adcs_sp_6(&rc, out);
+}
+
+void sprcPopulate9(CANPacket *out)
+{
+    rc_adcs_sp_9 rc = { 0 };
+    encoderc_adcs_sp_9(&rc, out);
+}
+
+void sprcPopulate10(CANPacket *out)
+{
+    rc_adcs_sp_10 rc = { 0 };
+    encoderc_adcs_sp_10(&rc, out);
+}
+
+void sprcPopulate11(CANPacket *out)
+{
+    rc_adcs_sp_11 rc = { 0 };
+    encoderc_adcs_sp_11(&rc, out);
+}
+
+void sprcPopulate12(CANPacket *out)
+{
+    rc_adcs_sp_12 rc = { 0 };
+    encoderc_adcs_sp_12(&rc, out);
+}
+
+void sprcPopulate13(CANPacket *out)
+{
+    rc_adcs_sp_13 rc = { 0 };
+    encoderc_adcs_sp_13(&rc, out);
+}
+
+void sprcPopulate14(CANPacket *out)
+{
+    rc_adcs_sp_14 rc;
+    encoderc_adcs_sp_14(&rc, out);
+}
+
+void sprcPopulate15(CANPacket *out)
+{
+    rc_adcs_sp_15 rc;
+    encoderc_adcs_sp_15(&rc, out);
+}
+
+void sprcPopulate16(CANPacket *out)
+{
+    rc_adcs_sp_16 rc;
+    encoderc_adcs_sp_16(&rc, out);
+}
+
+void sprcPopulate17(CANPacket *out)
+{
+    rc_adcs_sp_17 rc;
+    encoderc_adcs_sp_17(&rc, out);
+}
+
+void battrcPopulateH1(CANPacket *out)
+{
+    rc_adcs_bdot_h1 rc;
+    rc.rc_adcs_bdot_h1_reset_count = 0;
+    rc.rc_adcs_bdot_h1_sysrstiv = 0;
+    rc.rc_adcs_bdot_h1_temp_avg = 0;
+    rc.rc_adcs_bdot_h1_temp_min = 0;
+    rc.rc_adcs_bdot_h1_reset_count = 0;
+    encoderc_adcs_bdot_h1(&rc, out);
+}
+
+void battrcPopulateH2(CANPacket *out)
+{
+    rc_adcs_bdot_h2 rc;
+    rc.rc_adcs_bdot_h2_canrxerror = 0;
+    encoderc_adcs_bdot_h2(&rc, out);
+}
+
+void battrcPopulate1(CANPacket *out)
+{
+
+    rc_adcs_bdot_1 rc;
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_x = 0;
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_y = 0;
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_z = 0;
+
+    rc.rc_adcs_bdot_1_last_spam_y_mtq_x = 0;
+
+    encoderc_adcs_bdot_1(&rc, out);
+}
+
+void battrcPopulate2(CANPacket *out)
+{
+    rc_adcs_bdot_2 rc ;
+    rc.rc_adcs_bdot_2_mag_x_min = 0;
+    rc.rc_adcs_bdot_2_mag_x_max = 0;
+    rc.rc_adcs_bdot_2_mag_x_avg = 0;
+    rc.rc_adcs_bdot_2_mag_y_min = 0;
+    encoderc_adcs_bdot_2(&rc, out);
+}
+
+void battrcPopulate3(CANPacket *out)
+{
+    rc_adcs_bdot_3 rc = {0};
+    rc.rc_adcs_bdot_3_mag_y_max = 0;
+    rc.rc_adcs_bdot_3_mag_y_avg = 0;
+    rc.rc_adcs_bdot_3_mag_z_min = 0;
+    rc.rc_adcs_bdot_3_mag_z_max = 0;
+    encoderc_adcs_bdot_3(&rc, out);
+}
+
+
+void battrcPopulate4(CANPacket *out)
+{
+    rc_adcs_bdot_4 rc = {0};
+    rc.rc_adcs_bdot_4_mag_z_avg = 0;
+    rc.rc_adcs_bdot_4_tumble = 0;
+    rc.rc_adcs_bdot_4_last_spam_y_mtq_y = 0;
+    rc.rc_adcs_bdot_4_last_spam_y_mtq_z = 0;
+    encoderc_adcs_bdot_4(&rc, out);
+}
+
+void battrcPopulate5(CANPacket *out)
+{
+    rc_adcs_bdot_5 rc = {0};
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_x = 0;
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_y = 0;
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_z = 0;
+    encoderc_adcs_bdot_5(&rc, out);
+}
+
+
+FILE_STATIC const rollcall_fn rollcallFunctions[] =
+{
+ bdotrcPopulateH1, bdotrcPopulateH2, bdotrcPopulate1, bdotrcPopulate2, bdotrcPopulate3, bdotrcPopulate4, bdotrcPopulate5,
+ mtqrcPopulate1, mtqrcPopulate0, mtqrcPopulate2, mtqrcPopulate3, mtqrcPopulate4, mtqrcPopulate5,
+ sprcPopulate1, sprcPopulate2, sprcPopulate3, sprcPopulate4, sprcPopulate5,
+ sprcPopulate6, sprcPopulate9, sprcPopulate10, sprcPopulate11, sprcPopulate12,
+ sprcPopulate13, sprcPopulate14, sprcPopulate15, sprcPopulate16, sprcPopulate17,
+ battrcPopulateH1, battrcPopulateH2, battrcPopulate2, battrcPopulate3, battrcPopulate4,
+ battrcPopulate5
+
+};
+
+
 
 void rxCb(CANPacket *p){
     // PPT Single Fire
-    if(p -> id == 11325013 && p->data[0] == 160 ){
-        CANPacket j = {0};
-        j.id =  49153;
-        uint64_t data =3400535326 ;
-        uint64_t *thePointer = (uint64_t *) (j.data);
-        j.length=4;
-        *thePointer = data;
-        reverseArrah((j.data), 0, 3);
-        canSendPacket(&j);
+    if(p -> id == CAN_ID_CMD_ROLLCALL){
+        rollcallStart();
     }
 }
 
@@ -83,83 +389,12 @@ int main(void) {
 
     PJDIR |= BIT0 | BIT1 | BIT2;
 
-    uint64_t delay = 30000;
-
+    rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
+//    rollcallInit(rollcallFunctions, 8);
     while(1){
-
-        if (P1IN & BIT7){
-            delay = 20;
-        }
-        else {
-            delay = 60000;
-        }
-        if (P1IN & BIT6){
-            //GND_NONE
-            PJOUT |= BIT0;
-            CANPacket cmd_com2_run_packet = {0};
-            cmd_com2_run cmd_com2_run_info = {0};
-            encodecmd_com2_run(&cmd_com2_run_info, &cmd_com2_run_packet);
-            uint64_t data = 3735928559;
-            uint64_t *thePointer = (uint64_t *) (cmd_com2_run_packet.data);
-            cmd_com2_run_packet.length=4;
-            *thePointer = data;
-            reverseArrah((cmd_com2_run_packet.data), 0, 3);
-            canSendPacket(&cmd_com2_run_packet);
-        }
-        else {
-            PJOUT &= ~BIT0;
-        }
-        pause(delay);
-        if (P3IN & BIT7){
-            //GND_REALTIME
-            PJOUT |= BIT1;
-            CANPacket cmd_gen_rst_packet = {0};
-            cmd_gen_rst cmd_gen_rst_info = {0};
-            encodecmd_gen_rst(&cmd_gen_rst_info, &cmd_gen_rst_packet);
-            uint64_t data = 789514;
-            uint64_t *thePointer = (uint64_t *) (cmd_gen_rst_packet.data);
-            cmd_gen_rst_packet.length=3;
-            *thePointer = data;
-            reverseArrah((cmd_gen_rst_packet.data), 0, 2);
-            canSendPacket(&cmd_gen_rst_packet);
-        }
-        else {
-            PJOUT &= ~BIT1;
-        }
-        pause(delay);
-        if (P3IN & BIT6){
-            //GND_HEALTH
-            PJOUT |= BIT2;
-            CANPacket com2_state_packet = {0};
-            com2_state com2_state_info = {0};
-            encodecom2_state(&com2_state_info, &com2_state_packet);
-            uint64_t data = 900517141665;
-            uint64_t *thePointer = (uint64_t *) (com2_state_packet.data);
-            com2_state_packet.length=5;
-            *thePointer = data;
-            reverseArrah((com2_state_packet.data), 0, 4);
-            canSendPacket(&com2_state_packet);
-        }
-        else {
-            PJOUT &= ~BIT2;
-        }
-        pause(delay);
-        if (P2IN & BIT2){
-            //GND_WOD
-            CANPacket mpc_vp_packet = {0};
-            mpc_vp mpc_vp_info = {0};
-            encodempc_vp(&mpc_vp_info, &mpc_vp_packet);
-            uint64_t data = 3201966622;
-            uint64_t *thePointer = (uint64_t *) (mpc_vp_packet.data);
-            mpc_vp_packet.length=4;
-            *thePointer = data;
-            reverseArrah((mpc_vp_packet.data), 0, 3);
-            canSendPacket(&mpc_vp_packet);
-        }
-        pause(delay);
+        rollcallUpdate();
+        __delay_cycles(100);
     }
-
-
 
 #if defined(__DEBUG__)
 
