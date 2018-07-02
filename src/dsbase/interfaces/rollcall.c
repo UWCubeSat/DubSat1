@@ -32,6 +32,12 @@ void rollcallStart()
     rcFlag = numFunctions;
 }
 
+void rollcallStartMini()
+{
+    rcFlag=16;
+}
+
+
 FILE_STATIC uint8_t hasPacketBuffer()
 {
     return packets != NULL;

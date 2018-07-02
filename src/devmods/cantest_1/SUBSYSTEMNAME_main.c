@@ -38,12 +38,8 @@ uint64_t sentCount=0;
 
 void bdotrcPopulateH1(CANPacket *out)
 {
-    rc_adcs_bdot_2 rc ;
-    rc.rc_adcs_bdot_2_mag_x_min = 0;
-    rc.rc_adcs_bdot_2_mag_x_max = 0;
-    rc.rc_adcs_bdot_2_mag_x_avg = 0;
-    rc.rc_adcs_bdot_2_mag_y_min = 0;
-    encoderc_adcs_bdot_2(&rc, out);
+    rc_adcs_bdot_h1 rc ;
+    encoderc_adcs_bdot_h1(&rc, out);
     out->length=8;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((sentCount))));
@@ -460,13 +456,8 @@ void sprcPopulate17(CANPacket *out)
 
 void battrcPopulateH1(CANPacket *out)
 {
-    rc_adcs_bdot_h1 rc;
-       rc.rc_adcs_bdot_h1_reset_count = 0;
-       rc.rc_adcs_bdot_h1_sysrstiv = 0;
-       rc.rc_adcs_bdot_h1_temp_avg = 0;
-       rc.rc_adcs_bdot_h1_temp_min = 0;
-       rc.rc_adcs_bdot_h1_reset_count = 0;
-       encoderc_adcs_bdot_h1(&rc, out);
+    rc_eps_batt_h1 rc;
+    encoderc_eps_batt_h1(&rc, out);
     out->length=8;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((sentCount))));
@@ -477,13 +468,8 @@ void battrcPopulateH1(CANPacket *out)
 
 void battrcPopulate3(CANPacket *out)
 {
-    rc_adcs_bdot_3 rc = {0};
-      rc.rc_adcs_bdot_3_mag_y_max = 0;
-      rc.rc_adcs_bdot_3_mag_y_avg = 0;
-      rc.rc_adcs_bdot_3_mag_z_min = 0;
-      rc.rc_adcs_bdot_3_mag_z_max = 0;
-      encoderc_adcs_bdot_3(&rc, out);
-
+    rc_eps_batt_3 rc;
+    encoderc_eps_batt_3(&rc, out);
     out->length=8;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((sentCount))));
@@ -496,12 +482,9 @@ void battrcPopulate3(CANPacket *out)
 
 void battrcPopulate4(CANPacket *out)
 {
-    rc_adcs_bdot_4 rc = {0};
-       rc.rc_adcs_bdot_4_mag_z_avg = 0;
-       rc.rc_adcs_bdot_4_tumble = 0;
-       rc.rc_adcs_bdot_4_last_spam_y_mtq_y = 0;
-       rc.rc_adcs_bdot_4_last_spam_y_mtq_z = 0;
-       encoderc_adcs_bdot_4(&rc, out);
+    rc_eps_batt_4 rc;
+    encoderc_eps_batt_4(&rc, out);
+       encoderc_eps_batt_4(&rc, out);
 
     out->length=8;
     uint64_t fullPacketData = 0x0000000000000000;
@@ -514,11 +497,8 @@ void battrcPopulate4(CANPacket *out)
 
 void battrcPopulate5(CANPacket *out)
 {
-    rc_adcs_bdot_5 rc = {0};
-    rc.rc_adcs_bdot_5_last_spam_z_mtq_x = 0;
-    rc.rc_adcs_bdot_5_last_spam_z_mtq_y = 0;
-    rc.rc_adcs_bdot_5_last_spam_z_mtq_z = 0;
-    encoderc_adcs_bdot_5(&rc, out);
+    rc_eps_batt_5 rc;
+    encoderc_eps_batt_5(&rc, out);
 
     out->length=8;
     uint64_t fullPacketData = 0x0000000000000000;
@@ -547,7 +527,12 @@ FILE_STATIC const rollcall_fn rollcallFunctions[] =
 void rxCb(CANPacket *p){
     // PPT Single Fire
     if(p -> id == CAN_ID_CMD_ROLLCALL){
-        rollcallStart();
+        if(P1IN &= BIT7){
+            rollcallStartMini();
+        }
+        else {
+            rollcallStart();
+        }
         sentCount++;
     }
 }
@@ -583,6 +568,7 @@ int main(void) {
 //    rollcallInit(rollcallFunctions, 8);
     while(1){
         rollcallUpdate();
+        PJOUT ^= BIT0;
         __delay_cycles(100);
     }
 

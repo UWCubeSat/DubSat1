@@ -44,6 +44,7 @@ void rollcallInitWithBuffer(const rollcall_fn *functions, CANPacket *packets,
  * is received.
  */
 void rollcallStart();
+void rollcallStartMini();
 
 /**
  * Populate and send the next rollcall packets if there are any left to send
