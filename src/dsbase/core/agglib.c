@@ -195,7 +195,7 @@ int32_t aggVec_avg_i_i(aggVec_i* vector) {
 float aggVec_var_i_f(aggVec_i* vector)
 {
     if(vector->varianceEnabled && vector->meta.avgSumCount)
-        return ((double)vector->squareSum - (float)vector->sum / vector->meta.avgSumCount) / (vector->meta.avgSumCount - 1); //calculate variance
+        return (float)(((double)vector->squareSum - ((double)vector->sum * vector->sum) / vector->meta.avgSumCount) / (vector->meta.avgSumCount - 1)); //calculate variance
     else
         return FLT_MAX;
 }
