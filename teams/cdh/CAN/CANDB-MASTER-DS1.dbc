@@ -213,7 +213,7 @@ BO_ 2449736390 gcmd_gen_set_pt_state: 1 Vector__XXX
  SG_ gcmd_gen_set_pt_state_2 : 2|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ gcmd_gen_set_pt_state_1 : 0|2@1+ (1,0) [0|3] "" Vector__XXX
 
-BO_ 2449736391 gcmd_sp_set_thresh: 1 Vector__XXX
+BO_ 2449736391 gcmd_sp_set_thresh: 2 Vector__XXX
  SG_ gcmd_sp_set_thresh_thresh : 0|16@1+ (1,0) [0|65535] "1/73 nanoTeslas" Vector__XXX
 
 BO_ 2449736389 gcmd_dist_set_pd_ovc_ppt: 4 Vector__XXX
@@ -318,8 +318,8 @@ BO_ 2452161093 rc_eps_dist_3: 6 Vector__XXX
 
 BO_ 2452161092 rc_eps_dist_2: 6 Vector__XXX
  SG_ rc_eps_dist_2_uv_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
- SG_ rc_eps_dist_2_met_overflow : 40|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_eps_dist_2_met : 8|32@1+ (1,0) [0|4294967296] "2^-8 s" Vector__XXX
+ SG_ rc_eps_dist_2_met_overflow : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_eps_dist_2_met : 16|32@1+ (1,0) [0|4294967296] "2^-8 s" Vector__XXX
 
 BO_ 2452161107 rc_eps_dist_17: 6 Vector__XXX
  SG_ rc_eps_dist_17_ppt_v_min : 0|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX

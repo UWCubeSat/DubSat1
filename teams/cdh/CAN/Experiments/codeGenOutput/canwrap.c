@@ -898,7 +898,7 @@ void decodegcmd_sp_set_thresh(CANPacket *input, gcmd_sp_set_thresh *output){
 
 void encodegcmd_sp_set_thresh(gcmd_sp_set_thresh *input, CANPacket *output){
     output -> id = 302252743;
-    output -> length = 1;
+    output -> length = 2;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> gcmd_sp_set_thresh_thresh))) & 0xffff) << 48;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
@@ -1403,8 +1403,8 @@ void decoderc_eps_dist_2(CANPacket *input, rc_eps_dist_2 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_eps_dist_2_uv_state = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-    output -> rc_eps_dist_2_met_overflow = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
-    output -> rc_eps_dist_2_met = (uint64_t) (((fullData & ((uint64_t) 0xffffffff << 24)) >> 24));
+    output -> rc_eps_dist_2_met_overflow = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> rc_eps_dist_2_met = (uint64_t) (((fullData & ((uint64_t) 0xffffffff << 16)) >> 16));
 }
 
 void encoderc_eps_dist_2(rc_eps_dist_2 *input, CANPacket *output){
@@ -1412,8 +1412,8 @@ void encoderc_eps_dist_2(rc_eps_dist_2 *input, CANPacket *output){
     output -> length = 6;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_eps_dist_2_uv_state))) & 0xff) << 56;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_2_met_overflow))) & 0xff) << 16;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_2_met))) & 0xffffffff) << 24;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_2_met_overflow))) & 0xff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_2_met))) & 0xffffffff) << 16;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
