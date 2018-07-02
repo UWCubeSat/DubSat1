@@ -3,6 +3,16 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_7_packet = {0};
+	rc_adcs_bdot_7 rc_adcs_bdot_7_info = {0};
+	encoderc_adcs_bdot_7(&rc_adcs_bdot_7_info, &rc_adcs_bdot_7_packet);
+	canSendPacket(&rc_adcs_bdot_7_packet);
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_6_packet = {0};
+	rc_adcs_bdot_6 rc_adcs_bdot_6_info = {0};
+	encoderc_adcs_bdot_6(&rc_adcs_bdot_6_info, &rc_adcs_bdot_6_packet);
+	canSendPacket(&rc_adcs_bdot_6_packet);
+
 	__delay_cycles(10000);	CANPacket gcmd_ppt_multiple_fire_packet = {0};
 	gcmd_ppt_multiple_fire gcmd_ppt_multiple_fire_info = {0};
 	encodegcmd_ppt_multiple_fire(&gcmd_ppt_multiple_fire_info, &gcmd_ppt_multiple_fire_packet);

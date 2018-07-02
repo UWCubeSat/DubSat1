@@ -27,6 +27,8 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_RC_ADCS_BDOT_7 304677489
+#define CAN_ID_RC_ADCS_BDOT_6 304677488
 #define CAN_ID_GCMD_PPT_MULTIPLE_FIRE 302252753
 #define CAN_ID_GCMD_MTQ_PWM_TIME 302252752
 #define CAN_ID_GCMD_EPS_BATT_FULLDEF 302252751
@@ -293,6 +295,27 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct rc_adcs_bdot_7 {
+    int16_t rc_adcs_bdot_7_spam_magnitude_z; //  (No Units)
+    int16_t rc_adcs_bdot_7_spam_magnitude_y; //  (No Units)
+    int16_t rc_adcs_bdot_7_spam_magnitude_x; //  (No Units)
+} rc_adcs_bdot_7;
+
+typedef struct rc_adcs_bdot_6 {
+    uint16_t rc_adcs_bdot_6_spam_on_time; // minutes
+    uint16_t rc_adcs_bdot_6_spam_off_time; // minutes
+    uint8_t rc_adcs_bdot_6_spam_control; //  (No Units)
+    uint8_t rc_adcs_bdot_6_pop_status_z; //  (No Units)
+    uint8_t rc_adcs_bdot_6_pop_status_y; //  (No Units)
+    uint8_t rc_adcs_bdot_6_pop_status_x; //  (No Units)
+    uint16_t rc_adcs_bdot_6_max_tumble_time; // minutes
+    uint8_t rc_adcs_bdot_6_mag_control; //  (No Units)
+    uint8_t rc_adcs_bdot_6_gain_ovr_status_z; //  (No Units)
+    uint8_t rc_adcs_bdot_6_gain_ovr_status_y; //  (No Units)
+    uint8_t rc_adcs_bdot_6_gain_ovr_status_x; //  (No Units)
+    uint8_t rc_adcs_bdot_6_current_state; //  (No Units)
+} rc_adcs_bdot_6;
+
 typedef struct gcmd_ppt_multiple_fire {
     uint8_t gcmd_ppt_multiple_fire_override; //  (No Units)
     uint8_t gcmd_ppt_multiple_fire_count; //  (No Units)
@@ -1312,6 +1335,12 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encoderc_adcs_bdot_7(rc_adcs_bdot_7 *input, CANPacket* output);
+void decoderc_adcs_bdot_7(CANPacket *input, rc_adcs_bdot_7 *output);
+
+void encoderc_adcs_bdot_6(rc_adcs_bdot_6 *input, CANPacket* output);
+void decoderc_adcs_bdot_6(CANPacket *input, rc_adcs_bdot_6 *output);
 
 void encodegcmd_ppt_multiple_fire(gcmd_ppt_multiple_fire *input, CANPacket* output);
 void decodegcmd_ppt_multiple_fire(CANPacket *input, gcmd_ppt_multiple_fire *output);
