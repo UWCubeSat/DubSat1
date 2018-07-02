@@ -20,6 +20,11 @@ void aggVec_init_i(aggVec_i* vector) {
     aggVec_reset((aggVec *) vector);
 }
 
+void aggVec_init_i_Var(aggVec_i* vector) {
+    aggVec_init_i(vector);
+    vector->varianceEnabled = 1;
+}
+
 uint8_t aggVec_push_d(aggVec_d* vector, double val){ return aggVec_push((aggVec *) vector, (void *) &val);}
 uint8_t aggVec_push_f(aggVec_f* vector, float val){return aggVec_push((aggVec *) vector, (void *) &val);}
 uint8_t aggVec_push_i(aggVec_i* vector, int32_t val){return aggVec_push((aggVec *) vector, (void *) &val);}
@@ -33,6 +38,8 @@ uint8_t aggVec_push(aggVec* vector, void* val) {
         vector_i->sum += add;
         if (add < vector_i->min || vector->minCount == 0) vector_i->min = add;
         if (vector_i->max < add || vector->maxCount == 0) vector_i->max = add;
+        if (vector_i->varianceEnabled)
+            vector_i->squareSum += add * add;
     }
     // Code for float
     else if (vector->type == TYPE_FLOAT) {
@@ -104,6 +111,8 @@ void aggVec_as_reset(aggVec* vector) {
         aggVec_i *vec = (aggVec_i *) vector;
         vec->sum = 0;
         vec->meta.avgSumCount = 0;
+        if(vector->type == TYPE_INT)
+            vec->squareSum = 0;
     }
 }
 
@@ -181,4 +190,12 @@ void aggVec_avg(aggVec* vector, void* val) {
 int32_t aggVec_avg_i_i(aggVec_i* vector) {
     if (!vector->meta.avgSumCount) return INT32_MAX;
     return vector->sum / vector->meta.avgSumCount;
+}
+
+float aggVec_var_i_f(aggVec_i* vector)
+{
+    if(vector->varianceEnabled && vector->meta.avgSumCount)
+        return ((double)vector->squareSum - (float)vector->sum / vector->meta.avgSumCount) / (vector->meta.avgSumCount - 1); //calculate variance
+    else
+        return FLT_MAX;
 }

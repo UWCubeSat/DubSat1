@@ -159,12 +159,12 @@ FILE_STATIC void resetMTQ()
 	turn_off_coils();
 	// set input signals to unknown
 	sc_mode = ELOISE_UNKNOWN;
-	bdot_command_x = ELOISE_UNKNOWN; 
+	/*bdot_command_x = ELOISE_UNKNOWN; //because of these initializations, the min would always be -128
 	bdot_command_y = ELOISE_UNKNOWN; 
 	bdot_command_z = ELOISE_UNKNOWN; 
 	fsw_command_x = ELOISE_UNKNOWN; 
 	fsw_command_y = ELOISE_UNKNOWN; 
-	fsw_command_z = ELOISE_UNKNOWN;
+	fsw_command_z = ELOISE_UNKNOWN; */
 	// reset state 
 	curr_state = MEASUREMENT;
 	// kick off all the timers 
@@ -344,8 +344,11 @@ FILE_STATIC void can_packet_rx_callback(CANPacket *packet)
 		cmd_mtq_bdot bdot_packet = {0};
         decodecmd_mtq_bdot(packet, &bdot_packet);
         bdot_command_x = bdot_packet.cmd_mtq_bdot_x;
+        aggVec_push_i(&bdot_x_agg, bdot_command_x);
         bdot_command_y = bdot_packet.cmd_mtq_bdot_y;
+        aggVec_push_i(&bdot_y_agg, bdot_command_y);
         bdot_command_z = bdot_packet.cmd_mtq_bdot_z;
+        aggVec_push_i(&bdot_z_agg, bdot_command_z);
 	}
 	// flight software command packet 
 	if (packet->id == CAN_ID_CMD_MTQ_FSW){
@@ -416,9 +419,9 @@ FILE_STATIC void can_init(void)
 // roll call aggregate initialization 
 FILE_STATIC void rc_agg_init() {
     aggVec_init_f(&mspTemp_agg);
-    aggVec_init_i(&bdot_x_agg);
-    aggVec_init_i(&bdot_y_agg);
-    aggVec_init_i(&bdot_z_agg);
+    aggVec_init_i_Var(&bdot_x_agg);
+    aggVec_init_i_Var(&bdot_y_agg);
+    aggVec_init_i_Var(&bdot_z_agg);
     aggVec_init_i(&fsw_x_agg);
     aggVec_init_i(&fsw_y_agg);
     aggVec_init_i(&fsw_z_agg);
@@ -487,9 +490,9 @@ void rcPopulate2(CANPacket *out){
     rc.rc_adcs_mtq_2_bdot_y_avg = aggVec_avg_i_i(&bdot_y_agg);
     rc.rc_adcs_mtq_2_bdot_z_max = aggVec_max_i(&bdot_z_agg);
     rc.rc_adcs_mtq_2_bdot_z_avg = aggVec_avg_i_i(&bdot_z_agg);
-    aggVec_as_reset((aggVec *) &bdot_x_agg);
-    aggVec_as_reset((aggVec *) &bdot_y_agg);
-    aggVec_as_reset((aggVec *) &bdot_z_agg);
+    //aggVec_as_reset((aggVec *) &bdot_x_agg);
+    //aggVec_as_reset((aggVec *) &bdot_y_agg);
+    //aggVec_as_reset((aggVec *) &bdot_z_agg);
     encoderc_adcs_mtq_2(&rc, out);
 }
 
@@ -542,10 +545,10 @@ void rcPopulate5(CANPacket *out){
 // TODO: description 
 FILE_STATIC void update_rollcall_aggregates()
 {
-	aggVec_push_i(&bdot_x_agg, bdot_command_x);
-	aggVec_push_i(&bdot_y_agg, bdot_command_y);
-	aggVec_push_i(&bdot_z_agg, bdot_command_z);
-	aggVec_push_i(&fsw_x_agg, fsw_command_x); 
+	//aggVec_push_i(&bdot_x_agg, bdot_command_x);
+	//aggVec_push_i(&bdot_y_agg, bdot_command_y);
+	//aggVec_push_i(&bdot_z_agg, bdot_command_z);
+	aggVec_push_i(&fsw_x_agg, fsw_command_x);
 	aggVec_push_i(&fsw_y_agg, fsw_command_y);  
 	aggVec_push_i(&fsw_z_agg, fsw_command_z); 
 	aggVec_push_i(&duty_x1_agg, duty_x1);	  

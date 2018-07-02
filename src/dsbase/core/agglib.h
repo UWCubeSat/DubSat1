@@ -52,6 +52,8 @@ typedef struct {
     int32_t min;
     int32_t max;
     int32_t sum;
+    int64_t squareSum;
+    uint8_t varianceEnabled;
 } aggVec_i;
 
 /**
@@ -62,6 +64,8 @@ typedef struct {
 void aggVec_init_d(aggVec_d* vector);
 void aggVec_init_f(aggVec_f* vector);
 void aggVec_init_i(aggVec_i* vector);
+
+void aggVec_init_i_Var(aggVec_i* vector); //initialize with variance enabled
 
 /**
  * Push a value to a vector and updates the aggregates.
@@ -175,6 +179,9 @@ float aggVec_avg_i_f(aggVec_i* vector);
 
 // Get the average as an int (C integer dvision)
 int32_t aggVec_avg_i_i(aggVec_i* vector);
+
+//get the variance as a float
+float aggVec_var_i_f(aggVec_i* vector);
 
 
 // or you can cast to aggVec and do a pointer to the value you want to update.
