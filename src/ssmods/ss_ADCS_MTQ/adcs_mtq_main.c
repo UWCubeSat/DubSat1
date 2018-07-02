@@ -490,9 +490,9 @@ void rcPopulate2(CANPacket *out){
     rc.rc_adcs_mtq_2_bdot_y_avg = aggVec_avg_i_i(&bdot_y_agg);
     rc.rc_adcs_mtq_2_bdot_z_max = aggVec_max_i(&bdot_z_agg);
     rc.rc_adcs_mtq_2_bdot_z_avg = aggVec_avg_i_i(&bdot_z_agg);
-    //aggVec_as_reset((aggVec *) &bdot_x_agg);
-    //aggVec_as_reset((aggVec *) &bdot_y_agg);
-    //aggVec_as_reset((aggVec *) &bdot_z_agg);
+    aggVec_as_reset((aggVec *) &bdot_x_agg);
+    aggVec_as_reset((aggVec *) &bdot_y_agg);
+    aggVec_as_reset((aggVec *) &bdot_z_agg);
     encoderc_adcs_mtq_2(&rc, out);
 }
 
