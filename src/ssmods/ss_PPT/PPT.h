@@ -41,6 +41,12 @@ typedef enum _subsystem_mode {
     Mode_Firing,
 } SubsystemMode;
 
+typedef enum {
+    Result_FireSuccessful,
+    Result_MainFailedCharge,
+    Result_MainFailedDischarge
+} LastFireResult;
+
 // A struct for storing various interesting info about the subsystem module
 typedef struct _module_status {
     SubsystemMode ss_mode;

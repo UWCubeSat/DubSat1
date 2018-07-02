@@ -6,7 +6,6 @@
 #include "interfaces/canwrap.h"
 #include "core/agglib.h"
 
-//NOTE: this build will fire on power-on w/o timeout
 #define FIRING_PULSE_WIDTH 795 //was 7964 for 1 ms (target is 100 us)
 
 #define OPCODE_COMMON_CMD 0
@@ -72,9 +71,8 @@ aggVec_f mspTempAg;
 uint16_t fireCount = 0;
 #pragma PERSISTENT(faultCount)
 uint16_t faultCount = 0;
-
-uint32_t totalFireCount = 0;
-#pragma PERSISTENT(totalFireCount)
+#pragma PERSISTENT(lastFireResult)
+LastFireResult lastFireResult = Result_FireSuccessful;
 
 void initData()
 {
@@ -449,7 +447,7 @@ void fire()
     __delay_cycles(FIRING_PULSE_WIDTH);
     //fire low
     CHARGE_OUT &= ~FIRE_BIT;
-    totalFireCount++;
+    fireCount++;
 }
 
 #pragma vector = TIMER0_B1_VECTOR
@@ -479,10 +477,11 @@ __interrupt void Timer0_B1_ISR (void)
                 		else
                 		{
                 			fire();
-                			fireCount++;
+                			lastFireResult = Result_FireSuccessful;
 							if(CHARGE_OUT & SMT_OUT_BIT) //fault: main didn't discharge
 							{
 								stopFiring();
+								lastFireResult = Result_MainFailedDischarge;
 								faultCount++;
 							}
 							else
@@ -503,6 +502,7 @@ __interrupt void Timer0_B1_ISR (void)
                 	/*else //fault: main didn't charge
                 	{
                 		faultCount++;
+                		lastFireResult = Result_MainFailedCharge;
                 		stopFiring();
                 	}*/
                     break;
