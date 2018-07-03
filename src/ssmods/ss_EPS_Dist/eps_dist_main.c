@@ -5,7 +5,6 @@
 #include "core/timer.h"
 #include "core/MET.h"
 #include "interfaces/canwrap.h"
-#include "core/dataArray.h"
 #include "interfaces/rollcall.h"
 #include "core/agglib.h"
 #include "core/autosequence.h"
@@ -62,8 +61,6 @@ FILE_STATIC general_segment gseg = {0};
 FILE_STATIC sensordat_segment sseg;
 FILE_STATIC health_segment hseg;
 
-FILE_STATIC rcCount_segment rcCount;
-
 #pragma PERSISTENT(gseg)
 
 FILE_STATIC hDev hBattV;
@@ -75,8 +72,6 @@ FILE_STATIC uint16_t startupDelay = 1800;
 #pragma PERSISTENT(startupDelay)
 
 FILE_STATIC uint8_t rcFlag = 0; //use this one for sending own rollcall
-FILE_STATIC uint8_t rcSendFlag = 0;  //use this one for sending rcCmd
-
 
 //**********Data Stuff**********************
 FILE_STATIC uint8_t rebootCount = 60;
@@ -458,88 +453,6 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
     return 1;
 }
 
-void sendRollCallHandler()
-{
-    rcSendFlag = 1;
-    rcCount.timeSinceRC = 0;
-}
-
-void sendRCCmd()
-{
-    //distDomainSwitch(PD_WHEELS, PD_CMD_Enable);
-    CANPacket rcPkt = {0};
-    cmd_rollcall rc_info = {0};
-    rc_info.cmd_rollcall_met = getMETPrimary();
-    rc_info.cmd_rollcall_met_overflow = getMETOverflow();
-    encodecmd_rollcall(&rc_info, &rcPkt);
-    canSendPacket(&rcPkt);
-
-    rcFlag = 17;
-    if(rebootCount)
-        rebootCount--;
-    else
-    {
-        //WDTCTL = 0; //reboot
-    }
-
-    //TODO: uncomment this when automatic shutoff is ready to go!
-    /*if(rcResponseFlag)
-    {
-        if(rcResponseFlag & PD_COM1_FLAG)
-        {
-            distDomainSwitch(PD_COM1, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_COM1_FLAG;
-        }
-        if(rcResponseFlag & PD_COM2_FLAG)
-        {
-            distDomainSwitch(PD_COM2, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_COM2_FLAG;
-        }
-        if(rcResponseFlag & PD_RAHS_FLAG)
-        {
-            distDomainSwitch(PD_RAHS, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_RAHS_FLAG;
-        }
-        if(rcResponseFlag & PD_BDOT_FLAG)
-        {
-            distDomainSwitch(PD_BDOT, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_BDOT_FLAG;
-        }
-        if(rcResponseFlag & PD_ESTIM_FLAG)
-        {
-            distDomainSwitch(PD_ESTIM, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_ESTIM_FLAG;
-        }
-        if(rcResponseFlag & PD_EPS_FLAG)
-        {
-            distDomainSwitch(PD_EPS, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_EPS_FLAG;
-        }
-        if(rcResponseFlag & PD_PPT_FLAG)
-        {
-            distDomainSwitch(PD_PPT, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_PPT_FLAG;
-        }
-    }*/
-
-    if(distQueryDomainSwitch(PD_COM1))
-        rcResponseFlag |= PD_COM1_FLAG;
-    if(distQueryDomainSwitch(PD_COM2))
-        rcResponseFlag |= PD_COM2_FLAG;
-    if(distQueryDomainSwitch(PD_RAHS))
-        rcResponseFlag |= PD_RAHS_FLAG;
-    if(distQueryDomainSwitch(PD_BDOT))
-        rcResponseFlag |= PD_BDOT_FLAG;
-    if(distQueryDomainSwitch(PD_ESTIM))
-        rcResponseFlag |= PD_ESTIM_FLAG;
-    if(distQueryDomainSwitch(PD_EPS))
-        rcResponseFlag |= PD_EPS_FLAG;
-    if(distQueryDomainSwitch(PD_PPT))
-        rcResponseFlag |= PD_PPT_FLAG;
-    rcSendFlag = 0;
-    //distDomainSwitch(PD_WHEELS, PD_CMD_Disable);
-}
-
 uint8_t getPDState(PowerDomainID pd)
 {
     if(distQueryDomainSwitch(pd))
@@ -735,6 +648,70 @@ void setPowerSwitchFromCAN(uint8_t cmd, PowerDomainID pd)
     }
 }
 
+void autoShutoff()
+{
+    if(rcResponseFlag)
+    {
+        if(rcResponseFlag & PD_COM1_FLAG)
+        {
+            distDomainSwitch(PD_COM1, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_COM1_FLAG;
+        }
+        if(rcResponseFlag & PD_COM2_FLAG)
+        {
+            distDomainSwitch(PD_COM2, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_COM2_FLAG;
+        }
+        if(rcResponseFlag & PD_RAHS_FLAG)
+        {
+            distDomainSwitch(PD_RAHS, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_RAHS_FLAG;
+        }
+        if(rcResponseFlag & PD_BDOT_FLAG)
+        {
+            distDomainSwitch(PD_BDOT, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_BDOT_FLAG;
+        }
+        if(rcResponseFlag & PD_ESTIM_FLAG)
+        {
+            distDomainSwitch(PD_ESTIM, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_ESTIM_FLAG;
+        }
+        if(rcResponseFlag & PD_EPS_FLAG)
+        {
+            distDomainSwitch(PD_EPS, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_EPS_FLAG;
+        }
+        if(rcResponseFlag & PD_PPT_FLAG)
+        {
+            distDomainSwitch(PD_PPT, PD_CMD_Disable);
+            rcResponseFlag &= ~PD_PPT_FLAG;
+        }
+    }
+
+    if(distQueryDomainSwitch(PD_COM1))
+        rcResponseFlag |= PD_COM1_FLAG;
+    if(distQueryDomainSwitch(PD_COM2))
+        rcResponseFlag |= PD_COM2_FLAG;
+    if(distQueryDomainSwitch(PD_RAHS))
+        rcResponseFlag |= PD_RAHS_FLAG;
+    if(distQueryDomainSwitch(PD_BDOT))
+        rcResponseFlag |= PD_BDOT_FLAG;
+    if(distQueryDomainSwitch(PD_ESTIM))
+        rcResponseFlag |= PD_ESTIM_FLAG;
+    if(distQueryDomainSwitch(PD_EPS))
+        rcResponseFlag |= PD_EPS_FLAG;
+    if(distQueryDomainSwitch(PD_PPT))
+        rcResponseFlag |= PD_PPT_FLAG;
+}
+
+void checkSelfReboot()
+{
+    if(rebootCount)
+        rebootCount--;
+    else
+        WDTCTL = 0; //reboot
+}
 
 void can_packet_rx_callback(CANPacket *packet)
 {
@@ -750,10 +727,11 @@ void can_packet_rx_callback(CANPacket *packet)
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
+            //TODO: uncomment this when automatic shutoff is ready to go!
+            //autoShutoff();
+            //checkSelfReboot();
+            rcFlag = 17;
             break;
-        /*case CAN_ID_CMD_GRNDROLLCALL:
-            //start the same process for usual rollcall (shutoff)
-            break;*/
         case CAN_ID_RC_ADCS_BDOT_1:
             rcResponseFlag &= ~MOD_BDOT_FLAG;
             break;
@@ -850,12 +828,6 @@ void autoStart()
     //distDomainSwitch(PD_WHEELS, PD_CMD_AutoStart);
     __delay_cycles(0.5 * SEC);
     distDomainSwitch(PD_PPT, PD_CMD_AutoStart);
-}
-
-void intermediateRollcall()
-{
-    bcbinSendPacket((uint8_t *) &rcCount, sizeof(rcCount));
-    rcCount.timeSinceRC++;
 }
 
 void initData()
@@ -977,10 +949,6 @@ int main(void)
 
     initializeTimer();
     initData();
-    startCallback(timerCallbackInitializer(&sendRollCallHandler, 6000000)); //TODO: was 6000000 for 6s
-    //TODO: this is test code:
-    bcbinPopulateHeader(&(rcCount.header), 25, sizeof(rcCount));
-    startCallback(timerCallbackInitializer(&intermediateRollcall, 1000000));
 
     uint16_t counter = 0;
     while (1)
@@ -1004,8 +972,6 @@ int main(void)
         }
         if (counter % 64 == 0)
             distBcSendMeta();
-        if(rcSendFlag && (canTxCheck() != CAN_TX_BUSY))
-            sendRCCmd();
         sendRC();
         persistentTime = getMETTimestamp();
         seqUpdateMET(metConvertToSeconds(persistentTime));
