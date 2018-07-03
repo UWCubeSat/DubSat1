@@ -157,10 +157,6 @@ FILE_STATIC uint8_t check_spam_timer();
 FILE_STATIC void start_spam_timer(uint32_t spam_timer_ms);
 FILE_STATIC void end_spam_timer();
 
-FILE_STATIC void start_spam_mag_self_test_timer();
-FILE_STATIC void end_spam_mag_self_test_timer();
-FILE_STATIC uint8_t check_spam_mag_self_test_timer();
-
 FILE_STATIC void start_spam_avg_timer();
 FILE_STATIC void end_spam_avg_timer();
 FILE_STATIC uint8_t check_spam_avg_timer();
@@ -236,8 +232,9 @@ FILE_STATIC void determine_mtq_commands();
 
 
 /*****************************Others***********************************/
-FILE_STATIC int map(int val);
-FILE_STATIC int map_general(int x, int in_min, int in_max, int out_min, int out_max);
+FILE_STATIC int8_t map(int8_t val);
+FILE_STATIC int8_t map_general(int8_t x, int8_t in_min, int8_t in_max, int8_t out_min, int8_t out_max);
+FILE_STATIC int8_t find_max_dipole(int16_t dipole);
 void handlePPTFiringNotification();
 /**********************************************************************/
 #endif /* ADCS_BDOT_H_ */

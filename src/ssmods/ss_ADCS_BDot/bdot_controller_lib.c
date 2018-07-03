@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'bdot_controller_lib'.
  *
- * Model version                  : 1.330
+ * Model version                  : 1.350
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Wed Apr 11 19:37:04 2018
+ * C/C++ source code generated on : Wed Apr 18 10:34:19 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -40,11 +40,8 @@ void bdot_controller_lib_step(void)
   int16_T k;
   real_T rtb_Diff[3];
   real_T rtb_TSamp[3];
-  real_T rtb_MultiportSwitch1[3];
-  real_T rtb_Product[3];
-  real_T rtb_Sum_idx_0;
-  real_T rtb_Sum_idx_1;
-  real_T rtb_Sum_idx_2;
+  real_T rtb_Sum[3];
+  real_T rtb_Relay;
   real_T v;
 
   /* SampleTimeMath: '<S2>/TSamp' incorporates:
@@ -122,146 +119,115 @@ void bdot_controller_lib_step(void)
    */
   rtb_Diff[2] = rtb_TSamp[2] - rtDW.UD_DSTATE[2];
 
-  /* MultiPortSwitch: '<S1>/Multiport Switch1' incorporates:
-   *  Inport: '<Root>/B_meas_valid'
-   *  Inport: '<Root>/MT_on'
-   *  Logic: '<S1>/Logical Operator'
-   *  Logic: '<S1>/Logical Operator1'
-   *  UnitDelay: '<S1>/Unit Delay'
+  /* Product: '<S1>/Product' incorporates:
+   *  Constant: '<S1>/gain matrix'
    */
-  if (!((!(rtU.MT_on != 0.0)) && (rtU.B_meas_valid != 0.0))) {
-    rtb_MultiportSwitch1[0] = rtDW.UnitDelay_DSTATE[0];
-    rtb_MultiportSwitch1[1] = rtDW.UnitDelay_DSTATE[1];
-    rtb_MultiportSwitch1[2] = rtDW.UnitDelay_DSTATE[2];
-  } else {
-    rtb_MultiportSwitch1[0] = rtb_Diff[0];
-    rtb_MultiportSwitch1[1] = rtb_Diff[1];
-    rtb_MultiportSwitch1[2] = rtb_Diff[2];
+  for (k = 0; k < 3; k++) {
+    rtb_Sum[k] = rtConstP.gainmatrix_Value[k + 6] * rtb_Diff[2] +
+      (rtConstP.gainmatrix_Value[k + 3] * rtb_Diff[1] +
+       rtConstP.gainmatrix_Value[k] * rtb_Diff[0]);
   }
 
-  /* End of MultiPortSwitch: '<S1>/Multiport Switch1' */
+  /* End of Product: '<S1>/Product' */
 
-  /* MultiPortSwitch: '<S1>/Multiport Switch2' incorporates:
-   *  Gain: '<S1>/To DigVal1'
-   *  Gain: '<S1>/To DigVal2'
-   *  Gain: '<S1>/To DigVal3'
-   *  Inport: '<Root>/MT_on'
-   */
-  if ((int16_T)rtU.MT_on != 0) {
-    rtb_Sum_idx_0 = 0.0;
-    rtb_Sum_idx_1 = 0.0;
-    rtb_Sum_idx_2 = 0.0;
+  /* Saturate: '<S1>/Saturation1' */
+  if (rtb_Sum[0] > 0.15) {
+    rtb_Relay = 0.15;
+  } else if (rtb_Sum[0] < -0.15) {
+    rtb_Relay = -0.15;
   } else {
-    /* Product: '<S1>/Product' incorporates:
-     *  Constant: '<S1>/gain matrix'
-     */
-    for (k = 0; k < 3; k++) {
-      rtb_Product[k] = rtConstP.gainmatrix_Value[k + 6] * rtb_MultiportSwitch1[2]
-        + (rtConstP.gainmatrix_Value[k + 3] * rtb_MultiportSwitch1[1] +
-           rtConstP.gainmatrix_Value[k] * rtb_MultiportSwitch1[0]);
-    }
-
-    /* End of Product: '<S1>/Product' */
-
-    /* Saturate: '<S1>/Saturation1' */
-    if (rtb_Product[0] > 0.15) {
-      rtb_Sum_idx_2 = 0.15;
-    } else if (rtb_Product[0] < -0.15) {
-      rtb_Sum_idx_2 = -0.15;
-    } else {
-      rtb_Sum_idx_2 = rtb_Product[0];
-    }
-
-    /* End of Saturate: '<S1>/Saturation1' */
-    rtb_Sum_idx_0 = 846.66666666666663 * rtb_Sum_idx_2;
-
-    /* Saturate: '<S1>/Saturation2' incorporates:
-     *  Gain: '<S1>/To DigVal1'
-     */
-    if (rtb_Product[1] > 0.15) {
-      rtb_Sum_idx_2 = 0.15;
-    } else if (rtb_Product[1] < -0.15) {
-      rtb_Sum_idx_2 = -0.15;
-    } else {
-      rtb_Sum_idx_2 = rtb_Product[1];
-    }
-
-    /* End of Saturate: '<S1>/Saturation2' */
-    rtb_Sum_idx_1 = 846.66666666666663 * rtb_Sum_idx_2;
-
-    /* Saturate: '<S1>/Saturation3' incorporates:
-     *  Gain: '<S1>/To DigVal2'
-     */
-    if (rtb_Product[2] > 0.15) {
-      rtb_Sum_idx_2 = 0.15;
-    } else if (rtb_Product[2] < -0.15) {
-      rtb_Sum_idx_2 = -0.15;
-    } else {
-      rtb_Sum_idx_2 = rtb_Product[2];
-    }
-
-    /* End of Saturate: '<S1>/Saturation3' */
-    rtb_Sum_idx_2 *= 846.66666666666663;
+    rtb_Relay = rtb_Sum[0];
   }
 
-  /* End of MultiPortSwitch: '<S1>/Multiport Switch2' */
+  /* End of Saturate: '<S1>/Saturation1' */
+
+  /* Gain: '<S1>/To DigVal1' */
+  rtb_Relay *= 846.66666666666663;
 
   /* DataTypeConversion: '<S1>/Data Type Conversion' */
-  v = fabs(rtb_Sum_idx_0);
+  v = fabs(rtb_Relay);
   if (v < 4.503599627370496E+15) {
     if (v >= 0.5) {
       /* Outport: '<Root>/Dig_val' */
-      rtY.Dig_val[0] = (int8_T)floor(rtb_Sum_idx_0 + 0.5);
+      rtY.Dig_val[0] = (int8_T)floor(rtb_Relay + 0.5);
     } else {
       /* Outport: '<Root>/Dig_val' */
-      rtY.Dig_val[0] = (int8_T)(rtb_Sum_idx_0 * 0.0);
+      rtY.Dig_val[0] = (int8_T)(rtb_Relay * 0.0);
     }
   } else {
     /* Outport: '<Root>/Dig_val' */
-    rtY.Dig_val[0] = (int8_T)rtb_Sum_idx_0;
+    rtY.Dig_val[0] = (int8_T)rtb_Relay;
   }
 
-  v = fabs(rtb_Sum_idx_1);
+  /* Saturate: '<S1>/Saturation2' */
+  if (rtb_Sum[1] > 0.15) {
+    rtb_Relay = 0.15;
+  } else if (rtb_Sum[1] < -0.15) {
+    rtb_Relay = -0.15;
+  } else {
+    rtb_Relay = rtb_Sum[1];
+  }
+
+  /* End of Saturate: '<S1>/Saturation2' */
+
+  /* Gain: '<S1>/To DigVal2' */
+  rtb_Relay *= 846.66666666666663;
+
+  /* DataTypeConversion: '<S1>/Data Type Conversion' */
+  v = fabs(rtb_Relay);
   if (v < 4.503599627370496E+15) {
     if (v >= 0.5) {
       /* Outport: '<Root>/Dig_val' */
-      rtY.Dig_val[1] = (int8_T)floor(rtb_Sum_idx_1 + 0.5);
+      rtY.Dig_val[1] = (int8_T)floor(rtb_Relay + 0.5);
     } else {
       /* Outport: '<Root>/Dig_val' */
-      rtY.Dig_val[1] = (int8_T)(rtb_Sum_idx_1 * 0.0);
+      rtY.Dig_val[1] = (int8_T)(rtb_Relay * 0.0);
     }
   } else {
     /* Outport: '<Root>/Dig_val' */
-    rtY.Dig_val[1] = (int8_T)rtb_Sum_idx_1;
+    rtY.Dig_val[1] = (int8_T)rtb_Relay;
   }
 
-  v = fabs(rtb_Sum_idx_2);
+  /* Saturate: '<S1>/Saturation3' */
+  if (rtb_Sum[2] > 0.15) {
+    rtb_Relay = 0.15;
+  } else if (rtb_Sum[2] < -0.15) {
+    rtb_Relay = -0.15;
+  } else {
+    rtb_Relay = rtb_Sum[2];
+  }
+
+  /* End of Saturate: '<S1>/Saturation3' */
+
+  /* Gain: '<S1>/To DigVal3' */
+  rtb_Relay *= 846.66666666666663;
+
+  /* DataTypeConversion: '<S1>/Data Type Conversion' */
+  v = fabs(rtb_Relay);
   if (v < 4.503599627370496E+15) {
     if (v >= 0.5) {
       /* Outport: '<Root>/Dig_val' */
-      rtY.Dig_val[2] = (int8_T)floor(rtb_Sum_idx_2 + 0.5);
+      rtY.Dig_val[2] = (int8_T)floor(rtb_Relay + 0.5);
     } else {
       /* Outport: '<Root>/Dig_val' */
-      rtY.Dig_val[2] = (int8_T)(rtb_Sum_idx_2 * 0.0);
+      rtY.Dig_val[2] = (int8_T)(rtb_Relay * 0.0);
     }
   } else {
     /* Outport: '<Root>/Dig_val' */
-    rtY.Dig_val[2] = (int8_T)rtb_Sum_idx_2;
+    rtY.Dig_val[2] = (int8_T)rtb_Relay;
   }
-
-  /* End of DataTypeConversion: '<S1>/Data Type Conversion' */
 
   /* Sqrt: '<S1>/Sqrt' incorporates:
    *  DotProduct: '<S1>/Dot Product'
    */
-  rtb_Sum_idx_0 = sqrt((rtb_Diff[0] * rtb_Diff[0] + rtb_Diff[1] * rtb_Diff[1]) +
-                       rtb_Diff[2] * rtb_Diff[2]);
+  rtb_Relay = sqrt((rtb_Diff[0] * rtb_Diff[0] + rtb_Diff[1] * rtb_Diff[1]) +
+                   rtb_Diff[2] * rtb_Diff[2]);
 
   /* Relay: '<S1>/Relay' */
-  if (rtb_Sum_idx_0 >= 2.9698484809834993E-6) {
+  if (rtb_Relay >= 2.9698484809834993E-6) {
     rtDW.Relay_Mode = true;
   } else {
-    if (rtb_Sum_idx_0 <= 1.0790449480906716E-7) {
+    if (rtb_Relay <= 1.0790449480906716E-7) {
       rtDW.Relay_Mode = false;
     }
   }
@@ -282,12 +248,6 @@ void bdot_controller_lib_step(void)
     rtb_Diff[k] += rtConstP.Constant1_Value[k] * rtU.B_body_in_T[0];
     rtb_Diff[k] += rtConstP.Constant1_Value[k + 3] * rtU.B_body_in_T[1];
     rtb_Diff[k] += rtConstP.Constant1_Value[k + 6] * rtU.B_body_in_T[2];
-
-    /* Update for UnitDelay: '<S1>/Unit Delay' incorporates:
-     *  DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
-     *  Update for DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn'
-     */
-    rtDW.UnitDelay_DSTATE[k] = rtb_MultiportSwitch1[k];
 
     /* Update for DiscreteTransferFcn: '<S1>/Discrete Transfer Fcn' */
     rtDW.DiscreteTransferFcn_states[(int32_T)k] = rtb_Diff[(int32_T)k] -

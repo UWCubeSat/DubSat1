@@ -87,6 +87,10 @@ FILE_STATIC meta_segment metaSeg;
 FILE_STATIC magnetometer_segment continuous_mag_data_cosmos;
 /* stores the VALID bdot magnetometer data */
 FILE_STATIC magnetometer_segment bdot_magnetometer_data_cosmos;
+
+/* stores state of mtq when continuous mag measurement is taken */
+FILE_STATIC mtq_phase mag_measure_mtq_state = MTQ_MEASUREMENT_PHASE;
+
 /* stores the VALID sensor proc magnetometer data. Right now, this isn't
  * being used, but may need to be used when for debugging purposes when
  * implementing best fit mag functionality.
@@ -142,9 +146,9 @@ FILE_STATIC int8_t override_factor_x = POP_OFF_SCALE_FACTOR;
 FILE_STATIC int8_t override_factor_y = POP_OFF_SCALE_FACTOR;
 FILE_STATIC int8_t override_factor_z = POP_OFF_SCALE_FACTOR;
 
-FILE_STATIC uint8_t gcmd_dipole_gain_factor_x = 1;
-FILE_STATIC uint8_t gcmd_dipole_gain_factor_y = 1;
-FILE_STATIC uint8_t gcmd_dipole_gain_factor_z = 1;
+FILE_STATIC float gcmd_dipole_gain_factor_x = 1.0;
+FILE_STATIC float gcmd_dipole_gain_factor_y = 1.0;
+FILE_STATIC float gcmd_dipole_gain_factor_z = 1.0;
 
 FILE_STATIC uint8_t spam_control_time_change_flag = 0;
 FILE_STATIC spam_axis current_spam_axis = SPAM_X;
@@ -158,7 +162,7 @@ FILE_STATIC MagnetometerData* continuous_bdot_mag_data;
  * only under valid conditions.
  * Valid conditions: 1. Magnetorquer is not on
  *                   2. Magnetometer  is set to be in normal configurations */
-FILE_STATIC MagnetometerData* valid_bdot_mag_data;
+FILE_STATIC MagnetometerData valid_bdot_mag_data;
 
 /* sensor proc magnetometer data. These data were decided to be unfiltered data,
  * meaning the data can be data collected when the magnetorquer is on. */
@@ -211,13 +215,11 @@ FILE_STATIC TIMER_HANDLE spam_timer = 100;
 //FILE_STATIC uint32_t spam_on_timer_ms = 120000; // 6 min
 FILE_STATIC uint32_t spam_off_timer_ms = 120000; // 2 min
 FILE_STATIC uint32_t spam_on_timer_ms = 20000; // 20 secs
+FILE_STATIC uint32_t spam_mag_self_test_timer_ms = 4000;
+
 FILE_STATIC uint8_t spam_timer_on_flag = 0;
 #pragma PERSISTENT(spam_off_timer_ms)
 #pragma PERSISTENT(spam_on_timer_ms)
-
-FILE_STATIC TIMER_HANDLE spam_mag_self_test_timer = 100;
-FILE_STATIC uint32_t spam_mag_self_test_timer_ms = 4000;
-FILE_STATIC uint8_t spam_mag_self_test_timer_on_flag = 0;
 
 /* this is the timer that will indicate when to collect spam */
 FILE_STATIC TIMER_HANDLE spam_avg_timer = 100;
@@ -232,13 +234,21 @@ FILE_STATIC aggVec_i magX;
 FILE_STATIC aggVec_i magY;
 FILE_STATIC aggVec_i magZ;
 
-FILE_STATIC aggVec_i spam_x_avg_agg[3];
-FILE_STATIC aggVec_i spam_y_avg_agg[3];
-FILE_STATIC aggVec_i spam_z_avg_agg[3];
+FILE_STATIC aggVec_i spam_on_x_avg_agg[3];
+FILE_STATIC aggVec_i spam_on_y_avg_agg[3];
+FILE_STATIC aggVec_i spam_on_z_avg_agg[3];
 
-FILE_STATIC int16_t spam_x_avg[3];
-FILE_STATIC int16_t spam_y_avg[3];
-FILE_STATIC int16_t spam_z_avg[3];
+FILE_STATIC int16_t spam_on_x_avg[3];
+FILE_STATIC int16_t spam_on_y_avg[3];
+FILE_STATIC int16_t spam_on_z_avg[3];
+
+FILE_STATIC aggVec_i spam_off_x_avg_agg[3];
+FILE_STATIC aggVec_i spam_off_y_avg_agg[3];
+FILE_STATIC aggVec_i spam_off_z_avg_agg[3];
+
+FILE_STATIC int16_t spam_off_x_avg[3];
+FILE_STATIC int16_t spam_off_y_avg[3];
+FILE_STATIC int16_t spam_off_z_avg[3];
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
@@ -400,19 +410,25 @@ void determine_bdot_state()
     {
         /* in any case, when there's a command sent from ground to change state to
          * NORMAL or SLEEP, spam timer has to end and restart. */
+
         if(bdot_state == SPAM)
         {
             end_spam_timer();
-        }
-        if(bdot_state == SPAM_MAG_SELF_TEST)
+        } else if(bdot_state == SPAM_MAG_SELF_TEST)
         {
-            end_spam_mag_self_test_timer();
+            end_spam_timer();
             end_self_test_calibration(mag_num);
         }
+
         if(gcmd_next_bdot_state == SPAM_MAG_SELF_TEST)
         {
-            start_spam_mag_self_test_timer();
+            end_spam_timer();
+            start_spam_timer(spam_mag_self_test_timer_ms);
             start_self_test_calibration(mag_num);
+        } else if (gcmd_next_bdot_state == SPAM)
+        {
+            end_spam_timer();
+            start_spam_timer(spam_on_timer_ms);
         } else
         {
             start_spam_timer(spam_off_timer_ms);
@@ -420,7 +436,10 @@ void determine_bdot_state()
 
         end_check_nap_status_timer();
 
-        last_bdot_state = bdot_state;
+        if(bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST)
+        {
+            last_bdot_state = bdot_state;
+        }
         bdot_state = gcmd_next_bdot_state;
 
         /* if the next bdot state is not sleep mode, start the nap timer again */
@@ -453,7 +472,7 @@ void determine_bdot_state()
                     {
                         last_bdot_state = NORMAL_MODE;
                         bdot_state = SPAM_MAG_SELF_TEST;
-                        start_spam_mag_self_test_timer();
+                        start_spam_timer(spam_mag_self_test_timer_ms);
                         start_self_test_calibration(mag_num);
                     }
                 }
@@ -469,13 +488,13 @@ void determine_bdot_state()
                 {
                     last_bdot_state = SLEEP_MODE;
                     bdot_state = SPAM_MAG_SELF_TEST;
-                    start_spam_mag_self_test_timer();
+                    start_spam_timer(spam_mag_self_test_timer_ms);
                     start_self_test_calibration(mag_num);
                 }
             }
             break;
         case SPAM_MAG_SELF_TEST:
-            if(check_spam_mag_self_test_timer())
+            if(check_spam_timer())
             {
                 end_self_test_calibration(mag_num);
                 current_spam_axis = SPAM_X;
@@ -485,9 +504,9 @@ void determine_bdot_state()
             }
             break;
         case SPAM:
-            if(check_spam_avg_timer() && mtq_state == MTQ_ACTUATION_PHASE)
+            if(check_spam_avg_timer())
             {
-                handle_spam_average();
+                handle_spam_average(mag_measure_mtq_state);
             }
             /* if the amount of time spam is on is done, go back to last normal state (either NORMAL or SLEEP) */
             if(check_spam_timer())
@@ -517,21 +536,25 @@ void determine_spam_axis()
         case SPAM_X:
             for(i = 0; i < 3; i++)
             {
-                spam_x_avg[i] = aggVec_avg_i_i(&spam_x_avg_agg[i]);
+                spam_on_x_avg[i] = aggVec_avg_i_i(&spam_on_x_avg_agg[i]);
+                spam_off_x_avg[i] = aggVec_avg_i_i(&spam_off_x_avg_agg[i]);
+
             }
             current_spam_axis = SPAM_Y;
             break;
         case SPAM_Y:
             for(i = 0; i < 3; i++)
             {
-                spam_y_avg[i] = aggVec_avg_i_i(&spam_y_avg_agg[i]);
+                spam_on_y_avg[i] = aggVec_avg_i_i(&spam_on_y_avg_agg[i]);
+                spam_off_y_avg[i] = aggVec_avg_i_i(&spam_off_y_avg_agg[i]);
             }
             current_spam_axis = SPAM_Z;
             break;
         case SPAM_Z:
             for(i = 0; i < 3; i++)
             {
-                spam_z_avg[i] = aggVec_avg_i_i(&spam_z_avg_agg[i]);
+                spam_on_z_avg[i] = aggVec_avg_i_i(&spam_on_z_avg_agg[i]);
+                spam_off_z_avg[i] = aggVec_avg_i_i(&spam_off_z_avg_agg[i]);
             }
             current_spam_axis = SPAM_X;
             break;
@@ -543,9 +566,12 @@ void reset_spam_avg_agg()
     uint8_t i;
     for(i = 0; i < 3; i++)
     {
-        aggVec_reset((aggVec *) &spam_x_avg_agg[i]);
-        aggVec_reset((aggVec *) &spam_y_avg_agg[i]);
-        aggVec_reset((aggVec *) &spam_z_avg_agg[i]);
+        aggVec_reset((aggVec *) &spam_on_x_avg_agg[i]);
+        aggVec_reset((aggVec *) &spam_on_y_avg_agg[i]);
+        aggVec_reset((aggVec *) &spam_on_z_avg_agg[i]);
+        aggVec_reset((aggVec *) &spam_off_x_avg_agg[i]);
+        aggVec_reset((aggVec *) &spam_off_y_avg_agg[i]);
+        aggVec_reset((aggVec *) &spam_off_z_avg_agg[i]);
     }
 }
 
@@ -563,32 +589,24 @@ void update_simulink_info()
     {
         /* B_meas_valid is actually thrown away in rt one step so it doesn't matter what value you put in */
         case BDOT_MAG:
-            rtU.B_body_in_T[0] = valid_bdot_mag_data->convertedX;
-            rtU.B_body_in_T[1] = valid_bdot_mag_data->convertedY;
-            rtU.B_body_in_T[2] = valid_bdot_mag_data->convertedZ;
-            rtU.B_meas_valid = (bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST);
-            rtU.MT_on = 0;
+            rtU.B_body_in_T[0] = valid_bdot_mag_data.convertedX;
+            rtU.B_body_in_T[1] = valid_bdot_mag_data.convertedY;
+            rtU.B_body_in_T[2] = valid_bdot_mag_data.convertedZ;
             break;
         case SP_MAG1:
             rtU.B_body_in_T[0] = sp_mag1_data.convertedX;
             rtU.B_body_in_T[1] = sp_mag1_data.convertedY;
             rtU.B_body_in_T[2] = sp_mag1_data.convertedZ;
-            rtU.B_meas_valid = (bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST);
-            rtU.MT_on = 0;
             break;
         case SP_MAG2:
             rtU.B_body_in_T[0] = sp_mag2_data.convertedX;
             rtU.B_body_in_T[1] = sp_mag2_data.convertedY;
             rtU.B_body_in_T[2] = sp_mag2_data.convertedZ;
-            rtU.B_meas_valid = (bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST);
-            rtU.MT_on = 0;
             break;
         default:
-            rtU.B_body_in_T[0] = valid_bdot_mag_data->convertedX;
-            rtU.B_body_in_T[1] = valid_bdot_mag_data->convertedY;
-            rtU.B_body_in_T[2] = valid_bdot_mag_data->convertedZ;
-            rtU.B_meas_valid = (bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST);
-            rtU.MT_on = 0;
+            rtU.B_body_in_T[0] = valid_bdot_mag_data.convertedX;
+            rtU.B_body_in_T[1] = valid_bdot_mag_data.convertedY;
+            rtU.B_body_in_T[2] = valid_bdot_mag_data.convertedZ;
     }
 }
 
@@ -631,6 +649,7 @@ void process_sp_mag()
 void read_magnetometer_data()
 {
    continuous_bdot_mag_data = magReadXYZData(mag_num, ConvertToTeslas);
+   mag_measure_mtq_state = mtq_state;
    if(bdot_state == SPAM_MAG_SELF_TEST && mtq_state == MTQ_MEASUREMENT_PHASE)
    {
        self_test_add_samples(mag_num, continuous_bdot_mag_data);
@@ -644,17 +663,20 @@ void update_valid_mag_data()
 {
     if ((mtq_state == MTQ_MEASUREMENT_PHASE) && (bdot_state == NORMAL_MODE || bdot_state == SLEEP_MODE))
     {
+        valid_bdot_mag_data.rawX = continuous_bdot_mag_data->rawX;
+        valid_bdot_mag_data.rawY = continuous_bdot_mag_data->rawY;
+        valid_bdot_mag_data.rawZ = continuous_bdot_mag_data->rawZ;
         switch(calibration_switch)
         {
             case CALIBRATION_OFF:
-                valid_bdot_mag_data->convertedX = continuous_bdot_mag_data->convertedX;
-                valid_bdot_mag_data->convertedY = continuous_bdot_mag_data->convertedY;
-                valid_bdot_mag_data->convertedZ = continuous_bdot_mag_data->convertedZ;
+                valid_bdot_mag_data.convertedX = continuous_bdot_mag_data->convertedX;
+                valid_bdot_mag_data.convertedY = continuous_bdot_mag_data->convertedY;
+                valid_bdot_mag_data.convertedZ = continuous_bdot_mag_data->convertedZ;
             break;
             case CALIBRATION_ON:
-                valid_bdot_mag_data->convertedX = continuous_bdot_mag_data->convertedX * continuous_bdot_mag_data->calibration_factor_x;
-                valid_bdot_mag_data->convertedY = continuous_bdot_mag_data->convertedY * continuous_bdot_mag_data->calibration_factor_y;
-                valid_bdot_mag_data->convertedZ = continuous_bdot_mag_data->convertedZ * continuous_bdot_mag_data->calibration_factor_z;
+                valid_bdot_mag_data.convertedX = continuous_bdot_mag_data->convertedX * continuous_bdot_mag_data->calibration_factor_x;
+                valid_bdot_mag_data.convertedY = continuous_bdot_mag_data->convertedY * continuous_bdot_mag_data->calibration_factor_y;
+                valid_bdot_mag_data.convertedZ = continuous_bdot_mag_data->convertedZ * continuous_bdot_mag_data->calibration_factor_z;
             break;
         }
     }
@@ -673,7 +695,7 @@ void convert_mag_data_raw_to_teslas(MagnetometerData * mag)
 void calc_best_fit_mag()
 {
     // find the median of the norm to determine best magnetometer to use. TODO: Think of a better, less costly method
-    float bdot_mag_norm = sqrt(abs(valid_bdot_mag_data->convertedX)^2 + abs(valid_bdot_mag_data->convertedY)^2 + abs(valid_bdot_mag_data->convertedZ)^2);
+    float bdot_mag_norm = sqrt(abs(valid_bdot_mag_data.convertedX)^2 + abs(valid_bdot_mag_data.convertedY)^2 + abs(valid_bdot_mag_data.convertedZ)^2);
     float sp_mag1_norm =  sqrt(abs(sp_mag1_data.convertedX)^2 + abs(sp_mag1_data.convertedY)^2 + abs(sp_mag1_data.convertedZ)^2);
     float sp_mag2_norm = sqrt(abs(sp_mag2_data.convertedX)^2 + abs(sp_mag2_data.convertedY)^2 + abs(sp_mag2_data.convertedZ)^2);
 
@@ -728,37 +750,6 @@ uint8_t check_spam_timer()
         if(checkTimer(spam_timer))
         {
             spam_timer_on_flag = 0;
-            return 1;
-        }
-    }
-    return 0;
-}
-
-void start_spam_mag_self_test_timer()
-{
-    if(!spam_mag_self_test_timer_on_flag)
-    {
-        spam_mag_self_test_timer = timerPollInitializer(spam_mag_self_test_timer_ms);
-        spam_mag_self_test_timer_on_flag = 1;
-    }
-}
-
-void end_spam_mag_self_test_timer()
-{
-    if(spam_mag_self_test_timer_on_flag)
-    {
-        endPollingTimer(spam_mag_self_test_timer);
-        spam_mag_self_test_timer_on_flag = 0;
-    }
-}
-
-uint8_t check_spam_mag_self_test_timer()
-{
-    if(spam_mag_self_test_timer_on_flag)
-    {
-        if(checkTimer(spam_mag_self_test_timer))
-        {
-            spam_mag_self_test_timer_on_flag = 0;
             return 1;
         }
     }
@@ -829,24 +820,48 @@ uint8_t check_check_nap_status_timer()
     return 0;
 }
 
-void handle_spam_average()
+void handle_spam_average(mtq_phase current_phase)
 {
-    switch(current_spam_axis)
+    if(current_phase == MTQ_ACTUATION_PHASE)
     {
-        case SPAM_X:
-            aggVec_push_i(&spam_x_avg_agg[1], continuous_bdot_mag_data->rawY);
-            aggVec_push_i(&spam_x_avg_agg[2], continuous_bdot_mag_data->rawZ);
-            break;
-        case SPAM_Y:
-            aggVec_push_i(&spam_y_avg_agg[0], continuous_bdot_mag_data->rawX);
-            aggVec_push_i(&spam_y_avg_agg[1], continuous_bdot_mag_data->rawY);
-            aggVec_push_i(&spam_y_avg_agg[2], continuous_bdot_mag_data->rawZ);
-            break;
-        case SPAM_Z:
-            aggVec_push_i(&spam_z_avg_agg[0], continuous_bdot_mag_data->rawX);
-            aggVec_push_i(&spam_z_avg_agg[1], continuous_bdot_mag_data->rawY);
-            aggVec_push_i(&spam_z_avg_agg[2], continuous_bdot_mag_data->rawZ);
-            break;
+        switch(current_spam_axis)
+        {
+            case SPAM_X:
+                aggVec_push_i(&spam_on_x_avg_agg[0], continuous_bdot_mag_data->rawX);
+                aggVec_push_i(&spam_on_x_avg_agg[1], continuous_bdot_mag_data->rawY);
+                aggVec_push_i(&spam_on_x_avg_agg[2], continuous_bdot_mag_data->rawZ);
+                break;
+            case SPAM_Y:
+                aggVec_push_i(&spam_on_y_avg_agg[0], continuous_bdot_mag_data->rawX);
+                aggVec_push_i(&spam_on_y_avg_agg[1], continuous_bdot_mag_data->rawY);
+                aggVec_push_i(&spam_on_y_avg_agg[2], continuous_bdot_mag_data->rawZ);
+                break;
+            case SPAM_Z:
+                aggVec_push_i(&spam_on_z_avg_agg[0], continuous_bdot_mag_data->rawX);
+                aggVec_push_i(&spam_on_z_avg_agg[1], continuous_bdot_mag_data->rawY);
+                aggVec_push_i(&spam_on_z_avg_agg[2], continuous_bdot_mag_data->rawZ);
+                break;
+        }
+    } else if (current_phase == MTQ_MEASUREMENT_PHASE)
+    {
+        switch(current_spam_axis)
+        {
+            case SPAM_X:
+                aggVec_push_i(&spam_off_x_avg_agg[0], continuous_bdot_mag_data->rawX);
+                aggVec_push_i(&spam_off_x_avg_agg[1], continuous_bdot_mag_data->rawY);
+                aggVec_push_i(&spam_off_x_avg_agg[2], continuous_bdot_mag_data->rawZ);
+                break;
+            case SPAM_Y:
+                aggVec_push_i(&spam_off_y_avg_agg[0], continuous_bdot_mag_data->rawX);
+                aggVec_push_i(&spam_off_y_avg_agg[1], continuous_bdot_mag_data->rawY);
+                aggVec_push_i(&spam_off_y_avg_agg[2], continuous_bdot_mag_data->rawZ);
+                break;
+            case SPAM_Z:
+                aggVec_push_i(&spam_off_z_avg_agg[0], continuous_bdot_mag_data->rawX);
+                aggVec_push_i(&spam_off_z_avg_agg[1], continuous_bdot_mag_data->rawY);
+                aggVec_push_i(&spam_off_z_avg_agg[2], continuous_bdot_mag_data->rawZ);
+                break;
+        }
     }
 }
 
@@ -863,9 +878,9 @@ void determine_mtq_commands()
             bdot_perspective_mtq_info.tumble_status  = (uint8_t) rtY.tumble;
             if(bdot_perspective_mtq_info.tumble_status)
             {
-                bdot_perspective_mtq_info.xDipole = map((int8_t) rtY.Dig_val[0]) * override_factor_x;
-                bdot_perspective_mtq_info.yDipole = map((int8_t) rtY.Dig_val[1]) * override_factor_y;
-                bdot_perspective_mtq_info.zDipole = map((int8_t) rtY.Dig_val[2]) * override_factor_z;
+                bdot_perspective_mtq_info.xDipole = find_max_dipole((int16_t) (map((int8_t) rtY.Dig_val[0]) * override_factor_x * gcmd_dipole_gain_factor_x));
+                bdot_perspective_mtq_info.yDipole = find_max_dipole((int16_t) (map((int8_t) rtY.Dig_val[1]) * override_factor_y * gcmd_dipole_gain_factor_y));
+                bdot_perspective_mtq_info.zDipole = find_max_dipole((int16_t) (map((int8_t) rtY.Dig_val[2]) * override_factor_z * gcmd_dipole_gain_factor_z));
             } else
             {
                 bdot_perspective_mtq_info.xDipole = 0;
@@ -951,14 +966,22 @@ void send_dipole_packet(int8_t x, int8_t y, int8_t z)
 }
 
 /* convert val range from -127->127 to -100->100 */
-int map(int val)
+int8_t map(int8_t val)
 {
     return map_general(val, -127, 127, -100, 100);
 }
 
-int map_general(int x, int in_min, int in_max, int out_min, int out_max)
+int8_t map_general(int8_t x, int8_t in_min, int8_t in_max, int8_t out_min, int8_t out_max)
 {
+
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+int8_t find_max_dipole(int16_t dipole)
+{
+    if(dipole > 100) return 100;
+    if(dipole < -100) return -100;
+    return ((int8_t) dipole);
 }
 
 /* Can packet receive callback function */
@@ -1068,9 +1091,9 @@ void send_continuous_mag_reading_cosmos()
 /* send magnetometer reading segment through backchannel */
 void send_bdot_mag_reading_cosmos()
 {
-    bdot_magnetometer_data_cosmos.xMag = valid_bdot_mag_data->convertedX * 1e9;
-    bdot_magnetometer_data_cosmos.yMag = valid_bdot_mag_data->convertedY * 1e9;
-    bdot_magnetometer_data_cosmos.zMag = valid_bdot_mag_data->convertedZ * 1e9;
+    bdot_magnetometer_data_cosmos.xMag = valid_bdot_mag_data.convertedX * 1e9;
+    bdot_magnetometer_data_cosmos.yMag = valid_bdot_mag_data.convertedY * 1e9;
+    bdot_magnetometer_data_cosmos.zMag = valid_bdot_mag_data.convertedZ * 1e9;
 
     bcbinSendPacket((uint8_t *) &bdot_magnetometer_data_cosmos, sizeof(bdot_magnetometer_data_cosmos));
 }
@@ -1144,12 +1167,9 @@ void send_all_polling_timers_segment_cosmos()
 /* update rollcall packet */
 void updateRCData()
 {
-    if ((mtq_state == MTQ_MEASUREMENT_PHASE) && (bdot_state == NORMAL_MODE || bdot_state == SLEEP_MODE))
-    {
-        aggVec_push_i(&magX, continuous_bdot_mag_data->rawX);
-        aggVec_push_i(&magY, continuous_bdot_mag_data->rawY);
-        aggVec_push_i(&magZ, continuous_bdot_mag_data->rawZ);
-    }
+    aggVec_push_i(&magX, valid_bdot_mag_data.rawX);
+    aggVec_push_i(&magY, valid_bdot_mag_data.rawY);
+    aggVec_push_i(&magZ, valid_bdot_mag_data.rawZ);
     aggVec_push_f(&rc_temp, asensorReadIntTempC());
 }
 
@@ -1281,6 +1301,13 @@ void bdot_pop_operation(uint8_t pop_control_x, uint8_t pop_control_y, uint8_t po
     }
 }
 
+void bdot_dipole_gain_operation(uint8_t gain_control_x, uint8_t gain_control_y, uint8_t gain_control_z)
+{
+    gcmd_dipole_gain_factor_x = (float) gain_control_x / 100;
+    gcmd_dipole_gain_factor_y = (float) gain_control_y / 100;
+    gcmd_dipole_gain_factor_z = (float) gain_control_z / 100;
+}
+
 void mag_calibration_control_operation(uint8_t calibration_switch_cmd)
 {
     switch(calibration_switch_cmd)
@@ -1347,9 +1374,12 @@ void initialize_aggregate()
     uint8_t i;
     for(i = 0; i < 3; i++)
     {
-        aggVec_init_i(&spam_x_avg_agg[i]);
-        aggVec_init_i(&spam_y_avg_agg[i]);
-        aggVec_init_i(&spam_z_avg_agg[i]);
+        aggVec_init_i(&spam_on_x_avg_agg[i]);
+        aggVec_init_i(&spam_on_y_avg_agg[i]);
+        aggVec_init_i(&spam_on_z_avg_agg[i]);
+        aggVec_init_i(&spam_off_x_avg_agg[i]);
+        aggVec_init_i(&spam_off_y_avg_agg[i]);
+        aggVec_init_i(&spam_off_z_avg_agg[i]);
     }
 }
 
@@ -1376,18 +1406,18 @@ void rcPopulate1(CANPacket *out)
 {
 
     rc_adcs_bdot_1 rc;
-    rc.rc_adcs_bdot_1_last_spam_x_mtq_x = spam_x_avg[0];
-    rc.rc_adcs_bdot_1_last_spam_x_mtq_y = spam_x_avg[1];
-    rc.rc_adcs_bdot_1_last_spam_x_mtq_z = spam_x_avg[2];
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_x = spam_on_x_avg[0];
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_y = spam_on_x_avg[1];
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_z = spam_on_x_avg[2];
 
-    rc.rc_adcs_bdot_1_last_spam_y_mtq_x = spam_y_avg[0];
+    rc.rc_adcs_bdot_1_last_spam_y_mtq_x = spam_on_y_avg[0];
 
     encoderc_adcs_bdot_1(&rc, out);
 }
 
 void rcPopulate2(CANPacket *out)
 {
-    rc_adcs_bdot_2 rc ;
+    rc_adcs_bdot_2 rc;
     rc.rc_adcs_bdot_2_mag_x_min = aggVec_min_i(&magX);
     rc.rc_adcs_bdot_2_mag_x_max = aggVec_max_i(&magX);
     rc.rc_adcs_bdot_2_mag_x_avg = aggVec_avg_i_i(&magX);
@@ -1413,8 +1443,8 @@ void rcPopulate4(CANPacket *out)
     rc_adcs_bdot_4 rc = {0};
     rc.rc_adcs_bdot_4_mag_z_avg = aggVec_avg_i_i(&magZ);
     rc.rc_adcs_bdot_4_tumble = rtY.tumble;
-    rc.rc_adcs_bdot_4_last_spam_y_mtq_y = spam_y_avg[1];
-    rc.rc_adcs_bdot_4_last_spam_y_mtq_z = spam_y_avg[2];
+    rc.rc_adcs_bdot_4_last_spam_y_mtq_y = spam_on_y_avg[1];
+    rc.rc_adcs_bdot_4_last_spam_y_mtq_z = spam_on_y_avg[2];
     aggVec_as_reset((aggVec *)&magZ);
     encoderc_adcs_bdot_4(&rc, out);
 }
@@ -1422,9 +1452,9 @@ void rcPopulate4(CANPacket *out)
 void rcPopulate5(CANPacket *out)
 {
     rc_adcs_bdot_5 rc = {0};
-    rc.rc_adcs_bdot_5_last_spam_z_mtq_x = spam_z_avg[0];
-    rc.rc_adcs_bdot_5_last_spam_z_mtq_y = spam_z_avg[1];
-    rc.rc_adcs_bdot_5_last_spam_z_mtq_z = spam_z_avg[2];
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_x = spam_on_z_avg[0];
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_y = spam_on_z_avg[1];
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_z = spam_on_z_avg[2];
     encoderc_adcs_bdot_5(&rc, out);
 }
 
