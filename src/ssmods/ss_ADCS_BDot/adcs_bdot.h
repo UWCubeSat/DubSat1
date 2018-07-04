@@ -188,7 +188,6 @@ FILE_STATIC void send_sp_mag2_reading_cosmos();
 FILE_STATIC void send_mtq_info_segment_cosmos();
 FILE_STATIC void send_simulink_segment_cosmos();
 
-FILE_STATIC void send_all_polling_timers_segment_cosmos();
 FILE_STATIC void send_health_segment_cosmos();
 
 FILE_STATIC void send_bdot_state_status_cosmos();
@@ -205,10 +204,10 @@ FILE_STATIC void mag_select_switch(uint8_t mag_selection);
 FILE_STATIC void select_mode_operation(uint8_t reading_mode_selection);
 FILE_STATIC void ground_cmd_bdot_nap_schedule(uint8_t nap_status);
 FILE_STATIC void change_max_tumble_time(uint16_t max_tumble_time_min);
-FILE_STATIC void spam_control_operation(uint16_t off_time_min, uint8_t on_time_min, uint8_t spam_switch,
+FILE_STATIC void spam_control_operation(uint16_t off_time_min, uint16_t on_time_min, uint8_t spam_switch,
                                         int8_t x_dipole, int8_t y_dipole, int8_t z_dipole);
 FILE_STATIC void bdot_pop_operation(uint8_t pop_control_x, uint8_t pop_control_y, uint8_t pop_control_z);
-
+FILE_STATIC void change_spam_avg_time(uint8_t mtq_pwm_measurement, uint8_t mtq_pwm_actuation);
 /***********************************************************************/
 
 
@@ -219,6 +218,7 @@ FILE_STATIC void process_sp_mag();
 
 FILE_STATIC void convert_mag_data_raw_to_teslas(MagnetometerData * mag);
 
+FILE_STATIC void clear_update_bdot_state_flags();
 FILE_STATIC void determine_bdot_state();
 FILE_STATIC void determine_spam_axis();
 FILE_STATIC void handle_spam_average();
@@ -228,13 +228,11 @@ FILE_STATIC void update_valid_mag_data();
 FILE_STATIC void rt_OneStep(void);
 FILE_STATIC void update_simulink_info();
 FILE_STATIC void determine_mtq_commands();
+FILE_STATIC int8_t find_max_dipole(int16_t dipole);
 /**********************************************************************/
 
 
 /*****************************Others***********************************/
-FILE_STATIC int8_t map(int8_t val);
-FILE_STATIC int8_t map_general(int8_t x, int8_t in_min, int8_t in_max, int8_t out_min, int8_t out_max);
-FILE_STATIC int8_t find_max_dipole(int16_t dipole);
 void handlePPTFiringNotification();
 /**********************************************************************/
 #endif /* ADCS_BDOT_H_ */
