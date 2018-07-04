@@ -5,7 +5,6 @@
 #include "core/timer.h"
 #include "core/MET.h"
 #include "interfaces/canwrap.h"
-#include "core/dataArray.h"
 #include "interfaces/rollcall.h"
 #include "core/agglib.h"
 #include "core/autosequence.h"
@@ -143,8 +142,18 @@ void sendRCCmd()
     rcSendFlag = 0;
     //distDomainSwitch(PD_WHEELS, PD_CMD_Disable);
 }
+void reverseArrah(uint8_t arr[], uint8_t start, uint8_t end) {
+    uint8_t temp;
+    if (start >= end)
+        return;
+    temp = arr[start];
+    arr[start] = arr[end];
+    arr[end] = temp;
+    reverseArrah(arr, start+1, end-1);
+}
 
 
+uint64_t recSP=0;
 void sendRC()
 {
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
@@ -153,12 +162,12 @@ void sendRC()
         if(rcFlag == 17)
         {
             rc_eps_dist_h1 rollcallPkt1_info = {0};
-            rollcallPkt1_info.rc_eps_dist_h1_reset_count = bspGetResetCount();
-            rollcallPkt1_info.rc_eps_dist_h1_sysrstiv = SYSRSTIV;
-            rollcallPkt1_info.rc_eps_dist_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
-            rollcallPkt1_info.rc_eps_dist_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
-            rollcallPkt1_info.rc_eps_dist_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
             encoderc_eps_dist_h1(&rollcallPkt1_info, &rollcallPkt);
+            uint64_t fullPacketData = 0x0000000000000000;
+            fullPacketData |= recSP;
+            uint64_t *thePointer = (uint64_t *) (&(rollcallPkt.data));
+            *thePointer = fullPacketData;
+            reverseArrah((rollcallPkt.data), 0, 7);
             aggVec_as_reset((aggVec *)&mspTempAg);
         }
         else if(rcFlag == 16)
@@ -341,9 +350,6 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_RC_ADCS_MTQ_1:
             rcResponseFlag &= ~MOD_MTQ_FLAG;
             break;
-        case CAN_ID_RC_ADCS_SP_1:
-            rcResponseFlag &= ~MOD_SENSORPROC_FLAG;
-            break;
         case CAN_ID_RC_EPS_BATT_1:
             rcResponseFlag &= ~MOD_BATT_FLAG;
             break;
@@ -391,6 +397,63 @@ void can_packet_rx_callback(CANPacket *packet)
                 aggVec_reset((aggVec*)&ssCurrAgs[i - 1]);
                 aggVec_reset((aggVec *)&ssBusVAgs[i - 1]);
             }
+            break;
+        case CAN_ID_RC_ADCS_SP_H1:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_H2:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_1:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_2:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_3:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_4:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_5:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_6:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_7:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_8:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_9:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_10:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_11:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_12:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_13:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_14:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_15:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_16:
+            recSP++;
+            break;
+        case CAN_ID_RC_ADCS_SP_17:
+            recSP++;
             break;
         default:
             break;
@@ -472,7 +535,7 @@ int main(void)
 
     initializeTimer();
     initData();
-    startCallback(timerCallbackInitializer(&sendRollCallHandler, 500000)); //TODO: was 6000000 for 6s
+    startCallback(timerCallbackInitializer(&sendRollCallHandler, 6000000)); //TODO: was 6000000 for 6s
     //TODO: this is test code:
     bcbinPopulateHeader(&(rcCount.header), 25, sizeof(rcCount));
     startCallback(timerCallbackInitializer(&intermediateRollcall, 1000000));
