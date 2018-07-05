@@ -156,9 +156,8 @@ void readCC (){
 
     if(balancerIsChecking)
     {
-    	if((BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) && CCData.busVoltageV <= 6.1f)
+    	if((BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) && (CCData.busVoltageV <= 6.1f || CCData.calcdCurrentA > 3.0f || CCData.calcdCurrentA < -3.0f))
 			battControlBalancer(Cmd_ExplicitDisable);
-    	//TODO: check for on conditions here; add more off conditions (max current)
     }
     else if(BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT)
     {
