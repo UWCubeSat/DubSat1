@@ -34,6 +34,7 @@ NS_ :
 BS_:
 
 BU_: ppt eps_batt eps_dist eps_gen adcs_rwz adcs_rwy adcs_rwx adcs_mtq rahs adcs_sensorproc adcs_mpc adcs_estim adcs_bdot com_1 com_2
+VAL_TABLE_ fire_result 2 "no main discharge" 1 "no main charge" 0 "fire successful" ;
 VAL_TABLE_ mtq_phase 2 "pms_phase" 1 "actuation_phase" 0 "measurement_phase" ;
 VAL_TABLE_ bdot_mag_mode 3 "sp2 mode" 2 "sp1 mode" 1 "bdot mode" 0 "auto mode" ;
 VAL_TABLE_ bdot_control_mode 3 "spam" 2 "spam mag self test" 1 "sleep mode" 0 "normal mode" ;
@@ -111,7 +112,8 @@ BO_ 2452161128 rc_eps_gen_h2: 8 Vector__XXX
 BO_ 2452161127 rc_adcs_mtq_h2: 1 Vector__XXX
  SG_ rc_adcs_mtq_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
-BO_ 2452161126 rc_ppt_h2: 1 Vector__XXX
+BO_ 2452161126 rc_ppt_h2: 2 Vector__XXX
+ SG_ rc_ppt_h2_last_fire_result : 8|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ rc_ppt_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161125 rc_eps_batt_h1: 8 Vector__XXX
@@ -603,14 +605,14 @@ BO_ 2452161037 rc_adcs_mtq_3: 8 Vector__XXX
  SG_ rc_adcs_mtq_3_bdot_z_min : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161036 rc_adcs_mtq_2: 8 Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_z_max : 56|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_z_avg : 48|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_y_min : 40|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_y_max : 32|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_y_avg : 24|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_x_min : 16|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_x_max : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_2_bdot_x_avg : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_z_max : 56|8@1- (1,0) [-100|100] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_z_avg : 48|8@1- (1,0) [-100|100] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_y_min : 40|8@1- (1,0) [-100|100] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_y_max : 32|8@1- (1,0) [-100|100] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_y_avg : 24|8@1- (1,0) [-100|100] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_x_min : 16|8@1- (1,0) [-100|100] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_x_max : 8|8@1- (1,0) [-100|100] "" Vector__XXX
+ SG_ rc_adcs_mtq_2_bdot_x_avg : 0|8@1- (1,0) [-100|100] "" Vector__XXX
 
 BO_ 2452161035 rc_adcs_mtq_1: 8 Vector__XXX
 
@@ -625,7 +627,9 @@ BO_ 2452161033 rc_ppt_2: 8 Vector__XXX
  SG_ rc_ppt_2_main_chg_max : 16|16@1+ (1,0) [-32768|32767] "2^-15 seconds" Vector__XXX
  SG_ rc_ppt_2_main_chg_avg : 32|16@1+ (1,0) [-32768|32767] "2^-15 seconds" Vector__XXX
 
-BO_ 2452161032 rc_ppt_1: 8 Vector__XXX
+BO_ 2452161032 rc_ppt_1: 4 Vector__XXX
+ SG_ rc_ppt_1_fault_count : 16|16@1+ (1,0) [0|65535] "2^-15s" Vector__XXX
+ SG_ rc_ppt_1_fire_count : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2452161048 rc_eps_gen_9: 8 Vector__XXX
  SG_ rc_eps_gen_9_pnl_3_temp_min : 40|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
@@ -934,6 +938,10 @@ CM_ SG_ 2452161130 rc_adcs_estim_h2_canrxerror "Estim MCP's RX error buffer";
 CM_ SG_ 2452161129 rc_adcs_sp_h2_canrxerror "SP MCP's RX error buffer";
 CM_ SG_ 2452161128 rc_eps_gen_h2_canrxerror "GEN MCP's RX error buffer";
 CM_ SG_ 2452161127 rc_adcs_mtq_h2_canrxerror "the MTQ MCP's RX error buffer";
+CM_ SG_ 2452161126 rc_ppt_h2_last_fire_result "The result of the last PPT fire:
+0 - fire successful
+1 - main didn't charge
+2 - main didn't discharge";
 CM_ SG_ 2452161126 rc_ppt_h2_canrxerror "the PPT MCP's RX error buffer";
 CM_ SG_ 2452161125 rc_eps_batt_h1_temp_min "Temperature of MSP";
 CM_ SG_ 2452161125 rc_eps_batt_h1_temp_max "Temperature of MSP";
@@ -1218,6 +1226,8 @@ CM_ SG_ 2452161033 rc_ppt_2_total_fire_count "Total Fire count";
 CM_ SG_ 2452161033 rc_ppt_2_main_chg_min "Main Charge Time Minimum";
 CM_ SG_ 2452161033 rc_ppt_2_main_chg_max "Main Charge Time Maximum";
 CM_ SG_ 2452161033 rc_ppt_2_main_chg_avg "Main Charge Time Average";
+CM_ SG_ 2452161032 rc_ppt_1_fault_count "PPT fault count";
+CM_ SG_ 2452161032 rc_ppt_1_fire_count "Total number of times the PPT has fired";
 CM_ SG_ 2452161048 rc_eps_gen_9_pnl_3_temp_min "Panel 3 Temp min";
 CM_ SG_ 2452161048 rc_eps_gen_9_pnl_3_temp_max "Panel 3 Temp max";
 CM_ SG_ 2452161048 rc_eps_gen_9_pnl_3_temp_avg "Panel 3 Temp avg";
@@ -1386,6 +1396,7 @@ VAL_ 2452161136 rc_adcs_bdot_6_gain_ovr_status_y 1 "true" 0 "false" ;
 VAL_ 2452161136 rc_adcs_bdot_6_gain_ovr_status_x 1 "true" 0 "false" ;
 VAL_ 2452161136 rc_adcs_bdot_6_current_state 3 "spam" 2 "spam mag self test" 1 "sleep mode" 0 "normal mode" ;
 VAL_ 2449736401 gcmd_ppt_multiple_fire_override 1 "true" 0 "false" ;
+VAL_ 2452161126 rc_ppt_h2_last_fire_result 2 "no main discharge" 1 "no main charge" 0 "fire successful" ;
 VAL_ 2449736397 gcmd_mtq_pms_enable 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736395 gcmd_bdot_spam_control 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736394 gcmd_bdot_control_mode 3 "spam" 2 "spam mag self test" 1 "sleep mode" 0 "normal mode" ;

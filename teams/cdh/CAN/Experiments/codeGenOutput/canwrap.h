@@ -212,6 +212,9 @@
 #define CAN_ID_MSP_TEMP 304676883
 #define CAN_ID_GRND_EPOCH 302449337
 
+#define CAN_ENUM_FIRE_RESULT_NOMAINDISCHARGE 2
+#define CAN_ENUM_FIRE_RESULT_NOMAINCHARGE 1
+#define CAN_ENUM_FIRE_RESULT_FIRESUCCESSFUL 0
 #define CAN_ENUM_MTQ_PHASE_PMS_PHASE 2
 #define CAN_ENUM_MTQ_PHASE_ACTUATION_PHASE 1
 #define CAN_ENUM_MTQ_PHASE_MEASUREMENT_PHASE 0
@@ -373,6 +376,7 @@ typedef struct rc_adcs_mtq_h2 {
 } rc_adcs_mtq_h2;
 
 typedef struct rc_ppt_h2 {
+    uint8_t rc_ppt_h2_last_fire_result; //  (No Units)
     uint8_t rc_ppt_h2_canrxerror; //  (No Units)
 } rc_ppt_h2;
 
@@ -971,14 +975,14 @@ typedef struct rc_adcs_mtq_3 {
 } rc_adcs_mtq_3;
 
 typedef struct rc_adcs_mtq_2 {
-    uint8_t rc_adcs_mtq_2_bdot_z_max; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_z_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_y_min; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_y_max; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_y_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_x_min; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_x_max; //  (No Units)
-    uint8_t rc_adcs_mtq_2_bdot_x_avg; //  (No Units)
+    int8_t rc_adcs_mtq_2_bdot_z_max; //  (No Units)
+    int8_t rc_adcs_mtq_2_bdot_z_avg; //  (No Units)
+    int8_t rc_adcs_mtq_2_bdot_y_min; //  (No Units)
+    int8_t rc_adcs_mtq_2_bdot_y_max; //  (No Units)
+    int8_t rc_adcs_mtq_2_bdot_y_avg; //  (No Units)
+    int8_t rc_adcs_mtq_2_bdot_x_min; //  (No Units)
+    int8_t rc_adcs_mtq_2_bdot_x_max; //  (No Units)
+    int8_t rc_adcs_mtq_2_bdot_x_avg; //  (No Units)
 } rc_adcs_mtq_2;
 
 typedef struct rc_adcs_mtq_1 {
@@ -998,6 +1002,8 @@ typedef struct rc_ppt_2 {
 } rc_ppt_2;
 
 typedef struct rc_ppt_1 {
+    uint16_t rc_ppt_1_fault_count; // 2^-15s
+    uint16_t rc_ppt_1_fire_count; //  (No Units)
 } rc_ppt_1;
 
 typedef struct rc_eps_gen_9 {
