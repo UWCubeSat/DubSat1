@@ -938,10 +938,7 @@ CM_ SG_ 2452161130 rc_adcs_estim_h2_canrxerror "Estim MCP's RX error buffer";
 CM_ SG_ 2452161129 rc_adcs_sp_h2_canrxerror "SP MCP's RX error buffer";
 CM_ SG_ 2452161128 rc_eps_gen_h2_canrxerror "GEN MCP's RX error buffer";
 CM_ SG_ 2452161127 rc_adcs_mtq_h2_canrxerror "the MTQ MCP's RX error buffer";
-CM_ SG_ 2452161126 rc_ppt_h2_last_fire_result "The result of the last PPT fire:
-0 - fire successful
-1 - main didn't charge
-2 - main didn't discharge";
+CM_ SG_ 2452161126 rc_ppt_h2_last_fire_result "The result of the last PPT fire";
 CM_ SG_ 2452161126 rc_ppt_h2_canrxerror "the PPT MCP's RX error buffer";
 CM_ SG_ 2452161125 rc_eps_batt_h1_temp_min "Temperature of MSP";
 CM_ SG_ 2452161125 rc_eps_batt_h1_temp_max "Temperature of MSP";
