@@ -156,12 +156,10 @@ void readCC (){
 
     if(balancerIsChecking)
     {
-    	if((BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) && (CCData.busVoltageV <= 6.1f || CCData.calcdCurrentA > 3.0f || CCData.calcdCurrentA < -3.0f))
-			battControlBalancer(Cmd_ExplicitDisable);
-    }
-    else if(BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT)
-    {
-    	battControlBalancer(Cmd_ExplicitDisable);
+        if((CCData.busVoltageV <= 6.1f || CCData.calcdCurrentA > 3.0f || CCData.calcdCurrentA < -3.0f) && (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT))
+            battControlBalancer(Cmd_ExplicitDisable); //on and out of range
+        else if(!(BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) && CCData.busVoltageV > 6.1f && CCData.calcdCurrentA <= 3.0f && CCData.calcdCurrentA >= -3.0f)
+			battControlBalancer(Cmd_ExplicitEnable); //off and in range
     }
 
     aggVec_push_i(&voltageAg, CCReadRawVoltage());
