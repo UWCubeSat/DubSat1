@@ -153,6 +153,13 @@ void sendRC()
     while(sendRcFlag && canTxCheck() != CAN_TX_BUSY)
     {
         CANPacket pkt = {0};
+        if(sendRcFlag == 5)
+        {
+            rc_ppt_1 rc = {0};
+            rc.rc_ppt_1_fault_count = faultCount;
+            rc.rc_ppt_1_fire_count = fireCount;
+            encoderc_ppt_1(&rc, &pkt);
+        }
         if(sendRcFlag == 4)
         {
             rc_ppt_h1 rc = {0};
@@ -168,6 +175,7 @@ void sendRC()
         {
             rc_ppt_h2 rc = {0};
             rc.rc_ppt_h2_canrxerror = canRxErrorCheck();
+            rc.rc_ppt_h2_last_fire_result = lastFireResult;
             encoderc_ppt_h2(&rc, &pkt);
         }
         else if(sendRcFlag == 2)
@@ -371,7 +379,7 @@ void can_packet_rx_callback(CANPacket *packet)
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            sendRcFlag = 4;
+            sendRcFlag = 5;
             break;
         case CAN_ID_CMD_PPT_HALT:
             //stop firing, but with a flag
