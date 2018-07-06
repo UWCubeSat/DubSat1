@@ -2,52 +2,11 @@
 #include "MET.h"
 #include "../ssmods/ss_EPS_Dist/eps_dist.h"
 
-sequenceEvent *events; //TODO: increase this as necessary
+sequenceEvent *events;
 uint8_t eventSize;
 
 uint32_t recentMET;
 uint8_t metUpdatedFlag = 0;
-
-void populateDefaultValues()
-{
-	CANPacket pkt;
-	uint8_t i;
-	for(i = 0; i < NUM_POWER_DOMAINS; i++)
-	{
-		gcmd_dist_set_pd_state cmd = {0};
-		switch(i)
-		{
-			case 0:
-				cmd.gcmd_dist_set_pd_state_bdot = 1;
-				break;
-			case 1:
-				cmd.gcmd_dist_set_pd_state_com1 = 1;
-				break;
-			case 2:
-				cmd.gcmd_dist_set_pd_state_com2 = 1;
-				break;
-			case 3:
-				cmd.gcmd_dist_set_pd_state_eps = 1;
-				break;
-			case 4:
-				cmd.gcmd_dist_set_pd_state_estim = 1;
-				break;
-			case 5:
-				cmd.gcmd_dist_set_pd_state_ppt = 1;
-				break;
-			case 6:
-				cmd.gcmd_dist_set_pd_state_rahs = 1;
-				break;
-			case 7:
-				cmd.gcmd_dist_set_pd_state_wheels = 1;
-				break;
-		}
-		encodegcmd_dist_set_pd_state(&cmd, &pkt);
-		events[i].pkt = pkt;
-		events[i].sendFlag = 0;
-		events[i].time = i + 1; //sequentially activated
-	}
-}
 
 void seqUpdateMET(uint32_t met)
 {
@@ -59,7 +18,6 @@ void seqInit(sequenceEvent *initEvents, uint8_t size)
 {
 	events = initEvents;
 	eventSize = size;
-    //populateDefaultValues();
 }
 
 uint8_t seqAddEvent(sequenceEvent e)
@@ -101,15 +59,34 @@ void checkSequence()
     }
 }
 
-void removeEventAtIndex(uint8_t index)
+void seqRemoveEventAtIndex(uint8_t index)
 {
     events[index].time = 0;
 }
 
-void removeEventsWithID(uint32_t canPktId)
+void seqRemoveEventsWithID(uint32_t canPktId)
 {
     uint8_t i;
     for(i = 0; i < eventSize; i++)
         if (events[i].pkt.id == canPktId)
-            removeEventAtIndex(i);
+            seqRemoveEventAtIndex(i);
+}
+
+uint64_t seqGetIndicesForId(uint32_t canPktId)
+{
+    uint64_t indices = 0;
+    uint8_t i, currCount = 0;
+    for(i = 0; i < eventSize; i++) //populate "array" with indices
+        if(events[i].pkt.id == canPktId)
+            indices |= (i << (currCount++ * 8));
+
+    while(currCount < 8) //fill in the remaining elements with 0xFF
+        indices |= (0xFF << (currCount++ * 8));
+
+    return indices;
+}
+
+uint32_t seqGetMETForIndex(uint8_t index)
+{
+    return events[index].time;
 }

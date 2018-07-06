@@ -61,8 +61,6 @@ FILE_STATIC general_segment gseg = {0};
 FILE_STATIC sensordat_segment sseg;
 FILE_STATIC health_segment hseg;
 
-#pragma PERSISTENT(gseg)
-
 FILE_STATIC hDev hBattV;
 
 #define MAX_BUFF_SIZE   0x10
@@ -109,6 +107,12 @@ sequenceEvent persistentEvents[100] = {0};
 uint8_t eventsInitialized = 0;
 
 FILE_STATIC uint16_t rcResponseFlag = 0; //this is zero when no responses are pending
+sequenceEvent pendingEvent = {0};
+
+CANPacket autoseqMETResponsePkt = {0};
+uint8_t autoseqMETResponsePktSendFlag = 0;
+CANPacket autoseqIndicesResponsePkt = {0};
+uint8_t autoseqIndicesResponsePktSendFlag = 0;
 
 void distDeployInit()
 {
@@ -333,7 +337,7 @@ FILE_STATIC void distMonitorBattery()
         gseg.uvmode = (uint8_t)UV_InRange;
 
     //shut down everything (COM1 is hard-wired to never shut down)
-    if (gseg.uvmode != (uint8_t)UV_InRange && prevMode == (uint8_t)UV_InRange)
+    if (gseg.uvmode != (uint8_t)UV_InRange)
         for (i = NUM_POWER_DOMAINS; i; i--)
             if(i != PD_COM1)
                 distDomainSwitch((PowerDomainID)(i - 1), PD_CMD_BattVLow);
@@ -637,7 +641,7 @@ void sendRC()
 }
 void setPowerSwitchFromCAN(uint8_t cmd, PowerDomainID pd)
 {
-    if(cmd) //0 is nochange
+    if(cmd && gseg.uvmode != (uint8_t)UV_FullShutdown) //0 is nochange
     {
         if(cmd == 1)
             distDomainSwitch(pd, PD_CMD_Enable);
@@ -724,6 +728,14 @@ void can_packet_rx_callback(CANPacket *packet)
     gcmd_dist_set_pd_ovc_ppt ovcPktPPT;
     gcmd_dist_set_pd_ovc_rahs ovcPktRAHS;
     cmd_reboot_request rebootRequest;
+    gcmd_autoseq_add_1 autoseqAdd1;
+    gcmd_autoseq_add_2 autoseqAdd2;
+    gcmd_autoseq_remove_can_id rmCanId;
+    gcmd_autoseq_rm_at_index rmIndex;
+    gcmd_autoseq_get_met getMet;
+    gcmd_autoseq_get_indices getIndices;
+    dist_autoseq_get_met_rsp getMetRsp;
+    dist_autoseq_get_ind_rsp getIndicesRsp;
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
@@ -749,6 +761,7 @@ void can_packet_rx_callback(CANPacket *packet)
             break;
         case CAN_ID_RC_PPT_1:
             rcResponseFlag &= ~PD_PPT_FLAG;
+            break;
         case CAN_ID_GCMD_DIST_SET_PD_STATE:
             decodegcmd_dist_set_pd_state(packet, &pdCmd);
             setPowerSwitchFromCAN(pdCmd.gcmd_dist_set_pd_state_bdot, PD_BDOT);
@@ -775,7 +788,7 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_GCMD_DIST_SET_PD_OVC_EPS:
             decodegcmd_dist_set_pd_ovc_eps(packet, &ovcPktEPS);
             distSetOCPThreshold(PD_EPS, ovcPktEPS.gcmd_dist_set_pd_ovc_eps_ovc);
-        break;
+            break;
         case CAN_ID_GCMD_DIST_SET_PD_OVC_ESTIM:
             decodegcmd_dist_set_pd_ovc_estim(packet, &ovcPktEstim);
             distSetOCPThreshold(PD_ESTIM, ovcPktEstim.gcmd_dist_set_pd_ovc_estim_ovc);
@@ -804,6 +817,44 @@ void can_packet_rx_callback(CANPacket *packet)
                 aggVec_reset((aggVec*)&ssCurrAgs[i - 1]);
                 aggVec_reset((aggVec *)&ssBusVAgs[i - 1]);
             }
+            break;
+        case CAN_ID_GCMD_AUTOSEQ_ADD_1:
+            decodegcmd_autoseq_add_1(packet, &autoseqAdd1);
+            pendingEvent.pkt.id = autoseqAdd1.gcmd_autoseq_add_1_can_id;
+            pendingEvent.pkt.length = 8;
+            pendingEvent.sendFlag = autoseqAdd1.gcmd_autoseq_add_1_sendflg;
+            pendingEvent.time = autoseqAdd1.gcmd_autoseq_add_1_met;
+            break;
+        case CAN_ID_GCMD_AUTOSEQ_ADD_2:
+            if(pendingEvent.time)
+            {
+                decodegcmd_autoseq_add_2(packet, &autoseqAdd2);
+                uint8_t i;
+                for(i = 0; i < 8; i++)
+                    pendingEvent.pkt.data[i] = (uint8_t)(autoseqAdd2.gcmd_autoseq_add_2_data >> 8 * i);
+                seqAddEvent(pendingEvent);
+                pendingEvent.time = 0;
+            }
+            break;
+        case CAN_ID_GCMD_AUTOSEQ_REMOVE_CAN_ID:
+            decodegcmd_autoseq_remove_can_id(packet, &rmCanId);
+            seqRemoveEventsWithID(rmCanId.gcmd_autoseq_remove_can_id_id);
+            break;
+        case CAN_ID_GCMD_AUTOSEQ_RM_AT_INDEX:
+            decodegcmd_autoseq_rm_at_index(packet, &rmIndex);
+            seqRemoveEventAtIndex(rmIndex.gcmd_autoseq_rm_at_index_index);
+            break;
+        case CAN_ID_GCMD_AUTOSEQ_GET_MET:
+            decodegcmd_autoseq_get_met(packet, &getMet);
+            getMetRsp.dist_autoseq_get_met_rsp_met = seqGetMETForIndex(getMet.gcmd_autoseq_get_met_index);
+            encodedist_autoseq_get_met_rsp(&getMetRsp, &autoseqMETResponsePkt);
+            autoseqMETResponsePktSendFlag = 1;
+            break;
+        case CAN_ID_GCMD_AUTOSEQ_GET_INDICES:
+            decodegcmd_autoseq_get_indices(packet, &getIndices);
+            getIndicesRsp.dist_autoseq_get_ind_rsp_indices = seqGetIndicesForId(getIndices.gcmd_autoseq_get_indices_id);
+            encodedist_autoseq_get_ind_rsp(&getIndicesRsp, &autoseqIndicesResponsePkt);
+            autoseqIndicesResponsePktSendFlag = 1;
             break;
         default:
             break;
@@ -897,6 +948,7 @@ int main(void)
     METInitWithTime(persistentTime);
 
     P3DIR |= BIT4 | BIT7; //this is Paul's backpower fix
+    //P3REN |= BIT7;
     P3OUT |= BIT4 | BIT7;
 
     // Spin up the ADC, for the temp sensor and battery voltage
@@ -976,6 +1028,7 @@ int main(void)
         persistentTime = getMETTimestamp();
         seqUpdateMET(metConvertToSeconds(persistentTime));
         checkSequence();
+        //sendSequenceResponses();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
