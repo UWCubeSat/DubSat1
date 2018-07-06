@@ -936,6 +936,20 @@ void initializeEvents()
 	eventsInitialized = 1;
 }
 
+void sendSequenceResponses()
+{
+    if(autoseqIndicesResponsePktSendFlag && canTxCheck() != CAN_TX_BUSY)
+    {
+        canSendPacket(&autoseqIndicesResponsePkt);
+        autoseqIndicesResponsePktSendFlag = 0;
+    }
+    if(autoseqMETResponsePktSendFlag && canTxCheck() != CAN_TX_BUSY)
+    {
+        canSendPacket(&autoseqMETResponsePkt);
+        autoseqMETResponsePktSendFlag = 0;
+    }
+}
+
 /*
  * main.c
  */
@@ -1028,7 +1042,7 @@ int main(void)
         persistentTime = getMETTimestamp();
         seqUpdateMET(metConvertToSeconds(persistentTime));
         checkSequence();
-        //sendSequenceResponses();
+        sendSequenceResponses();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
