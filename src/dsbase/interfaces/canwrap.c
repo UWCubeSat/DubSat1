@@ -328,7 +328,8 @@ void decodegcmd_autosequencer_add_1(CANPacket *input, gcmd_autosequencer_add_1 *
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> gcmd_autosequencer_add_1_met = (uint32_t) (((fullData & ((uint64_t) 0xffffffff))));
+    output -> gcmd_autosequencer_add_1_sendflg = (uint8_t) (((fullData & ((uint64_t) 0x1 << 2)) >> 2));
+    output -> gcmd_autosequencer_add_1_met = (uint32_t) (((fullData & ((uint64_t) 0xffffffff << 3)) >> 3));
     output -> gcmd_autosequencer_add_1_can_id = (uint32_t) (((fullData & ((uint64_t) 0x1fffffff << 35)) >> 35));
 }
 
@@ -336,7 +337,8 @@ void encodegcmd_autosequencer_add_1(gcmd_autosequencer_add_1 *input, CANPacket *
     output -> id = 302252754;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> gcmd_autosequencer_add_1_met))) & 0xffffffff);
+    fullPacketData |= (((uint64_t)((input -> gcmd_autosequencer_add_1_sendflg))) & 0x1) << 2;
+    fullPacketData |= (((uint64_t)((input -> gcmd_autosequencer_add_1_met))) & 0xffffffff) << 3;
     fullPacketData |= (((uint64_t)((input -> gcmd_autosequencer_add_1_can_id))) & 0x1fffffff) << 35;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;

@@ -335,6 +335,7 @@ typedef struct gcmd_autosequencer_add_2 {
 } gcmd_autosequencer_add_2;
 
 typedef struct gcmd_autosequencer_add_1 {
+    uint8_t gcmd_autosequencer_add_1_sendflg; //  (No Units)
     uint32_t gcmd_autosequencer_add_1_met; // 2^-15s
     uint32_t gcmd_autosequencer_add_1_can_id; //  (No Units)
 } gcmd_autosequencer_add_1;
