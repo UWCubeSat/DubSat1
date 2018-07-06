@@ -28,6 +28,7 @@ uint8_t canRxErrorCheck(void){
     return retval;
 }
 
+uint8_t order[3] = {0,0,0};
 uint8_t canTxCheck(void){
     uint8_t retval = 0;
     uint8_t bufferstatus = 0;
@@ -48,6 +49,16 @@ uint8_t canTxCheck(void){
     readRegister(MCP_TXB2CTRL, &bufferstatus);
     enableCanInterrupt();
     retval |= (bufferstatus & TXREQ) >> 1;
+
+    if(!(retval & 0x01)){
+       order[0]=0;
+    }
+    if(!(retval & 0x02)){
+        order[1]=0;
+    }
+    if(!(retval & 0x04)){
+        order[2]=0;
+    }
     return retval;
 }
 
@@ -163,10 +174,45 @@ uint8_t loadTxBuf(uint8_t address, uint8_t value)
     return 0;
 }
 
+void setOrderAndPriority(int latest) {
+    int retval = canTxCheck();
+    if(!(retval & 0x01)){
+       order[0]=0;
+    }
+    if(!(retval & 0x02)){
+        order[1]=0;
+    }
+    if(!(retval & 0x04)){
+        order[2]=0;
+    }
+    order[latest]=1;
+    int i;
+    for (i=0; i<3; i++){
+        if(i!=latest && order[i]!= 0){
+           order[i] = (order[i]+1);
+        }
+        if(i ==0){
+           if( order[i] !=0 ){
+               setRegister(MCP_TXB0CTRL, 8 | (order[i]) );
+           }
+        }
+        if(i ==1){
+           if( order[i] !=0 ){
+               setRegister(MCP_TXB1CTRL, 8 | (order[i]) );
+           }
+        }
+        if(i ==2){
+           if(order[i] != 0 ){
+               setRegister(MCP_TXB2CTRL, 8 |(order[i]) );
+           }
+        }
+    }
+
+
+}
 uint8_t canSend(uint8_t bufNum, uint8_t* tech, uint8_t* msg) {
     uint8_t sendBuf[6];
     uint8_t sendBuf2[9];
-    uint8_t txBuf;
 
     // Modifying bits for which buffer to write to.
     switch (bufNum)
@@ -174,17 +220,14 @@ uint8_t canSend(uint8_t bufNum, uint8_t* tech, uint8_t* msg) {
         case 0:
             sendBuf[0] = CAN_LOADTX;
             sendBuf2[0] = CAN_LOADTX | 0x01;
-            txBuf = 1;
             break;
         case 1:
             sendBuf[0] = CAN_LOADTX | 0x2;
             sendBuf2[0] = CAN_LOADTX | 0x03;
-            txBuf = 2;
             break;
         case 2:
             sendBuf[0] = CAN_LOADTX | 0x4;
             sendBuf2[0] = CAN_LOADTX | 0x05;
-            txBuf = 4;
             break;
         default:
             return CAN_FAIL;
@@ -207,9 +250,10 @@ uint8_t canSend(uint8_t bufNum, uint8_t* tech, uint8_t* msg) {
        sendBuf2[i+1] = msg[i];
     }
     spiTransceive(sendBuf2, sendBuf2, 9, CS_1);
+    setOrderAndPriority(bufNum);
 
     // Request CAN to transmit buffer bufNum
-    requestToSend(txBuf);
+//    requestToSend(txBuf);
     enableCanInterrupt();
     return 0;
 }

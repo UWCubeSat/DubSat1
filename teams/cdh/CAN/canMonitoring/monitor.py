@@ -3,24 +3,48 @@ from canlib.canlib import ChannelData
 import threading
 import sys
 import pprint
+import struct
 from functools import partial
 
+amsatTest={}
+distCount=0
 def interpretFrame(db, frame,countdict):
-    bmsg = db.interpret(frame)
-    msgname = bmsg._message.name
+    bmsg = db.interpret(frame)._message
+    msgname = bmsg.name
+    if msgname == "rc_eps_dist_h1":
+        a = ([x for x in frame.data])
+        global distCount
+        distCount=0
+        for i in range(len(a)):
+            distCount+=pow(256,(7-i))*a[i]
+    if "rc_eps_dist" not in msgname and msgname != "cmd_rollcall": 
+        a = ([x for x in frame.data])
+        serial=0
+        for i in range(len(a)):
+            serial+=pow(256,(7-i))*a[i]
+        global amsatTest
+        if serial in amsatTest:
+            amsatTest[serial] = amsatTest[serial] + 1
+        else:
+            amsatTest[serial] = 1
+        print(msgname)
+        print(hex(bmsg.id))
+        print(serial)
+        sys.stdout.flush()
+
     if msgname in countdict:
-    	countdict[msgname] = countdict[msgname]+1
+        countdict[msgname] = countdict[msgname]+1
     else:
-    	countdict[msgname] = 1
+        countdict[msgname] = 1
 
 def setUpChannel(channel=0,
-                 openFlags=canlib.canOPEN_ACCEPT_VIRTUAL,
-                 bitrate=canlib.canBITRATE_125K,
-                 bitrateFlags=canlib.canDRIVER_NORMAL):
+        openFlags=canlib.canOPEN_ACCEPT_VIRTUAL,
+        bitrate=canlib.canBITRATE_125K,
+        bitrateFlags=canlib.canDRIVER_NORMAL):
     ch = canlib.openChannel(channel, openFlags)
     print("Using channel: %s, EAN: %s" % (ChannelData(channel).device_name,
-                                          ChannelData(channel).card_upc_no)
-                                              )
+        ChannelData(channel).card_upc_no)
+        )
     # ch.setBusOutputControl(bitrateFlags)
     ch.setBusParams(bitrate)
     ch.busOn()
@@ -38,14 +62,24 @@ ch0 = setUpChannel(channel=0)
 
 frame = Frame(id_=100, data=[1, 2, 3, 4], flags=canlib.canMSG_EXT)
 counts = {}
+data=0
 
 
 def printit():
-	global counts
-	threading.Timer(5.0, printit).start()
-	print(chr(27) + "[2J")
-	pprint.pprint(counts)
-	sys.stdout.flush()
+    global counts
+    threading.Timer(10, printit).start()
+    print(chr(27) + "[2J")
+    global distCount
+    print("what the packet reports: " + str(distCount))
+    total =0
+    for x in counts.keys():
+        if "rc_adcs_sp" in x:
+            total += counts[x]
+    global amsatTest
+    print("what the computer thinks: " + str(total))
+    print("rollcallresponse with serial: " + str(amsatTest))
+    pprint.pprint(counts)
+    sys.stdout.flush()
 
 printit()
 
@@ -59,3 +93,5 @@ while True:
         print(ex)
 
 tearDownChannel(ch0)
+
+

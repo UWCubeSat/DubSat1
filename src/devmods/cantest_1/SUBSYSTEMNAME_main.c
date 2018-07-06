@@ -569,7 +569,6 @@ int main(void) {
     while(1){
         rollcallUpdate();
         PJOUT ^= BIT0;
-        __delay_cycles(100);
     }
 
 #if defined(__DEBUG__)
