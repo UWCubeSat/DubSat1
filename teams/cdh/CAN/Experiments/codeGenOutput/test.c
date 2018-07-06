@@ -3,45 +3,45 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
-	__delay_cycles(10000);	CANPacket dist_autosequencer_get_met_rsp_packet = {0};
-	dist_autosequencer_get_met_rsp dist_autosequencer_get_met_rsp_info = {0};
-	encodedist_autosequencer_get_met_rsp(&dist_autosequencer_get_met_rsp_info, &dist_autosequencer_get_met_rsp_packet);
-	canSendPacket(&dist_autosequencer_get_met_rsp_packet);
+	__delay_cycles(10000);	CANPacket dist_autoseq_get_met_rsp_packet = {0};
+	dist_autoseq_get_met_rsp dist_autoseq_get_met_rsp_info = {0};
+	encodedist_autoseq_get_met_rsp(&dist_autoseq_get_met_rsp_info, &dist_autoseq_get_met_rsp_packet);
+	canSendPacket(&dist_autoseq_get_met_rsp_packet);
 
-	__delay_cycles(10000);	CANPacket dist_autoseq_get_indices_rsp_packet = {0};
-	dist_autoseq_get_indices_rsp dist_autoseq_get_indices_rsp_info = {0};
-	encodedist_autoseq_get_indices_rsp(&dist_autoseq_get_indices_rsp_info, &dist_autoseq_get_indices_rsp_packet);
-	canSendPacket(&dist_autoseq_get_indices_rsp_packet);
+	__delay_cycles(10000);	CANPacket dist_autoseq_get_ind_rsp_packet = {0};
+	dist_autoseq_get_ind_rsp dist_autoseq_get_ind_rsp_info = {0};
+	encodedist_autoseq_get_ind_rsp(&dist_autoseq_get_ind_rsp_info, &dist_autoseq_get_ind_rsp_packet);
+	canSendPacket(&dist_autoseq_get_ind_rsp_packet);
 
-	__delay_cycles(10000);	CANPacket gcmd_autosequencer_get_met_packet = {0};
-	gcmd_autosequencer_get_met gcmd_autosequencer_get_met_info = {0};
-	encodegcmd_autosequencer_get_met(&gcmd_autosequencer_get_met_info, &gcmd_autosequencer_get_met_packet);
-	canSendPacket(&gcmd_autosequencer_get_met_packet);
+	__delay_cycles(10000);	CANPacket gcmd_autoseq_get_met_packet = {0};
+	gcmd_autoseq_get_met gcmd_autoseq_get_met_info = {0};
+	encodegcmd_autoseq_get_met(&gcmd_autoseq_get_met_info, &gcmd_autoseq_get_met_packet);
+	canSendPacket(&gcmd_autoseq_get_met_packet);
 
-	__delay_cycles(10000);	CANPacket gcmd_autosequencer_get_indices_packet = {0};
-	gcmd_autosequencer_get_indices gcmd_autosequencer_get_indices_info = {0};
-	encodegcmd_autosequencer_get_indices(&gcmd_autosequencer_get_indices_info, &gcmd_autosequencer_get_indices_packet);
-	canSendPacket(&gcmd_autosequencer_get_indices_packet);
+	__delay_cycles(10000);	CANPacket gcmd_autoseq_get_indices_packet = {0};
+	gcmd_autoseq_get_indices gcmd_autoseq_get_indices_info = {0};
+	encodegcmd_autoseq_get_indices(&gcmd_autoseq_get_indices_info, &gcmd_autoseq_get_indices_packet);
+	canSendPacket(&gcmd_autoseq_get_indices_packet);
 
-	__delay_cycles(10000);	CANPacket gcmd_autosequencer_remove_can_id_packet = {0};
-	gcmd_autosequencer_remove_can_id gcmd_autosequencer_remove_can_id_info = {0};
-	encodegcmd_autosequencer_remove_can_id(&gcmd_autosequencer_remove_can_id_info, &gcmd_autosequencer_remove_can_id_packet);
-	canSendPacket(&gcmd_autosequencer_remove_can_id_packet);
+	__delay_cycles(10000);	CANPacket gcmd_autoseq_remove_can_id_packet = {0};
+	gcmd_autoseq_remove_can_id gcmd_autoseq_remove_can_id_info = {0};
+	encodegcmd_autoseq_remove_can_id(&gcmd_autoseq_remove_can_id_info, &gcmd_autoseq_remove_can_id_packet);
+	canSendPacket(&gcmd_autoseq_remove_can_id_packet);
 
-	__delay_cycles(10000);	CANPacket gcmd_autosequencer_rm_at_index_packet = {0};
-	gcmd_autosequencer_rm_at_index gcmd_autosequencer_rm_at_index_info = {0};
-	encodegcmd_autosequencer_rm_at_index(&gcmd_autosequencer_rm_at_index_info, &gcmd_autosequencer_rm_at_index_packet);
-	canSendPacket(&gcmd_autosequencer_rm_at_index_packet);
+	__delay_cycles(10000);	CANPacket gcmd_autoseq_rm_at_index_packet = {0};
+	gcmd_autoseq_rm_at_index gcmd_autoseq_rm_at_index_info = {0};
+	encodegcmd_autoseq_rm_at_index(&gcmd_autoseq_rm_at_index_info, &gcmd_autoseq_rm_at_index_packet);
+	canSendPacket(&gcmd_autoseq_rm_at_index_packet);
 
-	__delay_cycles(10000);	CANPacket gcmd_autosequencer_add_2_packet = {0};
-	gcmd_autosequencer_add_2 gcmd_autosequencer_add_2_info = {0};
-	encodegcmd_autosequencer_add_2(&gcmd_autosequencer_add_2_info, &gcmd_autosequencer_add_2_packet);
-	canSendPacket(&gcmd_autosequencer_add_2_packet);
+	__delay_cycles(10000);	CANPacket gcmd_autoseq_add_2_packet = {0};
+	gcmd_autoseq_add_2 gcmd_autoseq_add_2_info = {0};
+	encodegcmd_autoseq_add_2(&gcmd_autoseq_add_2_info, &gcmd_autoseq_add_2_packet);
+	canSendPacket(&gcmd_autoseq_add_2_packet);
 
-	__delay_cycles(10000);	CANPacket gcmd_autosequencer_add_1_packet = {0};
-	gcmd_autosequencer_add_1 gcmd_autosequencer_add_1_info = {0};
-	encodegcmd_autosequencer_add_1(&gcmd_autosequencer_add_1_info, &gcmd_autosequencer_add_1_packet);
-	canSendPacket(&gcmd_autosequencer_add_1_packet);
+	__delay_cycles(10000);	CANPacket gcmd_autoseq_add_1_packet = {0};
+	gcmd_autoseq_add_1 gcmd_autoseq_add_1_info = {0};
+	encodegcmd_autoseq_add_1(&gcmd_autoseq_add_1_info, &gcmd_autoseq_add_1_packet);
+	canSendPacket(&gcmd_autoseq_add_1_packet);
 
 	__delay_cycles(10000);	CANPacket rc_adcs_bdot_7_packet = {0};
 	rc_adcs_bdot_7 rc_adcs_bdot_7_info = {0};
