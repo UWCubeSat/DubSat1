@@ -27,6 +27,14 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_DIST_AUTOSEQ_GET_MET_RSP 303039193
+#define CAN_ID_DIST_AUTOSEQ_GET_IND_RSP 303039192
+#define CAN_ID_GCMD_AUTOSEQ_GET_MET 302252759
+#define CAN_ID_GCMD_AUTOSEQ_GET_INDICES 302252758
+#define CAN_ID_GCMD_AUTOSEQ_REMOVE_CAN_ID 302252757
+#define CAN_ID_GCMD_AUTOSEQ_RM_AT_INDEX 302252756
+#define CAN_ID_GCMD_AUTOSEQ_ADD_2 302252755
+#define CAN_ID_GCMD_AUTOSEQ_ADD_1 302252754
 #define CAN_ID_RC_ADCS_BDOT_7 304677489
 #define CAN_ID_RC_ADCS_BDOT_6 304677488
 #define CAN_ID_GCMD_PPT_MULTIPLE_FIRE 302252753
@@ -298,6 +306,40 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct dist_autoseq_get_met_rsp {
+    uint32_t dist_autoseq_get_met_rsp_met; // 2^-15s
+} dist_autoseq_get_met_rsp;
+
+typedef struct dist_autoseq_get_ind_rsp {
+    uint64_t dist_autoseq_get_ind_rsp_indices; //  (No Units)
+} dist_autoseq_get_ind_rsp;
+
+typedef struct gcmd_autoseq_get_met {
+    uint8_t gcmd_autoseq_get_met_index; //  (No Units)
+} gcmd_autoseq_get_met;
+
+typedef struct gcmd_autoseq_get_indices {
+    uint32_t gcmd_autoseq_get_indices_id; //  (No Units)
+} gcmd_autoseq_get_indices;
+
+typedef struct gcmd_autoseq_remove_can_id {
+    uint32_t gcmd_autoseq_remove_can_id_id; //  (No Units)
+} gcmd_autoseq_remove_can_id;
+
+typedef struct gcmd_autoseq_rm_at_index {
+    uint8_t gcmd_autoseq_rm_at_index_index; //  (No Units)
+} gcmd_autoseq_rm_at_index;
+
+typedef struct gcmd_autoseq_add_2 {
+    uint64_t gcmd_autoseq_add_2_data; //  (No Units)
+} gcmd_autoseq_add_2;
+
+typedef struct gcmd_autoseq_add_1 {
+    uint8_t gcmd_autoseq_add_1_sendflg; //  (No Units)
+    uint32_t gcmd_autoseq_add_1_met; // 2^-15s
+    uint32_t gcmd_autoseq_add_1_can_id; //  (No Units)
+} gcmd_autoseq_add_1;
+
 typedef struct rc_adcs_bdot_7 {
     int16_t rc_adcs_bdot_7_spam_magnitude_z; //  (No Units)
     int16_t rc_adcs_bdot_7_spam_magnitude_y; //  (No Units)
@@ -1341,6 +1383,30 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodedist_autoseq_get_met_rsp(dist_autoseq_get_met_rsp *input, CANPacket* output);
+void decodedist_autoseq_get_met_rsp(CANPacket *input, dist_autoseq_get_met_rsp *output);
+
+void encodedist_autoseq_get_ind_rsp(dist_autoseq_get_ind_rsp *input, CANPacket* output);
+void decodedist_autoseq_get_ind_rsp(CANPacket *input, dist_autoseq_get_ind_rsp *output);
+
+void encodegcmd_autoseq_get_met(gcmd_autoseq_get_met *input, CANPacket* output);
+void decodegcmd_autoseq_get_met(CANPacket *input, gcmd_autoseq_get_met *output);
+
+void encodegcmd_autoseq_get_indices(gcmd_autoseq_get_indices *input, CANPacket* output);
+void decodegcmd_autoseq_get_indices(CANPacket *input, gcmd_autoseq_get_indices *output);
+
+void encodegcmd_autoseq_remove_can_id(gcmd_autoseq_remove_can_id *input, CANPacket* output);
+void decodegcmd_autoseq_remove_can_id(CANPacket *input, gcmd_autoseq_remove_can_id *output);
+
+void encodegcmd_autoseq_rm_at_index(gcmd_autoseq_rm_at_index *input, CANPacket* output);
+void decodegcmd_autoseq_rm_at_index(CANPacket *input, gcmd_autoseq_rm_at_index *output);
+
+void encodegcmd_autoseq_add_2(gcmd_autoseq_add_2 *input, CANPacket* output);
+void decodegcmd_autoseq_add_2(CANPacket *input, gcmd_autoseq_add_2 *output);
+
+void encodegcmd_autoseq_add_1(gcmd_autoseq_add_1 *input, CANPacket* output);
+void decodegcmd_autoseq_add_1(CANPacket *input, gcmd_autoseq_add_1 *output);
 
 void encoderc_adcs_bdot_7(rc_adcs_bdot_7 *input, CANPacket* output);
 void decoderc_adcs_bdot_7(CANPacket *input, rc_adcs_bdot_7 *output);

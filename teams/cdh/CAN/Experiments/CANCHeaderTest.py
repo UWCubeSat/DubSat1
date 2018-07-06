@@ -80,7 +80,7 @@ def getSignalSize(sig, frame, floatList):
         return "uint16_t"
     elif sig.min >= 0 and sig.max <=  2 ** 32 - 1:
         return "uint32_t"
-    elif sig.min >= 0 and sig.max <=  2 ** 64 - 1:
+    elif sig.min >= 0 and (int)(sig.max / 10**6) <=  (int)((2 ** 64 - 1) / 10**6): #math is to account for rounding error
         return "uint64_t"
     elif sig.min >= - (2 ** (8-1)) and sig.max <=  2 ** (8-1) - 1:
         return "int8_t"

@@ -50,6 +50,32 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2450522841 dist_autoseq_get_met_rsp: 4 Vector__XXX
+ SG_ dist_autoseq_get_met_rsp_met : 0|32@1+ (1,0) [0|4294967295] "2^-15s" Vector__XXX
+
+BO_ 2450522840 dist_autoseq_get_ind_rsp: 1 Vector__XXX
+ SG_ dist_autoseq_get_ind_rsp_indices : 0|64@1+ (1,0) [0|1.84467440737096E+019] "" Vector__XXX
+
+BO_ 2449736407 gcmd_autoseq_get_met: 1 Vector__XXX
+ SG_ gcmd_autoseq_get_met_index : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2449736406 gcmd_autoseq_get_indices: 4 Vector__XXX
+ SG_ gcmd_autoseq_get_indices_id : 0|29@1+ (1,0) [0|536870911] "" Vector__XXX
+
+BO_ 2449736405 gcmd_autoseq_remove_can_id: 4 Vector__XXX
+ SG_ gcmd_autoseq_remove_can_id_id : 0|29@1+ (1,0) [0|536870911] "" Vector__XXX
+
+BO_ 2449736404 gcmd_autoseq_rm_at_index: 1 Vector__XXX
+ SG_ gcmd_autoseq_rm_at_index_index : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2449736403 gcmd_autoseq_add_2: 8 Vector__XXX
+ SG_ gcmd_autoseq_add_2_data : 0|64@1+ (1,0) [0|1.84467440737096E+019] "" Vector__XXX
+
+BO_ 2449736402 gcmd_autoseq_add_1: 8 Vector__XXX
+ SG_ gcmd_autoseq_add_1_sendflg : 61|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ gcmd_autoseq_add_1_met : 29|32@1+ (1,0) [0|4294967295] "2^-15s" Vector__XXX
+ SG_ gcmd_autoseq_add_1_can_id : 0|29@1+ (1,0) [0|536870911] "" Vector__XXX
+
 BO_ 2452161137 rc_adcs_bdot_7: 3 Vector__XXX
  SG_ rc_adcs_bdot_7_spam_magnitude_z : 16|8@1- (1,0) [-127|128] "" Vector__XXX
  SG_ rc_adcs_bdot_7_spam_magnitude_y : 8|8@1- (1,0) [-127|128] "" Vector__XXX
@@ -914,6 +940,24 @@ BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,
 BO_TX_BU_ 2452160531 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ BO_ 2450522841 "the MET of the item";
+CM_ SG_ 2450522841 dist_autoseq_get_met_rsp_met "the MET";
+CM_ BO_ 2450522840 "the first 8 indices of the specified CAN ID";
+CM_ SG_ 2450522840 dist_autoseq_get_ind_rsp_indices "the indices, as an 8-element array";
+CM_ BO_ 2449736407 "get MET of the item at the specified index of the autosequencer";
+CM_ SG_ 2449736407 gcmd_autoseq_get_met_index "the index";
+CM_ BO_ 2449736406 "get indices of the specified packet in the autosequencer";
+CM_ SG_ 2449736406 gcmd_autoseq_get_indices_id "the CAN Id";
+CM_ BO_ 2449736405 "remove all occurrence of the specified CAN Id in the autosequencer";
+CM_ SG_ 2449736405 gcmd_autoseq_remove_can_id_id "remove all occurrences of the specified CAN Id in the autosequencer";
+CM_ BO_ 2449736404 "remove the autosequencer entry at the specified index";
+CM_ SG_ 2449736404 gcmd_autoseq_rm_at_index_index "the index";
+CM_ BO_ 2449736403 "data of CAN packet to be added to the autosequencer";
+CM_ SG_ 2449736403 gcmd_autoseq_add_2_data "the data of the CAN packet to be added to the autosequencer";
+CM_ BO_ 2449736402 "propertires of autosequencer entry";
+CM_ SG_ 2449736402 gcmd_autoseq_add_1_sendflg "whether the CAN packet should send";
+CM_ SG_ 2449736402 gcmd_autoseq_add_1_met "the MET of the entry to add";
+CM_ SG_ 2449736402 gcmd_autoseq_add_1_can_id "the CAN Id of the message to add";
 CM_ SG_ 2452161136 rc_adcs_bdot_6_spam_on_time "Current setting for the time in minutes of SPAM being on";
 CM_ SG_ 2452161136 rc_adcs_bdot_6_spam_off_time "Current setting for the time in minutes of SPAM not being on";
 CM_ SG_ 2452161136 rc_adcs_bdot_6_spam_control "Current setting on whether or not spam is enabled";
