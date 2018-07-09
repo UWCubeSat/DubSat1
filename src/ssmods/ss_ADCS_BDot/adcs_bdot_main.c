@@ -1471,11 +1471,11 @@ void rcPopulate1(CANPacket *out)
 {
 
     rc_adcs_bdot_1 rc;
-    rc.rc_adcs_bdot_1_last_spam_x_mtq_x = spam_on_x_avg[0];
-    rc.rc_adcs_bdot_1_last_spam_x_mtq_y = spam_on_x_avg[1];
-    rc.rc_adcs_bdot_1_last_spam_x_mtq_z = spam_on_x_avg[2];
+    rc.rc_adcs_bdot_1_spam_on_x_mtq_x = spam_on_x_avg[0];
+    rc.rc_adcs_bdot_1_spam_on_x_mtq_y = spam_on_x_avg[1];
+    rc.rc_adcs_bdot_1_spam_on_x_mtq_z = spam_on_x_avg[2];
 
-    rc.rc_adcs_bdot_1_last_spam_y_mtq_x = spam_on_y_avg[0];
+    rc.rc_adcs_bdot_1_spam_on_y_mtq_x = spam_on_y_avg[0];
 
     encoderc_adcs_bdot_1(&rc, out);
 }
@@ -1508,8 +1508,8 @@ void rcPopulate4(CANPacket *out)
     rc_adcs_bdot_4 rc = {0};
     rc.rc_adcs_bdot_4_mag_z_avg = aggVec_avg_i_i(&magZ);
     rc.rc_adcs_bdot_4_tumble = rtY.tumble;
-    rc.rc_adcs_bdot_4_last_spam_y_mtq_y = spam_on_y_avg[1];
-    rc.rc_adcs_bdot_4_last_spam_y_mtq_z = spam_on_y_avg[2];
+    rc.rc_adcs_bdot_4_spam_on_y_mtq_y = spam_on_y_avg[1];
+    rc.rc_adcs_bdot_4_spam_on_y_mtq_z = spam_on_y_avg[2];
     aggVec_as_reset((aggVec *)&magZ);
     encoderc_adcs_bdot_4(&rc, out);
 }
@@ -1517,9 +1517,9 @@ void rcPopulate4(CANPacket *out)
 void rcPopulate5(CANPacket *out)
 {
     rc_adcs_bdot_5 rc = {0};
-    rc.rc_adcs_bdot_5_last_spam_z_mtq_x = spam_on_z_avg[0];
-    rc.rc_adcs_bdot_5_last_spam_z_mtq_y = spam_on_z_avg[1];
-    rc.rc_adcs_bdot_5_last_spam_z_mtq_z = spam_on_z_avg[2];
+    rc.rc_adcs_bdot_5_spam_on_z_mtq_x = spam_on_z_avg[0];
+    rc.rc_adcs_bdot_5_spam_on_z_mtq_y = spam_on_z_avg[1];
+    rc.rc_adcs_bdot_5_spam_on_z_mtq_z = spam_on_z_avg[2];
     encoderc_adcs_bdot_5(&rc, out);
 }
 
