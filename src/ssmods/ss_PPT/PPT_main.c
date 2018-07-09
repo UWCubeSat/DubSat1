@@ -21,9 +21,10 @@
 #define CHARGE_DIR P4DIR
 #define CHARGE_OUT P4OUT
 #define MAIN_CHARGE_BIT BIT3
-#define IGN_CHARGE_BIT BIT2
-#define FIRE_BIT BIT1
+#define IGN_CHARGE_BIT BIT1
+#define FIRE_BIT BIT2
 #define SMT_OUT_BIT BIT0
+#define MAIN_DONE_BIT BIT6
 
 #define BATTERY_CHARGE_SUFFICIENT_STATE 31000 //TODO: verify this value
 
@@ -85,8 +86,9 @@ FILE_STATIC void sendMainDone()
 {
 	if(mod_status.ss_state == State_Main_Charging)
 	{
-		mainDone.timeDone = TB0R - TB0CCR1;
+		mainDone.timeDone = mainChargeTime + TB0R - TB0CCR1;
 		aggVec_push_i(&mainDoneAg, mainDone.timeDone);
+		bcbinSendPacket((uint8_t *)&mainDone, sizeof(mainDone));
 	}
 	else
 	{
@@ -139,11 +141,11 @@ void initPins()
     LED_DIR |= (LED_BIT_FIRING | LED_BIT_IDLE);
     CHARGE_DIR |= (FIRE_BIT | IGN_CHARGE_BIT| MAIN_CHARGE_BIT);
 
-    //ign done ping interrupt
+    //main done interrupt
     P2IFG = 0; //clear the interrupt
-    P2REN |= BIT5;
-    P2IES |= BIT1; //this represents capture mode (rising/falling/both)
-    P2IE |= BIT6;
+    P2REN |= MAIN_DONE_BIT; //enable pullup/down resistor
+    P2IES |= MAIN_DONE_BIT; //falling edge capture mode
+    P2IE |= MAIN_DONE_BIT; //enable interrupt
 }
 
 void sendRC()
@@ -151,6 +153,13 @@ void sendRC()
     while(sendRcFlag && canTxCheck() != CAN_TX_BUSY)
     {
         CANPacket pkt = {0};
+        if(sendRcFlag == 5)
+        {
+            rc_ppt_1 rc = {0};
+            rc.rc_ppt_1_fault_count = faultCount;
+            rc.rc_ppt_1_fire_count = fireCount;
+            encoderc_ppt_1(&rc, &pkt);
+        }
         if(sendRcFlag == 4)
         {
             rc_ppt_h1 rc = {0};
@@ -166,6 +175,7 @@ void sendRC()
         {
             rc_ppt_h2 rc = {0};
             rc.rc_ppt_h2_canrxerror = canRxErrorCheck();
+            rc.rc_ppt_h2_last_fire_result = lastFireResult;
             encoderc_ppt_h2(&rc, &pkt);
         }
         else if(sendRcFlag == 2)
@@ -369,7 +379,7 @@ void can_packet_rx_callback(CANPacket *packet)
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            sendRcFlag = 4;
+            sendRcFlag = 5;
             break;
         case CAN_ID_CMD_PPT_HALT:
             //stop firing, but with a flag

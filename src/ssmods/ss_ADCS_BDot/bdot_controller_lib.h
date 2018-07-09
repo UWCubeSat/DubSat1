@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'bdot_controller_lib'.
  *
- * Model version                  : 1.330
+ * Model version                  : 1.350
  * Simulink Coder version         : 8.11 (R2016b) 25-Aug-2016
- * C/C++ source code generated on : Wed Apr 11 19:37:04 2018
+ * C/C++ source code generated on : Wed Apr 18 10:34:19 2018
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->MSP430
@@ -43,7 +43,6 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T UnitDelay_DSTATE[3];          /* '<S1>/Unit Delay' */
   real_T DiscreteTransferFcn_states[3];/* '<S1>/Discrete Transfer Fcn' */
   real_T UD_DSTATE[3];                 /* '<S2>/UD' */
   boolean_T Relay_Mode;                /* '<S1>/Relay' */
@@ -64,9 +63,7 @@ typedef struct {
 
 /* External inputs (root inport signals with auto storage) */
 typedef struct {
-  real_T B_body_in_T[3];               /* '<Root>/B_body_in_T' */
-  real_T B_meas_valid;                 /* '<Root>/B_meas_valid' */
-  real_T MT_on;                        /* '<Root>/MT_on' */
+  real32_T B_body_in_T[3];             /* '<Root>/B_body_in_T' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with auto storage) */
@@ -106,7 +103,6 @@ extern RT_MODEL *const rtM;
  * Block '<S2>/Data Type Duplicate' : Unused code path elimination
  * Block '<S1>/Rate Transition1' : Eliminated since input and output rates are identical
  * Block '<S1>/Rate Transition2' : Eliminated since input and output rates are identical
- * Block '<S1>/Rate Transition3' : Eliminated since input and output rates are identical
  * Block '<S1>/Rate Transition4' : Eliminated since input and output rates are identical
  */
 

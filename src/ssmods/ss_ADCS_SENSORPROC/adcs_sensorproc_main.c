@@ -127,13 +127,16 @@ int main(void)
     // initialize autocode
     MSP_SP_initialize();
 
+    __delay_cycles(SEC * 1); //this wait is necessary for the sun sensor to start up
+
     /*
      * Prime the sensor readings (initialize the data).
      * This is necessary because the autocode's base rate reads from every
      * sensor at the first update before the subrates' inputs have a chance to
      * read from their sensors.
      */
-    updateSensorInterfaces();
+    updateSensorInterfaces(); //this function is the one causing the hanging issues with the sun sensor
+
 
     // initialize timer
     initializeTimer();

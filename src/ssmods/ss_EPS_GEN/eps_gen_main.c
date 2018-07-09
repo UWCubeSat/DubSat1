@@ -167,7 +167,7 @@ FILE_STATIC void genMonitorPowerTrackers()
                 break;
         }
 
-        gseg.ptchargingactual[i] = ( chargingactual != 0 ? TRUE : FALSE);
+        gseg.ptchargingactual[i] = ( chargingactual != 0 ? FALSE : TRUE);
         gseg.ptchargingenablesw[i] = ( chargingdisable != 0 ? FALSE : TRUE );
     }
 }

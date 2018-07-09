@@ -46,8 +46,8 @@ FILE_STATIC aggVec_i nodeVoltageAg;
 FILE_STATIC aggVec_i nodeCurrentAg;
 FILE_STATIC aggVec_i accChargeAg;
 
-FILE_STATIC uint64_t lastFullChargeTime = 0;
-#pragma PERSISTENT(lastFullChargeTime);
+#pragma PERSISTENT(timeSinceLastFullCharge)
+uint32_t timeSinceLastFullCharge = 0xFFFFFFFF;
 
 FILE_STATIC uint8_t rcFlag = 0;
 
@@ -145,6 +145,12 @@ FILE_STATIC void battBcSendMeta()
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
+void secondsInterrupt()
+{
+    if(timeSinceLastFullCharge ^= 0xFFFFFFFF)
+        timeSinceLastFullCharge++;
+}
+
 void readCC (){
     //Reading Coulomb counter
     CCData = readCoulombCounter(); //reading the Coulomb counter (busVoltageV, calcdCurrentA, rawAccumCharge, (SOC?))
@@ -156,20 +162,17 @@ void readCC (){
 
     if(balancerIsChecking)
     {
-    	if((BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) && CCData.busVoltageV <= 6.1f)
-			battControlBalancer(Cmd_ExplicitDisable);
-    	//TODO: check for on conditions here; add more off conditions (max current)
-    }
-    else if(BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT)
-    {
-    	battControlBalancer(Cmd_ExplicitDisable);
+        if((CCData.busVoltageV <= 6.1f || CCData.calcdCurrentA > 3.0f || CCData.calcdCurrentA < -3.0f) && (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT))
+            battControlBalancer(Cmd_ExplicitDisable); //on and out of range
+        else if(!(BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) && CCData.busVoltageV > 6.1f && CCData.calcdCurrentA <= 3.0f && CCData.calcdCurrentA >= -3.0f)
+			battControlBalancer(Cmd_ExplicitEnable); //off and in range
     }
 
     aggVec_push_i(&voltageAg, CCReadRawVoltage());
     aggVec_push_i(&currentAg, CCReadRawCurrent());
     aggVec_push_i(&accChargeAg, CCReadRawAccumulatedCharge());
     if(CCData.fullCharge)
-        lastFullChargeTime = metConvertToInt(getMETTimestamp());
+        timeSinceLastFullCharge = 0;
 }
 
 void readINA(hDev hSensor){
@@ -287,7 +290,7 @@ void sendRC()
         else if(rcFlag == 2)
         {
             rc_eps_batt_6 rollcallPkt6_info = {0};
-            rollcallPkt6_info.rc_eps_batt_6_last_charge = lastFullChargeTime;
+            rollcallPkt6_info.rc_eps_batt_6_last_charge = timeSinceLastFullCharge;
             rollcallPkt6_info.rc_eps_batt_6_status = CCGetStatusReg();
             rollcallPkt6_info.rc_eps_batt_6_ctrl = CCGetControlReg();
             encoderc_eps_batt_6(&rollcallPkt6_info, &rollcallPkt);
@@ -363,6 +366,7 @@ int main(void)
     setCANPacketRxCallback(can_packet_rx_callback);
 
     previousTemp = asensorReadSingleSensorV(hTempC);
+    startCallback(timerCallbackInitializer(&secondsInterrupt, 1000000));
     uint16_t counter;
     while (1)
     {
