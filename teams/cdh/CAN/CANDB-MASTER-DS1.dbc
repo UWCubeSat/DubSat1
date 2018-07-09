@@ -50,6 +50,9 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2450522842 gcmd_batt_set_heater_check: 1 Vector__XXX
+ SG_ gcmd_batt_set_heater_check_state : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+
 BO_ 2450522841 dist_autoseq_get_met_rsp: 4 Vector__XXX
  SG_ dist_autoseq_get_met_rsp_met : 0|32@1+ (1,0) [0|4294967295] "2^-15s" Vector__XXX
 
@@ -709,7 +712,13 @@ BO_ 2452161041 rc_eps_gen_2: 8 Vector__XXX
  SG_ rc_eps_gen_2_pnl_1_voltage_max : 16|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
  SG_ rc_eps_gen_2_pnl_1_voltage_avg : 32|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
 
-BO_ 2452161040 rc_eps_gen_1: 8 Vector__XXX
+BO_ 2452161040 rc_eps_gen_1: 6 Vector__XXX
+ SG_ rc_eps_gen_1_pnl_3_charging : 40|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_2_charging : 32|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_1_charging : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_3_enabled : 16|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_2_enabled : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_1_enabled : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2452161029 rc_eps_batt_6: 7 Vector__XXX
  SG_ rc_eps_batt_6_status : 0|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -940,6 +949,8 @@ BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,
 BO_TX_BU_ 2452160531 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ BO_ 2450522842 "enables/disables battery heater automation";
+CM_ SG_ 2450522842 gcmd_batt_set_heater_check_state "the state of heater automation";
 CM_ BO_ 2450522841 "the MET of the item";
 CM_ SG_ 2450522841 dist_autoseq_get_met_rsp_met "the MET";
 CM_ BO_ 2450522840 "the first 8 indices of the specified CAN ID";
@@ -1305,6 +1316,12 @@ CM_ SG_ 2452161041 rc_eps_gen_2_pnl_2_voltage_min "Panel 2 Voltage min";
 CM_ SG_ 2452161041 rc_eps_gen_2_pnl_1_voltage_min "Panel 1 Voltage min";
 CM_ SG_ 2452161041 rc_eps_gen_2_pnl_1_voltage_max "Panel 1 Voltage max";
 CM_ SG_ 2452161041 rc_eps_gen_2_pnl_1_voltage_avg "Panel 1 Voltage avg";
+CM_ SG_ 2452161040 rc_eps_gen_1_pnl_3_charging "whether gen panel 3 is charing";
+CM_ SG_ 2452161040 rc_eps_gen_1_pnl_2_charging "whether gen panel 2 is charing";
+CM_ SG_ 2452161040 rc_eps_gen_1_pnl_1_charging "whether gen panel 1 is charing";
+CM_ SG_ 2452161040 rc_eps_gen_1_pnl_3_enabled "whether gen panel 3 is enabled";
+CM_ SG_ 2452161040 rc_eps_gen_1_pnl_2_enabled "whether gen panel 2 is enabled";
+CM_ SG_ 2452161040 rc_eps_gen_1_pnl_1_enabled "whether gen panel 1 is enabled";
 CM_ SG_ 2452161029 rc_eps_batt_6_status "State of charge status register";
 CM_ SG_ 2452161029 rc_eps_batt_6_ctrl "State of charge from coulomb counter on battery board";
 CM_ SG_ 2452161029 rc_eps_batt_6_last_charge "The MET of last full battery charge";
@@ -1427,6 +1444,7 @@ CM_ SG_ 2452160531 msp_temp_temp "temp of msp";
 CM_ SG_ 2449932985 grnd_epoch_val_overflow "Overflow of epoch (time between millenium and when we launched)";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2450522842 gcmd_batt_set_heater_check_state 2 "null" 1 "true" 0 "false" ;
 VAL_ 2452161136 rc_adcs_bdot_6_spam_control 1 "true" 0 "false" ;
 VAL_ 2452161136 rc_adcs_bdot_6_pop_status_z 1 "true" 0 "false" ;
 VAL_ 2452161136 rc_adcs_bdot_6_pop_status_y 1 "true" 0 "false" ;

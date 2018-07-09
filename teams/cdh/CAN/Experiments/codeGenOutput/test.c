@@ -3,6 +3,11 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket gcmd_batt_set_heater_check_packet = {0};
+	gcmd_batt_set_heater_check gcmd_batt_set_heater_check_info = {0};
+	encodegcmd_batt_set_heater_check(&gcmd_batt_set_heater_check_info, &gcmd_batt_set_heater_check_packet);
+	canSendPacket(&gcmd_batt_set_heater_check_packet);
+
 	__delay_cycles(10000);	CANPacket dist_autoseq_get_met_rsp_packet = {0};
 	dist_autoseq_get_met_rsp dist_autoseq_get_met_rsp_info = {0};
 	encodedist_autoseq_get_met_rsp(&dist_autoseq_get_met_rsp_info, &dist_autoseq_get_met_rsp_packet);
