@@ -3,6 +3,11 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket rc_eps_dist_19_packet = {0};
+	rc_eps_dist_19 rc_eps_dist_19_info = {0};
+	encoderc_eps_dist_19(&rc_eps_dist_19_info, &rc_eps_dist_19_packet);
+	canSendPacket(&rc_eps_dist_19_packet);
+
 	__delay_cycles(10000);	CANPacket rc_eps_dist_18_packet = {0};
 	rc_eps_dist_18 rc_eps_dist_18_info = {0};
 	encoderc_eps_dist_18(&rc_eps_dist_18_info, &rc_eps_dist_18_packet);

@@ -50,14 +50,16 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2450522844 rc_eps_dist_19: 2 Vector__XXX
+ SG_ rc_eps_dist_19_rahs_ocp_thresh : 0|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
+
 BO_ 2450522843 rc_eps_dist_18: 7 Vector__XXX
- SG_ rc_eps_dist_18_rahs_ocp_thresh : 48|8@1+ (1,0) [0|255] "hA" Vector__XXX
- SG_ rc_eps_dist_18_ppt_ocp_thresh : 40|8@1+ (1,0) [0|255] "hA" Vector__XXX
- SG_ rc_eps_dist_18_estim_ocp_thresh : 32|8@1+ (1,0) [0|255] "hA" Vector__XXX
- SG_ rc_eps_dist_18_eps_ocp_thresh : 24|8@1+ (1,0) [0|255] "hA" Vector__XXX
- SG_ rc_eps_dist_18_com2_ocp_thresh : 16|8@1+ (1,0) [0|255] "hA" Vector__XXX
- SG_ rc_eps_dist_18_com1_ocp_thresh : 8|8@1+ (1,0) [0|255] "hA" Vector__XXX
- SG_ rc_eps_dist_18_bdot_ocp_thresh : 0|8@1+ (1,0) [0|255] "hA" Vector__XXX
+ SG_ rc_eps_dist_18_ppt_ocp_thresh : 45|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
+ SG_ rc_eps_dist_18_estim_ocp_thresh : 36|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
+ SG_ rc_eps_dist_18_eps_ocp_thresh : 27|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
+ SG_ rc_eps_dist_18_com2_ocp_thresh : 18|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
+ SG_ rc_eps_dist_18_com1_ocp_thresh : 9|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
+ SG_ rc_eps_dist_18_bdot_ocp_thresh : 0|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
 
 BO_ 2450522842 gcmd_batt_set_heater_check: 1 Vector__XXX
  SG_ gcmd_batt_set_heater_check_state : 0|2@1+ (1,0) [0|3] "" Vector__XXX
@@ -958,8 +960,9 @@ BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,
 BO_TX_BU_ 2452160531 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ BO_ 2450522844 "Dist Rollcall";
+CM_ SG_ 2450522844 rc_eps_dist_19_rahs_ocp_thresh "RAHS current threshold";
 CM_ BO_ 2450522843 "Dist Rollcall";
-CM_ SG_ 2450522843 rc_eps_dist_18_rahs_ocp_thresh "RAHS current threshold";
 CM_ SG_ 2450522843 rc_eps_dist_18_ppt_ocp_thresh "PPT current threshold";
 CM_ SG_ 2450522843 rc_eps_dist_18_estim_ocp_thresh "ESTIM current threshold";
 CM_ SG_ 2450522843 rc_eps_dist_18_eps_ocp_thresh "EPS current threshold";
