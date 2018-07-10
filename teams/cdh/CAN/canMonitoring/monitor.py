@@ -57,7 +57,7 @@ def printit():
     print("what the packet reports: " + str(distCount))
     total =0
     for x in counts.keys():
-        if "rc_adcs_sp" in x:
+        if "rc" in x and "rc_eps_dist" not in x: 
             total += counts[x]
     print("what the computer thinks: " + str(total))
     pprint.pprint(counts)
