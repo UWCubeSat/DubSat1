@@ -205,6 +205,35 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decoderc_eps_dist_18(CANPacket *input, rc_eps_dist_18 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rc_eps_dist_18_rahs_v_thresh = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_eps_dist_18_ppt_v_thresh = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+    output -> rc_eps_dist_18_estim_v_thresh = (uint8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
+    output -> rc_eps_dist_18_eps_v_thresh = (uint8_t) (((fullData & ((uint64_t) 0xff << 32)) >> 32));
+    output -> rc_eps_dist_18_com2_v_thresh = (uint8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
+    output -> rc_eps_dist_18_com1_v_thresh = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> rc_eps_dist_18_bdot_v_thresh = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+}
+
+void encoderc_eps_dist_18(rc_eps_dist_18 *input, CANPacket *output){
+    output -> id = 303039195;
+    output -> length = 7;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_rahs_v_thresh))) & 0xff) << 8;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_ppt_v_thresh))) & 0xff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_estim_v_thresh))) & 0xff) << 24;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_eps_v_thresh))) & 0xff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_com2_v_thresh))) & 0xff) << 40;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_com1_v_thresh))) & 0xff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_bdot_v_thresh))) & 0xff) << 56;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decodegcmd_batt_set_heater_check(CANPacket *input, gcmd_batt_set_heater_check *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
