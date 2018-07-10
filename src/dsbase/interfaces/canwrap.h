@@ -309,13 +309,13 @@ uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
 typedef struct rc_eps_dist_18 {
-    uint8_t rc_eps_dist_18_rahs_v_thresh; // hV
-    uint8_t rc_eps_dist_18_ppt_v_thresh; // hV
-    uint8_t rc_eps_dist_18_estim_v_thresh; // hV
-    uint8_t rc_eps_dist_18_eps_v_thresh; // hV
-    uint8_t rc_eps_dist_18_com2_v_thresh; // hV
-    uint8_t rc_eps_dist_18_com1_v_thresh; // hV
-    uint8_t rc_eps_dist_18_bdot_v_thresh; // hV
+    uint8_t rc_eps_dist_18_rahs_ocp_thresh; // hA
+    uint8_t rc_eps_dist_18_ppt_ocp_thresh; // hA
+    uint8_t rc_eps_dist_18_estim_ocp_thresh; // hA
+    uint8_t rc_eps_dist_18_eps_ocp_thresh; // hA
+    uint8_t rc_eps_dist_18_com2_ocp_thresh; // hA
+    uint8_t rc_eps_dist_18_com1_ocp_thresh; // hA
+    uint8_t rc_eps_dist_18_bdot_ocp_thresh; // hA
 } rc_eps_dist_18;
 
 typedef struct gcmd_batt_set_heater_check {
