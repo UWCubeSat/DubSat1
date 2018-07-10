@@ -86,13 +86,6 @@ FILE_STATIC void battControlHeater(Cmds cmd)
         HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT;
 }
 
-void battSetHeaterChecking(uint8_t checking)
-{
-    heaterIsChecking = checking;
-    if(!checking && (HEATER_ENABLE_OUT & HEATER_ENABLE_BIT))
-        HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT;
-}
-
 FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     battmgmt_segment *bsegment;
@@ -111,7 +104,7 @@ FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
                 break;
 
             case OPCODE_SET_CHECK_STATE:
-                battSetHeaterChecking(((setCheckState_segment *) &cmdstr[1])->isChecking);
+                heaterIsChecking = ((setCheckState_segment *) &cmdstr[1])->isChecking;
                 break;
         }
     }
@@ -227,7 +220,7 @@ void can_packet_rx_callback(CANPacket *packet)
             break;
         case CAN_ID_GCMD_BATT_SET_HEATER_CHECK:
             decodegcmd_batt_set_heater_check(packet, &heaterCheckPkt);
-            battSetHeaterChecking(heaterCheckPkt.gcmd_batt_set_heater_check_state);
+            heaterIsChecking = heaterCheckPkt.gcmd_batt_set_heater_check_state;
         default:
             break;
     }
@@ -408,16 +401,18 @@ int main(void)
             battBcSendGeneral();
             battBcSendHealth();
 
+            float temp = asensorReadSingleSensorV(hTempC); //<-- this is batt temp
             if(heaterIsChecking)
             {
-                float temp = asensorReadSingleSensorV(hTempC); //<-- this is batt temp
                 if(previousTemp >= 0.5f && temp < 0.5f) //not heating & < 0C
                     HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT; //turn on
 
                 else if (previousTemp <= 0.6f && temp > 0.6f) //heating & > 10C
                     HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT; //turn off
-                previousTemp = temp;
             }
+            else if((HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) && temp > 0.6f)
+                HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT;
+            previousTemp = temp;
         }
 
         // Stuff running 4Hz
