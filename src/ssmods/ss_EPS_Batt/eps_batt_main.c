@@ -8,6 +8,7 @@
 #include "interfaces/canwrap.h"
 #include "core/MET.h"
 #include "core/agglib.h"
+#include "core/timer.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -85,6 +86,13 @@ FILE_STATIC void battControlHeater(Cmds cmd)
         HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT;
 }
 
+void battSetHeaterChecking(uint8_t checking)
+{
+    heaterIsChecking = checking;
+    if(!checking && (HEATER_ENABLE_OUT & HEATER_ENABLE_BIT))
+        HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT;
+}
+
 FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
 {
     battmgmt_segment *bsegment;
@@ -103,7 +111,7 @@ FILE_STATIC uint8_t handleActionCallback(DebugMode mode, uint8_t * cmdstr)
                 break;
 
             case OPCODE_SET_CHECK_STATE:
-                heaterIsChecking = ((setCheckState_segment *) &cmdstr[1])->isChecking;
+                battSetHeaterChecking(((setCheckState_segment *) &cmdstr[1])->isChecking);
                 break;
         }
     }
@@ -197,6 +205,7 @@ void readTempSensor(){
 void can_packet_rx_callback(CANPacket *packet)
 {
     gcmd_eps_batt_fulldef fullDefPkt;
+    gcmd_batt_set_heater_check heaterCheckPkt;
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
@@ -216,6 +225,9 @@ void can_packet_rx_callback(CANPacket *packet)
             CCSetFullCurrent(fullDefPkt.gcmd_eps_batt_fulldef_chg_curr);
             CCSetFullVoltage(fullDefPkt.gcmd_eps_batt_fulldef_const_volt);
             break;
+        case CAN_ID_GCMD_BATT_SET_HEATER_CHECK:
+            decodegcmd_batt_set_heater_check(packet, &heaterCheckPkt);
+            battSetHeaterChecking(heaterCheckPkt.gcmd_batt_set_heater_check_state);
         default:
             break;
     }
