@@ -27,7 +27,6 @@
 
 // BEGIN GENERATOR MACROS
 
-#define CAN_ID_RC_EPS_DIST_19 303039196
 #define CAN_ID_RC_EPS_DIST_18 303039195
 #define CAN_ID_GCMD_BATT_SET_HEATER_CHECK 303039194
 #define CAN_ID_DIST_AUTOSEQ_GET_MET_RSP 303039193
@@ -309,16 +308,12 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
-typedef struct rc_eps_dist_19 {
-    uint16_t rc_eps_dist_19_rahs_ocp_thresh; // ocpThresh
-} rc_eps_dist_19;
-
 typedef struct rc_eps_dist_18 {
+    uint16_t rc_eps_dist_18_rahs_ocp_thresh; // ocpThresh
     uint16_t rc_eps_dist_18_ppt_ocp_thresh; // ocpThresh
     uint16_t rc_eps_dist_18_estim_ocp_thresh; // ocpThresh
     uint16_t rc_eps_dist_18_eps_ocp_thresh; // ocpThresh
     uint16_t rc_eps_dist_18_com2_ocp_thresh; // ocpThresh
-    uint16_t rc_eps_dist_18_com1_ocp_thresh; // ocpThresh
     uint16_t rc_eps_dist_18_bdot_ocp_thresh; // ocpThresh
 } rc_eps_dist_18;
 
@@ -1409,9 +1404,6 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
-
-void encoderc_eps_dist_19(rc_eps_dist_19 *input, CANPacket* output);
-void decoderc_eps_dist_19(CANPacket *input, rc_eps_dist_19 *output);
 
 void encoderc_eps_dist_18(rc_eps_dist_18 *input, CANPacket* output);
 void decoderc_eps_dist_18(CANPacket *input, rc_eps_dist_18 *output);
