@@ -270,9 +270,7 @@ FILE_STATIC void set_pwm(char axis, int pwm_percent)
 			duty_x1 = duty_1; // for COSMOS
 			duty_x2 = duty_2;
 			last_pwm_percent_executed_x = pwm_percent; // for CAN ack 
-			// TODO Garrett delete old rollcall 
-			//addData_uint8_t(duty_x1Handle, duty_x1); // for CAN rollcall 
-			//addData_uint8_t(duty_x2Handle, duty_x2);
+			aggVec_push_i(&dipole_cmd_x_agg, pwm_percent);
 			break;
 		case 'y': 
 			SET_Y1_PWM ccr_value_1; 
@@ -280,8 +278,7 @@ FILE_STATIC void set_pwm(char axis, int pwm_percent)
 			duty_y1 = duty_1;
 			duty_y2 = duty_2;
 			last_pwm_percent_executed_y = pwm_percent;
-			//addData_uint8_t(duty_y1Handle, duty_y1);
-			//addData_uint8_t(duty_y2Handle, duty_y2);
+			aggVec_push_i(&dipole_cmd_y_agg, pwm_percent);
 			break;	
 		case 'z': 
 			SET_Z1_PWM ccr_value_1; 
@@ -289,8 +286,7 @@ FILE_STATIC void set_pwm(char axis, int pwm_percent)
 			duty_z1 = duty_1;
 			duty_z2 = duty_2;
 			last_pwm_percent_executed_z = pwm_percent;
-			//addData_uint8_t(duty_z1Handle, duty_z1);
-			//addData_uint8_t(duty_z2Handle, duty_z2);
+			aggVec_push_i(&dipole_cmd_z_agg, pwm_percent);
 			break;
 		default: // unknown state 
 			break;
@@ -406,6 +402,9 @@ FILE_STATIC void can_packet_rx_callback(CANPacket *packet)
         aggVec_reset((aggVec *)&duty_y2_agg);
         aggVec_reset((aggVec *)&duty_z1_agg);
         aggVec_reset((aggVec *)&duty_z2_agg);
+        aggVec_reset((aggVec *)&dipole_cmd_x_agg);
+        aggVec_reset((aggVec *)&dipole_cmd_y_agg);
+        aggVec_reset((aggVec *)&dipole_cmd_z_agg);
 	}
 }
 
@@ -419,9 +418,9 @@ FILE_STATIC void can_init(void)
 // roll call aggregate initialization 
 FILE_STATIC void rc_agg_init() {
     aggVec_init_f(&mspTemp_agg);
-    aggVec_init_i_Var(&bdot_x_agg);
-    aggVec_init_i_Var(&bdot_y_agg);
-    aggVec_init_i_Var(&bdot_z_agg);
+    aggVec_init_i(&bdot_x_agg);
+    aggVec_init_i(&bdot_y_agg);
+    aggVec_init_i(&bdot_z_agg);
     aggVec_init_i(&fsw_x_agg);
     aggVec_init_i(&fsw_y_agg);
     aggVec_init_i(&fsw_z_agg);
@@ -431,6 +430,9 @@ FILE_STATIC void rc_agg_init() {
     aggVec_init_i(&duty_y2_agg);
     aggVec_init_i(&duty_z1_agg);
     aggVec_init_i(&duty_z2_agg);
+    aggVec_init_i_Var(&dipole_cmd_x_agg);
+    aggVec_init_i_Var(&dipole_cmd_y_agg);
+    aggVec_init_i_Var(&dipole_cmd_z_agg);
     rollcallInit(rollcallFunctions, sizeof(rollcallFunctions) / sizeof(rollcall_fn));
 }	
 
@@ -539,7 +541,13 @@ void rcPopulate5(CANPacket *out){
     rc_adcs_mtq_5 rc = {0};
     rc.rc_adcs_mtq_5_fsw_ignore = fsw_ignore;
     rc.rc_adcs_mtq_5_reset_counts = bspGetResetCount();
+    rc.rc_adcs_mtq_5_cmds_x_var = compressVariance(aggVec_var_i_f(&dipole_cmd_x_agg));
+    rc.rc_adcs_mtq_5_cmds_y_var = compressVariance(aggVec_var_i_f(&dipole_cmd_y_agg));
+    rc.rc_adcs_mtq_5_cmds_z_var = compressVariance(aggVec_var_i_f(&dipole_cmd_z_agg));
     encoderc_adcs_mtq_5(&rc, out);
+    aggVec_as_reset((aggVec *)&dipole_cmd_x_agg);
+    aggVec_as_reset((aggVec *)&dipole_cmd_y_agg);
+    aggVec_as_reset((aggVec *)&dipole_cmd_z_agg);
 }
 
 // TODO: description 

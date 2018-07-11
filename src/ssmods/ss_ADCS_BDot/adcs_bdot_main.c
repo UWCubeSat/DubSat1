@@ -31,6 +31,7 @@
 #include "bdot_controller_lib.h"
 #include "interfaces/rollcall.h"
 #include "core/agglib.h"
+#include "core/utils.h"
 
 
 
@@ -243,6 +244,10 @@ FILE_STATIC aggVec_f rc_temp;
 FILE_STATIC aggVec_i magX;
 FILE_STATIC aggVec_i magY;
 FILE_STATIC aggVec_i magZ;
+
+FILE_STATIC aggVec_i dipole_x_agg;
+FILE_STATIC aggVec_i dipole_y_agg;
+FILE_STATIC aggVec_i dipole_z_agg;
 
 FILE_STATIC aggVec_i spam_on_x_avg_agg[3];
 FILE_STATIC aggVec_i spam_on_y_avg_agg[3];
@@ -1008,6 +1013,9 @@ void determine_mtq_commands()
             bdot_perspective_mtq_info.yDipole = 0;
             bdot_perspective_mtq_info.zDipole = 0;
     }
+    aggVec_push_i(&dipole_x_agg, bdot_perspective_mtq_info.xDipole);
+    aggVec_push_i(&dipole_y_agg, bdot_perspective_mtq_info.yDipole);
+    aggVec_push_i(&dipole_z_agg, bdot_perspective_mtq_info.zDipole);
 }
 
 /* Callback function tied to the one interrupt based timer. Sets flag at 10hz to
@@ -1133,6 +1141,19 @@ void can_rx_callback(CANPacket *packet)
             aggVec_reset((aggVec *)&magX);
             aggVec_reset((aggVec *)&magY);
             aggVec_reset((aggVec *)&magZ);
+            aggVec_reset((aggVec *)&dipole_x_agg);
+            aggVec_reset((aggVec *)&dipole_y_agg);
+            aggVec_reset((aggVec *)&dipole_z_agg);
+            uint8_t i;
+            for(i = 0; i < 3; i++)
+            {
+                aggVec_reset((aggVec *)&spam_on_x_avg_agg[i]);
+                aggVec_reset((aggVec *)&spam_on_y_avg_agg[i]);
+                aggVec_reset((aggVec *)&spam_on_z_avg_agg[i]);
+                aggVec_reset((aggVec *)&spam_off_x_avg_agg[i]);
+                aggVec_reset((aggVec *)&spam_off_y_avg_agg[i]);
+                aggVec_reset((aggVec *)&spam_off_z_avg_agg[i]);
+            }
             break;
     }
 }
@@ -1436,6 +1457,9 @@ void initialize_aggregate()
     aggVec_init_i(&magX);
     aggVec_init_i(&magY);
     aggVec_init_i(&magZ);
+    aggVec_init_i_Var(&dipole_x_agg);
+    aggVec_init_i_Var(&dipole_y_agg);
+    aggVec_init_i_Var(&dipole_z_agg);
     uint8_t i;
     for(i = 0; i < 3; i++)
     {
@@ -1471,11 +1495,11 @@ void rcPopulate1(CANPacket *out)
 {
 
     rc_adcs_bdot_1 rc;
-    rc.rc_adcs_bdot_1_spam_on_x_mtq_x = spam_on_x_avg[0];
-    rc.rc_adcs_bdot_1_spam_on_x_mtq_y = spam_on_x_avg[1];
-    rc.rc_adcs_bdot_1_spam_on_x_mtq_z = spam_on_x_avg[2];
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_x = spam_on_x_avg[0];
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_y = spam_on_x_avg[1];
+    rc.rc_adcs_bdot_1_last_spam_x_mtq_z = spam_on_x_avg[2];
 
-    rc.rc_adcs_bdot_1_spam_on_y_mtq_x = spam_on_y_avg[0];
+    rc.rc_adcs_bdot_1_last_spam_y_mtq_x = spam_on_y_avg[0];
 
     encoderc_adcs_bdot_1(&rc, out);
 }
@@ -1508,8 +1532,8 @@ void rcPopulate4(CANPacket *out)
     rc_adcs_bdot_4 rc = {0};
     rc.rc_adcs_bdot_4_mag_z_avg = aggVec_avg_i_i(&magZ);
     rc.rc_adcs_bdot_4_tumble = rtY.tumble;
-    rc.rc_adcs_bdot_4_spam_on_y_mtq_y = spam_on_y_avg[1];
-    rc.rc_adcs_bdot_4_spam_on_y_mtq_z = spam_on_y_avg[2];
+    rc.rc_adcs_bdot_4_last_spam_y_mtq_y = spam_on_y_avg[1];
+    rc.rc_adcs_bdot_4_last_spam_y_mtq_z = spam_on_y_avg[2];
     aggVec_as_reset((aggVec *)&magZ);
     encoderc_adcs_bdot_4(&rc, out);
 }
@@ -1517,10 +1541,12 @@ void rcPopulate4(CANPacket *out)
 void rcPopulate5(CANPacket *out)
 {
     rc_adcs_bdot_5 rc = {0};
-    rc.rc_adcs_bdot_5_spam_on_z_mtq_x = spam_on_z_avg[0];
-    rc.rc_adcs_bdot_5_spam_on_z_mtq_y = spam_on_z_avg[1];
-    rc.rc_adcs_bdot_5_spam_on_z_mtq_z = spam_on_z_avg[2];
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_x = spam_on_z_avg[0];
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_y = spam_on_z_avg[1];
+    rc.rc_adcs_bdot_5_last_spam_z_mtq_z = spam_on_z_avg[2];
+    rc.rc_adcs_bdot_5_diplole_var_x = compressVariance(aggVec_var_i_f(&dipole_x_agg));
     encoderc_adcs_bdot_5(&rc, out);
+    aggVec_as_reset((aggVec *)&dipole_x_agg);
 }
 
 void rcPopulate6(CANPacket *out)
@@ -1547,7 +1573,11 @@ void rcPopulate7(CANPacket *out)
     rc.rc_adcs_bdot_7_spam_magnitude_x = gcmd_spam_x_dipole;
     rc.rc_adcs_bdot_7_spam_magnitude_y = gcmd_spam_y_dipole;
     rc.rc_adcs_bdot_7_spam_magnitude_z = gcmd_spam_z_dipole;
+    rc.rc_adcs_bdot_7_dipole_var_y = compressVariance(aggVec_var_i_f(&dipole_y_agg));
+    rc.rc_adcs_bdot_7_dipole_var_z = compressVariance(aggVec_var_i_f(&dipole_z_agg));
     encoderc_adcs_bdot_7(&rc, out);
+    aggVec_as_reset((aggVec *)&dipole_y_agg);
+    aggVec_as_reset((aggVec *)&dipole_z_agg);
 }
 
 
