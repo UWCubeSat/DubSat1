@@ -356,6 +356,8 @@ typedef struct gcmd_autoseq_add_1 {
 } gcmd_autoseq_add_1;
 
 typedef struct rc_adcs_bdot_7 {
+    uint16_t rc_adcs_bdot_7_dipole_var_z; //  (No Units)
+    uint16_t rc_adcs_bdot_7_dipole_var_y; //  (No Units)
     int16_t rc_adcs_bdot_7_spam_magnitude_z; //  (No Units)
     int16_t rc_adcs_bdot_7_spam_magnitude_y; //  (No Units)
     int16_t rc_adcs_bdot_7_spam_magnitude_x; //  (No Units)
@@ -392,6 +394,7 @@ typedef struct gcmd_eps_batt_fulldef {
 } gcmd_eps_batt_fulldef;
 
 typedef struct rc_adcs_bdot_5 {
+    uint16_t rc_adcs_bdot_5_diplole_var_x; //  (No Units)
     int16_t rc_adcs_bdot_5_last_spam_z_mtq_z; // 1/73 nT
     int16_t rc_adcs_bdot_5_last_spam_z_mtq_y; // 1/73 nT
     int16_t rc_adcs_bdot_5_last_spam_z_mtq_x; // 1/73 nT
@@ -1005,6 +1008,9 @@ typedef struct estim_state {
 } estim_state;
 
 typedef struct rc_adcs_mtq_5 {
+    uint16_t rc_adcs_mtq_5_cmds_z_var; //  (No Units)
+    uint16_t rc_adcs_mtq_5_cmds_y_var; //  (No Units)
+    uint16_t rc_adcs_mtq_5_cmds_x_var; //  (No Units)
     uint8_t rc_adcs_mtq_5_reset_counts; //  (No Units)
     uint8_t rc_adcs_mtq_5_fsw_ignore; //  (No Units)
 } rc_adcs_mtq_5;
