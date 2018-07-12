@@ -465,9 +465,9 @@ uint8_t getPDState(PowerDomainID pd)
 {
     if(distQueryDomainSwitch(pd))
         return 0; //on
-    else if(gseg.powerdomainlastcmds[(uint8_t)pd] & (PD_CMD_Disable | PD_CMD_Toggle))
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_Disable || gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_Toggle)
         return 1; //off manual
-    else if(gseg.powerdomainlastcmds[(uint8_t)pd] & PD_CMD_OCLatch)
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_OCLatch)
         return 2; //overcurrent latch
     else
         return 3; //batt_undervoltage or other
