@@ -50,6 +50,20 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2452161139 rc_adcs_bdot_9: 6 Vector__XXX
+ SG_ rc_adcs_bdot_9_spam_off_z_mtq_z : 32|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_9_spam_off_z_mtq_y : 16|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_9_spam_off_z_mtq_x : 0|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
+
+BO_ 2452161138 rc_adcs_bdot_8: 8 Vector__XXX
+ SG_ rc_adcs_bdot_8_spam_off_y_mtq_z : 48|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_8_spam_off_y_mtq_y : 32|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_8_spam_off_y_mtq_x : 16|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_8_spam_off_x_mtq_z : 0|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
+
+BO_ 2450522842 gcmd_batt_set_heater_check: 1 Vector__XXX
+ SG_ gcmd_batt_set_heater_check_state : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+
 BO_ 2450522841 dist_autoseq_get_met_rsp: 4 Vector__XXX
  SG_ dist_autoseq_get_met_rsp_met : 0|32@1+ (1,0) [0|4294967295] "2^-15s" Vector__XXX
 
@@ -76,7 +90,9 @@ BO_ 2449736402 gcmd_autoseq_add_1: 8 Vector__XXX
  SG_ gcmd_autoseq_add_1_met : 29|32@1+ (1,0) [0|4294967295] "2^-15s" Vector__XXX
  SG_ gcmd_autoseq_add_1_can_id : 0|29@1+ (1,0) [0|536870911] "" Vector__XXX
 
-BO_ 2452161137 rc_adcs_bdot_7: 3 Vector__XXX
+BO_ 2452161137 rc_adcs_bdot_7: 8 Vector__XXX
+ SG_ rc_adcs_bdot_7_spam_off_x_mtq_y : 40|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_7_spam_off_x_mtq_x : 24|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_7_spam_magnitude_z : 16|8@1- (1,0) [-127|128] "" Vector__XXX
  SG_ rc_adcs_bdot_7_spam_magnitude_y : 8|8@1- (1,0) [-127|128] "" Vector__XXX
  SG_ rc_adcs_bdot_7_spam_magnitude_x : 0|8@1- (1,0) [-127|128] "" Vector__XXX
@@ -108,9 +124,9 @@ BO_ 2449736399 gcmd_eps_batt_fulldef: 8 Vector__XXX
  SG_ gcmd_eps_batt_fulldef_chg_curr : 32|32@1- (1,0) [0|1] "Amps" Vector__XXX
 
 BO_ 2452161116 rc_adcs_bdot_5: 6 Vector__XXX
- SG_ rc_adcs_bdot_5_last_spam_z_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
- SG_ rc_adcs_bdot_5_last_spam_z_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
- SG_ rc_adcs_bdot_5_last_spam_z_mtq_x : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_5_spam_on_z_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_5_spam_on_z_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_5_spam_on_z_mtq_x : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
 
 BO_ 2449736398 gcmd_reset_minmax: 0 Vector__XXX
 
@@ -561,8 +577,8 @@ BO_ 2452161052 rc_adcs_sp_2: 8 Vector__XXX
 BO_ 2452161051 rc_adcs_sp_1: 8 Vector__XXX
 
 BO_ 2452161050 rc_adcs_bdot_4: 7 Vector__XXX
- SG_ rc_adcs_bdot_4_last_spam_y_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
- SG_ rc_adcs_bdot_4_last_spam_y_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_4_spam_on_y_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_4_spam_on_y_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_4_mag_z_avg : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_4_tumble : 48|1@1+ (1,0) [0|1] "" Vector__XXX
 
@@ -579,10 +595,10 @@ BO_ 2452161031 rc_adcs_bdot_2: 8 Vector__XXX
  SG_ rc_adcs_bdot_2_mag_x_max : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
 
 BO_ 2452161030 rc_adcs_bdot_1: 8 Vector__XXX
- SG_ rc_adcs_bdot_1_last_spam_y_mtq_x : 48|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
- SG_ rc_adcs_bdot_1_last_spam_x_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
- SG_ rc_adcs_bdot_1_last_spam_x_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
- SG_ rc_adcs_bdot_1_last_spam_x_mtq_x : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_1_spam_on_y_mtq_x : 48|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_1_spam_on_x_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_1_spam_on_x_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
+ SG_ rc_adcs_bdot_1_spam_on_x_mtq_x : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
 
 BO_ 2449932980 estim_sun_unit_z: 8 Vector__XXX
  SG_ estim_sun_unit_z_val : 0|64@1- (1,0) [-1.7E+308|1.7E+308] "u" Vector__XXX
@@ -709,7 +725,13 @@ BO_ 2452161041 rc_eps_gen_2: 8 Vector__XXX
  SG_ rc_eps_gen_2_pnl_1_voltage_max : 16|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
  SG_ rc_eps_gen_2_pnl_1_voltage_avg : 32|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
 
-BO_ 2452161040 rc_eps_gen_1: 8 Vector__XXX
+BO_ 2452161040 rc_eps_gen_1: 6 Vector__XXX
+ SG_ rc_eps_gen_1_pnl_3_charging : 40|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_2_charging : 32|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_1_charging : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_3_enabled : 16|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_2_enabled : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_1_enabled : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2452161029 rc_eps_batt_6: 7 Vector__XXX
  SG_ rc_eps_batt_6_status : 0|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -940,6 +962,15 @@ BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,
 BO_TX_BU_ 2452160531 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ SG_ 2452161139 rc_adcs_bdot_9_spam_off_z_mtq_z "Last spam reading with mtq off 1/73 nT";
+CM_ SG_ 2452161139 rc_adcs_bdot_9_spam_off_z_mtq_y "Last spam reading with mtq off 1/73 nT";
+CM_ SG_ 2452161139 rc_adcs_bdot_9_spam_off_z_mtq_x "Last spam reading with mtq off 1/73 nT";
+CM_ SG_ 2452161138 rc_adcs_bdot_8_spam_off_y_mtq_z "Last spam reading with mtq off 1/73 nT";
+CM_ SG_ 2452161138 rc_adcs_bdot_8_spam_off_y_mtq_y "Last spam reading with mtq off 1/73 nT";
+CM_ SG_ 2452161138 rc_adcs_bdot_8_spam_off_y_mtq_x "Last spam reading with mtq off 1/73 nT";
+CM_ SG_ 2452161138 rc_adcs_bdot_8_spam_off_x_mtq_z "Last spam reading with mtq off 1/73 nT";
+CM_ BO_ 2450522842 "enables/disables battery heater automation";
+CM_ SG_ 2450522842 gcmd_batt_set_heater_check_state "the state of heater automation";
 CM_ BO_ 2450522841 "the MET of the item";
 CM_ SG_ 2450522841 dist_autoseq_get_met_rsp_met "the MET";
 CM_ BO_ 2450522840 "the first 8 indices of the specified CAN ID";
@@ -958,6 +989,8 @@ CM_ BO_ 2449736402 "propertires of autosequencer entry";
 CM_ SG_ 2449736402 gcmd_autoseq_add_1_sendflg "whether the CAN packet should send";
 CM_ SG_ 2449736402 gcmd_autoseq_add_1_met "the MET of the entry to add";
 CM_ SG_ 2449736402 gcmd_autoseq_add_1_can_id "the CAN Id of the message to add";
+CM_ SG_ 2452161137 rc_adcs_bdot_7_spam_off_x_mtq_y "Last spam reading with mtq off 1/73 nT";
+CM_ SG_ 2452161137 rc_adcs_bdot_7_spam_off_x_mtq_x "Last spam reading with mtq off 1/73 nT";
 CM_ SG_ 2452161136 rc_adcs_bdot_6_spam_on_time "Current setting for the time in minutes of SPAM being on";
 CM_ SG_ 2452161136 rc_adcs_bdot_6_spam_off_time "Current setting for the time in minutes of SPAM not being on";
 CM_ SG_ 2452161136 rc_adcs_bdot_6_spam_control "Current setting on whether or not spam is enabled";
@@ -971,9 +1004,9 @@ CM_ SG_ 2449736401 gcmd_ppt_multiple_fire_override "Ppt fire override";
 CM_ SG_ 2449736401 gcmd_ppt_multiple_fire_count "How many times to fire";
 CM_ SG_ 2449736399 gcmd_eps_batt_fulldef_const_volt "Limits for detecting a full state on the battery (voltage must be greater than this value)";
 CM_ SG_ 2449736399 gcmd_eps_batt_fulldef_chg_curr "Limits for detecting a full state on the battery (current must be less than this value)";
-CM_ SG_ 2452161116 rc_adcs_bdot_5_last_spam_z_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161116 rc_adcs_bdot_5_last_spam_z_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161116 rc_adcs_bdot_5_last_spam_z_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2452161116 rc_adcs_bdot_5_spam_on_z_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2452161116 rc_adcs_bdot_5_spam_on_z_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2452161116 rc_adcs_bdot_5_spam_on_z_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
 CM_ SG_ 2452161134 rc_eps_batt_h2_canrxerror "the Batt MCP's RX error buffer";
 CM_ SG_ 2452161133 rc_adcs_bdot_h2_canrxerror "the BDOT MCP's RX error buffer";
 CM_ SG_ 2452161132 rc_eps_dist_h2_canrxerror "the Dist MCP's RX error buffer";
@@ -1210,8 +1243,8 @@ CM_ SG_ 2452161052 rc_adcs_sp_2_imup_y_min "Processed IMU Y axis min";
 CM_ SG_ 2452161052 rc_adcs_sp_2_imup_x_min "Processed IMU X axis min";
 CM_ SG_ 2452161052 rc_adcs_sp_2_imup_x_max "Processed IMU X axis max";
 CM_ SG_ 2452161052 rc_adcs_sp_2_imup_x_avg "Processed IMU X axis avg";
-CM_ SG_ 2452161050 rc_adcs_bdot_4_last_spam_y_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161050 rc_adcs_bdot_4_last_spam_y_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2452161050 rc_adcs_bdot_4_spam_on_y_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2452161050 rc_adcs_bdot_4_spam_on_y_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
 CM_ SG_ 2452161050 rc_adcs_bdot_4_mag_z_avg "Z Average reading in nT";
 CM_ SG_ 2452161050 rc_adcs_bdot_4_tumble "Tumble Status";
 CM_ SG_ 2452161049 rc_adcs_bdot_3_mag_z_min "Z Minium reading in nT";
@@ -1222,10 +1255,10 @@ CM_ SG_ 2452161031 rc_adcs_bdot_2_mag_y_min "Y Minium reading in nT";
 CM_ SG_ 2452161031 rc_adcs_bdot_2_mag_x_avg "X Average reading in nT";
 CM_ SG_ 2452161031 rc_adcs_bdot_2_mag_x_min "X Minium reading in nT";
 CM_ SG_ 2452161031 rc_adcs_bdot_2_mag_x_max "X Maximum reading in nT ";
-CM_ SG_ 2452161030 rc_adcs_bdot_1_last_spam_y_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161030 rc_adcs_bdot_1_last_spam_x_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161030 rc_adcs_bdot_1_last_spam_x_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161030 rc_adcs_bdot_1_last_spam_x_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2452161030 rc_adcs_bdot_1_spam_on_y_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2452161030 rc_adcs_bdot_1_spam_on_x_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2452161030 rc_adcs_bdot_1_spam_on_x_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2452161030 rc_adcs_bdot_1_spam_on_x_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
 CM_ SG_ 2449932980 estim_sun_unit_z_val "Unit vector of where the sun is at x";
 CM_ SG_ 2449932979 estim_sun_unit_y_val "Unit vector of where the sun is at y";
 CM_ SG_ 2449932978 estim_sun_unit_x_val "Unit vector of where the sun is at z";
@@ -1305,6 +1338,12 @@ CM_ SG_ 2452161041 rc_eps_gen_2_pnl_2_voltage_min "Panel 2 Voltage min";
 CM_ SG_ 2452161041 rc_eps_gen_2_pnl_1_voltage_min "Panel 1 Voltage min";
 CM_ SG_ 2452161041 rc_eps_gen_2_pnl_1_voltage_max "Panel 1 Voltage max";
 CM_ SG_ 2452161041 rc_eps_gen_2_pnl_1_voltage_avg "Panel 1 Voltage avg";
+CM_ SG_ 2452161040 rc_eps_gen_1_pnl_3_charging "whether gen panel 3 is charing";
+CM_ SG_ 2452161040 rc_eps_gen_1_pnl_2_charging "whether gen panel 2 is charing";
+CM_ SG_ 2452161040 rc_eps_gen_1_pnl_1_charging "whether gen panel 1 is charing";
+CM_ SG_ 2452161040 rc_eps_gen_1_pnl_3_enabled "whether gen panel 3 is enabled";
+CM_ SG_ 2452161040 rc_eps_gen_1_pnl_2_enabled "whether gen panel 2 is enabled";
+CM_ SG_ 2452161040 rc_eps_gen_1_pnl_1_enabled "whether gen panel 1 is enabled";
 CM_ SG_ 2452161029 rc_eps_batt_6_status "State of charge status register";
 CM_ SG_ 2452161029 rc_eps_batt_6_ctrl "State of charge from coulomb counter on battery board";
 CM_ SG_ 2452161029 rc_eps_batt_6_last_charge "The MET of last full battery charge";
@@ -1427,6 +1466,7 @@ CM_ SG_ 2452160531 msp_temp_temp "temp of msp";
 CM_ SG_ 2449932985 grnd_epoch_val_overflow "Overflow of epoch (time between millenium and when we launched)";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2450522842 gcmd_batt_set_heater_check_state 2 "null" 1 "true" 0 "false" ;
 VAL_ 2452161136 rc_adcs_bdot_6_spam_control 1 "true" 0 "false" ;
 VAL_ 2452161136 rc_adcs_bdot_6_pop_status_z 1 "true" 0 "false" ;
 VAL_ 2452161136 rc_adcs_bdot_6_pop_status_y 1 "true" 0 "false" ;

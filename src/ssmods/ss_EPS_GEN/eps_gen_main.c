@@ -211,7 +211,7 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_CMD_ROLLCALL:
             decodecmd_rollcall(packet, &rcPkt);
             updateMET(constructTimestamp(rcPkt.cmd_rollcall_met, rcPkt.cmd_rollcall_met_overflow));
-            rcFlag = 10;
+            rcFlag = 11;
             break;
         case CAN_ID_GCMD_GEN_SET_PT_STATE:
             decodegcmd_gen_set_pt_state(packet, &ptStatePkt);
@@ -247,7 +247,7 @@ void sendRC() //TODO: use if'else for each and do rc while once implemented on C
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
     {
         CANPacket rollcallPkt = {0};
-        if(rcFlag == 10)
+        if(rcFlag == 11)
         {
             rc_eps_gen_h1 rollcallPkt1_info = {0};
             rollcallPkt1_info.rc_eps_gen_h1_sysrstiv = SYSRSTIV;
@@ -258,11 +258,22 @@ void sendRC() //TODO: use if'else for each and do rc while once implemented on C
             encoderc_eps_gen_h1(&rollcallPkt1_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&mspTempAg);
         }
-        else if(rcFlag == 9)
+        else if(rcFlag == 10)
         {
             rc_eps_gen_h2 rc ={0};
             rc.rc_eps_gen_h2_canrxerror = canRxErrorCheck();
             encoderc_eps_gen_h2(&rc, &rollcallPkt);
+        }
+        else if(rcFlag == 9)
+        {
+            rc_eps_gen_1 rc = {0};
+            rc.rc_eps_gen_1_pnl_1_charging = (CHARGING_PTRACKER1_IN & CHARGING_PTRACKER1_BIT != 0);
+            rc.rc_eps_gen_1_pnl_1_enabled = (DISABLE_PTRACKER1_OUT & DISABLE_PTRACKER1_BIT != 0);
+            rc.rc_eps_gen_1_pnl_2_charging = (CHARGING_PTRACKER2_IN & CHARGING_PTRACKER2_BIT != 0);
+            rc.rc_eps_gen_1_pnl_2_enabled = (DISABLE_PTRACKER2_OUT & DISABLE_PTRACKER2_BIT != 0);
+            rc.rc_eps_gen_1_pnl_3_charging = (CHARGING_PTRACKER3_IN & CHARGING_PTRACKER3_BIT != 0);
+            rc.rc_eps_gen_1_pnl_3_enabled = (DISABLE_PTRACKER3_OUT & DISABLE_PTRACKER3_BIT != 0);
+            encoderc_eps_gen_1(&rc, &rollcallPkt);
         }
         else if(rcFlag == 8)
         {

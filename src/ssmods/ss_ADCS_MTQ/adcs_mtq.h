@@ -132,6 +132,9 @@ FILE_STATIC aggVec_i duty_y1_agg;
 FILE_STATIC aggVec_i duty_y2_agg;
 FILE_STATIC aggVec_i duty_z1_agg;
 FILE_STATIC aggVec_i duty_z2_agg;
+FILE_STATIC aggVec_i dipole_cmd_x_agg;
+FILE_STATIC aggVec_i dipole_cmd_y_agg;
+FILE_STATIC aggVec_i dipole_cmd_z_agg;
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 	{rcPopulate1, rcPopulate0, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5};
 

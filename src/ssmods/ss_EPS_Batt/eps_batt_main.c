@@ -8,6 +8,7 @@
 #include "interfaces/canwrap.h"
 #include "core/MET.h"
 #include "core/agglib.h"
+#include "core/timer.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -46,8 +47,8 @@ FILE_STATIC aggVec_i nodeVoltageAg;
 FILE_STATIC aggVec_i nodeCurrentAg;
 FILE_STATIC aggVec_i accChargeAg;
 
-FILE_STATIC uint64_t lastFullChargeTime = 0;
-#pragma PERSISTENT(lastFullChargeTime);
+#pragma PERSISTENT(timeSinceLastFullCharge)
+uint32_t timeSinceLastFullCharge = 0xFFFFFFFF;
 
 FILE_STATIC uint8_t rcFlag = 0;
 
@@ -145,6 +146,12 @@ FILE_STATIC void battBcSendMeta()
     bcbinSendPacket((uint8_t *) &mseg, sizeof(mseg));
 }
 
+void secondsInterrupt()
+{
+    if(timeSinceLastFullCharge ^= 0xFFFFFFFF)
+        timeSinceLastFullCharge++;
+}
+
 void readCC (){
     //Reading Coulomb counter
     CCData = readCoulombCounter(); //reading the Coulomb counter (busVoltageV, calcdCurrentA, rawAccumCharge, (SOC?))
@@ -166,7 +173,7 @@ void readCC (){
     aggVec_push_i(&currentAg, CCReadRawCurrent());
     aggVec_push_i(&accChargeAg, CCReadRawAccumulatedCharge());
     if(CCData.fullCharge)
-        lastFullChargeTime = metConvertToInt(getMETTimestamp());
+        timeSinceLastFullCharge = 0;
 }
 
 void readINA(hDev hSensor){
@@ -191,6 +198,7 @@ void readTempSensor(){
 void can_packet_rx_callback(CANPacket *packet)
 {
     gcmd_eps_batt_fulldef fullDefPkt;
+    gcmd_batt_set_heater_check heaterCheckPkt;
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
@@ -210,6 +218,9 @@ void can_packet_rx_callback(CANPacket *packet)
             CCSetFullCurrent(fullDefPkt.gcmd_eps_batt_fulldef_chg_curr);
             CCSetFullVoltage(fullDefPkt.gcmd_eps_batt_fulldef_const_volt);
             break;
+        case CAN_ID_GCMD_BATT_SET_HEATER_CHECK:
+            decodegcmd_batt_set_heater_check(packet, &heaterCheckPkt);
+            heaterIsChecking = heaterCheckPkt.gcmd_batt_set_heater_check_state;
         default:
             break;
     }
@@ -284,7 +295,7 @@ void sendRC()
         else if(rcFlag == 2)
         {
             rc_eps_batt_6 rollcallPkt6_info = {0};
-            rollcallPkt6_info.rc_eps_batt_6_last_charge = lastFullChargeTime;
+            rollcallPkt6_info.rc_eps_batt_6_last_charge = timeSinceLastFullCharge;
             rollcallPkt6_info.rc_eps_batt_6_status = CCGetStatusReg();
             rollcallPkt6_info.rc_eps_batt_6_ctrl = CCGetControlReg();
             encoderc_eps_batt_6(&rollcallPkt6_info, &rollcallPkt);
@@ -360,6 +371,7 @@ int main(void)
     setCANPacketRxCallback(can_packet_rx_callback);
 
     previousTemp = asensorReadSingleSensorV(hTempC);
+    startCallback(timerCallbackInitializer(&secondsInterrupt, 1000000));
     uint16_t counter;
     while (1)
     {
@@ -389,16 +401,18 @@ int main(void)
             battBcSendGeneral();
             battBcSendHealth();
 
+            float temp = asensorReadSingleSensorV(hTempC); //<-- this is batt temp
             if(heaterIsChecking)
             {
-                float temp = asensorReadSingleSensorV(hTempC); //<-- this is batt temp
                 if(previousTemp >= 0.5f && temp < 0.5f) //not heating & < 0C
                     HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT; //turn on
 
                 else if (previousTemp <= 0.6f && temp > 0.6f) //heating & > 10C
                     HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT; //turn off
-                previousTemp = temp;
             }
+            else if((HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) && temp > 0.6f)
+                HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT;
+            previousTemp = temp;
         }
 
         // Stuff running 4Hz
