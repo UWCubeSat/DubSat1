@@ -90,6 +90,7 @@ FILE_STATIC health_segment hseg;
 FILE_STATIC meta_segment metaSeg;
 /* stores the magnetometer data read every 10 hz */
 FILE_STATIC magnetometer_segment continuous_mag_data_cosmos;
+FILE_STATIC magnetometer_segment continuous_mag_with_calibration_data_cosmos;
 /* stores the VALID bdot magnetometer data */
 FILE_STATIC magnetometer_segment bdot_magnetometer_data_cosmos;
 
@@ -384,6 +385,7 @@ FILE_STATIC void initial_setup()
     /* populate header for backchannel  */
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
     bcbinPopulateHeader(&continuous_mag_data_cosmos.header, TLM_ID_CONTINUOUS_MAG, sizeof(continuous_mag_data_cosmos));
+    bcbinPopulateHeader(&continuous_mag_with_calibration_data_cosmos.header, TLM_ID_CONTINUOUS_MAG_WITH_CAL, sizeof(continuous_mag_with_calibration_data_cosmos));
     bcbinPopulateHeader(&bdot_magnetometer_data_cosmos.header, TLM_ID_BDOT_MAGNETOMETER, sizeof(bdot_magnetometer_data_cosmos));
     bcbinPopulateHeader(&sp_mag1_data_cosmos.header, TLM_ID_SP_MAG1, sizeof(sp_mag1_data_cosmos));
     bcbinPopulateHeader(&sp_mag2_data_cosmos.header, TLM_ID_SP_MAG2, sizeof(sp_mag2_data_cosmos));
@@ -1086,6 +1088,7 @@ void send_cosmos_telem()
     send_bdot_state_status_cosmos();
     send_simulink_segment_cosmos();
     send_bdot_calibration_status_cosmos();
+    send_continuous_mag_with_calibration_reading_cosmos();
 //    send_sp_mag1_reading_cosmos();
 //    send_sp_mag2_reading_cosmos();
     bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
@@ -1228,6 +1231,15 @@ void send_continuous_mag_reading_cosmos()
     continuous_mag_data_cosmos.zMag = continuous_bdot_mag_data->convertedZ * 1e9;
 
     bcbinSendPacket((uint8_t *) &continuous_mag_data_cosmos, sizeof(continuous_mag_data_cosmos));
+}
+
+void send_continuous_mag_with_calibration_reading_cosmos()
+{
+    continuous_mag_with_calibration_data_cosmos.xMag = continuous_bdot_mag_data->convertedX * continuous_bdot_mag_data->calibration_factor_x * 1e9;
+    continuous_mag_with_calibration_data_cosmos.yMag = continuous_bdot_mag_data->convertedY * continuous_bdot_mag_data->calibration_factor_y * 1e9;
+    continuous_mag_with_calibration_data_cosmos.zMag = continuous_bdot_mag_data->convertedZ * continuous_bdot_mag_data->calibration_factor_z * 1e9;
+
+    bcbinSendPacket((uint8_t *) &continuous_mag_with_calibration_data_cosmos, sizeof(continuous_mag_with_calibration_data_cosmos));
 }
 
 /* send magnetometer reading segment through backchannel */
