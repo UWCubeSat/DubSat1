@@ -676,11 +676,11 @@ void autoShutoff()
             distDomainSwitch(PD_COM1, PD_CMD_Disable);
             rcResponseFlag &= ~PD_COM1_FLAG;
         }
-        if(rcResponseFlag & PD_COM2_FLAG)
+        /*if(rcResponseFlag & PD_COM2_FLAG)
         {
             distDomainSwitch(PD_COM2, PD_CMD_Disable);
             rcResponseFlag &= ~PD_COM2_FLAG;
-        }
+        }*/
         if(rcResponseFlag & PD_RAHS_FLAG)
         {
             distDomainSwitch(PD_RAHS, PD_CMD_Disable);
@@ -754,28 +754,33 @@ void can_packet_rx_callback(CANPacket *packet)
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            //TODO: uncomment this when automatic shutoff is ready to go!
-            //autoShutoff();
+            autoShutoff();
             //checkSelfReboot();
             rcFlag = 18;
             break;
-        case CAN_ID_RC_ADCS_BDOT_1:
+        case CAN_ID_RC_ADCS_BDOT_H1:
             rcResponseFlag &= ~MOD_BDOT_FLAG;
             break;
-        case CAN_ID_RC_ADCS_MTQ_1:
+        case CAN_ID_RC_ADCS_MTQ_H1:
             rcResponseFlag &= ~MOD_MTQ_FLAG;
             break;
-        case CAN_ID_RC_ADCS_SP_1:
+        case CAN_ID_RC_ADCS_SP_H1:
             rcResponseFlag &= ~MOD_SENSORPROC_FLAG;
             break;
-        case CAN_ID_RC_EPS_BATT_1:
+        case CAN_ID_RC_EPS_BATT_H1:
             rcResponseFlag &= ~MOD_BATT_FLAG;
             break;
-        case CAN_ID_RC_EPS_GEN_1:
+        case CAN_ID_RC_EPS_GEN_H1:
             rcResponseFlag &= ~MOD_GEN_FLAG;
             break;
-        case CAN_ID_RC_PPT_1:
+        case CAN_ID_RC_PPT_H1:
             rcResponseFlag &= ~PD_PPT_FLAG;
+            break;
+        case CAN_ID_RC_ADCS_MPC_2:
+            rcResponseFlag &= ~MOD_MPC_FLAG;
+            break;
+        case CAN_ID_RC_ADCS_ESTIM_H1:
+            rcResponseFlag &= ~MOD_ESTIM_FLAG;
             break;
         case CAN_ID_GCMD_DIST_SET_PD_STATE:
             decodegcmd_dist_set_pd_state(packet, &pdCmd);
