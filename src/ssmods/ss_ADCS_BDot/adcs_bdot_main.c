@@ -40,7 +40,7 @@
 
 #define NORMAL_READING_OPERATION 0
 #define NAP_OPERATION 1
-#define SPAM_MAG_SELF_TEST_OPERATION 2
+#define CALIBRATION_OPERATION 2
 #define SPAM_OPERATION 3
 
 #define POP_ON CAN_ENUM_BOOL_TRUE
@@ -70,8 +70,8 @@ typedef enum mtq_phase {
 typedef enum bdot_state_mode {
     NORMAL_MODE,
     SLEEP_MODE,
-    SPAM_MAG_SELF_TEST,
-    SPAM
+    CALIBRATION_MODE,
+    SPAM_MODE
 } bdot_state_mode;
 
 typedef enum spam_control {
@@ -219,13 +219,17 @@ FILE_STATIC uint32_t check_nap_status_timer_ms = 1200000; // 20 min
 FILE_STATIC uint8_t nap_status_timer_on_flag = 0;
 #pragma PERSISTENT(check_nap_status_timer_ms);
 
+FILE_STATIC TIMER_HANDLE calibration_timer = 15;
+FILE_STATIC uint32_t calibration_off_timer_ms = 120000; // 6 min
+FILE_STATIC uint32_t calibration_on_timer_ms = 4000;
+FILE_STATIC uint8_t calibration_timer_on_flag = 0;
+
 /* this is the timer that will keep track of how long SPAM is */
 FILE_STATIC TIMER_HANDLE spam_timer = 15;
 FILE_STATIC uint32_t spam_off_timer_ms = 3600000; // 1 hour;
 FILE_STATIC uint32_t spam_on_timer_ms = 120000; // 6 min
 //FILE_STATIC uint32_t spam_off_timer_ms = 15000; // 2 min
 //FILE_STATIC uint32_t spam_on_timer_ms = 20000; // 20 secs
-FILE_STATIC uint32_t spam_mag_self_test_timer_ms = 4000;
 
 FILE_STATIC uint8_t spam_timer_on_flag = 0;
 #pragma PERSISTENT(spam_off_timer_ms)
@@ -414,6 +418,13 @@ void determine_bdot_state()
                 start_spam_timer(spam_off_timer_ms);
                 bdot_state = SLEEP_MODE;
             }
+            if(check_calibration_timer() && calibration_switch == CALIBRATION_ON)
+            {
+                last_bdot_state = NORMAL_MODE;
+                bdot_state = CALIBRATION_MODE;
+                start_calibration_timer(calibration_on_timer_ms);
+                start_self_test_calibration(mag_num);
+            }
             /* if rt onestep reports not tumbling, restart check nap status timer */
             /* if rt onestep does report tumbling, then there's no reason to go into SPAM mode */
             if(!rtY.tumble)
@@ -424,35 +435,42 @@ void determine_bdot_state()
                 if(check_spam_timer() && gcmd_spam_control_switch == SPAM_ON)
                 {
                     last_bdot_state = NORMAL_MODE;
-                    bdot_state = SPAM_MAG_SELF_TEST;
-                    start_spam_timer(spam_mag_self_test_timer_ms);
-                    start_self_test_calibration(mag_num);
+                    bdot_state = SPAM_MODE;
+                    current_spam_axis = SPAM_X;
+                    reset_spam_avg_agg();
+                    start_spam_timer(spam_on_timer_ms);
                 }
             }
             break;
         case SLEEP_MODE:
             /* make sure nap timer is off. if it is off, then flag is 0 and the function does nothing */
             end_check_nap_status_timer();
+            if(check_calibration_timer() && calibration_switch == CALIBRATION_ON)
+            {
+                last_bdot_state = NORMAL_MODE;
+                bdot_state = CALIBRATION_MODE;
+                start_calibration_timer();
+                start_self_test_calibration(mag_num);
+            }
             /* ground commands determines that spam mode is enable, then check if spam timer is done */
             if(check_spam_timer() && gcmd_spam_control_switch == SPAM_ON)
             {
                 last_bdot_state = SLEEP_MODE;
-                bdot_state = SPAM_MAG_SELF_TEST;
-                start_spam_timer(spam_mag_self_test_timer_ms);
-                start_self_test_calibration(mag_num);
-            }
-            break;
-        case SPAM_MAG_SELF_TEST:
-            if(check_spam_timer())
-            {
-                end_self_test_calibration(mag_num);
+                bdot_state = SPAM_MODE;
                 current_spam_axis = SPAM_X;
                 reset_spam_avg_agg();
-                bdot_state = SPAM;
                 start_spam_timer(spam_on_timer_ms);
             }
             break;
-        case SPAM:
+        case CALIBRATION_MODE:
+            if(check_calibration_timer())
+            {
+                end_self_test_calibration(mag_num);
+                bdot_state = last_bdot_state;
+                start_calibration_timer(calibration_off_timer_ms);
+            }
+            break;
+        case SPAM_MODE:
             if(check_spam_avg_timer())
             {
                 handle_spam_average(mag_measure_mtq_state);
@@ -484,7 +502,7 @@ void clear_update_bdot_state_flags()
     {
         if(gcmd_spam_control_switch == SPAM_OFF)
         {
-            if(bdot_state == SPAM || bdot_state == SPAM_MAG_SELF_TEST)
+            if(bdot_state == SPAM_MODE)
             {
                 // go back to the previous state if current state is in spam: either normal or sleep.
                 bdot_state = last_bdot_state;
@@ -497,25 +515,28 @@ void clear_update_bdot_state_flags()
             {
                 last_bdot_state = bdot_state;
             }
-            bdot_state = SPAM_MAG_SELF_TEST;
+            if(bdot_state == CALIBRATION_MODE)
+            {
+                end_self_test_calibration(mag_num);
+                end_calibration_timer();
+                current_spam_axis = SPAM_X;
+            }
+            bdot_state = SPAM_MODE;
             end_spam_timer();
-            start_spam_timer(spam_mag_self_test_timer_ms);
-            start_self_test_calibration(mag_num);
+            start_spam_timer(spam_on_timer_ms);
+            reset_spam_avg_agg();
         }
         spam_control_switch_change_flag = 0;
     }
     if(spam_control_time_change_flag)
     {
-        if(bdot_state != SPAM_MAG_SELF_TEST)
-        {
-            end_spam_timer();
-        }
-        if(bdot_state == SPAM)
+        end_spam_timer();
+        if(bdot_state == SPAM_MODE)
         {
             start_spam_timer(spam_on_timer_ms);
             reset_spam_avg_agg();
             current_spam_axis = SPAM_X;
-        } else if(bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST)
+        } else if(bdot_state != SPAM_MODE)
         {
             start_spam_timer(spam_off_timer_ms);
         }
@@ -539,23 +560,26 @@ void clear_update_bdot_state_flags()
         /* in any case, when there's a command sent from ground to change state to
          * NORMAL or SLEEP, spam timer has to end and restart. */
 
-        if(bdot_state == SPAM)
+        if(bdot_state == SPAM_MODE)
         {
             end_spam_timer();
-        } else if(bdot_state == SPAM_MAG_SELF_TEST)
+        } else if(bdot_state == CALIBRATION_MODE)
         {
-            end_spam_timer();
+            end_calibration_timer();
+            start_calibration_timer(calibration_off_timer_ms);
             end_self_test_calibration(mag_num);
         }
-
+        if (gcmd_next_bdot_state == CALIBRATION_MODE)
+        {
+            end_spam_timer();
+            end_spam_avg_timer();
+            end_calibration_timer();
+            start_calibration_timer(calibration_on_timer_ms);
+            start_self_test_calibration(mag_num);
+        }
         if (gcmd_spam_control_switch == SPAM_ON)
         {
-            if (gcmd_next_bdot_state == SPAM_MAG_SELF_TEST)
-            {
-                end_spam_timer();
-                start_spam_timer(spam_mag_self_test_timer_ms);
-                start_self_test_calibration(mag_num);
-            } else if (gcmd_next_bdot_state == SPAM)
+            if (gcmd_next_bdot_state == SPAM_MODE)
             {
                 end_spam_timer();
                 start_spam_timer(spam_on_timer_ms);
@@ -564,15 +588,14 @@ void clear_update_bdot_state_flags()
                 start_spam_timer(spam_off_timer_ms);
             }
         }
-
         end_check_nap_status_timer();
 
-        if(bdot_state != SPAM && bdot_state != SPAM_MAG_SELF_TEST)
+        if(bdot_state != SPAM_MODE && bdot_state != CALIBRATION_MODE)
         {
             last_bdot_state = bdot_state;
         }
 
-        if(!(gcmd_spam_control_switch == SPAM_OFF && gcmd_next_bdot_state == SPAM_MAG_SELF_TEST))
+        if(!(gcmd_spam_control_switch == SPAM_OFF && gcmd_next_bdot_state == SPAM_MODE))
         {
             bdot_state = gcmd_next_bdot_state;
         }
@@ -588,7 +611,7 @@ void clear_update_bdot_state_flags()
 
     if(mtq_phase_change_flag)
     {
-        if(bdot_state == SPAM)
+        if(bdot_state == SPAM_MODE)
         {
             if(mtq_state == MTQ_MEASUREMENT_PHASE)
             {
@@ -733,7 +756,7 @@ void read_magnetometer_data()
 {
    continuous_bdot_mag_data = magReadXYZData(mag_num, ConvertToTeslas);
    mag_measure_mtq_state = mtq_state;
-   if(bdot_state == SPAM_MAG_SELF_TEST && mtq_state == MTQ_MEASUREMENT_PHASE)
+   if(bdot_state == CALIBRATION_MODE && mtq_state == MTQ_MEASUREMENT_PHASE)
    {
        self_test_add_samples(mag_num, continuous_bdot_mag_data);
    }
@@ -796,6 +819,37 @@ void calc_best_fit_mag()
 void start_check_best_mag_timer()
 {
     check_best_mag_timer = timerPollInitializer(check_best_mag_timer_ms);
+}
+
+void start_calibration_timer(uint32_t calibration_timer_ms)
+{
+    if(!calibration_timer_on_flag)
+    {
+        calibration_timer = timerPollInitializer(calibration_timer_ms);
+        calibration_timer_on_flag = 1;
+    }
+}
+
+uint8_t check_calibration_timer()
+{
+    if(calibration_timer_on_flag)
+    {
+        if(checkTimer(calibration_timer))
+        {
+            calibration_timer_on_flag = 0;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void end_calibration_timer()
+{
+    if(calibration_timer_on_flag)
+    {
+        endPollingTimer(calibration_timer);
+        calibration_timer_on_flag = 0;
+    }
 }
 
 void start_spam_timer(uint32_t spam_timer_ms)
@@ -976,12 +1030,12 @@ void determine_mtq_commands()
             bdot_perspective_mtq_info.yDipole = 0;
             bdot_perspective_mtq_info.zDipole = 0;
             break;
-        case SPAM_MAG_SELF_TEST:
+        case CALIBRATION_MODE:
             bdot_perspective_mtq_info.xDipole = 0;
             bdot_perspective_mtq_info.yDipole = 0;
             bdot_perspective_mtq_info.zDipole = 0;
             break;
-        case SPAM:
+        case SPAM_MODE:
             if(current_spam_axis == SPAM_X)
             {
                 bdot_perspective_mtq_info.xDipole = gcmd_spam_x_dipole;
@@ -1283,9 +1337,14 @@ void select_mode_operation(uint8_t reading_mode_selection)
             gcmd_next_bdot_state = SLEEP_MODE;
             gcmd_bdot_state_flag = 1;
             break;
+        case CALIBRATION_OPERATION:
+            if(bdot_state == CALIBRATION_MODE) return;
+            gcmd_next_bdot_state = CALIBRATION_MODE;
+            gcmd_bdot_state_flag = 1;
+            break;
         case SPAM_OPERATION:
-            if(bdot_state == SPAM_MAG_SELF_TEST) return;
-            gcmd_next_bdot_state = SPAM_MAG_SELF_TEST;
+            if(bdot_state == SPAM_MODE) return;
+            gcmd_next_bdot_state = CALIBRATION_MODE;
             gcmd_bdot_state_flag = 1;
             break;
     }
@@ -1491,11 +1550,11 @@ void rcPopulate1(CANPacket *out)
 {
 
     rc_adcs_bdot_1 rc;
-    rc.rc_adcs_bdot_1_last_spam_x_mtq_x = spam_on_x_avg[0];
-    rc.rc_adcs_bdot_1_last_spam_x_mtq_y = spam_on_x_avg[1];
-    rc.rc_adcs_bdot_1_last_spam_x_mtq_z = spam_on_x_avg[2];
+    rc.rc_adcs_bdot_1_spam_on_x_mtq_x = spam_on_x_avg[0];
+    rc.rc_adcs_bdot_1_spam_on_x_mtq_y = spam_on_x_avg[1];
+    rc.rc_adcs_bdot_1_spam_on_x_mtq_z = spam_on_x_avg[2];
 
-    rc.rc_adcs_bdot_1_last_spam_y_mtq_x = spam_on_y_avg[0];
+    rc.rc_adcs_bdot_1_spam_on_y_mtq_x = spam_on_y_avg[0];
 
     encoderc_adcs_bdot_1(&rc, out);
 }
@@ -1528,8 +1587,8 @@ void rcPopulate4(CANPacket *out)
     rc_adcs_bdot_4 rc = {0};
     rc.rc_adcs_bdot_4_mag_z_avg = aggVec_avg_i_i(&magZ);
     rc.rc_adcs_bdot_4_tumble = rtY.tumble;
-    rc.rc_adcs_bdot_4_last_spam_y_mtq_y = spam_on_y_avg[1];
-    rc.rc_adcs_bdot_4_last_spam_y_mtq_z = spam_on_y_avg[2];
+    rc.rc_adcs_bdot_4_spam_on_y_mtq_y = spam_on_y_avg[1];
+    rc.rc_adcs_bdot_4_spam_on_y_mtq_z = spam_on_y_avg[2];
     aggVec_as_reset((aggVec *)&magZ);
     encoderc_adcs_bdot_4(&rc, out);
 }
@@ -1537,10 +1596,10 @@ void rcPopulate4(CANPacket *out)
 void rcPopulate5(CANPacket *out)
 {
     rc_adcs_bdot_5 rc = {0};
-    rc.rc_adcs_bdot_5_last_spam_z_mtq_x = spam_on_z_avg[0];
-    rc.rc_adcs_bdot_5_last_spam_z_mtq_y = spam_on_z_avg[1];
-    rc.rc_adcs_bdot_5_last_spam_z_mtq_z = spam_on_z_avg[2];
-    rc.rc_adcs_bdot_5_diplole_var_x = compressVariance(aggVec_var_i_f(&dipole_x_agg));
+    rc.rc_adcs_bdot_5_spam_on_z_mtq_x = spam_on_z_avg[0];
+    rc.rc_adcs_bdot_5_spam_on_z_mtq_y = spam_on_z_avg[1];
+    rc.rc_adcs_bdot_5_spam_on_z_mtq_z = spam_on_z_avg[2];
+//    rc.rc_adcs_bdot_5_diplole_var_x = compressVariance(aggVec_var_i_f(&dipole_x_agg));
     encoderc_adcs_bdot_5(&rc, out);
     aggVec_as_reset((aggVec *)&dipole_x_agg);
 }
@@ -1569,12 +1628,13 @@ void rcPopulate7(CANPacket *out)
     rc.rc_adcs_bdot_7_spam_magnitude_x = gcmd_spam_x_dipole;
     rc.rc_adcs_bdot_7_spam_magnitude_y = gcmd_spam_y_dipole;
     rc.rc_adcs_bdot_7_spam_magnitude_z = gcmd_spam_z_dipole;
-    rc.rc_adcs_bdot_7_dipole_var_y = compressVariance(aggVec_var_i_f(&dipole_y_agg));
-    rc.rc_adcs_bdot_7_dipole_var_z = compressVariance(aggVec_var_i_f(&dipole_z_agg));
+ //   rc.rc_adcs_bdot_7_dipole_var_y = compressVariance(aggVec_var_i_f(&dipole_y_agg));
+ //   rc.rc_adcs_bdot_7_dipole_var_z = compressVariance(aggVec_var_i_f(&dipole_z_agg));
     encoderc_adcs_bdot_7(&rc, out);
     aggVec_as_reset((aggVec *)&dipole_y_agg);
     aggVec_as_reset((aggVec *)&dipole_z_agg);
 }
+
 
 
 
