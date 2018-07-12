@@ -267,12 +267,12 @@ void sendRC() //TODO: use if'else for each and do rc while once implemented on C
         else if(rcFlag == 9)
         {
             rc_eps_gen_1 rc = {0};
-            rc.rc_eps_gen_1_pnl_1_charging = (CHARGING_PTRACKER1_IN & CHARGING_PTRACKER1_BIT != 0);
-            rc.rc_eps_gen_1_pnl_1_enabled = (DISABLE_PTRACKER1_OUT & DISABLE_PTRACKER1_BIT != 0);
-            rc.rc_eps_gen_1_pnl_2_charging = (CHARGING_PTRACKER2_IN & CHARGING_PTRACKER2_BIT != 0);
-            rc.rc_eps_gen_1_pnl_2_enabled = (DISABLE_PTRACKER2_OUT & DISABLE_PTRACKER2_BIT != 0);
-            rc.rc_eps_gen_1_pnl_3_charging = (CHARGING_PTRACKER3_IN & CHARGING_PTRACKER3_BIT != 0);
-            rc.rc_eps_gen_1_pnl_3_enabled = (DISABLE_PTRACKER3_OUT & DISABLE_PTRACKER3_BIT != 0);
+            rc.rc_eps_gen_1_pnl_1_charging = gseg.ptchargingactual[0];//(CHARGING_PTRACKER1_IN & CHARGING_PTRACKER1_BIT != 0);
+            rc.rc_eps_gen_1_pnl_1_enabled = gseg.ptchargingenablesw[0];//(DISABLE_PTRACKER1_OUT & DISABLE_PTRACKER1_BIT != 0);
+            rc.rc_eps_gen_1_pnl_2_charging = gseg.ptchargingactual[1];//(CHARGING_PTRACKER2_IN & CHARGING_PTRACKER2_BIT != 0);
+            rc.rc_eps_gen_1_pnl_2_enabled = gseg.ptchargingenablesw[1];//(DISABLE_PTRACKER2_OUT & DISABLE_PTRACKER2_BIT != 0);
+            rc.rc_eps_gen_1_pnl_3_charging = gseg.ptchargingactual[2];//(CHARGING_PTRACKER3_IN & CHARGING_PTRACKER3_BIT != 0);
+            rc.rc_eps_gen_1_pnl_3_enabled = gseg.ptchargingenablesw[2];//(DISABLE_PTRACKER3_OUT & DISABLE_PTRACKER3_BIT != 0);
             encoderc_eps_gen_1(&rc, &rollcallPkt);
         }
         else if(rcFlag == 8)
