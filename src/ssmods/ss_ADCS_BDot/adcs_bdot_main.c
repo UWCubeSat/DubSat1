@@ -220,10 +220,10 @@ FILE_STATIC uint8_t nap_status_timer_on_flag = 0;
 
 /* this is the timer that will keep track of how long SPAM is */
 FILE_STATIC TIMER_HANDLE spam_timer = 15;
-//FILE_STATIC uint32_t spam_off_timer_ms = 3600000; // 1 hour;
-//FILE_STATIC uint32_t spam_on_timer_ms = 120000; // 6 min
-FILE_STATIC uint32_t spam_off_timer_ms = 15000; // 2 min
-FILE_STATIC uint32_t spam_on_timer_ms = 20000; // 20 secs
+FILE_STATIC uint32_t spam_off_timer_ms = 3600000; // 1 hour;
+FILE_STATIC uint32_t spam_on_timer_ms = 120000; // 6 min
+//FILE_STATIC uint32_t spam_off_timer_ms = 15000; // 2 min
+//FILE_STATIC uint32_t spam_on_timer_ms = 20000; // 20 secs
 FILE_STATIC uint32_t spam_mag_self_test_timer_ms = 4000;
 
 FILE_STATIC uint8_t spam_timer_on_flag = 0;
@@ -460,6 +460,8 @@ void determine_bdot_state()
                 if(current_spam_axis == SPAM_X)
                 {
                     bdot_state = last_bdot_state;
+                    /* make sure spam average timer is off */
+                    end_spam_avg_timer();
                     /* start timer to time how long spam is off for */
                     start_spam_timer(spam_off_timer_ms);
                 } else
@@ -591,11 +593,6 @@ void clear_update_bdot_state_flags()
             {
                 end_spam_avg_timer();
                 start_spam_avg_timer(spam_off_avg_timer_ms);
-            } else if(mtq_state == MTQ_PMS_PHASE)
-            {
-                end_spam_avg_timer();
-                end_spam_timer();
-                bdot_state = last_bdot_state;
             }
         }
         mtq_phase_change_flag = 0;
@@ -663,9 +660,17 @@ void update_simulink_info()
     {
         /* B_meas_valid is actually thrown away in rt one step so it doesn't matter what value you put in */
         case BDOT_MAG:
-            rtU.B_body_in_T[0] = valid_bdot_mag_data.convertedX;
-            rtU.B_body_in_T[1] = valid_bdot_mag_data.convertedY;
-            rtU.B_body_in_T[2] = valid_bdot_mag_data.convertedZ;
+            if(calibration_switch == CALIBRATION_OFF)
+            {
+                rtU.B_body_in_T[0] = valid_bdot_mag_data.convertedX;
+                rtU.B_body_in_T[1] = valid_bdot_mag_data.convertedY;
+                rtU.B_body_in_T[2] = valid_bdot_mag_data.convertedZ;
+            } else if (calibration_switch == CALIBRATION_ON)
+            {
+                rtU.B_body_in_T[0] = valid_bdot_mag_data.convertedX * valid_bdot_mag_data.calibration_factor_x;
+                rtU.B_body_in_T[1] = valid_bdot_mag_data.convertedY * valid_bdot_mag_data.calibration_factor_y;
+                rtU.B_body_in_T[2] = valid_bdot_mag_data.convertedZ * valid_bdot_mag_data.calibration_factor_z;
+            }
             break;
         case SP_MAG1:
             rtU.B_body_in_T[0] = sp_mag1_data.convertedX;
@@ -718,8 +723,7 @@ void process_sp_mag()
 }
 
 /* Read magnetometer data continuously every 10Hz, ignoring whether or not mtq is actuating.
- * Function is for debugging purposes.
- */
+ * Function is for debugging purposes. */
 void read_magnetometer_data()
 {
    continuous_bdot_mag_data = magReadXYZData(mag_num, ConvertToTeslas);
@@ -728,7 +732,6 @@ void read_magnetometer_data()
    {
        self_test_add_samples(mag_num, continuous_bdot_mag_data);
    }
-
 }
 
 
@@ -741,19 +744,12 @@ void update_valid_mag_data()
         valid_bdot_mag_data.rawX = continuous_bdot_mag_data->rawX;
         valid_bdot_mag_data.rawY = continuous_bdot_mag_data->rawY;
         valid_bdot_mag_data.rawZ = continuous_bdot_mag_data->rawZ;
-        switch(calibration_switch)
-        {
-            case CALIBRATION_OFF:
-                valid_bdot_mag_data.convertedX = continuous_bdot_mag_data->convertedX;
-                valid_bdot_mag_data.convertedY = continuous_bdot_mag_data->convertedY;
-                valid_bdot_mag_data.convertedZ = continuous_bdot_mag_data->convertedZ;
-            break;
-            case CALIBRATION_ON:
-                valid_bdot_mag_data.convertedX = continuous_bdot_mag_data->convertedX * continuous_bdot_mag_data->calibration_factor_x;
-                valid_bdot_mag_data.convertedY = continuous_bdot_mag_data->convertedY * continuous_bdot_mag_data->calibration_factor_y;
-                valid_bdot_mag_data.convertedZ = continuous_bdot_mag_data->convertedZ * continuous_bdot_mag_data->calibration_factor_z;
-            break;
-        }
+        valid_bdot_mag_data.convertedX = continuous_bdot_mag_data->convertedX;
+        valid_bdot_mag_data.convertedY = continuous_bdot_mag_data->convertedY;
+        valid_bdot_mag_data.convertedZ = continuous_bdot_mag_data->convertedZ;
+        valid_bdot_mag_data.calibration_factor_x = continuous_bdot_mag_data->calibration_factor_x;
+        valid_bdot_mag_data.calibration_factor_y = continuous_bdot_mag_data->calibration_factor_y;
+        valid_bdot_mag_data.calibration_factor_z = continuous_bdot_mag_data->calibration_factor_z;
     }
 }
 
@@ -769,7 +765,7 @@ void convert_mag_data_raw_to_teslas(MagnetometerData * mag)
  */
 void calc_best_fit_mag()
 {
-    // find the median of the norm to determine best magnetometer to use. TODO: Think of a better, less costly method
+    /* find the median of the norm to determine best magnetometer to use. TODO: Think of a better, less costly method */
     float bdot_mag_norm = sqrt(abs(valid_bdot_mag_data.convertedX)^2 + abs(valid_bdot_mag_data.convertedY)^2 + abs(valid_bdot_mag_data.convertedZ)^2);
     float sp_mag1_norm =  sqrt(abs(sp_mag1_data.convertedX)^2 + abs(sp_mag1_data.convertedY)^2 + abs(sp_mag1_data.convertedZ)^2);
     float sp_mag2_norm = sqrt(abs(sp_mag2_data.convertedX)^2 + abs(sp_mag2_data.convertedY)^2 + abs(sp_mag2_data.convertedZ)^2);
