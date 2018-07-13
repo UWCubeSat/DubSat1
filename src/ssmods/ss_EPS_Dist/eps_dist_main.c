@@ -894,6 +894,15 @@ void can_packet_rx_callback(CANPacket *packet)
             encodeeps_dist_autoseq_get_ind_rsp(&getIndicesRsp, &autoseqIndicesResponsePkt);
             autoseqIndicesResponsePktSendFlag = 1;
             break;
+        case CAN_ID_GCMD_DIST_RESET_MISSION: //reset MET, clear events, reboot
+            persistentTime = (timeStamp){0};
+            uint8_t j;
+            for(j = sizeof(persistentEvents) / sizeof(sequenceEvent); j; j--)
+                persistentEvents[j - 1].time = 0;
+            eventsInitialized = 0;
+        case CAN_ID_GCMD_DIST_SELF_RESTART:
+            WDTCTL = 0; //reboot
+            break;
         default:
             break;
     }
