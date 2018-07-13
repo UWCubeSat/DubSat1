@@ -237,8 +237,8 @@ void decoderc_adcs_bdot_10(CANPacket *input, rc_adcs_bdot_10 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_adcs_bdot_10_dipole_var_z = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_adcs_bdot_dipole_var_y = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_adcs_bdot_dipole_var_x = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+    output -> rc_adcs_bdot_10_dipole_var_y = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_adcs_bdot_10_dipole_var_x = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
 
 void encoderc_adcs_bdot_10(rc_adcs_bdot_10 *input, CANPacket *output){
@@ -246,8 +246,8 @@ void encoderc_adcs_bdot_10(rc_adcs_bdot_10 *input, CANPacket *output){
     output -> length = 6;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_10_dipole_var_z))) & 0xffff) << 16;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_dipole_var_y))) & 0xffff) << 32;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_dipole_var_x))) & 0xffff) << 48;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_10_dipole_var_y))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_10_dipole_var_x))) & 0xffff) << 48;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);

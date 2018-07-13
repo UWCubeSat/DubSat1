@@ -322,8 +322,8 @@ typedef struct rc_eps_dist_18 {
 
 typedef struct rc_adcs_bdot_10 {
     uint16_t rc_adcs_bdot_10_dipole_var_z; //  (No Units)
-    uint16_t rc_adcs_bdot_dipole_var_y; //  (No Units)
-    uint16_t rc_adcs_bdot_dipole_var_x; //  (No Units)
+    uint16_t rc_adcs_bdot_10_dipole_var_y; //  (No Units)
+    uint16_t rc_adcs_bdot_10_dipole_var_x; //  (No Units)
 } rc_adcs_bdot_10;
 
 typedef struct rc_adcs_bdot_9 {
