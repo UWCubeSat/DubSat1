@@ -27,6 +27,8 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_RC_EPS_DIST_18 303039195
+#define CAN_ID_RC_ADCS_BDOT_10 304677597
 #define CAN_ID_RC_ADCS_BDOT_9 304677491
 #define CAN_ID_RC_ADCS_BDOT_8 304677490
 #define CAN_ID_GCMD_BATT_SET_HEATER_CHECK 303039194
@@ -309,6 +311,21 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct rc_eps_dist_18 {
+    uint16_t rc_eps_dist_18_rahs_ocp_thresh; // ocpThresh
+    uint16_t rc_eps_dist_18_ppt_ocp_thresh; // ocpThresh
+    uint16_t rc_eps_dist_18_estim_ocp_thresh; // ocpThresh
+    uint16_t rc_eps_dist_18_eps_ocp_thresh; // ocpThresh
+    uint16_t rc_eps_dist_18_com2_ocp_thresh; // ocpThresh
+    uint16_t rc_eps_dist_18_bdot_ocp_thresh; // ocpThresh
+} rc_eps_dist_18;
+
+typedef struct rc_adcs_bdot_10 {
+    uint16_t rc_adcs_10_dipole_var_z; //  (No Units)
+    uint16_t rc_adcs_bdot_dipole_var_y; //  (No Units)
+    uint16_t rc_adcs_bdot_dipole_var_x; //  (No Units)
+} rc_adcs_bdot_10;
+
 typedef struct rc_adcs_bdot_9 {
     int16_t rc_adcs_bdot_9_spam_off_z_mtq_z; // 1/73 nT
     int16_t rc_adcs_bdot_9_spam_off_z_mtq_y; // 1/73 nT
@@ -1411,6 +1428,12 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encoderc_eps_dist_18(rc_eps_dist_18 *input, CANPacket* output);
+void decoderc_eps_dist_18(CANPacket *input, rc_eps_dist_18 *output);
+
+void encoderc_adcs_bdot_10(rc_adcs_bdot_10 *input, CANPacket* output);
+void decoderc_adcs_bdot_10(CANPacket *input, rc_adcs_bdot_10 *output);
 
 void encoderc_adcs_bdot_9(rc_adcs_bdot_9 *input, CANPacket* output);
 void decoderc_adcs_bdot_9(CANPacket *input, rc_adcs_bdot_9 *output);

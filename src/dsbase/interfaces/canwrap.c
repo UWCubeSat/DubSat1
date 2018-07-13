@@ -205,6 +205,54 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decoderc_eps_dist_18(CANPacket *input, rc_eps_dist_18 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rc_eps_dist_18_rahs_ocp_thresh = (uint16_t) (((fullData & ((uint64_t) 0x1ff << 10)) >> 10));
+    output -> rc_eps_dist_18_ppt_ocp_thresh = (uint16_t) (((fullData & ((uint64_t) 0x1ff << 19)) >> 19));
+    output -> rc_eps_dist_18_estim_ocp_thresh = (uint16_t) (((fullData & ((uint64_t) 0x1ff << 28)) >> 28));
+    output -> rc_eps_dist_18_eps_ocp_thresh = (uint16_t) (((fullData & ((uint64_t) 0x1ff << 37)) >> 37));
+    output -> rc_eps_dist_18_com2_ocp_thresh = (uint16_t) (((fullData & ((uint64_t) 0x1ff << 46)) >> 46));
+    output -> rc_eps_dist_18_bdot_ocp_thresh = (uint16_t) (((fullData & ((uint64_t) 0x1ff << 55)) >> 55));
+}
+
+void encoderc_eps_dist_18(rc_eps_dist_18 *input, CANPacket *output){
+    output -> id = 303039195;
+    output -> length = 7;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_rahs_ocp_thresh))) & 0x1ff) << 10;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_ppt_ocp_thresh))) & 0x1ff) << 19;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_estim_ocp_thresh))) & 0x1ff) << 28;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_eps_ocp_thresh))) & 0x1ff) << 37;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_com2_ocp_thresh))) & 0x1ff) << 46;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_bdot_ocp_thresh))) & 0x1ff) << 55;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decoderc_adcs_bdot_10(CANPacket *input, rc_adcs_bdot_10 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rc_adcs_10_dipole_var_z = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_bdot_dipole_var_y = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_adcs_bdot_dipole_var_x = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+}
+
+void encoderc_adcs_bdot_10(rc_adcs_bdot_10 *input, CANPacket *output){
+    output -> id = 304677597;
+    output -> length = 5;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_10_dipole_var_z))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_dipole_var_y))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_dipole_var_x))) & 0xffff) << 48;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decoderc_adcs_bdot_9(CANPacket *input, rc_adcs_bdot_9 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);

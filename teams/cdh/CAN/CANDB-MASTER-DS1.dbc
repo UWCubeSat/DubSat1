@@ -50,6 +50,19 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2450522843 rc_eps_dist_18: 7 eps_dist
+ SG_ rc_eps_dist_18_rahs_ocp_thresh : 45|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
+ SG_ rc_eps_dist_18_ppt_ocp_thresh : 36|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
+ SG_ rc_eps_dist_18_estim_ocp_thresh : 27|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
+ SG_ rc_eps_dist_18_eps_ocp_thresh : 18|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
+ SG_ rc_eps_dist_18_com2_ocp_thresh : 9|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
+ SG_ rc_eps_dist_18_bdot_ocp_thresh : 0|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
+
+BO_ 2452161245 rc_adcs_bdot_10: 5 adcs_bdot
+ SG_ rc_adcs_10_dipole_var_z : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ rc_adcs_bdot_dipole_var_y : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ rc_adcs_bdot_dipole_var_x : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+
 BO_ 2452161139 rc_adcs_bdot_9: 6 Vector__XXX
  SG_ rc_adcs_bdot_9_spam_off_z_mtq_z : 32|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_9_spam_off_z_mtq_y : 16|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
@@ -962,6 +975,17 @@ BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,
 BO_TX_BU_ 2452160531 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ BO_ 2450522843 "Dist Rollcall";
+CM_ SG_ 2450522843 rc_eps_dist_18_rahs_ocp_thresh "RAHS current threshold";
+CM_ SG_ 2450522843 rc_eps_dist_18_ppt_ocp_thresh "PPT current threshold";
+CM_ SG_ 2450522843 rc_eps_dist_18_estim_ocp_thresh "ESTIM current threshold";
+CM_ SG_ 2450522843 rc_eps_dist_18_eps_ocp_thresh "EPS current threshold";
+CM_ SG_ 2450522843 rc_eps_dist_18_com2_ocp_thresh "COM2 current threshold";
+CM_ SG_ 2450522843 rc_eps_dist_18_bdot_ocp_thresh "BDOT current threshold";
+CM_ BO_ 2452161245 "BDOT RollCall";
+CM_ SG_ 2452161245 rc_adcs_10_dipole_var_z "The variance of sent dipole commands";
+CM_ SG_ 2452161245 rc_adcs_bdot_dipole_var_y "The variance of sent dipole commands";
+CM_ SG_ 2452161245 rc_adcs_bdot_dipole_var_x "The variance of sent dipole commands";
 CM_ SG_ 2452161139 rc_adcs_bdot_9_spam_off_z_mtq_z "Last spam reading with mtq off 1/73 nT";
 CM_ SG_ 2452161139 rc_adcs_bdot_9_spam_off_z_mtq_y "Last spam reading with mtq off 1/73 nT";
 CM_ SG_ 2452161139 rc_adcs_bdot_9_spam_off_z_mtq_x "Last spam reading with mtq off 1/73 nT";
