@@ -1029,6 +1029,9 @@ typedef struct estim_state {
 } estim_state;
 
 typedef struct rc_adcs_mtq_5 {
+    uint16_t rc_adcs_mtq_5_cmds_z_var; //  (No Units)
+    uint16_t rc_adcs_mtq_5_cmds_y_var; //  (No Units)
+    uint16_t rc_adcs_mtq_5_cmds_x_var; //  (No Units)
     uint8_t rc_adcs_mtq_5_reset_counts; //  (No Units)
     uint8_t rc_adcs_mtq_5_fsw_ignore; //  (No Units)
 } rc_adcs_mtq_5;

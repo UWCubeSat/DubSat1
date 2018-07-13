@@ -2907,14 +2907,20 @@ void decoderc_adcs_mtq_5(CANPacket *input, rc_adcs_mtq_5 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
+    output -> rc_adcs_mtq_5_cmds_z_var = (uint16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> rc_adcs_mtq_5_cmds_y_var = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_mtq_5_cmds_x_var = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_adcs_mtq_5_reset_counts = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
     output -> rc_adcs_mtq_5_fsw_ignore = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
 void encoderc_adcs_mtq_5(rc_adcs_mtq_5 *input, CANPacket *output){
     output -> id = 304677391;
-    output -> length = 2;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_mtq_5_cmds_z_var))) & 0xffff);
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_mtq_5_cmds_y_var))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_mtq_5_cmds_x_var))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_mtq_5_reset_counts))) & 0xff) << 48;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_mtq_5_fsw_ignore))) & 0xff) << 56;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));

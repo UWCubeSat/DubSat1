@@ -635,7 +635,10 @@ BO_ 2449932984 estim_state: 1 Vector__XXX
  SG_ estim_state_in_sun : 1|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ estim_state_above_gs : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 2452161039 rc_adcs_mtq_5: 2 Vector__XXX
+BO_ 2452161039 rc_adcs_mtq_5: 8 Vector__XXX
+ SG_ rc_adcs_mtq_5_cmds_z_var : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ rc_adcs_mtq_5_cmds_y_var : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ rc_adcs_mtq_5_cmds_x_var : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ rc_adcs_mtq_5_reset_counts : 8|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_adcs_mtq_5_fsw_ignore : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
@@ -1291,6 +1294,9 @@ CM_ SG_ 2449932982 estim_mag_unit_y_val "Unit vector of direction of magnetic fi
 CM_ SG_ 2449932981 estim_mag_unit_x_val "Unit vector of direction of magnetic field z";
 CM_ SG_ 2449932984 estim_state_in_sun "Are we in the sun?";
 CM_ SG_ 2449932984 estim_state_above_gs "Are we above the ground stn?";
+CM_ SG_ 2452161039 rc_adcs_mtq_5_cmds_z_var "Variance in BDot's dipole commands";
+CM_ SG_ 2452161039 rc_adcs_mtq_5_cmds_y_var "Variance in BDot's dipole commands";
+CM_ SG_ 2452161039 rc_adcs_mtq_5_cmds_x_var "Variance in BDot's dipole commands";
 CM_ SG_ 2452161039 rc_adcs_mtq_5_reset_counts "Number of resets";
 CM_ SG_ 2452161039 rc_adcs_mtq_5_fsw_ignore "Flight Software Ignore";
 CM_ SG_ 2452161038 rc_adcs_mtq_4_fsw_z_min "Min Z FSW command";
