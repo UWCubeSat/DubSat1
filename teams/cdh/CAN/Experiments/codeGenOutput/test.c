@@ -28,15 +28,15 @@ void canBlast() {
 	encodegcmd_batt_set_heater_check(&gcmd_batt_set_heater_check_info, &gcmd_batt_set_heater_check_packet);
 	canSendPacket(&gcmd_batt_set_heater_check_packet);
 
-	__delay_cycles(10000);	CANPacket dist_autoseq_get_met_rsp_packet = {0};
-	dist_autoseq_get_met_rsp dist_autoseq_get_met_rsp_info = {0};
-	encodedist_autoseq_get_met_rsp(&dist_autoseq_get_met_rsp_info, &dist_autoseq_get_met_rsp_packet);
-	canSendPacket(&dist_autoseq_get_met_rsp_packet);
+	__delay_cycles(10000);	CANPacket eps_dist_autoseq_get_met_rsp_packet = {0};
+	eps_dist_autoseq_get_met_rsp eps_dist_autoseq_get_met_rsp_info = {0};
+	encodeeps_dist_autoseq_get_met_rsp(&eps_dist_autoseq_get_met_rsp_info, &eps_dist_autoseq_get_met_rsp_packet);
+	canSendPacket(&eps_dist_autoseq_get_met_rsp_packet);
 
-	__delay_cycles(10000);	CANPacket dist_autoseq_get_ind_rsp_packet = {0};
-	dist_autoseq_get_ind_rsp dist_autoseq_get_ind_rsp_info = {0};
-	encodedist_autoseq_get_ind_rsp(&dist_autoseq_get_ind_rsp_info, &dist_autoseq_get_ind_rsp_packet);
-	canSendPacket(&dist_autoseq_get_ind_rsp_packet);
+	__delay_cycles(10000);	CANPacket eps_dist_autoseq_get_ind_rsp_packet = {0};
+	eps_dist_autoseq_get_ind_rsp eps_dist_autoseq_get_ind_rsp_info = {0};
+	encodeeps_dist_autoseq_get_ind_rsp(&eps_dist_autoseq_get_ind_rsp_info, &eps_dist_autoseq_get_ind_rsp_packet);
+	canSendPacket(&eps_dist_autoseq_get_ind_rsp_packet);
 
 	__delay_cycles(10000);	CANPacket gcmd_autoseq_get_met_packet = {0};
 	gcmd_autoseq_get_met gcmd_autoseq_get_met_info = {0};
