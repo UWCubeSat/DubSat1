@@ -3,6 +3,16 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket gcmd_dist_reset_mission_packet = {0};
+	gcmd_dist_reset_mission gcmd_dist_reset_mission_info = {0};
+	encodegcmd_dist_reset_mission(&gcmd_dist_reset_mission_info, &gcmd_dist_reset_mission_packet);
+	canSendPacket(&gcmd_dist_reset_mission_packet);
+
+	__delay_cycles(10000);	CANPacket gcmd_dist_self_restart_packet = {0};
+	gcmd_dist_self_restart gcmd_dist_self_restart_info = {0};
+	encodegcmd_dist_self_restart(&gcmd_dist_self_restart_info, &gcmd_dist_self_restart_packet);
+	canSendPacket(&gcmd_dist_self_restart_packet);
+
 	__delay_cycles(10000);	CANPacket rc_eps_dist_18_packet = {0};
 	rc_eps_dist_18 rc_eps_dist_18_info = {0};
 	encoderc_eps_dist_18(&rc_eps_dist_18_info, &rc_eps_dist_18_packet);

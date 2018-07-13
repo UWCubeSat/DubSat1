@@ -205,6 +205,36 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodegcmd_dist_reset_mission(CANPacket *input, gcmd_dist_reset_mission *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+}
+
+void encodegcmd_dist_reset_mission(gcmd_dist_reset_mission *input, CANPacket *output){
+    output -> id = 302252767;
+    output -> length = 0;
+    uint64_t fullPacketData = 0x0000000000000000;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decodegcmd_dist_self_restart(CANPacket *input, gcmd_dist_self_restart *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+}
+
+void encodegcmd_dist_self_restart(gcmd_dist_self_restart *input, CANPacket *output){
+    output -> id = 302252766;
+    output -> length = 0;
+    uint64_t fullPacketData = 0x0000000000000000;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decoderc_eps_dist_18(CANPacket *input, rc_eps_dist_18 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
