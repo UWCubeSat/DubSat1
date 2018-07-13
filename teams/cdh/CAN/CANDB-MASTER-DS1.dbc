@@ -34,6 +34,8 @@ NS_ :
 BS_:
 
 BU_: ppt eps_batt eps_dist eps_gen adcs_rwz adcs_rwy adcs_rwx adcs_mtq rahs adcs_sensorproc adcs_mpc adcs_estim adcs_bdot com_1 com_2
+VAL_TABLE_ gen_pnl_charging 1 "CHARGING" 0 "NOTCHARGING" ;
+VAL_TABLE_ gen_pnl_enabled 1 "ENABLED" 0 "DISABLED" ;
 VAL_TABLE_ fire_result 2 "no main discharge" 1 "no main charge" 0 "fire successful" ;
 VAL_TABLE_ mtq_phase 2 "pms_phase" 1 "actuation_phase" 0 "measurement_phase" ;
 VAL_TABLE_ bdot_mag_mode 3 "sp2 mode" 2 "sp1 mode" 1 "bdot mode" 0 "auto mode" ;
@@ -49,6 +51,10 @@ VAL_TABLE_ node 15 "rahs" 14 "com_2" 13 "com_1" 12 "adcs_mtq" 11 "adcs_sensorpro
 VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
+
+BO_ 2449736415 gcmd_dist_reset_mission: 0 com_1
+
+BO_ 2449736414 gcmd_dist_self_restart: 0 com_1
 
 BO_ 2450522843 rc_eps_dist_18: 7 eps_dist
  SG_ rc_eps_dist_18_rahs_ocp_thresh : 45|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
@@ -978,6 +984,8 @@ BO_TX_BU_ 2148794376 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,
 BO_TX_BU_ 2452160531 : eps_batt,adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ BO_ 2449736415 "Resets MET and autosequencer, also sets the autosequencer to be reinitialized on next powerup";
+CM_ BO_ 2449736414 "Causes dist to self-restart";
 CM_ BO_ 2450522843 "Dist Rollcall";
 CM_ SG_ 2450522843 rc_eps_dist_18_rahs_ocp_thresh "RAHS current threshold";
 CM_ SG_ 2450522843 rc_eps_dist_18_ppt_ocp_thresh "PPT current threshold";
@@ -1544,6 +1552,12 @@ VAL_ 2452161075 rc_adcs_estim_8_sc_above_gs 1 "true" 0 "false" ;
 VAL_ 2452161050 rc_adcs_bdot_4_tumble 1 "true" 0 "false" ;
 VAL_ 2449932984 estim_state_in_sun 1 "true" 0 "false" ;
 VAL_ 2449932984 estim_state_above_gs 1 "true" 0 "false" ;
+VAL_ 2452161040 rc_eps_gen_1_pnl_3_charging 1 "CHARGING" 0 "NOTCHARGING" ;
+VAL_ 2452161040 rc_eps_gen_1_pnl_2_charging 1 "CHARGING" 0 "NOTCHARGING" ;
+VAL_ 2452161040 rc_eps_gen_1_pnl_1_charging 1 "CHARGING" 0 "NOTCHARGING" ;
+VAL_ 2452161040 rc_eps_gen_1_pnl_3_enabled 1 "ENABLED" 0 "DISABLED" ;
+VAL_ 2452161040 rc_eps_gen_1_pnl_2_enabled 1 "ENABLED" 0 "DISABLED" ;
+VAL_ 2452161040 rc_eps_gen_1_pnl_1_enabled 1 "ENABLED" 0 "DISABLED" ;
 VAL_ 2452161027 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
 VAL_ 2452161027 rc_eps_batt_4_balancer_state 1 "true" 0 "false" ;
 VAL_ 2432958724 cmd_ppt_halt_confirm 1 "true" 0 "false" ;

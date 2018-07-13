@@ -27,6 +27,8 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_DIST_RESET_MISSION 302252767
+#define CAN_ID_GCMD_DIST_SELF_RESTART 302252766
 #define CAN_ID_RC_EPS_DIST_18 303039195
 #define CAN_ID_RC_ADCS_BDOT_10 304677597
 #define CAN_ID_RC_ADCS_BDOT_9 304677491
@@ -225,6 +227,10 @@
 #define CAN_ID_MSP_TEMP 304676883
 #define CAN_ID_GRND_EPOCH 302449337
 
+#define CAN_ENUM_GEN_PNL_CHARGING_CHARGING 1
+#define CAN_ENUM_GEN_PNL_CHARGING_NOTCHARGING 0
+#define CAN_ENUM_GEN_PNL_ENABLED_ENABLED 1
+#define CAN_ENUM_GEN_PNL_ENABLED_DISABLED 0
 #define CAN_ENUM_FIRE_RESULT_NOMAINDISCHARGE 2
 #define CAN_ENUM_FIRE_RESULT_NOMAINCHARGE 1
 #define CAN_ENUM_FIRE_RESULT_FIRESUCCESSFUL 0
@@ -311,6 +317,12 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_dist_reset_mission {
+} gcmd_dist_reset_mission;
+
+typedef struct gcmd_dist_self_restart {
+} gcmd_dist_self_restart;
+
 typedef struct rc_eps_dist_18 {
     uint16_t rc_eps_dist_18_rahs_ocp_thresh; // ocpThresh
     uint16_t rc_eps_dist_18_ppt_ocp_thresh; // ocpThresh
@@ -1431,6 +1443,12 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_dist_reset_mission(gcmd_dist_reset_mission *input, CANPacket* output);
+void decodegcmd_dist_reset_mission(CANPacket *input, gcmd_dist_reset_mission *output);
+
+void encodegcmd_dist_self_restart(gcmd_dist_self_restart *input, CANPacket* output);
+void decodegcmd_dist_self_restart(CANPacket *input, gcmd_dist_self_restart *output);
 
 void encoderc_eps_dist_18(rc_eps_dist_18 *input, CANPacket* output);
 void decoderc_eps_dist_18(CANPacket *input, rc_eps_dist_18 *output);
