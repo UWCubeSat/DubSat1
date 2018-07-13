@@ -28,6 +28,7 @@
 // BEGIN GENERATOR MACROS
 
 #define CAN_ID_RC_EPS_DIST_18 303039195
+#define CAN_ID_RC_ADCS_BDOT_10 304677597
 #define CAN_ID_RC_ADCS_BDOT_9 304677491
 #define CAN_ID_RC_ADCS_BDOT_8 304677490
 #define CAN_ID_GCMD_BATT_SET_HEATER_CHECK 303039194
@@ -319,6 +320,12 @@ typedef struct rc_eps_dist_18 {
     uint16_t rc_eps_dist_18_bdot_ocp_thresh; // ocpThresh
 } rc_eps_dist_18;
 
+typedef struct rc_adcs_bdot_10 {
+    uint16_t rc_adcs_10_dipole_var_z; //  (No Units)
+    uint16_t rc_adcs_bdot_dipole_var_y; //  (No Units)
+    uint16_t rc_adcs_bdot_dipole_var_x; //  (No Units)
+} rc_adcs_bdot_10;
+
 typedef struct rc_adcs_bdot_9 {
     int16_t rc_adcs_bdot_9_spam_off_z_mtq_z; // 1/73 nT
     int16_t rc_adcs_bdot_9_spam_off_z_mtq_y; // 1/73 nT
@@ -371,8 +378,6 @@ typedef struct gcmd_autoseq_add_1 {
 } gcmd_autoseq_add_1;
 
 typedef struct rc_adcs_bdot_7 {
-    uint16_t rc_adcs_bdot_7_dipole_var_z; //  (No Units)
-    uint16_t rc_adcs_bdot_7_dipole_var_y; //  (No Units)
     int16_t rc_adcs_bdot_7_spam_off_x_mtq_y; // 1/73 nT
     int16_t rc_adcs_bdot_7_spam_off_x_mtq_x; // 1/73 nT
     int16_t rc_adcs_bdot_7_spam_magnitude_z; //  (No Units)
@@ -411,7 +416,6 @@ typedef struct gcmd_eps_batt_fulldef {
 } gcmd_eps_batt_fulldef;
 
 typedef struct rc_adcs_bdot_5 {
-    int16_t rc_adcs_bdot_5_last_spam_z_mtq_x; // 1/73 nT
     int16_t rc_adcs_bdot_5_spam_on_z_mtq_z; // 1/73 nT
     int16_t rc_adcs_bdot_5_spam_on_z_mtq_y; // 1/73 nT
     int16_t rc_adcs_bdot_5_spam_on_z_mtq_x; // 1/73 nT
@@ -1025,9 +1029,6 @@ typedef struct estim_state {
 } estim_state;
 
 typedef struct rc_adcs_mtq_5 {
-    uint16_t rc_adcs_mtq_5_cmds_z_var; //  (No Units)
-    uint16_t rc_adcs_mtq_5_cmds_y_var; //  (No Units)
-    uint16_t rc_adcs_mtq_5_cmds_x_var; //  (No Units)
     uint8_t rc_adcs_mtq_5_reset_counts; //  (No Units)
     uint8_t rc_adcs_mtq_5_fsw_ignore; //  (No Units)
 } rc_adcs_mtq_5;
@@ -1430,6 +1431,9 @@ typedef struct grnd_epoch {
 
 void encoderc_eps_dist_18(rc_eps_dist_18 *input, CANPacket* output);
 void decoderc_eps_dist_18(CANPacket *input, rc_eps_dist_18 *output);
+
+void encoderc_adcs_bdot_10(rc_adcs_bdot_10 *input, CANPacket* output);
+void decoderc_adcs_bdot_10(CANPacket *input, rc_adcs_bdot_10 *output);
 
 void encoderc_adcs_bdot_9(rc_adcs_bdot_9 *input, CANPacket* output);
 void decoderc_adcs_bdot_9(CANPacket *input, rc_adcs_bdot_9 *output);

@@ -227,6 +227,31 @@ void encoderc_eps_dist_18(rc_eps_dist_18 *input, CANPacket *output){
     fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_eps_ocp_thresh))) & 0x1ff) << 37;
     fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_com2_ocp_thresh))) & 0x1ff) << 46;
     fullPacketData |= (((uint64_t)((input -> rc_eps_dist_18_bdot_ocp_thresh))) & 0x1ff) << 55;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
+void decoderc_adcs_bdot_10(CANPacket *input, rc_adcs_bdot_10 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> rc_adcs_10_dipole_var_z = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_bdot_dipole_var_y = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_adcs_bdot_dipole_var_x = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
+}
+
+void encoderc_adcs_bdot_10(rc_adcs_bdot_10 *input, CANPacket *output){
+    output -> id = 304677597;
+    output -> length = 5;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_10_dipole_var_z))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_dipole_var_y))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_dipole_var_x))) & 0xffff) << 48;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
 
 void decoderc_adcs_bdot_9(CANPacket *input, rc_adcs_bdot_9 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
@@ -315,7 +340,7 @@ void decodedist_autoseq_get_ind_rsp(CANPacket *input, dist_autoseq_get_ind_rsp *
 
 void encodedist_autoseq_get_ind_rsp(dist_autoseq_get_ind_rsp *input, CANPacket *output){
     output -> id = 303039192;
-    output -> length = 8;
+    output -> length = 1;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> dist_autoseq_get_ind_rsp_indices))) & 0xffffffffffffffff);
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
@@ -565,7 +590,7 @@ void decoderc_adcs_bdot_5(CANPacket *input, rc_adcs_bdot_5 *output){
 
 void encoderc_adcs_bdot_5(rc_adcs_bdot_5 *input, CANPacket *output){
     output -> id = 304677468;
-    output -> length = 8;
+    output -> length = 6;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_5_spam_on_z_mtq_z))) & 0xffff) << 16;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_5_spam_on_z_mtq_y))) & 0xffff) << 32;
@@ -2882,20 +2907,14 @@ void decoderc_adcs_mtq_5(CANPacket *input, rc_adcs_mtq_5 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_mtq_5_cmds_z_var = (uint16_t) (((fullData & ((uint64_t) 0xffff))));
-    output -> rc_adcs_mtq_5_cmds_y_var = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_adcs_mtq_5_cmds_x_var = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_adcs_mtq_5_reset_counts = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
     output -> rc_adcs_mtq_5_fsw_ignore = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
 void encoderc_adcs_mtq_5(rc_adcs_mtq_5 *input, CANPacket *output){
     output -> id = 304677391;
-    output -> length = 8;
+    output -> length = 2;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_mtq_5_cmds_z_var))) & 0xffff);
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_mtq_5_cmds_y_var))) & 0xffff) << 16;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_mtq_5_cmds_x_var))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_mtq_5_reset_counts))) & 0xff) << 48;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_mtq_5_fsw_ignore))) & 0xff) << 56;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
@@ -3270,23 +3289,23 @@ void decoderc_eps_gen_1(CANPacket *input, rc_eps_gen_1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_eps_gen_1_pnl_3_charging = (uint8_t) (((fullData & ((uint64_t) 0x1 << 58)) >> 58));
-    output -> rc_eps_gen_1_pnl_2_charging = (uint8_t) (((fullData & ((uint64_t) 0x1 << 59)) >> 59));
-    output -> rc_eps_gen_1_pnl_1_charging = (uint8_t) (((fullData & ((uint64_t) 0x1 << 60)) >> 60));
-    output -> rc_eps_gen_1_pnl_3_enabled = (uint8_t) (((fullData & ((uint64_t) 0x1 << 61)) >> 61));
-    output -> rc_eps_gen_1_pnl_2_enabled = (uint8_t) (((fullData & ((uint64_t) 0x1 << 62)) >> 62));
+    output -> rc_eps_gen_1_pnl_3_charging = (uint8_t) (((fullData & ((uint64_t) 0x1 << 23)) >> 23));
+    output -> rc_eps_gen_1_pnl_2_charging = (uint8_t) (((fullData & ((uint64_t) 0x1 << 31)) >> 31));
+    output -> rc_eps_gen_1_pnl_1_charging = (uint8_t) (((fullData & ((uint64_t) 0x1 << 39)) >> 39));
+    output -> rc_eps_gen_1_pnl_3_enabled = (uint8_t) (((fullData & ((uint64_t) 0x1 << 47)) >> 47));
+    output -> rc_eps_gen_1_pnl_2_enabled = (uint8_t) (((fullData & ((uint64_t) 0x1 << 55)) >> 55));
     output -> rc_eps_gen_1_pnl_1_enabled = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
 }
 
 void encoderc_eps_gen_1(rc_eps_gen_1 *input, CANPacket *output){
     output -> id = 304677392;
-    output -> length = 1;
+    output -> length = 6;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_gen_1_pnl_3_charging))) & 0x1) << 58;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_gen_1_pnl_2_charging))) & 0x1) << 59;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_gen_1_pnl_1_charging))) & 0x1) << 60;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_gen_1_pnl_3_enabled))) & 0x1) << 61;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_gen_1_pnl_2_enabled))) & 0x1) << 62;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_gen_1_pnl_3_charging))) & 0x1) << 23;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_gen_1_pnl_2_charging))) & 0x1) << 31;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_gen_1_pnl_1_charging))) & 0x1) << 39;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_gen_1_pnl_3_enabled))) & 0x1) << 47;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_gen_1_pnl_2_enabled))) & 0x1) << 55;
     fullPacketData |= (((uint64_t)((input -> rc_eps_gen_1_pnl_1_enabled))) & 0x1) << 63;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;

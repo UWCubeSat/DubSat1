@@ -7,7 +7,12 @@ void canBlast() {
 	rc_eps_dist_18 rc_eps_dist_18_info = {0};
 	encoderc_eps_dist_18(&rc_eps_dist_18_info, &rc_eps_dist_18_packet);
 	canSendPacket(&rc_eps_dist_18_packet);
-  
+
+	__delay_cycles(10000);	CANPacket rc_adcs_bdot_10_packet = {0};
+	rc_adcs_bdot_10 rc_adcs_bdot_10_info = {0};
+	encoderc_adcs_bdot_10(&rc_adcs_bdot_10_info, &rc_adcs_bdot_10_packet);
+	canSendPacket(&rc_adcs_bdot_10_packet);
+
 	__delay_cycles(10000);	CANPacket rc_adcs_bdot_9_packet = {0};
 	rc_adcs_bdot_9 rc_adcs_bdot_9_info = {0};
 	encoderc_adcs_bdot_9(&rc_adcs_bdot_9_info, &rc_adcs_bdot_9_packet);
