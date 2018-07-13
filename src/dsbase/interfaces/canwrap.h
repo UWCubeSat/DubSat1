@@ -32,8 +32,8 @@
 #define CAN_ID_RC_ADCS_BDOT_9 304677491
 #define CAN_ID_RC_ADCS_BDOT_8 304677490
 #define CAN_ID_GCMD_BATT_SET_HEATER_CHECK 303039194
-#define CAN_ID_DIST_AUTOSEQ_GET_MET_RSP 303039193
-#define CAN_ID_DIST_AUTOSEQ_GET_IND_RSP 303039192
+#define CAN_ID_EPS_DIST_AUTOSEQ_GET_MET_RSP 303039193
+#define CAN_ID_EPS_DIST_AUTOSEQ_GET_IND_RSP 303039192
 #define CAN_ID_GCMD_AUTOSEQ_GET_MET 302252759
 #define CAN_ID_GCMD_AUTOSEQ_GET_INDICES 302252758
 #define CAN_ID_GCMD_AUTOSEQ_REMOVE_CAN_ID 302252757
@@ -343,13 +343,13 @@ typedef struct gcmd_batt_set_heater_check {
     uint8_t gcmd_batt_set_heater_check_state; //  (No Units)
 } gcmd_batt_set_heater_check;
 
-typedef struct dist_autoseq_get_met_rsp {
-    uint32_t dist_autoseq_get_met_rsp_met; // 2^-15s
-} dist_autoseq_get_met_rsp;
+typedef struct eps_dist_autoseq_get_met_rsp {
+    uint32_t eps_dist_autoseq_get_met_rsp_met; // 2^-15s
+} eps_dist_autoseq_get_met_rsp;
 
-typedef struct dist_autoseq_get_ind_rsp {
-    uint64_t dist_autoseq_get_ind_rsp_indices; //  (No Units)
-} dist_autoseq_get_ind_rsp;
+typedef struct eps_dist_autoseq_get_ind_rsp {
+    uint64_t eps_dist_autoseq_get_ind_rsp_ind; //  (No Units)
+} eps_dist_autoseq_get_ind_rsp;
 
 typedef struct gcmd_autoseq_get_met {
     uint8_t gcmd_autoseq_get_met_index; //  (No Units)
@@ -1447,11 +1447,11 @@ void decoderc_adcs_bdot_8(CANPacket *input, rc_adcs_bdot_8 *output);
 void encodegcmd_batt_set_heater_check(gcmd_batt_set_heater_check *input, CANPacket* output);
 void decodegcmd_batt_set_heater_check(CANPacket *input, gcmd_batt_set_heater_check *output);
 
-void encodedist_autoseq_get_met_rsp(dist_autoseq_get_met_rsp *input, CANPacket* output);
-void decodedist_autoseq_get_met_rsp(CANPacket *input, dist_autoseq_get_met_rsp *output);
+void encodeeps_dist_autoseq_get_met_rsp(eps_dist_autoseq_get_met_rsp *input, CANPacket* output);
+void decodeeps_dist_autoseq_get_met_rsp(CANPacket *input, eps_dist_autoseq_get_met_rsp *output);
 
-void encodedist_autoseq_get_ind_rsp(dist_autoseq_get_ind_rsp *input, CANPacket* output);
-void decodedist_autoseq_get_ind_rsp(CANPacket *input, dist_autoseq_get_ind_rsp *output);
+void encodeeps_dist_autoseq_get_ind_rsp(eps_dist_autoseq_get_ind_rsp *input, CANPacket* output);
+void decodeeps_dist_autoseq_get_ind_rsp(CANPacket *input, eps_dist_autoseq_get_ind_rsp *output);
 
 void encodegcmd_autoseq_get_met(gcmd_autoseq_get_met *input, CANPacket* output);
 void decodegcmd_autoseq_get_met(CANPacket *input, gcmd_autoseq_get_met *output);

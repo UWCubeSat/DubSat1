@@ -77,11 +77,11 @@ BO_ 2452161138 rc_adcs_bdot_8: 8 Vector__XXX
 BO_ 2450522842 gcmd_batt_set_heater_check: 1 Vector__XXX
  SG_ gcmd_batt_set_heater_check_state : 0|2@1+ (1,0) [0|3] "" Vector__XXX
 
-BO_ 2450522841 dist_autoseq_get_met_rsp: 4 Vector__XXX
- SG_ dist_autoseq_get_met_rsp_met : 0|32@1+ (1,0) [0|4294967295] "2^-15s" Vector__XXX
+BO_ 2450522841 eps_dist_autoseq_get_met_rsp: 4 Vector__XXX
+ SG_ eps_dist_autoseq_get_met_rsp_met : 0|32@1+ (1,0) [0|4294967295] "2^-15s" Vector__XXX
 
-BO_ 2450522840 dist_autoseq_get_ind_rsp: 8 Vector__XXX
- SG_ dist_autoseq_get_ind_rsp_indices : 0|64@1+ (1,0) [0|1.84467440737096E+019] "" Vector__XXX
+BO_ 2450522840 eps_dist_autoseq_get_ind_rsp: 8 Vector__XXX
+ SG_ eps_dist_autoseq_get_ind_rsp_ind : 0|64@1+ (1,0) [0|1.84467440737096E+019] "" Vector__XXX
 
 BO_ 2449736407 gcmd_autoseq_get_met: 1 Vector__XXX
  SG_ gcmd_autoseq_get_met_index : 0|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -999,9 +999,9 @@ CM_ SG_ 2452161138 rc_adcs_bdot_8_spam_off_x_mtq_z "Last spam reading with mtq o
 CM_ BO_ 2450522842 "enables/disables battery heater automation";
 CM_ SG_ 2450522842 gcmd_batt_set_heater_check_state "the state of heater automation";
 CM_ BO_ 2450522841 "the MET of the item";
-CM_ SG_ 2450522841 dist_autoseq_get_met_rsp_met "the MET";
+CM_ SG_ 2450522841 eps_dist_autoseq_get_met_rsp_met "the MET";
 CM_ BO_ 2450522840 "the first 8 indices of the specified CAN ID";
-CM_ SG_ 2450522840 dist_autoseq_get_ind_rsp_indices "the indices, as an 8-element array";
+CM_ SG_ 2450522840 eps_dist_autoseq_get_ind_rsp_ind "the indices, as an 8-element array";
 CM_ BO_ 2449736407 "get MET of the item at the specified index of the autosequencer";
 CM_ SG_ 2449736407 gcmd_autoseq_get_met_index "the index";
 CM_ BO_ 2449736406 "get indices of the specified packet in the autosequencer";
