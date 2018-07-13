@@ -8,6 +8,7 @@
 #include "interfaces/canwrap.h"
 #include "core/MET.h"
 #include "core/agglib.h"
+#include "core/timer.h"
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -197,6 +198,7 @@ void readTempSensor(){
 void can_packet_rx_callback(CANPacket *packet)
 {
     gcmd_eps_batt_fulldef fullDefPkt;
+    gcmd_batt_set_heater_check heaterCheckPkt;
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
@@ -216,6 +218,9 @@ void can_packet_rx_callback(CANPacket *packet)
             CCSetFullCurrent(fullDefPkt.gcmd_eps_batt_fulldef_chg_curr);
             CCSetFullVoltage(fullDefPkt.gcmd_eps_batt_fulldef_const_volt);
             break;
+        case CAN_ID_GCMD_BATT_SET_HEATER_CHECK:
+            decodegcmd_batt_set_heater_check(packet, &heaterCheckPkt);
+            heaterIsChecking = heaterCheckPkt.gcmd_batt_set_heater_check_state;
         default:
             break;
     }
@@ -396,16 +401,18 @@ int main(void)
             battBcSendGeneral();
             battBcSendHealth();
 
+            float temp = asensorReadSingleSensorV(hTempC); //<-- this is batt temp
             if(heaterIsChecking)
             {
-                float temp = asensorReadSingleSensorV(hTempC); //<-- this is batt temp
                 if(previousTemp >= 0.5f && temp < 0.5f) //not heating & < 0C
                     HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT; //turn on
 
                 else if (previousTemp <= 0.6f && temp > 0.6f) //heating & > 10C
                     HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT; //turn off
-                previousTemp = temp;
             }
+            else if((HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) && temp > 0.6f)
+                HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT;
+            previousTemp = temp;
         }
 
         // Stuff running 4Hz

@@ -98,6 +98,7 @@ hMag magInit(bus_instance_i2c bus)
    For z data output registers: 390 & 1.08 = +421 * 73 = 30733; */
 void mag_self_test_config(hMag handle)
 {
+    mags[handle].operation_mode = SELF_TEST_OPERATION;
     hDev hSensor = mags[handle].hSensor;
 
     i2cBuff[0] = MAG_HMC5883L_REG_ADDR_CRA;
@@ -110,8 +111,8 @@ void mag_self_test_config(hMag handle)
 
 void mag_normal_reading_operation_config(hMag handle)
 {
+    mags[handle].operation_mode = NORMAL_OPERATION;
     hDev hSensor = mags[handle].hSensor;
-
     // HMC5883 pattern is to address
     i2cBuff[0] = MAG_HMC5883L_REG_ADDR_CRA;
     // Configuration Register A: Average of 8 samples, 30Hz sample rate, normal measurement configuration (no bias)
@@ -215,7 +216,6 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
     mdata->rawX = (int16_t)(i2cBuff[1] | ((int16_t)i2cBuff[0] << 8));
     mdata->rawZ = (int16_t)(i2cBuff[3] | ((int16_t)i2cBuff[2] << 8));
     mdata->rawY = (int16_t)(i2cBuff[5] | ((int16_t)i2cBuff[4] << 8));
-    mdata->isValid = mag_is_reading_valid(mdata);
 
     // todo:  Ultimately, this logic needs to move into the device-specific file
     // (though some of it will be able to stay here, hopefully? just lookup conversion in a table

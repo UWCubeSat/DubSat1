@@ -28,6 +28,8 @@
 // BEGIN GENERATOR MACROS
 
 #define CAN_ID_RC_EPS_DIST_18 303039195
+#define CAN_ID_RC_ADCS_BDOT_9 304677491
+#define CAN_ID_RC_ADCS_BDOT_8 304677490
 #define CAN_ID_GCMD_BATT_SET_HEATER_CHECK 303039194
 #define CAN_ID_DIST_AUTOSEQ_GET_MET_RSP 303039193
 #define CAN_ID_DIST_AUTOSEQ_GET_IND_RSP 303039192
@@ -317,6 +319,19 @@ typedef struct rc_eps_dist_18 {
     uint16_t rc_eps_dist_18_bdot_ocp_thresh; // ocpThresh
 } rc_eps_dist_18;
 
+typedef struct rc_adcs_bdot_9 {
+    int16_t rc_adcs_bdot_9_spam_off_z_mtq_z; // 1/73 nT
+    int16_t rc_adcs_bdot_9_spam_off_z_mtq_y; // 1/73 nT
+    int16_t rc_adcs_bdot_9_spam_off_z_mtq_x; // 1/73 nT
+} rc_adcs_bdot_9;
+
+typedef struct rc_adcs_bdot_8 {
+    int16_t rc_adcs_bdot_8_spam_off_y_mtq_z; // 1/73 nT
+    int16_t rc_adcs_bdot_8_spam_off_y_mtq_y; // 1/73 nT
+    int16_t rc_adcs_bdot_8_spam_off_y_mtq_x; // 1/73 nT
+    int16_t rc_adcs_bdot_8_spam_off_x_mtq_z; // 1/73 nT
+} rc_adcs_bdot_8;
+
 typedef struct gcmd_batt_set_heater_check {
     uint8_t gcmd_batt_set_heater_check_state; //  (No Units)
 } gcmd_batt_set_heater_check;
@@ -358,6 +373,8 @@ typedef struct gcmd_autoseq_add_1 {
 typedef struct rc_adcs_bdot_7 {
     uint16_t rc_adcs_bdot_7_dipole_var_z; //  (No Units)
     uint16_t rc_adcs_bdot_7_dipole_var_y; //  (No Units)
+    int16_t rc_adcs_bdot_7_spam_off_x_mtq_y; // 1/73 nT
+    int16_t rc_adcs_bdot_7_spam_off_x_mtq_x; // 1/73 nT
     int16_t rc_adcs_bdot_7_spam_magnitude_z; //  (No Units)
     int16_t rc_adcs_bdot_7_spam_magnitude_y; //  (No Units)
     int16_t rc_adcs_bdot_7_spam_magnitude_x; //  (No Units)
@@ -394,10 +411,10 @@ typedef struct gcmd_eps_batt_fulldef {
 } gcmd_eps_batt_fulldef;
 
 typedef struct rc_adcs_bdot_5 {
-    uint16_t rc_adcs_bdot_5_diplole_var_x; //  (No Units)
-    int16_t rc_adcs_bdot_5_last_spam_z_mtq_z; // 1/73 nT
-    int16_t rc_adcs_bdot_5_last_spam_z_mtq_y; // 1/73 nT
     int16_t rc_adcs_bdot_5_last_spam_z_mtq_x; // 1/73 nT
+    int16_t rc_adcs_bdot_5_spam_on_z_mtq_z; // 1/73 nT
+    int16_t rc_adcs_bdot_5_spam_on_z_mtq_y; // 1/73 nT
+    int16_t rc_adcs_bdot_5_spam_on_z_mtq_x; // 1/73 nT
 } rc_adcs_bdot_5;
 
 typedef struct gcmd_reset_minmax {
@@ -951,8 +968,8 @@ typedef struct rc_adcs_sp_1 {
 } rc_adcs_sp_1;
 
 typedef struct rc_adcs_bdot_4 {
-    int16_t rc_adcs_bdot_4_last_spam_y_mtq_z; // 1/73 nT
-    int16_t rc_adcs_bdot_4_last_spam_y_mtq_y; // 1/73 nT
+    int16_t rc_adcs_bdot_4_spam_on_y_mtq_z; // 1/73 nT
+    int16_t rc_adcs_bdot_4_spam_on_y_mtq_y; // 1/73 nT
     int16_t rc_adcs_bdot_4_mag_z_avg; // 1/73 nT
     uint8_t rc_adcs_bdot_4_tumble; //  (No Units)
 } rc_adcs_bdot_4;
@@ -972,10 +989,10 @@ typedef struct rc_adcs_bdot_2 {
 } rc_adcs_bdot_2;
 
 typedef struct rc_adcs_bdot_1 {
-    int16_t rc_adcs_bdot_1_last_spam_y_mtq_x; // 1/73 nT
-    int16_t rc_adcs_bdot_1_last_spam_x_mtq_z; // 1/73 nT
-    int16_t rc_adcs_bdot_1_last_spam_x_mtq_y; // 1/73 nT
-    int16_t rc_adcs_bdot_1_last_spam_x_mtq_x; // 1/73 nT
+    int16_t rc_adcs_bdot_1_spam_on_y_mtq_x; // 1/73 nT
+    int16_t rc_adcs_bdot_1_spam_on_x_mtq_z; // 1/73 nT
+    int16_t rc_adcs_bdot_1_spam_on_x_mtq_y; // 1/73 nT
+    int16_t rc_adcs_bdot_1_spam_on_x_mtq_x; // 1/73 nT
 } rc_adcs_bdot_1;
 
 typedef struct estim_sun_unit_z {
@@ -1413,6 +1430,12 @@ typedef struct grnd_epoch {
 
 void encoderc_eps_dist_18(rc_eps_dist_18 *input, CANPacket* output);
 void decoderc_eps_dist_18(CANPacket *input, rc_eps_dist_18 *output);
+
+void encoderc_adcs_bdot_9(rc_adcs_bdot_9 *input, CANPacket* output);
+void decoderc_adcs_bdot_9(CANPacket *input, rc_adcs_bdot_9 *output);
+
+void encoderc_adcs_bdot_8(rc_adcs_bdot_8 *input, CANPacket* output);
+void decoderc_adcs_bdot_8(CANPacket *input, rc_adcs_bdot_8 *output);
 
 void encodegcmd_batt_set_heater_check(gcmd_batt_set_heater_check *input, CANPacket* output);
 void decodegcmd_batt_set_heater_check(CANPacket *input, gcmd_batt_set_heater_check *output);

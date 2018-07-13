@@ -114,6 +114,10 @@ uint8_t autoseqMETResponsePktSendFlag = 0;
 CANPacket autoseqIndicesResponsePkt = {0};
 uint8_t autoseqIndicesResponsePktSendFlag = 0;
 
+uint16_t compressOCPThresh(float thresh) {
+    return (uint16_t)(thresh * 20);
+}
+
 void distDeployInit()
 {
     DEPLOY_ENABLE_DIR |= DEPLOY_ENABLE_BIT;
@@ -461,9 +465,9 @@ uint8_t getPDState(PowerDomainID pd)
 {
     if(distQueryDomainSwitch(pd))
         return 0; //on
-    else if(gseg.powerdomainlastcmds[(uint8_t)pd] & (PD_CMD_Disable | PD_CMD_Toggle))
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_Disable || gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_Toggle)
         return 1; //off manual
-    else if(gseg.powerdomainlastcmds[(uint8_t)pd] & PD_CMD_OCLatch)
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_OCLatch)
         return 2; //overcurrent latch
     else
         return 3; //batt_undervoltage or other
@@ -474,7 +478,7 @@ void sendRC()
     while(rcFlag && (canTxCheck() != CAN_TX_BUSY))
     {
         CANPacket rollcallPkt = {0};
-        if(rcFlag == 17)
+        if(rcFlag == 18)
         {
             rc_eps_dist_h1 rollcallPkt1_info = {0};
             rollcallPkt1_info.rc_eps_dist_h1_reset_count = bspGetResetCount();
@@ -485,7 +489,7 @@ void sendRC()
             encoderc_eps_dist_h1(&rollcallPkt1_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&mspTempAg);
         }
-        else if(rcFlag == 16)
+        else if(rcFlag == 17)
         {
             rc_eps_dist_2 rollcallPkt2_info = {0};
             rollcallPkt2_info.rc_eps_dist_2_met = getMETPrimary();
@@ -493,7 +497,7 @@ void sendRC()
             rollcallPkt2_info.rc_eps_dist_2_uv_state = gseg.uvmode;
             encoderc_eps_dist_2(&rollcallPkt2_info, &rollcallPkt);
         }
-        else if(rcFlag == 15)
+        else if(rcFlag == 16)
         {
             rc_eps_dist_3 rollcallPkt3_info = {0};
             rollcallPkt3_info.rc_eps_dist_3_batt_v_avg = aggVec_avg_i_i(&battVAg);
@@ -502,7 +506,7 @@ void sendRC()
             encoderc_eps_dist_3(&rollcallPkt3_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&battVAg);
         }
-        else if(rcFlag == 14)
+        else if(rcFlag == 15)
         {
             rc_eps_dist_4 rollcallPkt4_info = {0};
             rollcallPkt4_info.rc_eps_dist_4_com1_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
@@ -512,7 +516,7 @@ void sendRC()
             encoderc_eps_dist_4(&rollcallPkt4_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
         }
-        else if(rcFlag == 13)
+        else if(rcFlag == 14)
         {
             rc_eps_dist_5 rollcallPkt5_info = {0};
             rollcallPkt5_info.rc_eps_dist_5_com1_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_COM1]);
@@ -521,7 +525,7 @@ void sendRC()
             encoderc_eps_dist_5(&rollcallPkt5_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssBusVAgs[PD_COM1]);
         }
-        else if(rcFlag == 12)
+        else if(rcFlag == 13)
         {
             rc_eps_dist_6 rollcallPkt6_info = {0};
             rollcallPkt6_info.rc_eps_dist_6_com2_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM2]);
@@ -531,7 +535,7 @@ void sendRC()
             encoderc_eps_dist_6(&rollcallPkt6_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM2]);
         }
-        else if(rcFlag == 11)
+        else if(rcFlag == 12)
         {
             rc_eps_dist_7 rollcallPkt7_info = {0};
             rollcallPkt7_info.rc_eps_dist_7_com2_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_COM2]);
@@ -540,7 +544,7 @@ void sendRC()
             encoderc_eps_dist_7(&rollcallPkt7_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssBusVAgs[PD_COM2]);
         }
-        else if(rcFlag == 10)
+        else if(rcFlag == 11)
         {
             rc_eps_dist_8 rollcallPkt8_info = {0};
             rollcallPkt8_info.rc_eps_dist_8_rahs_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_RAHS]);
@@ -550,7 +554,7 @@ void sendRC()
             encoderc_eps_dist_8(&rollcallPkt8_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_RAHS]);
         }
-        else if(rcFlag == 9)
+        else if(rcFlag == 10)
         {
             rc_eps_dist_9 rollcallPkt9_info = {0};
             rollcallPkt9_info.rc_eps_dist_9_rahs_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_RAHS]);
@@ -559,7 +563,7 @@ void sendRC()
             encoderc_eps_dist_9(&rollcallPkt9_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssBusVAgs[PD_RAHS]);
         }
-        else if(rcFlag == 8)
+        else if(rcFlag == 9)
         {
             rc_eps_dist_10 rollcallPkt10_info = {0};
             rollcallPkt10_info.rc_eps_dist_10_bdot_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_BDOT]);
@@ -569,7 +573,7 @@ void sendRC()
             encoderc_eps_dist_10(&rollcallPkt10_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_BDOT]);
         }
-        else if(rcFlag == 7)
+        else if(rcFlag == 8)
         {
             rc_eps_dist_11 rollcallPkt11_info = {0};
             rollcallPkt11_info.rc_eps_dist_11_bdot_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_BDOT]);
@@ -578,7 +582,7 @@ void sendRC()
             encoderc_eps_dist_11(&rollcallPkt11_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssBusVAgs[PD_BDOT]);
         }
-        else if(rcFlag == 6)
+        else if(rcFlag == 7)
         {
             rc_eps_dist_12 rollcallPkt12_info = {0};
             rollcallPkt12_info.rc_eps_dist_12_estim_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_ESTIM]);
@@ -588,7 +592,7 @@ void sendRC()
             encoderc_eps_dist_12(&rollcallPkt12_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_ESTIM]);
         }
-        else if(rcFlag == 5)
+        else if(rcFlag == 6)
         {
             rc_eps_dist_13 rollcallPkt13_info = {0};
             rollcallPkt13_info.rc_eps_dist_13_estim_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_ESTIM]);
@@ -597,7 +601,7 @@ void sendRC()
             encoderc_eps_dist_13(&rollcallPkt13_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssBusVAgs[PD_ESTIM]);
         }
-        else if(rcFlag == 4)
+        else if(rcFlag == 5)
         {
             rc_eps_dist_14 rollcallPkt14_info = {0};
             rollcallPkt14_info.rc_eps_dist_14_eps_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_EPS]);
@@ -607,7 +611,7 @@ void sendRC()
             encoderc_eps_dist_14(&rollcallPkt14_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_EPS]);
         }
-        else if(rcFlag == 3)
+        else if(rcFlag == 4)
         {
             rc_eps_dist_15 rollcallPkt15_info = {0};
             rollcallPkt15_info.rc_eps_dist_15_eps_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_EPS]);
@@ -616,7 +620,7 @@ void sendRC()
             encoderc_eps_dist_15(&rollcallPkt15_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssBusVAgs[PD_EPS]);
         }
-        else if(rcFlag == 2)
+        else if(rcFlag == 3)
         {
             rc_eps_dist_16 rollcallPkt16_info = {0};
             rollcallPkt16_info.rc_eps_dist_16_ppt_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_PPT]);
@@ -626,7 +630,7 @@ void sendRC()
             encoderc_eps_dist_16(&rollcallPkt16_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssCurrAgs[PD_PPT]);
         }
-        else if(rcFlag == 1)
+        else if(rcFlag == 2)
         {
             rc_eps_dist_17 rollcallPkt17_info = {0};
             rollcallPkt17_info.rc_eps_dist_17_ppt_v_avg = aggVec_avg_i_i(&ssBusVAgs[PD_PPT]);
@@ -634,6 +638,17 @@ void sendRC()
             rollcallPkt17_info.rc_eps_dist_17_ppt_v_min = aggVec_min_i(&ssBusVAgs[PD_PPT]);
             encoderc_eps_dist_17(&rollcallPkt17_info, &rollcallPkt);
             aggVec_as_reset((aggVec *)&ssBusVAgs[PD_PPT]);
+        }
+        else if(rcFlag == 1)
+        {
+            rc_eps_dist_18 rc = {0};
+            rc.rc_eps_dist_18_bdot_ocp_thresh = compressOCPThresh(gseg.powerdomainocpthreshold[PD_BDOT]);
+            rc.rc_eps_dist_18_com2_ocp_thresh = compressOCPThresh(gseg.powerdomainocpthreshold[PD_COM2]);
+            rc.rc_eps_dist_18_eps_ocp_thresh = compressOCPThresh(gseg.powerdomainocpthreshold[PD_EPS]);
+            rc.rc_eps_dist_18_estim_ocp_thresh = compressOCPThresh(gseg.powerdomainocpthreshold[PD_ESTIM]);
+            rc.rc_eps_dist_18_ppt_ocp_thresh = compressOCPThresh(gseg.powerdomainocpthreshold[PD_PPT]);
+            rc.rc_eps_dist_18_rahs_ocp_thresh = compressOCPThresh(gseg.powerdomainocpthreshold[PD_RAHS]);
+            encoderc_eps_dist_18(&rc, &rollcallPkt);
         }
         canSendPacket(&rollcallPkt);
         rcFlag--;
@@ -661,11 +676,11 @@ void autoShutoff()
             distDomainSwitch(PD_COM1, PD_CMD_Disable);
             rcResponseFlag &= ~PD_COM1_FLAG;
         }
-        if(rcResponseFlag & PD_COM2_FLAG)
+        /*if(rcResponseFlag & PD_COM2_FLAG)
         {
             distDomainSwitch(PD_COM2, PD_CMD_Disable);
             rcResponseFlag &= ~PD_COM2_FLAG;
-        }
+        }*/
         if(rcResponseFlag & PD_RAHS_FLAG)
         {
             distDomainSwitch(PD_RAHS, PD_CMD_Disable);
@@ -739,28 +754,33 @@ void can_packet_rx_callback(CANPacket *packet)
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            //TODO: uncomment this when automatic shutoff is ready to go!
-            //autoShutoff();
+            autoShutoff();
             //checkSelfReboot();
-            rcFlag = 17;
+            rcFlag = 18;
             break;
-        case CAN_ID_RC_ADCS_BDOT_1:
+        case CAN_ID_RC_ADCS_BDOT_H1:
             rcResponseFlag &= ~MOD_BDOT_FLAG;
             break;
-        case CAN_ID_RC_ADCS_MTQ_1:
+        case CAN_ID_RC_ADCS_MTQ_H1:
             rcResponseFlag &= ~MOD_MTQ_FLAG;
             break;
-        case CAN_ID_RC_ADCS_SP_1:
+        case CAN_ID_RC_ADCS_SP_H1:
             rcResponseFlag &= ~MOD_SENSORPROC_FLAG;
             break;
-        case CAN_ID_RC_EPS_BATT_1:
+        case CAN_ID_RC_EPS_BATT_H1:
             rcResponseFlag &= ~MOD_BATT_FLAG;
             break;
-        case CAN_ID_RC_EPS_GEN_1:
+        case CAN_ID_RC_EPS_GEN_H1:
             rcResponseFlag &= ~MOD_GEN_FLAG;
             break;
-        case CAN_ID_RC_PPT_1:
+        case CAN_ID_RC_PPT_H1:
             rcResponseFlag &= ~PD_PPT_FLAG;
+            break;
+        case CAN_ID_RC_ADCS_MPC_2:
+            rcResponseFlag &= ~MOD_MPC_FLAG;
+            break;
+        case CAN_ID_RC_ADCS_ESTIM_H1:
+            rcResponseFlag &= ~MOD_ESTIM_FLAG;
             break;
         case CAN_ID_GCMD_DIST_SET_PD_STATE:
             decodegcmd_dist_set_pd_state(packet, &pdCmd);

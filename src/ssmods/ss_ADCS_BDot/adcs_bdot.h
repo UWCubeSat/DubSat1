@@ -153,8 +153,12 @@ FILE_STATIC void start_check_nap_status_timer();
 FILE_STATIC void end_check_nap_status_timer();
 FILE_STATIC uint8_t check_check_nap_status_timer();
 
-FILE_STATIC uint8_t check_spam_timer();
+FILE_STATIC void start_calibration_timer();
+FILE_STATIC uint8_t check_calibration_timer();
+FILE_STATIC void end_calibration_timer();
+
 FILE_STATIC void start_spam_timer(uint32_t spam_timer_ms);
+FILE_STATIC uint8_t check_spam_timer();
 FILE_STATIC void end_spam_timer();
 
 FILE_STATIC void start_spam_avg_timer();
