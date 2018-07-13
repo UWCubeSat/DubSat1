@@ -236,16 +236,16 @@ void decoderc_adcs_bdot_10(CANPacket *input, rc_adcs_bdot_10 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_10_dipole_var_z = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_bdot_10_dipole_var_z = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_adcs_bdot_dipole_var_y = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_adcs_bdot_dipole_var_x = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
 
 void encoderc_adcs_bdot_10(rc_adcs_bdot_10 *input, CANPacket *output){
     output -> id = 304677597;
-    output -> length = 5;
+    output -> length = 6;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_10_dipole_var_z))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_10_dipole_var_z))) & 0xffff) << 16;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_dipole_var_y))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_dipole_var_x))) & 0xffff) << 48;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
@@ -340,7 +340,7 @@ void decodedist_autoseq_get_ind_rsp(CANPacket *input, dist_autoseq_get_ind_rsp *
 
 void encodedist_autoseq_get_ind_rsp(dist_autoseq_get_ind_rsp *input, CANPacket *output){
     output -> id = 303039192;
-    output -> length = 1;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> dist_autoseq_get_ind_rsp_indices))) & 0xffffffffffffffff);
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
