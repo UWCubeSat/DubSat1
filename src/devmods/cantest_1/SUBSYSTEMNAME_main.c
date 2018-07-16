@@ -79,23 +79,12 @@ int main(void) {
         if (P1IN & BIT6){
             PJOUT |= BIT0;
             CANPacket cmd_com2_run_packet = {0};
-            cmd_com2_run cmd_com2_run_info = {0};
-            encodecmd_com2_run(&cmd_com2_run_info, &cmd_com2_run_packet);
+            gcmd_com2_run cmd_com2_run_info = {0};
+            encodegcmd_com2_run(&cmd_com2_run_info, &cmd_com2_run_packet);
             canSendPacket(&cmd_com2_run_packet);
         }
         else {
             PJOUT &= ~BIT0;
-        }
-        pause(delay);
-        if (P3IN & BIT7){
-            PJOUT |= BIT1;
-            CANPacket cmd_gen_rst_packet = {0};
-            cmd_gen_rst cmd_gen_rst_info = {0};
-            encodecmd_gen_rst(&cmd_gen_rst_info, &cmd_gen_rst_packet);
-            canSendPacket(&cmd_gen_rst_packet);
-        }
-        else {
-            PJOUT &= ~BIT1;
         }
         pause(delay);
         if (P3IN & BIT6){

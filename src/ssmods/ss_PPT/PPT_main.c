@@ -370,7 +370,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr) //this shoul
 
 void can_packet_rx_callback(CANPacket *packet)
 {
-    cmd_ppt_halt pktHalt = {0};
+    gcmd_ppt_halt pktHalt = {0};
     cmd_ppt_time_upd pktTime = {0};
     cmd_ppt_single_fire pktFireSingle = {0};
     rc_adcs_estim_8 pktEstim = {0};
@@ -381,10 +381,10 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_CMD_ROLLCALL:
             sendRcFlag = 5;
             break;
-        case CAN_ID_CMD_PPT_HALT:
+        case CAN_ID_GCMD_PPT_HALT:
             //stop firing, but with a flag
-            decodecmd_ppt_halt(packet, &pktHalt);
-            if(pktHalt.cmd_ppt_halt_confirm)
+            decodegcmd_ppt_halt(packet, &pktHalt);
+            if(pktHalt.gcmd_ppt_halt_confirm)
                 stopFiring();
             break;
         case CAN_ID_CMD_PPT_SINGLE_FIRE:
