@@ -383,7 +383,7 @@ void can_packet_rx_callback(CANPacket *packet)
             break;
         case CAN_ID_GCMD_PPT_HALT:
             //stop firing, but with a flag
-            decodecmd_ppt_halt(packet, &pktHalt);
+            decodegcmd_ppt_halt(packet, &pktHalt);
             if(pktHalt.gcmd_ppt_halt_confirm)
                 stopFiring();
             break;
