@@ -28,3 +28,9 @@ for i in beforedict:
 		if beforedict[i] != afterdict[i]:
 			replacementDict.append([beforedict[i]+2**31,afterdict[i]+2**31])
 pprint.pprint(replacementDict)
+s = open("CANDB-MASTER-DS1.dbc").read()
+for z in replacementDict:
+	s = s.replace(str(z[0]),str(z[1]))
+f = open("out.dbc", 'w')
+f.write(s)
+f.close()
