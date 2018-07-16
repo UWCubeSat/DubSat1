@@ -8,6 +8,7 @@
 #include "interfaces/rollcall.h"
 #include "core/agglib.h"
 #include "core/autosequence.h"
+#include "core/utils.h"
 
 #define WDT_CONFIG WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_2
 
@@ -844,17 +845,20 @@ void can_packet_rx_callback(CANPacket *packet)
             setPowerSwitchFromCAN(PD_CMD_Disable, rebootRequest.cmd_reboot_request_domain);
             __delay_cycles(1000); //TODO: verify/move this wait
             setPowerSwitchFromCAN(PD_CMD_Enable, rebootRequest.cmd_reboot_request_domain);
-            break;
+                break;
         case CAN_ID_GCMD_RESET_MINMAX:
-            aggVec_reset((aggVec *)&mspTempAg);
-            aggVec_reset((aggVec *)&battVAg);
-            aggVec_reset((aggVec *)&coulombCounterAg);
-            uint8_t i;
-            for(i = NUM_POWER_DOMAINS; i; i--)
-            {
-                aggVec_reset((aggVec*)&ssCurrAgs[i - 1]);
-                aggVec_reset((aggVec *)&ssBusVAgs[i - 1]);
-            }
+            //checkSubsytemResetMinMax(packet,
+            //{
+                aggVec_reset((aggVec *)&mspTempAg);
+                aggVec_reset((aggVec *)&battVAg);
+                aggVec_reset((aggVec *)&coulombCounterAg);
+                uint8_t i;
+                for(i = NUM_POWER_DOMAINS; i; i--)
+                {
+                    aggVec_reset((aggVec*)&ssCurrAgs[i - 1]);
+                    aggVec_reset((aggVec *)&ssBusVAgs[i - 1]);
+                }
+            //})
             break;
         case CAN_ID_GCMD_AUTOSEQ_ADD_1:
             decodegcmd_autoseq_add_1(packet, &autoseqAdd1);
