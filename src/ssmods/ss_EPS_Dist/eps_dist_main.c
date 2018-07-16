@@ -775,7 +775,7 @@ void can_packet_rx_callback(CANPacket *packet)
     {
         case CAN_ID_CMD_ROLLCALL:
             rollcallStart();
-            autoShutoff();
+            //autoShutoff();
             break;
         case CAN_ID_RC_ADCS_BDOT_H1:
             rcResponseFlag &= ~MOD_BDOT_FLAG;

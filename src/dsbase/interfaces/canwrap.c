@@ -3899,7 +3899,7 @@ void decodecmd_rollcall(CANPacket *input, cmd_rollcall *output){
 }
 
 void encodecmd_rollcall(cmd_rollcall *input, CANPacket *output){
-    output -> id = 65556;
+    output -> id = 1114132;
     output -> length = 7;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> cmd_rollcall_type))) & 0xff) << 8;
