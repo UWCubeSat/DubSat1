@@ -874,7 +874,7 @@ BO_ 2483355715 sensorproc_mag: 7 adcs_sensorproc
  SG_ sensorproc_mag_x : 0|16@1- (1,0) [-32768|32767] "73 nanoTeslas" Vector__XXX
  SG_ sensorproc_mag_valid : 48|1@1+ (1,0) [0|1] "bool" Vector__XXX
 
-BO_ 2147549204 cmd_rollcall: 7 eps_dist
+BO_ 2148597780 cmd_rollcall: 7 eps_dist
  SG_ cmd_rollcall_type : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ cmd_rollcall_met_overflow : 40|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ cmd_rollcall_met : 8|32@1+ (1,0) [0|4294967295] "2^-8 s" Vector__XXX
@@ -1382,9 +1382,9 @@ CM_ SG_ 2483355715 sensorproc_mag_z "Sun Angle z";
 CM_ SG_ 2483355715 sensorproc_mag_y "Sun Angle y";
 CM_ SG_ 2483355715 sensorproc_mag_x "Sun Angle x";
 CM_ SG_ 2483355715 sensorproc_mag_valid "Sun Angle Validity";
-CM_ SG_ 2147549204 cmd_rollcall_type "Rollcall Type (Unused for now)";
-CM_ SG_ 2147549204 cmd_rollcall_met_overflow "MET Overflow Count";
-CM_ SG_ 2147549204 cmd_rollcall_met "Mission Elapsed Time";
+CM_ SG_ 2148597780 cmd_rollcall_type "Rollcall Type (Unused for now)";
+CM_ SG_ 2148597780 cmd_rollcall_met_overflow "MET Overflow Count";
+CM_ SG_ 2148597780 cmd_rollcall_met "Mission Elapsed Time";
 CM_ SG_ 2450980912 mtq_ack_source "who the mtq last listened to - bdot or fsw ";
 CM_ SG_ 2450980912 mtq_ack_phase "specifies what state the coils are in - measurement or actuation phase ";
 CM_ SG_ 2450980912 mtq_ack_last_fsw_z "last fsw z command received ";
