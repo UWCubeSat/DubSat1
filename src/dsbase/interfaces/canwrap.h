@@ -27,6 +27,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_PPT_HALT 285475076
 #define CAN_ID_GCMD_DIST_RESET_MISSION 302252767
 #define CAN_ID_GCMD_DIST_SELF_RESTART 302252766
 #define CAN_ID_RC_EPS_DIST_18 303039195
@@ -186,17 +187,14 @@
 #define CAN_ID_RC_EPS_BATT_1 304677376
 #define CAN_ID_CMD_PPT_SET_COUNT 302252294
 #define CAN_ID_CMD_PPT_TIME_UPD 302252293
-#define CAN_ID_CMD_PPT_HALT 285475076
 #define CAN_ID_PPT_FIRING_RESULT 304677104
 #define CAN_ID_TLE_5 309788744
 #define CAN_ID_TLE_4 309788743
 #define CAN_ID_TLE_3 309788742
 #define CAN_ID_TLE_2 309788741
 #define CAN_ID_TLE_1 302448708
-#define CAN_ID_EPS_PD_UNDERVOLTAGE 304218338
-#define CAN_ID_EPS_PD_BATT_VOLTAGE 304218337
 #define CAN_ID_CMD_PD_RST 304218385
-#define CAN_ID_CMD_COM2_RUN 302514673
+#define CAN_ID_GCMD_COM2_RUN 302514673
 #define CAN_ID_COM2_STATE 304611824
 #define CAN_ID_CMD_PD_ENABLE 303300865
 #define CAN_ID_CMD_BATT_RST 304349442
@@ -204,27 +202,16 @@
 #define CAN_ID_CMD_REBOOT_REQUEST 1310728
 #define CAN_ID_CMD_IGNORE_FSW 304349220
 #define CAN_ID_CMD_MTQ_FSW 304349219
-#define CAN_ID_EPS_DOMAIN_OUTPUT 304218336
 #define CAN_ID_SENSORPROC_IMU 335872066
 #define CAN_ID_SENSORPROC_MAG 335872067
 #define CAN_ID_CMD_ROLLCALL 1114132
 #define CAN_ID_MTQ_ACK 302448688
-#define CAN_ID_GEN_PANEL_TEMP 304677075
-#define CAN_ID_CMD_GEN_RST 303300880
 #define CAN_ID_CMD_PPT_SINGLE_FIRE 303300864
-#define CAN_ID_GEN_PANEL_PWR 304218322
-#define CAN_ID_GEN_PANEL_CURRENT 304218321
-#define CAN_ID_GEN_PANEL_VOLTAGE 303169744
 #define CAN_ID_MPC_VP 305594402
-#define CAN_ID_EPS_BATT_STATE 303169730
-#define CAN_ID_EPS_BATT_CURRENT 303169729
-#define CAN_ID_EPS_BATT_VOLTAGE 303169728
 #define CAN_ID_SENSORPROC_SUN 335872065
 #define CAN_ID_CMD_MTQ_BDOT 304545825
 #define CAN_ID_BDOT_TUMBLE_STATUS 302448672
-#define CAN_ID_SYNC_2 65554
 #define CAN_ID_SYNC_1 65553
-#define CAN_ID_MSP_TEMP 304676883
 #define CAN_ID_GRND_EPOCH 302449337
 
 #define CAN_ENUM_GEN_PNL_CHARGING_CHARGING 1
@@ -317,6 +304,10 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_ppt_halt {
+    uint8_t gcmd_ppt_halt_confirm; //  (No Units)
+} gcmd_ppt_halt;
+
 typedef struct gcmd_dist_reset_mission {
 } gcmd_dist_reset_mission;
 
@@ -1220,10 +1211,6 @@ typedef struct cmd_ppt_time_upd {
     uint16_t cmd_ppt_time_upd_charge; // 2^-15s
 } cmd_ppt_time_upd;
 
-typedef struct cmd_ppt_halt {
-    uint8_t cmd_ppt_halt_confirm; //  (No Units)
-} cmd_ppt_halt;
-
 typedef struct ppt_firing_result {
     uint8_t ppt_firing_result_panel_good; //  (No Units)
     uint8_t ppt_firing_result_batt_good; //  (No Units)
@@ -1256,24 +1243,15 @@ typedef struct tle_1 {
     float tle_1_bstar; //  (No Units)
 } tle_1;
 
-typedef struct eps_pd_undervoltage {
-    uint8_t eps_pd_undervoltage_state; //  (No Units)
-} eps_pd_undervoltage;
-
-typedef struct eps_pd_batt_voltage {
-    uint8_t eps_pd_batt_voltage_agg; //  (No Units)
-    uint16_t eps_pd_batt_voltage_val; // mV
-} eps_pd_batt_voltage;
-
 typedef struct cmd_pd_rst {
     uint8_t cmd_pd_rst_confirm; //  (No Units)
 } cmd_pd_rst;
 
-typedef struct cmd_com2_run {
-    uint8_t cmd_com2_run_clear; //  (No Units)
-    uint8_t cmd_com2_run_jump; //  (No Units)
-    uint8_t cmd_com2_run_fileno; //  (No Units)
-} cmd_com2_run;
+typedef struct gcmd_com2_run {
+    uint8_t gcmd_com2_run_clear; //  (No Units)
+    uint8_t gcmd_com2_run_jump; //  (No Units)
+    uint8_t gcmd_com2_run_fileno; //  (No Units)
+} gcmd_com2_run;
 
 typedef struct com2_state {
     uint8_t com2_state_health_state; //  (No Units)
@@ -1311,15 +1289,6 @@ typedef struct cmd_mtq_fsw {
     int8_t cmd_mtq_fsw_x; // pct doodie
 } cmd_mtq_fsw;
 
-typedef struct eps_domain_output {
-    uint8_t eps_domain_output_state; //  (No Units)
-    uint8_t eps_domain_output_oc_trip; //  (No Units)
-    uint16_t eps_domain_output_v_c_max; // mA
-    uint16_t eps_domain_output_v_c; // mA
-    uint16_t eps_domain_output_v; // mV
-    uint8_t eps_domain_output_num; //  (No Units)
-} eps_domain_output;
-
 typedef struct sensorproc_imu {
     int16_t sensorproc_imu_z; // 0.004375 deg/s
     int16_t sensorproc_imu_y; // 0.004375 deg/s
@@ -1352,65 +1321,14 @@ typedef struct mtq_ack {
     int8_t mtq_ack_last_bdot_x; // pct
 } mtq_ack;
 
-typedef struct gen_panel_temp {
-    uint8_t gen_panel_temp_agg; //  (No Units)
-    int8_t gen_panel_temp_x_pos; //  (No Units)
-    int8_t gen_panel_temp_y_neg; //  (No Units)
-    int8_t gen_panel_temp_y_pos; //  (No Units)
-} gen_panel_temp;
-
-typedef struct cmd_gen_rst {
-    uint8_t cmd_gen_rst_confirm; // bool
-} cmd_gen_rst;
-
 typedef struct cmd_ppt_single_fire {
     uint8_t cmd_ppt_single_fire_override; //  (No Units)
     uint8_t cmd_ppt_single_fire_with_pulse; //  (No Units)
 } cmd_ppt_single_fire;
 
-typedef struct gen_panel_pwr {
-    uint8_t gen_panel_pwr_agg; //  (No Units)
-    uint16_t gen_panel_pwr_x_pos; // mW
-    uint16_t gen_panel_pwr_y_neg; // mW
-    uint16_t gen_panel_pwr_y_pos; // mW
-} gen_panel_pwr;
-
-typedef struct gen_panel_current {
-    uint16_t gen_panel_current_x_pos; // mA
-    uint16_t gen_panel_current_y_neg; // mA
-    uint16_t gen_panel_current_y_pos; // mA
-} gen_panel_current;
-
-typedef struct gen_panel_voltage {
-    uint16_t gen_panel_voltage_x_pos; // mV
-    uint16_t gen_panel_voltage_y_neg; // mV
-    uint16_t gen_panel_voltage_y_pos; // mV
-} gen_panel_voltage;
-
 typedef struct mpc_vp {
     uint8_t mpc_vp_status; //  (No Units)
 } mpc_vp;
-
-typedef struct eps_batt_state {
-    uint8_t eps_batt_state_bal; //  (No Units)
-    uint8_t eps_batt_state_heat; //  (No Units)
-    uint8_t eps_batt_state_soc; // pct
-    int8_t eps_batt_state_temp; // Deg C
-} eps_batt_state;
-
-typedef struct eps_batt_current {
-    int16_t eps_batt_current_node_c; // dmA (0.1mA)
-    int16_t eps_batt_current_min_c; // cA
-    int16_t eps_batt_current_max_c; // cA
-    int16_t eps_batt_current_c; // cA
-} eps_batt_current;
-
-typedef struct eps_batt_voltage {
-    uint16_t eps_batt_voltage_v_max_delta; // mV
-    uint16_t eps_batt_voltage_node_v; // mV
-    uint16_t eps_batt_voltage_min_v; // mV
-    uint16_t eps_batt_voltage_v; // mV
-} eps_batt_voltage;
 
 typedef struct sensorproc_sun {
     uint8_t sensorproc_sun_valid; // bool
@@ -1429,20 +1347,16 @@ typedef struct bdot_tumble_status {
     uint8_t bdot_tumble_status_status; // bool
 } bdot_tumble_status;
 
-typedef struct sync_2 {
-} sync_2;
-
 typedef struct sync_1 {
 } sync_1;
-
-typedef struct msp_temp {
-    int16_t msp_temp_temp; // cC
-} msp_temp;
 
 typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_ppt_halt(gcmd_ppt_halt *input, CANPacket* output);
+void decodegcmd_ppt_halt(CANPacket *input, gcmd_ppt_halt *output);
 
 void encodegcmd_dist_reset_mission(gcmd_dist_reset_mission *input, CANPacket* output);
 void decodegcmd_dist_reset_mission(CANPacket *input, gcmd_dist_reset_mission *output);
@@ -1921,9 +1835,6 @@ void decodecmd_ppt_set_count(CANPacket *input, cmd_ppt_set_count *output);
 void encodecmd_ppt_time_upd(cmd_ppt_time_upd *input, CANPacket* output);
 void decodecmd_ppt_time_upd(CANPacket *input, cmd_ppt_time_upd *output);
 
-void encodecmd_ppt_halt(cmd_ppt_halt *input, CANPacket* output);
-void decodecmd_ppt_halt(CANPacket *input, cmd_ppt_halt *output);
-
 void encodeppt_firing_result(ppt_firing_result *input, CANPacket* output);
 void decodeppt_firing_result(CANPacket *input, ppt_firing_result *output);
 
@@ -1942,17 +1853,11 @@ void decodetle_2(CANPacket *input, tle_2 *output);
 void encodetle_1(tle_1 *input, CANPacket* output);
 void decodetle_1(CANPacket *input, tle_1 *output);
 
-void encodeeps_pd_undervoltage(eps_pd_undervoltage *input, CANPacket* output);
-void decodeeps_pd_undervoltage(CANPacket *input, eps_pd_undervoltage *output);
-
-void encodeeps_pd_batt_voltage(eps_pd_batt_voltage *input, CANPacket* output);
-void decodeeps_pd_batt_voltage(CANPacket *input, eps_pd_batt_voltage *output);
-
 void encodecmd_pd_rst(cmd_pd_rst *input, CANPacket* output);
 void decodecmd_pd_rst(CANPacket *input, cmd_pd_rst *output);
 
-void encodecmd_com2_run(cmd_com2_run *input, CANPacket* output);
-void decodecmd_com2_run(CANPacket *input, cmd_com2_run *output);
+void encodegcmd_com2_run(gcmd_com2_run *input, CANPacket* output);
+void decodegcmd_com2_run(CANPacket *input, gcmd_com2_run *output);
 
 void encodecom2_state(com2_state *input, CANPacket* output);
 void decodecom2_state(CANPacket *input, com2_state *output);
@@ -1975,9 +1880,6 @@ void decodecmd_ignore_fsw(CANPacket *input, cmd_ignore_fsw *output);
 void encodecmd_mtq_fsw(cmd_mtq_fsw *input, CANPacket* output);
 void decodecmd_mtq_fsw(CANPacket *input, cmd_mtq_fsw *output);
 
-void encodeeps_domain_output(eps_domain_output *input, CANPacket* output);
-void decodeeps_domain_output(CANPacket *input, eps_domain_output *output);
-
 void encodesensorproc_imu(sensorproc_imu *input, CANPacket* output);
 void decodesensorproc_imu(CANPacket *input, sensorproc_imu *output);
 
@@ -1990,35 +1892,11 @@ void decodecmd_rollcall(CANPacket *input, cmd_rollcall *output);
 void encodemtq_ack(mtq_ack *input, CANPacket* output);
 void decodemtq_ack(CANPacket *input, mtq_ack *output);
 
-void encodegen_panel_temp(gen_panel_temp *input, CANPacket* output);
-void decodegen_panel_temp(CANPacket *input, gen_panel_temp *output);
-
-void encodecmd_gen_rst(cmd_gen_rst *input, CANPacket* output);
-void decodecmd_gen_rst(CANPacket *input, cmd_gen_rst *output);
-
 void encodecmd_ppt_single_fire(cmd_ppt_single_fire *input, CANPacket* output);
 void decodecmd_ppt_single_fire(CANPacket *input, cmd_ppt_single_fire *output);
 
-void encodegen_panel_pwr(gen_panel_pwr *input, CANPacket* output);
-void decodegen_panel_pwr(CANPacket *input, gen_panel_pwr *output);
-
-void encodegen_panel_current(gen_panel_current *input, CANPacket* output);
-void decodegen_panel_current(CANPacket *input, gen_panel_current *output);
-
-void encodegen_panel_voltage(gen_panel_voltage *input, CANPacket* output);
-void decodegen_panel_voltage(CANPacket *input, gen_panel_voltage *output);
-
 void encodempc_vp(mpc_vp *input, CANPacket* output);
 void decodempc_vp(CANPacket *input, mpc_vp *output);
-
-void encodeeps_batt_state(eps_batt_state *input, CANPacket* output);
-void decodeeps_batt_state(CANPacket *input, eps_batt_state *output);
-
-void encodeeps_batt_current(eps_batt_current *input, CANPacket* output);
-void decodeeps_batt_current(CANPacket *input, eps_batt_current *output);
-
-void encodeeps_batt_voltage(eps_batt_voltage *input, CANPacket* output);
-void decodeeps_batt_voltage(CANPacket *input, eps_batt_voltage *output);
 
 void encodesensorproc_sun(sensorproc_sun *input, CANPacket* output);
 void decodesensorproc_sun(CANPacket *input, sensorproc_sun *output);
@@ -2029,14 +1907,8 @@ void decodecmd_mtq_bdot(CANPacket *input, cmd_mtq_bdot *output);
 void encodebdot_tumble_status(bdot_tumble_status *input, CANPacket* output);
 void decodebdot_tumble_status(CANPacket *input, bdot_tumble_status *output);
 
-void encodesync_2(sync_2 *input, CANPacket* output);
-void decodesync_2(CANPacket *input, sync_2 *output);
-
 void encodesync_1(sync_1 *input, CANPacket* output);
 void decodesync_1(CANPacket *input, sync_1 *output);
-
-void encodemsp_temp(msp_temp *input, CANPacket* output);
-void decodemsp_temp(CANPacket *input, msp_temp *output);
 
 void encodegrnd_epoch(grnd_epoch *input, CANPacket* output);
 void decodegrnd_epoch(CANPacket *input, grnd_epoch *output);
