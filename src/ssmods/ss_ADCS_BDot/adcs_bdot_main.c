@@ -221,7 +221,7 @@ FILE_STATIC uint8_t nap_status_timer_on_flag = 0;
 #pragma PERSISTENT(check_nap_status_timer_ms);
 
 FILE_STATIC TIMER_HANDLE calibration_timer = 15;
-FILE_STATIC uint32_t calibration_off_timer_ms = 120000; // 6 min
+FILE_STATIC uint32_t calibration_off_timer_ms = 30000; // 6 min
 FILE_STATIC uint32_t calibration_on_timer_ms = 4000;
 FILE_STATIC uint8_t calibration_timer_on_flag = 0;
 
@@ -306,6 +306,7 @@ int main(void)
     start_spam_timer(spam_off_timer_ms);
     /* Turns on the timer that will report 1 if satellite is tumbling for too long */
     start_check_nap_status_timer();
+    start_calibration_timer(calibration_off_timer_ms);
 
     while (1)
     {
