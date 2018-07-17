@@ -134,7 +134,7 @@ void setTheFilter(uint8_t address, uint32_t value);
 
 // Some of our register config macros:
 #define HS_CNF1_SJW 0x80
-#define HS_CNF1_BRP 0x03
+#define HS_CNF1_BRP 0x07
 
 #define HS_CNF2_BTLMODE 0x80
 #define HS_CNF2_SAM 0x00

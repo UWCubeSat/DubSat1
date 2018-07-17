@@ -272,7 +272,7 @@ FILE_STATIC int16_t spam_off_z_avg[3];
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5
+ rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate10
 };
 /**************************************************************/
 
@@ -1612,9 +1612,7 @@ void rcPopulate5(CANPacket *out)
     rc.rc_adcs_bdot_5_spam_on_z_mtq_x = spam_on_z_avg[0];
     rc.rc_adcs_bdot_5_spam_on_z_mtq_y = spam_on_z_avg[1];
     rc.rc_adcs_bdot_5_spam_on_z_mtq_z = spam_on_z_avg[2];
-//    rc.rc_adcs_bdot_5_diplole_var_x = compressVariance(aggVec_var_i_f(&dipole_x_agg));
     encoderc_adcs_bdot_5(&rc, out);
-    aggVec_as_reset((aggVec *)&dipole_x_agg);
 }
 
 void rcPopulate6(CANPacket *out)
@@ -1641,14 +1639,20 @@ void rcPopulate7(CANPacket *out)
     rc.rc_adcs_bdot_7_spam_magnitude_x = gcmd_spam_x_dipole;
     rc.rc_adcs_bdot_7_spam_magnitude_y = gcmd_spam_y_dipole;
     rc.rc_adcs_bdot_7_spam_magnitude_z = gcmd_spam_z_dipole;
- //   rc.rc_adcs_bdot_7_dipole_var_y = compressVariance(aggVec_var_i_f(&dipole_y_agg));
- //   rc.rc_adcs_bdot_7_dipole_var_z = compressVariance(aggVec_var_i_f(&dipole_z_agg));
     encoderc_adcs_bdot_7(&rc, out);
+}
+
+void rcPopulate10(CANPacket *out)
+{
+    rc_adcs_bdot_10 rc = {0};
+    rc.rc_adcs_bdot_10_dipole_var_x = compressVariance(aggVec_var_i_f(&dipole_x_agg));
+    rc.rc_adcs_bdot_10_dipole_var_y = compressVariance(aggVec_var_i_f(&dipole_y_agg));
+    rc.rc_adcs_bdot_10_dipole_var_z = compressVariance(aggVec_var_i_f(&dipole_z_agg));
+    encoderc_adcs_bdot_10(&rc, out);
+    aggVec_as_reset((aggVec *)&dipole_x_agg);
     aggVec_as_reset((aggVec *)&dipole_y_agg);
     aggVec_as_reset((aggVec *)&dipole_z_agg);
 }
-
-
 
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)

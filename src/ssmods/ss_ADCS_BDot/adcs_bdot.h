@@ -180,6 +180,7 @@ FILE_STATIC void rcPopulate2(CANPacket *out);
 FILE_STATIC void rcPopulate3(CANPacket *out);
 FILE_STATIC void rcPopulate4(CANPacket *out);
 FILE_STATIC void rcPopulate5(CANPacket *out);
+FILE_STATIC void rcPopulate10(CANPacket *out);
 /************************************************************************/
 
 
