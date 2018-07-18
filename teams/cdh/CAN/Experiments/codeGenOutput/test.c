@@ -3,6 +3,11 @@
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 void canBlast() { 
+	__delay_cycles(10000);	CANPacket gcmd_dist_autoshutoff_packet = {0};
+	gcmd_dist_autoshutoff gcmd_dist_autoshutoff_info = {0};
+	encodegcmd_dist_autoshutoff(&gcmd_dist_autoshutoff_info, &gcmd_dist_autoshutoff_packet);
+	canSendPacket(&gcmd_dist_autoshutoff_packet);
+
 	__delay_cycles(10000);	CANPacket gcmd_ppt_halt_packet = {0};
 	gcmd_ppt_halt gcmd_ppt_halt_info = {0};
 	encodegcmd_ppt_halt(&gcmd_ppt_halt_info, &gcmd_ppt_halt_packet);

@@ -27,6 +27,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_DIST_AUTOSHUTOFF 302252847
 #define CAN_ID_GCMD_PPT_HALT 285475076
 #define CAN_ID_GCMD_DIST_RESET_MISSION 302252767
 #define CAN_ID_GCMD_DIST_SELF_RESTART 302252766
@@ -304,6 +305,15 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_dist_autoshutoff {
+    uint8_t gcmd_dist_autoshutoff_ppt; //  (No Units)
+    uint8_t gcmd_dist_autoshutoff_eps; //  (No Units)
+    uint8_t gcmd_dist_autoshutoff_estim; //  (No Units)
+    uint8_t gcmd_dist_autoshutoff_bdot; //  (No Units)
+    uint8_t gcmd_dist_autoshutoff_rahs; //  (No Units)
+    uint8_t gcmd_dist_autoshutoff_com2; //  (No Units)
+} gcmd_dist_autoshutoff;
+
 typedef struct gcmd_ppt_halt {
     uint8_t gcmd_ppt_halt_confirm; //  (No Units)
 } gcmd_ppt_halt;
@@ -425,6 +435,15 @@ typedef struct rc_adcs_bdot_5 {
 } rc_adcs_bdot_5;
 
 typedef struct gcmd_reset_minmax {
+    uint8_t gcmd_reset_minmax_mtq; //  (No Units)
+    uint8_t gcmd_reset_minmax_sensorproc; //  (No Units)
+    uint8_t gcmd_reset_minmax_mpc; //  (No Units)
+    uint8_t gcmd_reset_minmax_estim; //  (No Units)
+    uint8_t gcmd_reset_minmax_batt; //  (No Units)
+    uint8_t gcmd_reset_minmax_gen; //  (No Units)
+    uint8_t gcmd_reset_minmax_dist; //  (No Units)
+    uint8_t gcmd_reset_minmax_ppt; //  (No Units)
+    uint8_t gcmd_reset_minmax_bdot; //  (No Units)
 } gcmd_reset_minmax;
 
 typedef struct rc_eps_batt_h2 {
@@ -1354,6 +1373,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_dist_autoshutoff(gcmd_dist_autoshutoff *input, CANPacket* output);
+void decodegcmd_dist_autoshutoff(CANPacket *input, gcmd_dist_autoshutoff *output);
 
 void encodegcmd_ppt_halt(gcmd_ppt_halt *input, CANPacket* output);
 void decodegcmd_ppt_halt(CANPacket *input, gcmd_ppt_halt *output);

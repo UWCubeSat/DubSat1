@@ -205,6 +205,33 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodegcmd_dist_autoshutoff(CANPacket *input, gcmd_dist_autoshutoff *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_dist_autoshutoff_ppt = (uint8_t) (((fullData & ((uint64_t) 0x3 << 52)) >> 52));
+    output -> gcmd_dist_autoshutoff_eps = (uint8_t) (((fullData & ((uint64_t) 0x3 << 54)) >> 54));
+    output -> gcmd_dist_autoshutoff_estim = (uint8_t) (((fullData & ((uint64_t) 0x3 << 56)) >> 56));
+    output -> gcmd_dist_autoshutoff_bdot = (uint8_t) (((fullData & ((uint64_t) 0x3 << 58)) >> 58));
+    output -> gcmd_dist_autoshutoff_rahs = (uint8_t) (((fullData & ((uint64_t) 0x3 << 60)) >> 60));
+    output -> gcmd_dist_autoshutoff_com2 = (uint8_t) (((fullData & ((uint64_t) 0x3 << 62)) >> 62));
+}
+
+void encodegcmd_dist_autoshutoff(gcmd_dist_autoshutoff *input, CANPacket *output){
+    output -> id = 302252847;
+    output -> length = 2;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_autoshutoff_ppt))) & 0x3) << 52;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_autoshutoff_eps))) & 0x3) << 54;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_autoshutoff_estim))) & 0x3) << 56;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_autoshutoff_bdot))) & 0x3) << 58;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_autoshutoff_rahs))) & 0x3) << 60;
+    fullPacketData |= (((uint64_t)((input -> gcmd_dist_autoshutoff_com2))) & 0x3) << 62;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decodegcmd_ppt_halt(CANPacket *input, gcmd_ppt_halt *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -651,12 +678,30 @@ void decodegcmd_reset_minmax(CANPacket *input, gcmd_reset_minmax *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
+    output -> gcmd_reset_minmax_mtq = (uint8_t) (((fullData & ((uint64_t) 0x1 << 55)) >> 55));
+    output -> gcmd_reset_minmax_sensorproc = (uint8_t) (((fullData & ((uint64_t) 0x1 << 56)) >> 56));
+    output -> gcmd_reset_minmax_mpc = (uint8_t) (((fullData & ((uint64_t) 0x1 << 57)) >> 57));
+    output -> gcmd_reset_minmax_estim = (uint8_t) (((fullData & ((uint64_t) 0x1 << 58)) >> 58));
+    output -> gcmd_reset_minmax_batt = (uint8_t) (((fullData & ((uint64_t) 0x1 << 59)) >> 59));
+    output -> gcmd_reset_minmax_gen = (uint8_t) (((fullData & ((uint64_t) 0x1 << 60)) >> 60));
+    output -> gcmd_reset_minmax_dist = (uint8_t) (((fullData & ((uint64_t) 0x1 << 61)) >> 61));
+    output -> gcmd_reset_minmax_ppt = (uint8_t) (((fullData & ((uint64_t) 0x1 << 62)) >> 62));
+    output -> gcmd_reset_minmax_bdot = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
 }
 
 void encodegcmd_reset_minmax(gcmd_reset_minmax *input, CANPacket *output){
     output -> id = 302252750;
-    output -> length = 0;
+    output -> length = 2;
     uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_reset_minmax_mtq))) & 0x1) << 55;
+    fullPacketData |= (((uint64_t)((input -> gcmd_reset_minmax_sensorproc))) & 0x1) << 56;
+    fullPacketData |= (((uint64_t)((input -> gcmd_reset_minmax_mpc))) & 0x1) << 57;
+    fullPacketData |= (((uint64_t)((input -> gcmd_reset_minmax_estim))) & 0x1) << 58;
+    fullPacketData |= (((uint64_t)((input -> gcmd_reset_minmax_batt))) & 0x1) << 59;
+    fullPacketData |= (((uint64_t)((input -> gcmd_reset_minmax_gen))) & 0x1) << 60;
+    fullPacketData |= (((uint64_t)((input -> gcmd_reset_minmax_dist))) & 0x1) << 61;
+    fullPacketData |= (((uint64_t)((input -> gcmd_reset_minmax_ppt))) & 0x1) << 62;
+    fullPacketData |= (((uint64_t)((input -> gcmd_reset_minmax_bdot))) & 0x1) << 63;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
