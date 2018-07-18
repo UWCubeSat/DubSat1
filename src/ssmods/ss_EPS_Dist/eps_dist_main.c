@@ -754,7 +754,7 @@ void can_packet_rx_callback(CANPacket *packet)
     switch(packet->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            autoShutoff();
+            //autoShutoff();
             //checkSelfReboot();
             rcFlag = 18;
             break;
