@@ -350,7 +350,12 @@ void canRxCallback(CANPacket *p)
             rtU.MET_epoch = metConvertFromIntToSeconds(metEpoch);
             break;
         case CAN_ID_GCMD_RESET_MINMAX:
-            aggVec_reset((aggVec *)&rc_mspTemp);
+        {
+            gcmd_reset_minmax pktRst;
+            decodegcmd_reset_minmax(p, &pktRst);
+            if(pktRst.gcmd_reset_minmax_estim)
+                aggVec_reset((aggVec *)&rc_mspTemp);
+        }
             break;
     }
 }

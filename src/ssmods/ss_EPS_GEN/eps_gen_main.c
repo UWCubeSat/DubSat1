@@ -227,19 +227,26 @@ void can_packet_rx_callback(CANPacket *packet)
                 genSetPowerTracker(PowerTracker3, ptStatePkt.gcmd_gen_set_pt_state_3);
             break;
         case CAN_ID_GCMD_RESET_MINMAX:
-            aggVec_reset((aggVec *)&mspTempAg);
-            aggVec_reset((aggVec *)&panel1VoltageAg);
-            aggVec_reset((aggVec *)&panel2VoltageAg);
-            aggVec_reset((aggVec *)&panel3VoltageAg);
-            aggVec_reset((aggVec *)&panel1CurrentAg);
-            aggVec_reset((aggVec *)&panel2CurrentAg);
-            aggVec_reset((aggVec *)&panel3CurrentAg);
-            aggVec_reset((aggVec *)&panel1PwrAg);
-            aggVec_reset((aggVec *)&panel2PwrAg);
-            aggVec_reset((aggVec *)&panel3PwrAg);
-            aggVec_reset((aggVec *)&panel1TempAg);
-            aggVec_reset((aggVec *)&panel2TempAg);
-            aggVec_reset((aggVec *)&panel3TempAg);
+        {
+            gcmd_reset_minmax pktRst;
+            decodegcmd_reset_minmax(packet, &pktRst);
+            if(pktRst.gcmd_reset_minmax_gen)
+            {
+                aggVec_reset((aggVec *)&mspTempAg);
+                aggVec_reset((aggVec *)&panel1VoltageAg);
+                aggVec_reset((aggVec *)&panel2VoltageAg);
+                aggVec_reset((aggVec *)&panel3VoltageAg);
+                aggVec_reset((aggVec *)&panel1CurrentAg);
+                aggVec_reset((aggVec *)&panel2CurrentAg);
+                aggVec_reset((aggVec *)&panel3CurrentAg);
+                aggVec_reset((aggVec *)&panel1PwrAg);
+                aggVec_reset((aggVec *)&panel2PwrAg);
+                aggVec_reset((aggVec *)&panel3PwrAg);
+                aggVec_reset((aggVec *)&panel1TempAg);
+                aggVec_reset((aggVec *)&panel2TempAg);
+                aggVec_reset((aggVec *)&panel3TempAg);
+            }
+        }
             break;
         default:
             break;

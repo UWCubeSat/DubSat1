@@ -418,8 +418,15 @@ void can_packet_rx_callback(CANPacket *packet)
             battChargeOK = pktBatt.rc_eps_batt_7_acc_charge_avg > BATTERY_CHARGE_SUFFICIENT_STATE;
             break;
         case CAN_ID_GCMD_RESET_MINMAX:
-            aggVec_reset((aggVec *)&mspTempAg);
-            aggVec_reset((aggVec *)&ignDoneAg);
+        {
+            gcmd_reset_minmax pktRst;
+            decodegcmd_reset_minmax(packet, &pktRst);
+            if(pktRst.gcmd_reset_minmax_ppt)
+            {
+                aggVec_reset((aggVec *)&mspTempAg);
+                aggVec_reset((aggVec *)&ignDoneAg);
+            }
+        }
             break;
         case CAN_ID_GCMD_PPT_MULTIPLE_FIRE:
             decodegcmd_ppt_multiple_fire(packet, &pktMultFire);

@@ -1124,7 +1124,12 @@ void can_rx_callback(CANPacket *packet)
             rollcallStart();
             break;
         case CAN_ID_GCMD_RESET_MINMAX:
-            reset_aggregate();
+        {
+            gcmd_reset_minmax pktRst;
+            decodegcmd_reset_minmax(packet, &pktRst);
+            if(pktRst.gcmd_reset_minmax_bdot)
+                reset_aggregate();
+        }
             break;
     }
 }
