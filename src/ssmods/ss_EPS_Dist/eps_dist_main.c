@@ -77,6 +77,7 @@ FILE_STATIC uint16_t startupDelay = 1800;
 
 //**********Data Stuff**********************
 FILE_STATIC uint8_t rebootCount = 60;
+FILE_STATIC uint8_t rollcallWatchdog = 0;
 
 FILE_STATIC aggVec_f mspTempAg;
 FILE_STATIC aggVec_i battVAg;
@@ -776,6 +777,7 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_CMD_ROLLCALL:
             rollcallStart();
             //autoShutoff();
+            rollcallWatchdog = 0;
             break;
         case CAN_ID_RC_ADCS_BDOT_H1:
             rcResponseFlag &= ~MOD_BDOT_FLAG;
@@ -1002,6 +1004,17 @@ void sendSequenceResponses()
     }
 }
 
+void checkRollcallWatchdog()
+{
+    if(!(rollcallWatchdog ^ 0xFF)) //rollcallWatchdog < 255
+        canInit(); //restart CAN controller
+}
+
+void incrementRollcallWatchdog()
+{
+    rollcallWatchdog++;
+}
+
 /*
  * main.c
  */
@@ -1068,6 +1081,9 @@ int main(void)
     initializeTimer();
     initData();
 
+
+    startCallback(timerCallbackInitializer(&incrementRollcallWatchdog, 1000000));
+
     uint16_t counter = 0;
     while (1)
     {
@@ -1095,6 +1111,7 @@ int main(void)
         seqUpdateMET(metConvertToSeconds(persistentTime));
         checkSequence();
         sendSequenceResponses();
+        checkRollcallWatchdog();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
