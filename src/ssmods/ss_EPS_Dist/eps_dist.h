@@ -120,6 +120,15 @@ typedef struct _power_domain_info {
     // eventually add other stuff, like handle to the averaging queues, etc.
 } PowerDomainInfo;
 
+typedef struct {
+    uint8_t ppt;
+    uint8_t eps;
+    uint8_t estim;
+    uint8_t bdot;
+    uint8_t rahs;
+    uint8_t com2;
+} AutoshutoffEnabled;
+
 // COSMOS telem and cmd packets
 TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this

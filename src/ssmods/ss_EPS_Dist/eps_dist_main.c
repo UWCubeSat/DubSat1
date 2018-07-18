@@ -29,6 +29,9 @@ FILE_STATIC flag_t triggerState1;
 FILE_STATIC flag_t triggerState2;
 FILE_STATIC flag_t triggerState3;
 
+#pragma PERSISTENT(shutoffEnabled)
+FILE_STATIC AutoshutoffEnabled shutoffEnabled = {1, 1, 1, 1, 1, 0};
+
 // DO NOT REORDER
 FILE_STATIC uint8_t *powerDomainNames[] =
                                            {
@@ -692,37 +695,37 @@ void autoShutoff()
 {
     if(rcResponseFlag)
     {
-        if(rcResponseFlag & PD_COM1_FLAG)
+        /*if(rcResponseFlag & PD_COM1_FLAG)
         {
             distDomainSwitch(PD_COM1, PD_CMD_Disable);
             rcResponseFlag &= ~PD_COM1_FLAG;
-        }
-        /*if(rcResponseFlag & PD_COM2_FLAG)
+        }*/
+        if(shutoffEnabled.com2 && rcResponseFlag & PD_COM2_FLAG)
         {
             distDomainSwitch(PD_COM2, PD_CMD_Disable);
             rcResponseFlag &= ~PD_COM2_FLAG;
-        }*/
-        if(rcResponseFlag & PD_RAHS_FLAG)
+        }
+        if(shutoffEnabled.rahs && rcResponseFlag & PD_RAHS_FLAG)
         {
             distDomainSwitch(PD_RAHS, PD_CMD_Disable);
             rcResponseFlag &= ~PD_RAHS_FLAG;
         }
-        if(rcResponseFlag & PD_BDOT_FLAG)
+        if(shutoffEnabled.bdot && rcResponseFlag & PD_BDOT_FLAG)
         {
             distDomainSwitch(PD_BDOT, PD_CMD_Disable);
             rcResponseFlag &= ~PD_BDOT_FLAG;
         }
-        if(rcResponseFlag & PD_ESTIM_FLAG)
+        if(shutoffEnabled.estim && rcResponseFlag & PD_ESTIM_FLAG)
         {
             distDomainSwitch(PD_ESTIM, PD_CMD_Disable);
             rcResponseFlag &= ~PD_ESTIM_FLAG;
         }
-        if(rcResponseFlag & PD_EPS_FLAG)
+        if(shutoffEnabled.eps == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_EPS_FLAG)
         {
             distDomainSwitch(PD_EPS, PD_CMD_Disable);
             rcResponseFlag &= ~PD_EPS_FLAG;
         }
-        if(rcResponseFlag & PD_PPT_FLAG)
+        if(shutoffEnabled.ppt && rcResponseFlag & PD_PPT_FLAG)
         {
             distDomainSwitch(PD_PPT, PD_CMD_Disable);
             rcResponseFlag &= ~PD_PPT_FLAG;
@@ -776,7 +779,7 @@ void can_packet_rx_callback(CANPacket *packet)
     {
         case CAN_ID_CMD_ROLLCALL:
             rollcallStart();
-            //autoShutoff();
+            autoShutoff();
             rollcallWatchdog = 0;
             break;
         case CAN_ID_RC_ADCS_BDOT_H1:
@@ -849,8 +852,11 @@ void can_packet_rx_callback(CANPacket *packet)
             setPowerSwitchFromCAN(PD_CMD_Enable, rebootRequest.cmd_reboot_request_domain);
                 break;
         case CAN_ID_GCMD_RESET_MINMAX:
-            //checkSubsytemResetMinMax(packet,
-            //{
+        {
+            gcmd_reset_minmax rstPkt = {0};
+            decodegcmd_reset_minmax(packet, &rstPkt);
+            if(rstPkt.gcmd_reset_minmax_dist)
+            {
                 aggVec_reset((aggVec *)&mspTempAg);
                 aggVec_reset((aggVec *)&battVAg);
                 aggVec_reset((aggVec *)&coulombCounterAg);
@@ -860,8 +866,9 @@ void can_packet_rx_callback(CANPacket *packet)
                     aggVec_reset((aggVec*)&ssCurrAgs[i - 1]);
                     aggVec_reset((aggVec *)&ssBusVAgs[i - 1]);
                 }
-            //})
-            break;
+            }
+        }
+        break;
         case CAN_ID_GCMD_AUTOSEQ_ADD_1:
             decodegcmd_autoseq_add_1(packet, &autoseqAdd1);
             pendingEvent.pkt.id = autoseqAdd1.gcmd_autoseq_add_1_can_id;
@@ -908,6 +915,25 @@ void can_packet_rx_callback(CANPacket *packet)
             eventsInitialized = 0;
         case CAN_ID_GCMD_DIST_SELF_RESTART:
             WDTCTL = 0; //reboot
+            break;
+        case CAN_ID_GCMD_DIST_AUTOSHUTOFF:
+        {
+            gcmd_dist_autoshutoff pktShutoff;
+            decodegcmd_dist_autoshutoff(packet, &pktShutoff);
+            if(pktShutoff.gcmd_dist_autoshutoff_bdot != CAN_ENUM_NBOOL_NULL)
+                shutoffEnabled.bdot = pktShutoff.gcmd_dist_autoshutoff_bdot;
+            if(pktShutoff.gcmd_dist_autoshutoff_com2 != CAN_ENUM_NBOOL_NULL)
+                shutoffEnabled.com2 = pktShutoff.gcmd_dist_autoshutoff_com2;
+            if(pktShutoff.gcmd_dist_autoshutoff_eps != CAN_ENUM_NBOOL_NULL)
+                shutoffEnabled.eps = pktShutoff.gcmd_dist_autoshutoff_eps;
+            if(pktShutoff.gcmd_dist_autoshutoff_estim != CAN_ENUM_NBOOL_NULL)
+                shutoffEnabled.estim = pktShutoff.gcmd_dist_autoshutoff_estim;
+            if(pktShutoff.gcmd_dist_autoshutoff_ppt != CAN_ENUM_NBOOL_NULL)
+                shutoffEnabled.ppt = pktShutoff.gcmd_dist_autoshutoff_ppt;
+            if(pktShutoff.gcmd_dist_autoshutoff_rahs != CAN_ENUM_NBOOL_NULL)
+                shutoffEnabled.rahs = pktShutoff.gcmd_dist_autoshutoff_rahs;
+        }
+            decodegcmd_dist_autoshutoff(packet, &shutoffEnabled);
             break;
         default:
             break;

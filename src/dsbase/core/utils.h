@@ -65,6 +65,4 @@ typedef enum {
 
 #define compressVariance(var) (uint16_t)var
 
-#define checkSubsytemResetMinMax(packet, function) { gcmd_reset_minmax rstPkt = {0}; decodegcmd_reset_minmax(packet, &rstPkt); if(rstPkt.param & (1 << __SUBSYSTEM_MODULE__)) { function } }
-
 #endif /* CORE_UTILS_H_ */
