@@ -170,6 +170,7 @@ FILE_STATIC void spam_control_operation(uint16_t off_time_min, uint16_t on_time_
                                         int8_t x_dipole, int8_t y_dipole, int8_t z_dipole);
 FILE_STATIC void bdot_pop_operation(uint8_t pop_control_x, uint8_t pop_control_y, uint8_t pop_control_z);
 FILE_STATIC void change_spam_avg_time(uint8_t mtq_pwm_measurement, uint8_t mtq_pwm_actuation);
+FILE_STATIC void bdot_dipole_gain_operation(uint8_t gain_control_x, uint8_t gain_control_y, uint8_t gain_control_z);
 /***********************************************************************/
 
 
