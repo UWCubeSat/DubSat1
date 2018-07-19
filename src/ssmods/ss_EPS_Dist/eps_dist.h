@@ -77,6 +77,10 @@
 #define LED_OUT P1OUT
 #define LED_BIT BIT0
 
+#define INA_DIR P3DIR
+#define INA_OUT P3OUT
+#define INA_BIT BIT7
+
 // Capture power domain info, IDs, addresses, and enable pins
 // DO NOT REORDER
 typedef enum {

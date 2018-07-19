@@ -1030,6 +1030,19 @@ void sendSequenceResponses()
     }
 }
 
+void INAInit()
+{
+    INA_DIR |= INA_BIT;
+    INA_OUT |= INA_BIT;
+}
+
+void restartINA()
+{
+    INA_OUT &= ~INA_BIT;
+    __delay_cycles((uint16_t)(MSEC * 10));
+    INA_OUT |= INA_BIT;
+}
+
 void checkRollcallWatchdog()
 {
     if(!(rollcallWatchdog ^ 0xFF)) //rollcallWatchdog < 255
@@ -1052,9 +1065,8 @@ int main(void)
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
     METInitWithTime(persistentTime);
 
-    P3DIR |= BIT4 | BIT7; //this is Paul's backpower fix
-    //P3REN |= BIT7;
-    P3OUT |= BIT4 | BIT7;
+    bspBackpowerPulldown();
+    INAInit();
 
     // Spin up the ADC, for the temp sensor and battery voltage
     asensorInit(Ref_2p5V);
@@ -1138,6 +1150,9 @@ int main(void)
         checkSequence();
         sendSequenceResponses();
         checkRollcallWatchdog();
+
+        if(i2cGetLastOperationResult())
+            restartINA();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
