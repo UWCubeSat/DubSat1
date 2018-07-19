@@ -101,7 +101,10 @@ uint8_t i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWri
 uint16_t i2cGetBusErrorCount();
 //gets the result of the last i2c operations
 uint8_t i2cGetLastOperationResult();
-
+//gets the number of bytes read successfully over i2c
+uint16_t i2cGetBytesRead();
+//gets the number of bytes written successfully over i2c
+uint16_t i2cGetBytesWritten();
 
 #endif /* DISABLE_SYNC_I2C_CALLS */
 
