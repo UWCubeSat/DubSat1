@@ -60,7 +60,7 @@ typedef enum {
 } IMUUpdateRate;
 
 // Main entry points
-void imuInit(bus_instance_i2c i2cbus, IMUUpdateRate rate);
+uint8_t imuInit(bus_instance_i2c i2cbus, IMUUpdateRate rate);
 IMUData *imuReadGyroAccelData();
 
 /**

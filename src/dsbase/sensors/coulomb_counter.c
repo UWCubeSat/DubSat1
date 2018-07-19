@@ -8,7 +8,7 @@ FILE_STATIC float full_current = 0.10f;
 #pragma PERSISTENT(full_voltage)
 #pragma PERSISTENT(full_current)
 
-void setControl(CC_Control_ADCmode ADCmode, CC_Control_PrescaleFactor m, CC_Control_ALCCConfiguration ALCC, CC_Control_Shutdown shutdown );
+uint8_t setControl(CC_Control_ADCmode ADCmode, CC_Control_PrescaleFactor m, CC_Control_ALCCConfiguration ALCC, CC_Control_Shutdown shutdown );
 
 void CCSetFullCurrent(float current)
 {
@@ -63,12 +63,12 @@ BOOL checkForFullState(float voltage, float current) {
     return (voltage >= full_voltage && current <= full_current && current >= 0);
 }
 
-void calibrate(hDev hSensor) {
+uint8_t calibrate(hDev hSensor) {
     //reset the accumulated charge register to the full state
     i2cBuff[0] = LTC2943_ADDR_ACCUMULATED_CHARGE_MSB;
     i2cBuff[1] = sensor.accumChargeFull >> 8;
     i2cBuff[2] = sensor.accumChargeFull & 0x00FF;
-    i2cMasterWrite(hSensor, i2cBuff, 3);
+    return i2cMasterWrite(hSensor, i2cBuff, 3);
 }
 
 CoulombCounterData readCoulombCounter() {
@@ -108,57 +108,61 @@ CoulombCounterData readCoulombCounter() {
 ////////////////////////////////////////////////////////////////////////////////////////////////
 uint16_t CCReadRawVoltage()
 {
-    i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_VOLTAGE_MSB, i2cBuff, 2);
-    sensor.sensorData.rawBusVoltage = (uint16_t)(i2cBuff[1] | ((uint16_t)i2cBuff[0]<<8));
+    if(i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_VOLTAGE_MSB, i2cBuff, 2) == 0)
+        sensor.sensorData.rawBusVoltage = (uint16_t)(i2cBuff[1] | ((uint16_t)i2cBuff[0]<<8));
     return sensor.sensorData.rawBusVoltage;
 }
 
 uint16_t CCReadRawCurrent()
 {
-    i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_CURRENT_MSB, i2cBuff, 2);
-    sensor.sensorData.rawCurrent = (uint16_t)(i2cBuff[1] | ((uint16_t)i2cBuff[0]<<8));
+    if(i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_CURRENT_MSB, i2cBuff, 2) == 0)
+        sensor.sensorData.rawCurrent = (uint16_t)(i2cBuff[1] | ((uint16_t)i2cBuff[0]<<8));
     return sensor.sensorData.rawCurrent;
 }
 
 uint16_t CCReadRawAccumulatedCharge()
 {
-    i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_ACCUMULATED_CHARGE_MSB, i2cBuff, 2);
-    sensor.sensorData.rawAccumCharge = ((uint16_t)i2cBuff[1] | ((uint16_t)i2cBuff[0]<<8));
+    if(i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_ACCUMULATED_CHARGE_MSB, i2cBuff, 2))
+        sensor.sensorData.rawAccumCharge = ((uint16_t)i2cBuff[1] | ((uint16_t)i2cBuff[0]<<8));
     return sensor.sensorData.rawAccumCharge;
 }
 
 uint8_t CCGetControlReg()
 {
-    i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_CONTROL, i2cBuff, 2); //combinedWriteRead is broken. Requires 2 bytes.
-    sensor.sensorData.controlReg = i2cBuff[0]; //Just take the first byte
+    //combinedWriteRead is broken. Requires 2 bytes.
+    if(i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_CONTROL, i2cBuff, 2))
+        sensor.sensorData.controlReg = i2cBuff[0]; //Just take the first byte
     return sensor.sensorData.controlReg;
 }
 
 uint8_t CCGetStatusReg()
 {
-    i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_STATUS, i2cBuff, 2); //combinedWriteRead is broken. Requires 2 bytes.
-    sensor.sensorData.statusReg = i2cBuff[0]; //Just take the first byte
+    //combinedWriteRead is broken. Requires 2 bytes.
+    if(i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_STATUS, i2cBuff, 2))
+        sensor.sensorData.statusReg = i2cBuff[0]; //Just take the first byte
     return sensor.sensorData.statusReg;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 void readCoulombCounterControl() {
     //read control
-    i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_CONTROL, i2cBuff, 2); //combinedWriteRead is broken. Requires 2 bytes.
-    sensor.sensorData.controlReg = i2cBuff[0]; //Just take the first byte
+    //combinedWriteRead is broken. Requires 2 bytes.
+    if(i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_CONTROL, i2cBuff, 2))
+        sensor.sensorData.controlReg = i2cBuff[0]; //Just take the first byte
 }
 
 void readCoulombCounterStatus() {
     //read status
-    i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_STATUS, i2cBuff, 2); //combinedWriteRead is broken. Requires 2 bytes.
-    sensor.sensorData.statusReg = i2cBuff[0]; //Just take the first byte
+    //combinedWriteRead is broken. Requires 2 bytes.
+    if(i2cMasterRegisterRead(sensor.hI2CDevice, LTC2943_ADDR_STATUS, i2cBuff, 2))
+        sensor.sensorData.statusReg = i2cBuff[0]; //Just take the first byte
 }
 
-void setControl(CC_Control_ADCmode ADCmode, CC_Control_PrescaleFactor m, CC_Control_ALCCConfiguration ALCC, CC_Control_Shutdown shutdown ) {
+uint8_t setControl(CC_Control_ADCmode ADCmode, CC_Control_PrescaleFactor m, CC_Control_ALCCConfiguration ALCC, CC_Control_Shutdown shutdown ) {
     uint8_t control = (ADCmode<<6) | (m<<3) | (ALCC<<1) | shutdown;
     i2cBuff[0] = LTC2943_ADDR_CONTROL;
     i2cBuff[1] = control;
-    i2cMasterWrite(sensor.hI2CDevice, i2cBuff, 2);
+    return i2cMasterWrite(sensor.hI2CDevice, i2cBuff, 2);
 }
 
 

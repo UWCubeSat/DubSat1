@@ -73,9 +73,9 @@
 #define DEPLOY_ENABLE_BIT BIT7
 
 // Debug LED
-#define LED_DIR P3DIR
-#define LED_OUT P3OUT
-#define LED_BIT BIT5
+#define LED_DIR P1DIR
+#define LED_OUT P1OUT
+#define LED_BIT BIT0
 
 // Capture power domain info, IDs, addresses, and enable pins
 // DO NOT REORDER

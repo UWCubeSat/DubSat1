@@ -14,6 +14,18 @@ FILE_STATIC uint8_t numDevices = 0;
 
 bus_registers_i2c busregs[CONFIGM_i2c_maxperipheralinstances];
 
+uint16_t busErrorCount = 0;
+uint16_t i2cGetBusErrorCount()
+{
+    return busErrorCount;
+}
+
+uint8_t lastOperationFlag = 0;
+uint8_t i2cGetLastOperationResult()
+{
+    return lastOperationFlag;
+}
+
 // Some quasi-unpleasant hackery to make for clean dual-bus support in general
 static void populateBusRegisters(bus_instance_i2c instance)
 {
@@ -83,7 +95,7 @@ hDev i2cInit(bus_instance_i2c bus, uint8_t slaveaddr)
     return (hDev)currindex;
 }
 
-static void i2cCoreRead(hDev device, uint8_t * buff, uint8_t szToRead, BOOL initialAutoStopSetup)
+static uint8_t i2cCoreRead(hDev device, uint8_t * buff, uint8_t szToRead, BOOL initialAutoStopSetup)
 {
     uint8_t index = 0;
 
@@ -101,16 +113,23 @@ static void i2cCoreRead(hDev device, uint8_t * buff, uint8_t szToRead, BOOL init
     // Send start message, in receive mode
     i2cMasterReceiveStart(bus);
     i2cWaitForStartComplete(bus);
-
+    if(I2CREG(bus, UCBxCTLW0) & UCTXSTT) //error state
+    {
+        busErrorCount++;
+        lastOperationFlag = 1;
+        return 1;
+    }
     //  Stop bit will be auto-set once we read szToRead bytes
     while ( (I2CREG(bus, UCBxIFG) & UCSTPIFG) == 0 && index < szToRead)
     {
         if ( (I2CREG(bus, UCBxIFG) & UCRXIFG) != 0)
             buff[index++] = i2cRetrieveReceiveBuffer(bus);
     }
+    lastOperationFlag = 0;
+    return 0;
 }
 
-static void i2cCoreWrite(hDev device, uint8_t * buff, uint8_t szToWrite, BOOL initialAutoStopSetup )
+static uint8_t i2cCoreWrite(hDev device, uint8_t * buff, uint8_t szToWrite, BOOL initialAutoStopSetup )
 {
     uint8_t index = 0;
 
@@ -126,6 +145,12 @@ static void i2cCoreWrite(hDev device, uint8_t * buff, uint8_t szToWrite, BOOL in
 
     i2cMasterTransmitStart(bus);
     i2cWaitForStartComplete(bus);
+    if(I2CREG(bus, UCBxCTLW0) & UCTXSTT) //error state
+    {
+        busErrorCount++;
+        lastOperationFlag = 1;
+        return 1;
+    }
 
     // Send in auto-stop or managed mode
     while ( (I2CREG(bus, UCBxIFG) & UCSTPIFG) == 0 && index < szToWrite)
@@ -135,19 +160,20 @@ static void i2cCoreWrite(hDev device, uint8_t * buff, uint8_t szToWrite, BOOL in
             I2CREG(bus, UCBxTXBUF) = buff[index++];
         }
     }
+    return 0;
 }
 
-void i2cMasterRead(hDev device, uint8_t * buff, uint8_t szToRead)
+uint8_t i2cMasterRead(hDev device, uint8_t * buff, uint8_t szToRead)
 {
-    i2cCoreRead(device, buff, szToRead, TRUE);
+    return i2cCoreRead(device, buff, szToRead, TRUE);
 }
 
-void i2cMasterWrite(hDev device, uint8_t * buff, uint8_t szToWrite)
+uint8_t i2cMasterWrite(hDev device, uint8_t * buff, uint8_t szToWrite)
 {
-    i2cCoreWrite(device, buff, szToWrite, TRUE);
+    return i2cCoreWrite(device, buff, szToWrite, TRUE);
 }
 
-void i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWrite, uint8_t * rbuff, uint8_t szToRead)
+uint8_t i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWrite, uint8_t * rbuff, uint8_t szToRead)
 {
     bus_instance_i2c bus = devices[device].bus;
 
@@ -156,19 +182,30 @@ void i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWrite,
     i2cDisable(bus);
     i2cAutoStopSetTotalBytes(bus, szToWrite + szToRead);
     i2cEnable(bus);
-
-    i2cCoreWrite(device, wbuff, szToWrite, FALSE);
+    if(i2cCoreWrite(device, wbuff, szToWrite, FALSE))
+    {
+        busErrorCount++;
+        return 1;
+    }
     i2cWaitReadyToTransmitByte(bus);
-    i2cCoreRead(device, rbuff, szToRead, FALSE);
+    if(i2cCoreRead(device, rbuff, szToRead, FALSE))
+    {
+        busErrorCount++;
+        return 1;
+    }
+    return 0;
 }
 
-void i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, uint8_t szToRead)
+uint8_t i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, uint8_t szToRead)
 {
     bus_instance_i2c bus = devices[device].bus;
 
     i2cWaitForStopComplete(bus);
 
-    i2cMasterCombinedWriteRead(device, &registeraddr, 1, buff, szToRead);
+    lastOperationFlag = i2cMasterCombinedWriteRead(device, &registeraddr, 1, buff, szToRead);
+    if(lastOperationFlag)
+        busErrorCount++;
+    return lastOperationFlag;
 }
 
 // Primary interrupt vector for I2C on module B1 (I2C #1)

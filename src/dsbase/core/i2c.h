@@ -51,6 +51,10 @@ typedef struct {
     uint16_t slaveaddr;
 } device_context_i2c;
 
+//in ms
+#define READ_WRITE_TIMEOUT 50
+#define READ_WRITE_INCREMENT 8
+
 // Core helper definitions
 #define I2C_MASTER_RECEIVE_INTERRUPT_MASK     (UCRXEIE | UCNACKIE )
 #define I2C_MASTER_TRANSMIT_INTERRUPT_MASK    (UCTXIE2 | UCNACKIE )
@@ -76,18 +80,27 @@ FILE_STATIC void inline i2cAutoStopSetTotalBytes(bus_instance_i2c bus, uint8_t c
 // TODO:  Re-enable this warning once there is actually an option to do async :)
 //#warning Synchronous calls to I2C are inefficient - consider disabling sync calls and \
 //using the async interrupt-based API instead, with DISABLE_SYNC_I2C_CALLS.
-FILE_STATIC void inline i2cWaitForStopComplete(bus_instance_i2c bus)  { while (I2CREG(bus, UCBxCTLW0) & UCTXSTP); }
-FILE_STATIC void inline i2cWaitForStartComplete(bus_instance_i2c bus) { while (I2CREG(bus, UCBxCTLW0) & UCTXSTT); }
-FILE_STATIC void inline i2cWaitReadyToTransmitByte(bus_instance_i2c bus)  { while ( (I2CREG(bus, UCBxIFG) & UCTXIFG0) == 0); }
-FILE_STATIC void inline i2cWaitReadyToReceiveByte(bus_instance_i2c bus)  { while ( (I2CREG(bus, UCBxIFG) & UCRXIFG) == 0); }
+//FILE_STATIC void inline i2cWaitForStopComplete(bus_instance_i2c bus)  { while (I2CREG(bus, UCBxCTLW0) & UCTXSTP); }
+FILE_STATIC void inline i2cWaitForStopComplete(bus_instance_i2c bus)  { uint16_t timeoutus = READ_WRITE_TIMEOUT; while (timeoutus-- && I2CREG(bus, UCBxCTLW0) & UCTXSTP); __delay_cycles(READ_WRITE_INCREMENT); }
+//FILE_STATIC void inline i2cWaitForStartComplete(bus_instance_i2c bus) { while (I2CREG(bus, UCBxCTLW0) & UCTXSTT); }
+FILE_STATIC void inline i2cWaitForStartComplete(bus_instance_i2c bus) { uint16_t timeoutms = READ_WRITE_TIMEOUT; while (timeoutms-- && I2CREG(bus, UCBxCTLW0) & UCTXSTT) __delay_cycles(READ_WRITE_INCREMENT); }
+//FILE_STATIC void inline i2cWaitReadyToTransmitByte(bus_instance_i2c bus)  { while ( (I2CREG(bus, UCBxIFG) & UCTXIFG0) == 0); }
+FILE_STATIC void inline i2cWaitReadyToTransmitByte(bus_instance_i2c bus)  { uint16_t timeoutus = READ_WRITE_TIMEOUT; while (timeoutus-- && (I2CREG(bus, UCBxIFG) & UCTXIFG0) == 0); __delay_cycles(READ_WRITE_INCREMENT); }
+//FILE_STATIC void inline i2cWaitReadyToReceiveByte(bus_instance_i2c bus)  { while ( (I2CREG(bus, UCBxIFG) & UCRXIFG) == 0); }
+FILE_STATIC void inline i2cWaitReadyToReceiveByte(bus_instance_i2c bus)  { uint16_t timeoutus = READ_WRITE_TIMEOUT; while (timeoutus-- && (I2CREG(bus, UCBxIFG) & UCRXIFG) == 0); __delay_cycles(READ_WRITE_INCREMENT); }
 
 /***************************/
 /* I2C MID-LEVEL FUNCTIONS */
 /***************************/
-void i2cMasterRead(hDev device, uint8_t * buff, uint8_t szToRead);
-void i2cMasterWrite(hDev device, uint8_t * buff, uint8_t szToWrite);
-void i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, uint8_t szToRead);
-void i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWrite, uint8_t * rbuff, uint8_t szToRead);
+uint8_t i2cMasterRead(hDev device, uint8_t * buff, uint8_t szToRead);
+uint8_t i2cMasterWrite(hDev device, uint8_t * buff, uint8_t szToWrite);
+uint8_t i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, uint8_t szToRead);
+uint8_t i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWrite, uint8_t * rbuff, uint8_t szToRead);
+
+//gets the total count of i2c errors
+uint16_t i2cGetBusErrorCount();
+//gets the result of the last i2c operations
+uint8_t i2cGetLastOperationResult();
 
 
 #endif /* DISABLE_SYNC_I2C_CALLS */
