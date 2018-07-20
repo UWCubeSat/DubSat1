@@ -11,6 +11,7 @@
 #include "core/utils.h"
 
 #define WDT_CONFIG WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_2
+#define ROLLCALL_WATCHDOG_TIMEOUT 255
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
@@ -1036,7 +1037,7 @@ void INAInit()
     INA_OUT |= INA_BIT;
 }
 
-void restartINA()
+void restartINA() //TODO: send a restart command instead
 {
     INA_OUT &= ~INA_BIT;
     __delay_cycles((uint16_t)(MSEC * 10));
@@ -1045,8 +1046,11 @@ void restartINA()
 
 void checkRollcallWatchdog()
 {
-    if(!(rollcallWatchdog ^ 0xFF)) //rollcallWatchdog < 255
-        canInit(); //restart CAN controller
+    if(rollcallWatchdog >= ROLLCALL_WATCHDOG_TIMEOUT)
+    {
+        canWrapInitWithFilter(); //also restarts the CAN controller
+        rollcallWatchdog = 0;
+    }
 }
 
 void incrementRollcallWatchdog()

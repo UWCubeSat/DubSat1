@@ -73,9 +73,9 @@
 #define DEPLOY_ENABLE_BIT BIT7
 
 // Debug LED
-#define LED_DIR P1DIR
-#define LED_OUT P1OUT
-#define LED_BIT BIT0
+#define LED_DIR P3DIR
+#define LED_OUT P3OUT
+#define LED_BIT BIT5
 
 #define INA_DIR P3DIR
 #define INA_OUT P3OUT
