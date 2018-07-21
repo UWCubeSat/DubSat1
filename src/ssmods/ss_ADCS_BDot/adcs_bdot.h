@@ -38,6 +38,7 @@
 #define TLM_ID_CONTINUOUS_MAG 120
 #define TLM_ID_BDOT_STATE_STATUS 119
 #define TLM_ID_BDOT_CALIBRATION_STATUS 118
+#define TLM_ID_CONTINUOUS_MAG_WITH_CAL 117
 
 #define OPCODE_MAG_SELECT_CMD 2
 #define OPCODE_MODE_OPERATION_CMD 3
@@ -179,12 +180,14 @@ FILE_STATIC void rcPopulate2(CANPacket *out);
 FILE_STATIC void rcPopulate3(CANPacket *out);
 FILE_STATIC void rcPopulate4(CANPacket *out);
 FILE_STATIC void rcPopulate5(CANPacket *out);
+FILE_STATIC void rcPopulate10(CANPacket *out);
 /************************************************************************/
 
 
 /**************************Cosmos Telemetry******************************/
 FILE_STATIC void send_bdot_mag_reading_cosmos();
 FILE_STATIC void send_continuous_mag_reading_cosmos();
+FILE_STATIC void send_continuous_mag_with_calibration_reading_cosmos();
 
 FILE_STATIC void send_sp_mag1_reading_cosmos();
 FILE_STATIC void send_sp_mag2_reading_cosmos();

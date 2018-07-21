@@ -27,11 +27,16 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_PPT_HALT 285475076
+#define CAN_ID_GCMD_DIST_RESET_MISSION 302252767
+#define CAN_ID_GCMD_DIST_SELF_RESTART 302252766
+#define CAN_ID_RC_EPS_DIST_18 304677595
+#define CAN_ID_RC_ADCS_BDOT_10 304677597
 #define CAN_ID_RC_ADCS_BDOT_9 304677491
 #define CAN_ID_RC_ADCS_BDOT_8 304677490
-#define CAN_ID_GCMD_BATT_SET_HEATER_CHECK 303039194
-#define CAN_ID_DIST_AUTOSEQ_GET_MET_RSP 303039193
-#define CAN_ID_DIST_AUTOSEQ_GET_IND_RSP 303039192
+#define CAN_ID_GCMD_BATT_SET_HEATER_CHECK 301990618
+#define CAN_ID_EPS_DIST_AUTOSEQ_GET_MET_RSP 303039193
+#define CAN_ID_EPS_DIST_AUTOSEQ_GET_IND_RSP 303039192
 #define CAN_ID_GCMD_AUTOSEQ_GET_MET 302252759
 #define CAN_ID_GCMD_AUTOSEQ_GET_INDICES 302252758
 #define CAN_ID_GCMD_AUTOSEQ_REMOVE_CAN_ID 302252757
@@ -49,7 +54,7 @@
 #define CAN_ID_RC_ADCS_BDOT_H2 304677485
 #define CAN_ID_RC_EPS_DIST_H2 304677484
 #define CAN_ID_RC_ADCS_MPC_H2 304677483
-#define CAN_ID_RC_ADCS_ESTIM_H2 304677482
+#define CAN_ID_RC_ADCS_ESTIM_H2 303628906
 #define CAN_ID_RC_ADCS_SP_H2 304677481
 #define CAN_ID_RC_EPS_GEN_H2 304677480
 #define CAN_ID_RC_ADCS_MTQ_H2 304677479
@@ -58,7 +63,7 @@
 #define CAN_ID_RC_ADCS_BDOT_H1 304677476
 #define CAN_ID_RC_EPS_DIST_H1 304677475
 #define CAN_ID_RC_ADCS_MPC_H1 304677474
-#define CAN_ID_RC_ADCS_ESTIM_H1 304677473
+#define CAN_ID_RC_ADCS_ESTIM_H1 303628897
 #define CAN_ID_RC_ADCS_SP_H1 304677472
 #define CAN_ID_RC_EPS_GEN_H1 304677471
 #define CAN_ID_RC_ADCS_MTQ_H1 304677470
@@ -83,12 +88,12 @@
 #define CAN_ID_GCMD_MTQ_POP 302449340
 #define CAN_ID_RC_EPS_BATT_7 304677466
 #define CAN_ID_SENSORPROC_MAG2 335872068
-#define CAN_ID_RC_ADCS_ESTIM_14 304677465
-#define CAN_ID_RC_ADCS_ESTIM_13 304677464
-#define CAN_ID_RC_ADCS_ESTIM_12 304677463
-#define CAN_ID_RC_ADCS_ESTIM_11 304677462
-#define CAN_ID_RC_ADCS_ESTIM_10 304677461
-#define CAN_ID_RC_ADCS_ESTIM_9 304677460
+#define CAN_ID_RC_ADCS_ESTIM_14 303628889
+#define CAN_ID_RC_ADCS_ESTIM_13 303628888
+#define CAN_ID_RC_ADCS_ESTIM_12 303628887
+#define CAN_ID_RC_ADCS_ESTIM_11 303628886
+#define CAN_ID_RC_ADCS_ESTIM_10 303628885
+#define CAN_ID_RC_ADCS_ESTIM_9 303628884
 #define CAN_ID_RC_EPS_DIST_16 304677458
 #define CAN_ID_RC_EPS_DIST_9 304677451
 #define CAN_ID_RC_EPS_DIST_7 304677449
@@ -106,46 +111,46 @@
 #define CAN_ID_RC_EPS_DIST_8 304677450
 #define CAN_ID_RC_EPS_DIST_4 304677446
 #define CAN_ID_RC_EPS_DIST_1 304677443
-#define CAN_ID_RC_ADCS_MPC_11 304677438
-#define CAN_ID_RC_ADCS_MPC_7 304677434
-#define CAN_ID_RC_ADCS_MPC_8 304677435
-#define CAN_ID_RC_ADCS_MPC_9 304677436
-#define CAN_ID_RC_ADCS_MPC_5 304677432
-#define CAN_ID_RC_ADCS_MPC_6 304677433
-#define CAN_ID_RC_ADCS_MPC_4 304677431
-#define CAN_ID_RC_ADCS_MPC_3 304677430
-#define CAN_ID_RC_ADCS_MPC_15 304677442
-#define CAN_ID_RC_ADCS_MPC_12 304677439
-#define CAN_ID_RC_ADCS_MPC_13 304677440
-#define CAN_ID_RC_ADCS_MPC_14 304677441
-#define CAN_ID_RC_ADCS_MPC_10 304677437
-#define CAN_ID_RC_ADCS_MPC_2 304677429
-#define CAN_ID_RC_ADCS_MPC_1 304677428
-#define CAN_ID_RC_ADCS_ESTIM_8 304677427
-#define CAN_ID_RC_ADCS_ESTIM_7 304677426
-#define CAN_ID_RC_ADCS_ESTIM_6 304677425
-#define CAN_ID_RC_ADCS_ESTIM_5 304677424
-#define CAN_ID_RC_ADCS_ESTIM_4 304677423
-#define CAN_ID_RC_ADCS_ESTIM_2 304677421
-#define CAN_ID_RC_ADCS_ESTIM_3 304677422
-#define CAN_ID_RC_ADCS_ESTIM_1 304677420
-#define CAN_ID_RC_ADCS_SP_12 304677414
-#define CAN_ID_RC_ADCS_SP_11 304677413
-#define CAN_ID_RC_ADCS_SP_7 304677409
-#define CAN_ID_RC_ADCS_SP_6 304677408
-#define CAN_ID_RC_ADCS_SP_17 304677419
-#define CAN_ID_RC_ADCS_SP_16 304677418
-#define CAN_ID_RC_ADCS_SP_10 304677412
-#define CAN_ID_RC_ADCS_SP_8 304677410
-#define CAN_ID_RC_ADCS_SP_9 304677411
-#define CAN_ID_RC_ADCS_SP_13 304677415
-#define CAN_ID_RC_ADCS_SP_15 304677417
-#define CAN_ID_RC_ADCS_SP_14 304677416
-#define CAN_ID_RC_ADCS_SP_5 304677407
-#define CAN_ID_RC_ADCS_SP_4 304677406
-#define CAN_ID_RC_ADCS_SP_3 304677405
-#define CAN_ID_RC_ADCS_SP_2 304677404
-#define CAN_ID_RC_ADCS_SP_1 304677403
+#define CAN_ID_RC_ADCS_MPC_11 303628862
+#define CAN_ID_RC_ADCS_MPC_7 303628858
+#define CAN_ID_RC_ADCS_MPC_8 303628859
+#define CAN_ID_RC_ADCS_MPC_9 303628860
+#define CAN_ID_RC_ADCS_MPC_5 303628856
+#define CAN_ID_RC_ADCS_MPC_6 303628857
+#define CAN_ID_RC_ADCS_MPC_4 303628855
+#define CAN_ID_RC_ADCS_MPC_3 303628854
+#define CAN_ID_RC_ADCS_MPC_15 303628866
+#define CAN_ID_RC_ADCS_MPC_12 303628863
+#define CAN_ID_RC_ADCS_MPC_13 303628864
+#define CAN_ID_RC_ADCS_MPC_14 303628865
+#define CAN_ID_RC_ADCS_MPC_10 303628861
+#define CAN_ID_RC_ADCS_MPC_2 303628853
+#define CAN_ID_RC_ADCS_MPC_1 303628852
+#define CAN_ID_RC_ADCS_ESTIM_8 303628851
+#define CAN_ID_RC_ADCS_ESTIM_7 303628850
+#define CAN_ID_RC_ADCS_ESTIM_6 303628849
+#define CAN_ID_RC_ADCS_ESTIM_5 303628848
+#define CAN_ID_RC_ADCS_ESTIM_4 303628847
+#define CAN_ID_RC_ADCS_ESTIM_2 303628845
+#define CAN_ID_RC_ADCS_ESTIM_3 303628846
+#define CAN_ID_RC_ADCS_ESTIM_1 303628844
+#define CAN_ID_RC_ADCS_SP_12 303628838
+#define CAN_ID_RC_ADCS_SP_11 303628837
+#define CAN_ID_RC_ADCS_SP_7 303628833
+#define CAN_ID_RC_ADCS_SP_6 303628832
+#define CAN_ID_RC_ADCS_SP_17 303628843
+#define CAN_ID_RC_ADCS_SP_16 303628842
+#define CAN_ID_RC_ADCS_SP_10 303628836
+#define CAN_ID_RC_ADCS_SP_8 303628834
+#define CAN_ID_RC_ADCS_SP_9 303628835
+#define CAN_ID_RC_ADCS_SP_13 303628839
+#define CAN_ID_RC_ADCS_SP_15 303628841
+#define CAN_ID_RC_ADCS_SP_14 303628840
+#define CAN_ID_RC_ADCS_SP_5 303628831
+#define CAN_ID_RC_ADCS_SP_4 303628830
+#define CAN_ID_RC_ADCS_SP_3 303628829
+#define CAN_ID_RC_ADCS_SP_2 303628828
+#define CAN_ID_RC_ADCS_SP_1 303628827
 #define CAN_ID_RC_ADCS_BDOT_4 304677402
 #define CAN_ID_RC_ADCS_BDOT_3 304677401
 #define CAN_ID_RC_ADCS_BDOT_2 304677383
@@ -162,9 +167,9 @@
 #define CAN_ID_RC_ADCS_MTQ_3 304677389
 #define CAN_ID_RC_ADCS_MTQ_2 304677388
 #define CAN_ID_RC_ADCS_MTQ_1 304677387
-#define CAN_ID_RC_PPT_3 304677386
-#define CAN_ID_RC_PPT_2 304677385
-#define CAN_ID_RC_PPT_1 304677384
+#define CAN_ID_RC_PPT_3 303628810
+#define CAN_ID_RC_PPT_2 303628809
+#define CAN_ID_RC_PPT_1 303628808
 #define CAN_ID_RC_EPS_GEN_9 304677400
 #define CAN_ID_RC_EPS_GEN_8 304677399
 #define CAN_ID_RC_EPS_GEN_7 304677398
@@ -182,47 +187,37 @@
 #define CAN_ID_RC_EPS_BATT_1 304677376
 #define CAN_ID_CMD_PPT_SET_COUNT 302252294
 #define CAN_ID_CMD_PPT_TIME_UPD 302252293
-#define CAN_ID_CMD_PPT_HALT 285475076
-#define CAN_ID_PPT_FIRING_RESULT 304677104
+#define CAN_ID_PPT_FIRING_RESULT 303628528
 #define CAN_ID_TLE_5 309788744
 #define CAN_ID_TLE_4 309788743
 #define CAN_ID_TLE_3 309788742
 #define CAN_ID_TLE_2 309788741
 #define CAN_ID_TLE_1 302448708
-#define CAN_ID_EPS_PD_UNDERVOLTAGE 304218338
-#define CAN_ID_EPS_PD_BATT_VOLTAGE 304218337
-#define CAN_ID_CMD_PD_RST 304218385
-#define CAN_ID_CMD_COM2_RUN 302514673
-#define CAN_ID_COM2_STATE 304611824
-#define CAN_ID_CMD_PD_ENABLE 303300865
-#define CAN_ID_CMD_BATT_RST 304349442
-#define CAN_ID_CMD_BATT_BAL_ENABLE 304349443
-#define CAN_ID_CMD_REBOOT_REQUEST 1310728
-#define CAN_ID_CMD_IGNORE_FSW 304349220
-#define CAN_ID_CMD_MTQ_FSW 304349219
-#define CAN_ID_EPS_DOMAIN_OUTPUT 304218336
+#define CAN_ID_CMD_PD_RST 302121233
+#define CAN_ID_GCMD_COM2_RUN 302514673
+#define CAN_ID_COM2_STATE 303563248
+#define CAN_ID_CMD_PD_ENABLE 302252289
+#define CAN_ID_CMD_BATT_RST 302252290
+#define CAN_ID_CMD_BATT_BAL_ENABLE 302252291
+#define CAN_ID_CMD_REBOOT_REQUEST 262152
+#define CAN_ID_CMD_IGNORE_FSW 302252068
+#define CAN_ID_CMD_MTQ_FSW 302252067
 #define CAN_ID_SENSORPROC_IMU 335872066
 #define CAN_ID_SENSORPROC_MAG 335872067
 #define CAN_ID_CMD_ROLLCALL 1114132
-#define CAN_ID_MTQ_ACK 302448688
-#define CAN_ID_GEN_PANEL_TEMP 304677075
-#define CAN_ID_CMD_GEN_RST 303300880
-#define CAN_ID_CMD_PPT_SINGLE_FIRE 303300864
-#define CAN_ID_GEN_PANEL_PWR 304218322
-#define CAN_ID_GEN_PANEL_CURRENT 304218321
-#define CAN_ID_GEN_PANEL_VOLTAGE 303169744
+#define CAN_ID_MTQ_ACK 303497264
+#define CAN_ID_CMD_PPT_SINGLE_FIRE 302252288
 #define CAN_ID_MPC_VP 305594402
-#define CAN_ID_EPS_BATT_STATE 303169730
-#define CAN_ID_EPS_BATT_CURRENT 303169729
-#define CAN_ID_EPS_BATT_VOLTAGE 303169728
 #define CAN_ID_SENSORPROC_SUN 335872065
-#define CAN_ID_CMD_MTQ_BDOT 304545825
-#define CAN_ID_BDOT_TUMBLE_STATUS 302448672
-#define CAN_ID_SYNC_2 65554
-#define CAN_ID_SYNC_1 65553
-#define CAN_ID_MSP_TEMP 304676883
+#define CAN_ID_CMD_MTQ_BDOT 303497249
+#define CAN_ID_BDOT_TUMBLE_STATUS 304545824
+#define CAN_ID_SYNC_1 2162705
 #define CAN_ID_GRND_EPOCH 302449337
 
+#define CAN_ENUM_GEN_PNL_CHARGING_CHARGING 1
+#define CAN_ENUM_GEN_PNL_CHARGING_NOTCHARGING 0
+#define CAN_ENUM_GEN_PNL_ENABLED_ENABLED 1
+#define CAN_ENUM_GEN_PNL_ENABLED_DISABLED 0
 #define CAN_ENUM_FIRE_RESULT_NOMAINDISCHARGE 2
 #define CAN_ENUM_FIRE_RESULT_NOMAINCHARGE 1
 #define CAN_ENUM_FIRE_RESULT_FIRESUCCESSFUL 0
@@ -309,6 +304,31 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_ppt_halt {
+    uint8_t gcmd_ppt_halt_confirm; //  (No Units)
+} gcmd_ppt_halt;
+
+typedef struct gcmd_dist_reset_mission {
+} gcmd_dist_reset_mission;
+
+typedef struct gcmd_dist_self_restart {
+} gcmd_dist_self_restart;
+
+typedef struct rc_eps_dist_18 {
+    uint16_t rc_eps_dist_18_rahs_ocp_thresh; // ocpThresh
+    uint16_t rc_eps_dist_18_ppt_ocp_thresh; // ocpThresh
+    uint16_t rc_eps_dist_18_estim_ocp_thresh; // ocpThresh
+    uint16_t rc_eps_dist_18_eps_ocp_thresh; // ocpThresh
+    uint16_t rc_eps_dist_18_com2_ocp_thresh; // ocpThresh
+    uint16_t rc_eps_dist_18_bdot_ocp_thresh; // ocpThresh
+} rc_eps_dist_18;
+
+typedef struct rc_adcs_bdot_10 {
+    uint16_t rc_adcs_bdot_10_dipole_var_z; //  (No Units)
+    uint16_t rc_adcs_bdot_10_dipole_var_y; //  (No Units)
+    uint16_t rc_adcs_bdot_10_dipole_var_x; //  (No Units)
+} rc_adcs_bdot_10;
+
 typedef struct rc_adcs_bdot_9 {
     int16_t rc_adcs_bdot_9_spam_off_z_mtq_z; // 1/73 nT
     int16_t rc_adcs_bdot_9_spam_off_z_mtq_y; // 1/73 nT
@@ -326,13 +346,13 @@ typedef struct gcmd_batt_set_heater_check {
     uint8_t gcmd_batt_set_heater_check_state; //  (No Units)
 } gcmd_batt_set_heater_check;
 
-typedef struct dist_autoseq_get_met_rsp {
-    uint32_t dist_autoseq_get_met_rsp_met; // 2^-15s
-} dist_autoseq_get_met_rsp;
+typedef struct eps_dist_autoseq_get_met_rsp {
+    uint32_t eps_dist_autoseq_get_met_rsp_met; // 2^-15s
+} eps_dist_autoseq_get_met_rsp;
 
-typedef struct dist_autoseq_get_ind_rsp {
-    uint64_t dist_autoseq_get_ind_rsp_indices; //  (No Units)
-} dist_autoseq_get_ind_rsp;
+typedef struct eps_dist_autoseq_get_ind_rsp {
+    uint64_t eps_dist_autoseq_get_ind_rsp_ind; //  (No Units)
+} eps_dist_autoseq_get_ind_rsp;
 
 typedef struct gcmd_autoseq_get_met {
     uint8_t gcmd_autoseq_get_met_index; //  (No Units)
@@ -1012,6 +1032,9 @@ typedef struct estim_state {
 } estim_state;
 
 typedef struct rc_adcs_mtq_5 {
+    uint16_t rc_adcs_mtq_5_cmds_z_var; //  (No Units)
+    uint16_t rc_adcs_mtq_5_cmds_y_var; //  (No Units)
+    uint16_t rc_adcs_mtq_5_cmds_x_var; //  (No Units)
     uint8_t rc_adcs_mtq_5_reset_counts; //  (No Units)
     uint8_t rc_adcs_mtq_5_fsw_ignore; //  (No Units)
 } rc_adcs_mtq_5;
@@ -1188,10 +1211,6 @@ typedef struct cmd_ppt_time_upd {
     uint16_t cmd_ppt_time_upd_charge; // 2^-15s
 } cmd_ppt_time_upd;
 
-typedef struct cmd_ppt_halt {
-    uint8_t cmd_ppt_halt_confirm; //  (No Units)
-} cmd_ppt_halt;
-
 typedef struct ppt_firing_result {
     uint8_t ppt_firing_result_panel_good; //  (No Units)
     uint8_t ppt_firing_result_batt_good; //  (No Units)
@@ -1224,24 +1243,15 @@ typedef struct tle_1 {
     float tle_1_bstar; //  (No Units)
 } tle_1;
 
-typedef struct eps_pd_undervoltage {
-    uint8_t eps_pd_undervoltage_state; //  (No Units)
-} eps_pd_undervoltage;
-
-typedef struct eps_pd_batt_voltage {
-    uint8_t eps_pd_batt_voltage_agg; //  (No Units)
-    uint16_t eps_pd_batt_voltage_val; // mV
-} eps_pd_batt_voltage;
-
 typedef struct cmd_pd_rst {
     uint8_t cmd_pd_rst_confirm; //  (No Units)
 } cmd_pd_rst;
 
-typedef struct cmd_com2_run {
-    uint8_t cmd_com2_run_clear; //  (No Units)
-    uint8_t cmd_com2_run_jump; //  (No Units)
-    uint8_t cmd_com2_run_fileno; //  (No Units)
-} cmd_com2_run;
+typedef struct gcmd_com2_run {
+    uint8_t gcmd_com2_run_clear; //  (No Units)
+    uint8_t gcmd_com2_run_jump; //  (No Units)
+    uint8_t gcmd_com2_run_fileno; //  (No Units)
+} gcmd_com2_run;
 
 typedef struct com2_state {
     uint8_t com2_state_health_state; //  (No Units)
@@ -1279,15 +1289,6 @@ typedef struct cmd_mtq_fsw {
     int8_t cmd_mtq_fsw_x; // pct doodie
 } cmd_mtq_fsw;
 
-typedef struct eps_domain_output {
-    uint8_t eps_domain_output_state; //  (No Units)
-    uint8_t eps_domain_output_oc_trip; //  (No Units)
-    uint16_t eps_domain_output_v_c_max; // mA
-    uint16_t eps_domain_output_v_c; // mA
-    uint16_t eps_domain_output_v; // mV
-    uint8_t eps_domain_output_num; //  (No Units)
-} eps_domain_output;
-
 typedef struct sensorproc_imu {
     int16_t sensorproc_imu_z; // 0.004375 deg/s
     int16_t sensorproc_imu_y; // 0.004375 deg/s
@@ -1320,65 +1321,14 @@ typedef struct mtq_ack {
     int8_t mtq_ack_last_bdot_x; // pct
 } mtq_ack;
 
-typedef struct gen_panel_temp {
-    uint8_t gen_panel_temp_agg; //  (No Units)
-    int8_t gen_panel_temp_x_pos; //  (No Units)
-    int8_t gen_panel_temp_y_neg; //  (No Units)
-    int8_t gen_panel_temp_y_pos; //  (No Units)
-} gen_panel_temp;
-
-typedef struct cmd_gen_rst {
-    uint8_t cmd_gen_rst_confirm; // bool
-} cmd_gen_rst;
-
 typedef struct cmd_ppt_single_fire {
     uint8_t cmd_ppt_single_fire_override; //  (No Units)
     uint8_t cmd_ppt_single_fire_with_pulse; //  (No Units)
 } cmd_ppt_single_fire;
 
-typedef struct gen_panel_pwr {
-    uint8_t gen_panel_pwr_agg; //  (No Units)
-    uint16_t gen_panel_pwr_x_pos; // mW
-    uint16_t gen_panel_pwr_y_neg; // mW
-    uint16_t gen_panel_pwr_y_pos; // mW
-} gen_panel_pwr;
-
-typedef struct gen_panel_current {
-    uint16_t gen_panel_current_x_pos; // mA
-    uint16_t gen_panel_current_y_neg; // mA
-    uint16_t gen_panel_current_y_pos; // mA
-} gen_panel_current;
-
-typedef struct gen_panel_voltage {
-    uint16_t gen_panel_voltage_x_pos; // mV
-    uint16_t gen_panel_voltage_y_neg; // mV
-    uint16_t gen_panel_voltage_y_pos; // mV
-} gen_panel_voltage;
-
 typedef struct mpc_vp {
     uint8_t mpc_vp_status; //  (No Units)
 } mpc_vp;
-
-typedef struct eps_batt_state {
-    uint8_t eps_batt_state_bal; //  (No Units)
-    uint8_t eps_batt_state_heat; //  (No Units)
-    uint8_t eps_batt_state_soc; // pct
-    int8_t eps_batt_state_temp; // Deg C
-} eps_batt_state;
-
-typedef struct eps_batt_current {
-    int16_t eps_batt_current_node_c; // dmA (0.1mA)
-    int16_t eps_batt_current_min_c; // cA
-    int16_t eps_batt_current_max_c; // cA
-    int16_t eps_batt_current_c; // cA
-} eps_batt_current;
-
-typedef struct eps_batt_voltage {
-    uint16_t eps_batt_voltage_v_max_delta; // mV
-    uint16_t eps_batt_voltage_node_v; // mV
-    uint16_t eps_batt_voltage_min_v; // mV
-    uint16_t eps_batt_voltage_v; // mV
-} eps_batt_voltage;
 
 typedef struct sensorproc_sun {
     uint8_t sensorproc_sun_valid; // bool
@@ -1397,20 +1347,28 @@ typedef struct bdot_tumble_status {
     uint8_t bdot_tumble_status_status; // bool
 } bdot_tumble_status;
 
-typedef struct sync_2 {
-} sync_2;
-
 typedef struct sync_1 {
 } sync_1;
-
-typedef struct msp_temp {
-    int16_t msp_temp_temp; // cC
-} msp_temp;
 
 typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_ppt_halt(gcmd_ppt_halt *input, CANPacket* output);
+void decodegcmd_ppt_halt(CANPacket *input, gcmd_ppt_halt *output);
+
+void encodegcmd_dist_reset_mission(gcmd_dist_reset_mission *input, CANPacket* output);
+void decodegcmd_dist_reset_mission(CANPacket *input, gcmd_dist_reset_mission *output);
+
+void encodegcmd_dist_self_restart(gcmd_dist_self_restart *input, CANPacket* output);
+void decodegcmd_dist_self_restart(CANPacket *input, gcmd_dist_self_restart *output);
+
+void encoderc_eps_dist_18(rc_eps_dist_18 *input, CANPacket* output);
+void decoderc_eps_dist_18(CANPacket *input, rc_eps_dist_18 *output);
+
+void encoderc_adcs_bdot_10(rc_adcs_bdot_10 *input, CANPacket* output);
+void decoderc_adcs_bdot_10(CANPacket *input, rc_adcs_bdot_10 *output);
 
 void encoderc_adcs_bdot_9(rc_adcs_bdot_9 *input, CANPacket* output);
 void decoderc_adcs_bdot_9(CANPacket *input, rc_adcs_bdot_9 *output);
@@ -1421,11 +1379,11 @@ void decoderc_adcs_bdot_8(CANPacket *input, rc_adcs_bdot_8 *output);
 void encodegcmd_batt_set_heater_check(gcmd_batt_set_heater_check *input, CANPacket* output);
 void decodegcmd_batt_set_heater_check(CANPacket *input, gcmd_batt_set_heater_check *output);
 
-void encodedist_autoseq_get_met_rsp(dist_autoseq_get_met_rsp *input, CANPacket* output);
-void decodedist_autoseq_get_met_rsp(CANPacket *input, dist_autoseq_get_met_rsp *output);
+void encodeeps_dist_autoseq_get_met_rsp(eps_dist_autoseq_get_met_rsp *input, CANPacket* output);
+void decodeeps_dist_autoseq_get_met_rsp(CANPacket *input, eps_dist_autoseq_get_met_rsp *output);
 
-void encodedist_autoseq_get_ind_rsp(dist_autoseq_get_ind_rsp *input, CANPacket* output);
-void decodedist_autoseq_get_ind_rsp(CANPacket *input, dist_autoseq_get_ind_rsp *output);
+void encodeeps_dist_autoseq_get_ind_rsp(eps_dist_autoseq_get_ind_rsp *input, CANPacket* output);
+void decodeeps_dist_autoseq_get_ind_rsp(CANPacket *input, eps_dist_autoseq_get_ind_rsp *output);
 
 void encodegcmd_autoseq_get_met(gcmd_autoseq_get_met *input, CANPacket* output);
 void decodegcmd_autoseq_get_met(CANPacket *input, gcmd_autoseq_get_met *output);
@@ -1877,9 +1835,6 @@ void decodecmd_ppt_set_count(CANPacket *input, cmd_ppt_set_count *output);
 void encodecmd_ppt_time_upd(cmd_ppt_time_upd *input, CANPacket* output);
 void decodecmd_ppt_time_upd(CANPacket *input, cmd_ppt_time_upd *output);
 
-void encodecmd_ppt_halt(cmd_ppt_halt *input, CANPacket* output);
-void decodecmd_ppt_halt(CANPacket *input, cmd_ppt_halt *output);
-
 void encodeppt_firing_result(ppt_firing_result *input, CANPacket* output);
 void decodeppt_firing_result(CANPacket *input, ppt_firing_result *output);
 
@@ -1898,17 +1853,11 @@ void decodetle_2(CANPacket *input, tle_2 *output);
 void encodetle_1(tle_1 *input, CANPacket* output);
 void decodetle_1(CANPacket *input, tle_1 *output);
 
-void encodeeps_pd_undervoltage(eps_pd_undervoltage *input, CANPacket* output);
-void decodeeps_pd_undervoltage(CANPacket *input, eps_pd_undervoltage *output);
-
-void encodeeps_pd_batt_voltage(eps_pd_batt_voltage *input, CANPacket* output);
-void decodeeps_pd_batt_voltage(CANPacket *input, eps_pd_batt_voltage *output);
-
 void encodecmd_pd_rst(cmd_pd_rst *input, CANPacket* output);
 void decodecmd_pd_rst(CANPacket *input, cmd_pd_rst *output);
 
-void encodecmd_com2_run(cmd_com2_run *input, CANPacket* output);
-void decodecmd_com2_run(CANPacket *input, cmd_com2_run *output);
+void encodegcmd_com2_run(gcmd_com2_run *input, CANPacket* output);
+void decodegcmd_com2_run(CANPacket *input, gcmd_com2_run *output);
 
 void encodecom2_state(com2_state *input, CANPacket* output);
 void decodecom2_state(CANPacket *input, com2_state *output);
@@ -1931,9 +1880,6 @@ void decodecmd_ignore_fsw(CANPacket *input, cmd_ignore_fsw *output);
 void encodecmd_mtq_fsw(cmd_mtq_fsw *input, CANPacket* output);
 void decodecmd_mtq_fsw(CANPacket *input, cmd_mtq_fsw *output);
 
-void encodeeps_domain_output(eps_domain_output *input, CANPacket* output);
-void decodeeps_domain_output(CANPacket *input, eps_domain_output *output);
-
 void encodesensorproc_imu(sensorproc_imu *input, CANPacket* output);
 void decodesensorproc_imu(CANPacket *input, sensorproc_imu *output);
 
@@ -1946,35 +1892,11 @@ void decodecmd_rollcall(CANPacket *input, cmd_rollcall *output);
 void encodemtq_ack(mtq_ack *input, CANPacket* output);
 void decodemtq_ack(CANPacket *input, mtq_ack *output);
 
-void encodegen_panel_temp(gen_panel_temp *input, CANPacket* output);
-void decodegen_panel_temp(CANPacket *input, gen_panel_temp *output);
-
-void encodecmd_gen_rst(cmd_gen_rst *input, CANPacket* output);
-void decodecmd_gen_rst(CANPacket *input, cmd_gen_rst *output);
-
 void encodecmd_ppt_single_fire(cmd_ppt_single_fire *input, CANPacket* output);
 void decodecmd_ppt_single_fire(CANPacket *input, cmd_ppt_single_fire *output);
 
-void encodegen_panel_pwr(gen_panel_pwr *input, CANPacket* output);
-void decodegen_panel_pwr(CANPacket *input, gen_panel_pwr *output);
-
-void encodegen_panel_current(gen_panel_current *input, CANPacket* output);
-void decodegen_panel_current(CANPacket *input, gen_panel_current *output);
-
-void encodegen_panel_voltage(gen_panel_voltage *input, CANPacket* output);
-void decodegen_panel_voltage(CANPacket *input, gen_panel_voltage *output);
-
 void encodempc_vp(mpc_vp *input, CANPacket* output);
 void decodempc_vp(CANPacket *input, mpc_vp *output);
-
-void encodeeps_batt_state(eps_batt_state *input, CANPacket* output);
-void decodeeps_batt_state(CANPacket *input, eps_batt_state *output);
-
-void encodeeps_batt_current(eps_batt_current *input, CANPacket* output);
-void decodeeps_batt_current(CANPacket *input, eps_batt_current *output);
-
-void encodeeps_batt_voltage(eps_batt_voltage *input, CANPacket* output);
-void decodeeps_batt_voltage(CANPacket *input, eps_batt_voltage *output);
 
 void encodesensorproc_sun(sensorproc_sun *input, CANPacket* output);
 void decodesensorproc_sun(CANPacket *input, sensorproc_sun *output);
@@ -1985,14 +1907,8 @@ void decodecmd_mtq_bdot(CANPacket *input, cmd_mtq_bdot *output);
 void encodebdot_tumble_status(bdot_tumble_status *input, CANPacket* output);
 void decodebdot_tumble_status(CANPacket *input, bdot_tumble_status *output);
 
-void encodesync_2(sync_2 *input, CANPacket* output);
-void decodesync_2(CANPacket *input, sync_2 *output);
-
 void encodesync_1(sync_1 *input, CANPacket* output);
 void decodesync_1(CANPacket *input, sync_1 *output);
-
-void encodemsp_temp(msp_temp *input, CANPacket* output);
-void decodemsp_temp(CANPacket *input, msp_temp *output);
 
 void encodegrnd_epoch(grnd_epoch *input, CANPacket* output);
 void decodegrnd_epoch(CANPacket *input, grnd_epoch *output);

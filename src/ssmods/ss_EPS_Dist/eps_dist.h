@@ -215,4 +215,24 @@ void distInitializeOCPThresholds();
 
 void can_packet_rx_callback(CANPacket *packet);
 
+FILE_STATIC void rcPopulateH1(CANPacket *out);
+FILE_STATIC void rcPopulateH2(CANPacket *out);
+FILE_STATIC void rcPopulate2(CANPacket *out);
+FILE_STATIC void rcPopulate3(CANPacket *out);
+FILE_STATIC void rcPopulate4(CANPacket *out);
+FILE_STATIC void rcPopulate5(CANPacket *out);
+FILE_STATIC void rcPopulate6(CANPacket *out);
+FILE_STATIC void rcPopulate7(CANPacket *out);
+FILE_STATIC void rcPopulate8(CANPacket *out);
+FILE_STATIC void rcPopulate9(CANPacket *out);
+FILE_STATIC void rcPopulate10(CANPacket *out);
+FILE_STATIC void rcPopulate11(CANPacket *out);
+FILE_STATIC void rcPopulate12(CANPacket *out);
+FILE_STATIC void rcPopulate13(CANPacket *out);
+FILE_STATIC void rcPopulate14(CANPacket *out);
+FILE_STATIC void rcPopulate15(CANPacket *out);
+FILE_STATIC void rcPopulate16(CANPacket *out);
+FILE_STATIC void rcPopulate17(CANPacket *out);
+FILE_STATIC void rcPopulate18(CANPacket *out);
+
 #endif /* EPS_DIST_H_ */

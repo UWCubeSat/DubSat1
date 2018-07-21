@@ -14,6 +14,7 @@
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
+#include "interfaces/canwrap.h"
 
 // Solar panel configuration
 #define NUM_PANELS  3
@@ -152,5 +153,17 @@ typedef struct _module_status {
 } ModuleStatus;
 
 uint8_t genActionCallback(DebugMode mode, uint8_t * cmdstr);
+
+FILE_STATIC void rcPopulateH1(CANPacket *out);
+FILE_STATIC void rcPopulateH2(CANPacket *out);
+FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulate2(CANPacket *out);
+FILE_STATIC void rcPopulate3(CANPacket *out);
+FILE_STATIC void rcPopulate4(CANPacket *out);
+FILE_STATIC void rcPopulate5(CANPacket *out);
+FILE_STATIC void rcPopulate6(CANPacket *out);
+FILE_STATIC void rcPopulate7(CANPacket *out);
+FILE_STATIC void rcPopulate8(CANPacket *out);
+FILE_STATIC void rcPopulate9(CANPacket *out);
 
 #endif /* EPS_GEN_H_ */

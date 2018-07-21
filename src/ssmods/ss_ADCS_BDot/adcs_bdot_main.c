@@ -90,6 +90,7 @@ FILE_STATIC health_segment hseg;
 FILE_STATIC meta_segment metaSeg;
 /* stores the magnetometer data read every 10 hz */
 FILE_STATIC magnetometer_segment continuous_mag_data_cosmos;
+FILE_STATIC magnetometer_segment continuous_mag_with_calibration_data_cosmos;
 /* stores the VALID bdot magnetometer data */
 FILE_STATIC magnetometer_segment bdot_magnetometer_data_cosmos;
 
@@ -220,7 +221,7 @@ FILE_STATIC uint8_t nap_status_timer_on_flag = 0;
 #pragma PERSISTENT(check_nap_status_timer_ms);
 
 FILE_STATIC TIMER_HANDLE calibration_timer = 15;
-FILE_STATIC uint32_t calibration_off_timer_ms = 120000; // 6 min
+FILE_STATIC uint32_t calibration_off_timer_ms = 30000; // 6 min
 FILE_STATIC uint32_t calibration_on_timer_ms = 4000;
 FILE_STATIC uint8_t calibration_timer_on_flag = 0;
 
@@ -271,7 +272,7 @@ FILE_STATIC int16_t spam_off_z_avg[3];
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5
+ rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate10
 };
 /**************************************************************/
 
@@ -305,6 +306,7 @@ int main(void)
     start_spam_timer(spam_off_timer_ms);
     /* Turns on the timer that will report 1 if satellite is tumbling for too long */
     start_check_nap_status_timer();
+    start_calibration_timer(calibration_off_timer_ms);
 
     while (1)
     {
@@ -384,6 +386,7 @@ FILE_STATIC void initial_setup()
     /* populate header for backchannel  */
     bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
     bcbinPopulateHeader(&continuous_mag_data_cosmos.header, TLM_ID_CONTINUOUS_MAG, sizeof(continuous_mag_data_cosmos));
+    bcbinPopulateHeader(&continuous_mag_with_calibration_data_cosmos.header, TLM_ID_CONTINUOUS_MAG_WITH_CAL, sizeof(continuous_mag_with_calibration_data_cosmos));
     bcbinPopulateHeader(&bdot_magnetometer_data_cosmos.header, TLM_ID_BDOT_MAGNETOMETER, sizeof(bdot_magnetometer_data_cosmos));
     bcbinPopulateHeader(&sp_mag1_data_cosmos.header, TLM_ID_SP_MAG1, sizeof(sp_mag1_data_cosmos));
     bcbinPopulateHeader(&sp_mag2_data_cosmos.header, TLM_ID_SP_MAG2, sizeof(sp_mag2_data_cosmos));
@@ -1086,6 +1089,7 @@ void send_cosmos_telem()
     send_bdot_state_status_cosmos();
     send_simulink_segment_cosmos();
     send_bdot_calibration_status_cosmos();
+    send_continuous_mag_with_calibration_reading_cosmos();
 //    send_sp_mag1_reading_cosmos();
 //    send_sp_mag2_reading_cosmos();
     bcbinSendPacket((uint8_t *) &metaSeg, sizeof(metaSeg));
@@ -1228,6 +1232,15 @@ void send_continuous_mag_reading_cosmos()
     continuous_mag_data_cosmos.zMag = continuous_bdot_mag_data->convertedZ * 1e9;
 
     bcbinSendPacket((uint8_t *) &continuous_mag_data_cosmos, sizeof(continuous_mag_data_cosmos));
+}
+
+void send_continuous_mag_with_calibration_reading_cosmos()
+{
+    continuous_mag_with_calibration_data_cosmos.xMag = continuous_bdot_mag_data->convertedX * continuous_bdot_mag_data->calibration_factor_x * 1e9;
+    continuous_mag_with_calibration_data_cosmos.yMag = continuous_bdot_mag_data->convertedY * continuous_bdot_mag_data->calibration_factor_y * 1e9;
+    continuous_mag_with_calibration_data_cosmos.zMag = continuous_bdot_mag_data->convertedZ * continuous_bdot_mag_data->calibration_factor_z * 1e9;
+
+    bcbinSendPacket((uint8_t *) &continuous_mag_with_calibration_data_cosmos, sizeof(continuous_mag_with_calibration_data_cosmos));
 }
 
 /* send magnetometer reading segment through backchannel */
@@ -1599,9 +1612,7 @@ void rcPopulate5(CANPacket *out)
     rc.rc_adcs_bdot_5_spam_on_z_mtq_x = spam_on_z_avg[0];
     rc.rc_adcs_bdot_5_spam_on_z_mtq_y = spam_on_z_avg[1];
     rc.rc_adcs_bdot_5_spam_on_z_mtq_z = spam_on_z_avg[2];
-//    rc.rc_adcs_bdot_5_diplole_var_x = compressVariance(aggVec_var_i_f(&dipole_x_agg));
     encoderc_adcs_bdot_5(&rc, out);
-    aggVec_as_reset((aggVec *)&dipole_x_agg);
 }
 
 void rcPopulate6(CANPacket *out)
@@ -1628,14 +1639,20 @@ void rcPopulate7(CANPacket *out)
     rc.rc_adcs_bdot_7_spam_magnitude_x = gcmd_spam_x_dipole;
     rc.rc_adcs_bdot_7_spam_magnitude_y = gcmd_spam_y_dipole;
     rc.rc_adcs_bdot_7_spam_magnitude_z = gcmd_spam_z_dipole;
- //   rc.rc_adcs_bdot_7_dipole_var_y = compressVariance(aggVec_var_i_f(&dipole_y_agg));
- //   rc.rc_adcs_bdot_7_dipole_var_z = compressVariance(aggVec_var_i_f(&dipole_z_agg));
     encoderc_adcs_bdot_7(&rc, out);
+}
+
+void rcPopulate10(CANPacket *out)
+{
+    rc_adcs_bdot_10 rc = {0};
+    rc.rc_adcs_bdot_10_dipole_var_x = compressVariance(aggVec_var_i_f(&dipole_x_agg));
+    rc.rc_adcs_bdot_10_dipole_var_y = compressVariance(aggVec_var_i_f(&dipole_y_agg));
+    rc.rc_adcs_bdot_10_dipole_var_z = compressVariance(aggVec_var_i_f(&dipole_z_agg));
+    encoderc_adcs_bdot_10(&rc, out);
+    aggVec_as_reset((aggVec *)&dipole_x_agg);
     aggVec_as_reset((aggVec *)&dipole_y_agg);
     aggVec_as_reset((aggVec *)&dipole_z_agg);
 }
-
-
 
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
