@@ -114,9 +114,10 @@ IMUData *imuReadGyroAccelData()
     int16_t prevZ = idata.rawGyroZ;
 #endif /* __HIL_AA_GLITCHFILTER__ */
 
-    idata.rawGyroX = (int16_t)(i2cBuff[0] | ((int16_t)i2cBuff[1] << 8));
-    idata.rawGyroY = (int16_t)(i2cBuff[2] | ((int16_t)i2cBuff[3] << 8));
-    idata.rawGyroZ = (int16_t)(i2cBuff[4] | ((int16_t)i2cBuff[5] << 8));
+    // the datasheet says it's little-endian, but testing shows big-endian
+    idata.rawGyroX = (int16_t)(i2cBuff[1] | ((uint16_t)i2cBuff[0] << 8));
+    idata.rawGyroY = (int16_t)(i2cBuff[3] | ((uint16_t)i2cBuff[2] << 8));
+    idata.rawGyroZ = (int16_t)(i2cBuff[5] | ((uint16_t)i2cBuff[4] << 8));
 
 #if defined(__HIL_AA_GLITCHFILTER__)
     if (hasRead && abs(idata.rawGyroX - prevX) > GLITCH_FILTER_MAX_DIFF
@@ -138,6 +139,18 @@ IMUData *imuReadGyroAccelData()
 #endif  // IMU type
 
     return &idata;
+}
+
+uint8_t imuWhoami()
+{
+#if defined(__BSP_HW_IMU_LSM6DSM__)
+    i2cMasterRegisterRead(hSensor, IMU_LSM6DSM_WHOAMI_REGS, i2cBuff, 1);
+#else
+
+#error whoami not implemented for other IMUs
+
+#endif  // IMU type
+    return i2cBuff[0];
 }
 
 float imuConvertRawToRPS(int16_t raw)

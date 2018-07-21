@@ -37,6 +37,7 @@
 
 #define IMU_I2C_7BIT_ADDRESS                        IMU_LSM6DSM_I2C_7BIT_ADDRESS
 
+
 #else
 
 #error Unknown - or no - IMU hardware selected.
@@ -62,6 +63,11 @@ typedef enum {
 // Main entry points
 uint8_t imuInit(bus_instance_i2c i2cbus, IMUUpdateRate rate);
 IMUData *imuReadGyroAccelData();
+
+/**
+ * Returns the IMU slave address
+ */
+uint8_t imuWhoami();
 
 /**
  * Convert a raw angular rate reading to radians per second

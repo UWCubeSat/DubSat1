@@ -25,5 +25,6 @@
 // Output register info
 #define IMU_LSM6DSM_OUTPUT_DATA_REGS        0x22
 #define IMU_LSM6DSM_DATA_NUM_BYTES          6
+#define IMU_LSM6DSM_WHOAMI_REGS             0x0f
 
 #endif /* DSBASE_SENSORS_LSM6DSM_IMU_H_ */

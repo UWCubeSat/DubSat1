@@ -56,8 +56,8 @@ void imuioUpdate()
     data = &mockData;
 #endif
 
-    // TODO write validity check
-    uint8_t valid = 1;
+    // simple sanity check for validity
+    uint8_t valid = imuWhoami() == IMU_I2C_7BIT_ADDRESS;
 
     // set autocode inputs
     rtU.omega_body_radps_gyro[0] = imuConvertRawToRPS(data->rawGyroX);
