@@ -64,11 +64,22 @@ uint8_t imuInit(bus_instance_i2c i2cbus, IMUUpdateRate rate)
         break;
     }
 
+    uint8_t error = 0;
+
     i2cBuff[0] = IMU_LSM6DSM_CTRL2_G;
     i2cBuff[1] = rateVal;
-    i2cBuff[2] = IMU_LSM6DSM_CTRL7_G;
-    i2cBuff[3] = IMU_LSM6DSM_HIGH_PERF_ON;
-    return i2cMasterWrite(hSensor, i2cBuff, 4);
+    error = i2cMasterWrite(hSensor, i2cBuff, 2);
+
+    // set CTRL3_C to default to guarantee endianness
+    i2cBuff[0] = IMU_LSM6DSM_CTRL3_C;
+    i2cBuff[1] = IMU_LSM6DSM_CTRL3_C_DEFAULT;
+    error |= i2cMasterWrite(hSensor, i2cBuff, 2);
+
+    i2cBuff[0] = IMU_LSM6DSM_CTRL7_G;
+    i2cBuff[1] = IMU_LSM6DSM_HIGH_PERF_ON;
+    error |= i2cMasterWrite(hSensor, i2cBuff, 2);
+
+    return error;
 
 #else
 
@@ -114,10 +125,9 @@ IMUData *imuReadGyroAccelData()
     int16_t prevZ = idata.rawGyroZ;
 #endif /* __HIL_AA_GLITCHFILTER__ */
 
-    // the datasheet says it's little-endian, but testing shows big-endian
-    idata.rawGyroX = (int16_t)(i2cBuff[1] | ((uint16_t)i2cBuff[0] << 8));
-    idata.rawGyroY = (int16_t)(i2cBuff[3] | ((uint16_t)i2cBuff[2] << 8));
-    idata.rawGyroZ = (int16_t)(i2cBuff[5] | ((uint16_t)i2cBuff[4] << 8));
+    idata.rawGyroX = (int16_t)(i2cBuff[0] | ((int16_t)i2cBuff[1] << 8));
+    idata.rawGyroY = (int16_t)(i2cBuff[2] | ((int16_t)i2cBuff[3] << 8));
+    idata.rawGyroZ = (int16_t)(i2cBuff[4] | ((int16_t)i2cBuff[5] << 8));
 
 #if defined(__HIL_AA_GLITCHFILTER__)
     if (hasRead && abs(idata.rawGyroX - prevX) > GLITCH_FILTER_MAX_DIFF

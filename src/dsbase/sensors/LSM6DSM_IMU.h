@@ -12,6 +12,7 @@
 
 // The interesting command registers
 #define IMU_LSM6DSM_CTRL2_G                 0x11
+#define IMU_LSM6DSM_CTRL3_C                 0x12
 #define IMU_LSM6DSM_CTRL7_G                 0x16
 
 // Relevant settings for command registers
@@ -21,6 +22,7 @@
 #define IMU_LSM6DSM_ODR_104_FS125           0x42
 #define IMU_LSM6DSM_HIGH_PERF_OFF           0x80
 #define IMU_LSM6DSM_HIGH_PERF_ON            0x00
+#define IMU_LSM6DSM_CTRL3_C_DEFAULT         0b00000100
 
 // Output register info
 #define IMU_LSM6DSM_OUTPUT_DATA_REGS        0x22
