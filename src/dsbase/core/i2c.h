@@ -81,13 +81,13 @@ FILE_STATIC void inline i2cAutoStopSetTotalBytes(bus_instance_i2c bus, uint8_t c
 //#warning Synchronous calls to I2C are inefficient - consider disabling sync calls and \
 //using the async interrupt-based API instead, with DISABLE_SYNC_I2C_CALLS.
 //FILE_STATIC void inline i2cWaitForStopComplete(bus_instance_i2c bus)  { while (I2CREG(bus, UCBxCTLW0) & UCTXSTP); }
-FILE_STATIC void inline i2cWaitForStopComplete(bus_instance_i2c bus)  { uint16_t timeoutus = READ_WRITE_TIMEOUT; while (timeoutus-- && I2CREG(bus, UCBxCTLW0) & UCTXSTP); __delay_cycles(READ_WRITE_INCREMENT); }
+FILE_STATIC void inline i2cWaitForStopComplete(bus_instance_i2c bus)  { uint16_t timeout = READ_WRITE_TIMEOUT; while (timeout-- && I2CREG(bus, UCBxCTLW0) & UCTXSTP) __delay_cycles(READ_WRITE_INCREMENT); }
 //FILE_STATIC void inline i2cWaitForStartComplete(bus_instance_i2c bus) { while (I2CREG(bus, UCBxCTLW0) & UCTXSTT); }
-FILE_STATIC void inline i2cWaitForStartComplete(bus_instance_i2c bus) { uint16_t timeoutms = READ_WRITE_TIMEOUT; while (timeoutms-- && I2CREG(bus, UCBxCTLW0) & UCTXSTT) __delay_cycles(READ_WRITE_INCREMENT); }
+FILE_STATIC void inline i2cWaitForStartComplete(bus_instance_i2c bus) { uint16_t timeout = READ_WRITE_TIMEOUT; while (timeout-- && I2CREG(bus, UCBxCTLW0) & UCTXSTT) __delay_cycles(READ_WRITE_INCREMENT); }
 //FILE_STATIC void inline i2cWaitReadyToTransmitByte(bus_instance_i2c bus)  { while ( (I2CREG(bus, UCBxIFG) & UCTXIFG0) == 0); }
-FILE_STATIC void inline i2cWaitReadyToTransmitByte(bus_instance_i2c bus)  { uint16_t timeoutus = READ_WRITE_TIMEOUT; while (timeoutus-- && (I2CREG(bus, UCBxIFG) & UCTXIFG0) == 0); __delay_cycles(READ_WRITE_INCREMENT); }
+FILE_STATIC void inline i2cWaitReadyToTransmitByte(bus_instance_i2c bus)  { uint16_t timeout = READ_WRITE_TIMEOUT; while (timeout-- && (I2CREG(bus, UCBxIFG) & UCTXIFG0) == 0) __delay_cycles(READ_WRITE_INCREMENT); }
 //FILE_STATIC void inline i2cWaitReadyToReceiveByte(bus_instance_i2c bus)  { while ( (I2CREG(bus, UCBxIFG) & UCRXIFG) == 0); }
-FILE_STATIC void inline i2cWaitReadyToReceiveByte(bus_instance_i2c bus)  { uint16_t timeoutus = READ_WRITE_TIMEOUT; while (timeoutus-- && (I2CREG(bus, UCBxIFG) & UCRXIFG) == 0); __delay_cycles(READ_WRITE_INCREMENT); }
+FILE_STATIC void inline i2cWaitReadyToReceiveByte(bus_instance_i2c bus)  { uint16_t timeout = READ_WRITE_TIMEOUT; while (timeout-- && (I2CREG(bus, UCBxIFG) & UCRXIFG) == 0) __delay_cycles(READ_WRITE_INCREMENT); }
 
 /***************************/
 /* I2C MID-LEVEL FUNCTIONS */

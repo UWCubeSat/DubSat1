@@ -94,6 +94,7 @@ hDev i2cInit(bus_instance_i2c bus, uint8_t slaveaddr)
         I2CREG(bus, UCBxCTLW0) |= UCMODE_3 | UCMST | UCSYNC | UCSSEL__SMCLK;     // I2C, master, synchronous, use SMCLK
         I2CREG(bus, UCBxBRW) = 12;                                               // Baudrate = SMCLK / 12
         I2CREG(bus, UCBxCTLW1) |= UCASTP_2;                                      // Automatic stop generated after transmission complete
+        I2CREG(bus, UCBxCTLW1) |= UCCLTO_3;                                      // clk low timeout @ 34ms
     }
 
     // Now setup the actual individual device
@@ -162,6 +163,7 @@ static uint8_t i2cCoreWrite(hDev device, uint8_t * buff, uint8_t szToWrite, BOOL
     {
         busErrorCount++;
         lastOperationFlag = 1;
+        //TODO: send a stop
         return 1;
     }
 
