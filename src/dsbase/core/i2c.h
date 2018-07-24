@@ -24,7 +24,8 @@ typedef enum {
     i2cRes_noerror = 0,
     i2cRes_startTimeout = 1,
     i2cRes_stopTimeout = 2,
-    i2cRes_nack = 3
+    i2cRes_nack = 3,
+    i2cRes_transmitTimeout = 4
 } i2c_result;
 
 typedef struct _bus_registers_i2c {
@@ -108,7 +109,7 @@ i2c_result i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szTo
 //gets the total count of i2c errors
 uint16_t i2cGetBusErrorCount();
 //gets the result of the last i2c operations
-uint8_t i2cGetLastOperationResult();
+i2c_result i2cGetLastOperationResult();
 //gets the number of bytes read successfully over i2c
 uint16_t i2cGetBytesRead();
 //gets the number of bytes written successfully over i2c
