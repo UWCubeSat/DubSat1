@@ -95,16 +95,16 @@ FILE_STATIC aggVec_i ssBusVAgs[NUM_POWER_DOMAINS];
 
 #define MOD_BDOT_FLAG 8
 #define MOD_MTQ_FLAG 16
-#define PD_BDOT_FLAG 24
+#define PD_BDOT_FLAG (MOD_BDOT_FLAG | MOD_MTQ_FLAG)
 
 #define MOD_ESTIM_FLAG 32
 #define MOD_MPC_FLAG 64
 #define MOD_SENSORPROC_FLAG 128
-#define PD_ESTIM_FLAG 224
+#define PD_ESTIM_FLAG (MOD_ESTIM_FLAG | MOD_MPC_FLAG | MOD_SENSORPROC_FLAG)
 
 #define MOD_GEN_FLAG 256
 #define MOD_BATT_FLAG 512
-#define PD_EPS_FLAG 768
+#define PD_EPS_FLAG (MOD_GEN_FLAG | MOD_BATT_FLAG)
 
 #define PD_PPT_FLAG 1024
 
@@ -701,22 +701,22 @@ void autoShutoff()
             distDomainSwitch(PD_COM1, PD_CMD_Disable);
             rcResponseFlag &= ~PD_COM1_FLAG;
         }*/
-        if(shutoffEnabled.com2 && rcResponseFlag & PD_COM2_FLAG)
+        if(shutoffEnabled.com2 == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_COM2_FLAG)
         {
             distDomainSwitch(PD_COM2, PD_CMD_Disable);
             rcResponseFlag &= ~PD_COM2_FLAG;
         }
-        if(shutoffEnabled.rahs && rcResponseFlag & PD_RAHS_FLAG)
+        if(shutoffEnabled.rahs == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_RAHS_FLAG)
         {
             distDomainSwitch(PD_RAHS, PD_CMD_Disable);
             rcResponseFlag &= ~PD_RAHS_FLAG;
         }
-        if(shutoffEnabled.bdot && rcResponseFlag & PD_BDOT_FLAG)
+        if(shutoffEnabled.bdot == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_BDOT_FLAG)
         {
             distDomainSwitch(PD_BDOT, PD_CMD_Disable);
             rcResponseFlag &= ~PD_BDOT_FLAG;
         }
-        if(shutoffEnabled.estim && rcResponseFlag & PD_ESTIM_FLAG)
+        if(shutoffEnabled.estim == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_ESTIM_FLAG)
         {
             distDomainSwitch(PD_ESTIM, PD_CMD_Disable);
             rcResponseFlag &= ~PD_ESTIM_FLAG;
@@ -726,7 +726,7 @@ void autoShutoff()
             distDomainSwitch(PD_EPS, PD_CMD_Disable);
             rcResponseFlag &= ~PD_EPS_FLAG;
         }
-        if(shutoffEnabled.ppt && rcResponseFlag & PD_PPT_FLAG)
+        if(shutoffEnabled.ppt == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_PPT_FLAG)
         {
             distDomainSwitch(PD_PPT, PD_CMD_Disable);
             rcResponseFlag &= ~PD_PPT_FLAG;
@@ -735,18 +735,38 @@ void autoShutoff()
 
     if(distQueryDomainSwitch(PD_COM1))
         rcResponseFlag |= PD_COM1_FLAG;
+    else
+        rcResponseFlag &= ~PD_COM1_FLAG;
+
     if(distQueryDomainSwitch(PD_COM2))
         rcResponseFlag |= PD_COM2_FLAG;
+    else
+        rcResponseFlag &= ~PD_COM2_FLAG;
+
     if(distQueryDomainSwitch(PD_RAHS))
         rcResponseFlag |= PD_RAHS_FLAG;
+    else
+        rcResponseFlag &= ~PD_RAHS_FLAG;
+
     if(distQueryDomainSwitch(PD_BDOT))
         rcResponseFlag |= PD_BDOT_FLAG;
+    else
+        rcResponseFlag &= ~PD_BDOT_FLAG;
+
     if(distQueryDomainSwitch(PD_ESTIM))
         rcResponseFlag |= PD_ESTIM_FLAG;
+    else
+        rcResponseFlag &= ~PD_ESTIM_FLAG;
+
     if(distQueryDomainSwitch(PD_EPS))
         rcResponseFlag |= PD_EPS_FLAG;
+    else
+        rcResponseFlag &= ~PD_EPS_FLAG;
+
     if(distQueryDomainSwitch(PD_PPT))
         rcResponseFlag |= PD_PPT_FLAG;
+    else
+        rcResponseFlag &= ~PD_PPT_FLAG;
 }
 
 void checkSelfReboot()
@@ -1064,8 +1084,8 @@ void incrementRollcallWatchdog()
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
-    //WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this when watchdog goes in
-    WDTCTL = WDTPW | WDTHOLD;
+    WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this to take watchdog out
+    //WDTCTL = WDTPW | WDTHOLD;
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
     METInitWithTime(persistentTime);
 
@@ -1129,8 +1149,7 @@ int main(void)
     uint16_t counter = 0;
     while (1)
     {
-        //TODO: uncomment this
-        //WDTCTL = WDT_CONFIG;
+        WDTCTL = WDT_CONFIG;
         // TODO:  eventually drive this with a timer
         LED_OUT ^= LED_BIT;
         __delay_cycles(0.1 * SEC);
