@@ -108,7 +108,7 @@ hDev i2cInit(bus_instance_i2c bus, uint8_t slaveaddr)
     return (hDev)currindex;
 }
 
-static uint8_t i2cCoreRead(hDev device, uint8_t * buff, uint8_t szToRead, BOOL initialAutoStopSetup)
+static i2c_result i2cCoreRead(hDev device, uint8_t * buff, uint8_t szToRead, BOOL initialAutoStopSetup)
 {
     uint8_t index = 0;
 
@@ -130,20 +130,30 @@ static uint8_t i2cCoreRead(hDev device, uint8_t * buff, uint8_t szToRead, BOOL i
     {
         busErrorCount++;
         lastOperationFlag = 1;
-        return 1;
+        return i2cRes_startTimeout;
     }
     //  Stop bit will be auto-set once we read szToRead bytes
     while ( (I2CREG(bus, UCBxIFG) & UCSTPIFG) == 0 && index < szToRead)
     {
+        if(I2CREG(bus, UCBxIFG) & UCNACKIFG)
+        {
+            //send a stop command
+            i2cMasterTransmitStop(bus);
+            i2cWaitForStopComplete(bus);
+            if(I2CREG(bus, UCBxCTLW0) & UCTXSTP)
+                return i2cRes_stopTimeout;
+
+            return i2cRes_nack;
+        }
         if ( (I2CREG(bus, UCBxIFG) & UCRXIFG) != 0)
             buff[index++] = i2cRetrieveReceiveBuffer(bus);
     }
     bytesRead += szToRead;
     lastOperationFlag = 0;
-    return 0;
+    return i2cRes_noerror;
 }
 
-static uint8_t i2cCoreWrite(hDev device, uint8_t * buff, uint8_t szToWrite, BOOL initialAutoStopSetup )
+static i2c_result i2cCoreWrite(hDev device, uint8_t * buff, uint8_t szToWrite, BOOL initialAutoStopSetup )
 {
     uint8_t index = 0;
 
@@ -163,13 +173,23 @@ static uint8_t i2cCoreWrite(hDev device, uint8_t * buff, uint8_t szToWrite, BOOL
     {
         busErrorCount++;
         lastOperationFlag = 1;
-        //TODO: send a stop
-        return 1;
+        return i2cRes_startTimeout;
     }
 
     // Send in auto-stop or managed mode
     while ( (I2CREG(bus, UCBxIFG) & UCSTPIFG) == 0 && index < szToWrite)
     {
+        if(I2CREG(bus, UCBxIFG) & UCNACKIFG)
+        {
+            //send a stop command
+            i2cMasterTransmitStop(bus);
+            i2cWaitForStopComplete(bus);
+            if(I2CREG(bus, UCBxCTLW0) & UCTXSTP)
+                return i2cRes_stopTimeout;
+
+            return i2cRes_nack;
+        }
+
         if ( (I2CREG(bus, UCBxIFG) & UCTXIFG0) != 0)
         {
             I2CREG(bus, UCBxTXBUF) = buff[index++];
@@ -177,20 +197,20 @@ static uint8_t i2cCoreWrite(hDev device, uint8_t * buff, uint8_t szToWrite, BOOL
     }
     lastOperationFlag = 0;
     bytesWritten += szToWrite;
-    return 0;
+    return i2cRes_noerror;
 }
 
-uint8_t i2cMasterRead(hDev device, uint8_t * buff, uint8_t szToRead)
+i2c_result i2cMasterRead(hDev device, uint8_t * buff, uint8_t szToRead)
 {
     return i2cCoreRead(device, buff, szToRead, TRUE);
 }
 
-uint8_t i2cMasterWrite(hDev device, uint8_t * buff, uint8_t szToWrite)
+i2c_result i2cMasterWrite(hDev device, uint8_t * buff, uint8_t szToWrite)
 {
     return i2cCoreWrite(device, buff, szToWrite, TRUE);
 }
 
-uint8_t i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWrite, uint8_t * rbuff, uint8_t szToRead)
+i2c_result i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWrite, uint8_t * rbuff, uint8_t szToRead)
 {
     bus_instance_i2c bus = devices[device].bus;
 
@@ -209,7 +229,7 @@ uint8_t i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWri
     return 0;
 }
 
-uint8_t i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, uint8_t szToRead)
+i2c_result i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, uint8_t szToRead)
 {
     bus_instance_i2c bus = devices[device].bus;
 

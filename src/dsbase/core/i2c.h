@@ -20,6 +20,13 @@ typedef enum _bus_instance_i2c {
     I2CBus2 = 2,
 } bus_instance_i2c;
 
+typedef enum {
+    i2cRes_noerror = 0,
+    i2cRes_startTimeout = 1,
+    i2cRes_stopTimeout = 2,
+    i2cRes_nack = 3
+} i2c_result;
+
 typedef struct _bus_registers_i2c {
     volatile uint16_t * UCBxCTLW0;
     volatile uint8_t * UCBxCTL1;
@@ -68,6 +75,7 @@ typedef struct {
 FILE_STATIC void inline i2cDisable(bus_instance_i2c bus)  { I2CREG(bus, UCBxCTLW0) |= UCSWRST; }
 void inline i2cEnable(bus_instance_i2c bus)  { I2CREG(bus, UCBxCTL1) &= ~UCSWRST; }
 FILE_STATIC void inline i2cMasterTransmitStart(bus_instance_i2c bus)  { I2CREG(bus, UCBxCTL1) |= UCTR | UCTXSTT; }
+FILE_STATIC void inline i2cMasterTransmitStop(bus_instance_i2c bus) { I2CREG(bus, UCBxCTL1) |= UCTXSTP; }
 FILE_STATIC void inline i2cMasterReceiveStart(bus_instance_i2c bus)  { I2CREG(bus, UCBxCTL1) &= ~UCTR;  I2CREG(bus, UCBxCTL1) |= UCTXSTT;  }
 FILE_STATIC void inline i2cLoadTransmitBuffer(bus_instance_i2c bus, uint8_t input)  {  I2CREG(bus, UCBxTXBUF) = input; }
 FILE_STATIC uint8_t inline i2cRetrieveReceiveBuffer(bus_instance_i2c bus)  {  return I2CREG(bus, UCBxRXBUF);  }
@@ -92,10 +100,10 @@ FILE_STATIC void inline i2cWaitReadyToReceiveByte(bus_instance_i2c bus)  { uint1
 /***************************/
 /* I2C MID-LEVEL FUNCTIONS */
 /***************************/
-uint8_t i2cMasterRead(hDev device, uint8_t * buff, uint8_t szToRead);
-uint8_t i2cMasterWrite(hDev device, uint8_t * buff, uint8_t szToWrite);
-uint8_t i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, uint8_t szToRead);
-uint8_t i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWrite, uint8_t * rbuff, uint8_t szToRead);
+i2c_result i2cMasterRead(hDev device, uint8_t * buff, uint8_t szToRead);
+i2c_result i2cMasterWrite(hDev device, uint8_t * buff, uint8_t szToWrite);
+i2c_result i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, uint8_t szToRead);
+i2c_result i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szToWrite, uint8_t * rbuff, uint8_t szToRead);
 
 //gets the total count of i2c errors
 uint16_t i2cGetBusErrorCount();
