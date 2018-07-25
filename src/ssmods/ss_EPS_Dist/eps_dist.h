@@ -133,6 +133,15 @@ typedef struct {
     uint8_t com2;
 } AutoshutoffEnabled;
 
+typedef struct {
+    uint8_t ppt;
+    uint8_t eps;
+    uint8_t estim;
+    uint8_t bdot;
+    uint8_t rahs;
+    uint8_t com2;
+} AutoshutoffDelay;
+
 // COSMOS telem and cmd packets
 TLM_SEGMENT {
     BcTlmHeader header;  // All COSMOS TLM packets must have this

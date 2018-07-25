@@ -11,7 +11,8 @@
 #include "core/utils.h"
 
 #define WDT_CONFIG WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_2
-#define ROLLCALL_WATCHDOG_TIMEOUT 255
+#define ROLLCALL_WATCHDOG_TIMEOUT 255 //seconds
+#define AUTOSHUTOFF_DELAY 1 //number of rollcalls before the check for shutoff starts
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
@@ -32,6 +33,7 @@ FILE_STATIC flag_t triggerState3;
 
 #pragma PERSISTENT(shutoffEnabled)
 FILE_STATIC AutoshutoffEnabled shutoffEnabled = {1, 1, 1, 1, 1, 0};
+FILE_STATIC AutoshutoffDelay shutoffDelay = {0, 0, 0, 0, 0, 0};
 
 // DO NOT REORDER
 FILE_STATIC uint8_t *powerDomainNames[] =
@@ -233,6 +235,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
     switch (domain)
     {
         case PD_COM2:
+            if(distQueryDomainSwitch(PD_COM2) == 0)
+                shutoffDelay.com2 = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_COM2_OUT |= DOMAIN_ENABLE_COM2_BIT;
             else if (cmd == PD_CMD_Disable)
@@ -241,6 +245,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_COM2_OUT ^= DOMAIN_ENABLE_COM2_BIT;
             break;
         case PD_PPT:
+            if(distQueryDomainSwitch(PD_PPT) == 0)
+                shutoffDelay.ppt = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_PPT_OUT |= DOMAIN_ENABLE_PPT_BIT;
             else if (cmd == PD_CMD_Disable)
@@ -249,6 +255,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_PPT_OUT ^= DOMAIN_ENABLE_PPT_BIT;
             break;
         case PD_BDOT:
+            if(distQueryDomainSwitch(PD_BDOT) == 0)
+                shutoffDelay.bdot = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_BDOT_OUT |= DOMAIN_ENABLE_BDOT_BIT;
             else if (cmd == PD_CMD_Disable)
@@ -265,6 +273,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_COM1_OUT ^= DOMAIN_ENABLE_COM1_BIT;
             break;
         case PD_RAHS:
+            if(distQueryDomainSwitch(PD_RAHS) == 0)
+                shutoffDelay.rahs = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_RAHS_OUT |= DOMAIN_ENABLE_RAHS_BIT;
             else if (cmd == PD_CMD_Disable)
@@ -273,6 +283,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_RAHS_OUT ^= DOMAIN_ENABLE_RAHS_BIT;
             break;
         case PD_ESTIM:
+            if(distQueryDomainSwitch(PD_ESTIM) == 0)
+                shutoffDelay.estim = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_ESTIM_OUT |= DOMAIN_ENABLE_ESTIM_BIT;
             else if (cmd == PD_CMD_Disable)
@@ -281,6 +293,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_ESTIM_OUT ^= DOMAIN_ENABLE_ESTIM_BIT;
             break;
         case PD_EPS:
+            if(distQueryDomainSwitch(PD_EPS) == 0)
+                shutoffDelay.eps = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_EPS_OUT |= DOMAIN_ENABLE_EPS_BIT;
             else if (cmd == PD_CMD_Disable)
@@ -701,36 +715,59 @@ void autoShutoff()
             distDomainSwitch(PD_COM1, PD_CMD_Disable);
             rcResponseFlag &= ~PD_COM1_FLAG;
         }*/
-        if(shutoffEnabled.com2 == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_COM2_FLAG)
-        {
-            distDomainSwitch(PD_COM2, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_COM2_FLAG;
-        }
-        if(shutoffEnabled.rahs == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_RAHS_FLAG)
-        {
-            distDomainSwitch(PD_RAHS, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_RAHS_FLAG;
-        }
-        if(shutoffEnabled.bdot == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_BDOT_FLAG)
-        {
-            distDomainSwitch(PD_BDOT, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_BDOT_FLAG;
-        }
-        if(shutoffEnabled.estim == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_ESTIM_FLAG)
-        {
-            distDomainSwitch(PD_ESTIM, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_ESTIM_FLAG;
-        }
-        if(shutoffEnabled.eps == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_EPS_FLAG)
-        {
-            distDomainSwitch(PD_EPS, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_EPS_FLAG;
-        }
-        if(shutoffEnabled.ppt == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_PPT_FLAG)
-        {
-            distDomainSwitch(PD_PPT, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_PPT_FLAG;
-        }
+        if(shutoffDelay.com2)
+            shutoffDelay.com2--;
+        else
+            if(shutoffEnabled.com2 == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_COM2_FLAG && shutoffDelay.com2 == 0)
+            {
+                distDomainSwitch(PD_COM2, PD_CMD_Disable);
+                rcResponseFlag &= ~PD_COM2_FLAG;
+            }
+
+        if(shutoffDelay.rahs)
+            shutoffDelay.rahs--;
+        else
+            if(shutoffEnabled.rahs == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_RAHS_FLAG)
+            {
+                distDomainSwitch(PD_RAHS, PD_CMD_Disable);
+                rcResponseFlag &= ~PD_RAHS_FLAG;
+            }
+
+        if(shutoffDelay.bdot)
+            shutoffDelay.bdot--;
+        else
+            if(shutoffEnabled.bdot == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_BDOT_FLAG)
+            {
+                distDomainSwitch(PD_BDOT, PD_CMD_Disable);
+                rcResponseFlag &= ~PD_BDOT_FLAG;
+            }
+
+        if(shutoffDelay.estim)
+            shutoffDelay.estim--;
+        else
+            if(shutoffEnabled.estim == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_ESTIM_FLAG)
+            {
+                distDomainSwitch(PD_ESTIM, PD_CMD_Disable);
+                rcResponseFlag &= ~PD_ESTIM_FLAG;
+            }
+
+        if(shutoffDelay.eps)
+            shutoffDelay.eps--;
+        else
+            if(shutoffEnabled.eps == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_EPS_FLAG)
+            {
+                distDomainSwitch(PD_EPS, PD_CMD_Disable);
+                rcResponseFlag &= ~PD_EPS_FLAG;
+            }
+
+        if(shutoffDelay.ppt)
+            shutoffDelay.ppt--;
+        else
+            if(shutoffEnabled.ppt == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_PPT_FLAG)
+            {
+                distDomainSwitch(PD_PPT, PD_CMD_Disable);
+                rcResponseFlag &= ~PD_PPT_FLAG;
+            }
     }
 
     if(distQueryDomainSwitch(PD_COM1))
@@ -954,7 +991,6 @@ void can_packet_rx_callback(CANPacket *packet)
             if(pktShutoff.gcmd_dist_autoshutoff_rahs != CAN_ENUM_NBOOL_NULL)
                 shutoffEnabled.rahs = pktShutoff.gcmd_dist_autoshutoff_rahs;
         }
-            decodegcmd_dist_autoshutoff(packet, &shutoffEnabled);
             break;
         default:
             break;
