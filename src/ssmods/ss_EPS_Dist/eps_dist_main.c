@@ -966,7 +966,7 @@ void can_packet_rx_callback(CANPacket *packet)
             autoseqIndicesResponsePktSendFlag = 1;
             break;
         case CAN_ID_GCMD_DIST_RESET_MISSION: //reset MET, clear events, reboot
-            persistentTime = (timeStamp){0};
+            persistentTime = (timeStamp){0, 0, 0, 0, 0};
             uint8_t j;
             for(j = sizeof(persistentEvents) / sizeof(sequenceEvent); j; j--)
                 persistentEvents[j - 1].time = 0;
@@ -1034,42 +1034,51 @@ void initData()
 void initializeEvents()
 {
 	CANPacket pkt;
-	uint8_t i;
+
+	////////////////////////////////////////////////////  TODO: this is test code for Con-Ops
+	gcmd_dist_set_pd_state cmd = {0, 0, 0, 0, 1, 0, 0};
+	encodegcmd_dist_set_pd_state(&cmd, &pkt);
+	persistentEvents[0].pkt = pkt;
+	persistentEvents[0].sendFlag = 0;
+	persistentEvents[0].time = 15;
+	////////////////////////////////////////////////////
+
+	/*uint8_t i;
 	for(i = 0; i < NUM_POWER_DOMAINS; i++)
 	{
 		gcmd_dist_set_pd_state cmd = {0};
 		switch(i)
 		{
 			case 0:
-				cmd.gcmd_dist_set_pd_state_bdot = 3;
+				cmd.gcmd_dist_set_pd_state_bdot = PD_CMD_Enable;
 				break;
 			case 1:
-				cmd.gcmd_dist_set_pd_state_com1 = 3;
+				cmd.gcmd_dist_set_pd_state_com1 = PD_CMD_Enable;
 				break;
 			case 2:
-				cmd.gcmd_dist_set_pd_state_com2 = 3;
+				cmd.gcmd_dist_set_pd_state_com2 = PD_CMD_Enable;
 				break;
 			case 3:
-				cmd.gcmd_dist_set_pd_state_eps = 3;
+				cmd.gcmd_dist_set_pd_state_eps = PD_CMD_Enable;
 				break;
 			case 4:
-				cmd.gcmd_dist_set_pd_state_estim = 3;
+				cmd.gcmd_dist_set_pd_state_estim = PD_CMD_Enable;
 				break;
 			case 5:
-				cmd.gcmd_dist_set_pd_state_ppt = 3;
+				cmd.gcmd_dist_set_pd_state_ppt = PD_CMD_Enable;
 				break;
 			case 6:
-				cmd.gcmd_dist_set_pd_state_rahs = 3;
+				cmd.gcmd_dist_set_pd_state_rahs = PD_CMD_Enable;
 				break;
 			case 7:
-				cmd.gcmd_dist_set_pd_state_wheels = 3;
+				cmd.gcmd_dist_set_pd_state_wheels = PD_CMD_Enable;
 				break;
 		}
 		encodegcmd_dist_set_pd_state(&cmd, &pkt);
 		persistentEvents[i].pkt = pkt;
 		persistentEvents[i].sendFlag = 0;
 		persistentEvents[i].time = i + 1; //sequentially activated
-	}
+	}*/
 	eventsInitialized = 1;
 }
 
@@ -1122,7 +1131,7 @@ int main(void)
     /* ----- INITIALIZATION -----*/
     WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this to take watchdog out
     //WDTCTL = WDTPW | WDTHOLD;
-    bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
+    bspInit(__SUBSYSTEM_MODULE__);  // This uses the framily of __SS_etc predefined symbols - see bsp.h
     METInitWithTime(persistentTime);
 
     bspBackpowerPulldown();
@@ -1171,8 +1180,6 @@ int main(void)
     // Autostart the EPS power domain for now
     if(!eventsInitialized)
     	initializeEvents();
-    else
-    	autoStart(); //TODO: remove autostart for flight
 
     seqInit(persistentEvents, sizeof(persistentEvents) / sizeof(persistentEvents[0]));
 
