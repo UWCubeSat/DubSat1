@@ -52,6 +52,14 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2449736495 gcmd_dist_autoshutoff: 2 Vector__XXX
+ SG_ gcmd_dist_autoshutoff_ppt : 10|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ gcmd_dist_autoshutoff_eps : 8|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ gcmd_dist_autoshutoff_estim : 6|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ gcmd_dist_autoshutoff_bdot : 4|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ gcmd_dist_autoshutoff_rahs : 2|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ gcmd_dist_autoshutoff_com2 : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+
 BO_ 2432958724 gcmd_ppt_halt: 1 Vector__XXX
  SG_ gcmd_ppt_halt_confirm : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
@@ -150,7 +158,16 @@ BO_ 2452161116 rc_adcs_bdot_5: 6 Vector__XXX
  SG_ rc_adcs_bdot_5_spam_on_z_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_5_spam_on_z_mtq_x : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
 
-BO_ 2449736398 gcmd_reset_minmax: 0 Vector__XXX
+BO_ 2449736398 gcmd_reset_minmax: 2 Vector__XXX
+ SG_ gcmd_reset_minmax_mtq : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ gcmd_reset_minmax_sensorproc : 7|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ gcmd_reset_minmax_mpc : 6|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ gcmd_reset_minmax_estim : 5|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ gcmd_reset_minmax_batt : 4|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ gcmd_reset_minmax_gen : 3|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ gcmd_reset_minmax_dist : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ gcmd_reset_minmax_ppt : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ gcmd_reset_minmax_bdot : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2452161134 rc_eps_batt_h2: 1 Vector__XXX
  SG_ rc_eps_batt_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -920,6 +937,13 @@ BO_ 2449932985 grnd_epoch: 5 Vector__XXX
 BO_TX_BU_ 2147745800 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_batt,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ BO_ 2449736495 "Set the status of dist autoshutoff for each power domain";
+CM_ SG_ 2449736495 gcmd_dist_autoshutoff_ppt "Whether autoshutoff is enabled on the power domain";
+CM_ SG_ 2449736495 gcmd_dist_autoshutoff_eps "Whether autoshutoff is enabled on the power domain";
+CM_ SG_ 2449736495 gcmd_dist_autoshutoff_estim "Whether autoshutoff is enabled on the power domain";
+CM_ SG_ 2449736495 gcmd_dist_autoshutoff_bdot "Whether autoshutoff is enabled on the power domain";
+CM_ SG_ 2449736495 gcmd_dist_autoshutoff_rahs "Whether autoshutoff is enabled on the power domain";
+CM_ SG_ 2449736495 gcmd_dist_autoshutoff_com2 "Whether autoshutoff is enabled on the power domain";
 CM_ SG_ 2432958724 gcmd_ppt_halt_confirm "Are you sure you want to halt the ppt?";
 CM_ BO_ 2449736415 "Resets MET and autosequencer, also sets the autosequencer to be reinitialized on next powerup";
 CM_ BO_ 2449736414 "Causes dist to self-restart";
@@ -979,6 +1003,15 @@ CM_ SG_ 2449736399 gcmd_eps_batt_fulldef_chg_curr "Limits for detecting a full s
 CM_ SG_ 2452161116 rc_adcs_bdot_5_spam_on_z_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
 CM_ SG_ 2452161116 rc_adcs_bdot_5_spam_on_z_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
 CM_ SG_ 2452161116 rc_adcs_bdot_5_spam_on_z_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2449736398 gcmd_reset_minmax_mtq "Whether to reset the subsystem";
+CM_ SG_ 2449736398 gcmd_reset_minmax_sensorproc "Whether to reset the subsystem";
+CM_ SG_ 2449736398 gcmd_reset_minmax_mpc "Whether to reset the subsystem";
+CM_ SG_ 2449736398 gcmd_reset_minmax_estim "Whether to reset the subsystem";
+CM_ SG_ 2449736398 gcmd_reset_minmax_batt "Whether to reset the subsystem";
+CM_ SG_ 2449736398 gcmd_reset_minmax_gen "Whether to reset the subsystem";
+CM_ SG_ 2449736398 gcmd_reset_minmax_dist "Whether to reset the subsystem";
+CM_ SG_ 2449736398 gcmd_reset_minmax_ppt "Whether to reset the subsystem";
+CM_ SG_ 2449736398 gcmd_reset_minmax_bdot "Whether to reset the subsystem";
 CM_ SG_ 2452161134 rc_eps_batt_h2_canrxerror "the Batt MCP's RX error buffer";
 CM_ SG_ 2452161133 rc_adcs_bdot_h2_canrxerror "the BDOT MCP's RX error buffer";
 CM_ SG_ 2452161132 rc_eps_dist_h2_canrxerror "the Dist MCP's RX error buffer";
@@ -1406,6 +1439,12 @@ CM_ SG_ 2452029472 bdot_tumble_status_status "bdot tumble status boolean";
 CM_ SG_ 2449932985 grnd_epoch_val_overflow "Overflow of epoch (time between millenium and when we launched)";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2449736495 gcmd_dist_autoshutoff_ppt 2 "null" 1 "true" 0 "false" ;
+VAL_ 2449736495 gcmd_dist_autoshutoff_eps 2 "null" 1 "true" 0 "false" ;
+VAL_ 2449736495 gcmd_dist_autoshutoff_estim 2 "null" 1 "true" 0 "false" ;
+VAL_ 2449736495 gcmd_dist_autoshutoff_bdot 2 "null" 1 "true" 0 "false" ;
+VAL_ 2449736495 gcmd_dist_autoshutoff_rahs 2 "null" 1 "true" 0 "false" ;
+VAL_ 2449736495 gcmd_dist_autoshutoff_com2 2 "null" 1 "true" 0 "false" ;
 VAL_ 2432958724 gcmd_ppt_halt_confirm 1 "true" 0 "false" ;
 VAL_ 2449474266 gcmd_batt_set_heater_check_state 2 "null" 1 "true" 0 "false" ;
 VAL_ 2452161136 rc_adcs_bdot_6_spam_control 1 "true" 0 "false" ;

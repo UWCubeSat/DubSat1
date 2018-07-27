@@ -329,5 +329,9 @@ uint8_t end_self_test_calibration(hMag handle)
     data->calibration_factor_x = SELF_TEST_NOMINAL_X / avg_x;
     data->calibration_factor_y = SELF_TEST_NOMINAL_Y / avg_y;
     data->calibration_factor_z = SELF_TEST_NOMINAL_Z / avg_z;
+    if(data->calibration_factor_z > 3 || data->calibration_factor_y > 3 || data->calibration_factor_x > 3)
+    {
+        P3OUT ^= BIT5;
+    }
     return 1;
 }
