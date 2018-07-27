@@ -771,11 +771,11 @@ BO_ 2452161041 rc_eps_gen_2: 8 Vector__XXX
  SG_ rc_eps_gen_2_pnl_1_voltage_avg : 32|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
 
 BO_ 2452161040 rc_eps_gen_1: 6 Vector__XXX
- SG_ rc_eps_gen_1_pnl_3_charging : 40|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ rc_eps_gen_1_pnl_2_charging : 32|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ rc_eps_gen_1_pnl_1_charging : 24|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ rc_eps_gen_1_pnl_3_enabled : 16|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ rc_eps_gen_1_pnl_2_enabled : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_3_charging : 5|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_2_charging : 4|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_1_charging : 3|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_3_enabled : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_gen_1_pnl_2_enabled : 1|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_eps_gen_1_pnl_1_enabled : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2452161029 rc_eps_batt_6: 7 Vector__XXX
