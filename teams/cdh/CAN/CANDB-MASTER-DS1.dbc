@@ -52,6 +52,9 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2449736496 gcmd_batt_set_bal_auto: 1 Vector__XXX
+ SG_ gcmd_batt_set_bal_auto_state : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+
 BO_ 2449736495 gcmd_dist_autoshutoff: 2 Vector__XXX
  SG_ gcmd_dist_autoshutoff_ppt : 10|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ gcmd_dist_autoshutoff_eps : 8|2@1+ (1,0) [0|3] "" Vector__XXX
@@ -937,6 +940,8 @@ BO_ 2449932985 grnd_epoch: 5 Vector__XXX
 BO_TX_BU_ 2147745800 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_1,com_2,eps_batt,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ BO_ 2449736496 "Sets the state of battery balancer automation";
+CM_ SG_ 2449736496 gcmd_batt_set_bal_auto_state "What state the battery balancer automation should be set to";
 CM_ BO_ 2449736495 "Set the status of dist autoshutoff for each power domain";
 CM_ SG_ 2449736495 gcmd_dist_autoshutoff_ppt "Whether autoshutoff is enabled on the power domain";
 CM_ SG_ 2449736495 gcmd_dist_autoshutoff_eps "Whether autoshutoff is enabled on the power domain";
@@ -1439,6 +1444,7 @@ CM_ SG_ 2452029472 bdot_tumble_status_status "bdot tumble status boolean";
 CM_ SG_ 2449932985 grnd_epoch_val_overflow "Overflow of epoch (time between millenium and when we launched)";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2449736496 gcmd_batt_set_bal_auto_state 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736495 gcmd_dist_autoshutoff_ppt 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736495 gcmd_dist_autoshutoff_eps 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736495 gcmd_dist_autoshutoff_estim 2 "null" 1 "true" 0 "false" ;

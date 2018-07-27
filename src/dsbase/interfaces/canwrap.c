@@ -205,6 +205,23 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodegcmd_batt_set_bal_auto(CANPacket *input, gcmd_batt_set_bal_auto *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_batt_set_bal_auto_state = (uint8_t) (((fullData & ((uint64_t) 0x3 << 62)) >> 62));
+}
+
+void encodegcmd_batt_set_bal_auto(gcmd_batt_set_bal_auto *input, CANPacket *output){
+    output -> id = 302252848;
+    output -> length = 1;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_batt_set_bal_auto_state))) & 0x3) << 62;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decodegcmd_dist_autoshutoff(CANPacket *input, gcmd_dist_autoshutoff *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);

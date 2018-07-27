@@ -27,6 +27,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_BATT_SET_BAL_AUTO 302252848
 #define CAN_ID_GCMD_DIST_AUTOSHUTOFF 302252847
 #define CAN_ID_GCMD_PPT_HALT 285475076
 #define CAN_ID_GCMD_DIST_RESET_MISSION 302252767
@@ -305,6 +306,10 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_batt_set_bal_auto {
+    uint8_t gcmd_batt_set_bal_auto_state; //  (No Units)
+} gcmd_batt_set_bal_auto;
+
 typedef struct gcmd_dist_autoshutoff {
     uint8_t gcmd_dist_autoshutoff_ppt; //  (No Units)
     uint8_t gcmd_dist_autoshutoff_eps; //  (No Units)
@@ -1373,6 +1378,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_batt_set_bal_auto(gcmd_batt_set_bal_auto *input, CANPacket* output);
+void decodegcmd_batt_set_bal_auto(CANPacket *input, gcmd_batt_set_bal_auto *output);
 
 void encodegcmd_dist_autoshutoff(gcmd_dist_autoshutoff *input, CANPacket* output);
 void decodegcmd_dist_autoshutoff(CANPacket *input, gcmd_dist_autoshutoff *output);
