@@ -269,21 +269,30 @@ def createCTestFile(candb, cFileName, floatList):
 #include <stddef.h>
 #include "interfaces/canwrap.h"
 ''')
-    cFile.write("void canBlast() { \n");
+    cFile.write("int rcFlag=0;")
+    cFile.write("void canBlast() { \n")
+    cFile.write("\t while(rcFlag>0 && (canTxCheck() != CAN_TX_BUSY)){\n")
+    i=0
     for frame in candb.frames:
         packetname= frame.name+"_packet"
         infoname = frame.name+"_info"
-        cFile.write("\t__delay_cycles(10000);")
-        cFile.write("\tCANPacket " + packetname + " = {0};" +"\n")
-        cFile.write("\t" + frame.name +" " + infoname + " = {0};" +"\n")
-        cFile.write("\t" + "encode" +frame.name + "(&"+infoname + ", &"+ packetname + ");" +"\n")
-        cFile.write("\t" + "canSendPacket(&" + packetname + ");" +"\n")
-        cFile.write("\n")
+        if "rc" in frame.name:
+        	print(frame.name)
+	        cFile.write("\t\tif(rcFlag == "+str(i) +"){\n")
+	        cFile.write("\t\t\tCANPacket " + packetname + " = {0};" +"\n")
+	        cFile.write("\t\t\t" + frame.name +" " + infoname + " = {0};" +"\n")
+	        cFile.write("\t\t\t" + "encode" +frame.name + "(&"+infoname + ", &"+ packetname + ");" +"\n")
+	        cFile.write("\t\t\t" + "canSendPacket(&" + packetname + ");" +"\n")
+	        cFile.write("\t\t}")
+	        i +=1
+	        cFile.write("\n")
+    cFile.write("\trcFlag--;\n")
+    cFile.write("\t}")
     cFile.write("} \n");
     cFile.write("while (1) { \n");
     cFile.write("\t" + "canBlast(); \n");
     cFile.write("\t"+ "int i=0; \n\tfor(int i=0;i<100000;i++){} \n");
-    cFile.write("}");
+    cFile.write("}\n");
     cFile.close()
 
 def createCMain(candb, cFileName, floatList):
