@@ -27,6 +27,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_BATT_SET_BAL_AUTO 302252848
 #define CAN_ID_GCMD_DIST_AUTOSHUTOFF 302252847
 #define CAN_ID_GCMD_PPT_HALT 285475076
 #define CAN_ID_GCMD_DIST_RESET_MISSION 302252767
@@ -215,6 +216,26 @@
 #define CAN_ID_SYNC_1 2162705
 #define CAN_ID_GRND_EPOCH 302449337
 
+#define CAN_ENUM_SYSRSTIV_(PUC)MPUSEG3IFGSEG3MEMVIOL 46
+#define CAN_ENUM_SYSRSTIV_(PUC)MPUSEG2IFGSEG2MEMVIOL 44
+#define CAN_ENUM_SYSRSTIV_(PUC)MPUSEG1IFGSEG1MEMVIOL 42
+#define CAN_ENUM_SYSRSTIV_(PUC)MPUSEGIIFGINFOMEMSEGVIOL 40
+#define CAN_ENUM_SYSRSTIV_(PUC)MPUSEGIPIFGENCAPIPMEMSEG 38
+#define CAN_ENUM_SYSRSTIV_(PUC)CSPWCSPASSWORDVIOLATION 36
+#define CAN_ENUM_SYSRSTIV_(PUC)MPUPWMPUPWDVIOLATION 34
+#define CAN_ENUM_SYSRSTIV_(PUC)PMMPWPMMPWDVIOLATION 32
+#define CAN_ENUM_SYSRSTIV_(PUC)PERIPHERALAREAFETCH 30
+#define CAN_ENUM_SYSRSTIV_(PUC)UNCORRECTABLEFRAMBITERR 28
+#define CAN_ENUM_SYSRSTIV_(PUC)FRCTLPWPASSWORDVIOLATION 26
+#define CAN_ENUM_SYSRSTIV_(PUC)WDTPWPASSWORDVIOLATION 24
+#define CAN_ENUM_SYSRSTIV_(PUC)WDTIFGWATCHDOGTIMEOUT 22
+#define CAN_ENUM_SYSRSTIV_(POR)PMMSWPORSOFTWAREPOR 20
+#define CAN_ENUM_SYSRSTIV_(BOR)SVSHIFGSVSHEVENT 14
+#define CAN_ENUM_SYSRSTIV_(BOR)SECURITYVIOLATION 10
+#define CAN_ENUM_SYSRSTIV_(BOR)LPMX.5WAKEUP 8
+#define CAN_ENUM_SYSRSTIV_(BOR)RSTIFGRST/NMI 6
+#define CAN_ENUM_SYSRSTIV_(BOR)BROWNOUT 2
+#define CAN_ENUM_SYSRSTIV_NOINTERRUPTPENDING 0
 #define CAN_ENUM_GEN_PNL_CHARGING_CHARGING 1
 #define CAN_ENUM_GEN_PNL_CHARGING_NOTCHARGING 0
 #define CAN_ENUM_GEN_PNL_ENABLED_ENABLED 1
@@ -305,6 +326,10 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_batt_set_bal_auto {
+    uint8_t gcmd_batt_set_bal_auto_state; //  (No Units)
+} gcmd_batt_set_bal_auto;
+
 typedef struct gcmd_dist_autoshutoff {
     uint8_t gcmd_dist_autoshutoff_ppt; //  (No Units)
     uint8_t gcmd_dist_autoshutoff_eps; //  (No Units)
@@ -1373,6 +1398,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_batt_set_bal_auto(gcmd_batt_set_bal_auto *input, CANPacket* output);
+void decodegcmd_batt_set_bal_auto(CANPacket *input, gcmd_batt_set_bal_auto *output);
 
 void encodegcmd_dist_autoshutoff(gcmd_dist_autoshutoff *input, CANPacket* output);
 void decodegcmd_dist_autoshutoff(CANPacket *input, gcmd_dist_autoshutoff *output);

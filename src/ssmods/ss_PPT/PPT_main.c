@@ -57,13 +57,14 @@ FILE_STATIC flag_t triggerState3;
 
 FILE_STATIC uint16_t mainChargeTime = 36045;
 FILE_STATIC uint16_t mainIgniterDelay = 32;
-FILE_STATIC uint16_t igniterChargeTime = 1000;
+FILE_STATIC uint16_t igniterChargeTime = 655;
 FILE_STATIC uint16_t cooldownTime = 28461;
 
 FILE_STATIC ppt_main_done mainDone;
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 FILE_STATIC timing currTiming;
+FILE_STATIC fireInfo fireSeg; //ID: 7
 
 aggVec_i mainDoneAg;
 aggVec_i ignDoneAg;
@@ -201,6 +202,14 @@ void sendRC()
     }
 }
 
+void sendFire()
+{
+    fireSeg.faultCount = faultCount;
+    fireSeg.fireCount = fireCount;
+    fireSeg.lastFireResult = (uint8_t)lastFireResult;
+    bcbinSendPacket((uint8_t *)&fireSeg, sizeof(fireSeg));
+}
+
 void blinkLED()
 {
     if(firing)
@@ -276,6 +285,7 @@ int main(void)
     bcbinPopulateHeader(&currTiming.header, 5, sizeof(currTiming));
     bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
     bcbinPopulateHeader(&mainDone.header, 3, sizeof(mainDone));
+    bcbinPopulateHeader(&fireSeg.header, 6, sizeof(fireSeg));
 
     withFiringPulse = 1;
 
@@ -290,6 +300,7 @@ int main(void)
         {
             sendMeta();
             sendHealth();
+            sendFire();
         }
         if(sendSync1Flag)
             sendSync1();
@@ -457,6 +468,7 @@ __interrupt void Port_2(void)
 
 void fire()
 {
+    fireCount++;
     CHARGE_OUT &= ~IGN_CHARGE_BIT;
     mod_status.ss_state = State_Firing;
     //fire high
@@ -464,7 +476,6 @@ void fire()
     __delay_cycles(FIRING_PULSE_WIDTH);
     //fire low
     CHARGE_OUT &= ~FIRE_BIT;
-    fireCount++;
 }
 
 #pragma vector = TIMER0_B1_VECTOR
@@ -487,14 +498,11 @@ __interrupt void Timer0_B1_ISR (void)
                     TB0CCR1 += igniterChargeTime;
                     break;
                 case State_Igniter_Charging:
-                	//if(CHARGE_OUT & SMT_OUT_BIT) //smt trigger high
-                	//{
-                		if(!withFiringPulse)
-                			stopFiring();
-                		else
+                	if(CHARGE_OUT & SMT_OUT_BIT) //smt trigger high
+                	{
+                		if(withFiringPulse)
                 		{
                 			fire();
-                			lastFireResult = Result_FireSuccessful;
 							if(CHARGE_OUT & SMT_OUT_BIT) //fault: main didn't discharge
 							{
 								stopFiring();
@@ -503,6 +511,7 @@ __interrupt void Timer0_B1_ISR (void)
 							}
 							else
 							{
+							    lastFireResult = Result_FireSuccessful;
 								if(currTimeout)
 								{
 									currTimeout--;
@@ -515,13 +524,15 @@ __interrupt void Timer0_B1_ISR (void)
 									stopFiring();
 							}
                 		}
-                	//}
-                	/*else //fault: main didn't charge
+                		else
+                            stopFiring();
+                	}
+                	else //fault: main didn't charge
                 	{
                 		faultCount++;
                 		lastFireResult = Result_MainFailedCharge;
                 		stopFiring();
-                	}*/
+                	}
                     break;
                 case State_Cooldown:
                     CHARGE_OUT |= MAIN_CHARGE_BIT;

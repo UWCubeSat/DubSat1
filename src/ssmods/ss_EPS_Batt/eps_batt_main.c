@@ -39,7 +39,7 @@ FILE_STATIC CoulombCounterData CCData;
 FILE_STATIC hDev hTempC;
 
 FILE_STATIC volatile uint8_t heaterIsChecking;
-FILE_STATIC volatile uint8_t balancerIsChecking;
+FILE_STATIC volatile uint8_t balancerIsChecking = 1;
 
 FILE_STATIC float previousTemp;
 
@@ -232,6 +232,15 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_GCMD_BATT_SET_HEATER_CHECK:
             decodegcmd_batt_set_heater_check(packet, &heaterCheckPkt);
             heaterIsChecking = heaterCheckPkt.gcmd_batt_set_heater_check_state;
+            break;
+        case CAN_ID_GCMD_BATT_SET_BAL_AUTO:
+        {
+            gcmd_batt_set_bal_auto pkt;
+            decodegcmd_batt_set_bal_auto(packet, &pkt);
+            if(pkt.gcmd_batt_set_bal_auto_state != CAN_ENUM_NBOOL_NULL)
+                balancerIsChecking = pkt.gcmd_batt_set_bal_auto_state;
+        }
+            break;
         default:
             break;
     }
