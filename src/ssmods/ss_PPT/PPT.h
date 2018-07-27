@@ -100,4 +100,11 @@ TLM_SEGMENT {
     uint16_t cooldownTime;
 } timing;
 
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint8_t lastFireResult;
+    uint16_t fireCount;
+    uint16_t faultCount;
+} fireInfo;
+
 #endif /* PPT_H_ */
