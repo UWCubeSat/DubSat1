@@ -389,22 +389,27 @@ FILE_STATIC void can_packet_rx_callback(CANPacket *packet)
 	}
 	if(packet->id == CAN_ID_GCMD_RESET_MINMAX)
 	{
-	    aggVec_reset((aggVec *)&mspTemp_agg);
-        aggVec_reset((aggVec *)&bdot_x_agg);
-        aggVec_reset((aggVec *)&bdot_y_agg);
-        aggVec_reset((aggVec *)&bdot_z_agg);
-        aggVec_reset((aggVec *)&fsw_x_agg);
-        aggVec_reset((aggVec *)&fsw_y_agg);
-        aggVec_reset((aggVec *)&fsw_z_agg);
-        aggVec_reset((aggVec *)&duty_x1_agg);
-        aggVec_reset((aggVec *)&duty_x2_agg);
-        aggVec_reset((aggVec *)&duty_y1_agg);
-        aggVec_reset((aggVec *)&duty_y2_agg);
-        aggVec_reset((aggVec *)&duty_z1_agg);
-        aggVec_reset((aggVec *)&duty_z2_agg);
-        aggVec_reset((aggVec *)&dipole_cmd_x_agg);
-        aggVec_reset((aggVec *)&dipole_cmd_y_agg);
-        aggVec_reset((aggVec *)&dipole_cmd_z_agg);
+        gcmd_reset_minmax pktRst;
+        decodegcmd_reset_minmax(packet, &pktRst);
+        if(pktRst.gcmd_reset_minmax_mtq)
+        {
+            aggVec_reset((aggVec *)&mspTemp_agg);
+            aggVec_reset((aggVec *)&bdot_x_agg);
+            aggVec_reset((aggVec *)&bdot_y_agg);
+            aggVec_reset((aggVec *)&bdot_z_agg);
+            aggVec_reset((aggVec *)&fsw_x_agg);
+            aggVec_reset((aggVec *)&fsw_y_agg);
+            aggVec_reset((aggVec *)&fsw_z_agg);
+            aggVec_reset((aggVec *)&duty_x1_agg);
+            aggVec_reset((aggVec *)&duty_x2_agg);
+            aggVec_reset((aggVec *)&duty_y1_agg);
+            aggVec_reset((aggVec *)&duty_y2_agg);
+            aggVec_reset((aggVec *)&duty_z1_agg);
+            aggVec_reset((aggVec *)&duty_z2_agg);
+            aggVec_reset((aggVec *)&dipole_cmd_x_agg);
+            aggVec_reset((aggVec *)&dipole_cmd_y_agg);
+            aggVec_reset((aggVec *)&dipole_cmd_z_agg);
+        }
 	}
 }
 

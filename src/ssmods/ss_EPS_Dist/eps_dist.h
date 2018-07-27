@@ -77,6 +77,10 @@
 #define LED_OUT P3OUT
 #define LED_BIT BIT5
 
+#define INA_DIR P3DIR
+#define INA_OUT P3OUT
+#define INA_BIT BIT7
+
 // Capture power domain info, IDs, addresses, and enable pins
 // DO NOT REORDER
 typedef enum {
@@ -119,6 +123,24 @@ typedef struct _power_domain_info {
 
     // eventually add other stuff, like handle to the averaging queues, etc.
 } PowerDomainInfo;
+
+typedef struct {
+    uint8_t ppt;
+    uint8_t eps;
+    uint8_t estim;
+    uint8_t bdot;
+    uint8_t rahs;
+    uint8_t com2;
+} AutoshutoffEnabled;
+
+typedef struct {
+    uint8_t ppt;
+    uint8_t eps;
+    uint8_t estim;
+    uint8_t bdot;
+    uint8_t rahs;
+    uint8_t com2;
+} AutoshutoffDelay;
 
 // COSMOS telem and cmd packets
 TLM_SEGMENT {

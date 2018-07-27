@@ -212,66 +212,73 @@ void canRxCallback(CANPacket *p)
 
     switch (p->id)
     {
-    case CAN_ID_CMD_ROLLCALL:
-        rollcallStart();
-        break;
-    case CAN_ID_SENSORPROC_MAG:
-        decodesensorproc_mag(p, &mag1);
-        tmp_mag1[0] = magConvertRawToTeslas(mag1.sensorproc_mag_x);
-        tmp_mag1[1] = magConvertRawToTeslas(mag1.sensorproc_mag_y);
-        tmp_mag1[2] = magConvertRawToTeslas(mag1.sensorproc_mag_z);
-        tmp_mag1[3] = mag1.sensorproc_mag_valid;
-        break;
-    case CAN_ID_SENSORPROC_MAG2:
-        decodesensorproc_mag2(p, &mag2);
-        tmp_mag2[0] = magConvertRawToTeslas(mag2.sensorproc_mag2_x);
-        tmp_mag2[1] = magConvertRawToTeslas(mag2.sensorproc_mag2_y);
-        tmp_mag2[2] = magConvertRawToTeslas(mag2.sensorproc_mag2_z);
-        tmp_mag2[3] = mag2.sensorproc_mag2_valid;
-        break;
-    case CAN_ID_SENSORPROC_IMU:
-        decodesensorproc_imu(p, &imu);
-        tmp_imu[0] = imuConvertRawToRPS(imu.sensorproc_imu_x);
-        tmp_imu[1] = imuConvertRawToRPS(imu.sensorproc_imu_y);
-        tmp_imu[2] = imuConvertRawToRPS(imu.sensorproc_imu_z);
-        tmp_imu[3] = imu.sensorproc_imu_valid;
-        break;
-    case CAN_ID_SENSORPROC_SUN:
-        decodesensorproc_sun(p, &sun);
-        // convert to unit vector
-        tmp_sun[0] = sun.sensorproc_sun_x / (real32_T) INT16_MAX;
-        tmp_sun[1] = sun.sensorproc_sun_y / (real32_T) INT16_MAX;
-        tmp_sun[2] = sun.sensorproc_sun_z / (real32_T) INT16_MAX;
-        tmp_sun[3] = sun.sensorproc_sun_valid;
-        break;
-    case CAN_ID_MTQ_ACK:
-        decodemtq_ack(p, &tmpMtqAck);
-        break;
-    case CAN_ID_ESTIM_STATE:
-        decodeestim_state(p, &tmpEstimState);
-        break;
-    case CAN_ID_ESTIM_MAG_UNIT_X:
-        decodeestim_mag_unit_x(p, &tmpEMagx);
-        break;
-    case CAN_ID_ESTIM_MAG_UNIT_Y:
-        decodeestim_mag_unit_y(p, &tmpEMagy);
-        break;
-    case CAN_ID_ESTIM_MAG_UNIT_Z:
-        decodeestim_mag_unit_z(p, &tmpEMagz);
-        break;
-    case CAN_ID_ESTIM_SUN_UNIT_X:
-        decodeestim_sun_unit_x(p, &tmpESunx);
-        break;
-    case CAN_ID_ESTIM_SUN_UNIT_Y:
-        decodeestim_sun_unit_y(p, &tmpESuny);
-        break;
-    case CAN_ID_ESTIM_SUN_UNIT_Z:
-        decodeestim_sun_unit_z(p, &tmpESunz);
-        break;
-    case CAN_ID_GCMD_RESET_MINMAX:
-        aggVec_reset((aggVec *)&rc_mspTemp);
-        aggVec_reset((aggVec *)&rc_pointTrue);
-        aggVec_reset((aggVec *)&rc_omega);
+        case CAN_ID_CMD_ROLLCALL:
+            rollcallStart();
+            break;
+        case CAN_ID_SENSORPROC_MAG:
+            decodesensorproc_mag(p, &mag1);
+            tmp_mag1[0] = magConvertRawToTeslas(mag1.sensorproc_mag_x);
+            tmp_mag1[1] = magConvertRawToTeslas(mag1.sensorproc_mag_y);
+            tmp_mag1[2] = magConvertRawToTeslas(mag1.sensorproc_mag_z);
+            tmp_mag1[3] = mag1.sensorproc_mag_valid;
+            break;
+        case CAN_ID_SENSORPROC_MAG2:
+            decodesensorproc_mag2(p, &mag2);
+            tmp_mag2[0] = magConvertRawToTeslas(mag2.sensorproc_mag2_x);
+            tmp_mag2[1] = magConvertRawToTeslas(mag2.sensorproc_mag2_y);
+            tmp_mag2[2] = magConvertRawToTeslas(mag2.sensorproc_mag2_z);
+            tmp_mag2[3] = mag2.sensorproc_mag2_valid;
+            break;
+        case CAN_ID_SENSORPROC_IMU:
+            decodesensorproc_imu(p, &imu);
+            tmp_imu[0] = imuConvertRawToRPS(imu.sensorproc_imu_x);
+            tmp_imu[1] = imuConvertRawToRPS(imu.sensorproc_imu_y);
+            tmp_imu[2] = imuConvertRawToRPS(imu.sensorproc_imu_z);
+            tmp_imu[3] = imu.sensorproc_imu_valid;
+            break;
+        case CAN_ID_SENSORPROC_SUN:
+            decodesensorproc_sun(p, &sun);
+            // convert to unit vector
+            tmp_sun[0] = sun.sensorproc_sun_x / (real32_T) INT16_MAX;
+            tmp_sun[1] = sun.sensorproc_sun_y / (real32_T) INT16_MAX;
+            tmp_sun[2] = sun.sensorproc_sun_z / (real32_T) INT16_MAX;
+            tmp_sun[3] = sun.sensorproc_sun_valid;
+            break;
+        case CAN_ID_MTQ_ACK:
+            decodemtq_ack(p, &tmpMtqAck);
+            break;
+        case CAN_ID_ESTIM_STATE:
+            decodeestim_state(p, &tmpEstimState);
+            break;
+        case CAN_ID_ESTIM_MAG_UNIT_X:
+            decodeestim_mag_unit_x(p, &tmpEMagx);
+            break;
+        case CAN_ID_ESTIM_MAG_UNIT_Y:
+            decodeestim_mag_unit_y(p, &tmpEMagy);
+            break;
+        case CAN_ID_ESTIM_MAG_UNIT_Z:
+            decodeestim_mag_unit_z(p, &tmpEMagz);
+            break;
+        case CAN_ID_ESTIM_SUN_UNIT_X:
+            decodeestim_sun_unit_x(p, &tmpESunx);
+            break;
+        case CAN_ID_ESTIM_SUN_UNIT_Y:
+            decodeestim_sun_unit_y(p, &tmpESuny);
+            break;
+        case CAN_ID_ESTIM_SUN_UNIT_Z:
+            decodeestim_sun_unit_z(p, &tmpESunz);
+            break;
+        case CAN_ID_GCMD_RESET_MINMAX:
+        {
+            gcmd_reset_minmax pktRst;
+            decodegcmd_reset_minmax(p, &pktRst);
+            if(pktRst.gcmd_reset_minmax_mpc)
+            {
+                aggVec_reset((aggVec *)&rc_mspTemp);
+                aggVec_reset((aggVec *)&rc_pointTrue);
+                aggVec_reset((aggVec *)&rc_omega);
+            }
+        }
         break;
     }
 }

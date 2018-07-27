@@ -26,6 +26,7 @@ FILE_STATIC aggVec_i rc_imupz;
 FILE_STATIC aggVec_i rc_imuValid;
 
 FILE_STATIC IMUData *data;
+FILE_STATIC initFailed = 0;
 
 #if !ENABLE_IMU
 FILE_STATIC IMUData mockData;
@@ -34,7 +35,7 @@ FILE_STATIC IMUData mockData;
 void imuioInit()
 {
 #if ENABLE_IMU
-    imuInit(IMU_I2CBUS, IMUUpdateRate_52Hz);
+    initFailed = imuInit(IMU_I2CBUS, IMUUpdateRate_52Hz);
 #endif
     aggVec_init_i(&rc_imux);
     aggVec_init_i(&rc_imuy);
@@ -56,8 +57,8 @@ void imuioUpdate()
     data = &mockData;
 #endif
 
-    // TODO write validity check
-    uint8_t valid = 1;
+    // simple sanity check for validity
+    uint8_t valid = (!initFailed) && (imuWhoami() == IMU_I2C_7BIT_ADDRESS);
 
     // set autocode inputs
     rtU.omega_body_radps_gyro[0] = imuConvertRawToRPS(data->rawGyroX);

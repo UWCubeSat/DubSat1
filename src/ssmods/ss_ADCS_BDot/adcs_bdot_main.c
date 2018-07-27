@@ -1111,6 +1111,7 @@ void can_rx_callback(CANPacket *packet)
         case CAN_ID_GCMD_BDOT_POLE_OVERRIDE:
             decodegcmd_bdot_pole_override(packet, &pop);
             bdot_pop_operation(pop.gcmd_bdot_pole_override_x, pop.gcmd_bdot_pole_override_y, pop.gcmd_bdot_pole_override_z);
+            bdot_dipole_gain_operation(pop.gcmd_bdot_pole_override_gain_x, pop.gcmd_bdot_pole_override_gain_y, pop.gcmd_bdot_pole_override_gain_z);
             break;
         case CAN_ID_GCMD_MTQ_PWM_TIME:
             decodegcmd_mtq_pwm_time(packet, &mtq_pwm);
@@ -1124,7 +1125,12 @@ void can_rx_callback(CANPacket *packet)
             rollcallStart();
             break;
         case CAN_ID_GCMD_RESET_MINMAX:
-            reset_aggregate();
+        {
+            gcmd_reset_minmax pktRst;
+            decodegcmd_reset_minmax(packet, &pktRst);
+            if(pktRst.gcmd_reset_minmax_bdot)
+                reset_aggregate();
+        }
             break;
     }
 }
@@ -1302,6 +1308,7 @@ void mag_select_switch(uint8_t mag_selection)
 
 void change_max_tumble_time(uint16_t max_tumble_time_min)
 {
+    if(max_tumble_time_min == 0) return;
     check_nap_status_timer_ms = ((uint32_t) max_tumble_time_min) * MINUTES_TO_MILLISEC_CONVERSION_FACTOR;
     max_tumbling_time_change_flag = 1;
 }
@@ -1312,7 +1319,7 @@ void spam_control_operation(uint16_t off_time_min, uint16_t on_time_min, uint8_t
     {
         spam_control_time_change_flag = 1;
         spam_off_timer_ms = ((uint32_t) off_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR);
-        spam_on_timer_ms = ((uint32_t) on_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR) / 3; // divide by three for three axis
+        spam_on_timer_ms = (uint32_t)((float) on_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR) / 3; // divide by three for three axis
     }
     gcmd_spam_x_dipole = x_dipole;
     gcmd_spam_y_dipole = y_dipole;
@@ -1350,10 +1357,10 @@ void bdot_pop_operation(uint8_t pop_control_x, uint8_t pop_control_y, uint8_t po
         override_factor_y = POP_OFF_SCALE_FACTOR;
     }
 
-    if(pop_control_x == POP_ON)
+    if(pop_control_z == POP_ON)
     {
-        override_factor_x = POP_ON_SCALE_FACTOR;
-    } else if(pop_control_x == POP_OFF)
+        override_factor_z = POP_ON_SCALE_FACTOR;
+    } else if(pop_control_z == POP_OFF)
     {
         override_factor_x = POP_OFF_SCALE_FACTOR;
     }
@@ -1361,9 +1368,9 @@ void bdot_pop_operation(uint8_t pop_control_x, uint8_t pop_control_y, uint8_t po
 
 void bdot_dipole_gain_operation(uint8_t gain_control_x, uint8_t gain_control_y, uint8_t gain_control_z)
 {
-    gcmd_dipole_gain_factor_x = (float) gain_control_x / 100;
-    gcmd_dipole_gain_factor_y = (float) gain_control_y / 100;
-    gcmd_dipole_gain_factor_z = (float) gain_control_z / 100;
+    gcmd_dipole_gain_factor_x = (float) gain_control_x / 100.0;
+    gcmd_dipole_gain_factor_y = (float) gain_control_y / 100.0;
+    gcmd_dipole_gain_factor_z = (float) gain_control_z / 100.0;
 }
 
 void change_spam_avg_time(uint8_t mtq_pwm_measurement, uint8_t mtq_pwm_actuation)
@@ -1494,9 +1501,9 @@ void rcPopulate6(CANPacket *out)
 {
     rc_adcs_bdot_6 rc = {0};
     rc.rc_adcs_bdot_6_current_state = (uint8_t) bdot_state;
-    rc.rc_adcs_bdot_6_gain_ovr_status_x = (gcmd_dipole_gain_factor_x != 1.0);
-    rc.rc_adcs_bdot_6_gain_ovr_status_y = (gcmd_dipole_gain_factor_y != 1.0);
-    rc.rc_adcs_bdot_6_gain_ovr_status_z = (gcmd_dipole_gain_factor_z != 1.0);
+    rc.rc_adcs_bdot_6_gain_ovr_status_x = (uint8_t)(gcmd_dipole_gain_factor_x * 100);
+    rc.rc_adcs_bdot_6_gain_ovr_status_y =  (uint8_t)(gcmd_dipole_gain_factor_y * 100);
+    rc.rc_adcs_bdot_6_gain_ovr_status_z =  (uint8_t)(gcmd_dipole_gain_factor_z * 100);
     rc.rc_adcs_bdot_6_mag_control = mag_selection_mode;
     rc.rc_adcs_bdot_6_max_tumble_time = (uint16_t)(check_nap_status_timer_ms / MINUTES_TO_MILLISEC_CONVERSION_FACTOR);
     rc.rc_adcs_bdot_6_pop_status_x = !(override_factor_x == POP_OFF_SCALE_FACTOR);
@@ -1504,7 +1511,7 @@ void rcPopulate6(CANPacket *out)
     rc.rc_adcs_bdot_6_pop_status_z = !(override_factor_z == POP_OFF_SCALE_FACTOR);
     rc.rc_adcs_bdot_6_spam_control = (gcmd_spam_control_switch == SPAM_ON);
     rc.rc_adcs_bdot_6_spam_off_time = spam_off_timer_ms / MINUTES_TO_MILLISEC_CONVERSION_FACTOR;
-    rc.rc_adcs_bdot_6_spam_on_time = spam_on_timer_ms / MINUTES_TO_MILLISEC_CONVERSION_FACTOR;
+    rc.rc_adcs_bdot_6_spam_on_time = (spam_on_timer_ms * 3) / MINUTES_TO_MILLISEC_CONVERSION_FACTOR;
     encoderc_adcs_bdot_6(&rc, out);
 }
 

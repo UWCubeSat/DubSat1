@@ -209,13 +209,20 @@ void can_packet_rx_callback(CANPacket *packet)
             rollcallStart();
             break;
         case CAN_ID_GCMD_RESET_MINMAX:
-            aggVec_reset((aggVec *)&mspTempAg);
-            aggVec_reset((aggVec *)&tempAg);
-            aggVec_reset((aggVec *)&voltageAg);
-            aggVec_reset((aggVec *)&currentAg);
-            aggVec_reset((aggVec *)&nodeVoltageAg);
-            aggVec_reset((aggVec *)&nodeCurrentAg);
-            aggVec_reset((aggVec *)&accChargeAg);
+        {
+            gcmd_reset_minmax pktRst;
+            decodegcmd_reset_minmax(packet, &pktRst);
+            if(pktRst.gcmd_reset_minmax_batt)
+            {
+                aggVec_reset((aggVec *)&mspTempAg);
+                aggVec_reset((aggVec *)&tempAg);
+                aggVec_reset((aggVec *)&voltageAg);
+                aggVec_reset((aggVec *)&currentAg);
+                aggVec_reset((aggVec *)&nodeVoltageAg);
+                aggVec_reset((aggVec *)&nodeCurrentAg);
+                aggVec_reset((aggVec *)&accChargeAg);
+            }
+        }
             break;
         case CAN_ID_GCMD_EPS_BATT_FULLDEF:
             decodegcmd_eps_batt_fulldef(packet, &fullDefPkt);

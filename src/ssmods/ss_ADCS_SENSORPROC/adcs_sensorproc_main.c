@@ -400,6 +400,13 @@ void canRxCallback(CANPacket *p)
     {
         rollcallStart();
     }
+    else if(p->id == CAN_ID_GCMD_RESET_MINMAX)
+    {
+        gcmd_reset_minmax pktRst;
+        decodegcmd_reset_minmax(p, &pktRst);
+        if(pktRst.gcmd_reset_minmax_sensorproc)
+            aggVec_reset((aggVec *)&rc_temp);
+    }
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
     {

@@ -11,6 +11,8 @@
 #include "core/utils.h"
 
 #define WDT_CONFIG WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_2
+#define ROLLCALL_WATCHDOG_TIMEOUT 255 //seconds
+#define AUTOSHUTOFF_DELAY 1 //number of rollcalls before the check for shutoff starts
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
@@ -28,6 +30,10 @@ FILE_STATIC volatile SubsystemMode ss_mode      = Mode_FirstMode;
 FILE_STATIC flag_t triggerState1;
 FILE_STATIC flag_t triggerState2;
 FILE_STATIC flag_t triggerState3;
+
+#pragma PERSISTENT(shutoffEnabled)
+FILE_STATIC AutoshutoffEnabled shutoffEnabled = {1, 1, 1, 1, 1, 0};
+FILE_STATIC AutoshutoffDelay shutoffDelay = {0, 0, 0, 0, 0, 0};
 
 // DO NOT REORDER
 FILE_STATIC uint8_t *powerDomainNames[] =
@@ -91,16 +97,16 @@ FILE_STATIC aggVec_i ssBusVAgs[NUM_POWER_DOMAINS];
 
 #define MOD_BDOT_FLAG 8
 #define MOD_MTQ_FLAG 16
-#define PD_BDOT_FLAG 24
+#define PD_BDOT_FLAG (MOD_BDOT_FLAG | MOD_MTQ_FLAG)
 
 #define MOD_ESTIM_FLAG 32
 #define MOD_MPC_FLAG 64
 #define MOD_SENSORPROC_FLAG 128
-#define PD_ESTIM_FLAG 224
+#define PD_ESTIM_FLAG (MOD_ESTIM_FLAG | MOD_MPC_FLAG | MOD_SENSORPROC_FLAG)
 
 #define MOD_GEN_FLAG 256
 #define MOD_BATT_FLAG 512
-#define PD_EPS_FLAG 768
+#define PD_EPS_FLAG (MOD_GEN_FLAG | MOD_BATT_FLAG)
 
 #define PD_PPT_FLAG 1024
 
@@ -229,6 +235,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
     switch (domain)
     {
         case PD_COM2:
+            if(distQueryDomainSwitch(PD_COM2) == 0)
+                shutoffDelay.com2 = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_COM2_OUT |= DOMAIN_ENABLE_COM2_BIT;
             else if (cmd == PD_CMD_Disable)
@@ -237,6 +245,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_COM2_OUT ^= DOMAIN_ENABLE_COM2_BIT;
             break;
         case PD_PPT:
+            if(distQueryDomainSwitch(PD_PPT) == 0)
+                shutoffDelay.ppt = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_PPT_OUT |= DOMAIN_ENABLE_PPT_BIT;
             else if (cmd == PD_CMD_Disable)
@@ -245,6 +255,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_PPT_OUT ^= DOMAIN_ENABLE_PPT_BIT;
             break;
         case PD_BDOT:
+            if(distQueryDomainSwitch(PD_BDOT) == 0)
+                shutoffDelay.bdot = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_BDOT_OUT |= DOMAIN_ENABLE_BDOT_BIT;
             else if (cmd == PD_CMD_Disable)
@@ -261,6 +273,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_COM1_OUT ^= DOMAIN_ENABLE_COM1_BIT;
             break;
         case PD_RAHS:
+            if(distQueryDomainSwitch(PD_RAHS) == 0)
+                shutoffDelay.rahs = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_RAHS_OUT |= DOMAIN_ENABLE_RAHS_BIT;
             else if (cmd == PD_CMD_Disable)
@@ -269,6 +283,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_RAHS_OUT ^= DOMAIN_ENABLE_RAHS_BIT;
             break;
         case PD_ESTIM:
+            if(distQueryDomainSwitch(PD_ESTIM) == 0)
+                shutoffDelay.estim = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_ESTIM_OUT |= DOMAIN_ENABLE_ESTIM_BIT;
             else if (cmd == PD_CMD_Disable)
@@ -277,6 +293,8 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_ESTIM_OUT ^= DOMAIN_ENABLE_ESTIM_BIT;
             break;
         case PD_EPS:
+            if(distQueryDomainSwitch(PD_EPS) == 0)
+                shutoffDelay.eps = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_EPS_OUT |= DOMAIN_ENABLE_EPS_BIT;
             else if (cmd == PD_CMD_Disable)
@@ -692,57 +710,100 @@ void autoShutoff()
 {
     if(rcResponseFlag)
     {
-        if(rcResponseFlag & PD_COM1_FLAG)
+        /*if(rcResponseFlag & PD_COM1_FLAG)
         {
             distDomainSwitch(PD_COM1, PD_CMD_Disable);
             rcResponseFlag &= ~PD_COM1_FLAG;
-        }
-        /*if(rcResponseFlag & PD_COM2_FLAG)
-        {
-            distDomainSwitch(PD_COM2, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_COM2_FLAG;
         }*/
-        if(rcResponseFlag & PD_RAHS_FLAG)
-        {
-            distDomainSwitch(PD_RAHS, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_RAHS_FLAG;
-        }
-        if(rcResponseFlag & PD_BDOT_FLAG)
-        {
-            distDomainSwitch(PD_BDOT, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_BDOT_FLAG;
-        }
-        if(rcResponseFlag & PD_ESTIM_FLAG)
-        {
-            distDomainSwitch(PD_ESTIM, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_ESTIM_FLAG;
-        }
-        if(rcResponseFlag & PD_EPS_FLAG)
-        {
-            distDomainSwitch(PD_EPS, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_EPS_FLAG;
-        }
-        if(rcResponseFlag & PD_PPT_FLAG)
-        {
-            distDomainSwitch(PD_PPT, PD_CMD_Disable);
-            rcResponseFlag &= ~PD_PPT_FLAG;
-        }
+        if(shutoffDelay.com2)
+            shutoffDelay.com2--;
+        else
+            if(shutoffEnabled.com2 == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_COM2_FLAG && shutoffDelay.com2 == 0)
+            {
+                distDomainSwitch(PD_COM2, PD_CMD_Disable);
+                rcResponseFlag &= ~PD_COM2_FLAG;
+            }
+
+        if(shutoffDelay.rahs)
+            shutoffDelay.rahs--;
+        else
+            if(shutoffEnabled.rahs == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_RAHS_FLAG)
+            {
+                distDomainSwitch(PD_RAHS, PD_CMD_Disable);
+                rcResponseFlag &= ~PD_RAHS_FLAG;
+            }
+
+        if(shutoffDelay.bdot)
+            shutoffDelay.bdot--;
+        else
+            if(shutoffEnabled.bdot == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_BDOT_FLAG)
+            {
+                distDomainSwitch(PD_BDOT, PD_CMD_Disable);
+                rcResponseFlag &= ~PD_BDOT_FLAG;
+            }
+
+        if(shutoffDelay.estim)
+            shutoffDelay.estim--;
+        else
+            if(shutoffEnabled.estim == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_ESTIM_FLAG)
+            {
+                distDomainSwitch(PD_ESTIM, PD_CMD_Disable);
+                rcResponseFlag &= ~PD_ESTIM_FLAG;
+            }
+
+        if(shutoffDelay.eps)
+            shutoffDelay.eps--;
+        else
+            if(shutoffEnabled.eps == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_EPS_FLAG)
+            {
+                distDomainSwitch(PD_EPS, PD_CMD_Disable);
+                rcResponseFlag &= ~PD_EPS_FLAG;
+            }
+
+        if(shutoffDelay.ppt)
+            shutoffDelay.ppt--;
+        else
+            if(shutoffEnabled.ppt == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_PPT_FLAG)
+            {
+                distDomainSwitch(PD_PPT, PD_CMD_Disable);
+                rcResponseFlag &= ~PD_PPT_FLAG;
+            }
     }
 
     if(distQueryDomainSwitch(PD_COM1))
         rcResponseFlag |= PD_COM1_FLAG;
+    else
+        rcResponseFlag &= ~PD_COM1_FLAG;
+
     if(distQueryDomainSwitch(PD_COM2))
         rcResponseFlag |= PD_COM2_FLAG;
+    else
+        rcResponseFlag &= ~PD_COM2_FLAG;
+
     if(distQueryDomainSwitch(PD_RAHS))
         rcResponseFlag |= PD_RAHS_FLAG;
+    else
+        rcResponseFlag &= ~PD_RAHS_FLAG;
+
     if(distQueryDomainSwitch(PD_BDOT))
         rcResponseFlag |= PD_BDOT_FLAG;
+    else
+        rcResponseFlag &= ~PD_BDOT_FLAG;
+
     if(distQueryDomainSwitch(PD_ESTIM))
         rcResponseFlag |= PD_ESTIM_FLAG;
+    else
+        rcResponseFlag &= ~PD_ESTIM_FLAG;
+
     if(distQueryDomainSwitch(PD_EPS))
         rcResponseFlag |= PD_EPS_FLAG;
+    else
+        rcResponseFlag &= ~PD_EPS_FLAG;
+
     if(distQueryDomainSwitch(PD_PPT))
         rcResponseFlag |= PD_PPT_FLAG;
+    else
+        rcResponseFlag &= ~PD_PPT_FLAG;
 }
 
 void checkSelfReboot()
@@ -776,7 +837,7 @@ void can_packet_rx_callback(CANPacket *packet)
     {
         case CAN_ID_CMD_ROLLCALL:
             rollcallStart();
-            //autoShutoff();
+            autoShutoff();
             rollcallWatchdog = 0;
             break;
         case CAN_ID_RC_ADCS_BDOT_H1:
@@ -849,8 +910,11 @@ void can_packet_rx_callback(CANPacket *packet)
             setPowerSwitchFromCAN(PD_CMD_Enable, rebootRequest.cmd_reboot_request_domain);
                 break;
         case CAN_ID_GCMD_RESET_MINMAX:
-            //checkSubsytemResetMinMax(packet,
-            //{
+        {
+            gcmd_reset_minmax rstPkt = {0};
+            decodegcmd_reset_minmax(packet, &rstPkt);
+            if(rstPkt.gcmd_reset_minmax_dist)
+            {
                 aggVec_reset((aggVec *)&mspTempAg);
                 aggVec_reset((aggVec *)&battVAg);
                 aggVec_reset((aggVec *)&coulombCounterAg);
@@ -860,8 +924,9 @@ void can_packet_rx_callback(CANPacket *packet)
                     aggVec_reset((aggVec*)&ssCurrAgs[i - 1]);
                     aggVec_reset((aggVec *)&ssBusVAgs[i - 1]);
                 }
-            //})
-            break;
+            }
+        }
+        break;
         case CAN_ID_GCMD_AUTOSEQ_ADD_1:
             decodegcmd_autoseq_add_1(packet, &autoseqAdd1);
             pendingEvent.pkt.id = autoseqAdd1.gcmd_autoseq_add_1_can_id;
@@ -901,13 +966,31 @@ void can_packet_rx_callback(CANPacket *packet)
             autoseqIndicesResponsePktSendFlag = 1;
             break;
         case CAN_ID_GCMD_DIST_RESET_MISSION: //reset MET, clear events, reboot
-            persistentTime = (timeStamp){0};
+            persistentTime = (timeStamp){0, 0, 0, 0, 0};
             uint8_t j;
             for(j = sizeof(persistentEvents) / sizeof(sequenceEvent); j; j--)
                 persistentEvents[j - 1].time = 0;
             eventsInitialized = 0;
         case CAN_ID_GCMD_DIST_SELF_RESTART:
             WDTCTL = 0; //reboot
+            break;
+        case CAN_ID_GCMD_DIST_AUTOSHUTOFF:
+        {
+            gcmd_dist_autoshutoff pktShutoff;
+            decodegcmd_dist_autoshutoff(packet, &pktShutoff);
+            if(pktShutoff.gcmd_dist_autoshutoff_bdot != CAN_ENUM_NBOOL_NULL)
+                shutoffEnabled.bdot = pktShutoff.gcmd_dist_autoshutoff_bdot;
+            if(pktShutoff.gcmd_dist_autoshutoff_com2 != CAN_ENUM_NBOOL_NULL)
+                shutoffEnabled.com2 = pktShutoff.gcmd_dist_autoshutoff_com2;
+            if(pktShutoff.gcmd_dist_autoshutoff_eps != CAN_ENUM_NBOOL_NULL)
+                shutoffEnabled.eps = pktShutoff.gcmd_dist_autoshutoff_eps;
+            if(pktShutoff.gcmd_dist_autoshutoff_estim != CAN_ENUM_NBOOL_NULL)
+                shutoffEnabled.estim = pktShutoff.gcmd_dist_autoshutoff_estim;
+            if(pktShutoff.gcmd_dist_autoshutoff_ppt != CAN_ENUM_NBOOL_NULL)
+                shutoffEnabled.ppt = pktShutoff.gcmd_dist_autoshutoff_ppt;
+            if(pktShutoff.gcmd_dist_autoshutoff_rahs != CAN_ENUM_NBOOL_NULL)
+                shutoffEnabled.rahs = pktShutoff.gcmd_dist_autoshutoff_rahs;
+        }
             break;
         default:
             break;
@@ -951,42 +1034,51 @@ void initData()
 void initializeEvents()
 {
 	CANPacket pkt;
-	uint8_t i;
+
+	////////////////////////////////////////////////////  TODO: this is test code for Con-Ops
+	gcmd_dist_set_pd_state cmd = {0, 0, 0, 0, 1, 0, 0};
+	encodegcmd_dist_set_pd_state(&cmd, &pkt);
+	persistentEvents[0].pkt = pkt;
+	persistentEvents[0].sendFlag = 0;
+	persistentEvents[0].time = 15;
+	////////////////////////////////////////////////////
+
+	/*uint8_t i;
 	for(i = 0; i < NUM_POWER_DOMAINS; i++)
 	{
 		gcmd_dist_set_pd_state cmd = {0};
 		switch(i)
 		{
 			case 0:
-				cmd.gcmd_dist_set_pd_state_bdot = 3;
+				cmd.gcmd_dist_set_pd_state_bdot = PD_CMD_Enable;
 				break;
 			case 1:
-				cmd.gcmd_dist_set_pd_state_com1 = 3;
+				cmd.gcmd_dist_set_pd_state_com1 = PD_CMD_Enable;
 				break;
 			case 2:
-				cmd.gcmd_dist_set_pd_state_com2 = 3;
+				cmd.gcmd_dist_set_pd_state_com2 = PD_CMD_Enable;
 				break;
 			case 3:
-				cmd.gcmd_dist_set_pd_state_eps = 3;
+				cmd.gcmd_dist_set_pd_state_eps = PD_CMD_Enable;
 				break;
 			case 4:
-				cmd.gcmd_dist_set_pd_state_estim = 3;
+				cmd.gcmd_dist_set_pd_state_estim = PD_CMD_Enable;
 				break;
 			case 5:
-				cmd.gcmd_dist_set_pd_state_ppt = 3;
+				cmd.gcmd_dist_set_pd_state_ppt = PD_CMD_Enable;
 				break;
 			case 6:
-				cmd.gcmd_dist_set_pd_state_rahs = 3;
+				cmd.gcmd_dist_set_pd_state_rahs = PD_CMD_Enable;
 				break;
 			case 7:
-				cmd.gcmd_dist_set_pd_state_wheels = 3;
+				cmd.gcmd_dist_set_pd_state_wheels = PD_CMD_Enable;
 				break;
 		}
 		encodegcmd_dist_set_pd_state(&cmd, &pkt);
 		persistentEvents[i].pkt = pkt;
 		persistentEvents[i].sendFlag = 0;
 		persistentEvents[i].time = i + 1; //sequentially activated
-	}
+	}*/
 	eventsInitialized = 1;
 }
 
@@ -1004,10 +1096,26 @@ void sendSequenceResponses()
     }
 }
 
+void INAInit()
+{
+    INA_DIR |= INA_BIT;
+    INA_OUT |= INA_BIT;
+}
+
+void restartINA() //TODO: send a restart command instead
+{
+    INA_OUT &= ~INA_BIT;
+    __delay_cycles((uint16_t)(MSEC * 10));
+    INA_OUT |= INA_BIT;
+}
+
 void checkRollcallWatchdog()
 {
-    if(!(rollcallWatchdog ^ 0xFF)) //rollcallWatchdog < 255
-        canInit(); //restart CAN controller
+    if(rollcallWatchdog >= ROLLCALL_WATCHDOG_TIMEOUT)
+    {
+        canWrapInitWithFilter(); //also restarts the CAN controller
+        rollcallWatchdog = 0;
+    }
 }
 
 void incrementRollcallWatchdog()
@@ -1021,14 +1129,13 @@ void incrementRollcallWatchdog()
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
-    //WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this when watchdog goes in
-    WDTCTL = WDTPW | WDTHOLD;
-    bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
+    WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this to take watchdog out
+    //WDTCTL = WDTPW | WDTHOLD;
+    bspInit(__SUBSYSTEM_MODULE__);  // This uses the framily of __SS_etc predefined symbols - see bsp.h
     METInitWithTime(persistentTime);
 
-    P3DIR |= BIT4 | BIT7; //this is Paul's backpower fix
-    //P3REN |= BIT7;
-    P3OUT |= BIT4 | BIT7;
+    bspBackpowerPulldown();
+    INAInit();
 
     // Spin up the ADC, for the temp sensor and battery voltage
     asensorInit(Ref_2p5V);
@@ -1073,8 +1180,6 @@ int main(void)
     // Autostart the EPS power domain for now
     if(!eventsInitialized)
     	initializeEvents();
-    else
-    	autoStart(); //TODO: remove autostart for flight
 
     seqInit(persistentEvents, sizeof(persistentEvents) / sizeof(persistentEvents[0]));
 
@@ -1087,8 +1192,7 @@ int main(void)
     uint16_t counter = 0;
     while (1)
     {
-        //TODO: uncomment this
-        //WDTCTL = WDT_CONFIG;
+        WDTCTL = WDT_CONFIG;
         // TODO:  eventually drive this with a timer
         LED_OUT ^= LED_BIT;
         __delay_cycles(0.1 * SEC);
@@ -1112,6 +1216,9 @@ int main(void)
         checkSequence();
         sendSequenceResponses();
         checkRollcallWatchdog();
+
+        if(i2cGetLastOperationResult())
+            restartINA();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!

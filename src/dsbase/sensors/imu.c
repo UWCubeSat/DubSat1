@@ -20,10 +20,10 @@ FILE_STATIC uint8_t hasRead = 0;
 
 
 
-void imuInit(bus_instance_i2c i2cbus, IMUUpdateRate rate)
+uint8_t imuInit(bus_instance_i2c i2cbus, IMUUpdateRate rate)
 {
     if (imuInitialized != 0)
-        return;
+        return 0;
 
     imuInitialized = 1;
     i2cEnable(i2cbus);
@@ -34,12 +34,13 @@ void imuInit(bus_instance_i2c i2cbus, IMUUpdateRate rate)
     // TODO:  Add initialization code
     i2cBuff[0] = 0x7E; // CMD register
     i2cBuff[1] = 0x15;  // SHOULD turn on gyro, and only gyro
-    i2cMasterWrite(hSensor, i2cBuff, 2);
+    if(i2cMasterWrite(hSensor, i2cBuff, 2))
+        return 1;
 
     // Turn on accel for now
     i2cBuff[0] = 0x7E;
     i2cBuff[1] = 0x11;
-    i2cMasterWrite(hSensor, i2cBuff, 2);
+    return i2cMasterWrite(hSensor, i2cBuff, 2);
 
 #elif defined(__BSP_HW_IMU_LSM6DSM__)
 
@@ -63,11 +64,22 @@ void imuInit(bus_instance_i2c i2cbus, IMUUpdateRate rate)
         break;
     }
 
+    uint8_t error = 0;
+
     i2cBuff[0] = IMU_LSM6DSM_CTRL2_G;
     i2cBuff[1] = rateVal;
-    i2cBuff[2] = IMU_LSM6DSM_CTRL7_G;
-    i2cBuff[3] = IMU_LSM6DSM_HIGH_PERF_ON;
-    i2cMasterWrite(hSensor, i2cBuff, 4);
+    error = i2cMasterWrite(hSensor, i2cBuff, 2);
+
+    // set CTRL3_C to default to guarantee endianness
+    i2cBuff[0] = IMU_LSM6DSM_CTRL3_C;
+    i2cBuff[1] = IMU_LSM6DSM_CTRL3_C_DEFAULT;
+    error |= i2cMasterWrite(hSensor, i2cBuff, 2);
+
+    i2cBuff[0] = IMU_LSM6DSM_CTRL7_G;
+    i2cBuff[1] = IMU_LSM6DSM_HIGH_PERF_ON;
+    error |= i2cMasterWrite(hSensor, i2cBuff, 2);
+
+    return error;
 
 #else
 
@@ -83,11 +95,14 @@ IMUData *imuReadGyroAccelData()
 #if defined (__BSP_HW_IMU_BMI160__)
 
     // TODO:  Add state read code, populate IMU data struct
-    i2cMasterRegisterRead(hSensor, 0x0C, i2cBuff, 12);  // read data bytes, little-endian pairs
-
-    idata.rawGyroX = (int16_t)(i2cBuff[0] | ((int16_t)i2cBuff[1] << 8));
-    idata.rawGyroY = (int16_t)(i2cBuff[2] | ((int16_t)i2cBuff[3] << 8));
-    idata.rawGyroZ = (int16_t)(i2cBuff[4] | ((int16_t)i2cBuff[5] << 8));
+    if(i2cMasterRegisterRead(hSensor, 0x0C, i2cBuff, 12) == 0)  // read data bytes, little-endian pairs
+    {
+        idata.rawGyroX = (int16_t)(i2cBuff[0] | ((int16_t)i2cBuff[1] << 8));
+        idata.rawGyroY = (int16_t)(i2cBuff[2] | ((int16_t)i2cBuff[3] << 8));
+        idata.rawGyroZ = (int16_t)(i2cBuff[4] | ((int16_t)i2cBuff[5] << 8));
+    }
+    else
+        return &idata;
 
     //idata.rawAccelX = (int16_t)(i2cBuff[6] | ((int16_t)i2cBuff[7] << 8));
     //idata.rawAccelY = (int16_t)(i2cBuff[8] | ((int16_t)i2cBuff[9] << 8));
@@ -134,6 +149,18 @@ IMUData *imuReadGyroAccelData()
 #endif  // IMU type
 
     return &idata;
+}
+
+uint8_t imuWhoami()
+{
+#if defined(__BSP_HW_IMU_LSM6DSM__)
+    i2cMasterRegisterRead(hSensor, IMU_LSM6DSM_WHOAMI_REGS, i2cBuff, 1);
+#else
+
+#error whoami not implemented for other IMUs
+
+#endif  // IMU type
+    return i2cBuff[0];
 }
 
 float imuConvertRawToRPS(int16_t raw)
