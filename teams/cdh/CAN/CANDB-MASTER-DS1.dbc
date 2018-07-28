@@ -34,6 +34,7 @@ NS_ :
 BS_:
 
 BU_: ppt eps_batt eps_dist eps_gen adcs_rwz adcs_rwy adcs_rwx adcs_mtq rahs adcs_sensorproc adcs_mpc adcs_estim adcs_bdot com_1 com_2
+VAL_TABLE_ i2c_result 4 "transmit timeout" 3 "nack" 2 "stop timeout" 1 "start timeout" 0 "no error" ;
 VAL_TABLE_ sysrstiv 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC) MPUSEG2IFG seg 2 mem viol" 42 "(PUC) MPUSEG1IFG seg 1 mem viol" 40 "(PUC) MPUSEGIIFGinfoMemSegViol" 38 "(PUC) MPUSEGIPIFGencapIPmemSeg" 36 "(PUC) CSPW CS password violation" 34 "(PUC) MPUPW MPU pwd violation" 32 "(PUC) PMMPW PMM pwd violation" 30 "(PUC) Peripheral area fetch" 28 "(PUC) Uncorrectable FRAM bit err" 26 "(PUC) FRCTLPW password violation" 24 "(PUC) WDTPW password violation" 22 "(PUC) WDTIFG watchdog timeout" 20 "(POR) PMMSWPOR software POR" 14 "(BOR) SVSHIFG SVSH event" 10 "(BOR) Security violation" 8 "(BOR) LPMx.5 wake up" 6 "(BOR) RSTIFG RST/NMI" 2 "(BOR) Brownout" 0 "No interrupt pending" ;
 VAL_TABLE_ gen_pnl_charging 1 "CHARGING" 0 "NOTCHARGING" ;
 VAL_TABLE_ gen_pnl_enabled 1 "ENABLED" 0 "DISABLED" ;
@@ -552,6 +553,10 @@ BO_ 2451112480 rc_adcs_sp_6: 8 Vector__XXX
  SG_ rc_adcs_sp_6_sun_z_avg : 16|16@1- (1,0) [-32768|32767] "1/32768 units" Vector__XXX
 
 BO_ 2451112491 rc_adcs_sp_17: 8 Vector__XXX
+ SG_ rc_adcs_sp_17_i2c_result_sun : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_sp_17_i2c_result_imu : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_sp_17_i2c_result_mag_2 : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_sp_17_i2c_result_mag_1 : 32|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_adcs_sp_17_imu_z_max : 0|16@1- (1,0) [-32768|32767] "0.004375 deg/s" Vector__XXX
  SG_ rc_adcs_sp_17_imu_z_avg : 16|16@1- (1,0) [-32768|32767] "0.004375 deg/s" Vector__XXX
 
@@ -1507,6 +1512,10 @@ VAL_ 2452161094 rc_eps_dist_4_com1_state 3 "off_batt_undervoltage" 2 "off_overcu
 VAL_ 2451112499 rc_adcs_estim_8_tle_id 1 "true" 0 "false" ;
 VAL_ 2451112499 rc_adcs_estim_8_sc_in_sun 1 "true" 0 "false" ;
 VAL_ 2451112499 rc_adcs_estim_8_sc_above_gs 1 "true" 0 "false" ;
+VAL_ 2451112491 rc_adcs_sp_17_i2c_result_sun 4 "transmit timeout" 3 "nack" 2 "stop timeout" 1 "start timeout" 0 "no error" ;
+VAL_ 2451112491 rc_adcs_sp_17_i2c_result_imu 4 "transmit timeout" 3 "nack" 2 "stop timeout" 1 "start timeout" 0 "no error" ;
+VAL_ 2451112491 rc_adcs_sp_17_i2c_result_mag_2 4 "transmit timeout" 3 "nack" 2 "stop timeout" 1 "start timeout" 0 "no error" ;
+VAL_ 2451112491 rc_adcs_sp_17_i2c_result_mag_1 4 "transmit timeout" 3 "nack" 2 "stop timeout" 1 "start timeout" 0 "no error" ;
 VAL_ 2452161050 rc_adcs_bdot_4_tumble 1 "true" 0 "false" ;
 VAL_ 2449932984 estim_state_in_sun 1 "true" 0 "false" ;
 VAL_ 2449932984 estim_state_above_gs 1 "true" 0 "false" ;

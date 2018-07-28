@@ -2512,6 +2512,10 @@ void decoderc_adcs_sp_17(CANPacket *input, rc_adcs_sp_17 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
+    output -> rc_adcs_sp_17_i2c_result_sun = (uint8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_adcs_sp_17_i2c_result_imu = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_adcs_sp_17_i2c_result_mag_2 = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+    output -> rc_adcs_sp_17_i2c_result_mag_1 = (uint8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
     output -> rc_adcs_sp_17_imu_z_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> rc_adcs_sp_17_imu_z_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
 }
@@ -2520,6 +2524,10 @@ void encoderc_adcs_sp_17(rc_adcs_sp_17 *input, CANPacket *output){
     output -> id = 303628843;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_sp_17_i2c_result_sun))) & 0xff);
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_sp_17_i2c_result_imu))) & 0xff) << 8;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_sp_17_i2c_result_mag_2))) & 0xff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_sp_17_i2c_result_mag_1))) & 0xff) << 24;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_sp_17_imu_z_max))) & 0xffff) << 48;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_sp_17_imu_z_avg))) & 0xffff) << 32;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));

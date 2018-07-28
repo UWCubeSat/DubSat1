@@ -216,6 +216,11 @@
 #define CAN_ID_SYNC_1 2162705
 #define CAN_ID_GRND_EPOCH 302449337
 
+#define CAN_ENUM_I2C_RESULT_TRANSMITTIMEOUT 4
+#define CAN_ENUM_I2C_RESULT_NACK 3
+#define CAN_ENUM_I2C_RESULT_STOPTIMEOUT 2
+#define CAN_ENUM_I2C_RESULT_STARTTIMEOUT 1
+#define CAN_ENUM_I2C_RESULT_NOERROR 0
 #define CAN_ENUM_SYSRSTIV_(PUC)MPUSEG3IFGSEG3MEMVIOL 46
 #define CAN_ENUM_SYSRSTIV_(PUC)MPUSEG2IFGSEG2MEMVIOL 44
 #define CAN_ENUM_SYSRSTIV_(PUC)MPUSEG1IFGSEG1MEMVIOL 42
@@ -938,6 +943,10 @@ typedef struct rc_adcs_sp_6 {
 } rc_adcs_sp_6;
 
 typedef struct rc_adcs_sp_17 {
+    uint8_t rc_adcs_sp_17_i2c_result_sun; //  (No Units)
+    uint8_t rc_adcs_sp_17_i2c_result_imu; //  (No Units)
+    uint8_t rc_adcs_sp_17_i2c_result_mag_2; //  (No Units)
+    uint8_t rc_adcs_sp_17_i2c_result_mag_1; //  (No Units)
     int16_t rc_adcs_sp_17_imu_z_max; // 0.004375 deg/s
     int16_t rc_adcs_sp_17_imu_z_avg; // 0.004375 deg/s
 } rc_adcs_sp_17;
