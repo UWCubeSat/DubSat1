@@ -12,6 +12,7 @@
 
 #define WDT_CONFIG WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_2
 #define ROLLCALL_WATCHDOG_TIMEOUT 255 //seconds
+#define ROLLCALL_WATCHDOG_AUTOSHUTOFF 3 //seconds
 #define AUTOSHUTOFF_DELAY 1 //number of rollcalls before the check for shutoff starts
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
@@ -175,6 +176,10 @@ void distDomainInit()
     }
 
     distInitializeOCPThresholds();
+
+    uint8_t i;
+    for(i = NUM_POWER_DOMAINS; i; i--)
+        gseg.powerdomainlastcmds[i - 1] = PD_CMD_OffInitial;
 }
 
 // Uses the actual GPIO output value to determine what is "actually" happening with the switch
@@ -492,8 +497,12 @@ uint8_t getPDState(PowerDomainID pd)
         return 1; //off manual
     else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_OCLatch)
         return 2; //overcurrent latch
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_BattVLow)
+        return 3; //batt_undervoltage
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_OffInitial)
+        return 4;
     else
-        return 3; //batt_undervoltage or other
+        return 5; //other
 }
 
 void rcPopulateH1(CANPacket *out)
@@ -769,7 +778,10 @@ void autoShutoff()
                 rcResponseFlag &= ~PD_PPT_FLAG;
             }
     }
+}
 
+void autoShutoffSetFlags()
+{
     if(distQueryDomainSwitch(PD_COM1))
         rcResponseFlag |= PD_COM1_FLAG;
     else
@@ -837,7 +849,7 @@ void can_packet_rx_callback(CANPacket *packet)
     {
         case CAN_ID_CMD_ROLLCALL:
             rollcallStart();
-            autoShutoff();
+            autoShutoffSetFlags();
             rollcallWatchdog = 0;
             break;
         case CAN_ID_RC_ADCS_BDOT_H1:
@@ -1115,6 +1127,10 @@ void checkRollcallWatchdog()
     {
         canWrapInitWithFilter(); //also restarts the CAN controller
         rollcallWatchdog = 0;
+    }
+    else if(rollcallWatchdog >= ROLLCALL_WATCHDOG_AUTOSHUTOFF)
+    {
+        autoShutoff();
     }
 }
 

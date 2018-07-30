@@ -337,10 +337,12 @@ void sendCANMtqCmd()
     canSendPacket(&p);
 }
 
+uint8_t useOutputsCount = 0;
 void useOutputs()
 {
     // send CAN packets
-    sendCANVelocityPointing();
+    if(useOutputsCount++ == 0)
+        sendCANVelocityPointing();
     sendCANMtqCmd();
 
     // calculate omega magnitude for rollcall
