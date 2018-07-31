@@ -6,8 +6,6 @@
 #include "interfaces/canwrap.h"
 #include "core/agglib.h"
 
-#define FIRING_PULSE_WIDTH 795 //was 7964 for 1 ms (target is 100 us)
-
 #define OPCODE_COMMON_CMD 0
 #define OPCODE_START_FIRE 2
 #define OPCODE_STOP_FIRE 3
@@ -22,8 +20,8 @@
 #define CHARGE_OUT P4OUT
 #define MAIN_CHARGE_BIT BIT3
 #define IGN_CHARGE_BIT BIT1
-#define FIRE_BIT BIT2
-#define SMT_OUT_BIT BIT0
+#define SMT_IN P4IN
+#define SMT_IN_BIT BIT0
 #define MAIN_DONE_BIT BIT6
 
 #define BATTERY_CHARGE_SUFFICIENT_STATE 31000 //TODO: verify this value
@@ -149,7 +147,7 @@ FILE_STATIC void sendSync1()
 void initPins()
 {
     LED_DIR |= (LED_BIT_FIRING | LED_BIT_IDLE);
-    CHARGE_DIR |= (FIRE_BIT | IGN_CHARGE_BIT| MAIN_CHARGE_BIT);
+    CHARGE_DIR |= (IGN_CHARGE_BIT| MAIN_CHARGE_BIT);
 
     //main done interrupt
     P2IFG = 0; //clear the interrupt
@@ -162,7 +160,7 @@ void checkFireState()
 {
     if(fireAttempt)
     {
-        if(CHARGE_OUT & SMT_OUT_BIT)
+        if(SMT_IN & SMT_IN_BIT)
         {
             lastFireResult = Result_MainFailedDischarge;
             faultCount++;
@@ -360,8 +358,7 @@ void stopFiring()
         LED_OUT &= ~LED_BIT_FIRING;
         mod_status.ss_state = State_Uncommissioned;
         firing = 0;
-        //P2IE &= ~(BIT5 | BIT6);
-        P4OUT &= ~(BIT1 | BIT2 | BIT3);
+        CHARGE_OUT &= ~(MAIN_CHARGE_BIT | IGN_CHARGE_BIT);
         withFiringPulse = 1;
     }
 }
@@ -497,7 +494,6 @@ __interrupt void Port_2(void)
 
 void fire()
 {
-    mod_status.ss_state = State_Firing;
     fireAttempt = 1;
     CHARGE_OUT |= IGN_CHARGE_BIT;
 }
@@ -519,7 +515,7 @@ __interrupt void Timer0_B1_ISR (void)
                 case State_Main_Igniter_Cooldown:
                     mod_status.ss_state = State_Igniter_Charging;
                     TB0CCR1 += igniterChargeTime;
-                    if((CHARGE_OUT & SMT_OUT_BIT) != 0) //smt trigger high
+                    if(SMT_IN & SMT_IN_BIT) //smt trigger high
                 	{
                 		if(withFiringPulse)
                 			fire();
@@ -536,7 +532,7 @@ __interrupt void Timer0_B1_ISR (void)
                 case State_Igniter_Charging:
                     CHARGE_OUT &= ~IGN_CHARGE_BIT; //set igniter low
                     fireAttempt = 0;
-                    if(CHARGE_OUT & SMT_OUT_BIT) //fault: main didn't discharge
+                    if(SMT_IN & SMT_IN_BIT) //fault: main didn't discharge
                     {
                         stopFiring();
                         lastFireResult = Result_MainFailedDischarge;
