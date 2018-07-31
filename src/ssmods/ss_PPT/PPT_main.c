@@ -60,6 +60,14 @@ FILE_STATIC uint16_t mainIgniterDelay = 32;
 FILE_STATIC uint16_t igniterChargeTime = 655;
 FILE_STATIC uint16_t cooldownTime = 28461;
 
+//MEASURED Values:
+#pragma PERSISTENT(lastMainChargeTime)
+uint16_t lastMainChargeTime = 0;
+
+//firing flag (used to determine state after reset)
+#pragma PERSISTENT(fireAttempt)
+volatile uint8_t fireAttempt = 0;
+
 FILE_STATIC ppt_main_done mainDone;
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
@@ -74,7 +82,7 @@ uint16_t fireCount = 0;
 #pragma PERSISTENT(faultCount)
 uint16_t faultCount = 0;
 #pragma PERSISTENT(lastFireResult)
-LastFireResult lastFireResult = Result_FireSuccessful;
+LastFireResult lastFireResult = 3;//Result_FireSuccessful;
 
 void initData()
 {
@@ -88,7 +96,8 @@ FILE_STATIC void sendMainDone()
 	if(mod_status.ss_state == State_Main_Charging)
 	{
 		mainDone.timeDone = mainChargeTime + TB0R - TB0CCR1;
-		aggVec_push_i(&mainDoneAg, mainDone.timeDone);
+		//aggVec_push_i(&mainDoneAg, mainDone.timeDone);
+		lastMainChargeTime = mainDone.timeDone;
 		bcbinSendPacket((uint8_t *)&mainDone, sizeof(mainDone));
 	}
 	else
@@ -149,6 +158,24 @@ void initPins()
     P2IE |= MAIN_DONE_BIT; //enable interrupt
 }
 
+void checkFireState()
+{
+    if(fireAttempt)
+    {
+        if(CHARGE_OUT & SMT_OUT_BIT)
+        {
+            lastFireResult = Result_MainFailedDischarge;
+            faultCount++;
+        }
+        else
+        {
+            lastFireResult = Result_FireSuccessful;
+            fireCount++;
+        }
+        fireAttempt = 0;
+    }
+}
+
 void sendRC()
 {
     while(sendRcFlag && canTxCheck() != CAN_TX_BUSY)
@@ -182,11 +209,12 @@ void sendRC()
         else if(sendRcFlag == 2)
         {
             rc_ppt_2 rc = {0};
-            rc.rc_ppt_2_main_chg_avg = 0;
+            rc.rc_ppt_2_main_chg_avg = lastMainChargeTime;
 			rc.rc_ppt_2_main_chg_max = 0;
 			rc.rc_ppt_2_main_chg_min = 0;
             rc.rc_ppt_2_total_fire_count = fireCount;
             encoderc_ppt_2(&rc, &pkt);
+            aggVec_as_reset((aggVec *)&mainDoneAg);
         }
         else if(sendRcFlag == 1)
         {
@@ -252,6 +280,7 @@ int main(void)
 
     initPins();
     initData();
+    checkFireState();
 
     TB0CTL = TBSSEL__ACLK | MC__CONTINOUS | TBCLR | TBIE;
 
@@ -468,14 +497,9 @@ __interrupt void Port_2(void)
 
 void fire()
 {
-    fireCount++;
-    CHARGE_OUT &= ~IGN_CHARGE_BIT;
     mod_status.ss_state = State_Firing;
-    //fire high
-    CHARGE_OUT |= FIRE_BIT;
-    __delay_cycles(FIRING_PULSE_WIDTH);
-    //fire low
-    CHARGE_OUT &= ~FIRE_BIT;
+    fireAttempt = 1;
+    CHARGE_OUT |= IGN_CHARGE_BIT;
 }
 
 #pragma vector = TIMER0_B1_VECTOR
@@ -493,37 +517,12 @@ __interrupt void Timer0_B1_ISR (void)
                     mod_status.ss_state = State_Main_Igniter_Cooldown;
                     break;
                 case State_Main_Igniter_Cooldown:
-                    CHARGE_OUT |= IGN_CHARGE_BIT;
                     mod_status.ss_state = State_Igniter_Charging;
                     TB0CCR1 += igniterChargeTime;
-                    break;
-                case State_Igniter_Charging:
-                	if(CHARGE_OUT & SMT_OUT_BIT) //smt trigger high
+                    if((CHARGE_OUT & SMT_OUT_BIT) != 0) //smt trigger high
                 	{
                 		if(withFiringPulse)
-                		{
                 			fire();
-							if(CHARGE_OUT & SMT_OUT_BIT) //fault: main didn't discharge
-							{
-								stopFiring();
-								lastFireResult = Result_MainFailedDischarge;
-								faultCount++;
-							}
-							else
-							{
-							    lastFireResult = Result_FireSuccessful;
-								if(currTimeout)
-								{
-									currTimeout--;
-									if(currTimeout)
-										sendSync1Flag = 1;
-									mod_status.ss_state = State_Cooldown;
-									TB0CCR1 += cooldownTime;
-								}
-								else
-									stopFiring();
-							}
-                		}
                 		else
                             stopFiring();
                 	}
@@ -533,6 +532,31 @@ __interrupt void Timer0_B1_ISR (void)
                 		lastFireResult = Result_MainFailedCharge;
                 		stopFiring();
                 	}
+                    break;
+                case State_Igniter_Charging:
+                    CHARGE_OUT &= ~IGN_CHARGE_BIT; //set igniter low
+                    fireAttempt = 0;
+                    if(CHARGE_OUT & SMT_OUT_BIT) //fault: main didn't discharge
+                    {
+                        stopFiring();
+                        lastFireResult = Result_MainFailedDischarge;
+                        faultCount++;
+                    }
+                    else
+                    {
+                        lastFireResult = Result_FireSuccessful;
+                        fireCount++;
+                        if(currTimeout)
+                        {
+                            currTimeout--;
+                            if(currTimeout)
+                                sendSync1Flag = 1;
+                            mod_status.ss_state = State_Cooldown;
+                            TB0CCR1 += cooldownTime;
+                        }
+                        else
+                            stopFiring();
+                    }
                     break;
                 case State_Cooldown:
                     CHARGE_OUT |= MAIN_CHARGE_BIT;
