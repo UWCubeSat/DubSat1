@@ -227,6 +227,7 @@
 #define CAN_ENUM_I2C_RESULT_STOPTIMEOUT 2
 #define CAN_ENUM_I2C_RESULT_STARTTIMEOUT 1
 #define CAN_ENUM_I2C_RESULT_NOERROR 0
+#define CAN_ENUM_SYSRSTIV_RSTIFGRST/NMI(BOR) 4
 #define CAN_ENUM_SYSRSTIV_(PUC)MPUSEG3IFGSEG3MEMVIOL 46
 #define CAN_ENUM_SYSRSTIV_(PUC)MPUSEG2IFGSEG2MEMVIOL 44
 #define CAN_ENUM_SYSRSTIV_(PUC)MPUSEG1IFGSEG1MEMVIOL 42
@@ -1236,6 +1237,8 @@ typedef struct rc_eps_batt_5 {
 } rc_eps_batt_5;
 
 typedef struct rc_eps_batt_4 {
+    uint8_t rc_eps_batt_4_bal_auto_state; //  (No Units)
+    uint8_t rc_eps_batt_4_heater_auto_state; //  (No Units)
     uint16_t rc_eps_batt_4_voltage_min; // raw voltage
     uint16_t rc_eps_batt_4_voltage_max; // raw voltage
     uint16_t rc_eps_batt_4_voltage_avg; // raw voltage
