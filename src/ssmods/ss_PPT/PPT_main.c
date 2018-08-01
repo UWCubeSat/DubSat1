@@ -56,6 +56,7 @@ FILE_STATIC flag_t triggerState3;
 FILE_STATIC uint16_t mainChargeTime = 36045;
 FILE_STATIC uint16_t mainIgniterDelay = 32;
 FILE_STATIC uint16_t igniterChargeTime = 655;
+FILE_STATIC uint16_t smtWaitTime = 131;
 FILE_STATIC uint16_t cooldownTime = 28461;
 
 //MEASURED Values:
@@ -532,6 +533,10 @@ __interrupt void Timer0_B1_ISR (void)
                 case State_Igniter_Charging:
                     CHARGE_OUT &= ~IGN_CHARGE_BIT; //set igniter low
                     fireAttempt = 0;
+                    mod_status.ss_state = State_SMT_Wait;
+                    TB0CCR1 += smtWaitTime;
+                    break;
+                case State_SMT_Wait:
                     if(SMT_IN & SMT_IN_BIT) //fault: main didn't discharge
                     {
                         stopFiring();
