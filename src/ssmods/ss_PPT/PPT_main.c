@@ -41,6 +41,7 @@ FILE_STATIC volatile ModuleStatus mod_status;
 FILE_STATIC uint8_t firing;
 FILE_STATIC uint8_t currTimeout;
 FILE_STATIC uint8_t withFiringPulse;
+FILE_STATIC uint8_t smtOverride;
 
 // These are sample "trigger" flags, used to indicate to the main loop
 // that a transition should occur
@@ -73,8 +74,6 @@ FILE_STATIC health_segment hseg;
 FILE_STATIC timing currTiming;
 FILE_STATIC fireInfo fireSeg; //ID: 7
 
-aggVec_i mainDoneAg;
-aggVec_i ignDoneAg;
 aggVec_f mspTempAg;
 #pragma PERSISTENT(fireCount)
 uint16_t fireCount = 0;
@@ -85,8 +84,6 @@ LastFireResult lastFireResult = 3;//Result_FireSuccessful;
 
 void initData()
 {
-    aggVec_init_i(&ignDoneAg);
-    aggVec_init_i(&mainDoneAg);
     aggVec_init_f(&mspTempAg);
 }
 
@@ -95,7 +92,6 @@ FILE_STATIC void sendMainDone()
 	if(mod_status.ss_state == State_Main_Charging)
 	{
 		mainDone.timeDone = mainChargeTime + TB0R - TB0CCR1;
-		//aggVec_push_i(&mainDoneAg, mainDone.timeDone);
 		lastMainChargeTime = mainDone.timeDone;
 		bcbinSendPacket((uint8_t *)&mainDone, sizeof(mainDone));
 	}
@@ -180,13 +176,6 @@ void sendRC()
     while(sendRcFlag && canTxCheck() != CAN_TX_BUSY)
     {
         CANPacket pkt = {0};
-        if(sendRcFlag == 5)
-        {
-            rc_ppt_1 rc = {0};
-            rc.rc_ppt_1_fault_count = faultCount;
-            rc.rc_ppt_1_fire_count = fireCount;
-            encoderc_ppt_1(&rc, &pkt);
-        }
         if(sendRcFlag == 4)
         {
             rc_ppt_h1 rc = {0};
@@ -205,24 +194,23 @@ void sendRC()
             rc.rc_ppt_h2_last_fire_result = lastFireResult;
             encoderc_ppt_h2(&rc, &pkt);
         }
-        else if(sendRcFlag == 2)
+        if(sendRcFlag == 2)
         {
-            rc_ppt_2 rc = {0};
-            rc.rc_ppt_2_main_chg_avg = lastMainChargeTime;
-			rc.rc_ppt_2_main_chg_max = 0;
-			rc.rc_ppt_2_main_chg_min = 0;
-            rc.rc_ppt_2_total_fire_count = fireCount;
-            encoderc_ppt_2(&rc, &pkt);
-            aggVec_as_reset((aggVec *)&mainDoneAg);
+            rc_ppt_1 rc = {0};
+            rc.rc_ppt_1_fault_count = faultCount;
+            rc.rc_ppt_1_fire_count = fireCount;
+            rc.rc_ppt_1_last_main_charge = lastMainChargeTime;
+            rc.rc_ppt_1_smt_wait_time = smtWaitTime;
+            encoderc_ppt_1(&rc, &pkt);
         }
         else if(sendRcFlag == 1)
         {
-            rc_ppt_3 rc = {0};
-            rc.rc_ppt_3_ign_chg_avg = aggVec_avg_i_i(&ignDoneAg);
-            rc.rc_ppt_3_ign_chg_max = aggVec_max_i(&ignDoneAg);
-            rc.rc_ppt_3_ign_chg_min = aggVec_min_i(&ignDoneAg);
-            encoderc_ppt_3(&rc, &pkt);
-            aggVec_as_reset((aggVec *)&ignDoneAg);
+            rc_ppt_2 rc = {0};
+            rc.rc_ppt_2_cooldown_time = cooldownTime;
+            rc.rc_ppt_2_ign_charge_time = igniterChargeTime;
+            rc.rc_ppt_2_main_charge_time = mainChargeTime;
+            rc.rc_ppt_2_main_ign_delay = mainIgniterDelay;
+            encoderc_ppt_2(&rc, &pkt);
         }
         canSendPacket(&pkt);
         sendRcFlag--;
@@ -316,6 +304,7 @@ int main(void)
     bcbinPopulateHeader(&fireSeg.header, 6, sizeof(fireSeg));
 
     withFiringPulse = 1;
+    smtOverride = 0;
 
     while (1)
     {
@@ -361,6 +350,7 @@ void stopFiring()
         firing = 0;
         CHARGE_OUT &= ~(MAIN_CHARGE_BIT | IGN_CHARGE_BIT);
         withFiringPulse = 1;
+        smtOverride = 0;
     }
 }
 
@@ -431,6 +421,7 @@ void can_packet_rx_callback(CANPacket *packet)
             if (pktFireSingle.cmd_ppt_single_fire_override || readyToFire())
             {
                 withFiringPulse = pktFireSingle.cmd_ppt_single_fire_with_pulse;
+                smtOverride = pktFireSingle.cmd_ppt_single_fire_override_smt;
                 startFiring(1);
             }
             break;
@@ -462,7 +453,6 @@ void can_packet_rx_callback(CANPacket *packet)
             if(pktRst.gcmd_reset_minmax_ppt)
             {
                 aggVec_reset((aggVec *)&mspTempAg);
-                aggVec_reset((aggVec *)&ignDoneAg);
             }
         }
             break;
@@ -516,7 +506,7 @@ __interrupt void Timer0_B1_ISR (void)
                 case State_Main_Igniter_Cooldown:
                     mod_status.ss_state = State_Igniter_Charging;
                     TB0CCR1 += igniterChargeTime;
-                    if(SMT_IN & SMT_IN_BIT) //smt trigger high
+                    if(smtOverride && SMT_IN & SMT_IN_BIT) //smt trigger high
                 	{
                 		if(withFiringPulse)
                 			fire();
@@ -537,7 +527,7 @@ __interrupt void Timer0_B1_ISR (void)
                     TB0CCR1 += smtWaitTime;
                     break;
                 case State_SMT_Wait:
-                    if(SMT_IN & SMT_IN_BIT) //fault: main didn't discharge
+                    if(smtOverride == 0 && SMT_IN & SMT_IN_BIT) //fault: main didn't discharge
                     {
                         stopFiring();
                         lastFireResult = Result_MainFailedDischarge;
