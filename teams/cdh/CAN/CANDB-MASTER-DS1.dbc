@@ -55,6 +55,9 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2449736497 gcmd_autoseq_enable: 1 Vector__XXX
+ SG_ gcmd_autoseq_enable_enable : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
 BO_ 2449736496 gcmd_batt_set_bal_auto: 1 Vector__XXX
  SG_ gcmd_batt_set_bal_auto_state : 0|2@1+ (1,0) [0|3] "" Vector__XXX
 
@@ -1453,6 +1456,7 @@ CM_ SG_ 2452029472 bdot_tumble_status_status "bdot tumble status boolean";
 CM_ SG_ 2449932985 grnd_epoch_val_overflow "Overflow of epoch (time between millenium and when we launched)";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2449736497 gcmd_autoseq_enable_enable 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736496 gcmd_batt_set_bal_auto_state 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736495 gcmd_dist_autoshutoff_ppt 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736495 gcmd_dist_autoshutoff_eps 2 "null" 1 "true" 0 "false" ;
