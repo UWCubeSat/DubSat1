@@ -34,9 +34,9 @@ uint8_t seqAddEvent(sequenceEvent e)
     return 1;
 }
 
-void checkSequence()
+void checkSequence(uint8_t enabled)
 {
-    if(metUpdatedFlag)
+    if(enabled && metUpdatedFlag)
     {
         uint8_t i;
         for(i = 0; i < eventSize; i++)

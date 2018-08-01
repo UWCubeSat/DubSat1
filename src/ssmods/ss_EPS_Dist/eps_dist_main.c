@@ -33,7 +33,7 @@ FILE_STATIC flag_t triggerState2;
 FILE_STATIC flag_t triggerState3;
 
 #pragma PERSISTENT(shutoffEnabled)
-FILE_STATIC AutoshutoffEnabled shutoffEnabled = {1, 1, 1, 1, 1, 0};
+FILE_STATIC AutoshutoffEnabled shutoffEnabled = {1, 1, 1, 1, 0, 0};
 FILE_STATIC AutoshutoffDelay shutoffDelay = {0, 0, 0, 0, 0, 0};
 
 // DO NOT REORDER
@@ -117,6 +117,8 @@ timeStamp persistentTime = {0};
 sequenceEvent persistentEvents[100] = {0};
 #pragma PERSISTENT(eventsInitialized)
 uint8_t eventsInitialized = 0;
+#pragma PERSISTENT(autoSequencerEnabled)
+uint8_t autoSequencerEnabled = 0;
 
 FILE_STATIC uint16_t rcResponseFlag = 0; //this is zero when no responses are pending
 sequenceEvent pendingEvent = {0};
@@ -977,6 +979,14 @@ void can_packet_rx_callback(CANPacket *packet)
             encodeeps_dist_autoseq_get_ind_rsp(&getIndicesRsp, &autoseqIndicesResponsePkt);
             autoseqIndicesResponsePktSendFlag = 1;
             break;
+        case CAN_ID_GCMD_AUTOSEQ_ENABLE:
+        {
+            gcmd_autoseq_enable pkt;
+            decodegcmd_autoseq_enable(packet, &pkt);
+            if(pkt.gcmd_autoseq_enable_enable != CAN_ENUM_NBOOL_NULL)
+                autoSequencerEnabled = pkt.gcmd_autoseq_enable_enable;
+        }
+            break;
         case CAN_ID_GCMD_DIST_RESET_MISSION: //reset MET, clear events, reboot
             persistentTime = (timeStamp){0, 0, 0, 0, 0};
             uint8_t j;
@@ -1229,7 +1239,7 @@ int main(void)
         rollcallUpdate();
         persistentTime = getMETTimestamp();
         seqUpdateMET(metConvertToSeconds(persistentTime));
-        checkSequence();
+        checkSequence(autoSequencerEnabled);
         sendSequenceResponses();
         checkRollcallWatchdog();
 
