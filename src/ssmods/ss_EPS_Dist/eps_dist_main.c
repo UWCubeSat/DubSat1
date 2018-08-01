@@ -12,7 +12,7 @@
 
 #define WDT_CONFIG WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_2
 #define ROLLCALL_WATCHDOG_TIMEOUT 255 //seconds
-#define ROLLCALL_WATCHDOG_AUTOSHUTOFF 3 //seconds
+#define ROLLCALL_WATCHDOG_AUTOSHUTOFF 10 //seconds
 #define AUTOSHUTOFF_DELAY 1 //number of rollcalls before the check for shutoff starts
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
