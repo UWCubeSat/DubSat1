@@ -14,7 +14,7 @@ typedef struct {
 ////////////////////////////////////////////////////////////////////////
 
 uint8_t seqAddEvent(sequenceEvent e); //returns 0 for successful adding
-void checkSequence(); //need to call this frequently to send CAN cmds
+void checkSequence(uint8_t enabled); //need to call this frequently to send CAN cmds
 void seqRemoveEventAtIndex(uint8_t index); //removes the event at a specific index (array is not sorted, so need to know the index)
 void seqRemoveEventsWithID(uint32_t canPktId); //removes all events that send a CAN packet with the specified Id
 

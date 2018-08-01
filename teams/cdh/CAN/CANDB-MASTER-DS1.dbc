@@ -36,7 +36,7 @@ BS_:
 BU_: ppt eps_batt eps_dist eps_gen adcs_rwz adcs_rwy adcs_rwx adcs_mtq rahs adcs_sensorproc adcs_mpc adcs_estim adcs_bdot com_1 com_2
 VAL_TABLE_ pd_state 5 "unknown" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
 VAL_TABLE_ i2c_result 4 "transmit timeout" 3 "nack" 2 "stop timeout" 1 "start timeout" 0 "no error" ;
-VAL_TABLE_ sysrstiv 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC) MPUSEG2IFG seg 2 mem viol" 42 "(PUC) MPUSEG1IFG seg 1 mem viol" 40 "(PUC) MPUSEGIIFGinfoMemSegViol" 38 "(PUC) MPUSEGIPIFGencapIPmemSeg" 36 "(PUC) CSPW CS password violation" 34 "(PUC) MPUPW MPU pwd violation" 32 "(PUC) PMMPW PMM pwd violation" 30 "(PUC) Peripheral area fetch" 28 "(PUC) Uncorrectable FRAM bit err" 26 "(PUC) FRCTLPW password violation" 24 "(PUC) WDTPW password violation" 22 "(PUC) WDTIFG watchdog timeout" 20 "(POR) PMMSWPOR software POR" 14 "(BOR) SVSHIFG SVSH event" 10 "(BOR) Security violation" 8 "(BOR) LPMx.5 wake up" 6 "(BOR) RSTIFG RST/NMI" 2 "(BOR) Brownout" 0 "No interrupt pending" ;
+VAL_TABLE_ sysrstiv 4 "RSTIFG RST/NMI (BOR)" 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC) MPUSEG2IFG seg 2 mem viol" 42 "(PUC) MPUSEG1IFG seg 1 mem viol" 40 "(PUC) MPUSEGIIFGinfoMemSegViol" 38 "(PUC) MPUSEGIPIFGencapIPmemSeg" 36 "(PUC) CSPW CS password violation" 34 "(PUC) MPUPW MPU pwd violation" 32 "(PUC) PMMPW PMM pwd violation" 30 "(PUC) Peripheral area fetch" 28 "(PUC) Uncorrectable FRAM bit err" 26 "(PUC) FRCTLPW password violation" 24 "(PUC) WDTPW password violation" 22 "(PUC) WDTIFG watchdog timeout" 20 "(POR) PMMSWPOR software POR" 14 "(BOR) SVSHIFG SVSH event" 10 "(BOR) Security violation" 8 "(BOR) LPMx.5 wake up" 6 "(BOR) RSTIFG RST/NMI" 2 "(BOR) Brownout" 0 "No interrupt pending" ;
 VAL_TABLE_ gen_pnl_charging 1 "CHARGING" 0 "NOTCHARGING" ;
 VAL_TABLE_ gen_pnl_enabled 1 "ENABLED" 0 "DISABLED" ;
 VAL_TABLE_ fire_result 2 "no main discharge" 1 "no main charge" 0 "fire successful" ;
@@ -54,6 +54,9 @@ VAL_TABLE_ node 15 "rahs" 14 "com_2" 13 "com_1" 12 "adcs_mtq" 11 "adcs_sensorpro
 VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
+
+BO_ 2449736497 gcmd_autoseq_enable: 1 Vector__XXX
+ SG_ gcmd_autoseq_enable_enable : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2449736496 gcmd_batt_set_bal_auto: 1 Vector__XXX
  SG_ gcmd_batt_set_bal_auto_state : 0|2@1+ (1,0) [0|3] "" Vector__XXX
@@ -797,7 +800,9 @@ BO_ 2452161028 rc_eps_batt_5: 8 Vector__XXX
  SG_ rc_eps_batt_5_batt_temp_min : 48|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
  SG_ rc_eps_batt_5_batt_temp_max : 56|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
 
-BO_ 2452161027 rc_eps_batt_4: 7 eps_batt
+BO_ 2452161027 rc_eps_batt_4: 8 eps_batt
+ SG_ rc_eps_batt_4_bal_auto_state : 56|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rc_eps_batt_4_heater_auto_state : 50|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_eps_batt_4_voltage_min : 0|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
  SG_ rc_eps_batt_4_voltage_max : 16|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
  SG_ rc_eps_batt_4_voltage_avg : 32|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
@@ -1451,6 +1456,7 @@ CM_ SG_ 2452029472 bdot_tumble_status_status "bdot tumble status boolean";
 CM_ SG_ 2449932985 grnd_epoch_val_overflow "Overflow of epoch (time between millenium and when we launched)";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 2449736497 gcmd_autoseq_enable_enable 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736496 gcmd_batt_set_bal_auto_state 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736495 gcmd_dist_autoshutoff_ppt 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736495 gcmd_dist_autoshutoff_eps 2 "null" 1 "true" 0 "false" ;
@@ -1526,6 +1532,8 @@ VAL_ 2452161040 rc_eps_gen_1_pnl_1_charging 1 "CHARGING" 0 "NOTCHARGING" ;
 VAL_ 2452161040 rc_eps_gen_1_pnl_3_enabled 1 "ENABLED" 0 "DISABLED" ;
 VAL_ 2452161040 rc_eps_gen_1_pnl_2_enabled 1 "ENABLED" 0 "DISABLED" ;
 VAL_ 2452161040 rc_eps_gen_1_pnl_1_enabled 1 "ENABLED" 0 "DISABLED" ;
+VAL_ 2452161027 rc_eps_batt_4_bal_auto_state 1 "true" 0 "false" ;
+VAL_ 2452161027 rc_eps_batt_4_heater_auto_state 1 "true" 0 "false" ;
 VAL_ 2452161027 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
 VAL_ 2452161027 rc_eps_batt_4_balancer_state 1 "true" 0 "false" ;
 VAL_ 2451112176 ppt_firing_result_panel_good 2 "null" 1 "true" 0 "false" ;

@@ -27,6 +27,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_AUTOSEQ_ENABLE 302252849
 #define CAN_ID_GCMD_BATT_SET_BAL_AUTO 302252848
 #define CAN_ID_GCMD_DIST_AUTOSHUTOFF 302252847
 #define CAN_ID_GCMD_PPT_HALT 285475076
@@ -227,6 +228,7 @@
 #define CAN_ENUM_I2C_RESULT_STOPTIMEOUT 2
 #define CAN_ENUM_I2C_RESULT_STARTTIMEOUT 1
 #define CAN_ENUM_I2C_RESULT_NOERROR 0
+#define CAN_ENUM_SYSRSTIV_RSTIFGRST/NMI(BOR) 4
 #define CAN_ENUM_SYSRSTIV_(PUC)MPUSEG3IFGSEG3MEMVIOL 46
 #define CAN_ENUM_SYSRSTIV_(PUC)MPUSEG2IFGSEG2MEMVIOL 44
 #define CAN_ENUM_SYSRSTIV_(PUC)MPUSEG1IFGSEG1MEMVIOL 42
@@ -337,6 +339,10 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_autoseq_enable {
+    uint8_t gcmd_autoseq_enable_enable; //  (No Units)
+} gcmd_autoseq_enable;
+
 typedef struct gcmd_batt_set_bal_auto {
     uint8_t gcmd_batt_set_bal_auto_state; //  (No Units)
 } gcmd_batt_set_bal_auto;
@@ -1236,6 +1242,8 @@ typedef struct rc_eps_batt_5 {
 } rc_eps_batt_5;
 
 typedef struct rc_eps_batt_4 {
+    uint8_t rc_eps_batt_4_bal_auto_state; //  (No Units)
+    uint8_t rc_eps_batt_4_heater_auto_state; //  (No Units)
     uint16_t rc_eps_batt_4_voltage_min; // raw voltage
     uint16_t rc_eps_batt_4_voltage_max; // raw voltage
     uint16_t rc_eps_batt_4_voltage_avg; // raw voltage
@@ -1413,6 +1421,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_autoseq_enable(gcmd_autoseq_enable *input, CANPacket* output);
+void decodegcmd_autoseq_enable(CANPacket *input, gcmd_autoseq_enable *output);
 
 void encodegcmd_batt_set_bal_auto(gcmd_batt_set_bal_auto *input, CANPacket* output);
 void decodegcmd_batt_set_bal_auto(CANPacket *input, gcmd_batt_set_bal_auto *output);

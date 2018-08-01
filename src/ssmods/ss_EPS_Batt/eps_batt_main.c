@@ -296,6 +296,8 @@ void rcPopulate4(CANPacket *out)
     rc.rc_eps_batt_4_voltage_avg = aggVec_avg_i_i(&voltageAg);
     rc.rc_eps_batt_4_voltage_max = aggVec_max_i(&voltageAg);
     rc.rc_eps_batt_4_voltage_min = aggVec_min_i(&voltageAg);
+    rc.rc_eps_batt_4_bal_auto_state = balancerIsChecking;
+    rc.rc_eps_batt_4_heater_auto_state = heaterIsChecking;
     encoderc_eps_batt_4(&rc, out);
     aggVec_as_reset((aggVec *)&voltageAg);
 }

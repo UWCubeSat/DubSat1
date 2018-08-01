@@ -205,6 +205,23 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodegcmd_autoseq_enable(CANPacket *input, gcmd_autoseq_enable *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+    output -> gcmd_autoseq_enable_enable = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+}
+
+void encodegcmd_autoseq_enable(gcmd_autoseq_enable *input, CANPacket *output){
+    output -> id = 302252849;
+    output -> length = 1;
+    uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> gcmd_autoseq_enable_enable))) & 0xff) << 56;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decodegcmd_batt_set_bal_auto(CANPacket *input, gcmd_batt_set_bal_auto *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -3485,6 +3502,8 @@ void decoderc_eps_batt_4(CANPacket *input, rc_eps_batt_4 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
+    output -> rc_eps_batt_4_bal_auto_state = (uint8_t) (((fullData & ((uint64_t) 0x1 << 7)) >> 7));
+    output -> rc_eps_batt_4_heater_auto_state = (uint8_t) (((fullData & ((uint64_t) 0x1 << 13)) >> 13));
     output -> rc_eps_batt_4_voltage_min = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
     output -> rc_eps_batt_4_voltage_max = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_eps_batt_4_voltage_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
@@ -3494,8 +3513,10 @@ void decoderc_eps_batt_4(CANPacket *input, rc_eps_batt_4 *output){
 
 void encoderc_eps_batt_4(rc_eps_batt_4 *input, CANPacket *output){
     output -> id = 304677379;
-    output -> length = 7;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_4_bal_auto_state))) & 0x1) << 7;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_4_heater_auto_state))) & 0x1) << 13;
     fullPacketData |= (((uint64_t)((input -> rc_eps_batt_4_voltage_min))) & 0xffff) << 48;
     fullPacketData |= (((uint64_t)((input -> rc_eps_batt_4_voltage_max))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> rc_eps_batt_4_voltage_avg))) & 0xffff) << 16;

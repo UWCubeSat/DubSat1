@@ -330,17 +330,12 @@ void canRxCallback(CANPacket *p)
     tleUpdate(p, &tle);
     __enable_interrupt();
 
-    cmd_rollcall rc;
     grnd_epoch ep;
     timeStamp t;
 
     switch (p->id)
     {
         case CAN_ID_CMD_ROLLCALL:
-            decodecmd_rollcall(p, &rc);
-            t = constructTimestamp(rc.cmd_rollcall_met,
-                                   rc.cmd_rollcall_met_overflow);
-            updateMET(t);
             rollcallStart();
             break;
         case CAN_ID_GRND_EPOCH:
@@ -355,6 +350,15 @@ void canRxCallback(CANPacket *p)
             decodegcmd_reset_minmax(p, &pktRst);
             if(pktRst.gcmd_reset_minmax_estim)
                 aggVec_reset((aggVec *)&rc_mspTemp);
+        }
+            break;
+        case CAN_ID_RC_EPS_DIST_2:
+        {
+            rc_eps_dist_2 rc;
+            decoderc_eps_dist_2(p, &rc);
+            t = constructTimestamp(rc.rc_eps_dist_2_met,
+                                   rc.rc_eps_dist_2_met_overflow);
+            updateMET(t);
         }
             break;
     }
