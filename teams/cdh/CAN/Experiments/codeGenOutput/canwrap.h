@@ -1141,20 +1141,19 @@ typedef struct rc_adcs_mtq_1 {
 } rc_adcs_mtq_1;
 
 typedef struct rc_ppt_3 {
-    int16_t rc_ppt_3_ign_chg_min; // 2^-15 seconds
-    int16_t rc_ppt_3_ign_chg_max; // 2^-15 seconds
-    int16_t rc_ppt_3_ign_chg_avg; // 2^-15 seconds
 } rc_ppt_3;
 
 typedef struct rc_ppt_2 {
-    int16_t rc_ppt_2_total_fire_count; //  (No Units)
-    int16_t rc_ppt_2_main_chg_min; // 2^-15 seconds
-    int16_t rc_ppt_2_main_chg_max; // 2^-15 seconds
-    int16_t rc_ppt_2_main_chg_avg; // 2^-15 seconds
+    uint16_t rc_ppt_2_cooldown_time; // 2^-15 seconds
+    uint16_t rc_ppt_2_ign_charge_time; // 2^-15 seconds
+    uint16_t rc_ppt_2_main_ign_delay; // 2^-15 seconds
+    uint16_t rc_ppt_2_main_charge_time; // 2^-15 seconds
 } rc_ppt_2;
 
 typedef struct rc_ppt_1 {
-    uint16_t rc_ppt_1_fault_count; // 2^-15s
+    uint16_t rc_ppt_1_smt_wait_time; // 2^-15 seconds
+    int16_t rc_ppt_1_last_main_charge; // 2^-15 seconds
+    uint16_t rc_ppt_1_fault_count; //  (No Units)
     uint16_t rc_ppt_1_fire_count; //  (No Units)
 } rc_ppt_1;
 
@@ -1389,6 +1388,7 @@ typedef struct mtq_ack {
 } mtq_ack;
 
 typedef struct cmd_ppt_single_fire {
+    uint8_t cmd_ppt_single_fire_override_smt; //  (No Units)
     uint8_t cmd_ppt_single_fire_override; //  (No Units)
     uint8_t cmd_ppt_single_fire_with_pulse; //  (No Units)
 } cmd_ppt_single_fire;

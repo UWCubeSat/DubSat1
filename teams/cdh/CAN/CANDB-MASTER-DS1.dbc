@@ -714,18 +714,17 @@ BO_ 2452161036 rc_adcs_mtq_2: 8 Vector__XXX
 BO_ 2452161035 rc_adcs_mtq_1: 8 Vector__XXX
 
 BO_ 2451112458 rc_ppt_3: 6 Vector__XXX
- SG_ rc_ppt_3_ign_chg_min : 0|16@1+ (1,0) [-32768|32767] "2^-15 seconds" Vector__XXX
- SG_ rc_ppt_3_ign_chg_max : 16|16@1+ (1,0) [-32768|32767] "2^-15 seconds" Vector__XXX
- SG_ rc_ppt_3_ign_chg_avg : 32|16@1+ (1,0) [-32768|32767] "2^-15 seconds" Vector__XXX
 
-BO_ 2451112457 rc_ppt_2: 8 Vector__XXX
- SG_ rc_ppt_2_total_fire_count : 48|16@1+ (1,0) [-32768|32767] "" Vector__XXX
- SG_ rc_ppt_2_main_chg_min : 0|16@1+ (1,0) [-32768|32767] "2^-15 seconds" Vector__XXX
- SG_ rc_ppt_2_main_chg_max : 16|16@1+ (1,0) [-32768|32767] "2^-15 seconds" Vector__XXX
- SG_ rc_ppt_2_main_chg_avg : 32|16@1+ (1,0) [-32768|32767] "2^-15 seconds" Vector__XXX
+BO_ 2451112457 rc_ppt_2: 7 Vector__XXX
+ SG_ rc_ppt_2_cooldown_time : 48|16@1+ (1,0) [0|65535] "2^-15 seconds" Vector__XXX
+ SG_ rc_ppt_2_ign_charge_time : 32|16@1+ (1,0) [0|65535] "2^-15 seconds" Vector__XXX
+ SG_ rc_ppt_2_main_ign_delay : 16|16@1+ (1,0) [0|65535] "2^-15 seconds" Vector__XXX
+ SG_ rc_ppt_2_main_charge_time : 0|16@1+ (1,0) [0|65535] "2^-15 seconds" Vector__XXX
 
-BO_ 2451112456 rc_ppt_1: 4 Vector__XXX
- SG_ rc_ppt_1_fault_count : 16|16@1+ (1,0) [0|65535] "2^-15s" Vector__XXX
+BO_ 2451112456 rc_ppt_1: 7 Vector__XXX
+ SG_ rc_ppt_1_smt_wait_time : 48|16@1+ (1,0) [0|65535] "2^-15 seconds" Vector__XXX
+ SG_ rc_ppt_1_last_main_charge : 32|16@1+ (1,0) [-32768|32767] "2^-15 seconds" Vector__XXX
+ SG_ rc_ppt_1_fault_count : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ rc_ppt_1_fire_count : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2452161048 rc_eps_gen_9: 8 Vector__XXX
@@ -922,7 +921,8 @@ BO_ 2450980912 mtq_ack: 8 adcs_mtq
  SG_ mtq_ack_last_bdot_y : 24|8@1- (1,0) [-128|100] "pct" Vector__XXX
  SG_ mtq_ack_last_bdot_x : 16|8@1- (1,0) [-128|100] "pct" Vector__XXX
 
-BO_ 2449735936 cmd_ppt_single_fire: 1 com_1
+BO_ 2449735936 cmd_ppt_single_fire: 2 com_1
+ SG_ cmd_ppt_single_fire_override_smt : 8|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ cmd_ppt_single_fire_override : 1|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ cmd_ppt_single_fire_with_pulse : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
@@ -1318,13 +1318,7 @@ CM_ SG_ 2452161036 rc_adcs_mtq_2_bdot_y_avg "Average Y BDOT command";
 CM_ SG_ 2452161036 rc_adcs_mtq_2_bdot_x_min "Min X BDOT command";
 CM_ SG_ 2452161036 rc_adcs_mtq_2_bdot_x_max "Max X BDOT command";
 CM_ SG_ 2452161036 rc_adcs_mtq_2_bdot_x_avg "Average X BDOT command";
-CM_ SG_ 2451112458 rc_ppt_3_ign_chg_min "Main Charge Time Minimum";
-CM_ SG_ 2451112458 rc_ppt_3_ign_chg_max "Main Charge Time Minimum";
-CM_ SG_ 2451112458 rc_ppt_3_ign_chg_avg "Main Charge Time Minimum";
-CM_ SG_ 2451112457 rc_ppt_2_total_fire_count "Total Fire count";
-CM_ SG_ 2451112457 rc_ppt_2_main_chg_min "Main Charge Time Minimum";
-CM_ SG_ 2451112457 rc_ppt_2_main_chg_max "Main Charge Time Maximum";
-CM_ SG_ 2451112457 rc_ppt_2_main_chg_avg "Main Charge Time Average";
+CM_ SG_ 2451112456 rc_ppt_1_last_main_charge "Main Charge Time Average";
 CM_ SG_ 2451112456 rc_ppt_1_fault_count "PPT fault count";
 CM_ SG_ 2451112456 rc_ppt_1_fire_count "Total number of times the PPT has fired";
 CM_ SG_ 2452161048 rc_eps_gen_9_pnl_3_temp_min "Panel 3 Temp min";
@@ -1443,6 +1437,7 @@ CM_ SG_ 2450980912 mtq_ack_last_fsw_x "last fsw x command received ";
 CM_ SG_ 2450980912 mtq_ack_last_bdot_z "last bdot z command received ";
 CM_ SG_ 2450980912 mtq_ack_last_bdot_y "last bdot y command received ";
 CM_ SG_ 2450980912 mtq_ack_last_bdot_x "last bdot x command received ";
+CM_ SG_ 2449735936 cmd_ppt_single_fire_override_smt "Whether the Schmidt Trigger is checked";
 CM_ SG_ 2449735936 cmd_ppt_single_fire_override "Do we fire or just charge?";
 CM_ SG_ 2449735936 cmd_ppt_single_fire_with_pulse "Do we fire or just charge?";
 CM_ SG_ 2483355713 sensorproc_sun_valid "Sun Angle Validity";
@@ -1552,6 +1547,7 @@ VAL_ 2449735715 cmd_mtq_fsw_sc_mode 3 "not tumbling charlie" 2 "not tumbling bob
 VAL_ 2483355714 sensorproc_imu_valid 1 "true" 0 "false" ;
 VAL_ 2483355715 sensorproc_mag_valid 1 "true" 0 "false" ;
 VAL_ 2450980912 mtq_ack_phase 2 "pms_phase" 1 "actuation_phase" 0 "measurement_phase" ;
+VAL_ 2449735936 cmd_ppt_single_fire_override_smt 1 "true" 0 "false" ;
 VAL_ 2449735936 cmd_ppt_single_fire_override 1 "true" 0 "false" ;
 VAL_ 2449735936 cmd_ppt_single_fire_with_pulse 1 "true" 0 "false" ;
 VAL_ 2453078050 mpc_vp_status 1 "true" 0 "false" ;

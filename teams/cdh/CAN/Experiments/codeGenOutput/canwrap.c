@@ -3174,18 +3174,12 @@ void decoderc_ppt_3(CANPacket *input, rc_ppt_3 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_ppt_3_ign_chg_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_ppt_3_ign_chg_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_ppt_3_ign_chg_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
 }
 
 void encoderc_ppt_3(rc_ppt_3 *input, CANPacket *output){
     output -> id = 303628810;
     output -> length = 6;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> rc_ppt_3_ign_chg_min))) & 0xffff) << 48;
-    fullPacketData |= (((uint64_t)((input -> rc_ppt_3_ign_chg_max))) & 0xffff) << 32;
-    fullPacketData |= (((uint64_t)((input -> rc_ppt_3_ign_chg_avg))) & 0xffff) << 16;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -3195,20 +3189,20 @@ void decoderc_ppt_2(CANPacket *input, rc_ppt_2 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_ppt_2_total_fire_count = (int16_t) (((fullData & ((uint64_t) 0xffff))));
-    output -> rc_ppt_2_main_chg_min = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-    output -> rc_ppt_2_main_chg_max = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> rc_ppt_2_main_chg_avg = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_ppt_2_cooldown_time = (uint16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> rc_ppt_2_ign_charge_time = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_ppt_2_main_ign_delay = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_ppt_2_main_charge_time = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
 
 void encoderc_ppt_2(rc_ppt_2 *input, CANPacket *output){
     output -> id = 303628809;
-    output -> length = 8;
+    output -> length = 7;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> rc_ppt_2_total_fire_count))) & 0xffff);
-    fullPacketData |= (((uint64_t)((input -> rc_ppt_2_main_chg_min))) & 0xffff) << 48;
-    fullPacketData |= (((uint64_t)((input -> rc_ppt_2_main_chg_max))) & 0xffff) << 32;
-    fullPacketData |= (((uint64_t)((input -> rc_ppt_2_main_chg_avg))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_ppt_2_cooldown_time))) & 0xffff);
+    fullPacketData |= (((uint64_t)((input -> rc_ppt_2_ign_charge_time))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_ppt_2_main_ign_delay))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rc_ppt_2_main_charge_time))) & 0xffff) << 48;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -3218,14 +3212,18 @@ void decoderc_ppt_1(CANPacket *input, rc_ppt_1 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
+    output -> rc_ppt_1_smt_wait_time = (uint16_t) (((fullData & ((uint64_t) 0xffff))));
+    output -> rc_ppt_1_last_main_charge = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_ppt_1_fault_count = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_ppt_1_fire_count = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
 
 void encoderc_ppt_1(rc_ppt_1 *input, CANPacket *output){
     output -> id = 303628808;
-    output -> length = 4;
+    output -> length = 7;
     uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_ppt_1_smt_wait_time))) & 0xffff);
+    fullPacketData |= (((uint64_t)((input -> rc_ppt_1_last_main_charge))) & 0xffff) << 16;
     fullPacketData |= (((uint64_t)((input -> rc_ppt_1_fault_count))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> rc_ppt_1_fire_count))) & 0xffff) << 48;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
@@ -4037,14 +4035,16 @@ void decodecmd_ppt_single_fire(CANPacket *input, cmd_ppt_single_fire *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
+    output -> cmd_ppt_single_fire_override_smt = (uint8_t) (((fullData & ((uint64_t) 0x1 << 55)) >> 55));
     output -> cmd_ppt_single_fire_override = (uint8_t) (((fullData & ((uint64_t) 0x1 << 62)) >> 62));
     output -> cmd_ppt_single_fire_with_pulse = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
 }
 
 void encodecmd_ppt_single_fire(cmd_ppt_single_fire *input, CANPacket *output){
     output -> id = 302252288;
-    output -> length = 1;
+    output -> length = 2;
     uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> cmd_ppt_single_fire_override_smt))) & 0x1) << 55;
     fullPacketData |= (((uint64_t)((input -> cmd_ppt_single_fire_override))) & 0x1) << 62;
     fullPacketData |= (((uint64_t)((input -> cmd_ppt_single_fire_with_pulse))) & 0x1) << 63;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
