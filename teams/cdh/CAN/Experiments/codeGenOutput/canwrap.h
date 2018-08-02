@@ -698,6 +698,7 @@ typedef struct rc_eps_batt_7 {
 } rc_eps_batt_7;
 
 typedef struct sensorproc_mag2 {
+    uint8_t sensorproc_mag2_bdot_valid; //  (No Units)
     int16_t sensorproc_mag2_z; // 73 nanoTeslas
     int16_t sensorproc_mag2_y; // 73 nanoTeslas
     int16_t sensorproc_mag2_x; // 73 nanoTeslas
@@ -1120,14 +1121,14 @@ typedef struct rc_adcs_mtq_4 {
 } rc_adcs_mtq_4;
 
 typedef struct rc_adcs_mtq_3 {
-    uint8_t rc_adcs_mtq_3_fsw_z_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_3_fsw_y_min; //  (No Units)
-    uint8_t rc_adcs_mtq_3_fsw_y_max; //  (No Units)
-    uint8_t rc_adcs_mtq_3_fsw_y_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_3_fsw_x_min; //  (No Units)
-    uint8_t rc_adcs_mtq_3_fsw_x_max; //  (No Units)
-    uint8_t rc_adcs_mtq_3_fsw_x_avg; //  (No Units)
-    uint8_t rc_adcs_mtq_3_bdot_z_min; //  (No Units)
+    int8_t rc_adcs_mtq_3_fsw_z_avg; //  (No Units)
+    int8_t rc_adcs_mtq_3_fsw_y_min; //  (No Units)
+    int8_t rc_adcs_mtq_3_fsw_y_max; //  (No Units)
+    int8_t rc_adcs_mtq_3_fsw_y_avg; //  (No Units)
+    int8_t rc_adcs_mtq_3_fsw_x_min; //  (No Units)
+    int8_t rc_adcs_mtq_3_fsw_x_max; //  (No Units)
+    int8_t rc_adcs_mtq_3_fsw_x_avg; //  (No Units)
+    int8_t rc_adcs_mtq_3_bdot_z_min; //  (No Units)
 } rc_adcs_mtq_3;
 
 typedef struct rc_adcs_mtq_2 {
@@ -1367,6 +1368,7 @@ typedef struct sensorproc_imu {
 } sensorproc_imu;
 
 typedef struct sensorproc_mag {
+    uint8_t sensorproc_mag_bdot_valid; //  (No Units)
     int16_t sensorproc_mag_z; // 73 nanoTeslas
     int16_t sensorproc_mag_y; // 73 nanoTeslas
     int16_t sensorproc_mag_x; // 73 nanoTeslas

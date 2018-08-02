@@ -1516,6 +1516,7 @@ void decodesensorproc_mag2(CANPacket *input, sensorproc_mag2 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
+    output -> sensorproc_mag2_bdot_valid = (uint8_t) (((fullData & ((uint64_t) 0x1 << 14)) >> 14));
     output -> sensorproc_mag2_z = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> sensorproc_mag2_y = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> sensorproc_mag2_x = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
@@ -1524,8 +1525,9 @@ void decodesensorproc_mag2(CANPacket *input, sensorproc_mag2 *output){
 
 void encodesensorproc_mag2(sensorproc_mag2 *input, CANPacket *output){
     output -> id = 335872068;
-    output -> length = 7;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_mag2_bdot_valid))) & 0x1) << 14;
     fullPacketData |= (((uint64_t)((input -> sensorproc_mag2_z))) & 0xffff) << 16;
     fullPacketData |= (((uint64_t)((input -> sensorproc_mag2_y))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> sensorproc_mag2_x))) & 0xffff) << 48;
@@ -3109,14 +3111,14 @@ void decoderc_adcs_mtq_3(CANPacket *input, rc_adcs_mtq_3 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_mtq_3_fsw_z_avg = (uint8_t) (((fullData & ((uint64_t) 0xff))));
-    output -> rc_adcs_mtq_3_fsw_y_min = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
-    output -> rc_adcs_mtq_3_fsw_y_max = (uint8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
-    output -> rc_adcs_mtq_3_fsw_y_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
-    output -> rc_adcs_mtq_3_fsw_x_min = (uint8_t) (((fullData & ((uint64_t) 0xff << 32)) >> 32));
-    output -> rc_adcs_mtq_3_fsw_x_max = (uint8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
-    output -> rc_adcs_mtq_3_fsw_x_avg = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
-    output -> rc_adcs_mtq_3_bdot_z_min = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
+    output -> rc_adcs_mtq_3_fsw_z_avg = (int8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_adcs_mtq_3_fsw_y_min = (int8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
+    output -> rc_adcs_mtq_3_fsw_y_max = (int8_t) (((fullData & ((uint64_t) 0xff << 16)) >> 16));
+    output -> rc_adcs_mtq_3_fsw_y_avg = (int8_t) (((fullData & ((uint64_t) 0xff << 24)) >> 24));
+    output -> rc_adcs_mtq_3_fsw_x_min = (int8_t) (((fullData & ((uint64_t) 0xff << 32)) >> 32));
+    output -> rc_adcs_mtq_3_fsw_x_max = (int8_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
+    output -> rc_adcs_mtq_3_fsw_x_avg = (int8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
+    output -> rc_adcs_mtq_3_bdot_z_min = (int8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
 void encoderc_adcs_mtq_3(rc_adcs_mtq_3 *input, CANPacket *output){
@@ -3970,6 +3972,7 @@ void decodesensorproc_mag(CANPacket *input, sensorproc_mag *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
+    output -> sensorproc_mag_bdot_valid = (uint8_t) (((fullData & ((uint64_t) 0x1 << 14)) >> 14));
     output -> sensorproc_mag_z = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> sensorproc_mag_y = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> sensorproc_mag_x = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
@@ -3978,8 +3981,9 @@ void decodesensorproc_mag(CANPacket *input, sensorproc_mag *output){
 
 void encodesensorproc_mag(sensorproc_mag *input, CANPacket *output){
     output -> id = 335872067;
-    output -> length = 7;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> sensorproc_mag_bdot_valid))) & 0x1) << 14;
     fullPacketData |= (((uint64_t)((input -> sensorproc_mag_z))) & 0xffff) << 16;
     fullPacketData |= (((uint64_t)((input -> sensorproc_mag_y))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> sensorproc_mag_x))) & 0xffff) << 48;

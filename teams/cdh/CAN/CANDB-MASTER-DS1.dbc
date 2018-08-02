@@ -352,7 +352,8 @@ BO_ 2452161114 rc_eps_batt_7: 6 Vector__XXX
  SG_ rc_eps_batt_7_acc_charge_max : 16|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
  SG_ rc_eps_batt_7_acc_charge_avg : 32|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
 
-BO_ 2483355716 sensorproc_mag2: 7 Vector__XXX
+BO_ 2483355716 sensorproc_mag2: 8 Vector__XXX
+ SG_ sensorproc_mag2_bdot_valid : 49|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ sensorproc_mag2_z : 32|16@1- (1,0) [-32768|32767] "73 nanoTeslas" Vector__XXX
  SG_ sensorproc_mag2_y : 16|16@1- (1,0) [-32768|32767] "73 nanoTeslas" Vector__XXX
  SG_ sensorproc_mag2_x : 0|16@1- (1,0) [-32768|32767] "73 nanoTeslas" Vector__XXX
@@ -698,14 +699,14 @@ BO_ 2452161038 rc_adcs_mtq_4: 8 Vector__XXX
  SG_ rc_adcs_mtq_4_duty_x1_avg : 16|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2452161037 rc_adcs_mtq_3: 8 Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_z_avg : 56|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_y_min : 48|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_y_max : 40|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_y_avg : 32|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_x_min : 24|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_x_max : 16|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_3_fsw_x_avg : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ rc_adcs_mtq_3_bdot_z_min : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_z_avg : 56|8@1- (1,0) [-128|127] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_y_min : 48|8@1- (1,0) [-128|127] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_y_max : 40|8@1- (1,0) [-128|127] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_y_avg : 32|8@1- (1,0) [-128|127] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_x_min : 24|8@1- (1,0) [-128|127] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_x_max : 16|8@1- (1,0) [-128|127] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_fsw_x_avg : 8|8@1- (1,0) [-128|127] "" Vector__XXX
+ SG_ rc_adcs_mtq_3_bdot_z_min : 0|8@1- (1,0) [-128|127] "" Vector__XXX
 
 BO_ 2452161036 rc_adcs_mtq_2: 8 Vector__XXX
  SG_ rc_adcs_mtq_2_bdot_z_max : 56|8@1- (1,0) [-100|100] "" Vector__XXX
@@ -905,7 +906,8 @@ BO_ 2483355714 sensorproc_imu: 7 adcs_sensorproc
  SG_ sensorproc_imu_x : 0|16@1- (1,0) [-32768|32767] "0.004375 deg/s" Vector__XXX
  SG_ sensorproc_imu_valid : 48|1@1+ (1,0) [0|1] "bool" Vector__XXX
 
-BO_ 2483355715 sensorproc_mag: 7 adcs_sensorproc
+BO_ 2483355715 sensorproc_mag: 8 adcs_sensorproc
+ SG_ sensorproc_mag_bdot_valid : 49|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ sensorproc_mag_z : 32|16@1- (1,0) [-32768|32767] "73 nanoTeslas" Vector__XXX
  SG_ sensorproc_mag_y : 16|16@1- (1,0) [-32768|32767] "73 nanoTeslas" Vector__XXX
  SG_ sensorproc_mag_x : 0|16@1- (1,0) [-32768|32767] "73 nanoTeslas" Vector__XXX
@@ -1134,6 +1136,7 @@ CM_ SG_ 2449932988 gcmd_mtq_pop_x "flips the polarity on mtq x axis ";
 CM_ SG_ 2452161114 rc_eps_batt_7_acc_charge_min "Acumulated charge minimum";
 CM_ SG_ 2452161114 rc_eps_batt_7_acc_charge_max "Accumulated charge maximum";
 CM_ SG_ 2452161114 rc_eps_batt_7_acc_charge_avg "Accumulated charge avg";
+CM_ SG_ 2483355716 sensorproc_mag2_bdot_valid "Whether the reading is valid for bdot";
 CM_ SG_ 2451112537 rc_adcs_estim_14_mag_z "z component of unit vector of the direction of the magnetic field ";
 CM_ SG_ 2451112536 rc_adcs_estim_13_mag_y "y component of unit vector of the direction of the magnetic field ";
 CM_ SG_ 2451112535 rc_adcs_estim_12_mag_x "x component of unit vector of the direction of the magnetic field ";
@@ -1428,6 +1431,7 @@ CM_ SG_ 2483355714 sensorproc_imu_z "Sun Angle z";
 CM_ SG_ 2483355714 sensorproc_imu_y "Sun Angle y";
 CM_ SG_ 2483355714 sensorproc_imu_x "Sun Angle x";
 CM_ SG_ 2483355714 sensorproc_imu_valid "Sun Angle Validity";
+CM_ SG_ 2483355715 sensorproc_mag_bdot_valid "Whether the reading is valid for bdot";
 CM_ SG_ 2483355715 sensorproc_mag_z "Sun Angle z";
 CM_ SG_ 2483355715 sensorproc_mag_y "Sun Angle y";
 CM_ SG_ 2483355715 sensorproc_mag_x "Sun Angle x";
@@ -1527,6 +1531,7 @@ VAL_ 2451112491 rc_adcs_sp_17_i2c_result_mag_1 4 "transmit timeout" 3 "nack" 2 "
 VAL_ 2452161050 rc_adcs_bdot_4_tumble 1 "true" 0 "false" ;
 VAL_ 2449932984 estim_state_in_sun 1 "true" 0 "false" ;
 VAL_ 2449932984 estim_state_above_gs 1 "true" 0 "false" ;
+VAL_ 2452161039 rc_adcs_mtq_5_fsw_ignore 1 "true" 0 "false" ;
 VAL_ 2452161040 rc_eps_gen_1_pnl_3_charging 1 "CHARGING" 0 "NOTCHARGING" ;
 VAL_ 2452161040 rc_eps_gen_1_pnl_2_charging 1 "CHARGING" 0 "NOTCHARGING" ;
 VAL_ 2452161040 rc_eps_gen_1_pnl_1_charging 1 "CHARGING" 0 "NOTCHARGING" ;
