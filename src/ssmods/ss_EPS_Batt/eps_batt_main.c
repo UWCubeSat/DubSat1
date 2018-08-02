@@ -241,6 +241,9 @@ void can_packet_rx_callback(CANPacket *packet)
                 balancerIsChecking = pkt.gcmd_batt_set_bal_auto_state;
         }
             break;
+        case CAN_ID_GCMD_DIST_RESET_MISSION: //clear persistent flags here
+            bspClearResetCount();
+            break;
         default:
             break;
     }

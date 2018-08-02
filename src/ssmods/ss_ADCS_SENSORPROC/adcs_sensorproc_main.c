@@ -407,6 +407,11 @@ void canRxCallback(CANPacket *p)
         if(pktRst.gcmd_reset_minmax_sensorproc)
             aggVec_reset((aggVec *)&rc_temp);
     }
+    else if(p->id == CAN_ID_GCMD_DIST_RESET_MISSION)
+    {
+        //clear persistent flags here
+        bspClearResetCount();
+    }
     uint8_t i = NUM_INTERFACES;
     while (i-- != 0)
     {

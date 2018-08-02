@@ -57,7 +57,7 @@ FILE_STATIC flag_t triggerState3;
 FILE_STATIC uint16_t mainChargeTime = 36045;
 FILE_STATIC uint16_t mainIgniterDelay = 32;
 FILE_STATIC uint16_t igniterChargeTime = 655;
-FILE_STATIC uint16_t smtWaitTime = 131;
+FILE_STATIC uint16_t smtWaitTime = 262; //~8ms
 FILE_STATIC uint16_t cooldownTime = 28461;
 
 //MEASURED Values:
@@ -460,6 +460,9 @@ void can_packet_rx_callback(CANPacket *packet)
             decodegcmd_ppt_multiple_fire(packet, &pktMultFire);
             if(pktMultFire.gcmd_ppt_multiple_fire_override || readyToFire())
                 startFiring(pktMultFire.gcmd_ppt_multiple_fire_count);
+            break;
+        case CAN_ID_GCMD_DIST_RESET_MISSION: //clear persistent flags here
+            bspClearResetCount();
             break;
     }
 }

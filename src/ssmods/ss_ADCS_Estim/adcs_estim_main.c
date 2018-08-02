@@ -361,6 +361,9 @@ void canRxCallback(CANPacket *p)
             updateMET(t);
         }
             break;
+        case CAN_ID_GCMD_DIST_RESET_MISSION: //clear persistent flags here
+            bspClearResetCount();
+            break;
     }
 }
 

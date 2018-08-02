@@ -106,6 +106,11 @@ uint32_t bspGetResetCount()
     return local_reset_count;
 }
 
+void bspClearResetCount()
+{
+    local_reset_count = 0;
+}
+
 FILE_STATIC meta_segment mseg;   // Used if something fails before init complete
 void bspInit(SubsystemModule mod)
 {

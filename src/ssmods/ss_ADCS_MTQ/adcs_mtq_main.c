@@ -411,6 +411,11 @@ FILE_STATIC void can_packet_rx_callback(CANPacket *packet)
             aggVec_reset((aggVec *)&dipole_cmd_z_agg);
         }
 	}
+	if(packet->id == CAN_ID_GCMD_DIST_RESET_MISSION)
+	{
+		//clear persistent flags here
+        bspClearResetCount();
+	}
 }
 
 // can initialization 

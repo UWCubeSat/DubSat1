@@ -988,6 +988,7 @@ void can_packet_rx_callback(CANPacket *packet)
         }
             break;
         case CAN_ID_GCMD_DIST_RESET_MISSION: //reset MET, clear events, reboot
+            bspClearResetCount();
             persistentTime = (timeStamp){0, 0, 0, 0, 0};
             uint8_t j;
             for(j = sizeof(persistentEvents) / sizeof(sequenceEvent); j; j--)
