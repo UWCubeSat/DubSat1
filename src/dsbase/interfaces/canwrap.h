@@ -259,12 +259,10 @@
 #define CAN_ENUM_MTQ_PHASE_PMS_PHASE 2
 #define CAN_ENUM_MTQ_PHASE_ACTUATION_PHASE 1
 #define CAN_ENUM_MTQ_PHASE_MEASUREMENT_PHASE 0
-#define CAN_ENUM_BDOT_MAG_MODE_SP2MODE 3
-#define CAN_ENUM_BDOT_MAG_MODE_SP1MODE 2
-#define CAN_ENUM_BDOT_MAG_MODE_BDOTMODE 1
-#define CAN_ENUM_BDOT_MAG_MODE_AUTOMODE 0
-#define CAN_ENUM_BDOT_CONTROL_MODE_SPAM 3
-#define CAN_ENUM_BDOT_CONTROL_MODE_SPAMMAGSELFTEST 2
+#define CAN_ENUM_BDOT_MAG_MODE_SP2MODE 2
+#define CAN_ENUM_BDOT_MAG_MODE_SP1MODE 1
+#define CAN_ENUM_BDOT_MAG_MODE_BDOTMODE 0
+#define CAN_ENUM_BDOT_CONTROL_MODE_SPAM 2
 #define CAN_ENUM_BDOT_CONTROL_MODE_SLEEPMODE 1
 #define CAN_ENUM_BDOT_CONTROL_MODE_NORMALMODE 0
 #define CAN_ENUM_DOMAIN_STATE_OFF_BATT_UNDERVOLTAGE 3
@@ -944,6 +942,9 @@ typedef struct rc_adcs_sp_11 {
 } rc_adcs_sp_11;
 
 typedef struct rc_adcs_sp_7 {
+    uint16_t rc_adcs_sp_7_mag1_var_z; //  (No Units)
+    uint16_t rc_adcs_sp_7_mag1_var_y; //  (No Units)
+    uint16_t rc_adcs_sp_7_mag1_var_x; //  (No Units)
 } rc_adcs_sp_7;
 
 typedef struct rc_adcs_sp_6 {
@@ -978,6 +979,9 @@ typedef struct rc_adcs_sp_10 {
 } rc_adcs_sp_10;
 
 typedef struct rc_adcs_sp_8 {
+    uint16_t rc_adcs_sp_8_mag2_var_z; //  (No Units)
+    uint16_t rc_adcs_sp_8_mag2_var_y; //  (No Units)
+    uint16_t rc_adcs_sp_8_mag2_var_x; //  (No Units)
 } rc_adcs_sp_8;
 
 typedef struct rc_adcs_sp_9 {
