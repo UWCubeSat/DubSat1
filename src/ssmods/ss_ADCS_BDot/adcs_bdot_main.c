@@ -184,8 +184,6 @@ FILE_STATIC mag_src current_listening_mag = BDOT_MAG;
 /* lets ground station pick which mag to use */
 FILE_STATIC uint8_t mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
 
-FILE_STATIC uint8_t mag_selection_switch_flag = 0;
-
 /* mag number for magnetometer reading. for questions, contact david */
 FILE_STATIC hMag mag_num;
 /***************************************************************/
@@ -294,7 +292,7 @@ int main(void)
     start_spam_timer(spam_off_timer_ms);
     /* Turns on the timer that will report 1 if satellite is tumbling for too long */
     start_check_nap_status_timer();
-    start_check_best_mag_timer();
+    //start_check_best_mag_timer();
     while (1)
     {
         /* determine the state of bdot */
@@ -302,7 +300,7 @@ int main(void)
         /* update sensor proc magnetometer values */
         process_sp_mag();
         /* determine the best magnetometer to listen to */
-        determine_best_fit_mag();
+        //determine_best_fit_mag();
 
         if(rt_flag)
         {
@@ -464,17 +462,6 @@ void determine_bdot_state()
 
 void clear_update_bdot_state_flags()
 {
-    if(mag_selection_switch_flag)
-    {
-        if(mag_selection_mode == MAG_BEST_FIT_OVERRIDE)
-        {
-            end_check_best_mag_timer();
-        } else if(mag_selection_mode == MAG_BEST_FIT_AUTO)
-        {
-            start_check_best_mag_timer();
-        }
-        mag_selection_switch_flag = 0;
-    }
     if(spam_control_switch_change_flag)
     {
         if(gcmd_spam_control_switch == SPAM_OFF)
@@ -1273,35 +1260,13 @@ void mag_select_switch(uint8_t mag_selection)
 {
     switch(mag_selection)
     {
-        case CMD_SELECT_AUTO:
-            if(mag_selection_mode == MAG_BEST_FIT_OVERRIDE)
-            {
-                mag_selection_switch_flag = 1;
-            }
-            mag_selection_mode = MAG_BEST_FIT_AUTO;
-            break;
         case CMD_SELECT_BDOT_MAG:
-            if(mag_selection_mode == MAG_BEST_FIT_AUTO)
-            {
-                mag_selection_switch_flag = 1;
-            }
-            mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
             current_listening_mag = BDOT_MAG;
             break;
         case CMD_SELECT_SP_MAG1:
-            if(mag_selection_mode == MAG_BEST_FIT_AUTO)
-            {
-                mag_selection_switch_flag = 1;
-            }
-            mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
             current_listening_mag = SP_MAG1;
             break;
         case CMD_SELECT_SP_MAG2:
-            if(mag_selection_mode == MAG_BEST_FIT_AUTO)
-            {
-                mag_selection_switch_flag = 1;
-            }
-            mag_selection_mode = MAG_BEST_FIT_OVERRIDE;
             current_listening_mag = SP_MAG2;
             break;
         default:
