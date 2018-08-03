@@ -380,6 +380,8 @@ typedef struct rc_adcs_bdot_10 {
 } rc_adcs_bdot_10;
 
 typedef struct rc_adcs_bdot_9 {
+    uint8_t rc_adcs_bdot_9_dipole_gain_z; //  (No Units)
+    uint8_t rc_adcs_bdot_9_dipole_gain_y; //  (No Units)
     int16_t rc_adcs_bdot_9_spam_off_z_mtq_z; // 1/73 nT
     int16_t rc_adcs_bdot_9_spam_off_z_mtq_y; // 1/73 nT
     int16_t rc_adcs_bdot_9_spam_off_z_mtq_x; // 1/73 nT
@@ -431,6 +433,7 @@ typedef struct gcmd_autoseq_add_1 {
 } gcmd_autoseq_add_1;
 
 typedef struct rc_adcs_bdot_7 {
+    uint8_t rc_adcs_bdot_7_dipole_gain_x; //  (No Units)
     int16_t rc_adcs_bdot_7_spam_off_x_mtq_y; // 1/73 nT
     int16_t rc_adcs_bdot_7_spam_off_x_mtq_x; // 1/73 nT
     int16_t rc_adcs_bdot_7_spam_magnitude_z; //  (No Units)

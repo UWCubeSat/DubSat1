@@ -89,7 +89,9 @@ BO_ 2452161245 rc_adcs_bdot_10: 6 adcs_bdot
  SG_ rc_adcs_bdot_10_dipole_var_y : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ rc_adcs_bdot_10_dipole_var_x : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
-BO_ 2452161139 rc_adcs_bdot_9: 6 Vector__XXX
+BO_ 2452161139 rc_adcs_bdot_9: 8 Vector__XXX
+ SG_ rc_adcs_bdot_9_dipole_gain_z : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rc_adcs_bdot_9_dipole_gain_y : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_adcs_bdot_9_spam_off_z_mtq_z : 32|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_9_spam_off_z_mtq_y : 16|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_9_spam_off_z_mtq_x : 0|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
@@ -130,6 +132,7 @@ BO_ 2449736402 gcmd_autoseq_add_1: 8 Vector__XXX
  SG_ gcmd_autoseq_add_1_can_id : 0|29@1+ (1,0) [0|536870911] "" Vector__XXX
 
 BO_ 2452161137 rc_adcs_bdot_7: 8 Vector__XXX
+ SG_ rc_adcs_bdot_7_dipole_gain_x : 56|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_adcs_bdot_7_spam_off_x_mtq_y : 40|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_7_spam_off_x_mtq_x : 24|16@1- (1,0) [-32768|-32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_7_spam_magnitude_z : 16|8@1- (1,0) [-127|128] "" Vector__XXX

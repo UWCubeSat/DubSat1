@@ -365,6 +365,8 @@ void decoderc_adcs_bdot_9(CANPacket *input, rc_adcs_bdot_9 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
+    output -> rc_adcs_bdot_9_dipole_gain_z = (uint8_t) (((fullData & ((uint64_t) 0xff))));
+    output -> rc_adcs_bdot_9_dipole_gain_y = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
     output -> rc_adcs_bdot_9_spam_off_z_mtq_z = (int16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_adcs_bdot_9_spam_off_z_mtq_y = (int16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_adcs_bdot_9_spam_off_z_mtq_x = (int16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
@@ -372,8 +374,10 @@ void decoderc_adcs_bdot_9(CANPacket *input, rc_adcs_bdot_9 *output){
 
 void encoderc_adcs_bdot_9(rc_adcs_bdot_9 *input, CANPacket *output){
     output -> id = 304677491;
-    output -> length = 6;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_9_dipole_gain_z))) & 0xff);
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_9_dipole_gain_y))) & 0xff) << 8;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_9_spam_off_z_mtq_z))) & 0xffff) << 16;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_9_spam_off_z_mtq_y))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_9_spam_off_z_mtq_x))) & 0xffff) << 48;
@@ -566,6 +570,7 @@ void decoderc_adcs_bdot_7(CANPacket *input, rc_adcs_bdot_7 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
+    output -> rc_adcs_bdot_7_dipole_gain_x = (uint8_t) (((fullData & ((uint64_t) 0xff))));
     output -> rc_adcs_bdot_7_spam_off_x_mtq_y = (int16_t) (((fullData & ((uint64_t) 0xffff << 8)) >> 8));
     output -> rc_adcs_bdot_7_spam_off_x_mtq_x = (int16_t) (((fullData & ((uint64_t) 0xffff << 24)) >> 24));
     output -> rc_adcs_bdot_7_spam_magnitude_z = (int16_t) (((fullData & ((uint64_t) 0xff << 40)) >> 40));
@@ -577,6 +582,7 @@ void encoderc_adcs_bdot_7(rc_adcs_bdot_7 *input, CANPacket *output){
     output -> id = 304677489;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_7_dipole_gain_x))) & 0xff);
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_7_spam_off_x_mtq_y))) & 0xffff) << 8;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_7_spam_off_x_mtq_x))) & 0xffff) << 24;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_7_spam_magnitude_z))) & 0xff) << 40;
