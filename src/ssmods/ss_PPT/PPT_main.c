@@ -180,7 +180,7 @@ void sendRC()
         {
             rc_ppt_h1 rc = {0};
             rc.rc_ppt_h1_reset_count = bspGetResetCount();
-            rc.rc_ppt_h1_sysrstiv = SYSRSTIV;
+            rc.rc_ppt_h1_sysrstiv = bspGetResetReason();
             rc.rc_ppt_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
             rc.rc_ppt_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
             rc.rc_ppt_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));

@@ -36,6 +36,8 @@ void bspExampleInit(SubsystemModule mod)
 #pragma PERSISTENT(local_reset_count)
 uint32_t local_reset_count = 0;
 
+uint16_t reset_reason = 0;
+
 FILE_STATIC hwsw_match_state hwsw_mstate;
 hwsw_match_state bspGetHWSWMatchState()
 {
@@ -106,6 +108,11 @@ uint32_t bspGetResetCount()
     return local_reset_count;
 }
 
+uint16_t bspGetResetReason()
+{
+    return reset_reason;
+}
+
 void bspClearResetCount()
 {
     local_reset_count = 0;
@@ -122,6 +129,9 @@ void bspInit(SubsystemModule mod)
 
     // Keep track of local reset count here for now (should move into ... timers?)
     local_reset_count++;
+
+    //get the reason for the reset
+    reset_reason = SYSRSTIV;
 
     // NOW, CHECK HARDWARE KEY - if it doesn't match, this never returns ...
     chipID = *((uint64_t *)0x1A0A);
