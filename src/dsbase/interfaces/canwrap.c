@@ -4057,7 +4057,7 @@ void decodecmd_ppt_single_fire(CANPacket *input, cmd_ppt_single_fire *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> cmd_ppt_single_fire_override_smt = (uint8_t) (((fullData & ((uint64_t) 0x1 << 55)) >> 55));
+    output -> cmd_ppt_single_fire_override_smt = (uint8_t) (((fullData & ((uint64_t) 0x1 << 61)) >> 61));
     output -> cmd_ppt_single_fire_override = (uint8_t) (((fullData & ((uint64_t) 0x1 << 62)) >> 62));
     output -> cmd_ppt_single_fire_with_pulse = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
 }
@@ -4066,7 +4066,7 @@ void encodecmd_ppt_single_fire(cmd_ppt_single_fire *input, CANPacket *output){
     output -> id = 302252288;
     output -> length = 2;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> cmd_ppt_single_fire_override_smt))) & 0x1) << 55;
+    fullPacketData |= (((uint64_t)((input -> cmd_ppt_single_fire_override_smt))) & 0x1) << 61;
     fullPacketData |= (((uint64_t)((input -> cmd_ppt_single_fire_override))) & 0x1) << 62;
     fullPacketData |= (((uint64_t)((input -> cmd_ppt_single_fire_with_pulse))) & 0x1) << 63;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));

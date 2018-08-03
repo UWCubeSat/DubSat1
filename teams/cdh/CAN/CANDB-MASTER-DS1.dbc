@@ -933,7 +933,7 @@ BO_ 2450980912 mtq_ack: 8 adcs_mtq
  SG_ mtq_ack_last_bdot_x : 16|8@1- (1,0) [-128|100] "pct" Vector__XXX
 
 BO_ 2449735936 cmd_ppt_single_fire: 2 com_1
- SG_ cmd_ppt_single_fire_override_smt : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ cmd_ppt_single_fire_override_smt : 2|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ cmd_ppt_single_fire_override : 1|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ cmd_ppt_single_fire_with_pulse : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
