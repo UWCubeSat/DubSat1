@@ -117,6 +117,7 @@ void magioSendCAN1()
     p.sensorproc_mag_y = magConvertTeslasToRaw(output[1]);
     p.sensorproc_mag_z = magConvertTeslasToRaw(output[2]);
     p.sensorproc_mag_valid = output[3];
+    p.sensorproc_mag_bdot_valid = lastActuationPhase;
     CANPacket packet;
     encodesensorproc_mag(&p, &packet);
     canSendPacket(&packet);
@@ -136,6 +137,8 @@ void magioSendCAN2()
     p.sensorproc_mag2_y = magConvertTeslasToRaw(output[1]);
     p.sensorproc_mag2_z = magConvertTeslasToRaw(output[2]);
     p.sensorproc_mag2_valid = output[3];
+    p.sensorproc_mag2_bdot_valid = lastActuationPhase;
+
     CANPacket packet;
     encodesensorproc_mag2(&p, &packet);
     canSendPacket(&packet);
