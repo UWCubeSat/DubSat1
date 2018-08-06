@@ -38,11 +38,13 @@ typedef struct {
 	aggVec_i agg_y;
 	aggVec_i agg_z;
 	aggVec_i agg_valid;
+	uint8_t last_phase
 } MagIO;
 
 void magioInit(MagIO *magio, real32_T *input, real32_T *output, bus_instance_i2c bus);
 void magioUpdate(MagIO *magio);
 void magioSendBackchannel(MagIO *magio, uint8_t tmlId, uint8_t tlmIdP);
+void magioUpdatePhase(uint8_t phase);
 
 void magioInit1();
 void magioUpdate1();

@@ -30,11 +30,14 @@ void magioInit(MagIO *magio, real32_T *input, real32_T *output, bus_instance_i2c
 	magio->handle = magInit(bus);
 	magio->input = input;
 	magio->output = output;
+	magio->last_phase = -1;
 	aggVec_init_i(&magio->agg_x);
 	aggVec_init_i(&magio->agg_y);
 	aggVec_init_i(&magio->agg_z);
 	aggVec_init_i(&magio->agg_valid);
 }
+
+
 
 void magioUpdate(MagIO *magio)
 {
@@ -117,7 +120,7 @@ void magioSendCAN1()
     p.sensorproc_mag_y = magConvertTeslasToRaw(output[1]);
     p.sensorproc_mag_z = magConvertTeslasToRaw(output[2]);
     p.sensorproc_mag_valid = output[3];
-    p.sensorproc_mag_bdot_valid = lastActuationPhase;
+    p.sensorproc_mag_bdot_valid = mag1.last_phase;
     CANPacket packet;
     encodesensorproc_mag(&p, &packet);
     canSendPacket(&packet);
@@ -137,7 +140,7 @@ void magioSendCAN2()
     p.sensorproc_mag2_y = magConvertTeslasToRaw(output[1]);
     p.sensorproc_mag2_z = magConvertTeslasToRaw(output[2]);
     p.sensorproc_mag2_valid = output[3];
-    p.sensorproc_mag2_bdot_valid = lastActuationPhase;
+    p.sensorproc_mag2_bdot_valid =mag2.last_phase;
 
     CANPacket packet;
     encodesensorproc_mag2(&p, &packet);
@@ -208,4 +211,9 @@ void magio2RcPopulate13(rc_adcs_sp_13 *r)
 {
     r->rc_adcs_sp_13_mag2_z_avg = aggVec_avg_i_i(&mag2.agg_z);
     aggVec_as_reset((aggVec *) &mag2.agg_z);
+}
+
+void magioUpdatePhase(uint8_t inphase) {
+    mag1.last_phase = inphase;
+    mag2.last_phase = inphase;
 }

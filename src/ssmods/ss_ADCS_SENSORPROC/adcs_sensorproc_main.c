@@ -78,7 +78,6 @@ FILE_STATIC health_segment hseg;
 /* Autocode */
 
 FILE_STATIC flag_t triggerStepFlag = FALSE;
-FILE_STATIC uint8_t lastActuationPhase = -1;
 /**
  * Takes one step of autocode.
  */
@@ -402,8 +401,8 @@ void canRxCallback(CANPacket *p)
     }
     else if(p->id == CAN_ID_MTQ_ACK) {
     	mtq_ack ackpacket;
-    	decodemtq_ack(p,&mtq_ack);
-    	lastActuationPhase = ackpacket.mtq_ack_phase;
+    	decodemtq_ack(p,&ackpacket);
+    	magioUpdatePhase(ackpacket.mtq_ack_phase);
     }
     else if(p->id == CAN_ID_GCMD_RESET_MINMAX)
     {
