@@ -1394,10 +1394,10 @@ void rcPopulateH1(CANPacket *out)
 {
     rc_adcs_bdot_h1 rc;
     rc.rc_adcs_bdot_h1_reset_count = bspGetResetCount();
-    rc.rc_adcs_bdot_h1_sysrstiv = SYSRSTIV;
+    rc.rc_adcs_bdot_h1_sysrstiv = bspGetResetReason();
     rc.rc_adcs_bdot_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&rc_temp));
     rc.rc_adcs_bdot_h1_temp_min = compressMSPTemp(aggVec_min_f(&rc_temp));
-    rc.rc_adcs_bdot_h1_reset_count = 0;
+    rc.rc_adcs_bdot_h1_temp_max = compressMSPTemp(aggVec_max_f(&rc_temp));
     aggVec_as_reset((aggVec *)&rc_temp);
     encoderc_adcs_bdot_h1(&rc, out);
 }
@@ -1469,9 +1469,9 @@ void rcPopulate6(CANPacket *out)
 {
     rc_adcs_bdot_6 rc = {0};
     rc.rc_adcs_bdot_6_current_state = (uint8_t) bdot_state;
-    rc.rc_adcs_bdot_6_gain_ovr_status_x = (uint8_t)(gcmd_dipole_gain_factor_x * 100);
-    rc.rc_adcs_bdot_6_gain_ovr_status_y =  (uint8_t)(gcmd_dipole_gain_factor_y * 100);
-    rc.rc_adcs_bdot_6_gain_ovr_status_z =  (uint8_t)(gcmd_dipole_gain_factor_z * 100);
+    rc.rc_adcs_bdot_6_gain_ovr_status_x = 0;
+    rc.rc_adcs_bdot_6_gain_ovr_status_y = 0;
+    rc.rc_adcs_bdot_6_gain_ovr_status_z = 0;
     rc.rc_adcs_bdot_6_mag_control = mag_selection_mode;
     rc.rc_adcs_bdot_6_max_tumble_time = (uint16_t)(check_nap_status_timer_ms / MINUTES_TO_MILLISEC_CONVERSION_FACTOR);
     rc.rc_adcs_bdot_6_pop_status_x = !(override_factor_x == POP_OFF_SCALE_FACTOR);
@@ -1491,6 +1491,7 @@ void rcPopulate7(CANPacket *out)
     rc.rc_adcs_bdot_7_spam_magnitude_z = gcmd_spam_z_dipole;
     rc.rc_adcs_bdot_7_spam_off_x_mtq_x = spam_off_x_avg[0];
     rc.rc_adcs_bdot_7_spam_off_x_mtq_y = spam_off_x_avg[1];
+    rc.rc_adcs_bdot_7_dipole_gain_x = (uint8_t)(gcmd_dipole_gain_factor_x * 100);
     encoderc_adcs_bdot_7(&rc, out);
 }
 
@@ -1510,6 +1511,8 @@ void rcPopulate9(CANPacket * out)
     rc.rc_adcs_bdot_9_spam_off_z_mtq_x = spam_off_z_avg[0];
     rc.rc_adcs_bdot_9_spam_off_z_mtq_y = spam_off_z_avg[1];
     rc.rc_adcs_bdot_9_spam_off_z_mtq_z = spam_off_z_avg[2];
+    rc.rc_adcs_bdot_9_dipole_gain_y = (uint8_t)(gcmd_dipole_gain_factor_y * 100);
+    rc.rc_adcs_bdot_9_dipole_gain_z = (uint8_t)(gcmd_dipole_gain_factor_z * 100);
     encoderc_adcs_bdot_9(&rc, out);
 
 }

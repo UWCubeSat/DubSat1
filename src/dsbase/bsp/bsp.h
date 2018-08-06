@@ -116,6 +116,7 @@ SubsystemModule bspGetModule();
 hwsw_match_state bspGetHWSWMatchState();
 uint64_t bspGetChipID();
 uint32_t bspGetResetCount();
+uint16_t bspGetResetReason();
 void bspClearResetCount();
 void bspBackpowerPulldown();
 

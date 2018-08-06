@@ -511,7 +511,7 @@ void rcPopulateH1(CANPacket *out)
 {
     rc_eps_dist_h1 rc = {0};
     rc.rc_eps_dist_h1_reset_count = bspGetResetCount();
-    rc.rc_eps_dist_h1_sysrstiv = SYSRSTIV;
+    rc.rc_eps_dist_h1_sysrstiv = bspGetResetReason();
     rc.rc_eps_dist_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
     rc.rc_eps_dist_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
     rc.rc_eps_dist_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));

@@ -476,7 +476,7 @@ FILE_STATIC void send_CAN_ack_packet(void)
 // TODO: description 
 void rcPopulate1(CANPacket *out){
     rc_adcs_mtq_h1 rc = {0};
-    rc.rc_adcs_mtq_h1_sysrstiv = SYSRSTIV;
+    rc.rc_adcs_mtq_h1_sysrstiv = bspGetResetReason();
     rc.rc_adcs_mtq_h1_reset_count = bspGetResetCount();
     rc.rc_adcs_mtq_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTemp_agg));
     rc.rc_adcs_mtq_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTemp_agg));

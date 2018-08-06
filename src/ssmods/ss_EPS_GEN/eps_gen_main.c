@@ -256,7 +256,7 @@ void can_packet_rx_callback(CANPacket *packet)
 void rcPopulateH1(CANPacket *out)
 {
     rc_eps_gen_h1 rc = {0};
-    rc.rc_eps_gen_h1_sysrstiv = SYSRSTIV;
+    rc.rc_eps_gen_h1_sysrstiv = bspGetResetReason();
     rc.rc_eps_gen_h1_reset_count = bspGetResetCount();
     rc.rc_eps_gen_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
     rc.rc_eps_gen_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
