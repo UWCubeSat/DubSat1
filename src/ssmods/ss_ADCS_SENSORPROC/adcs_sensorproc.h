@@ -63,6 +63,8 @@ void rcPopulate3(CANPacket *out);
 void rcPopulate4(CANPacket *out);
 void rcPopulate5(CANPacket *out);
 void rcPopulate6(CANPacket *out);
+void rcPopulate7(CANPacket *out);
+void rcPopulate8(CANPacket *out);
 void rcPopulate9(CANPacket *out);
 void rcPopulate10(CANPacket *out);
 void rcPopulate11(CANPacket *out);
