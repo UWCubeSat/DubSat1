@@ -14,6 +14,7 @@
 #define ROLLCALL_WATCHDOG_TIMEOUT 255 //seconds
 #define ROLLCALL_WATCHDOG_AUTOSHUTOFF 10 //seconds
 #define AUTOSHUTOFF_DELAY 1 //number of rollcalls before the check for shutoff starts
+#define RAHS_COM2_SHUTOFF_TIME 720 //the time COM2 and RAHS are allowed to be on (in s)
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
@@ -118,7 +119,7 @@ sequenceEvent persistentEvents[100] = {0};
 #pragma PERSISTENT(eventsInitialized)
 uint8_t eventsInitialized = 0;
 #pragma PERSISTENT(autoSequencerEnabled)
-uint8_t autoSequencerEnabled = 0;
+uint8_t autoSequencerEnabled = 1;
 
 FILE_STATIC uint16_t rcResponseFlag = 0; //this is zero when no responses are pending
 sequenceEvent pendingEvent = {0};
@@ -242,7 +243,7 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
     switch (domain)
     {
         case PD_COM2:
-            if(distQueryDomainSwitch(PD_COM2) == 0)
+            if(distQueryDomainSwitch(PD_COM2) == Switch_Disabled)
                 shutoffDelay.com2 = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_COM2_OUT |= DOMAIN_ENABLE_COM2_BIT;
@@ -250,9 +251,18 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_COM2_OUT &= ~DOMAIN_ENABLE_COM2_BIT;
             else if (cmd == PD_CMD_Toggle)
                 DOMAIN_ENABLE_COM2_OUT ^= DOMAIN_ENABLE_COM2_BIT;
+            if(distQueryDomainSwitch(PD_COM2) == Switch_Enabled)
+            {
+                gcmd_dist_set_pd_state _pkt = {0};
+                _pkt.gcmd_dist_set_pd_state_com2 = 2;
+                CANPacket pkt;
+                encodegcmd_dist_set_pd_state(&_pkt, &pkt);
+                sequenceEvent event = {pkt, 0, metConvertToSeconds(getMETTimestamp()) + RAHS_COM2_SHUTOFF_TIME};
+                seqAddEvent(event);
+            }
             break;
         case PD_PPT:
-            if(distQueryDomainSwitch(PD_PPT) == 0)
+            if(distQueryDomainSwitch(PD_PPT) == Switch_Disabled)
                 shutoffDelay.ppt = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_PPT_OUT |= DOMAIN_ENABLE_PPT_BIT;
@@ -262,7 +272,7 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_PPT_OUT ^= DOMAIN_ENABLE_PPT_BIT;
             break;
         case PD_BDOT:
-            if(distQueryDomainSwitch(PD_BDOT) == 0)
+            if(distQueryDomainSwitch(PD_BDOT) == Switch_Disabled)
                 shutoffDelay.bdot = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_BDOT_OUT |= DOMAIN_ENABLE_BDOT_BIT;
@@ -280,7 +290,7 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_COM1_OUT ^= DOMAIN_ENABLE_COM1_BIT;
             break;
         case PD_RAHS:
-            if(distQueryDomainSwitch(PD_RAHS) == 0)
+            if(distQueryDomainSwitch(PD_RAHS) == Switch_Disabled)
                 shutoffDelay.rahs = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_RAHS_OUT |= DOMAIN_ENABLE_RAHS_BIT;
@@ -288,9 +298,18 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_RAHS_OUT &= ~DOMAIN_ENABLE_RAHS_BIT;
             else if (cmd == PD_CMD_Toggle)
                 DOMAIN_ENABLE_RAHS_OUT ^= DOMAIN_ENABLE_RAHS_BIT;
+            if(distQueryDomainSwitch(PD_RAHS) == Switch_Enabled)
+            {
+                gcmd_dist_set_pd_state _pkt = {0};
+                _pkt.gcmd_dist_set_pd_state_rahs = 2;
+                CANPacket pkt;
+                encodegcmd_dist_set_pd_state(&_pkt, &pkt);
+                sequenceEvent event = {pkt, 0, metConvertToSeconds(getMETTimestamp()) + RAHS_COM2_SHUTOFF_TIME};
+                seqAddEvent(event);
+            }
             break;
         case PD_ESTIM:
-            if(distQueryDomainSwitch(PD_ESTIM) == 0)
+            if(distQueryDomainSwitch(PD_ESTIM) == Switch_Disabled)
                 shutoffDelay.estim = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_ESTIM_OUT |= DOMAIN_ENABLE_ESTIM_BIT;
@@ -300,7 +319,7 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_ESTIM_OUT ^= DOMAIN_ENABLE_ESTIM_BIT;
             break;
         case PD_EPS:
-            if(distQueryDomainSwitch(PD_EPS) == 0)
+            if(distQueryDomainSwitch(PD_EPS) == Switch_Disabled)
                 shutoffDelay.eps = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_EPS_OUT |= DOMAIN_ENABLE_EPS_BIT;
