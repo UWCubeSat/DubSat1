@@ -964,7 +964,7 @@ void decoderc_eps_dist_h1(CANPacket *input, rc_eps_dist_h1 *output){
 }
 
 void encoderc_eps_dist_h1(rc_eps_dist_h1 *input, CANPacket *output){
-    output -> id = 304677475;
+    output -> id = 305726051;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_eps_dist_h1_temp_min))) & 0xffff) << 48;
@@ -1507,7 +1507,7 @@ void decoderc_eps_batt_7(CANPacket *input, rc_eps_batt_7 *output){
 }
 
 void encoderc_eps_batt_7(rc_eps_batt_7 *input, CANPacket *output){
-    output -> id = 304677466;
+    output -> id = 305726042;
     output -> length = 6;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_eps_batt_7_acc_charge_min))) & 0xffff) << 48;
@@ -1995,7 +1995,7 @@ void decoderc_eps_dist_4(CANPacket *input, rc_eps_dist_4 *output){
 }
 
 void encoderc_eps_dist_4(rc_eps_dist_4 *input, CANPacket *output){
-    output -> id = 304677446;
+    output -> id = 305726022;
     output -> length = 7;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_eps_dist_4_com1_state))) & 0xff) << 56;
@@ -3293,7 +3293,7 @@ void decoderc_eps_gen_8(CANPacket *input, rc_eps_gen_8 *output){
 }
 
 void encoderc_eps_gen_8(rc_eps_gen_8 *input, CANPacket *output){
-    output -> id = 304677399;
+    output -> id = 305725975;
     output -> length = 7;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_eps_gen_8_pnl_3_power_min))) & 0xffff) << 48;
@@ -3316,7 +3316,7 @@ void decoderc_eps_gen_7(CANPacket *input, rc_eps_gen_7 *output){
 }
 
 void encoderc_eps_gen_7(rc_eps_gen_7 *input, CANPacket *output){
-    output -> id = 304677398;
+    output -> id = 305725974;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_eps_gen_7_pnl_2_power_min))) & 0xffff) << 32;
@@ -3339,7 +3339,7 @@ void decoderc_eps_gen_6(CANPacket *input, rc_eps_gen_6 *output){
 }
 
 void encoderc_eps_gen_6(rc_eps_gen_6 *input, CANPacket *output){
-    output -> id = 304677397;
+    output -> id = 305725973;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_eps_gen_6_pnl_3_current_max))) & 0xffff) << 48;
@@ -3530,7 +3530,7 @@ void decoderc_eps_batt_4(CANPacket *input, rc_eps_batt_4 *output){
 }
 
 void encoderc_eps_batt_4(rc_eps_batt_4 *input, CANPacket *output){
-    output -> id = 304677379;
+    output -> id = 305725955;
     output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_eps_batt_4_bal_auto_state))) & 0x1) << 7;
@@ -4082,7 +4082,7 @@ void decodempc_vp(CANPacket *input, mpc_vp *output){
 }
 
 void encodempc_vp(mpc_vp *input, CANPacket *output){
-    output -> id = 305594402;
+    output -> id = 302448674;
     output -> length = 1;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> mpc_vp_status))) & 0x1) << 63;
