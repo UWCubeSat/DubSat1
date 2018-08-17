@@ -208,6 +208,7 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
     prevData->convertedX = prevData->rawX * conversionFactor;
     prevData->convertedY = prevData->rawY * conversionFactor;
     prevData->convertedZ = prevData->rawZ * conversionFactor;
+    prevData->isValid = mag_is_reading_valid(prevData);
 
     return prevData;
 #else
