@@ -14,7 +14,7 @@
 #define ROLLCALL_WATCHDOG_TIMEOUT 255 //seconds
 #define ROLLCALL_WATCHDOG_AUTOSHUTOFF 10 //seconds
 #define AUTOSHUTOFF_DELAY 1 //number of rollcalls before the check for shutoff starts
-#define RAHS_COM2_SHUTOFF_TIME 720 //the time COM2 and RAHS are allowed to be on (in s)
+#define RAHS_COM2_SHUTOFF_TIME 720000000 //the time COM2 and RAHS are allowed to be on (in us)
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
@@ -119,7 +119,7 @@ sequenceEvent persistentEvents[100] = {0};
 #pragma PERSISTENT(eventsInitialized)
 uint8_t eventsInitialized = 0;
 #pragma PERSISTENT(autoSequencerEnabled)
-uint8_t autoSequencerEnabled = 1;
+uint8_t autoSequencerEnabled = 0;
 
 FILE_STATIC uint16_t rcResponseFlag = 0; //this is zero when no responses are pending
 sequenceEvent pendingEvent = {0};
@@ -129,9 +129,65 @@ uint8_t autoseqMETResponsePktSendFlag = 0;
 CANPacket autoseqIndicesResponsePkt = {0};
 uint8_t autoseqIndicesResponsePktSendFlag = 0;
 
+void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd);
+
+uint8_t offTimerCOM2Running = 0;
+TIMER_HANDLE offTimerCOM2;
+void offTimerCOM2Handler()
+{
+    distDomainSwitch(PD_COM2, PD_CMD_Autoshutoff);
+}
+
+void startOffTimerCOM2()
+{
+    if(!offTimerCOM2Running)
+    {
+        offTimerCOM2 = timerCallbackInitializer(&offTimerCOM2Handler, RAHS_COM2_SHUTOFF_TIME);
+        startCallback(offTimerCOM2);
+        offTimerCOM2Running = 1;
+    }
+}
+
+void stopOffTimerCOM2()
+{
+    if(offTimerCOM2Running)
+    {
+        stopCallback(offTimerCOM2);
+        offTimerCOM2Running = 0;
+    }
+}
+
+uint8_t offTimerRAHSRunning = 0;
+TIMER_HANDLE offTimerRAHS;
+void offTimerRAHSHandler()
+{
+    distDomainSwitch(PD_RAHS, PD_CMD_Autoshutoff);
+}
+
+void startOffTimerRAHS()
+{
+    if(!offTimerRAHSRunning)
+    {
+        offTimerRAHS = timerCallbackInitializer(&offTimerRAHSHandler, RAHS_COM2_SHUTOFF_TIME);
+        startCallback(offTimerRAHS);
+        offTimerRAHSRunning = 1;
+    }
+}
+
+void stopOffTimerRAHS()
+{
+    if(offTimerRAHSRunning)
+    {
+        stopCallback(offTimerRAHS);
+        offTimerRAHSRunning = 0;
+    }
+}
+
 uint16_t compressOCPThresh(float thresh) {
     return (uint16_t)(thresh * 20);
 }
+
+uint8_t off_timer_COM2_flag = 0;
 
 void distDeployInit()
 {
@@ -230,7 +286,7 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
     gseg.powerdomainlastcmds[(uint8_t)domain] = (uint8_t)cmd;
 
     // Overcurrent latching  or low batt commands only useful as a "special" disable for reporting purposes
-    if (cmd == PD_CMD_OCLatch || cmd == PD_CMD_BattVLow)
+    if (cmd == PD_CMD_OCLatch || cmd == PD_CMD_BattVLow || cmd == PD_CMD_Autoshutoff)
         cmd = PD_CMD_Disable;
 
     // Similarly, autostart is a just a "special" enable
@@ -252,14 +308,9 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
             else if (cmd == PD_CMD_Toggle)
                 DOMAIN_ENABLE_COM2_OUT ^= DOMAIN_ENABLE_COM2_BIT;
             if(distQueryDomainSwitch(PD_COM2) == Switch_Enabled)
-            {
-                gcmd_dist_set_pd_state _pkt = {0};
-                _pkt.gcmd_dist_set_pd_state_com2 = 2;
-                CANPacket pkt;
-                encodegcmd_dist_set_pd_state(&_pkt, &pkt);
-                sequenceEvent event = {pkt, 0, metConvertToSeconds(getMETTimestamp()) + RAHS_COM2_SHUTOFF_TIME};
-                seqAddEvent(event);
-            }
+                startOffTimerCOM2();
+            else
+                stopOffTimerCOM2();
             break;
         case PD_PPT:
             if(distQueryDomainSwitch(PD_PPT) == Switch_Disabled)
@@ -299,14 +350,9 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
             else if (cmd == PD_CMD_Toggle)
                 DOMAIN_ENABLE_RAHS_OUT ^= DOMAIN_ENABLE_RAHS_BIT;
             if(distQueryDomainSwitch(PD_RAHS) == Switch_Enabled)
-            {
-                gcmd_dist_set_pd_state _pkt = {0};
-                _pkt.gcmd_dist_set_pd_state_rahs = 2;
-                CANPacket pkt;
-                encodegcmd_dist_set_pd_state(&_pkt, &pkt);
-                sequenceEvent event = {pkt, 0, metConvertToSeconds(getMETTimestamp()) + RAHS_COM2_SHUTOFF_TIME};
-                seqAddEvent(event);
-            }
+                startOffTimerRAHS();
+            else
+                stopOffTimerRAHS();
             break;
         case PD_ESTIM:
             if(distQueryDomainSwitch(PD_ESTIM) == Switch_Disabled)
@@ -522,8 +568,10 @@ uint8_t getPDState(PowerDomainID pd)
         return 3; //batt_undervoltage
     else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_OffInitial)
         return 4;
+    else if(gseg.powerdomainlastcmds[(int8_t)pd] == PD_CMD_Autoshutoff)
+        return 5; //non-responsive
     else
-        return 5; //other
+        return 6; //other
 }
 
 void rcPopulateH1(CANPacket *out)
@@ -750,7 +798,7 @@ void autoShutoff()
         else
             if(shutoffEnabled.com2 == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_COM2_FLAG && shutoffDelay.com2 == 0)
             {
-                distDomainSwitch(PD_COM2, PD_CMD_Disable);
+                distDomainSwitch(PD_COM2, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_COM2_FLAG;
             }
 
@@ -759,7 +807,7 @@ void autoShutoff()
         else
             if(shutoffEnabled.rahs == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_RAHS_FLAG)
             {
-                distDomainSwitch(PD_RAHS, PD_CMD_Disable);
+                distDomainSwitch(PD_RAHS, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_RAHS_FLAG;
             }
 
@@ -768,7 +816,7 @@ void autoShutoff()
         else
             if(shutoffEnabled.bdot == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_BDOT_FLAG)
             {
-                distDomainSwitch(PD_BDOT, PD_CMD_Disable);
+                distDomainSwitch(PD_BDOT, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_BDOT_FLAG;
             }
 
@@ -777,7 +825,7 @@ void autoShutoff()
         else
             if(shutoffEnabled.estim == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_ESTIM_FLAG)
             {
-                distDomainSwitch(PD_ESTIM, PD_CMD_Disable);
+                distDomainSwitch(PD_ESTIM, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_ESTIM_FLAG;
             }
 
@@ -786,7 +834,7 @@ void autoShutoff()
         else
             if(shutoffEnabled.eps == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_EPS_FLAG)
             {
-                distDomainSwitch(PD_EPS, PD_CMD_Disable);
+                distDomainSwitch(PD_EPS, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_EPS_FLAG;
             }
 
@@ -795,7 +843,7 @@ void autoShutoff()
         else
             if(shutoffEnabled.ppt == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_PPT_FLAG)
             {
-                distDomainSwitch(PD_PPT, PD_CMD_Disable);
+                distDomainSwitch(PD_PPT, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_PPT_FLAG;
             }
     }
