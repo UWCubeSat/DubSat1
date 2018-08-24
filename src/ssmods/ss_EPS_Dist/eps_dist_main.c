@@ -14,7 +14,7 @@
 #define ROLLCALL_WATCHDOG_TIMEOUT 255 //seconds
 #define ROLLCALL_WATCHDOG_AUTOSHUTOFF 10 //seconds
 #define AUTOSHUTOFF_DELAY 1 //number of rollcalls before the check for shutoff starts
-#define RAHS_COM2_SHUTOFF_TIME 720000000 //the time COM2 and RAHS are allowed to be on (in us)
+#define RAHS_COM2_SHUTOFF_TIME 720000 //the time COM2 and RAHS are allowed to be on (in ms)
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
@@ -133,52 +133,60 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd);
 
 uint8_t offTimerCOM2Running = 0;
 TIMER_HANDLE offTimerCOM2;
-void offTimerCOM2Handler()
-{
-    distDomainSwitch(PD_COM2, PD_CMD_Autoshutoff);
-}
-
 void startOffTimerCOM2()
 {
     if(!offTimerCOM2Running)
     {
-        offTimerCOM2 = timerCallbackInitializer(&offTimerCOM2Handler, RAHS_COM2_SHUTOFF_TIME);
-        startCallback(offTimerCOM2);
+        offTimerCOM2 = timerPollInitializer(RAHS_COM2_SHUTOFF_TIME);
         offTimerCOM2Running = 1;
     }
+}
+
+uint8_t checkOffTimerCOM2()
+{
+    if(offTimerCOM2Running && checkTimer(offTimerCOM2))
+    {
+        offTimerCOM2Running = 0;
+        return 1;
+    }
+    return 0;
 }
 
 void stopOffTimerCOM2()
 {
     if(offTimerCOM2Running)
     {
-        stopCallback(offTimerCOM2);
+        endPollingTimer(offTimerCOM2);
         offTimerCOM2Running = 0;
     }
 }
 
 uint8_t offTimerRAHSRunning = 0;
 TIMER_HANDLE offTimerRAHS;
-void offTimerRAHSHandler()
-{
-    distDomainSwitch(PD_RAHS, PD_CMD_Autoshutoff);
-}
-
 void startOffTimerRAHS()
 {
     if(!offTimerRAHSRunning)
     {
-        offTimerRAHS = timerCallbackInitializer(&offTimerRAHSHandler, RAHS_COM2_SHUTOFF_TIME);
-        startCallback(offTimerRAHS);
+        offTimerRAHS = timerPollInitializer(RAHS_COM2_SHUTOFF_TIME);
         offTimerRAHSRunning = 1;
     }
+}
+
+uint8_t checkOffTimerRAHS()
+{
+    if(offTimerRAHSRunning && checkTimer(offTimerRAHS))
+    {
+        offTimerRAHSRunning = 0;
+        return 1;
+    }
+    return 0;
 }
 
 void stopOffTimerRAHS()
 {
     if(offTimerRAHSRunning)
     {
-        stopCallback(offTimerRAHS);
+        endPollingTimer(offTimerRAHS);
         offTimerRAHSRunning = 0;
     }
 }
@@ -796,7 +804,7 @@ void autoShutoff()
         if(shutoffDelay.com2)
             shutoffDelay.com2--;
         else
-            if(shutoffEnabled.com2 == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_COM2_FLAG && shutoffDelay.com2 == 0)
+            if(shutoffEnabled.com2 == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_COM2_FLAG)
             {
                 distDomainSwitch(PD_COM2, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_COM2_FLAG;
@@ -1313,6 +1321,11 @@ int main(void)
 
         if(i2cGetLastOperationResult())
             restartINA();
+
+        if(checkOffTimerCOM2())
+            distDomainSwitch(PD_COM2, PD_CMD_Autoshutoff);
+        if(checkOffTimerRAHS())
+            distDomainSwitch(PD_RAHS, PD_CMD_Autoshutoff);
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
