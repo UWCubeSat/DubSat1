@@ -55,6 +55,11 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2453209906 rc_eps_gen_10: 6 Vector__XXX
+ SG_ rc_eps_gen_10_pnl_3_power_avg : 32|16@1+ (1,0) [0|65535] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_10_pnl_2_power_avg : 16|16@1+ (1,0) [0|65535] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_10_pnl_1_power_avg : 0|16@1+ (1,0) [0|65535] "raw power gen" Vector__XXX
+
 BO_ 2449736497 gcmd_autoseq_enable: 1 Vector__XXX
  SG_ gcmd_autoseq_enable_enable : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
@@ -223,7 +228,7 @@ BO_ 2452161124 rc_adcs_bdot_h1: 8 Vector__XXX
  SG_ rc_adcs_bdot_h1_sysrstiv : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_adcs_bdot_h1_reset_count : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
-BO_ 2453209699 rc_eps_dist_h1: 8 Vector__XXX
+BO_ 2452161123 rc_eps_dist_h1: 8 Vector__XXX
  SG_ rc_eps_dist_h1_temp_min : 0|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
  SG_ rc_eps_dist_h1_temp_max : 16|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
  SG_ rc_eps_dist_h1_temp_avg : 32|16@1- (1,0) [-32768|32767] "cC" Vector__XXX
@@ -350,7 +355,7 @@ BO_ 2449932988 gcmd_mtq_pop: 6 Vector__XXX
  SG_ gcmd_mtq_pop_y : 2|2@1+ (1,0) [0|2] "" Vector__XXX
  SG_ gcmd_mtq_pop_x : 0|2@1+ (1,0) [0|2] "" Vector__XXX
 
-BO_ 2453209690 rc_eps_batt_7: 6 Vector__XXX
+BO_ 2451112538 rc_eps_batt_7: 6 Vector__XXX
  SG_ rc_eps_batt_7_acc_charge_min : 0|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
  SG_ rc_eps_batt_7_acc_charge_max : 16|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
  SG_ rc_eps_batt_7_acc_charge_avg : 32|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
@@ -467,7 +472,10 @@ BO_ 2452161094 rc_eps_dist_4: 7 Vector__XXX
  SG_ rc_eps_dist_4_com1_c_max : 24|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_4_com1_c_avg : 40|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
 
-BO_ 2452161091 rc_eps_dist_1: 8 Vector__XXX
+BO_ 2452619843 rc_eps_dist_1: 6 Vector__XXX
+ SG_ rc_eps_dist_1_temp_avg : 32|16@1+ (1,0) [0|65535] "cC" Vector__XXX
+ SG_ rc_eps_dist_1_com2_c_avg : 16|16@1+ (1,0) [0|65535] "raw node current" Vector__XXX
+ SG_ rc_eps_dist_1_batt_v_avg : 0|16@1+ (1,0) [0|65535] "raw dist battery voltage" Vector__XXX
 
 BO_ 2451112510 rc_adcs_mpc_11: 8 Vector__XXX
  SG_ rc_adcs_mpc_11_omega_z : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
@@ -747,19 +755,19 @@ BO_ 2451112472 rc_eps_gen_9: 8 Vector__XXX
  SG_ rc_eps_gen_9_pnl_1_temp_max : 0|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
  SG_ rc_eps_gen_9_pnl_1_temp_avg : 8|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
 
-BO_ 2453209623 rc_eps_gen_8: 7 Vector__XXX
+BO_ 2451112471 rc_eps_gen_8: 7 Vector__XXX
  SG_ rc_eps_gen_8_pnl_3_power_min : 0|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_8_pnl_3_power_max : 16|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_8_pnl_3_power_avg : 32|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_8_pnl_1_temp_min : 48|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
 
-BO_ 2453209622 rc_eps_gen_7: 8 Vector__XXX
+BO_ 2451112470 rc_eps_gen_7: 8 Vector__XXX
  SG_ rc_eps_gen_7_pnl_2_power_min : 16|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_7_pnl_2_power_max : 32|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_7_pnl_2_power_avg : 48|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_7_pnl_1_power_avg : 0|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
 
-BO_ 2453209621 rc_eps_gen_6: 8 Vector__XXX
+BO_ 2451112469 rc_eps_gen_6: 8 Vector__XXX
  SG_ rc_eps_gen_6_pnl_3_current_max : 0|16@1- (1,0) [-32768|32767] "raw node current gen" Vector__XXX
  SG_ rc_eps_gen_6_pnl_3_current_avg : 16|16@1- (1,0) [-32768|32767] "raw node current gen" Vector__XXX
  SG_ rc_eps_gen_6_pnl_1_power_min : 32|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
@@ -809,7 +817,7 @@ BO_ 2452161028 rc_eps_batt_5: 8 Vector__XXX
  SG_ rc_eps_batt_5_batt_temp_min : 48|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
  SG_ rc_eps_batt_5_batt_temp_max : 56|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
 
-BO_ 2453209603 rc_eps_batt_4: 8 eps_batt
+BO_ 2451112451 rc_eps_batt_4: 8 eps_batt
  SG_ rc_eps_batt_4_bal_auto_state : 56|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_eps_batt_4_heater_auto_state : 50|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_eps_batt_4_voltage_min : 0|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
@@ -829,7 +837,9 @@ BO_ 2452161025 rc_eps_batt_2: 6 eps_batt
  SG_ rc_eps_batt_2_node_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_batt_2_node_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
-BO_ 2452161024 rc_eps_batt_1: 8 eps_batt
+BO_ 2453209600 rc_eps_batt_1: 3 eps_batt
+ SG_ rc_eps_batt_1_voltage_avg : 16|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
+ SG_ rc_eps_batt_1_acc_charge_avg : 0|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
 
 BO_ 2449735942 cmd_ppt_set_count: 1 Vector__XXX
  SG_ cmd_ppt_set_count_count : 0|8@1+ (1,0) [0|30] "" Vector__XXX
@@ -1060,11 +1070,11 @@ CM_ SG_ 2452161124 rc_adcs_bdot_h1_temp_max "Temperature of MSP";
 CM_ SG_ 2452161124 rc_adcs_bdot_h1_temp_avg "Temperature of MSP";
 CM_ SG_ 2452161124 rc_adcs_bdot_h1_sysrstiv "Reason for reset";
 CM_ SG_ 2452161124 rc_adcs_bdot_h1_reset_count "Reset Count";
-CM_ SG_ 2453209699 rc_eps_dist_h1_temp_min "Temperature of MSP";
-CM_ SG_ 2453209699 rc_eps_dist_h1_temp_max "Temperature of MSP";
-CM_ SG_ 2453209699 rc_eps_dist_h1_temp_avg "Temperature of MSP";
-CM_ SG_ 2453209699 rc_eps_dist_h1_sysrstiv "Reason for reset";
-CM_ SG_ 2453209699 rc_eps_dist_h1_reset_count "Reset Count";
+CM_ SG_ 2452161123 rc_eps_dist_h1_temp_min "Temperature of MSP";
+CM_ SG_ 2452161123 rc_eps_dist_h1_temp_max "Temperature of MSP";
+CM_ SG_ 2452161123 rc_eps_dist_h1_temp_avg "Temperature of MSP";
+CM_ SG_ 2452161123 rc_eps_dist_h1_sysrstiv "Reason for reset";
+CM_ SG_ 2452161123 rc_eps_dist_h1_reset_count "Reset Count";
 CM_ SG_ 2452161122 rc_adcs_mpc_h1_temp_min "Temperature of MSP";
 CM_ SG_ 2452161122 rc_adcs_mpc_h1_temp_max "Temperature of MSP";
 CM_ SG_ 2452161122 rc_adcs_mpc_h1_temp_avg "Temperature of MSP";
@@ -1136,9 +1146,9 @@ CM_ SG_ 2449736381 gcmd_dist_set_pd_state_bdot "Enables or disables the power sw
 CM_ SG_ 2449932988 gcmd_mtq_pop_z "flips the polarity on mtq z axis";
 CM_ SG_ 2449932988 gcmd_mtq_pop_y "flips the polarity on mtq y axis";
 CM_ SG_ 2449932988 gcmd_mtq_pop_x "flips the polarity on mtq x axis ";
-CM_ SG_ 2453209690 rc_eps_batt_7_acc_charge_min "Acumulated charge minimum";
-CM_ SG_ 2453209690 rc_eps_batt_7_acc_charge_max "Accumulated charge maximum";
-CM_ SG_ 2453209690 rc_eps_batt_7_acc_charge_avg "Accumulated charge avg";
+CM_ SG_ 2451112538 rc_eps_batt_7_acc_charge_min "Acumulated charge minimum";
+CM_ SG_ 2451112538 rc_eps_batt_7_acc_charge_max "Accumulated charge maximum";
+CM_ SG_ 2451112538 rc_eps_batt_7_acc_charge_avg "Accumulated charge avg";
 CM_ SG_ 2483355716 sensorproc_mag2_bdot_valid "Whether the reading is valid for bdot";
 CM_ SG_ 2451112537 rc_adcs_estim_14_mag_z "z component of unit vector of the direction of the magnetic field ";
 CM_ SG_ 2451112536 rc_adcs_estim_13_mag_y "y component of unit vector of the direction of the magnetic field ";
@@ -1341,18 +1351,18 @@ CM_ SG_ 2451112472 rc_eps_gen_9_pnl_2_temp_max "Panel 2 Temp max";
 CM_ SG_ 2451112472 rc_eps_gen_9_pnl_2_temp_avg "Panel 2 Temp avg";
 CM_ SG_ 2451112472 rc_eps_gen_9_pnl_1_temp_max "Panel 1 Temp max";
 CM_ SG_ 2451112472 rc_eps_gen_9_pnl_1_temp_avg "Panel 1 Temp avg";
-CM_ SG_ 2453209623 rc_eps_gen_8_pnl_3_power_min "Panel 3 Current min";
-CM_ SG_ 2453209623 rc_eps_gen_8_pnl_3_power_max "Panel 3 Current max";
-CM_ SG_ 2453209623 rc_eps_gen_8_pnl_3_power_avg "Panel 3 Current avg";
-CM_ SG_ 2453209623 rc_eps_gen_8_pnl_1_temp_min "Panel 1 Temp min";
-CM_ SG_ 2453209622 rc_eps_gen_7_pnl_2_power_min "Panel 2 Current min";
-CM_ SG_ 2453209622 rc_eps_gen_7_pnl_2_power_max "Panel 2 Current max";
-CM_ SG_ 2453209622 rc_eps_gen_7_pnl_2_power_avg "Panel 2 Current avg";
-CM_ SG_ 2453209622 rc_eps_gen_7_pnl_1_power_avg "Panel 1 Current avg";
-CM_ SG_ 2453209621 rc_eps_gen_6_pnl_3_current_max "Panel 3 Current max";
-CM_ SG_ 2453209621 rc_eps_gen_6_pnl_3_current_avg "Panel 3 Current avg";
-CM_ SG_ 2453209621 rc_eps_gen_6_pnl_1_power_min "Panel 1 Current min";
-CM_ SG_ 2453209621 rc_eps_gen_6_pnl_1_power_max "Panel 1 Current max";
+CM_ SG_ 2451112471 rc_eps_gen_8_pnl_3_power_min "Panel 3 Current min";
+CM_ SG_ 2451112471 rc_eps_gen_8_pnl_3_power_max "Panel 3 Current max";
+CM_ SG_ 2451112471 rc_eps_gen_8_pnl_3_power_avg "Panel 3 Current avg";
+CM_ SG_ 2451112471 rc_eps_gen_8_pnl_1_temp_min "Panel 1 Temp min";
+CM_ SG_ 2451112470 rc_eps_gen_7_pnl_2_power_min "Panel 2 Current min";
+CM_ SG_ 2451112470 rc_eps_gen_7_pnl_2_power_max "Panel 2 Current max";
+CM_ SG_ 2451112470 rc_eps_gen_7_pnl_2_power_avg "Panel 2 Current avg";
+CM_ SG_ 2451112470 rc_eps_gen_7_pnl_1_power_avg "Panel 1 Current avg";
+CM_ SG_ 2451112469 rc_eps_gen_6_pnl_3_current_max "Panel 3 Current max";
+CM_ SG_ 2451112469 rc_eps_gen_6_pnl_3_current_avg "Panel 3 Current avg";
+CM_ SG_ 2451112469 rc_eps_gen_6_pnl_1_power_min "Panel 1 Current min";
+CM_ SG_ 2451112469 rc_eps_gen_6_pnl_1_power_max "Panel 1 Current max";
 CM_ SG_ 2451112468 rc_eps_gen_5_pnl_3_current_min "Panel 3 Current min";
 CM_ SG_ 2451112468 rc_eps_gen_5_pnl_2_current_min "Panel 2 Current min";
 CM_ SG_ 2451112468 rc_eps_gen_5_pnl_2_current_max "Panel 2 Current max";
@@ -1383,11 +1393,11 @@ CM_ SG_ 2452161028 rc_eps_batt_5_node_c_max "Current into the node between batte
 CM_ SG_ 2452161028 rc_eps_batt_5_node_c_avg "Current into the node between batteries. Indicates battery ballancing state.";
 CM_ SG_ 2452161028 rc_eps_batt_5_batt_temp_min "Battery temperature indicated by TMP36 mounted to the batteries.";
 CM_ SG_ 2452161028 rc_eps_batt_5_batt_temp_max "Battery temperature indicated by TMP36 mounted to the batteries.";
-CM_ SG_ 2453209603 rc_eps_batt_4_voltage_min "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
-CM_ SG_ 2453209603 rc_eps_batt_4_voltage_max "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
-CM_ SG_ 2453209603 rc_eps_batt_4_voltage_avg "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
-CM_ SG_ 2453209603 rc_eps_batt_4_heater_state "State of the battery heater switch";
-CM_ SG_ 2453209603 rc_eps_batt_4_balancer_state "State of the battery balancer. enabeling the battery balancer only gives it permission to ballance. ";
+CM_ SG_ 2451112451 rc_eps_batt_4_voltage_min "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
+CM_ SG_ 2451112451 rc_eps_batt_4_voltage_max "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
+CM_ SG_ 2451112451 rc_eps_batt_4_voltage_avg "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
+CM_ SG_ 2451112451 rc_eps_batt_4_heater_state "State of the battery heater switch";
+CM_ SG_ 2451112451 rc_eps_batt_4_balancer_state "State of the battery balancer. enabeling the battery balancer only gives it permission to ballance. ";
 CM_ SG_ 2452161026 rc_eps_batt_3_current_min "Minimum battery current seen since last min/max reset";
 CM_ SG_ 2452161026 rc_eps_batt_3_current_max "Maximum battery current seen since last min/max reset";
 CM_ SG_ 2452161026 rc_eps_batt_3_current_avg "Average current into or out of the battery";
@@ -1487,7 +1497,7 @@ VAL_ 2449736401 gcmd_ppt_multiple_fire_override 1 "true" 0 "false" ;
 VAL_ 2452161126 rc_ppt_h2_last_fire_result 2 "no main discharge" 1 "no main charge" 0 "fire successful" ;
 VAL_ 2452161125 rc_eps_batt_h1_sysrstiv 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC) MPUSEG2IFG seg 2 mem viol" 42 "(PUC) MPUSEG1IFG seg 1 mem viol" 40 "(PUC) MPUSEGIIFGinfoMemSegViol" 38 "(PUC) MPUSEGIPIFGencapIPmemSeg" 36 "(PUC) CSPW CS password violation" 34 "(PUC) MPUPW MPU pwd violation" 32 "(PUC) PMMPW PMM pwd violation" 30 "(PUC) Peripheral area fetch" 28 "(PUC) Uncorrectable FRAM bit err" 26 "(PUC) FRCTLPW password violation" 24 "(PUC) WDTPW password violation" 22 "(PUC) WDTIFG watchdog timeout" 20 "(POR) PMMSWPOR software POR" 14 "(BOR) SVSHIFG SVSH event" 10 "(BOR) Security violation" 8 "(BOR) LPMx.5 wake up" 6 "(BOR) RSTIFG RST/NMI" 2 "(BOR) Brownout" 0 "No interrupt pending" ;
 VAL_ 2452161124 rc_adcs_bdot_h1_sysrstiv 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC) MPUSEG2IFG seg 2 mem viol" 42 "(PUC) MPUSEG1IFG seg 1 mem viol" 40 "(PUC) MPUSEGIIFGinfoMemSegViol" 38 "(PUC) MPUSEGIPIFGencapIPmemSeg" 36 "(PUC) CSPW CS password violation" 34 "(PUC) MPUPW MPU pwd violation" 32 "(PUC) PMMPW PMM pwd violation" 30 "(PUC) Peripheral area fetch" 28 "(PUC) Uncorrectable FRAM bit err" 26 "(PUC) FRCTLPW password violation" 24 "(PUC) WDTPW password violation" 22 "(PUC) WDTIFG watchdog timeout" 20 "(POR) PMMSWPOR software POR" 14 "(BOR) SVSHIFG SVSH event" 10 "(BOR) Security violation" 8 "(BOR) LPMx.5 wake up" 6 "(BOR) RSTIFG RST/NMI" 2 "(BOR) Brownout" 0 "No interrupt pending" ;
-VAL_ 2453209699 rc_eps_dist_h1_sysrstiv 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC) MPUSEG2IFG seg 2 mem viol" 42 "(PUC) MPUSEG1IFG seg 1 mem viol" 40 "(PUC) MPUSEGIIFGinfoMemSegViol" 38 "(PUC) MPUSEGIPIFGencapIPmemSeg" 36 "(PUC) CSPW CS password violation" 34 "(PUC) MPUPW MPU pwd violation" 32 "(PUC) PMMPW PMM pwd violation" 30 "(PUC) Peripheral area fetch" 28 "(PUC) Uncorrectable FRAM bit err" 26 "(PUC) FRCTLPW password violation" 24 "(PUC) WDTPW password violation" 22 "(PUC) WDTIFG watchdog timeout" 20 "(POR) PMMSWPOR software POR" 14 "(BOR) SVSHIFG SVSH event" 10 "(BOR) Security violation" 8 "(BOR) LPMx.5 wake up" 6 "(BOR) RSTIFG RST/NMI" 2 "(BOR) Brownout" 0 "No interrupt pending" ;
+VAL_ 2452161123 rc_eps_dist_h1_sysrstiv 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC) MPUSEG2IFG seg 2 mem viol" 42 "(PUC) MPUSEG1IFG seg 1 mem viol" 40 "(PUC) MPUSEGIIFGinfoMemSegViol" 38 "(PUC) MPUSEGIPIFGencapIPmemSeg" 36 "(PUC) CSPW CS password violation" 34 "(PUC) MPUPW MPU pwd violation" 32 "(PUC) PMMPW PMM pwd violation" 30 "(PUC) Peripheral area fetch" 28 "(PUC) Uncorrectable FRAM bit err" 26 "(PUC) FRCTLPW password violation" 24 "(PUC) WDTPW password violation" 22 "(PUC) WDTIFG watchdog timeout" 20 "(POR) PMMSWPOR software POR" 14 "(BOR) SVSHIFG SVSH event" 10 "(BOR) Security violation" 8 "(BOR) LPMx.5 wake up" 6 "(BOR) RSTIFG RST/NMI" 2 "(BOR) Brownout" 0 "No interrupt pending" ;
 VAL_ 2452161122 rc_adcs_mpc_h1_sysrstiv 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC) MPUSEG2IFG seg 2 mem viol" 42 "(PUC) MPUSEG1IFG seg 1 mem viol" 40 "(PUC) MPUSEGIIFGinfoMemSegViol" 38 "(PUC) MPUSEGIPIFGencapIPmemSeg" 36 "(PUC) CSPW CS password violation" 34 "(PUC) MPUPW MPU pwd violation" 32 "(PUC) PMMPW PMM pwd violation" 30 "(PUC) Peripheral area fetch" 28 "(PUC) Uncorrectable FRAM bit err" 26 "(PUC) FRCTLPW password violation" 24 "(PUC) WDTPW password violation" 22 "(PUC) WDTIFG watchdog timeout" 20 "(POR) PMMSWPOR software POR" 14 "(BOR) SVSHIFG SVSH event" 10 "(BOR) Security violation" 8 "(BOR) LPMx.5 wake up" 6 "(BOR) RSTIFG RST/NMI" 2 "(BOR) Brownout" 0 "No interrupt pending" ;
 VAL_ 2451112545 rc_adcs_estim_h1_sysrstiv 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC) MPUSEG2IFG seg 2 mem viol" 42 "(PUC) MPUSEG1IFG seg 1 mem viol" 40 "(PUC) MPUSEGIIFGinfoMemSegViol" 38 "(PUC) MPUSEGIPIFGencapIPmemSeg" 36 "(PUC) CSPW CS password violation" 34 "(PUC) MPUPW MPU pwd violation" 32 "(PUC) PMMPW PMM pwd violation" 30 "(PUC) Peripheral area fetch" 28 "(PUC) Uncorrectable FRAM bit err" 26 "(PUC) FRCTLPW password violation" 24 "(PUC) WDTPW password violation" 22 "(PUC) WDTIFG watchdog timeout" 20 "(POR) PMMSWPOR software POR" 14 "(BOR) SVSHIFG SVSH event" 10 "(BOR) Security violation" 8 "(BOR) LPMx.5 wake up" 6 "(BOR) RSTIFG RST/NMI" 2 "(BOR) Brownout" 0 "No interrupt pending" ;
 VAL_ 2452161120 rc_adcs_sp_h1_sysrstiv 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC) MPUSEG2IFG seg 2 mem viol" 42 "(PUC) MPUSEG1IFG seg 1 mem viol" 40 "(PUC) MPUSEGIIFGinfoMemSegViol" 38 "(PUC) MPUSEGIPIFGencapIPmemSeg" 36 "(PUC) CSPW CS password violation" 34 "(PUC) MPUPW MPU pwd violation" 32 "(PUC) PMMPW PMM pwd violation" 30 "(PUC) Peripheral area fetch" 28 "(PUC) Uncorrectable FRAM bit err" 26 "(PUC) FRCTLPW password violation" 24 "(PUC) WDTPW password violation" 22 "(PUC) WDTIFG watchdog timeout" 20 "(POR) PMMSWPOR software POR" 14 "(BOR) SVSHIFG SVSH event" 10 "(BOR) Security violation" 8 "(BOR) LPMx.5 wake up" 6 "(BOR) RSTIFG RST/NMI" 2 "(BOR) Brownout" 0 "No interrupt pending" ;
@@ -1541,10 +1551,10 @@ VAL_ 2451112464 rc_eps_gen_1_pnl_1_charging 1 "CHARGING" 0 "NOTCHARGING" ;
 VAL_ 2451112464 rc_eps_gen_1_pnl_3_enabled 1 "ENABLED" 0 "DISABLED" ;
 VAL_ 2451112464 rc_eps_gen_1_pnl_2_enabled 1 "ENABLED" 0 "DISABLED" ;
 VAL_ 2451112464 rc_eps_gen_1_pnl_1_enabled 1 "ENABLED" 0 "DISABLED" ;
-VAL_ 2453209603 rc_eps_batt_4_bal_auto_state 1 "true" 0 "false" ;
-VAL_ 2453209603 rc_eps_batt_4_heater_auto_state 1 "true" 0 "false" ;
-VAL_ 2453209603 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
-VAL_ 2453209603 rc_eps_batt_4_balancer_state 1 "true" 0 "false" ;
+VAL_ 2451112451 rc_eps_batt_4_bal_auto_state 1 "true" 0 "false" ;
+VAL_ 2451112451 rc_eps_batt_4_heater_auto_state 1 "true" 0 "false" ;
+VAL_ 2451112451 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
+VAL_ 2451112451 rc_eps_batt_4_balancer_state 1 "true" 0 "false" ;
 VAL_ 2451112176 ppt_firing_result_panel_good 2 "null" 1 "true" 0 "false" ;
 VAL_ 2451112176 ppt_firing_result_batt_good 2 "null" 1 "true" 0 "false" ;
 VAL_ 2451112176 ppt_firing_result_coulmb_good 2 "null" 1 "true" 0 "false" ;

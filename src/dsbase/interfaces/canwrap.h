@@ -27,6 +27,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_RC_EPS_GEN_10 305726258
 #define CAN_ID_GCMD_AUTOSEQ_ENABLE 302252849
 #define CAN_ID_GCMD_BATT_SET_BAL_AUTO 302252848
 #define CAN_ID_GCMD_DIST_AUTOSHUTOFF 302252847
@@ -64,7 +65,7 @@
 #define CAN_ID_RC_PPT_H2 304677478
 #define CAN_ID_RC_EPS_BATT_H1 304677477
 #define CAN_ID_RC_ADCS_BDOT_H1 304677476
-#define CAN_ID_RC_EPS_DIST_H1 305726051
+#define CAN_ID_RC_EPS_DIST_H1 304677475
 #define CAN_ID_RC_ADCS_MPC_H1 304677474
 #define CAN_ID_RC_ADCS_ESTIM_H1 303628897
 #define CAN_ID_RC_ADCS_SP_H1 304677472
@@ -89,7 +90,7 @@
 #define CAN_ID_GCMD_DIST_SET_PD_OVC_COM1 302252734
 #define CAN_ID_GCMD_DIST_SET_PD_STATE 302252733
 #define CAN_ID_GCMD_MTQ_POP 302449340
-#define CAN_ID_RC_EPS_BATT_7 305726042
+#define CAN_ID_RC_EPS_BATT_7 303628890
 #define CAN_ID_SENSORPROC_MAG2 335872068
 #define CAN_ID_RC_ADCS_ESTIM_14 303628889
 #define CAN_ID_RC_ADCS_ESTIM_13 303628888
@@ -113,7 +114,7 @@
 #define CAN_ID_RC_EPS_DIST_10 303628876
 #define CAN_ID_RC_EPS_DIST_8 303628874
 #define CAN_ID_RC_EPS_DIST_4 304677446
-#define CAN_ID_RC_EPS_DIST_1 304677443
+#define CAN_ID_RC_EPS_DIST_1 305136195
 #define CAN_ID_RC_ADCS_MPC_11 303628862
 #define CAN_ID_RC_ADCS_MPC_7 303628858
 #define CAN_ID_RC_ADCS_MPC_8 303628859
@@ -174,9 +175,9 @@
 #define CAN_ID_RC_PPT_2 303628809
 #define CAN_ID_RC_PPT_1 303628808
 #define CAN_ID_RC_EPS_GEN_9 303628824
-#define CAN_ID_RC_EPS_GEN_8 305725975
-#define CAN_ID_RC_EPS_GEN_7 305725974
-#define CAN_ID_RC_EPS_GEN_6 305725973
+#define CAN_ID_RC_EPS_GEN_8 303628823
+#define CAN_ID_RC_EPS_GEN_7 303628822
+#define CAN_ID_RC_EPS_GEN_6 303628821
 #define CAN_ID_RC_EPS_GEN_5 303628820
 #define CAN_ID_RC_EPS_GEN_4 303628819
 #define CAN_ID_RC_EPS_GEN_3 303628818
@@ -184,10 +185,10 @@
 #define CAN_ID_RC_EPS_GEN_1 303628816
 #define CAN_ID_RC_EPS_BATT_6 304677381
 #define CAN_ID_RC_EPS_BATT_5 304677380
-#define CAN_ID_RC_EPS_BATT_4 305725955
+#define CAN_ID_RC_EPS_BATT_4 303628803
 #define CAN_ID_RC_EPS_BATT_3 304677378
 #define CAN_ID_RC_EPS_BATT_2 304677377
-#define CAN_ID_RC_EPS_BATT_1 304677376
+#define CAN_ID_RC_EPS_BATT_1 305725952
 #define CAN_ID_CMD_PPT_SET_COUNT 302252294
 #define CAN_ID_CMD_PPT_TIME_UPD 302252293
 #define CAN_ID_PPT_FIRING_RESULT 303628528
@@ -338,6 +339,12 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct rc_eps_gen_10 {
+    uint16_t rc_eps_gen_10_pnl_3_power_avg; // raw power gen
+    uint16_t rc_eps_gen_10_pnl_2_power_avg; // raw power gen
+    uint16_t rc_eps_gen_10_pnl_1_power_avg; // raw power gen
+} rc_eps_gen_10;
+
 typedef struct gcmd_autoseq_enable {
     uint8_t gcmd_autoseq_enable_enable; //  (No Units)
 } gcmd_autoseq_enable;
@@ -837,6 +844,9 @@ typedef struct rc_eps_dist_4 {
 } rc_eps_dist_4;
 
 typedef struct rc_eps_dist_1 {
+    uint16_t rc_eps_dist_1_temp_avg; // cC
+    uint16_t rc_eps_dist_1_com2_c_avg; // raw node current
+    uint16_t rc_eps_dist_1_batt_v_avg; // raw dist battery voltage
 } rc_eps_dist_1;
 
 typedef struct rc_adcs_mpc_11 {
@@ -1273,6 +1283,8 @@ typedef struct rc_eps_batt_2 {
 } rc_eps_batt_2;
 
 typedef struct rc_eps_batt_1 {
+    uint16_t rc_eps_batt_1_voltage_avg; // raw voltage
+    uint16_t rc_eps_batt_1_acc_charge_avg; // 22.588 mAh
 } rc_eps_batt_1;
 
 typedef struct cmd_ppt_set_count {
@@ -1431,6 +1443,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encoderc_eps_gen_10(rc_eps_gen_10 *input, CANPacket* output);
+void decoderc_eps_gen_10(CANPacket *input, rc_eps_gen_10 *output);
 
 void encodegcmd_autoseq_enable(gcmd_autoseq_enable *input, CANPacket* output);
 void decodegcmd_autoseq_enable(CANPacket *input, gcmd_autoseq_enable *output);
