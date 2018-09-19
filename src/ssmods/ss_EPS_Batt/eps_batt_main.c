@@ -13,7 +13,7 @@
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulateH1, rcPopulateH2, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate6, rcPopulate7
+ rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate6, rcPopulate7
 };
 
 // Main status (a structure) and state and mode variables
@@ -269,6 +269,16 @@ void rcPopulateH2(CANPacket *out)
     encoderc_eps_batt_h2(&rc, out);
 }
 
+void rcPopulate1(CANPacket *out)
+{
+    rc_eps_batt_1 rc = {0};
+    rc.rc_eps_batt_1_acc_charge_avg = aggVec_avg_i_i(&accChargeAg);
+    rc.rc_eps_batt_1_voltage_avg = aggVec_avg_i_i(&voltageAg);
+    encoderc_eps_batt_1(&rc, out);
+    aggVec_as_reset((aggVec *)&accChargeAg);
+    aggVec_as_reset((aggVec *)&voltageAg);
+}
+
 void rcPopulate2(CANPacket *out)
 {
     rc_eps_batt_2 rc = {0};
@@ -296,13 +306,12 @@ void rcPopulate4(CANPacket *out)
     rc_eps_batt_4 rc = {0};
     rc.rc_eps_batt_4_balancer_state = (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) != 0;
     rc.rc_eps_batt_4_heater_state = (HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) != 0;
-    rc.rc_eps_batt_4_voltage_avg = aggVec_avg_i_i(&voltageAg);
+    rc.rc_eps_batt_4_voltage_avg = 0; //aggVec_avg_i_i(&voltageAg);
     rc.rc_eps_batt_4_voltage_max = aggVec_max_i(&voltageAg);
     rc.rc_eps_batt_4_voltage_min = aggVec_min_i(&voltageAg);
     rc.rc_eps_batt_4_bal_auto_state = balancerIsChecking;
     rc.rc_eps_batt_4_heater_auto_state = heaterIsChecking;
     encoderc_eps_batt_4(&rc, out);
-    aggVec_as_reset((aggVec *)&voltageAg);
 }
 
 void rcPopulate5(CANPacket *out)
@@ -329,11 +338,10 @@ void rcPopulate6(CANPacket *out)
 void rcPopulate7(CANPacket *out)
 {
     rc_eps_batt_7 rc = {0};
-    rc.rc_eps_batt_7_acc_charge_avg = aggVec_avg_i_i(&accChargeAg);
+    rc.rc_eps_batt_7_acc_charge_avg = 0; //aggVec_avg_i_i(&accChargeAg);
     rc.rc_eps_batt_7_acc_charge_max = aggVec_max_i(&accChargeAg);
     rc.rc_eps_batt_7_acc_charge_min = aggVec_min_i(&accChargeAg);
     encoderc_eps_batt_7(&rc, out);
-    aggVec_as_reset((aggVec *)&accChargeAg);
 }
 
 /*

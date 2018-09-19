@@ -18,7 +18,7 @@
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulateH1, rcPopulateH2, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10, rcPopulate11, rcPopulate12, rcPopulate13, rcPopulate14, rcPopulate15, rcPopulate16, rcPopulate17, rcPopulate18
+ rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10, rcPopulate11, rcPopulate12, rcPopulate13, rcPopulate14, rcPopulate15, rcPopulate16, rcPopulate17, rcPopulate18
 };
 
 // Main status (a structure) and state and mode variables
@@ -587,11 +587,10 @@ void rcPopulateH1(CANPacket *out)
     rc_eps_dist_h1 rc = {0};
     rc.rc_eps_dist_h1_reset_count = bspGetResetCount();
     rc.rc_eps_dist_h1_sysrstiv = bspGetResetReason();
-    rc.rc_eps_dist_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
+    rc.rc_eps_dist_h1_temp_avg = 0; //compressMSPTemp(aggVec_avg_f(&mspTempAg));
     rc.rc_eps_dist_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
     rc.rc_eps_dist_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
     encoderc_eps_dist_h1(&rc, out);
-    aggVec_as_reset((aggVec *)&mspTempAg);
 }
 
 void rcPopulateH2(CANPacket *out)
@@ -599,6 +598,19 @@ void rcPopulateH2(CANPacket *out)
     rc_eps_dist_h2 rc = {0};
     rc.rc_eps_dist_h2_canrxerror = canRxErrorCheck();
     encoderc_eps_dist_h2(&rc, out);
+}
+
+void rcPopulate1(CANPacket *out)
+{
+    rc_eps_dist_1 rc = {0};
+    rc.rc_eps_dist_1_batt_v_avg = aggVec_avg_i_i(&battVAg);
+    rc.rc_eps_dist_1_com1_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
+    rc.rc_eps_dist_1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
+    encoderc_eps_dist_1(&rc, out);
+    aggVec_as_reset((aggVec *)&battVAg);
+    aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
+    aggVec_as_reset((aggVec *)&mspTempAg);
+
 }
 
 void rcPopulate2(CANPacket *out)
@@ -613,22 +625,20 @@ void rcPopulate2(CANPacket *out)
 void rcPopulate3(CANPacket *out)
 {
     rc_eps_dist_3 rc = {0};
-    rc.rc_eps_dist_3_batt_v_avg = aggVec_avg_i_i(&battVAg);
+    rc.rc_eps_dist_3_batt_v_avg = 0; //aggVec_avg_i_i(&battVAg);
     rc.rc_eps_dist_3_batt_v_max = aggVec_max_i(&battVAg);
     rc.rc_eps_dist_3_batt_v_min = aggVec_min_i(&battVAg);
     encoderc_eps_dist_3(&rc, out);
-    aggVec_as_reset((aggVec *)&battVAg);
 }
 
 void rcPopulate4(CANPacket *out)
 {
     rc_eps_dist_4 rc = {0};
-    rc.rc_eps_dist_4_com1_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
+    rc.rc_eps_dist_4_com1_c_avg = 0; //aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
     rc.rc_eps_dist_4_com1_c_max = aggVec_max_i(&ssCurrAgs[PD_COM1]);
     rc.rc_eps_dist_4_com1_c_min = aggVec_min_i(&ssCurrAgs[PD_COM1]);
     rc.rc_eps_dist_4_com1_state = getPDState(PD_COM1);
     encoderc_eps_dist_4(&rc, out);
-    aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
 }
 
 void rcPopulate5(CANPacket *out)

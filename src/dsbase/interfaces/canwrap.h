@@ -845,7 +845,7 @@ typedef struct rc_eps_dist_4 {
 
 typedef struct rc_eps_dist_1 {
     uint16_t rc_eps_dist_1_temp_avg; // cC
-    uint16_t rc_eps_dist_1_com2_c_avg; // raw node current
+    uint16_t rc_eps_dist_1_com1_c_avg; // raw node current
     uint16_t rc_eps_dist_1_batt_v_avg; // raw dist battery voltage
 } rc_eps_dist_1;
 

@@ -2033,7 +2033,7 @@ void decoderc_eps_dist_1(CANPacket *input, rc_eps_dist_1 *output){
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
     output -> rc_eps_dist_1_temp_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> rc_eps_dist_1_com2_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
+    output -> rc_eps_dist_1_com1_c_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_eps_dist_1_batt_v_avg = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
 
@@ -2042,7 +2042,7 @@ void encoderc_eps_dist_1(rc_eps_dist_1 *input, CANPacket *output){
     output -> length = 6;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_eps_dist_1_temp_avg))) & 0xffff) << 16;
-    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_1_com2_c_avg))) & 0xffff) << 32;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_dist_1_com1_c_avg))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> rc_eps_dist_1_batt_v_avg))) & 0xffff) << 48;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;

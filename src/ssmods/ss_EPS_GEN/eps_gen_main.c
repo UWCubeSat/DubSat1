@@ -343,24 +343,21 @@ void rcPopulate6(CANPacket *out)
 void rcPopulate7(CANPacket *out)
 {
     rc_eps_gen_7 rc = {0};
-    rc.rc_eps_gen_7_pnl_1_power_avg = aggVec_avg_i_i(&panel1PwrAg);
-    rc.rc_eps_gen_7_pnl_2_power_avg = aggVec_avg_i_i(&panel2PwrAg);
+    rc.rc_eps_gen_7_pnl_1_power_avg = 0; //aggVec_avg_i_i(&panel1PwrAg);
+    rc.rc_eps_gen_7_pnl_2_power_avg = 0; //aggVec_avg_i_i(&panel2PwrAg);
     rc.rc_eps_gen_7_pnl_2_power_max = aggVec_max_i(&panel2PwrAg);
     rc.rc_eps_gen_7_pnl_2_power_min = aggVec_min_i(&panel2PwrAg);
     encoderc_eps_gen_7(&rc, out);
-    aggVec_as_reset((aggVec *)&panel1PwrAg);
-    aggVec_as_reset((aggVec *)&panel2PwrAg);
 }
 
 void rcPopulate8(CANPacket *out)
 {
     rc_eps_gen_8 rc = {0};
     rc.rc_eps_gen_8_pnl_1_temp_min = aggVec_min_i(&panel1TempAg);
-    rc.rc_eps_gen_8_pnl_3_power_avg = aggVec_avg_i_i(&panel3PwrAg);
+    rc.rc_eps_gen_8_pnl_3_power_avg = 0;
     rc.rc_eps_gen_8_pnl_3_power_max = aggVec_max_i(&panel3PwrAg);
     rc.rc_eps_gen_8_pnl_3_power_min = aggVec_min_i(&panel3PwrAg);
     encoderc_eps_gen_8(&rc, out);
-    aggVec_as_reset((aggVec *)&panel3PwrAg);
 }
 
 void rcPopulate9(CANPacket *out)
@@ -378,6 +375,18 @@ void rcPopulate9(CANPacket *out)
     aggVec_as_reset((aggVec *)&panel1TempAg);
     aggVec_as_reset((aggVec *)&panel2TempAg);
     aggVec_as_reset((aggVec *)&panel3TempAg);
+}
+
+void rcPopulate10(CANPacket *out)
+{
+    rc_eps_gen_10 rc = {0};
+    rc.rc_eps_gen_10_pnl_1_power_avg = aggVec_avg_i_i(&panel1PwrAg);
+    rc.rc_eps_gen_10_pnl_2_power_avg = aggVec_avg_i_i(&panel2PwrAg);
+    rc.rc_eps_gen_10_pnl_3_power_avg = aggVec_avg_i_i(&panel3PwrAg);
+    encoderc_eps_gen_10(&rc, out);
+    aggVec_as_reset((aggVec *)&panel1PwrAg);
+    aggVec_as_reset((aggVec *)&panel2PwrAg);
+    aggVec_as_reset((aggVec *)&panel3PwrAg);
 }
 
 /*

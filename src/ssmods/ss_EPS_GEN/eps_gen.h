@@ -165,5 +165,6 @@ FILE_STATIC void rcPopulate6(CANPacket *out);
 FILE_STATIC void rcPopulate7(CANPacket *out);
 FILE_STATIC void rcPopulate8(CANPacket *out);
 FILE_STATIC void rcPopulate9(CANPacket *out);
+FILE_STATIC void rcPopulate10(CANPacket *out);
 
 #endif /* EPS_GEN_H_ */

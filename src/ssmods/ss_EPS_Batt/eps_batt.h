@@ -124,6 +124,7 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 
 FILE_STATIC void rcPopulateH1(CANPacket *out);
 FILE_STATIC void rcPopulateH2(CANPacket *out);
+FILE_STATIC void rcPopulate1(CANPacket *out);
 FILE_STATIC void rcPopulate2(CANPacket *out);
 FILE_STATIC void rcPopulate3(CANPacket *out);
 FILE_STATIC void rcPopulate4(CANPacket *out);
