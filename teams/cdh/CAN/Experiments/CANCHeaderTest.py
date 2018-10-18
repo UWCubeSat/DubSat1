@@ -31,6 +31,8 @@ sys.path.append('..')
 import canmatrix.formats
 import canmatrix.canmatrix as cm
 import canmatrix.copy as cmcp
+import datetime
+import calendar
 
 def toPyObject(infile, outfileName, **options):
     dbs = {}
@@ -113,9 +115,9 @@ def createCHeader(candb, cFileName, floatList):
 #define PARAM_ADCS_STATUS_VELOCITY_RPM 0x4201;
 
 // the initial value assigned to the coils before commands are received
-#define ELOISE_UNKNOWN -128 
+#define ELOISE_UNKNOWN -128
 // what phase the mtq is in (needed by fsw and bdot)
-#define MEASUREMENT_PHASE CAN_ENUM_MTQ_PHASE_MEASUREMENT_PHASE 
+#define MEASUREMENT_PHASE CAN_ENUM_MTQ_PHASE_MEASUREMENT_PHASE
 #define ACTUATION_PHASE CAN_ENUM_MTQ_PHASE_ACTUATION_PHASE
 #define PMS_PHASE CAN_ENUM_MTQ_PHASE_PMS_PHASE
 #define FROM_FSW_IS_ZERO 0
@@ -277,7 +279,6 @@ def createCTestFile(candb, cFileName, floatList):
         packetname= frame.name+"_packet"
         infoname = frame.name+"_info"
         if "rc" in frame.name:
-        	print(frame.name)
 	        cFile.write("\t\tif(rcFlag == "+str(i) +"){\n")
 	        cFile.write("\t\t\tCANPacket " + packetname + " = {0};" +"\n")
 	        cFile.write("\t\t\t" + frame.name +" " + infoname + " = {0};" +"\n")
@@ -540,6 +541,84 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
         cFile.write("}\n\n")
     cFile.close()
 
+def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFileName):
+    CAN_MODEL_VERSION_NUM = 1
+    #NOTE: rates are in 100ms increments
+    realtimePacketRates = {"cmd_mtq_bdot" : 2, "com2_state" : 100, "estim_sun_unit_x" : 28, "estim_sun_unit_y" : 28, "estim_sun_unit_z" : 28, "estim_mag_unit_x" : 28,
+    "estim_mag_unit_y" : 28, "estim_mag_unit_z" : 28, "estim_state" : 28,
+    "cmd_mtq_fsw" : 1, "mtq_ack" : 20}
+
+    templateCFile = open(templateCFileName, "r")
+    templateHFile = open(templateHFileName, "r")
+    date = datetime.datetime.now()
+    header = '''//////////////////////////////////////////////////////////////////////
+//DO NOT MODIFY THIS FILE DIRECTLY
+//Instead, change DubSat1/teams/cdh/CAN/Experiments/CANModelTemplate.*
+//////////////////////////////////////////////////////////////////////
+
+/*
+* CANModel
+*
+*  Created on: ''' +  calendar.month_abbr[date.month] + " " + str(date.day) + ", " + str(date.year) + '''
+*      Author: Nathan Wacker
+*/
+
+'''
+    #rollcall
+    rollcallIDArrays = ["{", "{", "{", "{", "{", "{", "{"]
+    pdNames = ["dist", "com2", "rahs", "bdot", "estim", "eps", "ppt"]
+
+    #realtime
+    realtimeUpdateMethods = ""
+    realtimeLastUpdateVars = ""
+    subsystemToPowerDomain = {"adcs_bdot" : "bdot", "adcs_mpc" : "estim", "adcs_mtq" : "bdot", "adcs_sensorproc" : "estim", "estim" : "estim", "eps_batt" : "eps", "eps_gen" : "eps", "ppt" : "ppt", "com2" : "com2"}
+    for frame in candb.frames:
+        packetname= frame.name+"_packet"
+        infoname = frame.name+"_info"
+        if "rc" in frame.name:
+            for subsystem in subsystemToPowerDomain:
+                if subsystem in frame.name:
+                    rollcallIDArrays[pdNames.index(subsystemToPowerDomain[subsystem])] += str(frame.id) + ", "
+            if "eps_dist" in frame.name:
+                rollcallIDArrays[0] += str(frame.id) + ", "
+
+        if frame.name in realtimePacketRates:
+            print(frame.name)
+            realtimeLastUpdateVars += "TIMER_LENGTH last_" + frame.name + "_time = 0;\n"
+            transmitter = str(frame.transmitter)
+            for subsystem in subsystemToPowerDomain:
+                if subsystem in transmitter or subsystem in frame.name:
+                    powerDomainName = subsystemToPowerDomain[subsystem].upper()
+                    realtimeUpdateMethods += "if(checkTimeElapsed(last_" + frame.name + "_time, " + str(realtimePacketRates[frame.name]) + ") && PD_IN_" + powerDomainName + " & PD_BIT_" + powerDomainName + ''')
+        {
+            last_''' + frame.name + '''_time = realtimeCounter;
+            while(sendCANPacket(''' + str(frame.id) + '''));
+        }
+        '''
+    rollcallArraysString = ""
+    rollcallIDString = ""
+    arrayLenString = ""
+    for i in range(0, len(rollcallIDArrays)):
+        arrayName = pdNames[i] + "Array"
+        rollcallArraysString += "uint32_t " + arrayName + "[] = " + rollcallIDArrays[i] + "};\n"
+        rollcallIDString += arrayName + ", "
+        arrayLenString += "sizeof(" + arrayName + ") / sizeof(uint32_t), "
+
+    cFileString = header + templateCFile.read()
+    cFileString = cFileString.replace("/*[version number here]*/", str(CAN_MODEL_VERSION_NUM))
+    cFileString = cFileString.replace("/*[Function ID arrays here]*/", rollcallArraysString)
+    cFileString = cFileString.replace("/*[Populate function IDs here]*/", rollcallIDString)
+    cFileString = cFileString.replace("/*[Realtime Update Methods Here]*/", realtimeUpdateMethods)
+    cFileString = cFileString.replace("/*[Rollcall ID array sizes here]*/", arrayLenString)
+
+    hFileString = header + templateHFile.read()
+    hFileString = hFileString.replace("/*[last update times here]*/", realtimeLastUpdateVars)
+
+    targetCFile = open(cFileName, "w")
+    targetCFile.write(cFileString)
+    targetHFile = open(hFileName, "w")
+    targetHFile.write(hFileString)
+
 def handleFloats(infile):
     file = open(infile, "r")
     out = []
@@ -548,6 +627,7 @@ def handleFloats(infile):
         if len(linearr) > 4 and linearr[0] == "SIG_VALTYPE_":
             out.append(((int(linearr[1]) - 2 ** (32 - 1) if int(linearr[1]) != 2147483648 else 2147483648), linearr[2], int(linearr[4][0])))
     return out
+
 def main():
     # Command line stuff
     from optparse import OptionParser
@@ -570,6 +650,7 @@ def main():
     createCHeader(CANObj, "codeGenOutput/canwrap.h", floatList)
     createCMain(CANObj, "codeGenOutput/canwrap.c", floatList)
     createCTestFile(CANObj, "codeGenOutput/test.c", floatList)
+    createCANModel(CANObj, "CANModelTemplate.c", "CANModelTemplate.h", "codeGenOutput/CAN_Model_main.c", "codeGenOutput/CAN_Model.h");
 
 if __name__ == '__main__':
     sys.exit(main())
