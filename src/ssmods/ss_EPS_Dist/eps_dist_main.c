@@ -80,7 +80,7 @@ FILE_STATIC hDev hBattV;
 #define MAX_BUFF_SIZE   0x10
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 
-FILE_STATIC uint16_t startupDelay = 1800;
+FILE_STATIC uint16_t startupDelay = 1800; //this will be used for the initial 30min wait
 #pragma PERSISTENT(startupDelay)
 
 //**********Data Stuff**********************
@@ -122,6 +122,8 @@ uint8_t eventsInitialized = 0;
 uint8_t autoSequencerEnabled = 0;
 
 FILE_STATIC uint16_t rcResponseFlag = 0; //this is zero when no responses are pending
+FILE_STATIC char clearTemp = 0;
+FILE_STATIC char clearBattV = 0;
 sequenceEvent pendingEvent = {0};
 
 CANPacket autoseqMETResponsePkt = {0};
@@ -436,8 +438,6 @@ FILE_STATIC void distMonitorBattery()
     float prevBattV = gseg.battV;
     gseg.battV = newbattV;
 
-    uint8_t prevMode = (uint8_t)gseg.uvmode;
-
     if (newbattV <= gseg.undervoltagethreshold && prevBattV <= gseg.undervoltagethreshold)
         gseg.uvmode = (uint8_t)UV_FullShutdown;
     else
@@ -496,8 +496,6 @@ FILE_STATIC void distBcSendMeta()
 
 void distSetOCPThreshold(PowerDomainID domain, float newval)
 {
-    int i;
-
     // 0.0f means don't change current value
     if (newval == 0.0f)
         return;
@@ -523,7 +521,6 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
     firedeploy_segment *fsegment;
 
     int i;
-    float newval;
 
     if (mode == Mode_BinaryStreaming)
     {
@@ -587,10 +584,13 @@ void rcPopulateH1(CANPacket *out)
     rc_eps_dist_h1 rc = {0};
     rc.rc_eps_dist_h1_reset_count = bspGetResetCount();
     rc.rc_eps_dist_h1_sysrstiv = bspGetResetReason();
-    rc.rc_eps_dist_h1_temp_avg = 0; //compressMSPTemp(aggVec_avg_f(&mspTempAg));
+    rc.rc_eps_dist_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
     rc.rc_eps_dist_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
     rc.rc_eps_dist_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
     encoderc_eps_dist_h1(&rc, out);
+    clearTemp &= ~BIT1;
+    if(!clearTemp)
+        aggVec_as_reset((aggVec *)&mspTempAg);
 }
 
 void rcPopulateH2(CANPacket *out)
@@ -609,8 +609,14 @@ void rcPopulate1(CANPacket *out)
     encoderc_eps_dist_1(&rc, out);
     aggVec_as_reset((aggVec *)&battVAg);
     aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
-    aggVec_as_reset((aggVec *)&mspTempAg);
 
+    clearTemp &= ~BIT0;
+    if(!clearTemp)
+        aggVec_as_reset((aggVec *)&mspTempAg);
+
+    clearBattV &= ~BIT0;
+    if(!clearBattV)
+        aggVec_as_reset((aggVec *)&battVAg);
 }
 
 void rcPopulate2(CANPacket *out)
@@ -625,10 +631,14 @@ void rcPopulate2(CANPacket *out)
 void rcPopulate3(CANPacket *out)
 {
     rc_eps_dist_3 rc = {0};
-    rc.rc_eps_dist_3_batt_v_avg = 0; //aggVec_avg_i_i(&battVAg);
+    rc.rc_eps_dist_3_batt_v_avg = aggVec_avg_i_i(&battVAg);
     rc.rc_eps_dist_3_batt_v_max = aggVec_max_i(&battVAg);
     rc.rc_eps_dist_3_batt_v_min = aggVec_min_i(&battVAg);
     encoderc_eps_dist_3(&rc, out);
+
+    clearBattV &= ~BIT1;
+    if(!clearBattV)
+        aggVec_as_reset((aggVec *)&battVAg);
 }
 
 void rcPopulate4(CANPacket *out)
@@ -937,6 +947,8 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_CMD_ROLLCALL:
             rollcallStart();
             autoShutoffSetFlags();
+            clearTemp = 3; //flags for clear after field has been sent in rollcall twice
+            clearBattV = 3;
             rollcallWatchdog = 0;
             break;
         case CAN_ID_RC_ADCS_BDOT_H1:
