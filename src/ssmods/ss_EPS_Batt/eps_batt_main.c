@@ -40,6 +40,7 @@ FILE_STATIC hDev hTempC;
 
 FILE_STATIC volatile uint8_t heaterIsChecking;
 FILE_STATIC volatile uint8_t balancerIsChecking = 1;
+FILE_STATIC char clearBattV = 0;
 
 FILE_STATIC float previousTemp;
 
@@ -207,6 +208,7 @@ void can_packet_rx_callback(CANPacket *packet)
     {
         case CAN_ID_CMD_ROLLCALL:
             rollcallStart();
+            clearBattV = 3;
             break;
         case CAN_ID_GCMD_RESET_MINMAX:
         {
@@ -276,7 +278,10 @@ void rcPopulate1(CANPacket *out)
     rc.rc_eps_batt_1_voltage_avg = aggVec_avg_i_i(&voltageAg);
     encoderc_eps_batt_1(&rc, out);
     aggVec_as_reset((aggVec *)&accChargeAg);
-    aggVec_as_reset((aggVec *)&voltageAg);
+
+    clearBattV &= ~BIT0;
+    if(~clearBattV)
+        aggVec_as_reset((aggVec *)&voltageAg);
 }
 
 void rcPopulate2(CANPacket *out)
@@ -306,12 +311,16 @@ void rcPopulate4(CANPacket *out)
     rc_eps_batt_4 rc = {0};
     rc.rc_eps_batt_4_balancer_state = (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) != 0;
     rc.rc_eps_batt_4_heater_state = (HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) != 0;
-    rc.rc_eps_batt_4_voltage_avg = 0; //aggVec_avg_i_i(&voltageAg);
+    rc.rc_eps_batt_4_voltage_avg = aggVec_avg_i_i(&voltageAg);
     rc.rc_eps_batt_4_voltage_max = aggVec_max_i(&voltageAg);
     rc.rc_eps_batt_4_voltage_min = aggVec_min_i(&voltageAg);
     rc.rc_eps_batt_4_bal_auto_state = balancerIsChecking;
     rc.rc_eps_batt_4_heater_auto_state = heaterIsChecking;
     encoderc_eps_batt_4(&rc, out);
+
+    clearBattV &= ~BIT0;
+    if(~clearBattV)
+        aggVec_as_reset((aggVec *)&voltageAg);
 }
 
 void rcPopulate5(CANPacket *out)
