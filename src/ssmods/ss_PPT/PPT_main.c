@@ -509,7 +509,7 @@ __interrupt void Timer0_B1_ISR (void)
                 case State_Main_Igniter_Cooldown:
                     mod_status.ss_state = State_Igniter_Charging;
                     TB0CCR1 += igniterChargeTime;
-                    if(smtOverride && SMT_IN & SMT_IN_BIT) //smt trigger high
+                    if(smtOverride || SMT_IN & SMT_IN_BIT) //smt trigger high
                 	{
                 		if(withFiringPulse)
                 			fire();

@@ -34,16 +34,15 @@ NS_ :
 BS_:
 
 BU_: ppt eps_batt eps_dist eps_gen adcs_rwz adcs_rwy adcs_rwx adcs_mtq rahs adcs_sensorproc adcs_mpc adcs_estim adcs_bdot com_1 com_2
-VAL_TABLE_ pd_state 5 "unknown" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
+VAL_TABLE_ pd_state 6 "unknown" 5 "off_autoshutoff" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
 VAL_TABLE_ i2c_result 4 "transmit timeout" 3 "nack" 2 "stop timeout" 1 "start timeout" 0 "no error" ;
-VAL_TABLE_ sysrstiv 4 "RSTIFG RST/NMI (BOR)" 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC) MPUSEG2IFG seg 2 mem viol" 42 "(PUC) MPUSEG1IFG seg 1 mem viol" 40 "(PUC) MPUSEGIIFGinfoMemSegViol" 38 "(PUC) MPUSEGIPIFGencapIPmemSeg" 36 "(PUC) CSPW CS password violation" 34 "(PUC) MPUPW MPU pwd violation" 32 "(PUC) PMMPW PMM pwd violation" 30 "(PUC) Peripheral area fetch" 28 "(PUC) Uncorrectable FRAM bit err" 26 "(PUC) FRCTLPW password violation" 24 "(PUC) WDTPW password violation" 22 "(PUC) WDTIFG watchdog timeout" 20 "(POR) PMMSWPOR software POR" 14 "(BOR) SVSHIFG SVSH event" 10 "(BOR) Security violation" 8 "(BOR) LPMx.5 wake up" 6 "(BOR) RSTIFG RST/NMI" 2 "(BOR) Brownout" 0 "No interrupt pending" ;
+VAL_TABLE_ sysrstiv 4 "RSTIFG RST_NMI BOR" 46 "PUC MPUSEG3IFG seg 3 mem viol" 44 "PUC MPUSEG2IFG seg 2 mem viol" 42 "PUC MPUSEG1IFG seg 1 mem viol" 40 "PUC MPUSEGIIFGinfoMemSegViol" 38 "PUC MPUSEGIPIFGencapIPmemSeg" 36 "PUC CSPW CS password violation" 34 "PUC MPUPW MPU pwd violation" 32 "PUC PMMPW PMM pwd violation" 30 "PUC Peripheral area fetch" 28 "PUC Uncorrectable FRAM bit err" 26 "PUC FRCTLPW password violation" 24 "PUC WDTPW password violation" 22 "PUC WDTIFG watchdog timeout" 20 "POR PMMSWPOR software POR" 14 "BOR SVSHIFG SVSH event" 10 "BOR Security violation" 8 "BOR LPMx_5 wake up" 6 "BOR RSTIFG RSTNMI" 2 "BOR Brownout" 0 "No interrupt pending" ;
 VAL_TABLE_ gen_pnl_charging 1 "CHARGING" 0 "NOTCHARGING" ;
 VAL_TABLE_ gen_pnl_enabled 1 "ENABLED" 0 "DISABLED" ;
 VAL_TABLE_ fire_result 2 "no main discharge" 1 "no main charge" 0 "fire successful" ;
 VAL_TABLE_ mtq_phase 2 "pms_phase" 1 "actuation_phase" 0 "measurement_phase" ;
 VAL_TABLE_ bdot_mag_mode 2 "sp2 mode" 1 "sp1 mode" 0 "bdot mode" ;
 VAL_TABLE_ bdot_control_mode 2 "spam" 1 "sleep mode" 0 "normal mode" ;
-VAL_TABLE_ domain_state 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
 VAL_TABLE_ nbool 2 "null" 1 "true" 0 "false" ;
 VAL_TABLE_ fire_state 3 "no discharge" 2 "no charge" 1 "fire overridden" 0 "fire successful" ;
 VAL_TABLE_ uv_state 1 "undervoltage" 0 "normal" ;
@@ -54,6 +53,11 @@ VAL_TABLE_ node 15 "rahs" 14 "com_2" 13 "com_1" 12 "adcs_mtq" 11 "adcs_sensorpro
 VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
+
+BO_ 2453209906 rc_eps_gen_10: 6 Vector__XXX
+ SG_ rc_eps_gen_10_pnl_3_power_avg : 32|16@1+ (1,0) [0|65535] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_10_pnl_2_power_avg : 16|16@1+ (1,0) [0|65535] "raw power gen" Vector__XXX
+ SG_ rc_eps_gen_10_pnl_1_power_avg : 0|16@1+ (1,0) [0|65535] "raw power gen" Vector__XXX
 
 BO_ 2449736497 gcmd_autoseq_enable: 1 Vector__XXX
  SG_ gcmd_autoseq_enable_enable : 0|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -76,7 +80,7 @@ BO_ 2449736415 gcmd_dist_reset_mission: 0 com_1
 
 BO_ 2449736414 gcmd_dist_self_restart: 0 com_1
 
-BO_ 2452161243 rc_eps_dist_18: 7 eps_dist
+BO_ 2451112667 rc_eps_dist_18: 7 eps_dist
  SG_ rc_eps_dist_18_rahs_ocp_thresh : 45|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
  SG_ rc_eps_dist_18_ppt_ocp_thresh : 36|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
  SG_ rc_eps_dist_18_estim_ocp_thresh : 27|9@1+ (1,0) [0|511] "ocpThresh" Vector__XXX
@@ -139,7 +143,7 @@ BO_ 2452161137 rc_adcs_bdot_7: 8 Vector__XXX
  SG_ rc_adcs_bdot_7_spam_magnitude_y : 8|8@1- (1,0) [-127|128] "" Vector__XXX
  SG_ rc_adcs_bdot_7_spam_magnitude_x : 0|8@1- (1,0) [-127|128] "" Vector__XXX
 
-BO_ 2452161136 rc_adcs_bdot_6: 8 Vector__XXX
+BO_ 2451112560 rc_adcs_bdot_6: 8 Vector__XXX
  SG_ rc_adcs_bdot_6_spam_on_time : 16|16@1+ (1,0) [0|65535] "minutes" Vector__XXX
  SG_ rc_adcs_bdot_6_spam_off_time : 0|16@1+ (1,0) [0|65535] "minutes" Vector__XXX
  SG_ rc_adcs_bdot_6_spam_control : 32|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -165,7 +169,7 @@ BO_ 2449736399 gcmd_eps_batt_fulldef: 8 Vector__XXX
  SG_ gcmd_eps_batt_fulldef_const_volt : 0|32@1- (1,0) [0|8] "V" Vector__XXX
  SG_ gcmd_eps_batt_fulldef_chg_curr : 32|32@1- (1,0) [0|1] "Amps" Vector__XXX
 
-BO_ 2452161116 rc_adcs_bdot_5: 6 Vector__XXX
+BO_ 2451112540 rc_adcs_bdot_5: 6 Vector__XXX
  SG_ rc_adcs_bdot_5_spam_on_z_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_5_spam_on_z_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_5_spam_on_z_mtq_x : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
@@ -350,7 +354,7 @@ BO_ 2449932988 gcmd_mtq_pop: 6 Vector__XXX
  SG_ gcmd_mtq_pop_y : 2|2@1+ (1,0) [0|2] "" Vector__XXX
  SG_ gcmd_mtq_pop_x : 0|2@1+ (1,0) [0|2] "" Vector__XXX
 
-BO_ 2452161114 rc_eps_batt_7: 6 Vector__XXX
+BO_ 2451112538 rc_eps_batt_7: 6 Vector__XXX
  SG_ rc_eps_batt_7_acc_charge_min : 0|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
  SG_ rc_eps_batt_7_acc_charge_max : 16|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
  SG_ rc_eps_batt_7_acc_charge_avg : 32|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
@@ -380,82 +384,82 @@ BO_ 2451112533 rc_adcs_estim_10: 8 Vector__XXX
 BO_ 2451112532 rc_adcs_estim_9: 8 Vector__XXX
  SG_ rc_adcs_estim_9_sun_x : 0|64@1- (1,0) [-1|1] "u" Vector__XXX
 
-BO_ 2452161106 rc_eps_dist_16: 7 Vector__XXX
+BO_ 2451112530 rc_eps_dist_16: 7 Vector__XXX
  SG_ rc_eps_dist_16_ppt_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
  SG_ rc_eps_dist_16_ppt_c_min : 8|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_16_ppt_c_max : 24|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_16_ppt_c_avg : 40|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
 
-BO_ 2452161099 rc_eps_dist_9: 6 Vector__XXX
+BO_ 2451112523 rc_eps_dist_9: 6 Vector__XXX
  SG_ rc_eps_dist_9_rahs_v_min : 0|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_9_rahs_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_9_rahs_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
-BO_ 2452161097 rc_eps_dist_7: 6 Vector__XXX
+BO_ 2451112521 rc_eps_dist_7: 6 Vector__XXX
  SG_ rc_eps_dist_7_com2_v_min : 0|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_7_com2_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_7_com2_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
-BO_ 2452161096 rc_eps_dist_6: 7 Vector__XXX
+BO_ 2451112520 rc_eps_dist_6: 7 Vector__XXX
  SG_ rc_eps_dist_6_com2_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
  SG_ rc_eps_dist_6_com2_c_min : 8|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_6_com2_c_max : 24|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_6_com2_c_avg : 40|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
 
-BO_ 2452161095 rc_eps_dist_5: 6 Vector__XXX
+BO_ 2451112519 rc_eps_dist_5: 6 Vector__XXX
  SG_ rc_eps_dist_5_com1_v_min : 0|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_5_com1_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_5_com1_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
-BO_ 2452161093 rc_eps_dist_3: 6 Vector__XXX
+BO_ 2451112517 rc_eps_dist_3: 6 Vector__XXX
  SG_ rc_eps_dist_3_batt_v_avg : 32|16@1+ (1,0) [0|65535] "raw dist battery voltage" Vector__XXX
  SG_ rc_eps_dist_3_batt_v_max : 16|16@1+ (1,0) [0|65535] "raw dist battery voltage" Vector__XXX
  SG_ rc_eps_dist_3_batt_v_min : 0|16@1+ (1,0) [0|65535] "raw dist battery voltage" Vector__XXX
 
-BO_ 2452161092 rc_eps_dist_2: 6 Vector__XXX
+BO_ 2451112516 rc_eps_dist_2: 6 Vector__XXX
  SG_ rc_eps_dist_2_uv_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
  SG_ rc_eps_dist_2_met_overflow : 8|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_eps_dist_2_met : 16|32@1+ (1,0) [0|4294967296] "2^-8 s" Vector__XXX
 
-BO_ 2452161107 rc_eps_dist_17: 6 Vector__XXX
+BO_ 2451112531 rc_eps_dist_17: 6 Vector__XXX
  SG_ rc_eps_dist_17_ppt_v_min : 0|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_17_ppt_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_17_ppt_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
-BO_ 2452161104 rc_eps_dist_14: 8 Vector__XXX
+BO_ 2451112528 rc_eps_dist_14: 8 Vector__XXX
  SG_ rc_eps_dist_14_eps_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
  SG_ rc_eps_dist_14_eps_c_min : 8|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_14_eps_c_max : 24|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_14_eps_c_avg : 40|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
 
-BO_ 2452161103 rc_eps_dist_13: 6 Vector__XXX
+BO_ 2451112527 rc_eps_dist_13: 6 Vector__XXX
  SG_ rc_eps_dist_13_estim_v_min : 0|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_13_estim_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_13_estim_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
-BO_ 2452161101 rc_eps_dist_11: 6 Vector__XXX
+BO_ 2451112525 rc_eps_dist_11: 6 Vector__XXX
  SG_ rc_eps_dist_11_bdot_v_min : 0|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_11_bdot_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_11_bdot_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
-BO_ 2452161102 rc_eps_dist_12: 7 Vector__XXX
+BO_ 2451112526 rc_eps_dist_12: 7 Vector__XXX
  SG_ rc_eps_dist_12_estim_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
  SG_ rc_eps_dist_12_estim_c_min : 8|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_12_estim_c_max : 24|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_12_estim_c_avg : 40|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
 
-BO_ 2452161105 rc_eps_dist_15: 6 Vector__XXX
+BO_ 2451112529 rc_eps_dist_15: 6 Vector__XXX
  SG_ rc_eps_dist_15_eps_v_min : 0|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_15_eps_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_dist_15_eps_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
-BO_ 2452161100 rc_eps_dist_10: 7 Vector__XXX
+BO_ 2451112524 rc_eps_dist_10: 7 Vector__XXX
  SG_ rc_eps_dist_10_bdot_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
  SG_ rc_eps_dist_10_bdot_c_min : 8|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_10_bdot_c_max : 24|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_10_bdot_c_avg : 40|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
 
-BO_ 2452161098 rc_eps_dist_8: 7 Vector__XXX
+BO_ 2451112522 rc_eps_dist_8: 7 Vector__XXX
  SG_ rc_eps_dist_8_rahs_state : 0|8@1+ (1,0) [0|3] "" Vector__XXX
  SG_ rc_eps_dist_8_rahs_c_min : 8|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_8_rahs_c_max : 24|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
@@ -467,7 +471,10 @@ BO_ 2452161094 rc_eps_dist_4: 7 Vector__XXX
  SG_ rc_eps_dist_4_com1_c_max : 24|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_4_com1_c_avg : 40|16@1- (1,0) [-32768|32767] "raw node current dist" Vector__XXX
 
-BO_ 2452161091 rc_eps_dist_1: 8 Vector__XXX
+BO_ 2452619843 rc_eps_dist_1: 6 Vector__XXX
+ SG_ rc_eps_dist_1_temp_avg : 32|16@1+ (1,0) [0|65535] "cC" Vector__XXX
+ SG_ rc_eps_dist_1_com1_c_avg : 16|16@1+ (1,0) [0|65535] "raw node current" Vector__XXX
+ SG_ rc_eps_dist_1_batt_v_avg : 0|16@1+ (1,0) [0|65535] "raw dist battery voltage" Vector__XXX
 
 BO_ 2451112510 rc_adcs_mpc_11: 8 Vector__XXX
  SG_ rc_adcs_mpc_11_omega_z : 0|64@1- (1,0) [-10|10] "r/s" Vector__XXX
@@ -638,25 +645,25 @@ BO_ 2451112476 rc_adcs_sp_2: 8 Vector__XXX
 
 BO_ 2451112475 rc_adcs_sp_1: 8 Vector__XXX
 
-BO_ 2452161050 rc_adcs_bdot_4: 7 Vector__XXX
+BO_ 2451112474 rc_adcs_bdot_4: 7 Vector__XXX
  SG_ rc_adcs_bdot_4_spam_on_y_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_4_spam_on_y_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_4_mag_z_avg : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_4_tumble : 48|1@1+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 2452161049 rc_adcs_bdot_3: 8 Vector__XXX
+BO_ 2451112473 rc_adcs_bdot_3: 8 Vector__XXX
  SG_ rc_adcs_bdot_3_mag_z_min : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_3_mag_z_max : 48|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_3_mag_y_max : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_3_mag_y_avg : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
 
-BO_ 2452161031 rc_adcs_bdot_2: 8 Vector__XXX
+BO_ 2451112455 rc_adcs_bdot_2: 8 Vector__XXX
  SG_ rc_adcs_bdot_2_mag_y_min : 48|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_2_mag_x_avg : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_2_mag_x_min : 0|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_2_mag_x_max : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
 
-BO_ 2452161030 rc_adcs_bdot_1: 8 Vector__XXX
+BO_ 2451112454 rc_adcs_bdot_1: 8 Vector__XXX
  SG_ rc_adcs_bdot_1_spam_on_y_mtq_x : 48|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_1_spam_on_x_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
  SG_ rc_adcs_bdot_1_spam_on_x_mtq_y : 16|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
@@ -737,7 +744,7 @@ BO_ 2451112456 rc_ppt_1: 7 Vector__XXX
  SG_ rc_ppt_1_fault_count : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ rc_ppt_1_fire_count : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
-BO_ 2452161048 rc_eps_gen_9: 8 Vector__XXX
+BO_ 2451112472 rc_eps_gen_9: 8 Vector__XXX
  SG_ rc_eps_gen_9_pnl_3_temp_min : 40|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
  SG_ rc_eps_gen_9_pnl_3_temp_max : 48|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
  SG_ rc_eps_gen_9_pnl_3_temp_avg : 56|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
@@ -747,49 +754,49 @@ BO_ 2452161048 rc_eps_gen_9: 8 Vector__XXX
  SG_ rc_eps_gen_9_pnl_1_temp_max : 0|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
  SG_ rc_eps_gen_9_pnl_1_temp_avg : 8|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
 
-BO_ 2452161047 rc_eps_gen_8: 7 Vector__XXX
+BO_ 2451112471 rc_eps_gen_8: 7 Vector__XXX
  SG_ rc_eps_gen_8_pnl_3_power_min : 0|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_8_pnl_3_power_max : 16|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_8_pnl_3_power_avg : 32|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_8_pnl_1_temp_min : 48|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
 
-BO_ 2452161046 rc_eps_gen_7: 8 Vector__XXX
+BO_ 2451112470 rc_eps_gen_7: 8 Vector__XXX
  SG_ rc_eps_gen_7_pnl_2_power_min : 16|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_7_pnl_2_power_max : 32|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_7_pnl_2_power_avg : 48|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_7_pnl_1_power_avg : 0|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
 
-BO_ 2452161045 rc_eps_gen_6: 8 Vector__XXX
+BO_ 2451112469 rc_eps_gen_6: 8 Vector__XXX
  SG_ rc_eps_gen_6_pnl_3_current_max : 0|16@1- (1,0) [-32768|32767] "raw node current gen" Vector__XXX
  SG_ rc_eps_gen_6_pnl_3_current_avg : 16|16@1- (1,0) [-32768|32767] "raw node current gen" Vector__XXX
  SG_ rc_eps_gen_6_pnl_1_power_min : 32|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_6_pnl_1_power_max : 48|16@1- (1,0) [-32768|32767] "raw power gen" Vector__XXX
 
-BO_ 2452161044 rc_eps_gen_5: 8 Vector__XXX
+BO_ 2451112468 rc_eps_gen_5: 8 Vector__XXX
  SG_ rc_eps_gen_5_pnl_3_current_min : 48|16@1- (1,0) [-32768|32767] "raw node current gen" Vector__XXX
  SG_ rc_eps_gen_5_pnl_2_current_min : 0|16@1- (1,0) [-32768|32767] "raw node current gen" Vector__XXX
  SG_ rc_eps_gen_5_pnl_2_current_max : 16|16@1- (1,0) [-32768|32767] "raw node current gen" Vector__XXX
  SG_ rc_eps_gen_5_pnl_2_current_avg : 32|16@1- (1,0) [-32768|32767] "raw node current gen" Vector__XXX
 
-BO_ 2452161043 rc_eps_gen_4: 8 Vector__XXX
+BO_ 2451112467 rc_eps_gen_4: 8 Vector__XXX
  SG_ rc_eps_gen_4_pnl_3_voltage_avg : 0|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
  SG_ rc_eps_gen_4_pnl_1_current_min : 16|16@1- (1,0) [-32768|32767] "raw node current gen" Vector__XXX
  SG_ rc_eps_gen_4_pnl_1_current_max : 32|16@1- (1,0) [-32768|32767] "raw node current gen" Vector__XXX
  SG_ rc_eps_gen_4_pnl_1_current_avg : 48|16@1- (1,0) [-32768|32767] "raw node current gen" Vector__XXX
 
-BO_ 2452161042 rc_eps_gen_3: 8 Vector__XXX
+BO_ 2451112466 rc_eps_gen_3: 8 Vector__XXX
  SG_ rc_eps_gen_3_pnl_3_voltage_min : 32|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
  SG_ rc_eps_gen_3_pnl_3_voltage_max : 48|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
  SG_ rc_eps_gen_3_pnl_2_voltage_max : 0|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
  SG_ rc_eps_gen_3_pnl_2_voltage_avg : 16|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
 
-BO_ 2452161041 rc_eps_gen_2: 8 Vector__XXX
+BO_ 2451112465 rc_eps_gen_2: 8 Vector__XXX
  SG_ rc_eps_gen_2_pnl_2_voltage_min : 48|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
  SG_ rc_eps_gen_2_pnl_1_voltage_min : 0|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
  SG_ rc_eps_gen_2_pnl_1_voltage_max : 16|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
  SG_ rc_eps_gen_2_pnl_1_voltage_avg : 32|16@1+ (1,0) [0|20000] "raw node voltage" Vector__XXX
 
-BO_ 2452161040 rc_eps_gen_1: 6 Vector__XXX
+BO_ 2451112464 rc_eps_gen_1: 6 Vector__XXX
  SG_ rc_eps_gen_1_pnl_3_charging : 5|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_eps_gen_1_pnl_2_charging : 4|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_eps_gen_1_pnl_1_charging : 3|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -809,7 +816,7 @@ BO_ 2452161028 rc_eps_batt_5: 8 Vector__XXX
  SG_ rc_eps_batt_5_batt_temp_min : 48|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
  SG_ rc_eps_batt_5_batt_temp_max : 56|8@1- (1,0) [-128|127] "raw tmp36" Vector__XXX
 
-BO_ 2452161027 rc_eps_batt_4: 8 eps_batt
+BO_ 2451112451 rc_eps_batt_4: 8 eps_batt
  SG_ rc_eps_batt_4_bal_auto_state : 56|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_eps_batt_4_heater_auto_state : 50|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ rc_eps_batt_4_voltage_min : 0|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
@@ -829,7 +836,9 @@ BO_ 2452161025 rc_eps_batt_2: 6 eps_batt
  SG_ rc_eps_batt_2_node_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_batt_2_node_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
-BO_ 2452161024 rc_eps_batt_1: 8 eps_batt
+BO_ 2453209600 rc_eps_batt_1: 3 eps_batt
+ SG_ rc_eps_batt_1_voltage_avg : 16|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
+ SG_ rc_eps_batt_1_acc_charge_avg : 0|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
 
 BO_ 2449735942 cmd_ppt_set_count: 1 Vector__XXX
  SG_ cmd_ppt_set_count_count : 0|8@1+ (1,0) [0|30] "" Vector__XXX
@@ -933,11 +942,11 @@ BO_ 2450980912 mtq_ack: 8 adcs_mtq
  SG_ mtq_ack_last_bdot_x : 16|8@1- (1,0) [-128|100] "pct" Vector__XXX
 
 BO_ 2449735936 cmd_ppt_single_fire: 2 com_1
- SG_ cmd_ppt_single_fire_override_smt : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ cmd_ppt_single_fire_override_smt : 2|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ cmd_ppt_single_fire_override : 1|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ cmd_ppt_single_fire_with_pulse : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 2453078050 mpc_vp: 1 adcs_mpc
+BO_ 2449932322 mpc_vp: 1 adcs_mpc
  SG_ mpc_vp_status : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2483355713 sensorproc_sun: 7 adcs_sensorproc
@@ -975,13 +984,13 @@ CM_ SG_ 2449736495 gcmd_dist_autoshutoff_com2 "Whether autoshutoff is enabled on
 CM_ SG_ 2432958724 gcmd_ppt_halt_confirm "Are you sure you want to halt the ppt?";
 CM_ BO_ 2449736415 "Resets MET and autosequencer, also sets the autosequencer to be reinitialized on next powerup";
 CM_ BO_ 2449736414 "Causes dist to self-restart";
-CM_ BO_ 2452161243 "Dist Rollcall";
-CM_ SG_ 2452161243 rc_eps_dist_18_rahs_ocp_thresh "RAHS current threshold";
-CM_ SG_ 2452161243 rc_eps_dist_18_ppt_ocp_thresh "PPT current threshold";
-CM_ SG_ 2452161243 rc_eps_dist_18_estim_ocp_thresh "ESTIM current threshold";
-CM_ SG_ 2452161243 rc_eps_dist_18_eps_ocp_thresh "EPS current threshold";
-CM_ SG_ 2452161243 rc_eps_dist_18_com2_ocp_thresh "COM2 current threshold";
-CM_ SG_ 2452161243 rc_eps_dist_18_bdot_ocp_thresh "BDOT current threshold";
+CM_ BO_ 2451112667 "Dist Rollcall";
+CM_ SG_ 2451112667 rc_eps_dist_18_rahs_ocp_thresh "RAHS current threshold";
+CM_ SG_ 2451112667 rc_eps_dist_18_ppt_ocp_thresh "PPT current threshold";
+CM_ SG_ 2451112667 rc_eps_dist_18_estim_ocp_thresh "ESTIM current threshold";
+CM_ SG_ 2451112667 rc_eps_dist_18_eps_ocp_thresh "EPS current threshold";
+CM_ SG_ 2451112667 rc_eps_dist_18_com2_ocp_thresh "COM2 current threshold";
+CM_ SG_ 2451112667 rc_eps_dist_18_bdot_ocp_thresh "BDOT current threshold";
 CM_ BO_ 2452161245 "BDOT RollCall";
 CM_ SG_ 2452161245 rc_adcs_bdot_10_dipole_var_z "The variance of sent dipole commands";
 CM_ SG_ 2452161245 rc_adcs_bdot_10_dipole_var_y "The variance of sent dipole commands";
@@ -1015,22 +1024,22 @@ CM_ SG_ 2449736402 gcmd_autoseq_add_1_met "the MET of the entry to add";
 CM_ SG_ 2449736402 gcmd_autoseq_add_1_can_id "the CAN Id of the message to add";
 CM_ SG_ 2452161137 rc_adcs_bdot_7_spam_off_x_mtq_y "Last spam reading with mtq off 1/73 nT";
 CM_ SG_ 2452161137 rc_adcs_bdot_7_spam_off_x_mtq_x "Last spam reading with mtq off 1/73 nT";
-CM_ SG_ 2452161136 rc_adcs_bdot_6_spam_on_time "Current setting for the time in minutes of SPAM being on";
-CM_ SG_ 2452161136 rc_adcs_bdot_6_spam_off_time "Current setting for the time in minutes of SPAM not being on";
-CM_ SG_ 2452161136 rc_adcs_bdot_6_spam_control "Current setting on whether or not spam is enabled";
-CM_ SG_ 2452161136 rc_adcs_bdot_6_pop_status_z "Current status of whether or not POP is enable for specified axis ";
-CM_ SG_ 2452161136 rc_adcs_bdot_6_pop_status_y "Current status of whether or not POP is enable for specified axis ";
-CM_ SG_ 2452161136 rc_adcs_bdot_6_pop_status_x "Current status of whether or not POP is enable for specified axis ";
-CM_ SG_ 2452161136 rc_adcs_bdot_6_max_tumble_time "Current max tumbling time that bdot can be in until it swtiches to SLEEP_MODE automatically";
-CM_ SG_ 2452161136 rc_adcs_bdot_6_mag_control "Shows the current state of magnetometer control on bdot. Choose the best fit magnetometer from ground. 0 = Auto, 1 = MAG_BDOT, 2 = MAG_SP1, 3 = MAG_SP2";
-CM_ SG_ 2452161136 rc_adcs_bdot_6_current_state "State that bdot is in. Chooses mode that bdot is in: 0 = NORMAL_MODE , 1 = SLEEP_MODE, 2 = SPAM_MAG_SELF_TEST, 3 = SPAM";
+CM_ SG_ 2451112560 rc_adcs_bdot_6_spam_on_time "Current setting for the time in minutes of SPAM being on";
+CM_ SG_ 2451112560 rc_adcs_bdot_6_spam_off_time "Current setting for the time in minutes of SPAM not being on";
+CM_ SG_ 2451112560 rc_adcs_bdot_6_spam_control "Current setting on whether or not spam is enabled";
+CM_ SG_ 2451112560 rc_adcs_bdot_6_pop_status_z "Current status of whether or not POP is enable for specified axis ";
+CM_ SG_ 2451112560 rc_adcs_bdot_6_pop_status_y "Current status of whether or not POP is enable for specified axis ";
+CM_ SG_ 2451112560 rc_adcs_bdot_6_pop_status_x "Current status of whether or not POP is enable for specified axis ";
+CM_ SG_ 2451112560 rc_adcs_bdot_6_max_tumble_time "Current max tumbling time that bdot can be in until it swtiches to SLEEP_MODE automatically";
+CM_ SG_ 2451112560 rc_adcs_bdot_6_mag_control "Shows the current state of magnetometer control on bdot. Choose the best fit magnetometer from ground. 0 = Auto, 1 = MAG_BDOT, 2 = MAG_SP1, 3 = MAG_SP2";
+CM_ SG_ 2451112560 rc_adcs_bdot_6_current_state "State that bdot is in. Chooses mode that bdot is in: 0 = NORMAL_MODE , 1 = SLEEP_MODE, 2 = SPAM_MAG_SELF_TEST, 3 = SPAM";
 CM_ SG_ 2449736401 gcmd_ppt_multiple_fire_override "Ppt fire override";
 CM_ SG_ 2449736401 gcmd_ppt_multiple_fire_count "How many times to fire";
 CM_ SG_ 2449736399 gcmd_eps_batt_fulldef_const_volt "Limits for detecting a full state on the battery (voltage must be greater than this value)";
 CM_ SG_ 2449736399 gcmd_eps_batt_fulldef_chg_curr "Limits for detecting a full state on the battery (current must be less than this value)";
-CM_ SG_ 2452161116 rc_adcs_bdot_5_spam_on_z_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161116 rc_adcs_bdot_5_spam_on_z_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161116 rc_adcs_bdot_5_spam_on_z_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2451112540 rc_adcs_bdot_5_spam_on_z_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2451112540 rc_adcs_bdot_5_spam_on_z_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2451112540 rc_adcs_bdot_5_spam_on_z_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
 CM_ SG_ 2449736398 gcmd_reset_minmax_mtq "Whether to reset the subsystem";
 CM_ SG_ 2449736398 gcmd_reset_minmax_sensorproc "Whether to reset the subsystem";
 CM_ SG_ 2449736398 gcmd_reset_minmax_mpc "Whether to reset the subsystem";
@@ -1136,9 +1145,9 @@ CM_ SG_ 2449736381 gcmd_dist_set_pd_state_bdot "Enables or disables the power sw
 CM_ SG_ 2449932988 gcmd_mtq_pop_z "flips the polarity on mtq z axis";
 CM_ SG_ 2449932988 gcmd_mtq_pop_y "flips the polarity on mtq y axis";
 CM_ SG_ 2449932988 gcmd_mtq_pop_x "flips the polarity on mtq x axis ";
-CM_ SG_ 2452161114 rc_eps_batt_7_acc_charge_min "Acumulated charge minimum";
-CM_ SG_ 2452161114 rc_eps_batt_7_acc_charge_max "Accumulated charge maximum";
-CM_ SG_ 2452161114 rc_eps_batt_7_acc_charge_avg "Accumulated charge avg";
+CM_ SG_ 2451112538 rc_eps_batt_7_acc_charge_min "Acumulated charge minimum";
+CM_ SG_ 2451112538 rc_eps_batt_7_acc_charge_max "Accumulated charge maximum";
+CM_ SG_ 2451112538 rc_eps_batt_7_acc_charge_avg "Accumulated charge avg";
 CM_ SG_ 2483355716 sensorproc_mag2_bdot_valid "Whether the reading is valid for bdot";
 CM_ SG_ 2451112537 rc_adcs_estim_14_mag_z "z component of unit vector of the direction of the magnetic field ";
 CM_ SG_ 2451112536 rc_adcs_estim_13_mag_y "y component of unit vector of the direction of the magnetic field ";
@@ -1146,57 +1155,57 @@ CM_ SG_ 2451112535 rc_adcs_estim_12_mag_x "x component of unit vector of the dir
 CM_ SG_ 2451112534 rc_adcs_estim_11_sun_z "z component of unit vector from spacecraft to sun";
 CM_ SG_ 2451112533 rc_adcs_estim_10_sun_y "y component of unit vector from spacecraft to sun";
 CM_ SG_ 2451112532 rc_adcs_estim_9_sun_x "x component of unit vector from spacecraft to sun";
-CM_ SG_ 2452161106 rc_eps_dist_16_ppt_state "PPT domain state";
-CM_ SG_ 2452161106 rc_eps_dist_16_ppt_c_min "PPT domain current minimum";
-CM_ SG_ 2452161106 rc_eps_dist_16_ppt_c_max "PPT domain current maximum";
-CM_ SG_ 2452161106 rc_eps_dist_16_ppt_c_avg "PPT domain current average";
-CM_ SG_ 2452161099 rc_eps_dist_9_rahs_v_min "RAHS domain voltage minimum";
-CM_ SG_ 2452161099 rc_eps_dist_9_rahs_v_max "RAHS domain voltage maximum";
-CM_ SG_ 2452161099 rc_eps_dist_9_rahs_v_avg "RAHS domain voltage average";
-CM_ SG_ 2452161097 rc_eps_dist_7_com2_v_min "COM2 domain voltage minimum";
-CM_ SG_ 2452161097 rc_eps_dist_7_com2_v_max "COM2 domain voltage maximum";
-CM_ SG_ 2452161097 rc_eps_dist_7_com2_v_avg "COM2 domain voltage average";
-CM_ SG_ 2452161096 rc_eps_dist_6_com2_state "COM2 domain state";
-CM_ SG_ 2452161096 rc_eps_dist_6_com2_c_min "COM2 domain current minimum";
-CM_ SG_ 2452161096 rc_eps_dist_6_com2_c_max "COM2 domain current maximum";
-CM_ SG_ 2452161096 rc_eps_dist_6_com2_c_avg "COM2 domain current average";
-CM_ SG_ 2452161095 rc_eps_dist_5_com1_v_min "COM1 domain voltage minimum";
-CM_ SG_ 2452161095 rc_eps_dist_5_com1_v_max "COM1 domain voltage maximum";
-CM_ SG_ 2452161095 rc_eps_dist_5_com1_v_avg "COM1 domain voltage average";
-CM_ SG_ 2452161093 rc_eps_dist_3_batt_v_avg "Battery voltage average";
-CM_ SG_ 2452161093 rc_eps_dist_3_batt_v_max "Battery voltage maximum";
-CM_ SG_ 2452161093 rc_eps_dist_3_batt_v_min "Battery voltage minimum";
-CM_ SG_ 2452161092 rc_eps_dist_2_uv_state "Undervoltage State";
-CM_ SG_ 2452161092 rc_eps_dist_2_met_overflow "Mission elapsed time last byte";
-CM_ SG_ 2452161092 rc_eps_dist_2_met "Mission elapsed time first 4 bytes";
-CM_ SG_ 2452161107 rc_eps_dist_17_ppt_v_min "PPT domain voltage minimum";
-CM_ SG_ 2452161107 rc_eps_dist_17_ppt_v_max "PPT domain voltage maximum";
-CM_ SG_ 2452161107 rc_eps_dist_17_ppt_v_avg "PPT domain voltage average";
-CM_ SG_ 2452161104 rc_eps_dist_14_eps_state "EPS domain state";
-CM_ SG_ 2452161104 rc_eps_dist_14_eps_c_min "EPS domain current minimum";
-CM_ SG_ 2452161104 rc_eps_dist_14_eps_c_max "EPS domain current maximum";
-CM_ SG_ 2452161104 rc_eps_dist_14_eps_c_avg "EPS domain current average";
-CM_ SG_ 2452161103 rc_eps_dist_13_estim_v_min "ESTIM domain voltage minimum";
-CM_ SG_ 2452161103 rc_eps_dist_13_estim_v_max "ESTIM domain voltage maximum";
-CM_ SG_ 2452161103 rc_eps_dist_13_estim_v_avg "ESTIM domain voltage average";
-CM_ SG_ 2452161101 rc_eps_dist_11_bdot_v_min "BDOT domain voltage minimum";
-CM_ SG_ 2452161101 rc_eps_dist_11_bdot_v_max "BDOT domain voltage maximum";
-CM_ SG_ 2452161101 rc_eps_dist_11_bdot_v_avg "BDOT domain voltage average";
-CM_ SG_ 2452161102 rc_eps_dist_12_estim_state "ESTIM domain state";
-CM_ SG_ 2452161102 rc_eps_dist_12_estim_c_min "ESTIM domain current minimum";
-CM_ SG_ 2452161102 rc_eps_dist_12_estim_c_max "ESTIM domain current maximum";
-CM_ SG_ 2452161102 rc_eps_dist_12_estim_c_avg "ESTIM domain current average";
-CM_ SG_ 2452161105 rc_eps_dist_15_eps_v_min "EPS domain voltage minimum";
-CM_ SG_ 2452161105 rc_eps_dist_15_eps_v_max "EPS domain voltage maximum";
-CM_ SG_ 2452161105 rc_eps_dist_15_eps_v_avg "EPS domain voltage average";
-CM_ SG_ 2452161100 rc_eps_dist_10_bdot_state "BDOT domain state";
-CM_ SG_ 2452161100 rc_eps_dist_10_bdot_c_min "BDOT domain current minimum";
-CM_ SG_ 2452161100 rc_eps_dist_10_bdot_c_max "BDOT domain current maximum";
-CM_ SG_ 2452161100 rc_eps_dist_10_bdot_c_avg "BDOT domain current average";
-CM_ SG_ 2452161098 rc_eps_dist_8_rahs_state "RAHS domain state";
-CM_ SG_ 2452161098 rc_eps_dist_8_rahs_c_min "RAHS domain current minimum";
-CM_ SG_ 2452161098 rc_eps_dist_8_rahs_c_max "RAHS domain current maximum";
-CM_ SG_ 2452161098 rc_eps_dist_8_rahs_c_avg "RAHS domain current average";
+CM_ SG_ 2451112530 rc_eps_dist_16_ppt_state "PPT domain state";
+CM_ SG_ 2451112530 rc_eps_dist_16_ppt_c_min "PPT domain current minimum";
+CM_ SG_ 2451112530 rc_eps_dist_16_ppt_c_max "PPT domain current maximum";
+CM_ SG_ 2451112530 rc_eps_dist_16_ppt_c_avg "PPT domain current average";
+CM_ SG_ 2451112523 rc_eps_dist_9_rahs_v_min "RAHS domain voltage minimum";
+CM_ SG_ 2451112523 rc_eps_dist_9_rahs_v_max "RAHS domain voltage maximum";
+CM_ SG_ 2451112523 rc_eps_dist_9_rahs_v_avg "RAHS domain voltage average";
+CM_ SG_ 2451112521 rc_eps_dist_7_com2_v_min "COM2 domain voltage minimum";
+CM_ SG_ 2451112521 rc_eps_dist_7_com2_v_max "COM2 domain voltage maximum";
+CM_ SG_ 2451112521 rc_eps_dist_7_com2_v_avg "COM2 domain voltage average";
+CM_ SG_ 2451112520 rc_eps_dist_6_com2_state "COM2 domain state";
+CM_ SG_ 2451112520 rc_eps_dist_6_com2_c_min "COM2 domain current minimum";
+CM_ SG_ 2451112520 rc_eps_dist_6_com2_c_max "COM2 domain current maximum";
+CM_ SG_ 2451112520 rc_eps_dist_6_com2_c_avg "COM2 domain current average";
+CM_ SG_ 2451112519 rc_eps_dist_5_com1_v_min "COM1 domain voltage minimum";
+CM_ SG_ 2451112519 rc_eps_dist_5_com1_v_max "COM1 domain voltage maximum";
+CM_ SG_ 2451112519 rc_eps_dist_5_com1_v_avg "COM1 domain voltage average";
+CM_ SG_ 2451112517 rc_eps_dist_3_batt_v_avg "Battery voltage average";
+CM_ SG_ 2451112517 rc_eps_dist_3_batt_v_max "Battery voltage maximum";
+CM_ SG_ 2451112517 rc_eps_dist_3_batt_v_min "Battery voltage minimum";
+CM_ SG_ 2451112516 rc_eps_dist_2_uv_state "Undervoltage State";
+CM_ SG_ 2451112516 rc_eps_dist_2_met_overflow "Mission elapsed time last byte";
+CM_ SG_ 2451112516 rc_eps_dist_2_met "Mission elapsed time first 4 bytes";
+CM_ SG_ 2451112531 rc_eps_dist_17_ppt_v_min "PPT domain voltage minimum";
+CM_ SG_ 2451112531 rc_eps_dist_17_ppt_v_max "PPT domain voltage maximum";
+CM_ SG_ 2451112531 rc_eps_dist_17_ppt_v_avg "PPT domain voltage average";
+CM_ SG_ 2451112528 rc_eps_dist_14_eps_state "EPS domain state";
+CM_ SG_ 2451112528 rc_eps_dist_14_eps_c_min "EPS domain current minimum";
+CM_ SG_ 2451112528 rc_eps_dist_14_eps_c_max "EPS domain current maximum";
+CM_ SG_ 2451112528 rc_eps_dist_14_eps_c_avg "EPS domain current average";
+CM_ SG_ 2451112527 rc_eps_dist_13_estim_v_min "ESTIM domain voltage minimum";
+CM_ SG_ 2451112527 rc_eps_dist_13_estim_v_max "ESTIM domain voltage maximum";
+CM_ SG_ 2451112527 rc_eps_dist_13_estim_v_avg "ESTIM domain voltage average";
+CM_ SG_ 2451112525 rc_eps_dist_11_bdot_v_min "BDOT domain voltage minimum";
+CM_ SG_ 2451112525 rc_eps_dist_11_bdot_v_max "BDOT domain voltage maximum";
+CM_ SG_ 2451112525 rc_eps_dist_11_bdot_v_avg "BDOT domain voltage average";
+CM_ SG_ 2451112526 rc_eps_dist_12_estim_state "ESTIM domain state";
+CM_ SG_ 2451112526 rc_eps_dist_12_estim_c_min "ESTIM domain current minimum";
+CM_ SG_ 2451112526 rc_eps_dist_12_estim_c_max "ESTIM domain current maximum";
+CM_ SG_ 2451112526 rc_eps_dist_12_estim_c_avg "ESTIM domain current average";
+CM_ SG_ 2451112529 rc_eps_dist_15_eps_v_min "EPS domain voltage minimum";
+CM_ SG_ 2451112529 rc_eps_dist_15_eps_v_max "EPS domain voltage maximum";
+CM_ SG_ 2451112529 rc_eps_dist_15_eps_v_avg "EPS domain voltage average";
+CM_ SG_ 2451112524 rc_eps_dist_10_bdot_state "BDOT domain state";
+CM_ SG_ 2451112524 rc_eps_dist_10_bdot_c_min "BDOT domain current minimum";
+CM_ SG_ 2451112524 rc_eps_dist_10_bdot_c_max "BDOT domain current maximum";
+CM_ SG_ 2451112524 rc_eps_dist_10_bdot_c_avg "BDOT domain current average";
+CM_ SG_ 2451112522 rc_eps_dist_8_rahs_state "RAHS domain state";
+CM_ SG_ 2451112522 rc_eps_dist_8_rahs_c_min "RAHS domain current minimum";
+CM_ SG_ 2451112522 rc_eps_dist_8_rahs_c_max "RAHS domain current maximum";
+CM_ SG_ 2451112522 rc_eps_dist_8_rahs_c_avg "RAHS domain current average";
 CM_ SG_ 2452161094 rc_eps_dist_4_com1_state "COM1 domain state";
 CM_ SG_ 2452161094 rc_eps_dist_4_com1_c_min "COM1 domain current minimum";
 CM_ SG_ 2452161094 rc_eps_dist_4_com1_c_max "COM1 domain current maximum";
@@ -1277,22 +1286,22 @@ CM_ SG_ 2451112476 rc_adcs_sp_2_imup_y_min "Processed IMU Y axis min";
 CM_ SG_ 2451112476 rc_adcs_sp_2_imup_x_min "Processed IMU X axis min";
 CM_ SG_ 2451112476 rc_adcs_sp_2_imup_x_max "Processed IMU X axis max";
 CM_ SG_ 2451112476 rc_adcs_sp_2_imup_x_avg "Processed IMU X axis avg";
-CM_ SG_ 2452161050 rc_adcs_bdot_4_spam_on_y_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161050 rc_adcs_bdot_4_spam_on_y_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161050 rc_adcs_bdot_4_mag_z_avg "Z Average reading in nT";
-CM_ SG_ 2452161050 rc_adcs_bdot_4_tumble "Tumble Status";
-CM_ SG_ 2452161049 rc_adcs_bdot_3_mag_z_min "Z Minium reading in nT";
-CM_ SG_ 2452161049 rc_adcs_bdot_3_mag_z_max "Z Maximum reading in nT";
-CM_ SG_ 2452161049 rc_adcs_bdot_3_mag_y_max "Y Maximum reading in nT";
-CM_ SG_ 2452161049 rc_adcs_bdot_3_mag_y_avg "Y Average reading in nT";
-CM_ SG_ 2452161031 rc_adcs_bdot_2_mag_y_min "Y Minium reading in nT";
-CM_ SG_ 2452161031 rc_adcs_bdot_2_mag_x_avg "X Average reading in nT";
-CM_ SG_ 2452161031 rc_adcs_bdot_2_mag_x_min "X Minium reading in nT";
-CM_ SG_ 2452161031 rc_adcs_bdot_2_mag_x_max "X Maximum reading in nT ";
-CM_ SG_ 2452161030 rc_adcs_bdot_1_spam_on_y_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161030 rc_adcs_bdot_1_spam_on_x_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161030 rc_adcs_bdot_1_spam_on_x_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
-CM_ SG_ 2452161030 rc_adcs_bdot_1_spam_on_x_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2451112474 rc_adcs_bdot_4_spam_on_y_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2451112474 rc_adcs_bdot_4_spam_on_y_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2451112474 rc_adcs_bdot_4_mag_z_avg "Z Average reading in nT";
+CM_ SG_ 2451112474 rc_adcs_bdot_4_tumble "Tumble Status";
+CM_ SG_ 2451112473 rc_adcs_bdot_3_mag_z_min "Z Minium reading in nT";
+CM_ SG_ 2451112473 rc_adcs_bdot_3_mag_z_max "Z Maximum reading in nT";
+CM_ SG_ 2451112473 rc_adcs_bdot_3_mag_y_max "Y Maximum reading in nT";
+CM_ SG_ 2451112473 rc_adcs_bdot_3_mag_y_avg "Y Average reading in nT";
+CM_ SG_ 2451112455 rc_adcs_bdot_2_mag_y_min "Y Minium reading in nT";
+CM_ SG_ 2451112455 rc_adcs_bdot_2_mag_x_avg "X Average reading in nT";
+CM_ SG_ 2451112455 rc_adcs_bdot_2_mag_x_min "X Minium reading in nT";
+CM_ SG_ 2451112455 rc_adcs_bdot_2_mag_x_max "X Maximum reading in nT ";
+CM_ SG_ 2451112454 rc_adcs_bdot_1_spam_on_y_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2451112454 rc_adcs_bdot_1_spam_on_x_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2451112454 rc_adcs_bdot_1_spam_on_x_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
+CM_ SG_ 2451112454 rc_adcs_bdot_1_spam_on_x_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
 CM_ SG_ 2449932980 estim_sun_unit_z_val "Unit vector of where the sun is at x";
 CM_ SG_ 2449932979 estim_sun_unit_y_val "Unit vector of where the sun is at y";
 CM_ SG_ 2449932978 estim_sun_unit_x_val "Unit vector of where the sun is at z";
@@ -1333,48 +1342,48 @@ CM_ SG_ 2452161036 rc_adcs_mtq_2_bdot_x_avg "Average X BDOT command";
 CM_ SG_ 2451112456 rc_ppt_1_last_main_charge "Main Charge Time Average";
 CM_ SG_ 2451112456 rc_ppt_1_fault_count "PPT fault count";
 CM_ SG_ 2451112456 rc_ppt_1_fire_count "Total number of times the PPT has fired";
-CM_ SG_ 2452161048 rc_eps_gen_9_pnl_3_temp_min "Panel 3 Temp min";
-CM_ SG_ 2452161048 rc_eps_gen_9_pnl_3_temp_max "Panel 3 Temp max";
-CM_ SG_ 2452161048 rc_eps_gen_9_pnl_3_temp_avg "Panel 3 Temp avg";
-CM_ SG_ 2452161048 rc_eps_gen_9_pnl_2_temp_min "Panel 2 Temp min";
-CM_ SG_ 2452161048 rc_eps_gen_9_pnl_2_temp_max "Panel 2 Temp max";
-CM_ SG_ 2452161048 rc_eps_gen_9_pnl_2_temp_avg "Panel 2 Temp avg";
-CM_ SG_ 2452161048 rc_eps_gen_9_pnl_1_temp_max "Panel 1 Temp max";
-CM_ SG_ 2452161048 rc_eps_gen_9_pnl_1_temp_avg "Panel 1 Temp avg";
-CM_ SG_ 2452161047 rc_eps_gen_8_pnl_3_power_min "Panel 3 Current min";
-CM_ SG_ 2452161047 rc_eps_gen_8_pnl_3_power_max "Panel 3 Current max";
-CM_ SG_ 2452161047 rc_eps_gen_8_pnl_3_power_avg "Panel 3 Current avg";
-CM_ SG_ 2452161047 rc_eps_gen_8_pnl_1_temp_min "Panel 1 Temp min";
-CM_ SG_ 2452161046 rc_eps_gen_7_pnl_2_power_min "Panel 2 Current min";
-CM_ SG_ 2452161046 rc_eps_gen_7_pnl_2_power_max "Panel 2 Current max";
-CM_ SG_ 2452161046 rc_eps_gen_7_pnl_2_power_avg "Panel 2 Current avg";
-CM_ SG_ 2452161046 rc_eps_gen_7_pnl_1_power_avg "Panel 1 Current avg";
-CM_ SG_ 2452161045 rc_eps_gen_6_pnl_3_current_max "Panel 3 Current max";
-CM_ SG_ 2452161045 rc_eps_gen_6_pnl_3_current_avg "Panel 3 Current avg";
-CM_ SG_ 2452161045 rc_eps_gen_6_pnl_1_power_min "Panel 1 Current min";
-CM_ SG_ 2452161045 rc_eps_gen_6_pnl_1_power_max "Panel 1 Current max";
-CM_ SG_ 2452161044 rc_eps_gen_5_pnl_3_current_min "Panel 3 Current min";
-CM_ SG_ 2452161044 rc_eps_gen_5_pnl_2_current_min "Panel 2 Current min";
-CM_ SG_ 2452161044 rc_eps_gen_5_pnl_2_current_max "Panel 2 Current max";
-CM_ SG_ 2452161044 rc_eps_gen_5_pnl_2_current_avg "Panel 2 Current avg";
-CM_ SG_ 2452161043 rc_eps_gen_4_pnl_3_voltage_avg "Panel 3 Voltage avg";
-CM_ SG_ 2452161043 rc_eps_gen_4_pnl_1_current_min "Panel 1 Current min";
-CM_ SG_ 2452161043 rc_eps_gen_4_pnl_1_current_max "Panel 1 Current max";
-CM_ SG_ 2452161043 rc_eps_gen_4_pnl_1_current_avg "Panel 1 Current avg";
-CM_ SG_ 2452161042 rc_eps_gen_3_pnl_3_voltage_min "Panel 3 Voltage min";
-CM_ SG_ 2452161042 rc_eps_gen_3_pnl_3_voltage_max "Panel 3 Voltage max";
-CM_ SG_ 2452161042 rc_eps_gen_3_pnl_2_voltage_max "Panel 2 Voltage max";
-CM_ SG_ 2452161042 rc_eps_gen_3_pnl_2_voltage_avg "Panel 2 Voltage avg";
-CM_ SG_ 2452161041 rc_eps_gen_2_pnl_2_voltage_min "Panel 2 Voltage min";
-CM_ SG_ 2452161041 rc_eps_gen_2_pnl_1_voltage_min "Panel 1 Voltage min";
-CM_ SG_ 2452161041 rc_eps_gen_2_pnl_1_voltage_max "Panel 1 Voltage max";
-CM_ SG_ 2452161041 rc_eps_gen_2_pnl_1_voltage_avg "Panel 1 Voltage avg";
-CM_ SG_ 2452161040 rc_eps_gen_1_pnl_3_charging "whether gen panel 3 is charing";
-CM_ SG_ 2452161040 rc_eps_gen_1_pnl_2_charging "whether gen panel 2 is charing";
-CM_ SG_ 2452161040 rc_eps_gen_1_pnl_1_charging "whether gen panel 1 is charing";
-CM_ SG_ 2452161040 rc_eps_gen_1_pnl_3_enabled "whether gen panel 3 is enabled";
-CM_ SG_ 2452161040 rc_eps_gen_1_pnl_2_enabled "whether gen panel 2 is enabled";
-CM_ SG_ 2452161040 rc_eps_gen_1_pnl_1_enabled "whether gen panel 1 is enabled";
+CM_ SG_ 2451112472 rc_eps_gen_9_pnl_3_temp_min "Panel 3 Temp min";
+CM_ SG_ 2451112472 rc_eps_gen_9_pnl_3_temp_max "Panel 3 Temp max";
+CM_ SG_ 2451112472 rc_eps_gen_9_pnl_3_temp_avg "Panel 3 Temp avg";
+CM_ SG_ 2451112472 rc_eps_gen_9_pnl_2_temp_min "Panel 2 Temp min";
+CM_ SG_ 2451112472 rc_eps_gen_9_pnl_2_temp_max "Panel 2 Temp max";
+CM_ SG_ 2451112472 rc_eps_gen_9_pnl_2_temp_avg "Panel 2 Temp avg";
+CM_ SG_ 2451112472 rc_eps_gen_9_pnl_1_temp_max "Panel 1 Temp max";
+CM_ SG_ 2451112472 rc_eps_gen_9_pnl_1_temp_avg "Panel 1 Temp avg";
+CM_ SG_ 2451112471 rc_eps_gen_8_pnl_3_power_min "Panel 3 Current min";
+CM_ SG_ 2451112471 rc_eps_gen_8_pnl_3_power_max "Panel 3 Current max";
+CM_ SG_ 2451112471 rc_eps_gen_8_pnl_3_power_avg "Panel 3 Current avg";
+CM_ SG_ 2451112471 rc_eps_gen_8_pnl_1_temp_min "Panel 1 Temp min";
+CM_ SG_ 2451112470 rc_eps_gen_7_pnl_2_power_min "Panel 2 Current min";
+CM_ SG_ 2451112470 rc_eps_gen_7_pnl_2_power_max "Panel 2 Current max";
+CM_ SG_ 2451112470 rc_eps_gen_7_pnl_2_power_avg "Panel 2 Current avg";
+CM_ SG_ 2451112470 rc_eps_gen_7_pnl_1_power_avg "Panel 1 Current avg";
+CM_ SG_ 2451112469 rc_eps_gen_6_pnl_3_current_max "Panel 3 Current max";
+CM_ SG_ 2451112469 rc_eps_gen_6_pnl_3_current_avg "Panel 3 Current avg";
+CM_ SG_ 2451112469 rc_eps_gen_6_pnl_1_power_min "Panel 1 Current min";
+CM_ SG_ 2451112469 rc_eps_gen_6_pnl_1_power_max "Panel 1 Current max";
+CM_ SG_ 2451112468 rc_eps_gen_5_pnl_3_current_min "Panel 3 Current min";
+CM_ SG_ 2451112468 rc_eps_gen_5_pnl_2_current_min "Panel 2 Current min";
+CM_ SG_ 2451112468 rc_eps_gen_5_pnl_2_current_max "Panel 2 Current max";
+CM_ SG_ 2451112468 rc_eps_gen_5_pnl_2_current_avg "Panel 2 Current avg";
+CM_ SG_ 2451112467 rc_eps_gen_4_pnl_3_voltage_avg "Panel 3 Voltage avg";
+CM_ SG_ 2451112467 rc_eps_gen_4_pnl_1_current_min "Panel 1 Current min";
+CM_ SG_ 2451112467 rc_eps_gen_4_pnl_1_current_max "Panel 1 Current max";
+CM_ SG_ 2451112467 rc_eps_gen_4_pnl_1_current_avg "Panel 1 Current avg";
+CM_ SG_ 2451112466 rc_eps_gen_3_pnl_3_voltage_min "Panel 3 Voltage min";
+CM_ SG_ 2451112466 rc_eps_gen_3_pnl_3_voltage_max "Panel 3 Voltage max";
+CM_ SG_ 2451112466 rc_eps_gen_3_pnl_2_voltage_max "Panel 2 Voltage max";
+CM_ SG_ 2451112466 rc_eps_gen_3_pnl_2_voltage_avg "Panel 2 Voltage avg";
+CM_ SG_ 2451112465 rc_eps_gen_2_pnl_2_voltage_min "Panel 2 Voltage min";
+CM_ SG_ 2451112465 rc_eps_gen_2_pnl_1_voltage_min "Panel 1 Voltage min";
+CM_ SG_ 2451112465 rc_eps_gen_2_pnl_1_voltage_max "Panel 1 Voltage max";
+CM_ SG_ 2451112465 rc_eps_gen_2_pnl_1_voltage_avg "Panel 1 Voltage avg";
+CM_ SG_ 2451112464 rc_eps_gen_1_pnl_3_charging "whether gen panel 3 is charing";
+CM_ SG_ 2451112464 rc_eps_gen_1_pnl_2_charging "whether gen panel 2 is charing";
+CM_ SG_ 2451112464 rc_eps_gen_1_pnl_1_charging "whether gen panel 1 is charing";
+CM_ SG_ 2451112464 rc_eps_gen_1_pnl_3_enabled "whether gen panel 3 is enabled";
+CM_ SG_ 2451112464 rc_eps_gen_1_pnl_2_enabled "whether gen panel 2 is enabled";
+CM_ SG_ 2451112464 rc_eps_gen_1_pnl_1_enabled "whether gen panel 1 is enabled";
 CM_ SG_ 2452161029 rc_eps_batt_6_status "State of charge status register";
 CM_ SG_ 2452161029 rc_eps_batt_6_ctrl "State of charge from coulomb counter on battery board";
 CM_ SG_ 2452161029 rc_eps_batt_6_last_charge "The MET of last full battery charge";
@@ -1383,11 +1392,11 @@ CM_ SG_ 2452161028 rc_eps_batt_5_node_c_max "Current into the node between batte
 CM_ SG_ 2452161028 rc_eps_batt_5_node_c_avg "Current into the node between batteries. Indicates battery ballancing state.";
 CM_ SG_ 2452161028 rc_eps_batt_5_batt_temp_min "Battery temperature indicated by TMP36 mounted to the batteries.";
 CM_ SG_ 2452161028 rc_eps_batt_5_batt_temp_max "Battery temperature indicated by TMP36 mounted to the batteries.";
-CM_ SG_ 2452161027 rc_eps_batt_4_voltage_min "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
-CM_ SG_ 2452161027 rc_eps_batt_4_voltage_max "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
-CM_ SG_ 2452161027 rc_eps_batt_4_voltage_avg "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
-CM_ SG_ 2452161027 rc_eps_batt_4_heater_state "State of the battery heater switch";
-CM_ SG_ 2452161027 rc_eps_batt_4_balancer_state "State of the battery balancer. enabeling the battery balancer only gives it permission to ballance. ";
+CM_ SG_ 2451112451 rc_eps_batt_4_voltage_min "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
+CM_ SG_ 2451112451 rc_eps_batt_4_voltage_max "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
+CM_ SG_ 2451112451 rc_eps_batt_4_voltage_avg "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
+CM_ SG_ 2451112451 rc_eps_batt_4_heater_state "State of the battery heater switch";
+CM_ SG_ 2451112451 rc_eps_batt_4_balancer_state "State of the battery balancer. enabeling the battery balancer only gives it permission to ballance. ";
 CM_ SG_ 2452161026 rc_eps_batt_3_current_min "Minimum battery current seen since last min/max reset";
 CM_ SG_ 2452161026 rc_eps_batt_3_current_max "Maximum battery current seen since last min/max reset";
 CM_ SG_ 2452161026 rc_eps_batt_3_current_avg "Average current into or out of the battery";
@@ -1474,15 +1483,15 @@ VAL_ 2449736495 gcmd_dist_autoshutoff_rahs 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736495 gcmd_dist_autoshutoff_com2 2 "null" 1 "true" 0 "false" ;
 VAL_ 2432958724 gcmd_ppt_halt_confirm 1 "true" 0 "false" ;
 VAL_ 2449474266 gcmd_batt_set_heater_check_state 2 "null" 1 "true" 0 "false" ;
-VAL_ 2452161136 rc_adcs_bdot_6_spam_control 1 "true" 0 "false" ;
-VAL_ 2452161136 rc_adcs_bdot_6_pop_status_z 1 "true" 0 "false" ;
-VAL_ 2452161136 rc_adcs_bdot_6_pop_status_y 1 "true" 0 "false" ;
-VAL_ 2452161136 rc_adcs_bdot_6_pop_status_x 1 "true" 0 "false" ;
-VAL_ 2452161136 rc_adcs_bdot_6_mag_control 3 "sp2 mode" 2 "sp1 mode" 1 "bdot mode" 0 "auto mode" ;
-VAL_ 2452161136 rc_adcs_bdot_6_gain_ovr_status_z 1 "true" 0 "false" ;
-VAL_ 2452161136 rc_adcs_bdot_6_gain_ovr_status_y 1 "true" 0 "false" ;
-VAL_ 2452161136 rc_adcs_bdot_6_gain_ovr_status_x 1 "true" 0 "false" ;
-VAL_ 2452161136 rc_adcs_bdot_6_current_state 3 "spam" 2 "spam mag self test" 1 "sleep mode" 0 "normal mode" ;
+VAL_ 2451112560 rc_adcs_bdot_6_spam_control 1 "true" 0 "false" ;
+VAL_ 2451112560 rc_adcs_bdot_6_pop_status_z 1 "true" 0 "false" ;
+VAL_ 2451112560 rc_adcs_bdot_6_pop_status_y 1 "true" 0 "false" ;
+VAL_ 2451112560 rc_adcs_bdot_6_pop_status_x 1 "true" 0 "false" ;
+VAL_ 2451112560 rc_adcs_bdot_6_mag_control 3 "sp2 mode" 2 "sp1 mode" 1 "bdot mode" 0 "auto mode" ;
+VAL_ 2451112560 rc_adcs_bdot_6_gain_ovr_status_z 1 "true" 0 "false" ;
+VAL_ 2451112560 rc_adcs_bdot_6_gain_ovr_status_y 1 "true" 0 "false" ;
+VAL_ 2451112560 rc_adcs_bdot_6_gain_ovr_status_x 1 "true" 0 "false" ;
+VAL_ 2451112560 rc_adcs_bdot_6_current_state 3 "spam" 2 "spam mag self test" 1 "sleep mode" 0 "normal mode" ;
 VAL_ 2449736401 gcmd_ppt_multiple_fire_override 1 "true" 0 "false" ;
 VAL_ 2452161126 rc_ppt_h2_last_fire_result 2 "no main discharge" 1 "no main charge" 0 "fire successful" ;
 VAL_ 2452161125 rc_eps_batt_h1_sysrstiv 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC) MPUSEG2IFG seg 2 mem viol" 42 "(PUC) MPUSEG1IFG seg 1 mem viol" 40 "(PUC) MPUSEGIIFGinfoMemSegViol" 38 "(PUC) MPUSEGIPIFGencapIPmemSeg" 36 "(PUC) CSPW CS password violation" 34 "(PUC) MPUPW MPU pwd violation" 32 "(PUC) PMMPW PMM pwd violation" 30 "(PUC) Peripheral area fetch" 28 "(PUC) Uncorrectable FRAM bit err" 26 "(PUC) FRCTLPW password violation" 24 "(PUC) WDTPW password violation" 22 "(PUC) WDTIFG watchdog timeout" 20 "(POR) PMMSWPOR software POR" 14 "(BOR) SVSHIFG SVSH event" 10 "(BOR) Security violation" 8 "(BOR) LPMx.5 wake up" 6 "(BOR) RSTIFG RST/NMI" 2 "(BOR) Brownout" 0 "No interrupt pending" ;
@@ -1516,13 +1525,13 @@ VAL_ 2449932988 gcmd_mtq_pop_z 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449932988 gcmd_mtq_pop_y 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449932988 gcmd_mtq_pop_x 2 "null" 1 "true" 0 "false" ;
 VAL_ 2483355716 sensorproc_mag2_valid 1 "true" 0 "false" ;
-VAL_ 2452161106 rc_eps_dist_16_ppt_state 5 "unknown" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
-VAL_ 2452161096 rc_eps_dist_6_com2_state 5 "unknown" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
-VAL_ 2452161092 rc_eps_dist_2_uv_state 1 "undervoltage" 0 "normal" ;
-VAL_ 2452161104 rc_eps_dist_14_eps_state 5 "unknown" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
-VAL_ 2452161102 rc_eps_dist_12_estim_state 5 "unknown" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
-VAL_ 2452161100 rc_eps_dist_10_bdot_state 5 "unknown" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
-VAL_ 2452161098 rc_eps_dist_8_rahs_state 5 "unknown" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
+VAL_ 2451112530 rc_eps_dist_16_ppt_state 6 "unknown" 5 "off_autoshutoff" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
+VAL_ 2451112520 rc_eps_dist_6_com2_state 6 "unknown" 5 "off_autoshutoff" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
+VAL_ 2451112516 rc_eps_dist_2_uv_state 1 "undervoltage" 0 "normal" ;
+VAL_ 2451112528 rc_eps_dist_14_eps_state 6 "unknown" 5 "off_autoshutoff" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
+VAL_ 2451112526 rc_eps_dist_12_estim_state 6 "unknown" 5 "off_autoshutoff" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
+VAL_ 2451112524 rc_eps_dist_10_bdot_state 6 "unknown" 5 "off_autoshutoff" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
+VAL_ 2451112522 rc_eps_dist_8_rahs_state 6 "unknown" 5 "off_autoshutoff" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
 VAL_ 2452161094 rc_eps_dist_4_com1_state 5 "unknown" 4 "off_initial" 3 "off_batt_undervoltage" 2 "off_overcurrent" 1 "off_manual" 0 "on" ;
 VAL_ 2451112499 rc_adcs_estim_8_tle_id 1 "true" 0 "false" ;
 VAL_ 2451112499 rc_adcs_estim_8_sc_in_sun 1 "true" 0 "false" ;
@@ -1531,20 +1540,20 @@ VAL_ 2451112491 rc_adcs_sp_17_i2c_result_sun 4 "transmit timeout" 3 "nack" 2 "st
 VAL_ 2451112491 rc_adcs_sp_17_i2c_result_imu 4 "transmit timeout" 3 "nack" 2 "stop timeout" 1 "start timeout" 0 "no error" ;
 VAL_ 2451112491 rc_adcs_sp_17_i2c_result_mag_2 4 "transmit timeout" 3 "nack" 2 "stop timeout" 1 "start timeout" 0 "no error" ;
 VAL_ 2451112491 rc_adcs_sp_17_i2c_result_mag_1 4 "transmit timeout" 3 "nack" 2 "stop timeout" 1 "start timeout" 0 "no error" ;
-VAL_ 2452161050 rc_adcs_bdot_4_tumble 1 "true" 0 "false" ;
+VAL_ 2451112474 rc_adcs_bdot_4_tumble 1 "true" 0 "false" ;
 VAL_ 2449932984 estim_state_in_sun 1 "true" 0 "false" ;
 VAL_ 2449932984 estim_state_above_gs 1 "true" 0 "false" ;
 VAL_ 2452161039 rc_adcs_mtq_5_fsw_ignore 1 "true" 0 "false" ;
-VAL_ 2452161040 rc_eps_gen_1_pnl_3_charging 1 "CHARGING" 0 "NOTCHARGING" ;
-VAL_ 2452161040 rc_eps_gen_1_pnl_2_charging 1 "CHARGING" 0 "NOTCHARGING" ;
-VAL_ 2452161040 rc_eps_gen_1_pnl_1_charging 1 "CHARGING" 0 "NOTCHARGING" ;
-VAL_ 2452161040 rc_eps_gen_1_pnl_3_enabled 1 "ENABLED" 0 "DISABLED" ;
-VAL_ 2452161040 rc_eps_gen_1_pnl_2_enabled 1 "ENABLED" 0 "DISABLED" ;
-VAL_ 2452161040 rc_eps_gen_1_pnl_1_enabled 1 "ENABLED" 0 "DISABLED" ;
-VAL_ 2452161027 rc_eps_batt_4_bal_auto_state 1 "true" 0 "false" ;
-VAL_ 2452161027 rc_eps_batt_4_heater_auto_state 1 "true" 0 "false" ;
-VAL_ 2452161027 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
-VAL_ 2452161027 rc_eps_batt_4_balancer_state 1 "true" 0 "false" ;
+VAL_ 2451112464 rc_eps_gen_1_pnl_3_charging 1 "CHARGING" 0 "NOTCHARGING" ;
+VAL_ 2451112464 rc_eps_gen_1_pnl_2_charging 1 "CHARGING" 0 "NOTCHARGING" ;
+VAL_ 2451112464 rc_eps_gen_1_pnl_1_charging 1 "CHARGING" 0 "NOTCHARGING" ;
+VAL_ 2451112464 rc_eps_gen_1_pnl_3_enabled 1 "ENABLED" 0 "DISABLED" ;
+VAL_ 2451112464 rc_eps_gen_1_pnl_2_enabled 1 "ENABLED" 0 "DISABLED" ;
+VAL_ 2451112464 rc_eps_gen_1_pnl_1_enabled 1 "ENABLED" 0 "DISABLED" ;
+VAL_ 2451112451 rc_eps_batt_4_bal_auto_state 1 "true" 0 "false" ;
+VAL_ 2451112451 rc_eps_batt_4_heater_auto_state 1 "true" 0 "false" ;
+VAL_ 2451112451 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
+VAL_ 2451112451 rc_eps_batt_4_balancer_state 1 "true" 0 "false" ;
 VAL_ 2451112176 ppt_firing_result_panel_good 2 "null" 1 "true" 0 "false" ;
 VAL_ 2451112176 ppt_firing_result_batt_good 2 "null" 1 "true" 0 "false" ;
 VAL_ 2451112176 ppt_firing_result_coulmb_good 2 "null" 1 "true" 0 "false" ;
@@ -1564,7 +1573,7 @@ VAL_ 2450980912 mtq_ack_phase 2 "pms_phase" 1 "actuation_phase" 0 "measurement_p
 VAL_ 2449735936 cmd_ppt_single_fire_override_smt 1 "true" 0 "false" ;
 VAL_ 2449735936 cmd_ppt_single_fire_override 1 "true" 0 "false" ;
 VAL_ 2449735936 cmd_ppt_single_fire_with_pulse 1 "true" 0 "false" ;
-VAL_ 2453078050 mpc_vp_status 1 "true" 0 "false" ;
+VAL_ 2449932322 mpc_vp_status 1 "true" 0 "false" ;
 VAL_ 2483355713 sensorproc_sun_valid 1 "true" 0 "false" ;
 VAL_ 2452029472 bdot_tumble_status_status 1 "true" 0 "false" ;
 SIG_VALTYPE_ 2449736399 gcmd_eps_batt_fulldef_const_volt : 1;

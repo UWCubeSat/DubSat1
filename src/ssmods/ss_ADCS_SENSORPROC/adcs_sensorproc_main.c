@@ -64,7 +64,7 @@ FILE_STATIC const SensorInterface sensorInterfaces[] =
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
  rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
- rcPopulate6, rcPopulate9, rcPopulate10, rcPopulate11, rcPopulate12,
+ rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10, rcPopulate11, rcPopulate12,
  rcPopulate13, rcPopulate14, rcPopulate15, rcPopulate16, rcPopulate17
 };
 
@@ -78,7 +78,6 @@ FILE_STATIC health_segment hseg;
 /* Autocode */
 
 FILE_STATIC flag_t triggerStepFlag = FALSE;
-FILE_STATIC uint8_t lastActuationPhase = -1;
 /**
  * Takes one step of autocode.
  */
@@ -402,8 +401,8 @@ void canRxCallback(CANPacket *p)
     }
     else if(p->id == CAN_ID_MTQ_ACK) {
     	mtq_ack ackpacket;
-    	decodemtq_ack(p,&mtq_ack);
-    	lastActuationPhase = ackpacket.mtq_ack_phase;
+    	decodemtq_ack(p,&ackpacket);
+    	magioUpdatePhase(ackpacket.mtq_ack_phase);
     }
     else if(p->id == CAN_ID_GCMD_RESET_MINMAX)
     {
@@ -479,6 +478,20 @@ void rcPopulate6(CANPacket *out)
     magio2RcPopulate6(&rc);
 #endif
     encoderc_adcs_sp_6(&rc, out);
+}
+
+void rcPopulate7(CANPacket *out)
+{
+    rc_adcs_sp_7 rc = { 0 };
+    magio1RcPopulate7(&rc);
+    encoderc_adcs_sp_7(&rc, out);
+}
+
+void rcPopulate8(CANPacket *out)
+{
+    rc_adcs_sp_8 rc = { 0 };
+    magio2RcPopulate8(&rc);
+    encoderc_adcs_sp_8(&rc, out);
 }
 
 void rcPopulate9(CANPacket *out)

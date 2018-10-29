@@ -13,8 +13,8 @@
 #define MAX_CALIBRATION_SAMPLES 15
 #define CALIBRATION_IGNORE_SAMPLES 5
 #define MAX_NUM_MAGNETOMETERS 2 // one for each i2c bus
-#define MIN_VALID_MAG_READING 0xF800
-#define MAX_VALID_MAG_READING 0x07FF
+#define MIN_VALID_MAG_READING -2048 //0xF800
+#define MAX_VALID_MAG_READING 2047 //0x07FF
 
 #define NORMAL_OPERATION 1
 #define SELF_TEST_OPERATION 0
@@ -58,8 +58,8 @@ hMag magInit(bus_instance_i2c bus)
     i2cEnable(bus);
     hDev hSensor = i2cInit(bus, MAG_I2C_7BIT_ADDRESS);
     mags[numRegistered].hSensor = hSensor;
-    mags[numRegistered].curr_calibration_index = 0;
-    mags[numRegistered].operation_mode = NORMAL_OPERATION;
+    //mags[numRegistered].curr_calibration_index = 0;
+    //mags[numRegistered].operation_mode = NORMAL_OPERATION;
     mags[numRegistered].data.calibration_factor_x = 1.0;
     mags[numRegistered].data.calibration_factor_y = 1.0;
     mags[numRegistered].data.calibration_factor_z = 1.0;
@@ -96,7 +96,7 @@ hMag magInit(bus_instance_i2c bus)
    Expected Results for self test
    For x and y data output registers: 390 * 1.16 = +452 --> 452 * 73 = 32996;
    For z data output registers: 390 & 1.08 = +421 * 73 = 30733; */
-void mag_self_test_config(hMag handle)
+/*void mag_self_test_config(hMag handle)
 {
     mags[handle].operation_mode = SELF_TEST_OPERATION;
     hDev hSensor = mags[handle].hSensor;
@@ -106,12 +106,12 @@ void mag_self_test_config(hMag handle)
     i2cBuff[2] = MAG_HMC5883L_CONFIG_REGISTER_B_SELF_TEST;
     i2cBuff[3] = MAG_HMC5883L_MODE_REGISTER_SELF_TEST;
     i2cMasterWrite(hSensor, i2cBuff, 4);
-}
+}*/
 
 
 void mag_normal_reading_operation_config(hMag handle)
 {
-    mags[handle].operation_mode = NORMAL_OPERATION;
+    //mags[handle].operation_mode = NORMAL_OPERATION;
     hDev hSensor = mags[handle].hSensor;
     // HMC5883 pattern is to address
     i2cBuff[0] = MAG_HMC5883L_REG_ADDR_CRA;
@@ -208,6 +208,7 @@ MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode desiredConversi
     prevData->convertedX = prevData->rawX * conversionFactor;
     prevData->convertedY = prevData->rawY * conversionFactor;
     prevData->convertedZ = prevData->rawZ * conversionFactor;
+    prevData->isValid = mag_is_reading_valid(prevData);
 
     return prevData;
 #else
@@ -287,7 +288,7 @@ uint8_t mag_is_reading_valid(MagnetometerData* data)
     return 1;
 }
 
-void start_self_test_calibration(hMag handle)
+/*void start_self_test_calibration(hMag handle)
 {
     mag_self_test_config(handle);
     mags[handle].operation_mode = SELF_TEST_OPERATION;
@@ -306,7 +307,7 @@ void self_test_add_samples(hMag handle, MagnetometerData* data)
 }
 
 /* returns 1 if a new calibration number was generated, else 0 */
-uint8_t end_self_test_calibration(hMag handle)
+/*uint8_t end_self_test_calibration(hMag handle)
 {
     mag_normal_reading_operation_config(handle);
     uint8_t curr_index = mags[handle].curr_calibration_index;
@@ -334,4 +335,4 @@ uint8_t end_self_test_calibration(hMag handle)
         P3OUT ^= BIT5;
     }
     return 1;
-}
+}*/

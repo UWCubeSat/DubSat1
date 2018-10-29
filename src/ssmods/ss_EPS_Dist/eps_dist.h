@@ -102,7 +102,8 @@ typedef enum {
     PD_CMD_OCLatch,
     PD_CMD_BattVLow,
     PD_CMD_AutoStart,
-    PD_CMD_OffInitial
+    PD_CMD_OffInitial,
+    PD_CMD_Autoshutoff
 } PowerDomainCmd;
 
 typedef enum {
@@ -240,6 +241,7 @@ void can_packet_rx_callback(CANPacket *packet);
 
 FILE_STATIC void rcPopulateH1(CANPacket *out);
 FILE_STATIC void rcPopulateH2(CANPacket *out);
+FILE_STATIC void rcPopulate1(CANPacket *out);
 FILE_STATIC void rcPopulate2(CANPacket *out);
 FILE_STATIC void rcPopulate3(CANPacket *out);
 FILE_STATIC void rcPopulate4(CANPacket *out);

@@ -14,10 +14,11 @@
 #define ROLLCALL_WATCHDOG_TIMEOUT 255 //seconds
 #define ROLLCALL_WATCHDOG_AUTOSHUTOFF 10 //seconds
 #define AUTOSHUTOFF_DELAY 1 //number of rollcalls before the check for shutoff starts
+#define RAHS_COM2_SHUTOFF_TIME 720000 //the time COM2 and RAHS are allowed to be on (in ms)
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulateH1, rcPopulateH2, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10, rcPopulate11, rcPopulate12, rcPopulate13, rcPopulate14, rcPopulate15, rcPopulate16, rcPopulate17, rcPopulate18
+ rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10, rcPopulate11, rcPopulate12, rcPopulate13, rcPopulate14, rcPopulate15, rcPopulate16, rcPopulate17, rcPopulate18
 };
 
 // Main status (a structure) and state and mode variables
@@ -79,7 +80,7 @@ FILE_STATIC hDev hBattV;
 #define MAX_BUFF_SIZE   0x10
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 
-FILE_STATIC uint16_t startupDelay = 1800;
+FILE_STATIC uint16_t startupDelay = 1800; //this will be used for the initial 30min wait
 #pragma PERSISTENT(startupDelay)
 
 //**********Data Stuff**********************
@@ -121,6 +122,8 @@ uint8_t eventsInitialized = 0;
 uint8_t autoSequencerEnabled = 0;
 
 FILE_STATIC uint16_t rcResponseFlag = 0; //this is zero when no responses are pending
+FILE_STATIC char clearTemp = 0;
+FILE_STATIC char clearBattV = 0;
 sequenceEvent pendingEvent = {0};
 
 CANPacket autoseqMETResponsePkt = {0};
@@ -128,9 +131,73 @@ uint8_t autoseqMETResponsePktSendFlag = 0;
 CANPacket autoseqIndicesResponsePkt = {0};
 uint8_t autoseqIndicesResponsePktSendFlag = 0;
 
+void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd);
+
+uint8_t offTimerCOM2Running = 0;
+TIMER_HANDLE offTimerCOM2;
+void startOffTimerCOM2()
+{
+    if(!offTimerCOM2Running)
+    {
+        offTimerCOM2 = timerPollInitializer(RAHS_COM2_SHUTOFF_TIME);
+        offTimerCOM2Running = 1;
+    }
+}
+
+uint8_t checkOffTimerCOM2()
+{
+    if(offTimerCOM2Running && checkTimer(offTimerCOM2))
+    {
+        offTimerCOM2Running = 0;
+        return 1;
+    }
+    return 0;
+}
+
+void stopOffTimerCOM2()
+{
+    if(offTimerCOM2Running)
+    {
+        endPollingTimer(offTimerCOM2);
+        offTimerCOM2Running = 0;
+    }
+}
+
+uint8_t offTimerRAHSRunning = 0;
+TIMER_HANDLE offTimerRAHS;
+void startOffTimerRAHS()
+{
+    if(!offTimerRAHSRunning)
+    {
+        offTimerRAHS = timerPollInitializer(RAHS_COM2_SHUTOFF_TIME);
+        offTimerRAHSRunning = 1;
+    }
+}
+
+uint8_t checkOffTimerRAHS()
+{
+    if(offTimerRAHSRunning && checkTimer(offTimerRAHS))
+    {
+        offTimerRAHSRunning = 0;
+        return 1;
+    }
+    return 0;
+}
+
+void stopOffTimerRAHS()
+{
+    if(offTimerRAHSRunning)
+    {
+        endPollingTimer(offTimerRAHS);
+        offTimerRAHSRunning = 0;
+    }
+}
+
 uint16_t compressOCPThresh(float thresh) {
     return (uint16_t)(thresh * 20);
 }
+
+uint8_t off_timer_COM2_flag = 0;
 
 void distDeployInit()
 {
@@ -229,7 +296,7 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
     gseg.powerdomainlastcmds[(uint8_t)domain] = (uint8_t)cmd;
 
     // Overcurrent latching  or low batt commands only useful as a "special" disable for reporting purposes
-    if (cmd == PD_CMD_OCLatch || cmd == PD_CMD_BattVLow)
+    if (cmd == PD_CMD_OCLatch || cmd == PD_CMD_BattVLow || cmd == PD_CMD_Autoshutoff)
         cmd = PD_CMD_Disable;
 
     // Similarly, autostart is a just a "special" enable
@@ -242,7 +309,7 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
     switch (domain)
     {
         case PD_COM2:
-            if(distQueryDomainSwitch(PD_COM2) == 0)
+            if(distQueryDomainSwitch(PD_COM2) == Switch_Disabled)
                 shutoffDelay.com2 = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_COM2_OUT |= DOMAIN_ENABLE_COM2_BIT;
@@ -250,9 +317,13 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_COM2_OUT &= ~DOMAIN_ENABLE_COM2_BIT;
             else if (cmd == PD_CMD_Toggle)
                 DOMAIN_ENABLE_COM2_OUT ^= DOMAIN_ENABLE_COM2_BIT;
+            if(distQueryDomainSwitch(PD_COM2) == Switch_Enabled)
+                startOffTimerCOM2();
+            else
+                stopOffTimerCOM2();
             break;
         case PD_PPT:
-            if(distQueryDomainSwitch(PD_PPT) == 0)
+            if(distQueryDomainSwitch(PD_PPT) == Switch_Disabled)
                 shutoffDelay.ppt = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_PPT_OUT |= DOMAIN_ENABLE_PPT_BIT;
@@ -262,7 +333,7 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_PPT_OUT ^= DOMAIN_ENABLE_PPT_BIT;
             break;
         case PD_BDOT:
-            if(distQueryDomainSwitch(PD_BDOT) == 0)
+            if(distQueryDomainSwitch(PD_BDOT) == Switch_Disabled)
                 shutoffDelay.bdot = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_BDOT_OUT |= DOMAIN_ENABLE_BDOT_BIT;
@@ -280,7 +351,7 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_COM1_OUT ^= DOMAIN_ENABLE_COM1_BIT;
             break;
         case PD_RAHS:
-            if(distQueryDomainSwitch(PD_RAHS) == 0)
+            if(distQueryDomainSwitch(PD_RAHS) == Switch_Disabled)
                 shutoffDelay.rahs = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_RAHS_OUT |= DOMAIN_ENABLE_RAHS_BIT;
@@ -288,9 +359,13 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_RAHS_OUT &= ~DOMAIN_ENABLE_RAHS_BIT;
             else if (cmd == PD_CMD_Toggle)
                 DOMAIN_ENABLE_RAHS_OUT ^= DOMAIN_ENABLE_RAHS_BIT;
+            if(distQueryDomainSwitch(PD_RAHS) == Switch_Enabled)
+                startOffTimerRAHS();
+            else
+                stopOffTimerRAHS();
             break;
         case PD_ESTIM:
-            if(distQueryDomainSwitch(PD_ESTIM) == 0)
+            if(distQueryDomainSwitch(PD_ESTIM) == Switch_Disabled)
                 shutoffDelay.estim = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_ESTIM_OUT |= DOMAIN_ENABLE_ESTIM_BIT;
@@ -300,7 +375,7 @@ void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
                 DOMAIN_ENABLE_ESTIM_OUT ^= DOMAIN_ENABLE_ESTIM_BIT;
             break;
         case PD_EPS:
-            if(distQueryDomainSwitch(PD_EPS) == 0)
+            if(distQueryDomainSwitch(PD_EPS) == Switch_Disabled)
                 shutoffDelay.eps = AUTOSHUTOFF_DELAY;
             if (cmd == PD_CMD_Enable)
                 DOMAIN_ENABLE_EPS_OUT |= DOMAIN_ENABLE_EPS_BIT;
@@ -363,8 +438,6 @@ FILE_STATIC void distMonitorBattery()
     float prevBattV = gseg.battV;
     gseg.battV = newbattV;
 
-    uint8_t prevMode = (uint8_t)gseg.uvmode;
-
     if (newbattV <= gseg.undervoltagethreshold && prevBattV <= gseg.undervoltagethreshold)
         gseg.uvmode = (uint8_t)UV_FullShutdown;
     else
@@ -423,8 +496,6 @@ FILE_STATIC void distBcSendMeta()
 
 void distSetOCPThreshold(PowerDomainID domain, float newval)
 {
-    int i;
-
     // 0.0f means don't change current value
     if (newval == 0.0f)
         return;
@@ -450,7 +521,6 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
     firedeploy_segment *fsegment;
 
     int i;
-    float newval;
 
     if (mode == Mode_BinaryStreaming)
     {
@@ -503,8 +573,10 @@ uint8_t getPDState(PowerDomainID pd)
         return 3; //batt_undervoltage
     else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_OffInitial)
         return 4;
+    else if(gseg.powerdomainlastcmds[(int8_t)pd] == PD_CMD_Autoshutoff)
+        return 5; //non-responsive
     else
-        return 5; //other
+        return 6; //other
 }
 
 void rcPopulateH1(CANPacket *out)
@@ -516,7 +588,9 @@ void rcPopulateH1(CANPacket *out)
     rc.rc_eps_dist_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
     rc.rc_eps_dist_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
     encoderc_eps_dist_h1(&rc, out);
-    aggVec_as_reset((aggVec *)&mspTempAg);
+    clearTemp &= ~BIT1;
+    if(!clearTemp)
+        aggVec_as_reset((aggVec *)&mspTempAg);
 }
 
 void rcPopulateH2(CANPacket *out)
@@ -524,6 +598,25 @@ void rcPopulateH2(CANPacket *out)
     rc_eps_dist_h2 rc = {0};
     rc.rc_eps_dist_h2_canrxerror = canRxErrorCheck();
     encoderc_eps_dist_h2(&rc, out);
+}
+
+void rcPopulate1(CANPacket *out)
+{
+    rc_eps_dist_1 rc = {0};
+    rc.rc_eps_dist_1_batt_v_avg = aggVec_avg_i_i(&battVAg);
+    rc.rc_eps_dist_1_com1_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
+    rc.rc_eps_dist_1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
+    encoderc_eps_dist_1(&rc, out);
+    aggVec_as_reset((aggVec *)&battVAg);
+    aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
+
+    clearTemp &= ~BIT0;
+    if(!clearTemp)
+        aggVec_as_reset((aggVec *)&mspTempAg);
+
+    clearBattV &= ~BIT0;
+    if(!clearBattV)
+        aggVec_as_reset((aggVec *)&battVAg);
 }
 
 void rcPopulate2(CANPacket *out)
@@ -542,18 +635,20 @@ void rcPopulate3(CANPacket *out)
     rc.rc_eps_dist_3_batt_v_max = aggVec_max_i(&battVAg);
     rc.rc_eps_dist_3_batt_v_min = aggVec_min_i(&battVAg);
     encoderc_eps_dist_3(&rc, out);
-    aggVec_as_reset((aggVec *)&battVAg);
+
+    clearBattV &= ~BIT1;
+    if(!clearBattV)
+        aggVec_as_reset((aggVec *)&battVAg);
 }
 
 void rcPopulate4(CANPacket *out)
 {
     rc_eps_dist_4 rc = {0};
-    rc.rc_eps_dist_4_com1_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
+    rc.rc_eps_dist_4_com1_c_avg = 0; //aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
     rc.rc_eps_dist_4_com1_c_max = aggVec_max_i(&ssCurrAgs[PD_COM1]);
     rc.rc_eps_dist_4_com1_c_min = aggVec_min_i(&ssCurrAgs[PD_COM1]);
     rc.rc_eps_dist_4_com1_state = getPDState(PD_COM1);
     encoderc_eps_dist_4(&rc, out);
-    aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
 }
 
 void rcPopulate5(CANPacket *out)
@@ -729,9 +824,9 @@ void autoShutoff()
         if(shutoffDelay.com2)
             shutoffDelay.com2--;
         else
-            if(shutoffEnabled.com2 == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_COM2_FLAG && shutoffDelay.com2 == 0)
+            if(shutoffEnabled.com2 == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_COM2_FLAG)
             {
-                distDomainSwitch(PD_COM2, PD_CMD_Disable);
+                distDomainSwitch(PD_COM2, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_COM2_FLAG;
             }
 
@@ -740,7 +835,7 @@ void autoShutoff()
         else
             if(shutoffEnabled.rahs == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_RAHS_FLAG)
             {
-                distDomainSwitch(PD_RAHS, PD_CMD_Disable);
+                distDomainSwitch(PD_RAHS, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_RAHS_FLAG;
             }
 
@@ -749,7 +844,7 @@ void autoShutoff()
         else
             if(shutoffEnabled.bdot == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_BDOT_FLAG)
             {
-                distDomainSwitch(PD_BDOT, PD_CMD_Disable);
+                distDomainSwitch(PD_BDOT, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_BDOT_FLAG;
             }
 
@@ -758,7 +853,7 @@ void autoShutoff()
         else
             if(shutoffEnabled.estim == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_ESTIM_FLAG)
             {
-                distDomainSwitch(PD_ESTIM, PD_CMD_Disable);
+                distDomainSwitch(PD_ESTIM, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_ESTIM_FLAG;
             }
 
@@ -767,7 +862,7 @@ void autoShutoff()
         else
             if(shutoffEnabled.eps == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_EPS_FLAG)
             {
-                distDomainSwitch(PD_EPS, PD_CMD_Disable);
+                distDomainSwitch(PD_EPS, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_EPS_FLAG;
             }
 
@@ -776,7 +871,7 @@ void autoShutoff()
         else
             if(shutoffEnabled.ppt == CAN_ENUM_NBOOL_TRUE && rcResponseFlag & PD_PPT_FLAG)
             {
-                distDomainSwitch(PD_PPT, PD_CMD_Disable);
+                distDomainSwitch(PD_PPT, PD_CMD_Autoshutoff);
                 rcResponseFlag &= ~PD_PPT_FLAG;
             }
     }
@@ -852,6 +947,8 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_CMD_ROLLCALL:
             rollcallStart();
             autoShutoffSetFlags();
+            clearTemp = 3; //flags for clear after field has been sent in rollcall twice
+            clearBattV = 3;
             rollcallWatchdog = 0;
             break;
         case CAN_ID_RC_ADCS_BDOT_H1:
@@ -1246,6 +1343,11 @@ int main(void)
 
         if(i2cGetLastOperationResult())
             restartINA();
+
+        if(checkOffTimerCOM2())
+            distDomainSwitch(PD_COM2, PD_CMD_Autoshutoff);
+        if(checkOffTimerRAHS())
+            distDomainSwitch(PD_RAHS, PD_CMD_Autoshutoff);
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!

@@ -13,7 +13,7 @@
 
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
- rcPopulateH1, rcPopulateH2, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate6, rcPopulate7
+ rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5, rcPopulate6, rcPopulate7
 };
 
 // Main status (a structure) and state and mode variables
@@ -40,6 +40,7 @@ FILE_STATIC hDev hTempC;
 
 FILE_STATIC volatile uint8_t heaterIsChecking;
 FILE_STATIC volatile uint8_t balancerIsChecking = 1;
+FILE_STATIC char clearBattV = 0;
 
 FILE_STATIC float previousTemp;
 
@@ -207,6 +208,7 @@ void can_packet_rx_callback(CANPacket *packet)
     {
         case CAN_ID_CMD_ROLLCALL:
             rollcallStart();
+            clearBattV = 3;
             break;
         case CAN_ID_GCMD_RESET_MINMAX:
         {
@@ -269,6 +271,19 @@ void rcPopulateH2(CANPacket *out)
     encoderc_eps_batt_h2(&rc, out);
 }
 
+void rcPopulate1(CANPacket *out)
+{
+    rc_eps_batt_1 rc = {0};
+    rc.rc_eps_batt_1_acc_charge_avg = aggVec_avg_i_i(&accChargeAg);
+    rc.rc_eps_batt_1_voltage_avg = aggVec_avg_i_i(&voltageAg);
+    encoderc_eps_batt_1(&rc, out);
+    aggVec_as_reset((aggVec *)&accChargeAg);
+
+    clearBattV &= ~BIT0;
+    if(~clearBattV)
+        aggVec_as_reset((aggVec *)&voltageAg);
+}
+
 void rcPopulate2(CANPacket *out)
 {
     rc_eps_batt_2 rc = {0};
@@ -302,7 +317,10 @@ void rcPopulate4(CANPacket *out)
     rc.rc_eps_batt_4_bal_auto_state = balancerIsChecking;
     rc.rc_eps_batt_4_heater_auto_state = heaterIsChecking;
     encoderc_eps_batt_4(&rc, out);
-    aggVec_as_reset((aggVec *)&voltageAg);
+
+    clearBattV &= ~BIT0;
+    if(~clearBattV)
+        aggVec_as_reset((aggVec *)&voltageAg);
 }
 
 void rcPopulate5(CANPacket *out)
@@ -329,11 +347,10 @@ void rcPopulate6(CANPacket *out)
 void rcPopulate7(CANPacket *out)
 {
     rc_eps_batt_7 rc = {0};
-    rc.rc_eps_batt_7_acc_charge_avg = aggVec_avg_i_i(&accChargeAg);
+    rc.rc_eps_batt_7_acc_charge_avg = 0; //aggVec_avg_i_i(&accChargeAg);
     rc.rc_eps_batt_7_acc_charge_max = aggVec_max_i(&accChargeAg);
     rc.rc_eps_batt_7_acc_charge_min = aggVec_min_i(&accChargeAg);
     encoderc_eps_batt_7(&rc, out);
-    aggVec_as_reset((aggVec *)&accChargeAg);
 }
 
 /*
