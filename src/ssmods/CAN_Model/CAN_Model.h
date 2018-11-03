@@ -19,7 +19,7 @@
 #include "core/timers.h"
 
 typedef enum {
-	PD_DIST = 0,
+    PD_DIST = 0,
     PD_COM2 = 1,
     PD_RAHS = 2,
     PD_BDOT = 3,

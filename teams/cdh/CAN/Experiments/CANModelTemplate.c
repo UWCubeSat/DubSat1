@@ -15,17 +15,23 @@ FILE_STATIC uint32_t * rollcallIDs[] =
     /*[Populate function IDs here]*/
 };
 
-uint16_t arraySizes[] = {/*[Rollcall ID array sizes here]*/};
+/*[Packet DLC arrays here]*/
+FILE_STATIC uint8_t * rollcallLengths[] =
+{
+	/*[Populate packet DLCs here]*/
+};
+
+uint16_t arraySizes[] = {sizeof(distArray) / sizeof(uint32_t), sizeof(com2Array) / sizeof(uint32_t), sizeof(rahsArray) / sizeof(uint32_t), sizeof(bdotArray) / sizeof(uint32_t), sizeof(estimArray) / sizeof(uint32_t), sizeof(epsArray) / sizeof(uint32_t), sizeof(pptArray) / sizeof(uint32_t), };
 volatile TIMER_LENGTH realtimeCounter = 0;
 uint8_t rcSendFlag = 0;
 #pragma PERSISTENT(initSequenceFlag)
 char initSequenceFlag = 1;
 
-uint8_t sendCANPacket(uint32_t id)
+uint8_t sendCANPacket(uint32_t id, uint8_t length)
 {
 	CANPacket pkt;
     pkt.id = id;
-    pkt.length = 8;
+    pkt.length = length;
     int i;
     for(i = 0; i < 4; i++)
     {
@@ -71,7 +77,7 @@ void sendRCResponse()
 
         if(j < arraySizes[i])
         {
-            sendCANPacket(rollcallIDs[i][j]);
+            sendCANPacket(rollcallIDs[i][j], rollcallLengths[i][j]);
 			j++;
         }
         else

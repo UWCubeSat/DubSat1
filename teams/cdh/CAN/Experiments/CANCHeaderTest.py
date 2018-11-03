@@ -542,7 +542,7 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
     cFile.close()
 
 def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFileName):
-    CAN_MODEL_VERSION_NUM = 1
+    CAN_MODEL_VERSION_NUM = 2
     #NOTE: rates are in 100ms increments
     realtimePacketRates = {"cmd_mtq_bdot" : 2, "com2_state" : 100, "estim_sun_unit_x" : 28, "estim_sun_unit_y" : 28, "estim_sun_unit_z" : 28, "estim_mag_unit_x" : 28,
     "estim_mag_unit_y" : 28, "estim_mag_unit_z" : 28, "estim_state" : 28,
@@ -566,6 +566,7 @@ def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFile
 '''
     #rollcall
     rollcallIDArrays = ["{", "{", "{", "{", "{", "{", "{"]
+    rollcallLenArrays = ["{", "{", "{", "{", "{", "{", "{"]
     pdNames = ["dist", "com2", "rahs", "bdot", "estim", "eps", "ppt"]
 
     #realtime
@@ -578,12 +579,14 @@ def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFile
         if "rc" in frame.name:
             for subsystem in subsystemToPowerDomain:
                 if subsystem in frame.name:
-                    rollcallIDArrays[pdNames.index(subsystemToPowerDomain[subsystem])] += str(frame.id) + ", "
+                    index = pdNames.index(subsystemToPowerDomain[subsystem])
+                    rollcallIDArrays[index] += str(frame.id) + ", "
+                    rollcallLenArrays[index] += str(frame.size) + ", "
             if "eps_dist" in frame.name:
                 rollcallIDArrays[0] += str(frame.id) + ", "
+                rollcallLenArrays[0] += str(frame.size) + ", "
 
         if frame.name in realtimePacketRates:
-            print(frame.name)
             realtimeLastUpdateVars += "TIMER_LENGTH last_" + frame.name + "_time = 0;\n"
             transmitter = str(frame.transmitter)
             for subsystem in subsystemToPowerDomain:
@@ -592,24 +595,28 @@ def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFile
                     realtimeUpdateMethods += "if(checkTimeElapsed(last_" + frame.name + "_time, " + str(realtimePacketRates[frame.name]) + ") && PD_IN_" + powerDomainName + " & PD_BIT_" + powerDomainName + ''')
         {
             last_''' + frame.name + '''_time = realtimeCounter;
-            while(sendCANPacket(''' + str(frame.id) + '''));
+            while(sendCANPacket(''' + str(frame.id) + ", " + str(frame.size) + '''));
         }
         '''
     rollcallArraysString = ""
     rollcallIDString = ""
-    arrayLenString = ""
+    packetLenArrayString = ""
+    packetLenString = ""
     for i in range(0, len(rollcallIDArrays)):
         arrayName = pdNames[i] + "Array"
+        lenArrayName = pdNames[i] + "Lens"
         rollcallArraysString += "uint32_t " + arrayName + "[] = " + rollcallIDArrays[i] + "};\n"
+        packetLenArrayString += "uint8_t " + lenArrayName + "[] = " + rollcallLenArrays[i] + "};\n"
         rollcallIDString += arrayName + ", "
-        arrayLenString += "sizeof(" + arrayName + ") / sizeof(uint32_t), "
+        packetLenString += lenArrayName + ", "
 
     cFileString = header + templateCFile.read()
     cFileString = cFileString.replace("/*[version number here]*/", str(CAN_MODEL_VERSION_NUM))
     cFileString = cFileString.replace("/*[Function ID arrays here]*/", rollcallArraysString)
     cFileString = cFileString.replace("/*[Populate function IDs here]*/", rollcallIDString)
     cFileString = cFileString.replace("/*[Realtime Update Methods Here]*/", realtimeUpdateMethods)
-    cFileString = cFileString.replace("/*[Rollcall ID array sizes here]*/", arrayLenString)
+    cFileString = cFileString.replace("/*[Packet DLC arrays here]*/", packetLenArrayString)
+    cFileString = cFileString.replace("/*[Populate packet DLCs here]*/", packetLenString)
 
     hFileString = header + templateHFile.read()
     hFileString = hFileString.replace("/*[last update times here]*/", realtimeLastUpdateVars)
