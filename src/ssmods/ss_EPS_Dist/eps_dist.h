@@ -179,8 +179,7 @@ CMD_SEGMENT {
 
 #define BATTV_CONV_FACTOR    2.8867925f
 
-//#define BATT_DEFAULT_PARTIAL_THRESH   (5.8f)
-#define BATT_DEFAULT_FULL_THRESH      (5.2f)
+#define BATT_DEFAULT_FULL_THRESH      (6.0f)
 #define BATT_HYSTER   (0.25f)
 
 
