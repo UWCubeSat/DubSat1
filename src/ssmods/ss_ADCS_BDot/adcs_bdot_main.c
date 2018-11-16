@@ -420,6 +420,11 @@ void determine_bdot_state()
                     start_spam_timer(spam_on_timer_ms);
                 }
             }
+            else
+            {
+                end_spam_timer();
+                start_spam_timer(spam_off_timer_ms);
+            }
             break;
         case SLEEP_MODE:
             /* make sure nap timer is off. if it is off, then flag is 0 and the function does nothing */
@@ -462,18 +467,18 @@ void determine_bdot_state()
 
 void clear_update_bdot_state_flags()
 {
-    if(spam_control_switch_change_flag)
+    if (spam_control_switch_change_flag)
     {
-        if(gcmd_spam_control_switch == SPAM_OFF)
+        if (gcmd_spam_control_switch == SPAM_OFF)
         {
-            if(bdot_state == SPAM_MODE)
+            if (bdot_state == SPAM_MODE)
             {
                 // go back to the previous state if current state is in spam: either normal or sleep.
                 bdot_state = last_bdot_state;
             }
             end_spam_timer();
             end_spam_avg_timer();
-        } else if(gcmd_spam_control_switch == SPAM_ON)
+        } else if (gcmd_spam_control_switch == SPAM_ON)
         {
             if(bdot_state == NORMAL_MODE || bdot_state == SLEEP_MODE)
             {
@@ -483,22 +488,9 @@ void clear_update_bdot_state_flags()
             end_spam_timer();
             start_spam_timer(spam_on_timer_ms);
             reset_spam_avg_agg();
+            current_spam_axis = SPAM_X;
         }
         spam_control_switch_change_flag = 0;
-    }
-    if(spam_control_time_change_flag)
-    {
-        end_spam_timer();
-        if(bdot_state == SPAM_MODE)
-        {
-            start_spam_timer(spam_on_timer_ms);
-            reset_spam_avg_agg();
-            current_spam_axis = SPAM_X;
-        } else if(bdot_state != SPAM_MODE)
-        {
-            start_spam_timer(spam_off_timer_ms);
-        }
-        spam_control_time_change_flag = 0;
     }
 
     if(max_tumbling_time_change_flag)
@@ -1277,33 +1269,36 @@ void mag_select_switch(uint8_t mag_selection)
 void change_max_tumble_time(uint16_t max_tumble_time_min)
 {
     if(max_tumble_time_min == 0) return;
-    check_nap_status_timer_ms = ((uint32_t) max_tumble_time_min) * MINUTES_TO_MILLISEC_CONVERSION_FACTOR;
-    max_tumbling_time_change_flag = 1;
+    uint32_t cmd_check_nap_status_timer_ms = ((uint32_t) max_tumble_time_min) * MINUTES_TO_MILLISEC_CONVERSION_FACTOR;
+    if(check_nap_status_timer_ms != cmd_check_nap_status_timer_ms)
+    {
+        check_nap_status_timer_ms = cmd_check_nap_status_timer_ms;
+        max_tumbling_time_change_flag = 1;
+    }
 }
 
 void spam_control_operation(uint16_t off_time_min, uint16_t on_time_min, uint8_t spam_switch, int8_t x_dipole, int8_t y_dipole, int8_t z_dipole)
 {
-    if (off_time_min > 0 && on_time_min > 0 && spam_switch == SPAM_ON)
+    uint32_t cmd_off_timer_ms = ((uint32_t) off_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR);
+    uint32_t cmd_on_timer_ms = (uint32_t)((float) on_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR) / 3; // divide by three for three axis
+    if (cmd_off_timer_ms > 0 && cmd_on_timer_ms > 0)
     {
-        spam_control_time_change_flag = 1;
-        spam_off_timer_ms = ((uint32_t) off_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR);
-        spam_on_timer_ms = (uint32_t)((float) on_time_min * MINUTES_TO_MILLISEC_CONVERSION_FACTOR) / 3; // divide by three for three axis
+        spam_off_timer_ms = cmd_off_timer_ms;
+        spam_on_timer_ms = cmd_on_timer_ms; // divide by three for three axis
     }
+
     gcmd_spam_x_dipole = x_dipole;
     gcmd_spam_y_dipole = y_dipole;
     gcmd_spam_z_dipole = z_dipole;
 
-    if(spam_switch != gcmd_spam_control_switch)
+    spam_control_switch_change_flag = 1;
+    if(spam_switch == SPAM_OFF)
     {
-        spam_control_switch_change_flag = 1;
-        if(spam_switch == SPAM_OFF)
-        {
-            gcmd_spam_control_switch = SPAM_OFF;
-        }
-        else if(spam_switch == SPAM_ON)
-        {
-            gcmd_spam_control_switch = SPAM_ON;
-        }
+        gcmd_spam_control_switch = SPAM_OFF;
+    }
+    else if(spam_switch == SPAM_ON)
+    {
+        gcmd_spam_control_switch = SPAM_ON;
     }
 }
 
