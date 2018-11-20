@@ -3635,23 +3635,6 @@ void encoderc_eps_batt_1(rc_eps_batt_1 *input, CANPacket *output){
     reverseArray((output->data), 0, 7);
 }
 
-void decodecmd_ppt_set_count(CANPacket *input, cmd_ppt_set_count *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    output -> cmd_ppt_set_count_count = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-}
-
-void encodecmd_ppt_set_count(cmd_ppt_set_count *input, CANPacket *output){
-    output -> id = 302252294;
-    output -> length = 1;
-    uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> cmd_ppt_set_count_count))) & 0xff) << 56;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
 void decodecmd_ppt_time_upd(CANPacket *input, cmd_ppt_time_upd *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -3670,33 +3653,6 @@ void encodecmd_ppt_time_upd(cmd_ppt_time_upd *input, CANPacket *output){
     fullPacketData |= (((uint64_t)((input -> cmd_ppt_time_upd_cooldown))) & 0xffff);
     fullPacketData |= (((uint64_t)((input -> cmd_ppt_time_upd_ign_delay))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> cmd_ppt_time_upd_charge))) & 0xffff) << 48;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
-void decodeppt_firing_result(CANPacket *input, ppt_firing_result *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    output -> ppt_firing_result_panel_good = (uint8_t) (((fullData & ((uint64_t) 0xff))));
-    output -> ppt_firing_result_batt_good = (uint8_t) (((fullData & ((uint64_t) 0xff << 8)) >> 8));
-    output -> ppt_firing_result_coulmb_good = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
-    output -> ppt_firing_result_ign_time = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
-    output -> ppt_firing_result_main_time = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
-    output -> ppt_firing_result_code = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-}
-
-void encodeppt_firing_result(ppt_firing_result *input, CANPacket *output){
-    output -> id = 307822832;
-    output -> length = 8;
-    uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> ppt_firing_result_panel_good))) & 0xff);
-    fullPacketData |= (((uint64_t)((input -> ppt_firing_result_batt_good))) & 0xff) << 8;
-    fullPacketData |= (((uint64_t)((input -> ppt_firing_result_coulmb_good))) & 0xff) << 48;
-    fullPacketData |= (((uint64_t)((input -> ppt_firing_result_ign_time))) & 0xffff) << 16;
-    fullPacketData |= (((uint64_t)((input -> ppt_firing_result_main_time))) & 0xffff) << 32;
-    fullPacketData |= (((uint64_t)((input -> ppt_firing_result_code))) & 0xff) << 56;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -3809,23 +3765,6 @@ void encodetle_1(tle_1 *input, CANPacket *output){
     reverseArray((output->data), 0, 7);
 }
 
-void decodecmd_pd_rst(CANPacket *input, cmd_pd_rst *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    output -> cmd_pd_rst_confirm = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
-}
-
-void encodecmd_pd_rst(cmd_pd_rst *input, CANPacket *output){
-    output -> id = 302121233;
-    output -> length = 1;
-    uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> cmd_pd_rst_confirm))) & 0x1) << 63;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
 void decodegcmd_com2_run(CANPacket *input, gcmd_com2_run *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -3867,25 +3806,6 @@ void encodecom2_state(com2_state *input, CANPacket *output){
     fullPacketData |= (((uint64_t)((input -> com2_state_qfilesize))) & 0xffff) << 16;
     fullPacketData |= (((uint64_t)((input -> com2_state_qlen))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> com2_state_uptime))) & 0xffff) << 48;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
-void decodecmd_pd_enable(CANPacket *input, cmd_pd_enable *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    output -> cmd_pd_enable_enable = (uint8_t) (((fullData & ((uint64_t) 0x1 << 55)) >> 55));
-    output -> cmd_pd_enable_domain = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-}
-
-void encodecmd_pd_enable(cmd_pd_enable *input, CANPacket *output){
-    output -> id = 302252289;
-    output -> length = 2;
-    uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> cmd_pd_enable_enable))) & 0x1) << 55;
-    fullPacketData |= (((uint64_t)((input -> cmd_pd_enable_domain))) & 0xff) << 56;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -4178,21 +4098,6 @@ void encodebdot_tumble_status(bdot_tumble_status *input, CANPacket *output){
     output -> length = 1;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> bdot_tumble_status_status))) & 0x1) << 63;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
-void decodesync_1(CANPacket *input, sync_1 *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-}
-
-void encodesync_1(sync_1 *input, CANPacket *output){
-    output -> id = 6357009;
-    output -> length = 0;
-    uint64_t fullPacketData = 0x0000000000000000;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);

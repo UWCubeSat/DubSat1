@@ -31,7 +31,6 @@ uint8_t aboveGrndStation = 0;
 uint8_t battChargeOK = 0;
 
 //FLAGS:
-uint8_t sendSync1Flag = 0;
 uint8_t sendRcFlag = 0;
 
 // Main status (a structure) and state and mode variables
@@ -128,18 +127,6 @@ FILE_STATIC void sendTiming()
 }
 
 ///////////////////////////////////////////////////////////////
-FILE_STATIC void sendSync1()
-{
-    CANPacket syncPacket = {0};
-    sync_1 syncPacket_info;
-
-    encodesync_1(&syncPacket_info, &syncPacket);
-    if(canTxCheck() != CAN_TX_BUSY)
-    {
-        canSendPacket(&syncPacket);
-        sendSync1Flag = 0;
-    }
-}
 
 void initPins()
 {
@@ -319,8 +306,6 @@ int main(void)
             sendHealth();
             sendFire();
         }
-        if(sendSync1Flag)
-            sendSync1();
         sendRC();
         counter++;
     }
@@ -332,7 +317,6 @@ void startFiring(uint8_t timeout)
     {
         LED_OUT &= ~LED_BIT_IDLE;
         currTimeout = timeout - 1;
-        sendSync1Flag = 1;
         mod_status.ss_state = State_Cooldown;
         TB0CCR1 = TB0R + cooldownTime;
         TB0CCTL1 = CCIE;
@@ -543,8 +527,6 @@ __interrupt void Timer0_B1_ISR (void)
                         if(currTimeout)
                         {
                             currTimeout--;
-                            if(currTimeout)
-                                sendSync1Flag = 1;
                             mod_status.ss_state = State_Cooldown;
                             TB0CCR1 += cooldownTime;
                         }

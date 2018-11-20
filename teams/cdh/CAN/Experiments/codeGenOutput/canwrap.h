@@ -189,18 +189,14 @@
 #define CAN_ID_RC_EPS_BATT_3 308871682
 #define CAN_ID_RC_EPS_BATT_2 308871681
 #define CAN_ID_RC_EPS_BATT_1 309920256
-#define CAN_ID_CMD_PPT_SET_COUNT 302252294
 #define CAN_ID_CMD_PPT_TIME_UPD 302252293
-#define CAN_ID_PPT_FIRING_RESULT 307822832
 #define CAN_ID_TLE_5 302448712
 #define CAN_ID_TLE_4 302448711
 #define CAN_ID_TLE_3 302448710
 #define CAN_ID_TLE_2 302448709
 #define CAN_ID_TLE_1 302448708
-#define CAN_ID_CMD_PD_RST 302121233
 #define CAN_ID_GCMD_COM2_RUN 302514673
 #define CAN_ID_COM2_STATE 307757552
-#define CAN_ID_CMD_PD_ENABLE 302252289
 #define CAN_ID_CMD_BATT_RST 302252290
 #define CAN_ID_CMD_BATT_BAL_ENABLE 302252291
 #define CAN_ID_CMD_REBOOT_REQUEST 262152
@@ -215,7 +211,6 @@
 #define CAN_ID_SENSORPROC_SUN 335872065
 #define CAN_ID_CMD_MTQ_BDOT 307691553
 #define CAN_ID_BDOT_TUMBLE_STATUS 308740128
-#define CAN_ID_SYNC_1 6357009
 #define CAN_ID_GRND_EPOCH 302449337
 
 #define CAN_ENUM_PD_STATE_UNKNOWN 6
@@ -1283,25 +1278,12 @@ typedef struct rc_eps_batt_1 {
     uint16_t rc_eps_batt_1_acc_charge_avg; // 22.588 mAh
 } rc_eps_batt_1;
 
-typedef struct cmd_ppt_set_count {
-    uint8_t cmd_ppt_set_count_count; //  (No Units)
-} cmd_ppt_set_count;
-
 typedef struct cmd_ppt_time_upd {
     uint16_t cmd_ppt_time_upd_ign_charge; // 2^-15s
     uint16_t cmd_ppt_time_upd_cooldown; // 2^-15s
     uint16_t cmd_ppt_time_upd_ign_delay; // 2^-15s
     uint16_t cmd_ppt_time_upd_charge; // 2^-15s
 } cmd_ppt_time_upd;
-
-typedef struct ppt_firing_result {
-    uint8_t ppt_firing_result_panel_good; //  (No Units)
-    uint8_t ppt_firing_result_batt_good; //  (No Units)
-    uint8_t ppt_firing_result_coulmb_good; //  (No Units)
-    uint16_t ppt_firing_result_ign_time; // 2^-15s
-    uint16_t ppt_firing_result_main_time; // 2^-15s
-    uint8_t ppt_firing_result_code; //  (No Units)
-} ppt_firing_result;
 
 typedef struct tle_5 {
     double tle_5_mnm; //  (No Units)
@@ -1326,10 +1308,6 @@ typedef struct tle_1 {
     float tle_1_bstar; //  (No Units)
 } tle_1;
 
-typedef struct cmd_pd_rst {
-    uint8_t cmd_pd_rst_confirm; //  (No Units)
-} cmd_pd_rst;
-
 typedef struct gcmd_com2_run {
     uint8_t gcmd_com2_run_clear; //  (No Units)
     uint8_t gcmd_com2_run_jump; //  (No Units)
@@ -1343,11 +1321,6 @@ typedef struct com2_state {
     uint16_t com2_state_qlen; // files
     uint16_t com2_state_uptime; // s
 } com2_state;
-
-typedef struct cmd_pd_enable {
-    uint8_t cmd_pd_enable_enable; //  (No Units)
-    uint8_t cmd_pd_enable_domain; //  (No Units)
-} cmd_pd_enable;
 
 typedef struct cmd_batt_rst {
     uint8_t cmd_batt_rst_confirm; //  (No Units)
@@ -1431,9 +1404,6 @@ typedef struct cmd_mtq_bdot {
 typedef struct bdot_tumble_status {
     uint8_t bdot_tumble_status_status; // bool
 } bdot_tumble_status;
-
-typedef struct sync_1 {
-} sync_1;
 
 typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
@@ -1926,14 +1896,8 @@ void decoderc_eps_batt_2(CANPacket *input, rc_eps_batt_2 *output);
 void encoderc_eps_batt_1(rc_eps_batt_1 *input, CANPacket* output);
 void decoderc_eps_batt_1(CANPacket *input, rc_eps_batt_1 *output);
 
-void encodecmd_ppt_set_count(cmd_ppt_set_count *input, CANPacket* output);
-void decodecmd_ppt_set_count(CANPacket *input, cmd_ppt_set_count *output);
-
 void encodecmd_ppt_time_upd(cmd_ppt_time_upd *input, CANPacket* output);
 void decodecmd_ppt_time_upd(CANPacket *input, cmd_ppt_time_upd *output);
-
-void encodeppt_firing_result(ppt_firing_result *input, CANPacket* output);
-void decodeppt_firing_result(CANPacket *input, ppt_firing_result *output);
 
 void encodetle_5(tle_5 *input, CANPacket* output);
 void decodetle_5(CANPacket *input, tle_5 *output);
@@ -1950,17 +1914,11 @@ void decodetle_2(CANPacket *input, tle_2 *output);
 void encodetle_1(tle_1 *input, CANPacket* output);
 void decodetle_1(CANPacket *input, tle_1 *output);
 
-void encodecmd_pd_rst(cmd_pd_rst *input, CANPacket* output);
-void decodecmd_pd_rst(CANPacket *input, cmd_pd_rst *output);
-
 void encodegcmd_com2_run(gcmd_com2_run *input, CANPacket* output);
 void decodegcmd_com2_run(CANPacket *input, gcmd_com2_run *output);
 
 void encodecom2_state(com2_state *input, CANPacket* output);
 void decodecom2_state(CANPacket *input, com2_state *output);
-
-void encodecmd_pd_enable(cmd_pd_enable *input, CANPacket* output);
-void decodecmd_pd_enable(CANPacket *input, cmd_pd_enable *output);
 
 void encodecmd_batt_rst(cmd_batt_rst *input, CANPacket* output);
 void decodecmd_batt_rst(CANPacket *input, cmd_batt_rst *output);
@@ -2003,9 +1961,6 @@ void decodecmd_mtq_bdot(CANPacket *input, cmd_mtq_bdot *output);
 
 void encodebdot_tumble_status(bdot_tumble_status *input, CANPacket* output);
 void decodebdot_tumble_status(CANPacket *input, bdot_tumble_status *output);
-
-void encodesync_1(sync_1 *input, CANPacket* output);
-void decodesync_1(CANPacket *input, sync_1 *output);
 
 void encodegrnd_epoch(grnd_epoch *input, CANPacket* output);
 void decodegrnd_epoch(CANPacket *input, grnd_epoch *output);
