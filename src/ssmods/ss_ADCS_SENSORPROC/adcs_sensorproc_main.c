@@ -12,52 +12,11 @@
 #include "interfaces/canwrap.h"
 
 #include "adcs_sensorproc_ids.h"
-#include "sensorInterface.h"
 #include "sunsensor_io.h"
 #include "mag_io.h"
 #include "imu_io.h"
 
 #include "autocode/MSP_SP.h"
-
-/* Sensor interfaces */
-
-FILE_STATIC const SensorInterface sensorInterfaces[] =
-{
-    {
-     sunsensorioInit,
-     sunsensorioUpdate,
-     sunsensorioSendBackchannel,
-     sunsensorioSendCAN,
-	 NULL,
-    },
-#if ENABLE_MAG1
-    {
-     magioInit1,
-     magioUpdate1,
-     magioSendBackchannel1,
-     magioSendCAN1,
-     NULL,
-    },
-#endif /* ENABLE_MAG1 */
-#if ENABLE_MAG2
-    {
-     magioInit2,
-     magioUpdate2,
-     magioSendBackchannel2,
-     magioSendCAN2,
-     NULL,
-    },
-#endif /* ENABLE_MAG2 */
-    {
-     imuioInit,
-     imuioUpdate,
-     imuioSendBackchannel,
-     imuioSendCAN,
-	 NULL,
-    },
-};
-
-#define NUM_INTERFACES (sizeof(sensorInterfaces) / sizeof(SensorInterface))
 
 /* Rollcall */
 
@@ -359,38 +318,58 @@ void sendMetaSegment()
 
 void initSensorInterfaces()
 {
-    uint8_t i = NUM_INTERFACES;
-    while (i-- != 0)
-    {
-        sensorInterfaces[i].init();
-    }
+    sunsensorioInit();
+    imuioInit();
+
+#if ENABLE_MAG1
+    magioInit1();
+#endif /* ENABLE_MAG1 */
+
+#if ENABLE_MAG2
+    magioInit2();
+#endif /* ENABLE_MAG2 */
 }
 
 void updateSensorInterfaces()
 {
-    uint8_t i = NUM_INTERFACES;
-    while (i-- != 0)
-    {
-        sensorInterfaces[i].update();
-    }
+    sunsensorioUpdate();
+    imuioUpdate();
+
+#if ENABLE_MAG1
+    magioUpdate1();
+#endif /* ENABLE_MAG1 */
+
+#if ENABLE_MAG2
+    magioUpdate2();
+#endif /* ENABLE_MAG2 */
 }
 
 void sendSensorBackchannel()
 {
-    uint8_t i = NUM_INTERFACES;
-    while (i-- != 0)
-    {
-        sensorInterfaces[i].sendBackchannel();
-    }
+    sunsensorioSendBackchannel();
+    imuioSendBackchannel();
+
+#if ENABLE_MAG1
+    magioSendBackchannel1();
+#endif /* ENABLE_MAG1 */
+
+#if ENABLE_MAG2
+    magioSendBackchannel2();
+#endif /* ENABLE_MAG2 */
 }
 
 void sendSensorCAN()
 {
-    uint8_t i = NUM_INTERFACES;
-    while (i-- != 0)
-    {
-        sensorInterfaces[i].sendCan();
-    }
+    sunsensorioSendCAN();
+    imuioSendCAN();
+
+#if ENABLE_MAG1
+    magioSendCAN1();
+#endif /* ENABLE_MAG1 */
+
+#if ENABLE_MAG2
+    magioSendCAN2();
+#endif /* ENABLE_MAG2 */
 }
 
 void canRxCallback(CANPacket *p)
@@ -415,14 +394,6 @@ void canRxCallback(CANPacket *p)
     {
         //clear persistent flags here
         bspClearResetCount();
-    }
-    uint8_t i = NUM_INTERFACES;
-    while (i-- != 0)
-    {
-    	if (sensorInterfaces[i].handleCan)
-    	{
-        	sensorInterfaces[i].handleCan(p);
-    	}
     }
 }
 
