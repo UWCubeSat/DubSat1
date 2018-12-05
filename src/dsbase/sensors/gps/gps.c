@@ -11,8 +11,7 @@
 
 typedef enum reader_state
 {
-    State_Sync, State_Header, State_Message, State_ArrayLength,
-    State_ArrayMessage, State_CRC
+    State_Sync, State_Header, State_Message, State_CRC
 } reader_state;
 
 FILE_STATIC hBus uartHandle;

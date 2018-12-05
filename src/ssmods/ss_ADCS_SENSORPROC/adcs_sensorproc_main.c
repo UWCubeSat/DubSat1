@@ -1,8 +1,4 @@
-// using theses macros b/c i2c blocks when they aren't plugged in
-#define ENABLE_PHOTODIODES 1
-#define ENABLE_SUNSENSOR   1
-
-// time to wait between readings of the sun sensor and photodiodes
+// time to wait between LED blink
 #define UPDATE_DELAY_MS 200
 
 #include <adcs_sensorproc.h>
@@ -15,8 +11,6 @@
 
 #include "adcs_sensorproc_ids.h"
 #include "gps_io.h"
-#include "sunsensor_io.h"
-#include "photodiode_io.h"
 
 // Segment instances - used both to store information and as a structure for sending as telemetry/commands
 FILE_STATIC meta_segment mseg;
@@ -65,12 +59,6 @@ int main(void)
 
     // initialize sensors
     gpsioInit();
-#if ENABLE_SUNSENSOR
-    sunsensorioInit();
-#endif // ENABLE_SUNSENSOR
-#if ENABLE_PHOTODIODES
-    photodiodeioInit();
-#endif // ENABLE_PHOTODIODES
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
@@ -80,7 +68,6 @@ int main(void)
         {
             if (i % 4 == 0) // 1.25 Hz
             {
-                LED_OUT ^= LED_BIT;
                 gpsioSendPowerStatus();
                 sendHealthSegment();
             }
@@ -91,15 +78,7 @@ int main(void)
                 gpsioSendStatus();
             }
 
-#if ENABLE_PHOTODIODES
-            photodiodeioUpdate();
-            photodiodeioSendData();
-#endif // ENABLE_PHOTODIODES
-#if ENABLE_SUNSENSOR
-            sunsensorioUpdate(); // TODO don't let these block
-            sunsensorioSendData();
-#endif // ENABLE_SUNSENSOR
-
+            LED_OUT ^= LED_BIT;     // blink LED
             startSensorprocTimer(); // reset the timer
             i++;
         }
