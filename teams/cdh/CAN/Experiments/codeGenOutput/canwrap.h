@@ -170,7 +170,6 @@
 #define CAN_ID_RC_ADCS_MTQ_4 308871694
 #define CAN_ID_RC_ADCS_MTQ_3 308871693
 #define CAN_ID_RC_ADCS_MTQ_2 308871692
-#define CAN_ID_RC_ADCS_MTQ_1 308871691
 #define CAN_ID_RC_PPT_3 307823114
 #define CAN_ID_RC_PPT_2 307823113
 #define CAN_ID_RC_PPT_1 307823112
@@ -1147,9 +1146,6 @@ typedef struct rc_adcs_mtq_2 {
     int8_t rc_adcs_mtq_2_bdot_x_avg; //  (No Units)
 } rc_adcs_mtq_2;
 
-typedef struct rc_adcs_mtq_1 {
-} rc_adcs_mtq_1;
-
 typedef struct rc_ppt_3 {
 } rc_ppt_3;
 
@@ -1286,17 +1282,17 @@ typedef struct cmd_ppt_time_upd {
 } cmd_ppt_time_upd;
 
 typedef struct tle_5 {
-    double tle_5_mnm; //  (No Units)
+    double tle_5_mnm; // revolutions/day
 } tle_5;
 
 typedef struct tle_4 {
-    float tle_4_aop; //  (No Units)
-    float tle_4_raan; //  (No Units)
+    float tle_4_aop; // degrees
+    float tle_4_raan; // degrees
 } tle_4;
 
 typedef struct tle_3 {
     float tle_3_ecc; //  (No Units)
-    float tle_3_inc; //  (No Units)
+    float tle_3_inc; // degrees
 } tle_3;
 
 typedef struct tle_2 {
@@ -1304,7 +1300,7 @@ typedef struct tle_2 {
 } tle_2;
 
 typedef struct tle_1 {
-    float tle_1_mna; //  (No Units)
+    float tle_1_mna; // degrees
     float tle_1_bstar; //  (No Units)
 } tle_1;
 
@@ -1838,9 +1834,6 @@ void decoderc_adcs_mtq_3(CANPacket *input, rc_adcs_mtq_3 *output);
 
 void encoderc_adcs_mtq_2(rc_adcs_mtq_2 *input, CANPacket* output);
 void decoderc_adcs_mtq_2(CANPacket *input, rc_adcs_mtq_2 *output);
-
-void encoderc_adcs_mtq_1(rc_adcs_mtq_1 *input, CANPacket* output);
-void decoderc_adcs_mtq_1(CANPacket *input, rc_adcs_mtq_1 *output);
 
 void encoderc_ppt_3(rc_ppt_3 *input, CANPacket* output);
 void decoderc_ppt_3(CANPacket *input, rc_ppt_3 *output);
