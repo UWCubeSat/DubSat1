@@ -47,11 +47,11 @@ void can_packet_rx_callback(CANPacket *packet)
 		if(packet->id == CAN_ID_CMD_ROLLCALL)
     {
 		rcSendFlag = 1;
-        rcSendFlag |= !!(PD_IN_COM2 & PD_BIT_COM2) << PD_COM2;
-        rcSendFlag |= !!(PD_IN_BDOT & PD_BIT_BDOT) << PD_BDOT;
-        rcSendFlag |= !!(PD_IN_ESTIM & PD_BIT_ESTIM) << PD_ESTIM;
-        rcSendFlag |= !!(PD_IN_EPS & PD_BIT_EPS) << PD_EPS;
-        rcSendFlag |= !!(PD_IN_PPT & PD_BIT_PPT) << PD_PPT;
+        rcSendFlag |= !(PD_IN_COM2 & PD_BIT_COM2) << PD_COM2;
+        rcSendFlag |= !(PD_IN_BDOT & PD_BIT_BDOT) << PD_BDOT;
+        rcSendFlag |= !(PD_IN_ESTIM & PD_BIT_ESTIM) << PD_ESTIM;
+        rcSendFlag |= !(PD_IN_EPS & PD_BIT_EPS) << PD_EPS;
+        rcSendFlag |= !(PD_IN_PPT & PD_BIT_PPT) << PD_PPT;
 
         lastLED1Time = realtimeCounter;
         LED_1_FREQ = 7;
@@ -125,6 +125,15 @@ void bitInit()
 	PD_OUT_ESTIM &= ~PD_BIT_ESTIM;
 	PD_OUT_EPS &= ~PD_BIT_EPS;
 	PD_OUT_PPT &= ~PD_BIT_PPT;
+	
+	//opposite pins
+	P1DIR |= BIT6 | BIT7;
+	P2DIR |= BIT2 | BIT6;
+	P3DIR |= BIT6 | BIT7;
+	
+	P1OUT |= BIT6 | BIT7;
+	P2OUT |= BIT2 | BIT6;
+	P3OUT |= BIT6 | BIT7;
 }
 
 /*

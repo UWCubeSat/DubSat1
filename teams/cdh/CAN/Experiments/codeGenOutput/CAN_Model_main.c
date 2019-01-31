@@ -6,7 +6,7 @@
 /*
 * CANModel
 *
-*  Created on: Dec 16, 2018
+*  Created on: Jan 16, 2019
 *      Author: Nathan Wacker
 */
 
@@ -19,7 +19,7 @@
 #include "interfaces/canwrap.h"
 #include "interfaces/rollcall.h"
 
-#define VERSION_NUMBER 2
+#define VERSION_NUMBER 3
 
 uint32_t distArray[] = {307823323, 308871788, 308871779, 307823186, 307823179, 307823177, 307823176, 307823175, 307823173, 307823172, 307823187, 307823184, 307823183, 307823181, 307823182, 307823185, 307823180, 307823178, 308871750, 309330499, };
 uint32_t com2Array[] = {};
@@ -73,11 +73,11 @@ void can_packet_rx_callback(CANPacket *packet)
 		if(packet->id == CAN_ID_CMD_ROLLCALL)
     {
 		rcSendFlag = 1;
-        rcSendFlag |= !!(PD_IN_COM2 & PD_BIT_COM2) << PD_COM2;
-        rcSendFlag |= !!(PD_IN_BDOT & PD_BIT_BDOT) << PD_BDOT;
-        rcSendFlag |= !!(PD_IN_ESTIM & PD_BIT_ESTIM) << PD_ESTIM;
-        rcSendFlag |= !!(PD_IN_EPS & PD_BIT_EPS) << PD_EPS;
-        rcSendFlag |= !!(PD_IN_PPT & PD_BIT_PPT) << PD_PPT;
+        rcSendFlag |= !(PD_IN_COM2 & PD_BIT_COM2) << PD_COM2;
+        rcSendFlag |= !(PD_IN_BDOT & PD_BIT_BDOT) << PD_BDOT;
+        rcSendFlag |= !(PD_IN_ESTIM & PD_BIT_ESTIM) << PD_ESTIM;
+        rcSendFlag |= !(PD_IN_EPS & PD_BIT_EPS) << PD_EPS;
+        rcSendFlag |= !(PD_IN_PPT & PD_BIT_PPT) << PD_PPT;
 
         lastLED1Time = realtimeCounter;
         LED_1_FREQ = 7;
@@ -151,6 +151,15 @@ void bitInit()
 	PD_OUT_ESTIM &= ~PD_BIT_ESTIM;
 	PD_OUT_EPS &= ~PD_BIT_EPS;
 	PD_OUT_PPT &= ~PD_BIT_PPT;
+	
+	//opposite pins
+	P1DIR |= BIT6 | BIT7;
+	P2DIR |= BIT2 | BIT6;
+	P3DIR |= BIT6 | BIT7;
+	
+	P1OUT |= BIT6 | BIT7;
+	P2OUT |= BIT2 | BIT6;
+	P3OUT |= BIT6 | BIT7;
 }
 
 /*
@@ -193,57 +202,57 @@ int main(void)
             LED_OUT &= ~LED1_BIT;
         }
 
-        if(checkTimeElapsed(last_estim_sun_unit_z_time, 28) && PD_IN_ESTIM & PD_BIT_ESTIM)
+        if(checkTimeElapsed(last_estim_sun_unit_z_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_sun_unit_z_time = realtimeCounter;
             while(sendCANPacket(302449332, 8));
         }
-        if(checkTimeElapsed(last_estim_sun_unit_y_time, 28) && PD_IN_ESTIM & PD_BIT_ESTIM)
+        if(checkTimeElapsed(last_estim_sun_unit_y_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_sun_unit_y_time = realtimeCounter;
             while(sendCANPacket(302449331, 8));
         }
-        if(checkTimeElapsed(last_estim_sun_unit_x_time, 28) && PD_IN_ESTIM & PD_BIT_ESTIM)
+        if(checkTimeElapsed(last_estim_sun_unit_x_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_sun_unit_x_time = realtimeCounter;
             while(sendCANPacket(302449330, 8));
         }
-        if(checkTimeElapsed(last_estim_mag_unit_z_time, 28) && PD_IN_ESTIM & PD_BIT_ESTIM)
+        if(checkTimeElapsed(last_estim_mag_unit_z_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_mag_unit_z_time = realtimeCounter;
             while(sendCANPacket(302449335, 8));
         }
-        if(checkTimeElapsed(last_estim_mag_unit_y_time, 28) && PD_IN_ESTIM & PD_BIT_ESTIM)
+        if(checkTimeElapsed(last_estim_mag_unit_y_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_mag_unit_y_time = realtimeCounter;
             while(sendCANPacket(302449334, 8));
         }
-        if(checkTimeElapsed(last_estim_mag_unit_x_time, 28) && PD_IN_ESTIM & PD_BIT_ESTIM)
+        if(checkTimeElapsed(last_estim_mag_unit_x_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_mag_unit_x_time = realtimeCounter;
             while(sendCANPacket(302449333, 8));
         }
-        if(checkTimeElapsed(last_estim_state_time, 28) && PD_IN_ESTIM & PD_BIT_ESTIM)
+        if(checkTimeElapsed(last_estim_state_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_state_time = realtimeCounter;
             while(sendCANPacket(302449336, 1));
         }
-        if(checkTimeElapsed(last_com2_state_time, 100) && PD_IN_COM2 & PD_BIT_COM2)
+        if(checkTimeElapsed(last_com2_state_time, 100) && !(PD_IN_COM2 & PD_BIT_COM2))
         {
             last_com2_state_time = realtimeCounter;
             while(sendCANPacket(307757552, 8));
         }
-        if(checkTimeElapsed(last_cmd_mtq_fsw_time, 1) && PD_IN_ESTIM & PD_BIT_ESTIM)
+        if(checkTimeElapsed(last_cmd_mtq_fsw_time, 1) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_cmd_mtq_fsw_time = realtimeCounter;
             while(sendCANPacket(302252067, 4));
         }
-        if(checkTimeElapsed(last_mtq_ack_time, 20) && PD_IN_BDOT & PD_BIT_BDOT)
+        if(checkTimeElapsed(last_mtq_ack_time, 20) && !(PD_IN_BDOT & PD_BIT_BDOT))
         {
             last_mtq_ack_time = realtimeCounter;
             while(sendCANPacket(307691568, 8));
         }
-        if(checkTimeElapsed(last_cmd_mtq_bdot_time, 2) && PD_IN_BDOT & PD_BIT_BDOT)
+        if(checkTimeElapsed(last_cmd_mtq_bdot_time, 2) && !(PD_IN_BDOT & PD_BIT_BDOT))
         {
             last_cmd_mtq_bdot_time = realtimeCounter;
             while(sendCANPacket(307691553, 3));

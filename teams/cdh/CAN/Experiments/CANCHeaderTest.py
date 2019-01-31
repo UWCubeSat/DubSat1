@@ -542,7 +542,7 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
     cFile.close()
 
 def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFileName):
-    CAN_MODEL_VERSION_NUM = 2
+    CAN_MODEL_VERSION_NUM = 3
     #NOTE: rates are in 100ms increments
     realtimePacketRates = {"cmd_mtq_bdot" : 2, "com2_state" : 100, "estim_sun_unit_x" : 28, "estim_sun_unit_y" : 28, "estim_sun_unit_z" : 28, "estim_mag_unit_x" : 28,
     "estim_mag_unit_y" : 28, "estim_mag_unit_z" : 28, "estim_state" : 28,
@@ -592,7 +592,7 @@ def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFile
             for subsystem in subsystemToPowerDomain:
                 if subsystem in transmitter or subsystem in frame.name:
                     powerDomainName = subsystemToPowerDomain[subsystem].upper()
-                    realtimeUpdateMethods += "if(checkTimeElapsed(last_" + frame.name + "_time, " + str(realtimePacketRates[frame.name]) + ") && PD_IN_" + powerDomainName + " & PD_BIT_" + powerDomainName + ''')
+                    realtimeUpdateMethods += "if(checkTimeElapsed(last_" + frame.name + "_time, " + str(realtimePacketRates[frame.name]) + ") && !(PD_IN_" + powerDomainName + " & PD_BIT_" + powerDomainName + '''))
         {
             last_''' + frame.name + '''_time = realtimeCounter;
             while(sendCANPacket(''' + str(frame.id) + ", " + str(frame.size) + '''));
