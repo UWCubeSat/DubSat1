@@ -1225,7 +1225,7 @@ void INAInit()
 void restartINA() //TODO: send a restart command instead
 {
     INA_OUT &= ~INA_BIT;
-    __delay_cycles((uint16_t)(MSEC * 10));
+    __delay_cycles(MSEC * 10);
     INA_OUT |= INA_BIT;
 }
 
@@ -1247,13 +1247,23 @@ void incrementRollcallWatchdog()
     rollcallWatchdog++;
 }
 
+
+volatile char updateLogicFlag = 0;
+
+void setUpdateLogicFlag()
+{
+    updateLogicFlag = 1;
+}
+
+
+#define OFFSET 1024
 /*
  * main.c
  */
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
-    WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this to take watchdog out
+    WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1;
     //WDTCTL = WDTPW | WDTHOLD;
     bspInit(__SUBSYSTEM_MODULE__);  // This uses the framily of __SS_etc predefined symbols - see bsp.h
     METInitWithTime(persistentTime);
@@ -1266,8 +1276,6 @@ int main(void)
     hBattV = asensorActivateChannel(CHAN_A0, Type_GeneralV);
     distDomainInit();
     distDeployInit();
-    canWrapInit();
-    setCANPacketRxCallback(can_packet_rx_callback);
 
     LED_DIR |= LED_BIT;
 
@@ -1276,15 +1284,13 @@ int main(void)
     bcbinPopulateHeader(&(gseg.header), TLM_ID_EPS_DIST_GENERAL, sizeof(gseg));
     bcbinPopulateHeader(&(sseg.header), TLM_ID_EPS_DIST_SENSORDAT, sizeof(sseg));
 
-    //mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
-
 #if defined(__DEBUG__)
 
     // Register to handle telecommands
     debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, distActionCallback);
     __delay_cycles(0.5 * SEC);
 
-#else  //  __DEBUG__
+#else  // Release build
     while(startupDelay)
     {
         __delay_cycles(SEC); //wait for 30 minutes
@@ -1293,66 +1299,69 @@ int main(void)
 #endif
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
-    // TODO:  Add the correct bus filters and register CAN message receive handlers
+    canWrapInit();
+    setCANPacketRxCallback(can_packet_rx_callback);
 
-
-    /* ----- SUBSYSTEM LOGIC -----*/
-    // TODO:  Finally ... NOW, implement the actual subsystem logic!
-    // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
-    // and then control is returned to this main loop
-
-    // Autostart the EPS power domain for now
+    /* ----- AUTOSEQUENCER INITIALIZATION -----*/
     if(!eventsInitialized)
-    	initializeEvents();
-
+        initializeEvents();
     seqInit(persistentEvents, sizeof(persistentEvents) / sizeof(persistentEvents[0]));
 
+    /* ----- SUBSYSTEM LOGIC -----*/
     initializeTimer();
     initData();
 
-
     startCallback(timerCallbackInitializer(&incrementRollcallWatchdog, 1000000));
 
-    uint16_t counter = 0;
+
+    //starts timer for main loop logic
+    startCallback(timerCallbackInitializer(&setUpdateLogicFlag, 10000)); //10ms
+
+    uint32_t counter = 0;
     while (1)
     {
-        WDTCTL = WDT_CONFIG;
-        // TODO:  eventually drive this with a timer
-        LED_OUT ^= LED_BIT;
-        __delay_cycles(0.1 * SEC);
-
-        // This assumes that some interrupt code will change the value of the triggerStaten variables
-        distMonitorDomains();
-
-        counter++;
-        distBcSendSensorDat();
-        if (counter % 8 == 0)
+        //~10ms
+        if(updateLogicFlag)
         {
-            distBcSendGeneral();
-            distBcSendHealth();
-            distMonitorBattery();
+            //time-critical operations near the top
+            WDTCTL = WDT_CONFIG;
+
+            distMonitorDomains();
+            rollcallUpdate();
+            sendSequenceResponses();
+            checkRollcallWatchdog();
+
+            persistentTime = getMETTimestamp();
+
+            if(i2cGetLastOperationResult())
+                restartINA();
+
+            //~640ms
+            if(counter % 64 == 0)
+            {
+                LED_OUT ^= LED_BIT;
+
+                seqUpdateMET(metConvertToSeconds(persistentTime));
+                checkSequence(autoSequencerEnabled);
+
+                distBcSendGeneral();
+                distBcSendHealth();
+                distMonitorBattery();
+                distBcSendMeta();
+                distBcSendSensorDat();
+
+                if(checkOffTimerCOM2())
+                    distDomainSwitch(PD_COM2, PD_CMD_Autoshutoff);
+                if(checkOffTimerRAHS())
+                    distDomainSwitch(PD_RAHS, PD_CMD_Autoshutoff);
+            }
+
+            counter++;
+            //turn off the flag until it gets triggered again by the timer
+            updateLogicFlag = 0;
         }
-        if (counter % 64 == 0)
-            distBcSendMeta();
-        rollcallUpdate();
-        persistentTime = getMETTimestamp();
-        seqUpdateMET(metConvertToSeconds(persistentTime));
-        checkSequence(autoSequencerEnabled);
-        sendSequenceResponses();
-        checkRollcallWatchdog();
-
-        if(i2cGetLastOperationResult())
-            restartINA();
-
-        if(checkOffTimerCOM2())
-            distDomainSwitch(PD_COM2, PD_CMD_Autoshutoff);
-        if(checkOffTimerRAHS())
-            distDomainSwitch(PD_RAHS, PD_CMD_Autoshutoff);
     }
-
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
-
-	return 0;
 }
 
 
