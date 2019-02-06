@@ -1311,12 +1311,12 @@ int main(void)
 
 
     //starts timer for main loop logic
-    startCallback(timerCallbackInitializer(&setUpdateLogicFlag, 10000)); //10ms
+    startCallback(timerCallbackInitializer(&setUpdateLogicFlag, 8000)); //8ms
 
     uint32_t counter = 0;
     while (1)
     {
-        //~10ms
+        //~8ms
         if(updateLogicFlag)
         {
             //time-critical operations near the top
@@ -1331,7 +1331,7 @@ int main(void)
             if(i2cGetLastOperationResult())
                 restartINA();
 
-            //~640ms
+            //~512ms
             if(counter % 64 == 0)
             {
                 LED_OUT ^= LED_BIT;
