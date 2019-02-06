@@ -408,21 +408,15 @@ FILE_STATIC void distMonitorDomains()
     PCVSensorData *pdata;
     for (i=0; i < NUM_POWER_DOMAINS; i++)
     {
-        LED_OUT ^= LED_BIT;
         pdata = pcvsensorRead(powerdomains[i].hpcvsensor, Read_CurrentA | Read_BusV);
         aggVec_push_i(&ssCurrAgs[i], pdata->rawCurrent);
         aggVec_push_i(&ssBusVAgs[i], pdata->rawBusVoltage);
 
-        //LED_OUT ^= LED_BIT;
         if (pdata->calcdCurrentA >= gseg.powerdomainocpthreshold[i] && sseg.powerdomaincurrentlimited[i] != 1)
         {
             distDomainSwitch((PowerDomainID)i, PD_CMD_OCLatch);  // Yes, this means Disable is ALWAYS sent if current too high
-            //LED_OUT ^= LED_BIT;
-            //if (sseg.powerdomaincurrentlimited[i] != 1)
-            //{
-                sseg.powerdomaincurrentlimited[i] = 1;
-                gseg.powerdomaincurrentlimitedcount[i] += 1;
-            //}
+            sseg.powerdomaincurrentlimited[i] = 1;
+            gseg.powerdomaincurrentlimitedcount[i] += 1;
         }
 
         // Save data for each sensor, regardless of threshold
@@ -1340,7 +1334,7 @@ int main(void)
             //~640ms
             if(counter % 64 == 0)
             {
-                //LED_OUT ^= LED_BIT;
+                LED_OUT ^= LED_BIT;
 
                 seqUpdateMET(metConvertToSeconds(persistentTime));
                 checkSequence(autoSequencerEnabled);
