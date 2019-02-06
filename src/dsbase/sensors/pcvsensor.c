@@ -53,10 +53,10 @@ hDev pcvsensorInit(bus_instance_i2c bus, uint8_t i2cAddr, float shuntResistance,
 
     // Configure sensor
     // Reminder:  INA219 has registers with ONE byte addresses, but TWO byte lengths (big-endian ordering)
-    /*i2cBuff[0] = CUR_INA219_REG_ADDR_CONFIG;
+    i2cBuff[0] = CUR_INA219_REG_ADDR_CONFIG;
     i2cBuff[1] = CUR_INA219_CONFIG_MAX_GAIN_MAX_SAMPLING_MSB;
     i2cBuff[2] = CUR_INA219_CONFIG_MAX_GAIN_MAX_SAMPLING_LSB;
-    i2cMasterWrite(hSensor, i2cBuff, 3);*/
+    i2cMasterWrite(hSensor, i2cBuff, 3);
 
     //__delay_cycles(0.25 * SEC);
     //i2cMasterRegisterRead(hSensor, CUR_INA219_REG_ADDR_CONFIG, i2cBuff, 2 );
