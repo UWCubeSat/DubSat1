@@ -408,18 +408,21 @@ FILE_STATIC void distMonitorDomains()
     PCVSensorData *pdata;
     for (i=0; i < NUM_POWER_DOMAINS; i++)
     {
+        LED_OUT ^= LED_BIT;
         pdata = pcvsensorRead(powerdomains[i].hpcvsensor, Read_CurrentA | Read_BusV);
         aggVec_push_i(&ssCurrAgs[i], pdata->rawCurrent);
         aggVec_push_i(&ssBusVAgs[i], pdata->rawBusVoltage);
 
-        if (pdata->calcdCurrentA >= gseg.powerdomainocpthreshold[i])
+        //LED_OUT ^= LED_BIT;
+        if (pdata->calcdCurrentA >= gseg.powerdomainocpthreshold[i] && sseg.powerdomaincurrentlimited[i] != 1)
         {
             distDomainSwitch((PowerDomainID)i, PD_CMD_OCLatch);  // Yes, this means Disable is ALWAYS sent if current too high
-            if (sseg.powerdomaincurrentlimited[i] != 1)
-            {
+            //LED_OUT ^= LED_BIT;
+            //if (sseg.powerdomaincurrentlimited[i] != 1)
+            //{
                 sseg.powerdomaincurrentlimited[i] = 1;
                 gseg.powerdomaincurrentlimitedcount[i] += 1;
-            }
+            //}
         }
 
         // Save data for each sensor, regardless of threshold
@@ -536,7 +539,6 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
                 break;
             case OPCODE_COMMONCMD:
                 csegment = (commoncmd_segment *) &cmdstr[1];
-                LED_OUT ^= LED_BIT;
                 break;
             case OPCODE_OCPTHRESH:
                 osegment = (ocpthresh_segment *) &cmdstr[1];
@@ -1325,7 +1327,6 @@ int main(void)
         {
             //time-critical operations near the top
             WDTCTL = WDT_CONFIG;
-
             distMonitorDomains();
             rollcallUpdate();
             sendSequenceResponses();
@@ -1339,7 +1340,7 @@ int main(void)
             //~640ms
             if(counter % 64 == 0)
             {
-                LED_OUT ^= LED_BIT;
+                //LED_OUT ^= LED_BIT;
 
                 seqUpdateMET(metConvertToSeconds(persistentTime));
                 checkSequence(autoSequencerEnabled);
