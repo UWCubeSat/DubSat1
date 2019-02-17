@@ -54,6 +54,21 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2449736504 gcmd_com1_mode_camera: 0 Vector__XXX
+
+BO_ 2449736503 gcmd_com1_mode_realtime: 0 Vector__XXX
+
+BO_ 2449736502 gcmd_com1_mode_health: 0 Vector__XXX
+
+BO_ 2449736501 gcmd_com1_mode_safe: 0 Vector__XXX
+
+BO_ 2449736500 gcmd_com1_transponder_off: 0 Vector__XXX
+
+BO_ 2449736499 gcmd_com1_transponder_on: 0 Vector__XXX
+
+BO_ 2451047200 rahs_camera: 8 rahs
+ SG_ rahs_camera_data : 0|64@1+ (1,0) [0|1.84467440737096E+019] "" Vector__XXX
+
 BO_ 2457404210 rc_eps_gen_10: 6 eps_gen
  SG_ rc_eps_gen_10_pnl_3_power_avg : 32|16@1+ (1,0) [0|65535] "raw power gen" Vector__XXX
  SG_ rc_eps_gen_10_pnl_2_power_avg : 16|16@1+ (1,0) [0|65535] "raw power gen" Vector__XXX
@@ -950,6 +965,14 @@ BO_ 2449932985 grnd_epoch: 5 com_1
 BO_TX_BU_ 2147745800 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_2,eps_batt,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ BO_ 2449736504 "Commands COM1 to switch to Camera Mode";
+CM_ BO_ 2449736503 "Commands COM1 to switch to Real-Time Mode";
+CM_ BO_ 2449736502 "Commands COM1 to switch to Health Mode";
+CM_ BO_ 2449736501 "Commands COM1 to switch to Safe Mode";
+CM_ BO_ 2449736500 "Commands COM1 to disable the transponder";
+CM_ BO_ 2449736499 "Commands COM1 to enable the transponder";
+CM_ BO_ 2451047200 "Packet containing camera data from the RAHS board";
+CM_ SG_ 2451047200 rahs_camera_data "The picture data";
 CM_ BO_ 2449736496 "Sets the state of battery balancer automation";
 CM_ SG_ 2449736496 gcmd_batt_set_bal_auto_state "What state the battery balancer automation should be set to";
 CM_ BO_ 2449736495 "Set the status of dist autoshutoff for each power domain";
