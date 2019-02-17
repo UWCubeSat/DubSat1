@@ -1311,7 +1311,7 @@ int main(void)
 
 
     //starts timer for main loop logic
-    startCallback(timerCallbackInitializer(&setUpdateLogicFlag, 8000)); //8ms
+    startCallback(timerCallbackInitializer(&setUpdateLogicFlag, 6000)); //8ms
 
     uint32_t counter = 0;
     while (1)
