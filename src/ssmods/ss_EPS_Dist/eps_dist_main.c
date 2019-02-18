@@ -119,7 +119,7 @@ sequenceEvent persistentEvents[100] = {0};
 #pragma PERSISTENT(eventsInitialized)
 uint8_t eventsInitialized = 0;
 #pragma PERSISTENT(autoSequencerEnabled)
-uint8_t autoSequencerEnabled = 0;
+uint8_t autoSequencerEnabled = 1;
 
 FILE_STATIC uint16_t rcResponseFlag = 0; //this is zero when no responses are pending
 FILE_STATIC char clearTemp = 0;
@@ -1151,50 +1151,31 @@ void initializeEvents()
 {
 	CANPacket pkt;
 
-	////////////////////////////////////////////////////  TODO: this is test code for Con-Ops
-	gcmd_dist_set_pd_state cmd = {0, 0, 0, 0, 1, 0, 0};
-	encodegcmd_dist_set_pd_state(&cmd, &pkt);
-	persistentEvents[0].pkt = pkt;
-	persistentEvents[0].sendFlag = 0;
-	persistentEvents[0].time = 15;
-	////////////////////////////////////////////////////
-
-	/*uint8_t i;
+	//Sequentially enable power domains a week apart
+	uint8_t i;
 	for(i = 0; i < NUM_POWER_DOMAINS; i++)
 	{
-		gcmd_dist_set_pd_state cmd = {0};
+		gcmd_dist_set_pd_state cmd = {0, 0, 0, 0, 0, 0, 0};
 		switch(i)
 		{
 			case 0:
-				cmd.gcmd_dist_set_pd_state_bdot = PD_CMD_Enable;
-				break;
-			case 1:
-				cmd.gcmd_dist_set_pd_state_com1 = PD_CMD_Enable;
-				break;
-			case 2:
-				cmd.gcmd_dist_set_pd_state_com2 = PD_CMD_Enable;
-				break;
-			case 3:
 				cmd.gcmd_dist_set_pd_state_eps = PD_CMD_Enable;
 				break;
-			case 4:
+			case 1:
+				cmd.gcmd_dist_set_pd_state_bdot = PD_CMD_Enable;
+				break;
+			case 2:
 				cmd.gcmd_dist_set_pd_state_estim = PD_CMD_Enable;
 				break;
-			case 5:
-				cmd.gcmd_dist_set_pd_state_ppt = PD_CMD_Enable;
-				break;
-			case 6:
-				cmd.gcmd_dist_set_pd_state_rahs = PD_CMD_Enable;
-				break;
-			case 7:
-				cmd.gcmd_dist_set_pd_state_wheels = PD_CMD_Enable;
-				break;
+			case 3:
+			    cmd.gcmd_dist_set_pd_state_estim = PD_CMD_Disable;
+			    break;
 		}
 		encodegcmd_dist_set_pd_state(&cmd, &pkt);
 		persistentEvents[i].pkt = pkt;
 		persistentEvents[i].sendFlag = 0;
-		persistentEvents[i].time = i + 1; //sequentially activated
-	}*/
+		persistentEvents[i].time = (i + 1) * 604800; //sequentially activated, one week apart
+	}
 	eventsInitialized = 1;
 }
 
@@ -1252,7 +1233,6 @@ void setUpdateLogicFlag()
 }
 
 
-#define OFFSET 1024
 /*
  * main.c
  */
@@ -1261,7 +1241,7 @@ int main(void)
     /* ----- INITIALIZATION -----*/
     WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1;
     //WDTCTL = WDTPW | WDTHOLD;
-    bspInit(__SUBSYSTEM_MODULE__);  // This uses the framily of __SS_etc predefined symbols - see bsp.h
+    bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
     METInitWithTime(persistentTime);
 
     bspBackpowerPulldown();
