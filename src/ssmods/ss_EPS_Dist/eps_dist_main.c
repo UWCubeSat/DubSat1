@@ -1,5 +1,5 @@
 #include <eps_dist.h>
-#include <msp430.h> 
+#include <msp430.h>
 
 #include "bsp/bsp.h"
 #include "core/timer.h"
@@ -57,8 +57,8 @@ FILE_STATIC uint8_t domainsSensorAddresses[] =   { 0x43, 0x40, 0x44, 0x42, 0x45,
 FILE_STATIC float   domainShuntResistances[] =   { SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE,
                                                    SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE };
 
-FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_VERY_HIGH_DRAW_DEVICE, //COM1
-                                                      12.0f, //COM2
+FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_LOW_DRAW_DEVICE, //COM1
+                                                      3.0f, //COM2
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //RAHS
                                                       OCP_THRESH_VERY_HIGH_DRAW_DEVICE, //BDOT
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //ESTIM
@@ -119,7 +119,7 @@ sequenceEvent persistentEvents[100] = {0};
 #pragma PERSISTENT(eventsInitialized)
 uint8_t eventsInitialized = 0;
 #pragma PERSISTENT(autoSequencerEnabled)
-uint8_t autoSequencerEnabled = 1;
+uint8_t autoSequencerEnabled = 0;
 
 FILE_STATIC uint16_t rcResponseFlag = 0; //this is zero when no responses are pending
 FILE_STATIC char clearTemp = 0;
@@ -412,11 +412,14 @@ FILE_STATIC void distMonitorDomains()
         aggVec_push_i(&ssCurrAgs[i], pdata->rawCurrent);
         aggVec_push_i(&ssBusVAgs[i], pdata->rawBusVoltage);
 
-        if (pdata->calcdCurrentA >= gseg.powerdomainocpthreshold[i] && sseg.powerdomaincurrentlimited[i] != 1)
+        if (pdata->calcdCurrentA >= gseg.powerdomainocpthreshold[i])
         {
             distDomainSwitch((PowerDomainID)i, PD_CMD_OCLatch);  // Yes, this means Disable is ALWAYS sent if current too high
-            sseg.powerdomaincurrentlimited[i] = 1;
-            gseg.powerdomaincurrentlimitedcount[i] += 1;
+            if (sseg.powerdomaincurrentlimited[i] != 1)
+            {
+                sseg.powerdomaincurrentlimited[i] = 1;
+                gseg.powerdomaincurrentlimitedcount[i] += 1;
+            }
         }
 
         // Save data for each sensor, regardless of threshold
@@ -533,6 +536,7 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
                 break;
             case OPCODE_COMMONCMD:
                 csegment = (commoncmd_segment *) &cmdstr[1];
+                LED_OUT ^= LED_BIT;
                 break;
             case OPCODE_OCPTHRESH:
                 osegment = (ocpthresh_segment *) &cmdstr[1];
@@ -1149,34 +1153,53 @@ void initData()
 
 void initializeEvents()
 {
-	CANPacket pkt;
+    CANPacket pkt;
 
-	//Sequentially enable power domains a week apart
-	uint8_t i;
-	for(i = 0; i < NUM_POWER_DOMAINS; i++)
-	{
-		gcmd_dist_set_pd_state cmd = {0, 0, 0, 0, 0, 0, 0};
-		switch(i)
-		{
-			case 0:
-				cmd.gcmd_dist_set_pd_state_eps = PD_CMD_Enable;
-				break;
-			case 1:
-				cmd.gcmd_dist_set_pd_state_bdot = PD_CMD_Enable;
-				break;
-			case 2:
-				cmd.gcmd_dist_set_pd_state_estim = PD_CMD_Enable;
-				break;
-			case 3:
-			    cmd.gcmd_dist_set_pd_state_estim = PD_CMD_Disable;
-			    break;
-		}
-		encodegcmd_dist_set_pd_state(&cmd, &pkt);
-		persistentEvents[i].pkt = pkt;
-		persistentEvents[i].sendFlag = 0;
-		persistentEvents[i].time = (i + 1) * 604800; //sequentially activated, one week apart
-	}
-	eventsInitialized = 1;
+    ////////////////////////////////////////////////////  TODO: this is test code for Con-Ops
+    gcmd_dist_set_pd_state cmd = {0, 0, 0, 0, 1, 0, 0};
+    encodegcmd_dist_set_pd_state(&cmd, &pkt);
+    persistentEvents[0].pkt = pkt;
+    persistentEvents[0].sendFlag = 0;
+    persistentEvents[0].time = 15;
+    ////////////////////////////////////////////////////
+
+    /*uint8_t i;
+    for(i = 0; i < NUM_POWER_DOMAINS; i++)
+    {
+        gcmd_dist_set_pd_state cmd = {0};
+        switch(i)
+        {
+            case 0:
+                cmd.gcmd_dist_set_pd_state_bdot = PD_CMD_Enable;
+                break;
+            case 1:
+                cmd.gcmd_dist_set_pd_state_com1 = PD_CMD_Enable;
+                break;
+            case 2:
+                cmd.gcmd_dist_set_pd_state_com2 = PD_CMD_Enable;
+                break;
+            case 3:
+                cmd.gcmd_dist_set_pd_state_eps = PD_CMD_Enable;
+                break;
+            case 4:
+                cmd.gcmd_dist_set_pd_state_estim = PD_CMD_Enable;
+                break;
+            case 5:
+                cmd.gcmd_dist_set_pd_state_ppt = PD_CMD_Enable;
+                break;
+            case 6:
+                cmd.gcmd_dist_set_pd_state_rahs = PD_CMD_Enable;
+                break;
+            case 7:
+                cmd.gcmd_dist_set_pd_state_wheels = PD_CMD_Enable;
+                break;
+        }
+        encodegcmd_dist_set_pd_state(&cmd, &pkt);
+        persistentEvents[i].pkt = pkt;
+        persistentEvents[i].sendFlag = 0;
+        persistentEvents[i].time = i + 1; //sequentially activated
+    }*/
+    eventsInitialized = 1;
 }
 
 void sendSequenceResponses()
@@ -1202,7 +1225,7 @@ void INAInit()
 void restartINA() //TODO: send a restart command instead
 {
     INA_OUT &= ~INA_BIT;
-    __delay_cycles(MSEC * 10);
+    __delay_cycles((uint16_t)(MSEC * 10));
     INA_OUT |= INA_BIT;
 }
 
@@ -1224,24 +1247,15 @@ void incrementRollcallWatchdog()
     rollcallWatchdog++;
 }
 
-
-volatile char updateLogicFlag = 0;
-
-void setUpdateLogicFlag()
-{
-    updateLogicFlag = 1;
-}
-
-
 /*
  * main.c
  */
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
-    WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1;
+    WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this to take watchdog out
     //WDTCTL = WDTPW | WDTHOLD;
-    bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
+    bspInit(__SUBSYSTEM_MODULE__);  // This uses the framily of __SS_etc predefined symbols - see bsp.h
     METInitWithTime(persistentTime);
 
     bspBackpowerPulldown();
@@ -1252,6 +1266,8 @@ int main(void)
     hBattV = asensorActivateChannel(CHAN_A0, Type_GeneralV);
     distDomainInit();
     distDeployInit();
+    canWrapInit();
+    setCANPacketRxCallback(can_packet_rx_callback);
 
     LED_DIR |= LED_BIT;
 
@@ -1260,13 +1276,15 @@ int main(void)
     bcbinPopulateHeader(&(gseg.header), TLM_ID_EPS_DIST_GENERAL, sizeof(gseg));
     bcbinPopulateHeader(&(sseg.header), TLM_ID_EPS_DIST_SENSORDAT, sizeof(sseg));
 
+    //mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
+
 #if defined(__DEBUG__)
 
     // Register to handle telecommands
     debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, distActionCallback);
     __delay_cycles(0.5 * SEC);
 
-#else  // Release build
+#else  //  __DEBUG__
     while(startupDelay)
     {
         __delay_cycles(SEC); //wait for 30 minutes
@@ -1275,68 +1293,66 @@ int main(void)
 #endif
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
-    canWrapInit();
-    setCANPacketRxCallback(can_packet_rx_callback);
+    // TODO:  Add the correct bus filters and register CAN message receive handlers
 
-    /* ----- AUTOSEQUENCER INITIALIZATION -----*/
-    if(!eventsInitialized)
-        initializeEvents();
-    seqInit(persistentEvents, sizeof(persistentEvents) / sizeof(persistentEvents[0]));
 
     /* ----- SUBSYSTEM LOGIC -----*/
+    // TODO:  Finally ... NOW, implement the actual subsystem logic!
+    // In general, follow the demonstrated coding pattern, where action flags are set in interrupt handlers,
+    // and then control is returned to this main loop
+
+    // Autostart the EPS power domain for now
+    if(!eventsInitialized)
+        initializeEvents();
+
+    seqInit(persistentEvents, sizeof(persistentEvents) / sizeof(persistentEvents[0]));
+
     initializeTimer();
     initData();
 
+
     startCallback(timerCallbackInitializer(&incrementRollcallWatchdog, 1000000));
 
-
-    //starts timer for main loop logic
-    startCallback(timerCallbackInitializer(&setUpdateLogicFlag, 6000)); //8ms
-
-    uint32_t counter = 0;
+    uint16_t counter = 0;
     while (1)
     {
-        //~8ms
-        if(updateLogicFlag)
+        WDTCTL = WDT_CONFIG;
+        // TODO:  eventually drive this with a timer
+        LED_OUT ^= LED_BIT;
+        __delay_cycles(0.1 * SEC);
+
+        // This assumes that some interrupt code will change the value of the triggerStaten variables
+        distMonitorDomains();
+
+        counter++;
+        distBcSendSensorDat();
+        if (counter % 8 == 0)
         {
-            //time-critical operations near the top
-            WDTCTL = WDT_CONFIG;
-            distMonitorDomains();
-            rollcallUpdate();
-            sendSequenceResponses();
-            checkRollcallWatchdog();
-
-            persistentTime = getMETTimestamp();
-
-            if(i2cGetLastOperationResult())
-                restartINA();
-
-            //~512ms
-            if(counter % 64 == 0)
-            {
-                LED_OUT ^= LED_BIT;
-
-                seqUpdateMET(metConvertToSeconds(persistentTime));
-                checkSequence(autoSequencerEnabled);
-
-                distBcSendGeneral();
-                distBcSendHealth();
-                distMonitorBattery();
-                distBcSendMeta();
-                distBcSendSensorDat();
-
-                if(checkOffTimerCOM2())
-                    distDomainSwitch(PD_COM2, PD_CMD_Autoshutoff);
-                if(checkOffTimerRAHS())
-                    distDomainSwitch(PD_RAHS, PD_CMD_Autoshutoff);
-            }
-
-            counter++;
-            //turn off the flag until it gets triggered again by the timer
-            updateLogicFlag = 0;
+            distBcSendGeneral();
+            distBcSendHealth();
+            distMonitorBattery();
         }
+        if (counter % 64 == 0)
+            distBcSendMeta();
+        rollcallUpdate();
+        persistentTime = getMETTimestamp();
+        seqUpdateMET(metConvertToSeconds(persistentTime));
+        checkSequence(autoSequencerEnabled);
+        sendSequenceResponses();
+        checkRollcallWatchdog();
+
+        if(i2cGetLastOperationResult())
+            restartINA();
+
+        if(checkOffTimerCOM2())
+            distDomainSwitch(PD_COM2, PD_CMD_Autoshutoff);
+        if(checkOffTimerRAHS())
+            distDomainSwitch(PD_RAHS, PD_CMD_Autoshutoff);
     }
+
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
+
+    return 0;
 }
 
 
