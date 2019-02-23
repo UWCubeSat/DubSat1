@@ -542,11 +542,11 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
     cFile.close()
 
 def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFileName):
-    CAN_MODEL_VERSION_NUM = 3
+    CAN_MODEL_VERSION_NUM = 4
     #NOTE: rates are in 100ms increments
     realtimePacketRates = {"cmd_mtq_bdot" : 2, "com2_state" : 100, "estim_sun_unit_x" : 28, "estim_sun_unit_y" : 28, "estim_sun_unit_z" : 28, "estim_mag_unit_x" : 28,
     "estim_mag_unit_y" : 28, "estim_mag_unit_z" : 28, "estim_state" : 28,
-    "cmd_mtq_fsw" : 1, "mtq_ack" : 20}
+    "cmd_mtq_fsw" : 1, "mtq_ack" : 20, "rahs_camera" : 18}
 
     templateCFile = open(templateCFileName, "r")
     templateHFile = open(templateHFileName, "r")
@@ -572,7 +572,7 @@ def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFile
     #realtime
     realtimeUpdateMethods = ""
     realtimeLastUpdateVars = ""
-    subsystemToPowerDomain = {"adcs_bdot" : "bdot", "adcs_mpc" : "estim", "adcs_mtq" : "bdot", "adcs_sensorproc" : "estim", "estim" : "estim", "eps_batt" : "eps", "eps_gen" : "eps", "ppt" : "ppt", "com2" : "com2"}
+    subsystemToPowerDomain = {"adcs_bdot" : "bdot", "adcs_mpc" : "estim", "adcs_mtq" : "bdot", "adcs_sensorproc" : "estim", "estim" : "estim", "eps_batt" : "eps", "eps_gen" : "eps", "ppt" : "ppt", "com2" : "com2", "rahs" : "rahs"}
     for frame in candb.frames:
         packetname= frame.name+"_packet"
         infoname = frame.name+"_info"

@@ -6,7 +6,7 @@
 /*
 * CANModel
 *
-*  Created on: Jan 16, 2019
+*  Created on: Feb 23, 2019
 *      Author: Nathan Wacker
 */
 
@@ -19,7 +19,7 @@
 #include "core/timers.h"
 
 typedef enum {
-    PD_DIST = 0,
+	PD_DIST = 0,
     PD_COM2 = 1,
     PD_RAHS = 2,
     PD_BDOT = 3,
@@ -73,6 +73,7 @@ TIMER_LENGTH lastLED0Time = 0;
 TIMER_LENGTH LED_1_FREQ = 0xff;
 TIMER_LENGTH lastLED1Time = 0;
 
+TIMER_LENGTH last_rahs_camera_time = 0;
 TIMER_LENGTH last_estim_sun_unit_z_time = 0;
 TIMER_LENGTH last_estim_sun_unit_y_time = 0;
 TIMER_LENGTH last_estim_sun_unit_x_time = 0;

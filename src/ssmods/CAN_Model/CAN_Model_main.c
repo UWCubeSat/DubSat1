@@ -6,12 +6,12 @@
 /*
 * CANModel
 *
-*  Created on: Jan 16, 2019
+*  Created on: Feb 23, 2019
 *      Author: Nathan Wacker
 */
 
 #include <CAN_Model.h>
-#include <msp430.h>
+#include <msp430.h> 
 #include <stdint.h>
 
 #include "bsp/bsp.h"
@@ -19,7 +19,7 @@
 #include "interfaces/canwrap.h"
 #include "interfaces/rollcall.h"
 
-#define VERSION_NUMBER 3
+#define VERSION_NUMBER 4
 
 uint32_t distArray[] = {307823323, 308871788, 308871779, 307823186, 307823179, 307823177, 307823176, 307823175, 307823173, 307823172, 307823187, 307823184, 307823183, 307823181, 307823182, 307823185, 307823180, 307823178, 308871750, 309330499, };
 uint32_t com2Array[] = {};
@@ -31,7 +31,7 @@ uint32_t pptArray[] = {308871782, 308871773, 307823114, 307823113, 307823112, };
 
 FILE_STATIC uint32_t * rollcallIDs[] =
 {
-    distArray, com2Array, rahsArray, bdotArray, estimArray, epsArray, pptArray,
+    distArray, com2Array, rahsArray, bdotArray, estimArray, epsArray, pptArray, 
 };
 
 uint8_t distLens[] = {7, 1, 8, 7, 6, 6, 7, 6, 6, 6, 6, 8, 6, 6, 7, 6, 7, 7, 7, 6, };
@@ -44,7 +44,7 @@ uint8_t pptLens[] = {2, 8, 6, 7, 7, };
 
 FILE_STATIC uint8_t * rollcallLengths[] =
 {
-    distLens, com2Lens, rahsLens, bdotLens, estimLens, epsLens, pptLens,
+	distLens, com2Lens, rahsLens, bdotLens, estimLens, epsLens, pptLens, 
 };
 
 uint16_t arraySizes[] = {sizeof(distArray) / sizeof(uint32_t), sizeof(com2Array) / sizeof(uint32_t), sizeof(rahsArray) / sizeof(uint32_t), sizeof(bdotArray) / sizeof(uint32_t), sizeof(estimArray) / sizeof(uint32_t), sizeof(epsArray) / sizeof(uint32_t), sizeof(pptArray) / sizeof(uint32_t), };
@@ -55,7 +55,7 @@ char initSequenceFlag = 1;
 
 uint8_t sendCANPacket(uint32_t id, uint8_t length)
 {
-    CANPacket pkt;
+	CANPacket pkt;
     pkt.id = id;
     pkt.length = length;
     int i;
@@ -70,9 +70,9 @@ uint8_t i = 0; //power domain
 uint8_t j = 0; //current index
 void can_packet_rx_callback(CANPacket *packet)
 {
-        if(packet->id == CAN_ID_CMD_ROLLCALL)
+		if(packet->id == CAN_ID_CMD_ROLLCALL)
     {
-        rcSendFlag = 1;
+		rcSendFlag = 1;
         rcSendFlag |= !(PD_IN_COM2 & PD_BIT_COM2) << PD_COM2;
         rcSendFlag |= !(PD_IN_BDOT & PD_BIT_BDOT) << PD_BDOT;
         rcSendFlag |= !(PD_IN_ESTIM & PD_BIT_ESTIM) << PD_ESTIM;
@@ -104,7 +104,7 @@ void sendRCResponse()
         if(j < arraySizes[i])
         {
             sendCANPacket(rollcallIDs[i][j], rollcallLengths[i][j]);
-            j++;
+			j++;
         }
         else
         {
@@ -137,29 +137,29 @@ int checkTimeElapsed(TIMER_LENGTH lastTime, int packetFreq)
 
 void bitInit()
 {
-    LED_DIR |= LED0_BIT | LED1_BIT | LED2_BIT;
-    PD_DIR_COM2 &= ~PD_BIT_COM2;
-    PD_DIR_RAHS &= ~PD_BIT_RAHS;
+	LED_DIR |= LED0_BIT | LED1_BIT | LED2_BIT;
+	PD_DIR_COM2 &= ~PD_BIT_COM2;
+	PD_DIR_RAHS &= ~PD_BIT_RAHS;
     PD_DIR_BDOT &= ~PD_BIT_BDOT;
-    PD_DIR_ESTIM &= ~PD_BIT_ESTIM;
-    PD_DIR_EPS &= ~PD_BIT_EPS;
-    PD_DIR_PPT &= ~PD_BIT_PPT;
-
-    PD_OUT_COM2 &= ~PD_BIT_COM2;
-    PD_OUT_RAHS &= ~PD_BIT_RAHS;
-    PD_OUT_BDOT &= ~PD_BIT_BDOT;
-    PD_OUT_ESTIM &= ~PD_BIT_ESTIM;
-    PD_OUT_EPS &= ~PD_BIT_EPS;
-    PD_OUT_PPT &= ~PD_BIT_PPT;
-
-    //opposite pins
-    P1DIR |= BIT6 | BIT7;
-    P2DIR |= BIT2 | BIT6;
-    P3DIR |= BIT6 | BIT7;
-
-    P1OUT |= BIT6 | BIT7;
-    P2OUT |= BIT2 | BIT6;
-    P3OUT |= BIT6 | BIT7;
+	PD_DIR_ESTIM &= ~PD_BIT_ESTIM;
+	PD_DIR_EPS &= ~PD_BIT_EPS;
+	PD_DIR_PPT &= ~PD_BIT_PPT;
+	
+	PD_OUT_COM2 &= ~PD_BIT_COM2;
+	PD_OUT_RAHS &= ~PD_BIT_RAHS;
+	PD_OUT_BDOT &= ~PD_BIT_BDOT;
+	PD_OUT_ESTIM &= ~PD_BIT_ESTIM;
+	PD_OUT_EPS &= ~PD_BIT_EPS;
+	PD_OUT_PPT &= ~PD_BIT_PPT;
+	
+	//opposite pins
+	P1DIR |= BIT6 | BIT7;
+	P2DIR |= BIT2 | BIT6;
+	P3DIR |= BIT6 | BIT7;
+	
+	P1OUT |= BIT6 | BIT7;
+	P2OUT |= BIT2 | BIT6;
+	P3OUT |= BIT6 | BIT7;
 }
 
 /*
@@ -202,6 +202,11 @@ int main(void)
             LED_OUT &= ~LED1_BIT;
         }
 
+        if(checkTimeElapsed(last_rahs_camera_time, 18) && !(PD_IN_RAHS & PD_BIT_RAHS))
+        {
+            last_rahs_camera_time = realtimeCounter;
+            while(sendCANPacket(303563552, 8));
+        }
         if(checkTimeElapsed(last_estim_sun_unit_z_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_sun_unit_z_time = realtimeCounter;
@@ -257,6 +262,6 @@ int main(void)
             last_cmd_mtq_bdot_time = realtimeCounter;
             while(sendCANPacket(307691553, 3));
         }
-
+        
     }
 }
