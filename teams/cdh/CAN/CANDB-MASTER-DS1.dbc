@@ -55,7 +55,7 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
-BO_ 2449736506 gcmd_com1_mode: 1 Vector__XXX
+BO_ 2449736506 gcmd_com1_mode: 1 com_1
  SG_ gcmd_com1_mode_mode : 0|8@1+ (1,0) [1|4] "" Vector__XXX
 
 BO_ 2451047200 rahs_camera: 8 rahs
