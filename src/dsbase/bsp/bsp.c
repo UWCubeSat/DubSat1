@@ -182,6 +182,7 @@ void bspInit(SubsystemModule mod)
     // previously configured port settings
     PM5CTL0 &= ~LOCKLPM5;
 
+
 #if defined(__DEBUG__)
 
     debugInit();

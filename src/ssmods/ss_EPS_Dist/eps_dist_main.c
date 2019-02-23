@@ -1318,28 +1318,31 @@ int main(void)
     {
         WDTCTL = WDT_CONFIG;
         // TODO:  eventually drive this with a timer
-        LED_OUT ^= LED_BIT;
-        __delay_cycles(0.1 * SEC);
+        __delay_cycles(0.0125 * SEC);
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
         distMonitorDomains();
 
         counter++;
-        distBcSendSensorDat();
-        if (counter % 8 == 0)
+        if(counter % 8 == 0)
+        {
+            LED_OUT ^= LED_BIT;
+            distBcSendSensorDat();
+            rollcallUpdate();
+            persistentTime = getMETTimestamp();
+            seqUpdateMET(metConvertToSeconds(persistentTime));
+            checkSequence(autoSequencerEnabled);
+            sendSequenceResponses();
+            checkRollcallWatchdog();
+        }
+        if (counter % 64 == 0)
         {
             distBcSendGeneral();
             distBcSendHealth();
             distMonitorBattery();
         }
-        if (counter % 64 == 0)
+        if (counter % 512 == 0)
             distBcSendMeta();
-        rollcallUpdate();
-        persistentTime = getMETTimestamp();
-        seqUpdateMET(metConvertToSeconds(persistentTime));
-        checkSequence(autoSequencerEnabled);
-        sendSequenceResponses();
-        checkRollcallWatchdog();
 
         if(i2cGetLastOperationResult())
             restartINA();
