@@ -5,7 +5,19 @@
 [PROTOCOL] CAN
 
 [BUSMASTER_VERSION] [3.2.2]
-[NUMBER_OF_MESSAGES] 184
+[NUMBER_OF_MESSAGES] 186
+
+[START_MSG] gcmd_com1_mode,302252858,1,1,1,X,com_1
+[START_SIGNALS] gcmd_com1_mode_mode,8,1,0,U,4,1,1,0,1,,,
+[VALUE_DESCRIPTION] "camera mode",4
+[VALUE_DESCRIPTION] "real-time mode",3
+[VALUE_DESCRIPTION] "safe mode",2
+[VALUE_DESCRIPTION] "health mode",1
+[END_MSG]
+
+[START_MSG] rahs_camera,303563552,8,1,1,X,rahs
+[START_SIGNALS] rahs_camera_data,64,1,0,U,9223372036854775807,0,1,0,1,,,
+[END_MSG]
 
 [START_MSG] rc_eps_gen_10,309920562,6,3,1,X,eps_gen
 [START_SIGNALS] rc_eps_gen_10_pnl_3_power_avg,16,5,0,U,65535,0,1,0,1,raw power gen,,
@@ -1534,6 +1546,12 @@
 [END_MSG]
 
 [START_VALUE_TABLE]
+[START_TABLE] com1_mode
+[VALUE_DESCRIPTION] "camera mode",4
+[VALUE_DESCRIPTION] "real-time mode",3
+[VALUE_DESCRIPTION] "safe mode",2
+[VALUE_DESCRIPTION] "health mode",1
+[END_TABLE]
 [START_TABLE] pd_state
 [VALUE_DESCRIPTION] "unknown",6
 [VALUE_DESCRIPTION] "off_autoshutoff",5
@@ -1679,6 +1697,8 @@
 [END_DESC_NODE]
 
 [START_DESC_MSG]
+302252858 X "ground command to change the mode of COM1";
+303563552 X "Packet containing camera data from the RAHS board";
 302252848 X "Sets the state of battery balancer automation";
 302252847 X "Set the status of dist autoshutoff for each power domain";
 302252767 X "Resets MET and autosequencer, also sets the autosequencer to be reinitialized on next powerup";
@@ -1700,6 +1720,8 @@
 [END_DESC_MSG]
 
 [START_DESC_SIG]
+302252858 X gcmd_com1_mode_mode "the mode to change to";
+303563552 X rahs_camera_data "The picture data";
 302252848 X gcmd_batt_set_bal_auto_state "What state the battery balancer automation should be set to";
 302252847 X gcmd_dist_autoshutoff_ppt "Whether autoshutoff is enabled on the power domain";
 302252847 X gcmd_dist_autoshutoff_eps "Whether autoshutoff is enabled on the power domain";
