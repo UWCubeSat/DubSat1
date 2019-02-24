@@ -544,9 +544,9 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFileName):
     CAN_MODEL_VERSION_NUM = 4
     #NOTE: rates are in 100ms increments
-    realtimePacketRates = {"cmd_mtq_bdot" : 2, "com2_state" : 100, "estim_sun_unit_x" : 28, "estim_sun_unit_y" : 28, "estim_sun_unit_z" : 28, "estim_mag_unit_x" : 28,
-    "estim_mag_unit_y" : 28, "estim_mag_unit_z" : 28, "estim_state" : 28,
-    "cmd_mtq_fsw" : 1, "mtq_ack" : 20, "rahs_camera" : 18}
+    realtimePacketRates = {"cmd_mtq_bdot" : 20, "com2_state" : 1000, "estim_sun_unit_x" : 280, "estim_sun_unit_y" : 280, "estim_sun_unit_z" : 280, "estim_mag_unit_x" : 280,
+    "estim_mag_unit_y" : 280, "estim_mag_unit_z" : 280, "estim_state" : 280,
+    "cmd_mtq_fsw" : 10, "mtq_ack" : 200, "rahs_camera" : 18}
 
     templateCFile = open(templateCFileName, "r")
     templateHFile = open(templateHFileName, "r")

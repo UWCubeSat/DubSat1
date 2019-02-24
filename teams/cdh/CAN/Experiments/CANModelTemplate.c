@@ -54,7 +54,7 @@ void can_packet_rx_callback(CANPacket *packet)
         rcSendFlag |= !(PD_IN_PPT & PD_BIT_PPT) << PD_PPT;
 
         lastLED1Time = realtimeCounter;
-        LED_1_FREQ = 7;
+        LED_1_FREQ = 70;
         LED_OUT |= LED1_BIT;
 
         //reset rcResponse counters
@@ -147,7 +147,7 @@ int main(void)
     setCANPacketRxCallback(can_packet_rx_callback);
 
     initializeTimer();
-    startCallback(timerCallbackInitializer(&incrementRealtimeCounter, 100000)); //increments every 100 ms
+    startCallback(timerCallbackInitializer(&incrementRealtimeCounter, 10000)); //increments every 10 ms
 
     bitInit();
 
@@ -171,7 +171,7 @@ int main(void)
 
         if(checkTimeElapsed(lastLED1Time, LED_1_FREQ))
         {
-            LED_1_FREQ = 0xff;
+            LED_1_FREQ = 0x9f6;
             lastLED1Time = 0;
             LED_OUT &= ~LED1_BIT;
         }

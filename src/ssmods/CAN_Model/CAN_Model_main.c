@@ -6,7 +6,7 @@
 /*
 * CANModel
 *
-*  Created on: Feb 23, 2019
+*  Created on: Feb 24, 2019
 *      Author: Nathan Wacker
 */
 
@@ -80,7 +80,7 @@ void can_packet_rx_callback(CANPacket *packet)
         rcSendFlag |= !(PD_IN_PPT & PD_BIT_PPT) << PD_PPT;
 
         lastLED1Time = realtimeCounter;
-        LED_1_FREQ = 7;
+        LED_1_FREQ = 70;
         LED_OUT |= LED1_BIT;
 
         //reset rcResponse counters
@@ -173,7 +173,7 @@ int main(void)
     setCANPacketRxCallback(can_packet_rx_callback);
 
     initializeTimer();
-    startCallback(timerCallbackInitializer(&incrementRealtimeCounter, 100000)); //increments every 100 ms
+    startCallback(timerCallbackInitializer(&incrementRealtimeCounter, 10000)); //increments every 10 ms
 
     bitInit();
 
@@ -197,7 +197,7 @@ int main(void)
 
         if(checkTimeElapsed(lastLED1Time, LED_1_FREQ))
         {
-            LED_1_FREQ = 0xff;
+            LED_1_FREQ = 0x9f6;
             lastLED1Time = 0;
             LED_OUT &= ~LED1_BIT;
         }
@@ -207,57 +207,57 @@ int main(void)
             last_rahs_camera_time = realtimeCounter;
             while(sendCANPacket(303563552, 8));
         }
-        if(checkTimeElapsed(last_estim_sun_unit_z_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
+        if(checkTimeElapsed(last_estim_sun_unit_z_time, 280) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_sun_unit_z_time = realtimeCounter;
             while(sendCANPacket(302449332, 8));
         }
-        if(checkTimeElapsed(last_estim_sun_unit_y_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
+        if(checkTimeElapsed(last_estim_sun_unit_y_time, 280) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_sun_unit_y_time = realtimeCounter;
             while(sendCANPacket(302449331, 8));
         }
-        if(checkTimeElapsed(last_estim_sun_unit_x_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
+        if(checkTimeElapsed(last_estim_sun_unit_x_time, 280) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_sun_unit_x_time = realtimeCounter;
             while(sendCANPacket(302449330, 8));
         }
-        if(checkTimeElapsed(last_estim_mag_unit_z_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
+        if(checkTimeElapsed(last_estim_mag_unit_z_time, 280) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_mag_unit_z_time = realtimeCounter;
             while(sendCANPacket(302449335, 8));
         }
-        if(checkTimeElapsed(last_estim_mag_unit_y_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
+        if(checkTimeElapsed(last_estim_mag_unit_y_time, 280) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_mag_unit_y_time = realtimeCounter;
             while(sendCANPacket(302449334, 8));
         }
-        if(checkTimeElapsed(last_estim_mag_unit_x_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
+        if(checkTimeElapsed(last_estim_mag_unit_x_time, 280) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_mag_unit_x_time = realtimeCounter;
             while(sendCANPacket(302449333, 8));
         }
-        if(checkTimeElapsed(last_estim_state_time, 28) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
+        if(checkTimeElapsed(last_estim_state_time, 280) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_estim_state_time = realtimeCounter;
             while(sendCANPacket(302449336, 1));
         }
-        if(checkTimeElapsed(last_com2_state_time, 100) && !(PD_IN_COM2 & PD_BIT_COM2))
+        if(checkTimeElapsed(last_com2_state_time, 1000) && !(PD_IN_COM2 & PD_BIT_COM2))
         {
             last_com2_state_time = realtimeCounter;
             while(sendCANPacket(307757552, 8));
         }
-        if(checkTimeElapsed(last_cmd_mtq_fsw_time, 1) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
+        if(checkTimeElapsed(last_cmd_mtq_fsw_time, 10) && !(PD_IN_ESTIM & PD_BIT_ESTIM))
         {
             last_cmd_mtq_fsw_time = realtimeCounter;
             while(sendCANPacket(302252067, 4));
         }
-        if(checkTimeElapsed(last_mtq_ack_time, 20) && !(PD_IN_BDOT & PD_BIT_BDOT))
+        if(checkTimeElapsed(last_mtq_ack_time, 200) && !(PD_IN_BDOT & PD_BIT_BDOT))
         {
             last_mtq_ack_time = realtimeCounter;
             while(sendCANPacket(307691568, 8));
         }
-        if(checkTimeElapsed(last_cmd_mtq_bdot_time, 2) && !(PD_IN_BDOT & PD_BIT_BDOT))
+        if(checkTimeElapsed(last_cmd_mtq_bdot_time, 20) && !(PD_IN_BDOT & PD_BIT_BDOT))
         {
             last_cmd_mtq_bdot_time = realtimeCounter;
             while(sendCANPacket(307691553, 3));
