@@ -27,8 +27,6 @@
 
 // BEGIN GENERATOR MACROS
 
-#define CAN_ID_GCMD_COM1_MODE 302252858
-#define CAN_ID_RAHS_CAMERA 303563552
 #define CAN_ID_RC_EPS_GEN_10 309920562
 #define CAN_ID_GCMD_AUTOSEQ_ENABLE 302252849
 #define CAN_ID_GCMD_BATT_SET_BAL_AUTO 302252848
@@ -214,10 +212,6 @@
 #define CAN_ID_BDOT_TUMBLE_STATUS 308740128
 #define CAN_ID_GRND_EPOCH 302449337
 
-#define CAN_ENUM_COM1_MODE_CAMERAMODE 4
-#define CAN_ENUM_COM1_MODE_REAL-TIMEMODE 3
-#define CAN_ENUM_COM1_MODE_SAFEMODE 2
-#define CAN_ENUM_COM1_MODE_HEALTHMODE 1
 #define CAN_ENUM_PD_STATE_UNKNOWN 6
 #define CAN_ENUM_PD_STATE_OFF_AUTOSHUTOFF 5
 #define CAN_ENUM_PD_STATE_OFF_INITIAL 4
@@ -335,14 +329,6 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
-typedef struct gcmd_com1_mode {
-    uint8_t gcmd_com1_mode_mode; //  (No Units)
-} gcmd_com1_mode;
-
-typedef struct rahs_camera {
-    uint64_t rahs_camera_data; //  (No Units)
-} rahs_camera;
-
 typedef struct rc_eps_gen_10 {
     uint16_t rc_eps_gen_10_pnl_3_power_avg; // raw power gen
     uint16_t rc_eps_gen_10_pnl_2_power_avg; // raw power gen
@@ -1419,12 +1405,6 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
-
-void encodegcmd_com1_mode(gcmd_com1_mode *input, CANPacket* output);
-void decodegcmd_com1_mode(CANPacket *input, gcmd_com1_mode *output);
-
-void encoderahs_camera(rahs_camera *input, CANPacket* output);
-void decoderahs_camera(CANPacket *input, rahs_camera *output);
 
 void encoderc_eps_gen_10(rc_eps_gen_10 *input, CANPacket* output);
 void decoderc_eps_gen_10(CANPacket *input, rc_eps_gen_10 *output);
