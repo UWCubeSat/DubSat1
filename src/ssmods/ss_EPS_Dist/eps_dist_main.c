@@ -57,14 +57,14 @@ FILE_STATIC uint8_t domainsSensorAddresses[] =   { 0x43, 0x40, 0x44, 0x42, 0x45,
 FILE_STATIC float   domainShuntResistances[] =   { SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE,
                                                    SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE };
 
-FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_LOW_DRAW_DEVICE, //COM1
+FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_HIGH_DRAW_DEVICE, //COM1
                                                       3.0f, //COM2
-                                                      OCP_THRESH_LOW_DRAW_DEVICE, //RAHS
+                                                      OCP_THRESH_MED_DRAW_DEVICE, //RAHS
                                                       OCP_THRESH_VERY_HIGH_DRAW_DEVICE, //BDOT
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //ESTIM
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //WHEELS
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //EPS
-                                                      OCP_THRESH_HIGH_DRAW_DEVICE }; //PPT
+                                                      12.0f }; //PPT
 
 PCVSensorData *sensorData;
 hDev i2cdev, hSensor;
