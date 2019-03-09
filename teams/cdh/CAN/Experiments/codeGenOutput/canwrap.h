@@ -37,7 +37,6 @@
 #define CAN_ID_RAHS_CAMERA 303563552
 #define CAN_ID_RC_EPS_GEN_10 309920562
 #define CAN_ID_GCMD_AUTOSEQ_ENABLE 302252849
-#define CAN_ID_GCMD_BATT_SET_BAL_AUTO 302252848
 #define CAN_ID_GCMD_DIST_AUTOSHUTOFF 302252847
 #define CAN_ID_GCMD_PPT_HALT 285475076
 #define CAN_ID_GCMD_DIST_RESET_MISSION 302252767
@@ -67,7 +66,6 @@
 #define CAN_ID_RC_EPS_DIST_H2 308871788
 #define CAN_ID_RC_ADCS_MPC_H2 308871787
 #define CAN_ID_RC_ADCS_ESTIM_H2 307823210
-#define CAN_ID_RC_ADCS_SP_H2 308871785
 #define CAN_ID_RC_EPS_GEN_H2 308871784
 #define CAN_ID_RC_ADCS_MTQ_H2 308871783
 #define CAN_ID_RC_PPT_H2 308871782
@@ -87,15 +85,12 @@
 #define CAN_ID_GCMD_BDOT_MAG_CONTROL 302252745
 #define CAN_ID_GCMD_BDOT_POLE_OVERRIDE 302252744
 #define CAN_ID_GCMD_GEN_SET_PT_STATE 302252742
-#define CAN_ID_GCMD_SP_SET_THRESH 302252743
 #define CAN_ID_GCMD_DIST_SET_PD_OVC_PPT 302252741
 #define CAN_ID_GCMD_DIST_SET_PD_OVC_EPS 302252740
-#define CAN_ID_GCMD_DIST_SET_PD_OVC_WHEELS 302252739
 #define CAN_ID_GCMD_DIST_SET_PD_OVC_ESTIM 302252738
 #define CAN_ID_GCMD_DIST_SET_PD_OVC_BDOT 302252737
 #define CAN_ID_GCMD_DIST_SET_PD_OVC_RAHS 302252736
 #define CAN_ID_GCMD_DIST_SET_PD_OVC_COM2 302252735
-#define CAN_ID_GCMD_DIST_SET_PD_OVC_COM1 302252734
 #define CAN_ID_GCMD_DIST_SET_PD_STATE 302252733
 #define CAN_ID_GCMD_MTQ_POP 302449340
 #define CAN_ID_RC_EPS_BATT_7 307823194
@@ -178,7 +173,6 @@
 #define CAN_ID_RC_ADCS_MTQ_4 308871694
 #define CAN_ID_RC_ADCS_MTQ_3 308871693
 #define CAN_ID_RC_ADCS_MTQ_2 308871692
-#define CAN_ID_RC_PPT_3 307823114
 #define CAN_ID_RC_PPT_2 307823113
 #define CAN_ID_RC_PPT_1 307823112
 #define CAN_ID_RC_EPS_GEN_9 307823128
@@ -204,8 +198,6 @@
 #define CAN_ID_TLE_1 302448708
 #define CAN_ID_GCMD_COM2_RUN 302514673
 #define CAN_ID_COM2_STATE 307757552
-#define CAN_ID_CMD_BATT_RST 302252290
-#define CAN_ID_CMD_BATT_BAL_ENABLE 302252291
 #define CAN_ID_CMD_REBOOT_REQUEST 262152
 #define CAN_ID_CMD_IGNORE_FSW 302252068
 #define CAN_ID_CMD_MTQ_FSW 302252067
@@ -217,7 +209,6 @@
 #define CAN_ID_MPC_VP 302448674
 #define CAN_ID_SENSORPROC_SUN 335872065
 #define CAN_ID_CMD_MTQ_BDOT 307691553
-#define CAN_ID_BDOT_TUMBLE_STATUS 308740128
 #define CAN_ID_GRND_EPOCH 302449337
 
 #define CAN_ENUM_COM1_MODE_CAMERAMODE 4
@@ -378,10 +369,6 @@ typedef struct rc_eps_gen_10 {
 typedef struct gcmd_autoseq_enable {
     uint8_t gcmd_autoseq_enable_enable; //  (No Units)
 } gcmd_autoseq_enable;
-
-typedef struct gcmd_batt_set_bal_auto {
-    uint8_t gcmd_batt_set_bal_auto_state; //  (No Units)
-} gcmd_batt_set_bal_auto;
 
 typedef struct gcmd_dist_autoshutoff {
     uint8_t gcmd_dist_autoshutoff_ppt; //  (No Units)
@@ -547,10 +534,6 @@ typedef struct rc_adcs_estim_h2 {
     uint8_t rc_adcs_estim_h2_canrxerror; //  (No Units)
 } rc_adcs_estim_h2;
 
-typedef struct rc_adcs_sp_h2 {
-    uint8_t rc_adcs_sp_h2_canrxerror; //  (No Units)
-} rc_adcs_sp_h2;
-
 typedef struct rc_eps_gen_h2 {
     uint8_t rc_eps_gen_h2_canrxerror; //  (No Units)
 } rc_eps_gen_h2;
@@ -679,10 +662,6 @@ typedef struct gcmd_gen_set_pt_state {
     uint8_t gcmd_gen_set_pt_state_1; //  (No Units)
 } gcmd_gen_set_pt_state;
 
-typedef struct gcmd_sp_set_thresh {
-    uint16_t gcmd_sp_set_thresh_thresh; // 1/73 nanoTeslas
-} gcmd_sp_set_thresh;
-
 typedef struct gcmd_dist_set_pd_ovc_ppt {
     float gcmd_dist_set_pd_ovc_ppt_ovc; // A
 } gcmd_dist_set_pd_ovc_ppt;
@@ -690,10 +669,6 @@ typedef struct gcmd_dist_set_pd_ovc_ppt {
 typedef struct gcmd_dist_set_pd_ovc_eps {
     float gcmd_dist_set_pd_ovc_eps_ovc; // A
 } gcmd_dist_set_pd_ovc_eps;
-
-typedef struct gcmd_dist_set_pd_ovc_wheels {
-    float gcmd_dist_set_pd_ovc_wheels_ovc; // A
-} gcmd_dist_set_pd_ovc_wheels;
 
 typedef struct gcmd_dist_set_pd_ovc_estim {
     float gcmd_dist_set_pd_ovc_estim_ovc; // A
@@ -710,10 +685,6 @@ typedef struct gcmd_dist_set_pd_ovc_rahs {
 typedef struct gcmd_dist_set_pd_ovc_com2 {
     float gcmd_dist_set_pd_ovc_com2_ovc; // A
 } gcmd_dist_set_pd_ovc_com2;
-
-typedef struct gcmd_dist_set_pd_ovc_com1 {
-    float gcmd_dist_set_pd_ovc_com1_ovc; // A
-} gcmd_dist_set_pd_ovc_com1;
 
 typedef struct gcmd_dist_set_pd_state {
     uint8_t gcmd_dist_set_pd_state_wheels; //  (No Units)
@@ -1186,9 +1157,6 @@ typedef struct rc_adcs_mtq_2 {
     int8_t rc_adcs_mtq_2_bdot_x_avg; //  (No Units)
 } rc_adcs_mtq_2;
 
-typedef struct rc_ppt_3 {
-} rc_ppt_3;
-
 typedef struct rc_ppt_2 {
     uint16_t rc_ppt_2_cooldown_time; // 2^-15 seconds
     uint16_t rc_ppt_2_ign_charge_time; // 2^-15 seconds
@@ -1358,14 +1326,6 @@ typedef struct com2_state {
     uint16_t com2_state_uptime; // s
 } com2_state;
 
-typedef struct cmd_batt_rst {
-    uint8_t cmd_batt_rst_confirm; //  (No Units)
-} cmd_batt_rst;
-
-typedef struct cmd_batt_bal_enable {
-    uint8_t cmd_batt_bal_enable_enable; //  (No Units)
-} cmd_batt_bal_enable;
-
 typedef struct cmd_reboot_request {
     uint8_t cmd_reboot_request_domain; //  (No Units)
 } cmd_reboot_request;
@@ -1437,10 +1397,6 @@ typedef struct cmd_mtq_bdot {
     int8_t cmd_mtq_bdot_x; // pct doodie
 } cmd_mtq_bdot;
 
-typedef struct bdot_tumble_status {
-    uint8_t bdot_tumble_status_status; // bool
-} bdot_tumble_status;
-
 typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
@@ -1475,9 +1431,6 @@ void decoderc_eps_gen_10(CANPacket *input, rc_eps_gen_10 *output);
 
 void encodegcmd_autoseq_enable(gcmd_autoseq_enable *input, CANPacket* output);
 void decodegcmd_autoseq_enable(CANPacket *input, gcmd_autoseq_enable *output);
-
-void encodegcmd_batt_set_bal_auto(gcmd_batt_set_bal_auto *input, CANPacket* output);
-void decodegcmd_batt_set_bal_auto(CANPacket *input, gcmd_batt_set_bal_auto *output);
 
 void encodegcmd_dist_autoshutoff(gcmd_dist_autoshutoff *input, CANPacket* output);
 void decodegcmd_dist_autoshutoff(CANPacket *input, gcmd_dist_autoshutoff *output);
@@ -1566,9 +1519,6 @@ void decoderc_adcs_mpc_h2(CANPacket *input, rc_adcs_mpc_h2 *output);
 void encoderc_adcs_estim_h2(rc_adcs_estim_h2 *input, CANPacket* output);
 void decoderc_adcs_estim_h2(CANPacket *input, rc_adcs_estim_h2 *output);
 
-void encoderc_adcs_sp_h2(rc_adcs_sp_h2 *input, CANPacket* output);
-void decoderc_adcs_sp_h2(CANPacket *input, rc_adcs_sp_h2 *output);
-
 void encoderc_eps_gen_h2(rc_eps_gen_h2 *input, CANPacket* output);
 void decoderc_eps_gen_h2(CANPacket *input, rc_eps_gen_h2 *output);
 
@@ -1626,17 +1576,11 @@ void decodegcmd_bdot_pole_override(CANPacket *input, gcmd_bdot_pole_override *ou
 void encodegcmd_gen_set_pt_state(gcmd_gen_set_pt_state *input, CANPacket* output);
 void decodegcmd_gen_set_pt_state(CANPacket *input, gcmd_gen_set_pt_state *output);
 
-void encodegcmd_sp_set_thresh(gcmd_sp_set_thresh *input, CANPacket* output);
-void decodegcmd_sp_set_thresh(CANPacket *input, gcmd_sp_set_thresh *output);
-
 void encodegcmd_dist_set_pd_ovc_ppt(gcmd_dist_set_pd_ovc_ppt *input, CANPacket* output);
 void decodegcmd_dist_set_pd_ovc_ppt(CANPacket *input, gcmd_dist_set_pd_ovc_ppt *output);
 
 void encodegcmd_dist_set_pd_ovc_eps(gcmd_dist_set_pd_ovc_eps *input, CANPacket* output);
 void decodegcmd_dist_set_pd_ovc_eps(CANPacket *input, gcmd_dist_set_pd_ovc_eps *output);
-
-void encodegcmd_dist_set_pd_ovc_wheels(gcmd_dist_set_pd_ovc_wheels *input, CANPacket* output);
-void decodegcmd_dist_set_pd_ovc_wheels(CANPacket *input, gcmd_dist_set_pd_ovc_wheels *output);
 
 void encodegcmd_dist_set_pd_ovc_estim(gcmd_dist_set_pd_ovc_estim *input, CANPacket* output);
 void decodegcmd_dist_set_pd_ovc_estim(CANPacket *input, gcmd_dist_set_pd_ovc_estim *output);
@@ -1649,9 +1593,6 @@ void decodegcmd_dist_set_pd_ovc_rahs(CANPacket *input, gcmd_dist_set_pd_ovc_rahs
 
 void encodegcmd_dist_set_pd_ovc_com2(gcmd_dist_set_pd_ovc_com2 *input, CANPacket* output);
 void decodegcmd_dist_set_pd_ovc_com2(CANPacket *input, gcmd_dist_set_pd_ovc_com2 *output);
-
-void encodegcmd_dist_set_pd_ovc_com1(gcmd_dist_set_pd_ovc_com1 *input, CANPacket* output);
-void decodegcmd_dist_set_pd_ovc_com1(CANPacket *input, gcmd_dist_set_pd_ovc_com1 *output);
 
 void encodegcmd_dist_set_pd_state(gcmd_dist_set_pd_state *input, CANPacket* output);
 void decodegcmd_dist_set_pd_state(CANPacket *input, gcmd_dist_set_pd_state *output);
@@ -1899,9 +1840,6 @@ void decoderc_adcs_mtq_3(CANPacket *input, rc_adcs_mtq_3 *output);
 void encoderc_adcs_mtq_2(rc_adcs_mtq_2 *input, CANPacket* output);
 void decoderc_adcs_mtq_2(CANPacket *input, rc_adcs_mtq_2 *output);
 
-void encoderc_ppt_3(rc_ppt_3 *input, CANPacket* output);
-void decoderc_ppt_3(CANPacket *input, rc_ppt_3 *output);
-
 void encoderc_ppt_2(rc_ppt_2 *input, CANPacket* output);
 void decoderc_ppt_2(CANPacket *input, rc_ppt_2 *output);
 
@@ -1977,12 +1915,6 @@ void decodegcmd_com2_run(CANPacket *input, gcmd_com2_run *output);
 void encodecom2_state(com2_state *input, CANPacket* output);
 void decodecom2_state(CANPacket *input, com2_state *output);
 
-void encodecmd_batt_rst(cmd_batt_rst *input, CANPacket* output);
-void decodecmd_batt_rst(CANPacket *input, cmd_batt_rst *output);
-
-void encodecmd_batt_bal_enable(cmd_batt_bal_enable *input, CANPacket* output);
-void decodecmd_batt_bal_enable(CANPacket *input, cmd_batt_bal_enable *output);
-
 void encodecmd_reboot_request(cmd_reboot_request *input, CANPacket* output);
 void decodecmd_reboot_request(CANPacket *input, cmd_reboot_request *output);
 
@@ -2015,9 +1947,6 @@ void decodesensorproc_sun(CANPacket *input, sensorproc_sun *output);
 
 void encodecmd_mtq_bdot(cmd_mtq_bdot *input, CANPacket* output);
 void decodecmd_mtq_bdot(CANPacket *input, cmd_mtq_bdot *output);
-
-void encodebdot_tumble_status(bdot_tumble_status *input, CANPacket* output);
-void decodebdot_tumble_status(CANPacket *input, bdot_tumble_status *output);
 
 void encodegrnd_epoch(grnd_epoch *input, CANPacket* output);
 void decodegrnd_epoch(CANPacket *input, grnd_epoch *output);

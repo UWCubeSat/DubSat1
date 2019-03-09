@@ -371,23 +371,6 @@ void encodegcmd_autoseq_enable(gcmd_autoseq_enable *input, CANPacket *output){
     reverseArray((output->data), 0, 7);
 }
 
-void decodegcmd_batt_set_bal_auto(CANPacket *input, gcmd_batt_set_bal_auto *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    output -> gcmd_batt_set_bal_auto_state = (uint8_t) (((fullData & ((uint64_t) 0x3 << 62)) >> 62));
-}
-
-void encodegcmd_batt_set_bal_auto(gcmd_batt_set_bal_auto *input, CANPacket *output){
-    output -> id = 302252848;
-    output -> length = 1;
-    uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> gcmd_batt_set_bal_auto_state))) & 0x3) << 62;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
 void decodegcmd_dist_autoshutoff(CANPacket *input, gcmd_dist_autoshutoff *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -981,23 +964,6 @@ void encoderc_adcs_estim_h2(rc_adcs_estim_h2 *input, CANPacket *output){
     reverseArray((output->data), 0, 7);
 }
 
-void decoderc_adcs_sp_h2(CANPacket *input, rc_adcs_sp_h2 *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    output -> rc_adcs_sp_h2_canrxerror = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
-}
-
-void encoderc_adcs_sp_h2(rc_adcs_sp_h2 *input, CANPacket *output){
-    output -> id = 308871785;
-    output -> length = 1;
-    uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_sp_h2_canrxerror))) & 0xff) << 56;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
 void decoderc_eps_gen_h2(CANPacket *input, rc_eps_gen_h2 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -1425,23 +1391,6 @@ void encodegcmd_gen_set_pt_state(gcmd_gen_set_pt_state *input, CANPacket *output
     reverseArray((output->data), 0, 7);
 }
 
-void decodegcmd_sp_set_thresh(CANPacket *input, gcmd_sp_set_thresh *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    output -> gcmd_sp_set_thresh_thresh = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
-}
-
-void encodegcmd_sp_set_thresh(gcmd_sp_set_thresh *input, CANPacket *output){
-    output -> id = 302252743;
-    output -> length = 2;
-    uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> gcmd_sp_set_thresh_thresh))) & 0xffff) << 48;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
 void decodegcmd_dist_set_pd_ovc_ppt(CANPacket *input, gcmd_dist_set_pd_ovc_ppt *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -1475,25 +1424,6 @@ void encodegcmd_dist_set_pd_ovc_eps(gcmd_dist_set_pd_ovc_eps *input, CANPacket *
     uint64_t fullPacketData = 0x0000000000000000;
     const float tempgcmd_dist_set_pd_ovc_eps_ovc = ((input -> gcmd_dist_set_pd_ovc_eps_ovc));
     fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_dist_set_pd_ovc_eps_ovc))))) << 32;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
-void decodegcmd_dist_set_pd_ovc_wheels(CANPacket *input, gcmd_dist_set_pd_ovc_wheels *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    uint32_t tempgcmd_dist_set_pd_ovc_wheels_ovc = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
-    output -> gcmd_dist_set_pd_ovc_wheels_ovc = (*((float *)(&(tempgcmd_dist_set_pd_ovc_wheels_ovc))));
-}
-
-void encodegcmd_dist_set_pd_ovc_wheels(gcmd_dist_set_pd_ovc_wheels *input, CANPacket *output){
-    output -> id = 302252739;
-    output -> length = 4;
-    uint64_t fullPacketData = 0x0000000000000000;
-    const float tempgcmd_dist_set_pd_ovc_wheels_ovc = ((input -> gcmd_dist_set_pd_ovc_wheels_ovc));
-    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_dist_set_pd_ovc_wheels_ovc))))) << 32;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -1570,25 +1500,6 @@ void encodegcmd_dist_set_pd_ovc_com2(gcmd_dist_set_pd_ovc_com2 *input, CANPacket
     uint64_t fullPacketData = 0x0000000000000000;
     const float tempgcmd_dist_set_pd_ovc_com2_ovc = ((input -> gcmd_dist_set_pd_ovc_com2_ovc));
     fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_dist_set_pd_ovc_com2_ovc))))) << 32;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
-void decodegcmd_dist_set_pd_ovc_com1(CANPacket *input, gcmd_dist_set_pd_ovc_com1 *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    uint32_t tempgcmd_dist_set_pd_ovc_com1_ovc = (uint32_t) ((fullData & ((uint64_t) 0xffffffff << 32)) >> 32);
-    output -> gcmd_dist_set_pd_ovc_com1_ovc = (*((float *)(&(tempgcmd_dist_set_pd_ovc_com1_ovc))));
-}
-
-void encodegcmd_dist_set_pd_ovc_com1(gcmd_dist_set_pd_ovc_com1 *input, CANPacket *output){
-    output -> id = 302252734;
-    output -> length = 4;
-    uint64_t fullPacketData = 0x0000000000000000;
-    const float tempgcmd_dist_set_pd_ovc_com1_ovc = ((input -> gcmd_dist_set_pd_ovc_com1_ovc));
-    fullPacketData |= ((uint64_t)(*((uint32_t *)(&(tempgcmd_dist_set_pd_ovc_com1_ovc))))) << 32;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);
@@ -3330,21 +3241,6 @@ void encoderc_adcs_mtq_2(rc_adcs_mtq_2 *input, CANPacket *output){
     reverseArray((output->data), 0, 7);
 }
 
-void decoderc_ppt_3(CANPacket *input, rc_ppt_3 *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-}
-
-void encoderc_ppt_3(rc_ppt_3 *input, CANPacket *output){
-    output -> id = 307823114;
-    output -> length = 6;
-    uint64_t fullPacketData = 0x0000000000000000;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
 void decoderc_ppt_2(CANPacket *input, rc_ppt_2 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -3924,40 +3820,6 @@ void encodecom2_state(com2_state *input, CANPacket *output){
     reverseArray((output->data), 0, 7);
 }
 
-void decodecmd_batt_rst(CANPacket *input, cmd_batt_rst *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    output -> cmd_batt_rst_confirm = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
-}
-
-void encodecmd_batt_rst(cmd_batt_rst *input, CANPacket *output){
-    output -> id = 302252290;
-    output -> length = 1;
-    uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> cmd_batt_rst_confirm))) & 0x1) << 63;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
-void decodecmd_batt_bal_enable(CANPacket *input, cmd_batt_bal_enable *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    output -> cmd_batt_bal_enable_enable = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
-}
-
-void encodecmd_batt_bal_enable(cmd_batt_bal_enable *input, CANPacket *output){
-    output -> id = 302252291;
-    output -> length = 1;
-    uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> cmd_batt_bal_enable_enable))) & 0x1) << 63;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
 void decodecmd_reboot_request(CANPacket *input, cmd_reboot_request *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -4194,23 +4056,6 @@ void encodecmd_mtq_bdot(cmd_mtq_bdot *input, CANPacket *output){
     fullPacketData |= (((uint64_t)((input -> cmd_mtq_bdot_z))) & 0xff) << 40;
     fullPacketData |= (((uint64_t)((input -> cmd_mtq_bdot_y))) & 0xff) << 48;
     fullPacketData |= (((uint64_t)((input -> cmd_mtq_bdot_x))) & 0xff) << 56;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
-void decodebdot_tumble_status(CANPacket *input, bdot_tumble_status *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-    output -> bdot_tumble_status_status = (uint8_t) (((fullData & ((uint64_t) 0x1 << 63)) >> 63));
-}
-
-void encodebdot_tumble_status(bdot_tumble_status *input, CANPacket *output){
-    output -> id = 308740128;
-    output -> length = 1;
-    uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> bdot_tumble_status_status))) & 0x1) << 63;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;
     reverseArray((output->data), 0, 7);

@@ -83,9 +83,6 @@ BO_ 2457404210 rc_eps_gen_10: 6 eps_gen
 BO_ 2449736497 gcmd_autoseq_enable: 1 com_1
  SG_ gcmd_autoseq_enable_enable : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
-BO_ 2449736496 gcmd_batt_set_bal_auto: 1 com_1
- SG_ gcmd_batt_set_bal_auto_state : 0|2@1+ (1,0) [0|3] "" Vector__XXX
-
 BO_ 2449736495 gcmd_dist_autoshutoff: 2 com_1
  SG_ gcmd_dist_autoshutoff_ppt : 10|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ gcmd_dist_autoshutoff_eps : 8|2@1+ (1,0) [0|3] "" Vector__XXX
@@ -221,9 +218,6 @@ BO_ 2456355435 rc_adcs_mpc_h2: 8 adcs_mpc
 BO_ 2455306858 rc_adcs_estim_h2: 1 adcs_estim
  SG_ rc_adcs_estim_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
-BO_ 2456355433 rc_adcs_sp_h2: 1 adcs_sensorproc
- SG_ rc_adcs_sp_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
-
 BO_ 2456355432 rc_eps_gen_h2: 8 eps_gen
  SG_ rc_eps_gen_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
@@ -333,17 +327,11 @@ BO_ 2449736390 gcmd_gen_set_pt_state: 1 com_1
  SG_ gcmd_gen_set_pt_state_2 : 2|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ gcmd_gen_set_pt_state_1 : 0|2@1+ (1,0) [0|3] "" Vector__XXX
 
-BO_ 2449736391 gcmd_sp_set_thresh: 2 com_1
- SG_ gcmd_sp_set_thresh_thresh : 0|16@1+ (1,0) [0|65535] "1/73 nanoTeslas" Vector__XXX
-
 BO_ 2449736389 gcmd_dist_set_pd_ovc_ppt: 4 com_1
  SG_ gcmd_dist_set_pd_ovc_ppt_ovc : 0|32@1- (1,0) [0|15] "A" Vector__XXX
 
 BO_ 2449736388 gcmd_dist_set_pd_ovc_eps: 4 com_1
  SG_ gcmd_dist_set_pd_ovc_eps_ovc : 0|32@1- (1,0) [0|15] "A" Vector__XXX
-
-BO_ 2449736387 gcmd_dist_set_pd_ovc_wheels: 4 com_1
- SG_ gcmd_dist_set_pd_ovc_wheels_ovc : 0|32@1- (1,0) [0|15] "A" Vector__XXX
 
 BO_ 2449736386 gcmd_dist_set_pd_ovc_estim: 4 com_1
  SG_ gcmd_dist_set_pd_ovc_estim_ovc : 0|32@1- (1,0) [0|15] "A" Vector__XXX
@@ -356,9 +344,6 @@ BO_ 2449736384 gcmd_dist_set_pd_ovc_rahs: 4 com_1
 
 BO_ 2449736383 gcmd_dist_set_pd_ovc_com2: 4 com_1
  SG_ gcmd_dist_set_pd_ovc_com2_ovc : 0|32@1- (1,0) [0|15] "A" Vector__XXX
-
-BO_ 2449736382 gcmd_dist_set_pd_ovc_com1: 4 Vector__XXX
- SG_ gcmd_dist_set_pd_ovc_com1_ovc : 0|32@1- (1,0) [0|15] "A" Vector__XXX
 
 BO_ 2449736381 gcmd_dist_set_pd_state: 2 com_1
  SG_ gcmd_dist_set_pd_state_wheels : 10|2@1+ (1,0) [0|3] "" Vector__XXX
@@ -749,8 +734,6 @@ BO_ 2456355340 rc_adcs_mtq_2: 8 adcs_mtq
  SG_ rc_adcs_mtq_2_bdot_x_max : 8|8@1- (1,0) [-100|100] "" Vector__XXX
  SG_ rc_adcs_mtq_2_bdot_x_avg : 0|8@1- (1,0) [-100|100] "" Vector__XXX
 
-BO_ 2455306762 rc_ppt_3: 6 Vector__XXX
-
 BO_ 2455306761 rc_ppt_2: 7 ppt
  SG_ rc_ppt_2_cooldown_time : 48|16@1+ (1,0) [0|65535] "2^-15 seconds" Vector__XXX
  SG_ rc_ppt_2_ign_charge_time : 32|16@1+ (1,0) [0|65535] "2^-15 seconds" Vector__XXX
@@ -895,12 +878,6 @@ BO_ 2455241200 com2_state: 8 com_2
  SG_ com2_state_qlen : 16|16@1+ (1,0) [0|65535] "files" Vector__XXX
  SG_ com2_state_uptime : 0|16@1+ (1,0) [0|65535] "s" Vector__XXX
 
-BO_ 2449735938 cmd_batt_rst: 1 com_1
- SG_ cmd_batt_rst_confirm : 0|1@1+ (1,0) [0|1] "" Vector__XXX
-
-BO_ 2449735939 cmd_batt_bal_enable: 1 com_1
- SG_ cmd_batt_bal_enable_enable : 0|1@1+ (1,0) [0|1] "" Vector__XXX
-
 BO_ 2147745800 cmd_reboot_request: 1 rahs
  SG_ cmd_reboot_request_domain : 0|8@1+ (1,0) [0|8] "" Vector__XXX
 
@@ -961,9 +938,6 @@ BO_ 2455175201 cmd_mtq_bdot: 3 adcs_bdot
  SG_ cmd_mtq_bdot_y : 8|8@1- (1,0) [-100|100] "pct doodie" Vector__XXX
  SG_ cmd_mtq_bdot_x : 0|8@1- (1,0) [-100|100] "pct doodie" Vector__XXX
 
-BO_ 2456223776 bdot_tumble_status: 1 adcs_bdot
- SG_ bdot_tumble_status_status : 0|1@1+ (1,0) [0|1] "bool" Vector__XXX
-
 BO_ 2449932985 grnd_epoch: 5 com_1
  SG_ grnd_epoch_val_overflow : 32|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ grnd_epoch_val : 0|32@1+ (1,0) [0|4294967295] "2^-8 s" Vector__XXX
@@ -983,8 +957,6 @@ CM_ BO_ 2449736500 "Commands COM1 to disable the transponder";
 CM_ BO_ 2449736499 "Commands COM1 to enable the transponder";
 CM_ BO_ 2451047200 "Packet containing camera data from the RAHS board";
 CM_ SG_ 2451047200 rahs_camera_data "The picture data";
-CM_ BO_ 2449736496 "Sets the state of battery balancer automation";
-CM_ SG_ 2449736496 gcmd_batt_set_bal_auto_state "What state the battery balancer automation should be set to";
 CM_ BO_ 2449736495 "Set the status of dist autoshutoff for each power domain";
 CM_ SG_ 2449736495 gcmd_dist_autoshutoff_ppt "Whether autoshutoff is enabled on the power domain";
 CM_ SG_ 2449736495 gcmd_dist_autoshutoff_eps "Whether autoshutoff is enabled on the power domain";
@@ -1065,7 +1037,6 @@ CM_ SG_ 2456355437 rc_adcs_bdot_h2_canrxerror "the BDOT MCP's RX error buffer";
 CM_ SG_ 2456355436 rc_eps_dist_h2_canrxerror "the Dist MCP's RX error buffer";
 CM_ SG_ 2456355435 rc_adcs_mpc_h2_canrxerror "the MPC MCP's RX error buffer";
 CM_ SG_ 2455306858 rc_adcs_estim_h2_canrxerror "Estim MCP's RX error buffer";
-CM_ SG_ 2456355433 rc_adcs_sp_h2_canrxerror "SP MCP's RX error buffer";
 CM_ SG_ 2456355432 rc_eps_gen_h2_canrxerror "GEN MCP's RX error buffer";
 CM_ SG_ 2456355431 rc_adcs_mtq_h2_canrxerror "the MTQ MCP's RX error buffer";
 CM_ SG_ 2456355430 rc_ppt_h2_last_fire_result "The result of the last PPT fire";
@@ -1136,15 +1107,12 @@ CM_ SG_ 2449736392 gcmd_bdot_pole_override_x "Flips the dipole signs on bdot x a
 CM_ SG_ 2449736390 gcmd_gen_set_pt_state_3 "enables or disables Power Tracker #3";
 CM_ SG_ 2449736390 gcmd_gen_set_pt_state_2 "enables or disables Power Tracker #2";
 CM_ SG_ 2449736390 gcmd_gen_set_pt_state_1 "enables or disables Power Tracker #1";
-CM_ SG_ 2449736391 gcmd_sp_set_thresh_thresh "Any magnetometer reading outside of +/- the set threshold will be discarded as invalid";
 CM_ SG_ 2449736389 gcmd_dist_set_pd_ovc_ppt_ovc "Set PD overcurrent PPT";
 CM_ SG_ 2449736388 gcmd_dist_set_pd_ovc_eps_ovc "Set PD Overcurrent EPS";
-CM_ SG_ 2449736387 gcmd_dist_set_pd_ovc_wheels_ovc "Set PD Overcurrent Weels";
 CM_ SG_ 2449736386 gcmd_dist_set_pd_ovc_estim_ovc "Set PD overcurrent ESTIM";
 CM_ SG_ 2449736385 gcmd_dist_set_pd_ovc_bdot_ovc "Set PD overcurrent BDOT";
 CM_ SG_ 2449736384 gcmd_dist_set_pd_ovc_rahs_ovc "Set PD overcurrent RAHS";
 CM_ SG_ 2449736383 gcmd_dist_set_pd_ovc_com2_ovc "set PD Overcurrent Com2";
-CM_ SG_ 2449736382 gcmd_dist_set_pd_ovc_com1_ovc "Set PD Overcurrent Com1";
 CM_ SG_ 2449736381 gcmd_dist_set_pd_state_wheels "Enables or disables the power switch to the reaction wheels (empty power domain)";
 CM_ SG_ 2449736381 gcmd_dist_set_pd_state_rahs "Enables or disables the power switch to rahs power domain";
 CM_ SG_ 2449736381 gcmd_dist_set_pd_state_ppt "Enables or disables the power switch to the PPT power domain";
@@ -1435,8 +1403,6 @@ CM_ SG_ 2455241200 com2_state_curr_file "which fille is comm2 running rn";
 CM_ SG_ 2455241200 com2_state_qfilesize "size of most recent queue file";
 CM_ SG_ 2455241200 com2_state_qlen "length of the queue of py files to run";
 CM_ SG_ 2455241200 com2_state_uptime "time since least mcu reboot";
-CM_ SG_ 2449735938 cmd_batt_rst_confirm "Do we really want to reset all stastics?";
-CM_ SG_ 2449735939 cmd_batt_bal_enable_enable "enable? (or disable if false)";
 CM_ SG_ 2147745800 cmd_reboot_request_domain "domain to reboot";
 CM_ SG_ 2449735716 cmd_ignore_fsw_ignore "ignore the bdot commands from fsw";
 CM_ SG_ 2449735715 cmd_mtq_fsw_sc_mode "overall satellite state";
@@ -1473,13 +1439,11 @@ CM_ SG_ 2483355713 sensorproc_sun_x "Sun Angle x";
 CM_ SG_ 2455175201 cmd_mtq_bdot_z "bdot command for z direction";
 CM_ SG_ 2455175201 cmd_mtq_bdot_y "bdot command for y direction";
 CM_ SG_ 2455175201 cmd_mtq_bdot_x "bdot command for x direction";
-CM_ SG_ 2456223776 bdot_tumble_status_status "bdot tumble status boolean";
 CM_ SG_ 2449932985 grnd_epoch_val_overflow "Overflow of epoch (time between millenium and when we launched)";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "BusType" "CAN";
 VAL_ 2449736506 com1_mode_mode 4 "camera mode" 3 "real-time mode" 2 "safe mode" 1 "health mode" ;
 VAL_ 2449736497 gcmd_autoseq_enable_enable 2 "null" 1 "true" 0 "false" ;
-VAL_ 2449736496 gcmd_batt_set_bal_auto_state 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736495 gcmd_dist_autoshutoff_ppt 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736495 gcmd_dist_autoshutoff_eps 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736495 gcmd_dist_autoshutoff_estim 2 "null" 1 "true" 0 "false" ;
@@ -1561,8 +1525,6 @@ VAL_ 2455306755 rc_eps_batt_4_heater_state 1 "true" 0 "false" ;
 VAL_ 2455306755 rc_eps_batt_4_balancer_state 1 "true" 0 "false" ;
 VAL_ 2449998321 gcmd_com2_run_clear 1 "true" 0 "false" ;
 VAL_ 2449998321 gcmd_com2_run_jump 1 "true" 0 "false" ;
-VAL_ 2449735938 cmd_batt_rst_confirm 1 "true" 0 "false" ;
-VAL_ 2449735939 cmd_batt_bal_enable_enable 1 "true" 0 "false" ;
 VAL_ 2147745800 cmd_reboot_request_domain 8 "unk" 7 "com1" 6 "com2" 5 "rahs" 4 "bdot" 3 "estim" 2 "wheel" 1 "eps" 0 "ppt" ;
 VAL_ 2449735716 cmd_ignore_fsw_ignore 1 "true" 0 "false" ;
 VAL_ 2449735715 cmd_mtq_fsw_sc_mode 3 "not tumbling charlie" 2 "not tumbling bob" 1 "not tumbling alice" 0 "tumbling" ;
@@ -1574,17 +1536,14 @@ VAL_ 2449735936 cmd_ppt_single_fire_override 1 "true" 0 "false" ;
 VAL_ 2449735936 cmd_ppt_single_fire_with_pulse 1 "true" 0 "false" ;
 VAL_ 2449932322 mpc_vp_status 1 "true" 0 "false" ;
 VAL_ 2483355713 sensorproc_sun_valid 1 "true" 0 "false" ;
-VAL_ 2456223776 bdot_tumble_status_status 1 "true" 0 "false" ;
 SIG_VALTYPE_ 2449736399 gcmd_eps_batt_fulldef_const_volt : 1;
 SIG_VALTYPE_ 2449736399 gcmd_eps_batt_fulldef_chg_curr : 1;
 SIG_VALTYPE_ 2449736389 gcmd_dist_set_pd_ovc_ppt_ovc : 1;
 SIG_VALTYPE_ 2449736388 gcmd_dist_set_pd_ovc_eps_ovc : 1;
-SIG_VALTYPE_ 2449736387 gcmd_dist_set_pd_ovc_wheels_ovc : 1;
 SIG_VALTYPE_ 2449736386 gcmd_dist_set_pd_ovc_estim_ovc : 1;
 SIG_VALTYPE_ 2449736385 gcmd_dist_set_pd_ovc_bdot_ovc : 1;
 SIG_VALTYPE_ 2449736384 gcmd_dist_set_pd_ovc_rahs_ovc : 1;
 SIG_VALTYPE_ 2449736383 gcmd_dist_set_pd_ovc_com2_ovc : 1;
-SIG_VALTYPE_ 2449736382 gcmd_dist_set_pd_ovc_com1_ovc : 1;
 SIG_VALTYPE_ 2455306841 rc_adcs_estim_14_mag_z : 2;
 SIG_VALTYPE_ 2455306840 rc_adcs_estim_13_mag_y : 2;
 SIG_VALTYPE_ 2455306839 rc_adcs_estim_12_mag_x : 2;
