@@ -143,7 +143,7 @@ FILE_STATIC volatile uint8_t fsw_ignore = 1;
 #pragma PERSISTENT(fsw_ignore) // persist value of fsw_ignore on reboot
 
 // POP "Polarity Override Protocol" 
-FILE_STATIC volatile int8_t pop_x = 0, pop_y = 0, pop_z = 0; 
+FILE_STATIC volatile int8_t pop_x = 0, pop_y = 1, pop_z = 1;
 #pragma PERSISTENT(pop_x)
 #pragma PERSISTENT(pop_y)
 #pragma PERSISTENT(pop_z)
