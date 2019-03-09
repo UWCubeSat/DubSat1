@@ -55,10 +55,10 @@ typedef enum {
 
 #define TIMER_LENGTH uint16_t
 
-#define LED_0_FREQ 10
+#define LED_0_FREQ 100
 TIMER_LENGTH lastLED0Time = 0;
 
-TIMER_LENGTH LED_1_FREQ = 0xff;
+TIMER_LENGTH LED_1_FREQ = 0x9f6;
 TIMER_LENGTH lastLED1Time = 0;
 
 /*[last update times here]*/

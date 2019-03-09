@@ -542,11 +542,11 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
     cFile.close()
 
 def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFileName):
-    CAN_MODEL_VERSION_NUM = 2
+    CAN_MODEL_VERSION_NUM = 4
     #NOTE: rates are in 100ms increments
-    realtimePacketRates = {"cmd_mtq_bdot" : 2, "com2_state" : 100, "estim_sun_unit_x" : 28, "estim_sun_unit_y" : 28, "estim_sun_unit_z" : 28, "estim_mag_unit_x" : 28,
-    "estim_mag_unit_y" : 28, "estim_mag_unit_z" : 28, "estim_state" : 28,
-    "cmd_mtq_fsw" : 1, "mtq_ack" : 20}
+    realtimePacketRates = {"cmd_mtq_bdot" : 20, "com2_state" : 1000, "estim_sun_unit_x" : 280, "estim_sun_unit_y" : 280, "estim_sun_unit_z" : 280, "estim_mag_unit_x" : 280,
+    "estim_mag_unit_y" : 280, "estim_mag_unit_z" : 280, "estim_state" : 280,
+    "cmd_mtq_fsw" : 10, "mtq_ack" : 200, "rahs_camera" : 18}
 
     templateCFile = open(templateCFileName, "r")
     templateHFile = open(templateHFileName, "r")
@@ -572,7 +572,7 @@ def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFile
     #realtime
     realtimeUpdateMethods = ""
     realtimeLastUpdateVars = ""
-    subsystemToPowerDomain = {"adcs_bdot" : "bdot", "adcs_mpc" : "estim", "adcs_mtq" : "bdot", "adcs_sensorproc" : "estim", "estim" : "estim", "eps_batt" : "eps", "eps_gen" : "eps", "ppt" : "ppt", "com2" : "com2"}
+    subsystemToPowerDomain = {"adcs_bdot" : "bdot", "adcs_mpc" : "estim", "adcs_mtq" : "bdot", "adcs_sensorproc" : "estim", "estim" : "estim", "eps_batt" : "eps", "eps_gen" : "eps", "ppt" : "ppt", "com2" : "com2", "rahs" : "rahs"}
     for frame in candb.frames:
         packetname= frame.name+"_packet"
         infoname = frame.name+"_info"
@@ -592,7 +592,7 @@ def createCANModel(candb, templateCFileName, templateHFileName, cFileName, hFile
             for subsystem in subsystemToPowerDomain:
                 if subsystem in transmitter or subsystem in frame.name:
                     powerDomainName = subsystemToPowerDomain[subsystem].upper()
-                    realtimeUpdateMethods += "if(checkTimeElapsed(last_" + frame.name + "_time, " + str(realtimePacketRates[frame.name]) + ") && PD_IN_" + powerDomainName + " & PD_BIT_" + powerDomainName + ''')
+                    realtimeUpdateMethods += "if(checkTimeElapsed(last_" + frame.name + "_time, " + str(realtimePacketRates[frame.name]) + ") && !(PD_IN_" + powerDomainName + " & PD_BIT_" + powerDomainName + '''))
         {
             last_''' + frame.name + '''_time = realtimeCounter;
             while(sendCANPacket(''' + str(frame.id) + ", " + str(frame.size) + '''));

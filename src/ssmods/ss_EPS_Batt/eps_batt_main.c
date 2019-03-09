@@ -153,7 +153,7 @@ FILE_STATIC void battBcSendMeta()
 
 void secondsInterrupt()
 {
-    if(timeSinceLastFullCharge ^= 0xFFFFFFFF)
+    if(timeSinceLastFullCharge ^ 0xFFFFFFFF)
         timeSinceLastFullCharge++;
 }
 

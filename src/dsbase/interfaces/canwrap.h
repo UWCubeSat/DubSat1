@@ -27,6 +27,14 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_COM1_MODE 302252858
+#define CAN_ID_GCMD_COM1_MODE_CAMERA 302252856
+#define CAN_ID_GCMD_COM1_MODE_REALTIME 302252855
+#define CAN_ID_GCMD_COM1_MODE_HEALTH 302252854
+#define CAN_ID_GCMD_COM1_MODE_SAFE 302252853
+#define CAN_ID_GCMD_COM1_TRANSPONDER_OFF 302252852
+#define CAN_ID_GCMD_COM1_TRANSPONDER_ON 302252851
+#define CAN_ID_RAHS_CAMERA 303563552
 #define CAN_ID_RC_EPS_GEN_10 309920562
 #define CAN_ID_GCMD_AUTOSEQ_ENABLE 302252849
 #define CAN_ID_GCMD_BATT_SET_BAL_AUTO 302252848
@@ -212,6 +220,10 @@
 #define CAN_ID_BDOT_TUMBLE_STATUS 308740128
 #define CAN_ID_GRND_EPOCH 302449337
 
+#define CAN_ENUM_COM1_MODE_CAMERAMODE 4
+#define CAN_ENUM_COM1_MODE_REAL-TIMEMODE 3
+#define CAN_ENUM_COM1_MODE_SAFEMODE 2
+#define CAN_ENUM_COM1_MODE_HEALTHMODE 1
 #define CAN_ENUM_PD_STATE_UNKNOWN 6
 #define CAN_ENUM_PD_STATE_OFF_AUTOSHUTOFF 5
 #define CAN_ENUM_PD_STATE_OFF_INITIAL 4
@@ -329,6 +341,34 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct com1_mode {
+    uint8_t com1_mode_mode; //  (No Units)
+} com1_mode;
+
+typedef struct gcmd_com1_mode_camera {
+    uint8_t gcmd_com1_mode_camera_time; // minutes
+} gcmd_com1_mode_camera;
+
+typedef struct gcmd_com1_mode_realtime {
+    uint8_t gcmd_com1_mode_realtime_time; // minutes
+} gcmd_com1_mode_realtime;
+
+typedef struct gcmd_com1_mode_health {
+} gcmd_com1_mode_health;
+
+typedef struct gcmd_com1_mode_safe {
+} gcmd_com1_mode_safe;
+
+typedef struct gcmd_com1_transponder_off {
+} gcmd_com1_transponder_off;
+
+typedef struct gcmd_com1_transponder_on {
+} gcmd_com1_transponder_on;
+
+typedef struct rahs_camera {
+    uint64_t rahs_camera_data; //  (No Units)
+} rahs_camera;
+
 typedef struct rc_eps_gen_10 {
     uint16_t rc_eps_gen_10_pnl_3_power_avg; // raw power gen
     uint16_t rc_eps_gen_10_pnl_2_power_avg; // raw power gen
@@ -1405,6 +1445,30 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodecom1_mode(com1_mode *input, CANPacket* output);
+void decodecom1_mode(CANPacket *input, com1_mode *output);
+
+void encodegcmd_com1_mode_camera(gcmd_com1_mode_camera *input, CANPacket* output);
+void decodegcmd_com1_mode_camera(CANPacket *input, gcmd_com1_mode_camera *output);
+
+void encodegcmd_com1_mode_realtime(gcmd_com1_mode_realtime *input, CANPacket* output);
+void decodegcmd_com1_mode_realtime(CANPacket *input, gcmd_com1_mode_realtime *output);
+
+void encodegcmd_com1_mode_health(gcmd_com1_mode_health *input, CANPacket* output);
+void decodegcmd_com1_mode_health(CANPacket *input, gcmd_com1_mode_health *output);
+
+void encodegcmd_com1_mode_safe(gcmd_com1_mode_safe *input, CANPacket* output);
+void decodegcmd_com1_mode_safe(CANPacket *input, gcmd_com1_mode_safe *output);
+
+void encodegcmd_com1_transponder_off(gcmd_com1_transponder_off *input, CANPacket* output);
+void decodegcmd_com1_transponder_off(CANPacket *input, gcmd_com1_transponder_off *output);
+
+void encodegcmd_com1_transponder_on(gcmd_com1_transponder_on *input, CANPacket* output);
+void decodegcmd_com1_transponder_on(CANPacket *input, gcmd_com1_transponder_on *output);
+
+void encoderahs_camera(rahs_camera *input, CANPacket* output);
+void decoderahs_camera(CANPacket *input, rahs_camera *output);
 
 void encoderc_eps_gen_10(rc_eps_gen_10 *input, CANPacket* output);
 void decoderc_eps_gen_10(CANPacket *input, rc_eps_gen_10 *output);

@@ -1,5 +1,5 @@
 #include <eps_dist.h>
-#include <msp430.h> 
+#include <msp430.h>
 
 #include "bsp/bsp.h"
 #include "core/timer.h"
@@ -57,14 +57,14 @@ FILE_STATIC uint8_t domainsSensorAddresses[] =   { 0x43, 0x40, 0x44, 0x42, 0x45,
 FILE_STATIC float   domainShuntResistances[] =   { SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE,
                                                    SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_LOW_DRAW_DEVICE, SHUNT_HIGH_DRAW_DEVICE };
 
-FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_LOW_DRAW_DEVICE, //COM1
+FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_HIGH_DRAW_DEVICE, //COM1
                                                       3.0f, //COM2
-                                                      OCP_THRESH_LOW_DRAW_DEVICE, //RAHS
+                                                      OCP_THRESH_MED_DRAW_DEVICE, //RAHS
                                                       OCP_THRESH_VERY_HIGH_DRAW_DEVICE, //BDOT
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //ESTIM
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //WHEELS
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //EPS
-                                                      OCP_THRESH_HIGH_DRAW_DEVICE }; //PPT
+                                                      12.0f }; //PPT
 
 PCVSensorData *sensorData;
 hDev i2cdev, hSensor;
@@ -1153,53 +1153,53 @@ void initData()
 
 void initializeEvents()
 {
-	CANPacket pkt;
+    CANPacket pkt;
 
-	////////////////////////////////////////////////////  TODO: this is test code for Con-Ops
-	gcmd_dist_set_pd_state cmd = {0, 0, 0, 0, 1, 0, 0};
-	encodegcmd_dist_set_pd_state(&cmd, &pkt);
-	persistentEvents[0].pkt = pkt;
-	persistentEvents[0].sendFlag = 0;
-	persistentEvents[0].time = 15;
-	////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////  TODO: this is test code for Con-Ops
+    gcmd_dist_set_pd_state cmd = {0, 0, 0, 0, 1, 0, 0};
+    encodegcmd_dist_set_pd_state(&cmd, &pkt);
+    persistentEvents[0].pkt = pkt;
+    persistentEvents[0].sendFlag = 0;
+    persistentEvents[0].time = 15;
+    ////////////////////////////////////////////////////
 
-	/*uint8_t i;
-	for(i = 0; i < NUM_POWER_DOMAINS; i++)
-	{
-		gcmd_dist_set_pd_state cmd = {0};
-		switch(i)
-		{
-			case 0:
-				cmd.gcmd_dist_set_pd_state_bdot = PD_CMD_Enable;
-				break;
-			case 1:
-				cmd.gcmd_dist_set_pd_state_com1 = PD_CMD_Enable;
-				break;
-			case 2:
-				cmd.gcmd_dist_set_pd_state_com2 = PD_CMD_Enable;
-				break;
-			case 3:
-				cmd.gcmd_dist_set_pd_state_eps = PD_CMD_Enable;
-				break;
-			case 4:
-				cmd.gcmd_dist_set_pd_state_estim = PD_CMD_Enable;
-				break;
-			case 5:
-				cmd.gcmd_dist_set_pd_state_ppt = PD_CMD_Enable;
-				break;
-			case 6:
-				cmd.gcmd_dist_set_pd_state_rahs = PD_CMD_Enable;
-				break;
-			case 7:
-				cmd.gcmd_dist_set_pd_state_wheels = PD_CMD_Enable;
-				break;
-		}
-		encodegcmd_dist_set_pd_state(&cmd, &pkt);
-		persistentEvents[i].pkt = pkt;
-		persistentEvents[i].sendFlag = 0;
-		persistentEvents[i].time = i + 1; //sequentially activated
-	}*/
-	eventsInitialized = 1;
+    /*uint8_t i;
+    for(i = 0; i < NUM_POWER_DOMAINS; i++)
+    {
+        gcmd_dist_set_pd_state cmd = {0};
+        switch(i)
+        {
+            case 0:
+                cmd.gcmd_dist_set_pd_state_bdot = PD_CMD_Enable;
+                break;
+            case 1:
+                cmd.gcmd_dist_set_pd_state_com1 = PD_CMD_Enable;
+                break;
+            case 2:
+                cmd.gcmd_dist_set_pd_state_com2 = PD_CMD_Enable;
+                break;
+            case 3:
+                cmd.gcmd_dist_set_pd_state_eps = PD_CMD_Enable;
+                break;
+            case 4:
+                cmd.gcmd_dist_set_pd_state_estim = PD_CMD_Enable;
+                break;
+            case 5:
+                cmd.gcmd_dist_set_pd_state_ppt = PD_CMD_Enable;
+                break;
+            case 6:
+                cmd.gcmd_dist_set_pd_state_rahs = PD_CMD_Enable;
+                break;
+            case 7:
+                cmd.gcmd_dist_set_pd_state_wheels = PD_CMD_Enable;
+                break;
+        }
+        encodegcmd_dist_set_pd_state(&cmd, &pkt);
+        persistentEvents[i].pkt = pkt;
+        persistentEvents[i].sendFlag = 0;
+        persistentEvents[i].time = i + 1; //sequentially activated
+    }*/
+    eventsInitialized = 1;
 }
 
 void sendSequenceResponses()
@@ -1303,7 +1303,7 @@ int main(void)
 
     // Autostart the EPS power domain for now
     if(!eventsInitialized)
-    	initializeEvents();
+        initializeEvents();
 
     seqInit(persistentEvents, sizeof(persistentEvents) / sizeof(persistentEvents[0]));
 
@@ -1318,28 +1318,31 @@ int main(void)
     {
         WDTCTL = WDT_CONFIG;
         // TODO:  eventually drive this with a timer
-        LED_OUT ^= LED_BIT;
-        __delay_cycles(0.1 * SEC);
+        __delay_cycles(0.0125 * SEC);
 
         // This assumes that some interrupt code will change the value of the triggerStaten variables
         distMonitorDomains();
 
         counter++;
-        distBcSendSensorDat();
-        if (counter % 8 == 0)
+        if(counter % 8 == 0)
+        {
+            LED_OUT ^= LED_BIT;
+            distBcSendSensorDat();
+            rollcallUpdate();
+            persistentTime = getMETTimestamp();
+            seqUpdateMET(metConvertToSeconds(persistentTime));
+            checkSequence(autoSequencerEnabled);
+            sendSequenceResponses();
+            checkRollcallWatchdog();
+        }
+        if (counter % 64 == 0)
         {
             distBcSendGeneral();
             distBcSendHealth();
             distMonitorBattery();
         }
-        if (counter % 64 == 0)
+        if (counter % 512 == 0)
             distBcSendMeta();
-        rollcallUpdate();
-        persistentTime = getMETTimestamp();
-        seqUpdateMET(metConvertToSeconds(persistentTime));
-        checkSequence(autoSequencerEnabled);
-        sendSequenceResponses();
-        checkRollcallWatchdog();
 
         if(i2cGetLastOperationResult())
             restartINA();
@@ -1352,7 +1355,7 @@ int main(void)
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
-	return 0;
+    return 0;
 }
 
 

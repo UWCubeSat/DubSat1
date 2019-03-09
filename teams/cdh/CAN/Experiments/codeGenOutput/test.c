@@ -593,114 +593,108 @@ int rcFlag=0;void canBlast() {
 			canSendPacket(&rc_adcs_mtq_2_packet);
 		}
 		if(rcFlag == 98){
-			CANPacket rc_adcs_mtq_1_packet = {0};
-			rc_adcs_mtq_1 rc_adcs_mtq_1_info = {0};
-			encoderc_adcs_mtq_1(&rc_adcs_mtq_1_info, &rc_adcs_mtq_1_packet);
-			canSendPacket(&rc_adcs_mtq_1_packet);
-		}
-		if(rcFlag == 99){
 			CANPacket rc_ppt_3_packet = {0};
 			rc_ppt_3 rc_ppt_3_info = {0};
 			encoderc_ppt_3(&rc_ppt_3_info, &rc_ppt_3_packet);
 			canSendPacket(&rc_ppt_3_packet);
 		}
-		if(rcFlag == 100){
+		if(rcFlag == 99){
 			CANPacket rc_ppt_2_packet = {0};
 			rc_ppt_2 rc_ppt_2_info = {0};
 			encoderc_ppt_2(&rc_ppt_2_info, &rc_ppt_2_packet);
 			canSendPacket(&rc_ppt_2_packet);
 		}
-		if(rcFlag == 101){
+		if(rcFlag == 100){
 			CANPacket rc_ppt_1_packet = {0};
 			rc_ppt_1 rc_ppt_1_info = {0};
 			encoderc_ppt_1(&rc_ppt_1_info, &rc_ppt_1_packet);
 			canSendPacket(&rc_ppt_1_packet);
 		}
-		if(rcFlag == 102){
+		if(rcFlag == 101){
 			CANPacket rc_eps_gen_9_packet = {0};
 			rc_eps_gen_9 rc_eps_gen_9_info = {0};
 			encoderc_eps_gen_9(&rc_eps_gen_9_info, &rc_eps_gen_9_packet);
 			canSendPacket(&rc_eps_gen_9_packet);
 		}
-		if(rcFlag == 103){
+		if(rcFlag == 102){
 			CANPacket rc_eps_gen_8_packet = {0};
 			rc_eps_gen_8 rc_eps_gen_8_info = {0};
 			encoderc_eps_gen_8(&rc_eps_gen_8_info, &rc_eps_gen_8_packet);
 			canSendPacket(&rc_eps_gen_8_packet);
 		}
-		if(rcFlag == 104){
+		if(rcFlag == 103){
 			CANPacket rc_eps_gen_7_packet = {0};
 			rc_eps_gen_7 rc_eps_gen_7_info = {0};
 			encoderc_eps_gen_7(&rc_eps_gen_7_info, &rc_eps_gen_7_packet);
 			canSendPacket(&rc_eps_gen_7_packet);
 		}
-		if(rcFlag == 105){
+		if(rcFlag == 104){
 			CANPacket rc_eps_gen_6_packet = {0};
 			rc_eps_gen_6 rc_eps_gen_6_info = {0};
 			encoderc_eps_gen_6(&rc_eps_gen_6_info, &rc_eps_gen_6_packet);
 			canSendPacket(&rc_eps_gen_6_packet);
 		}
-		if(rcFlag == 106){
+		if(rcFlag == 105){
 			CANPacket rc_eps_gen_5_packet = {0};
 			rc_eps_gen_5 rc_eps_gen_5_info = {0};
 			encoderc_eps_gen_5(&rc_eps_gen_5_info, &rc_eps_gen_5_packet);
 			canSendPacket(&rc_eps_gen_5_packet);
 		}
-		if(rcFlag == 107){
+		if(rcFlag == 106){
 			CANPacket rc_eps_gen_4_packet = {0};
 			rc_eps_gen_4 rc_eps_gen_4_info = {0};
 			encoderc_eps_gen_4(&rc_eps_gen_4_info, &rc_eps_gen_4_packet);
 			canSendPacket(&rc_eps_gen_4_packet);
 		}
-		if(rcFlag == 108){
+		if(rcFlag == 107){
 			CANPacket rc_eps_gen_3_packet = {0};
 			rc_eps_gen_3 rc_eps_gen_3_info = {0};
 			encoderc_eps_gen_3(&rc_eps_gen_3_info, &rc_eps_gen_3_packet);
 			canSendPacket(&rc_eps_gen_3_packet);
 		}
-		if(rcFlag == 109){
+		if(rcFlag == 108){
 			CANPacket rc_eps_gen_2_packet = {0};
 			rc_eps_gen_2 rc_eps_gen_2_info = {0};
 			encoderc_eps_gen_2(&rc_eps_gen_2_info, &rc_eps_gen_2_packet);
 			canSendPacket(&rc_eps_gen_2_packet);
 		}
-		if(rcFlag == 110){
+		if(rcFlag == 109){
 			CANPacket rc_eps_gen_1_packet = {0};
 			rc_eps_gen_1 rc_eps_gen_1_info = {0};
 			encoderc_eps_gen_1(&rc_eps_gen_1_info, &rc_eps_gen_1_packet);
 			canSendPacket(&rc_eps_gen_1_packet);
 		}
-		if(rcFlag == 111){
+		if(rcFlag == 110){
 			CANPacket rc_eps_batt_6_packet = {0};
 			rc_eps_batt_6 rc_eps_batt_6_info = {0};
 			encoderc_eps_batt_6(&rc_eps_batt_6_info, &rc_eps_batt_6_packet);
 			canSendPacket(&rc_eps_batt_6_packet);
 		}
-		if(rcFlag == 112){
+		if(rcFlag == 111){
 			CANPacket rc_eps_batt_5_packet = {0};
 			rc_eps_batt_5 rc_eps_batt_5_info = {0};
 			encoderc_eps_batt_5(&rc_eps_batt_5_info, &rc_eps_batt_5_packet);
 			canSendPacket(&rc_eps_batt_5_packet);
 		}
-		if(rcFlag == 113){
+		if(rcFlag == 112){
 			CANPacket rc_eps_batt_4_packet = {0};
 			rc_eps_batt_4 rc_eps_batt_4_info = {0};
 			encoderc_eps_batt_4(&rc_eps_batt_4_info, &rc_eps_batt_4_packet);
 			canSendPacket(&rc_eps_batt_4_packet);
 		}
-		if(rcFlag == 114){
+		if(rcFlag == 113){
 			CANPacket rc_eps_batt_3_packet = {0};
 			rc_eps_batt_3 rc_eps_batt_3_info = {0};
 			encoderc_eps_batt_3(&rc_eps_batt_3_info, &rc_eps_batt_3_packet);
 			canSendPacket(&rc_eps_batt_3_packet);
 		}
-		if(rcFlag == 115){
+		if(rcFlag == 114){
 			CANPacket rc_eps_batt_2_packet = {0};
 			rc_eps_batt_2 rc_eps_batt_2_info = {0};
 			encoderc_eps_batt_2(&rc_eps_batt_2_info, &rc_eps_batt_2_packet);
 			canSendPacket(&rc_eps_batt_2_packet);
 		}
-		if(rcFlag == 116){
+		if(rcFlag == 115){
 			CANPacket rc_eps_batt_1_packet = {0};
 			rc_eps_batt_1 rc_eps_batt_1_info = {0};
 			encoderc_eps_batt_1(&rc_eps_batt_1_info, &rc_eps_batt_1_packet);

@@ -145,7 +145,7 @@ FILE_STATIC void genMonitorPanels()
         sseg.panelvoltages[i] = pdata->busVoltageV;
 
         // Get temperature readings
-        sseg.paneltempsC[i] = asensorGetLastValueV(hTempSensors[i]);
+        sseg.paneltempsC[i] = asensorReadSingleSensorV(hTempSensors[i]) * 100; //asensorGetLastValueV(hTempSensors[i]);
     }
 }
 
