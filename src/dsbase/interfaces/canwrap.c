@@ -3202,21 +3202,6 @@ void encoderc_adcs_mtq_2(rc_adcs_mtq_2 *input, CANPacket *output){
     reverseArray((output->data), 0, 7);
 }
 
-void decoderc_adcs_mtq_1(CANPacket *input, rc_adcs_mtq_1 *output){
-    uint64_t *thePointer = (uint64_t *) input -> data;
-    reverseArray(input -> data, 0, 7);
-    const uint64_t fullData = *thePointer;
-}
-
-void encoderc_adcs_mtq_1(rc_adcs_mtq_1 *input, CANPacket *output){
-    output -> id = 308871691;
-    output -> length = 8;
-    uint64_t fullPacketData = 0x0000000000000000;
-    uint64_t *thePointer = (uint64_t *) (&(output -> data));
-    *thePointer = fullPacketData;
-    reverseArray((output->data), 0, 7);
-}
-
 void decoderc_ppt_3(CANPacket *input, rc_ppt_3 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
