@@ -1266,7 +1266,7 @@ int main(void)
     hBattV = asensorActivateChannel(CHAN_A0, Type_GeneralV);
     distDomainInit();
     distDeployInit();
-    canWrapInit();
+    canWrapInitWithFilter();
     setCANPacketRxCallback(can_packet_rx_callback);
 
     LED_DIR |= LED_BIT;

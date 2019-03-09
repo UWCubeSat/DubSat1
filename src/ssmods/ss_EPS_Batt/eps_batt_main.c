@@ -38,8 +38,7 @@ FILE_STATIC PCVSensorData *INAData;
 FILE_STATIC CoulombCounterData CCData;
 FILE_STATIC hDev hTempC;
 
-FILE_STATIC volatile uint8_t heaterIsChecking;
-FILE_STATIC volatile uint8_t balancerIsChecking = 1;
+FILE_STATIC volatile uint8_t heaterIsChecking = 0;
 FILE_STATIC char clearBattV = 0;
 
 FILE_STATIC float previousTemp;
@@ -166,14 +165,6 @@ void readCC (){
     sseg.battCharge = CCData.battCharge;
     sseg.accumulatedCharge = CCData.totalAccumulatedCharge;
 
-    if(balancerIsChecking)
-    {
-        if((CCData.busVoltageV <= 6.1f || CCData.calcdCurrentA > 3.0f || CCData.calcdCurrentA < -3.0f) && (BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT))
-            battControlBalancer(Cmd_ExplicitDisable); //on and out of range
-        else if(!(BATTERY_BALANCER_ENABLE_OUT & BATTERY_BALANCER_ENABLE_BIT) && CCData.busVoltageV > 6.1f && CCData.calcdCurrentA <= 3.0f && CCData.calcdCurrentA >= -3.0f)
-			battControlBalancer(Cmd_ExplicitEnable); //off and in range
-    }
-
     aggVec_push_i(&voltageAg, CCReadRawVoltage());
     aggVec_push_i(&currentAg, CCReadRawCurrent());
     aggVec_push_i(&accChargeAg, CCReadRawAccumulatedCharge());
@@ -234,14 +225,8 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_GCMD_BATT_SET_HEATER_CHECK:
             decodegcmd_batt_set_heater_check(packet, &heaterCheckPkt);
             heaterIsChecking = heaterCheckPkt.gcmd_batt_set_heater_check_state;
-            break;
-        case CAN_ID_GCMD_BATT_SET_BAL_AUTO:
-        {
-            gcmd_batt_set_bal_auto pkt;
-            decodegcmd_batt_set_bal_auto(packet, &pkt);
-            if(pkt.gcmd_batt_set_bal_auto_state != CAN_ENUM_NBOOL_NULL)
-                balancerIsChecking = pkt.gcmd_batt_set_bal_auto_state;
-        }
+            if(!heaterIsChecking)
+                HEATER_ENABLE_OUT &= ~ HEATER_ENABLE_BIT; //turn off heater
             break;
         case CAN_ID_GCMD_DIST_RESET_MISSION: //clear persistent flags here
             bspClearResetCount();
@@ -314,7 +299,7 @@ void rcPopulate4(CANPacket *out)
     rc.rc_eps_batt_4_voltage_avg = aggVec_avg_i_i(&voltageAg);
     rc.rc_eps_batt_4_voltage_max = aggVec_max_i(&voltageAg);
     rc.rc_eps_batt_4_voltage_min = aggVec_min_i(&voltageAg);
-    rc.rc_eps_batt_4_bal_auto_state = balancerIsChecking;
+    rc.rc_eps_batt_4_bal_auto_state = 1; //always on now
     rc.rc_eps_batt_4_heater_auto_state = heaterIsChecking;
     encoderc_eps_batt_4(&rc, out);
 
@@ -413,6 +398,8 @@ int main(void)
     previousTemp = asensorReadSingleSensorV(hTempC);
     startCallback(timerCallbackInitializer(&secondsInterrupt, 1000000));
     uint16_t counter;
+
+    battControlBalancer(Cmd_ExplicitEnable); //enable, and never disable
     while (1)
     {
         counter++;
@@ -449,9 +436,11 @@ int main(void)
 
                 else if (previousTemp <= 0.6f && temp > 0.6f) //heating & > 10C
                     HEATER_ENABLE_OUT &= ~HEATER_ENABLE_BIT; //turn off
+
+                if(hseg.inttemp > 30) //MSP temp > 30C
+                    HEATER_ENABLE_OUT |=
+                            HEATER_ENABLE_BIT; //turn off
             }
-            else if((HEATER_ENABLE_OUT & HEATER_ENABLE_BIT) && temp > 0.6f)
-                HEATER_ENABLE_OUT |= HEATER_ENABLE_BIT;
             previousTemp = temp;
         }
 
