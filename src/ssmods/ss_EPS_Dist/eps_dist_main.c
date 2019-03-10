@@ -60,7 +60,7 @@ FILE_STATIC float   domainShuntResistances[] =   { SHUNT_LOW_DRAW_DEVICE, SHUNT_
 FILE_STATIC float domainCurrentThresholdInitial[] = { OCP_THRESH_HIGH_DRAW_DEVICE, //COM1
                                                       3.0f, //COM2
                                                       OCP_THRESH_MED_DRAW_DEVICE, //RAHS
-                                                      OCP_THRESH_VERY_HIGH_DRAW_DEVICE, //BDOT
+                                                      0.9f, //BDOT
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //ESTIM
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //WHEELS
                                                       OCP_THRESH_LOW_DRAW_DEVICE, //EPS
@@ -927,7 +927,6 @@ void can_packet_rx_callback(CANPacket *packet)
 {
     gcmd_dist_set_pd_state pdCmd;
     gcmd_dist_set_pd_ovc_bdot ovcPktBDot;
-    gcmd_dist_set_pd_ovc_com1 ovcPktCom1;
     gcmd_dist_set_pd_ovc_com2 ovcPktCom2;
     gcmd_dist_set_pd_ovc_eps ovcPktEPS;
     gcmd_dist_set_pd_ovc_estim ovcPktEstim;
@@ -989,10 +988,6 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_GCMD_DIST_SET_PD_OVC_BDOT:
             decodegcmd_dist_set_pd_ovc_bdot(packet, &ovcPktBDot);
             distSetOCPThreshold(PD_BDOT, ovcPktBDot.gcmd_dist_set_pd_ovc_bdot_ovc);
-            break;
-        case CAN_ID_GCMD_DIST_SET_PD_OVC_COM1:
-            decodegcmd_dist_set_pd_ovc_com1(packet, &ovcPktCom1);
-            distSetOCPThreshold(PD_COM1, ovcPktCom1.gcmd_dist_set_pd_ovc_com1_ovc);
             break;
         case CAN_ID_GCMD_DIST_SET_PD_OVC_COM2:
             decodegcmd_dist_set_pd_ovc_com2(packet, &ovcPktCom2);
