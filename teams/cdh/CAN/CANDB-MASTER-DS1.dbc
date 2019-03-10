@@ -1456,7 +1456,7 @@ VAL_ 2455306864 rc_adcs_bdot_6_spam_control 1 "true" 0 "false" ;
 VAL_ 2455306864 rc_adcs_bdot_6_pop_status_z 1 "true" 0 "false" ;
 VAL_ 2455306864 rc_adcs_bdot_6_pop_status_y 1 "true" 0 "false" ;
 VAL_ 2455306864 rc_adcs_bdot_6_pop_status_x 1 "true" 0 "false" ;
-VAL_ 2455306864 rc_adcs_bdot_6_mag_control 3 "sp2 mode" 2 "sp1 mode" 1 "bdot mode" 0 "auto mode" ;
+VAL_ 2455306864 rc_adcs_bdot_6_mag_control 2 "sp2 mode" 1 "sp1 mode" 0 "bdot mode" ;
 VAL_ 2455306864 rc_adcs_bdot_6_gain_ovr_status_z 1 "true" 0 "false" ;
 VAL_ 2455306864 rc_adcs_bdot_6_gain_ovr_status_y 1 "true" 0 "false" ;
 VAL_ 2455306864 rc_adcs_bdot_6_gain_ovr_status_x 1 "true" 0 "false" ;
