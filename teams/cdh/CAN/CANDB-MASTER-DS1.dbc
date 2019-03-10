@@ -1475,7 +1475,7 @@ VAL_ 2456355421 rc_ppt_h1_sysrstiv 46 "(PUC) MPUSEG3IFG seg 3 mem viol" 44 "(PUC
 VAL_ 2449736397 gcmd_mtq_pms_enable 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736395 gcmd_bdot_spam_control 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736394 gcmd_bdot_control_mode 3 "spam" 2 "spam mag self test" 1 "sleep mode" 0 "normal mode" ;
-VAL_ 2449736393 gcmd_bdot_mag_control_mode 3 "sp2 mode" 2 "sp1 mode" 1 "bdot mode" 0 "auto mode" ;
+VAL_ 2449736393 gcmd_bdot_mag_control_mode 2 "sp2 mode" 1 "sp1 mode" 0 "bdot mode" ;
 VAL_ 2449736392 gcmd_bdot_pole_override_z 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736392 gcmd_bdot_pole_override_y 2 "null" 1 "true" 0 "false" ;
 VAL_ 2449736392 gcmd_bdot_pole_override_x 2 "null" 1 "true" 0 "false" ;
