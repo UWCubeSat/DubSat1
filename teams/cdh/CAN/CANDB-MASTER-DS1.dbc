@@ -479,7 +479,7 @@ BO_ 2456355398 rc_eps_dist_4: 7 eps_dist
 
 BO_ 2456814147 rc_eps_dist_1: 6 eps_dist
  SG_ rc_eps_dist_1_temp_avg : 32|16@1+ (1,0) [0|65535] "cC" Vector__XXX
- SG_ rc_eps_dist_1_com1_c_avg : 16|16@1+ (1,0) [0|65535] "raw node current" Vector__XXX
+ SG_ rc_eps_dist_1_com1_c_avg : 16|16@1+ (1,0) [0|65535] "raw node current dist" Vector__XXX
  SG_ rc_eps_dist_1_batt_v_avg : 0|16@1+ (1,0) [0|65535] "raw dist battery voltage" Vector__XXX
 
 BO_ 2455306814 rc_adcs_mpc_11: 8 adcs_mpc
