@@ -263,7 +263,7 @@ FILE_STATIC int16_t spam_off_z_avg[3];
 FILE_STATIC const rollcall_fn rollcallFunctions[] =
 {
  rcPopulateH1, rcPopulateH2, rcPopulate1, rcPopulate2, rcPopulate3, rcPopulate4, rcPopulate5,
- rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10
+ rcPopulate6, rcPopulate7, rcPopulate8, rcPopulate9, rcPopulate10, rcPopulate11
 };
 /**************************************************************/
 
@@ -1346,9 +1346,9 @@ void initialize_aggregate()
 {
     /* TODO: Add comment */
     aggVec_init_f(&rc_temp);
-    aggVec_init_i(&magX);
-    aggVec_init_i(&magY);
-    aggVec_init_i(&magZ);
+    aggVec_init_i_Var(&magX);
+    aggVec_init_i_Var(&magY);
+    aggVec_init_i_Var(&magZ);
     aggVec_init_i_Var(&dipole_x_agg);
     aggVec_init_i_Var(&dipole_y_agg);
     aggVec_init_i_Var(&dipole_z_agg);
@@ -1524,6 +1524,14 @@ void rcPopulate10(CANPacket *out)
     aggVec_as_reset((aggVec *)&dipole_z_agg);
 }
 
+void rcPopulate11(CANPacket *out)
+{
+    rc_adcs_bdot_11 rc;
+    rc.rc_adcs_bdot_11_mag_x_var = compressVariance(aggVec_var_i_f(&magX));
+    rc.rc_adcs_bdot_11_mag_y_var = compressVariance(aggVec_var_i_f(&magY));
+    rc.rc_adcs_bdot_11_mag_z_var = compressVariance(aggVec_var_i_f(&magZ));
+    encoderc_adcs_bdot_11(&rc, out);
+}
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)
 void handlePPTFiringNotification()

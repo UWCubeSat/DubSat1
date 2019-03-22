@@ -216,7 +216,7 @@ void decoderc_adcs_bdot_11(CANPacket *input, rc_adcs_bdot_11 *output){
 
 void encoderc_adcs_bdot_11(rc_adcs_bdot_11 *input, CANPacket *output){
     output -> id = 308871796;
-    output -> length = 5;
+    output -> length = 6;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_11_mag_z_var))) & 0xffff) << 16;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_11_mag_y_var))) & 0xffff) << 32;
