@@ -334,7 +334,7 @@ uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
 typedef struct rc_adcs_bdot_11 {
-    uint16_t rc_adcs_bdot_mag_z_var; //  (No Units)
+    uint16_t rc_adcs_bdot_11_mag_z_var; //  (No Units)
     uint16_t rc_adcs_bdot_11_mag_y_var; //  (No Units)
     uint16_t rc_adcs_bdot_11_mag_x_var; //  (No Units)
 } rc_adcs_bdot_11;

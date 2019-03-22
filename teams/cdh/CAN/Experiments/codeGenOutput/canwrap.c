@@ -209,7 +209,7 @@ void decoderc_adcs_bdot_11(CANPacket *input, rc_adcs_bdot_11 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
-    output -> rc_adcs_bdot_mag_z_var = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
+    output -> rc_adcs_bdot_11_mag_z_var = (uint16_t) (((fullData & ((uint64_t) 0xffff << 16)) >> 16));
     output -> rc_adcs_bdot_11_mag_y_var = (uint16_t) (((fullData & ((uint64_t) 0xffff << 32)) >> 32));
     output -> rc_adcs_bdot_11_mag_x_var = (uint16_t) (((fullData & ((uint64_t) 0xffff << 48)) >> 48));
 }
@@ -218,7 +218,7 @@ void encoderc_adcs_bdot_11(rc_adcs_bdot_11 *input, CANPacket *output){
     output -> id = 308871796;
     output -> length = 5;
     uint64_t fullPacketData = 0x0000000000000000;
-    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_mag_z_var))) & 0xffff) << 16;
+    fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_11_mag_z_var))) & 0xffff) << 16;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_11_mag_y_var))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_bdot_11_mag_x_var))) & 0xffff) << 48;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
