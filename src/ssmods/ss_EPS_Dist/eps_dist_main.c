@@ -289,9 +289,31 @@ PowerDomainSwitchState distQueryDomainSwitch(PowerDomainID domain)
     return ( enabled == TRUE ? Switch_Enabled : Switch_Disabled);
 }
 
+uint8_t getPDState(PowerDomainID pd)
+{
+    if(distQueryDomainSwitch(pd))
+        return 0; //on
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_Disable || gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_Toggle)
+        return 1; //off manual
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_OCLatch)
+        return 2; //overcurrent latch
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_BattVLow)
+        return 3; //batt_undervoltage
+    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_OffInitial)
+        return 4;
+    else if(gseg.powerdomainlastcmds[(int8_t)pd] == PD_CMD_Autoshutoff)
+        return 5; //non-responsive
+    else
+        return 6; //other
+}
+
 // Turns on/off switches for indicated domain
 void distDomainSwitch(PowerDomainID domain, PowerDomainCmd cmd )
 {
+    //power domain already off and we're not turning it on
+    if(getPDState(domain) && cmd != PD_CMD_Enable && cmd != PD_CMD_AutoStart && cmd != PD_CMD_Toggle)
+        return;
+
     // Record last command for each domain
     gseg.powerdomainlastcmds[(uint8_t)domain] = (uint8_t)cmd;
 
@@ -559,24 +581,6 @@ uint8_t distActionCallback(DebugMode mode, uint8_t * cmdstr)
         }
     }
     return 1;
-}
-
-uint8_t getPDState(PowerDomainID pd)
-{
-    if(distQueryDomainSwitch(pd))
-        return 0; //on
-    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_Disable || gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_Toggle)
-        return 1; //off manual
-    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_OCLatch)
-        return 2; //overcurrent latch
-    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_BattVLow)
-        return 3; //batt_undervoltage
-    else if(gseg.powerdomainlastcmds[(uint8_t)pd] == PD_CMD_OffInitial)
-        return 4;
-    else if(gseg.powerdomainlastcmds[(int8_t)pd] == PD_CMD_Autoshutoff)
-        return 5; //non-responsive
-    else
-        return 6; //other
 }
 
 void rcPopulateH1(CANPacket *out)
