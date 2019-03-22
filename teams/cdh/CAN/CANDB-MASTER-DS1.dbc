@@ -55,6 +55,11 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2456355444 rc_adcs_bdot_11: 5 adcs_bdot
+ SG_ rc_adcs_bdot_mag_z_var : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ rc_adcs_bdot_11_mag_y_var : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ rc_adcs_bdot_11_mag_x_var : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+
 BO_ 2449736506 com1_mode: 1 Vector__XXX
  SG_ com1_mode_mode : 0|8@1+ (1,0) [1|4] "" Vector__XXX
 
@@ -945,6 +950,9 @@ BO_ 2449932985 grnd_epoch: 5 com_1
 BO_TX_BU_ 2147745800 : adcs_bdot,adcs_estim,adcs_mpc,adcs_mtq,adcs_rwx,adcs_rwy,adcs_rwz,adcs_sensorproc,com_2,eps_batt,eps_dist,eps_gen,ppt,rahs;
 
 
+CM_ SG_ 2456355444 rc_adcs_bdot_mag_z_var "The magnetometer variance on the z axis";
+CM_ SG_ 2456355444 rc_adcs_bdot_11_mag_y_var "The magnetometer variance on the y axis";
+CM_ SG_ 2456355444 rc_adcs_bdot_11_mag_x_var "The magnetometer variance on the x axis";
 CM_ BO_ 2449736506 "Set by COM1; contains the current mode";
 CM_ SG_ 2449736506 com1_mode_mode "The current mode of COM1";
 CM_ BO_ 2449736504 "Commands COM1 to switch to Camera Mode";
