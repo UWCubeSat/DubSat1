@@ -569,7 +569,7 @@ BO_ 2455306789 rc_adcs_sp_11: 8 adcs_sensorproc
  SG_ rc_adcs_sp_11_mag2_x_min : 0|16@1- (1,0) [-32768|32767] "73 nanoTeslas" Vector__XXX
  SG_ rc_adcs_sp_11_mag2_y_min : 48|16@1- (1,0) [-32768|32767] "73 nanoTeslas" Vector__XXX
 
-BO_ 2455306785 rc_adcs_sp_7: 5 adcs_sensorproc
+BO_ 2455306785 rc_adcs_sp_7: 6 adcs_sensorproc
  SG_ rc_adcs_sp_7_mag1_var_z : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ rc_adcs_sp_7_mag1_var_y : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ rc_adcs_sp_7_mag1_var_x : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
@@ -601,7 +601,7 @@ BO_ 2455306788 rc_adcs_sp_10: 8 adcs_sensorproc
  SG_ rc_adcs_sp_10_mag1_z_avg : 48|16@1- (1,0) [-32768|32767] "73 nanoTeslas" Vector__XXX
  SG_ rc_adcs_sp_10_mag1_y_avg : 0|16@1- (1,0) [-32768|32767] "73 nanoTeslas" Vector__XXX
 
-BO_ 2455306786 rc_adcs_sp_8: 5 adcs_sensorproc
+BO_ 2455306786 rc_adcs_sp_8: 6 adcs_sensorproc
  SG_ rc_adcs_sp_8_mag2_var_z : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ rc_adcs_sp_8_mag2_var_y : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ rc_adcs_sp_8_mag2_var_x : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
@@ -739,13 +739,13 @@ BO_ 2456355340 rc_adcs_mtq_2: 8 adcs_mtq
  SG_ rc_adcs_mtq_2_bdot_x_max : 8|8@1- (1,0) [-100|100] "" Vector__XXX
  SG_ rc_adcs_mtq_2_bdot_x_avg : 0|8@1- (1,0) [-100|100] "" Vector__XXX
 
-BO_ 2455306761 rc_ppt_2: 7 ppt
+BO_ 2455306761 rc_ppt_2: 8 ppt
  SG_ rc_ppt_2_cooldown_time : 48|16@1+ (1,0) [0|65535] "2^-15 seconds" Vector__XXX
  SG_ rc_ppt_2_ign_charge_time : 32|16@1+ (1,0) [0|65535] "2^-15 seconds" Vector__XXX
  SG_ rc_ppt_2_main_ign_delay : 16|16@1+ (1,0) [0|65535] "2^-15 seconds" Vector__XXX
  SG_ rc_ppt_2_main_charge_time : 0|16@1+ (1,0) [0|65535] "2^-15 seconds" Vector__XXX
 
-BO_ 2455306760 rc_ppt_1: 7 ppt
+BO_ 2455306760 rc_ppt_1: 8 ppt
  SG_ rc_ppt_1_smt_wait_time : 48|16@1+ (1,0) [0|65535] "2^-15 seconds" Vector__XXX
  SG_ rc_ppt_1_last_main_charge : 32|16@1+ (1,0) [-32768|32767] "2^-15 seconds" Vector__XXX
  SG_ rc_ppt_1_fault_count : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
@@ -843,7 +843,7 @@ BO_ 2456355329 rc_eps_batt_2: 6 eps_batt
  SG_ rc_eps_batt_2_node_v_max : 16|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
  SG_ rc_eps_batt_2_node_v_avg : 32|16@1+ (1,0) [0|65535] "raw node voltage" Vector__XXX
 
-BO_ 2457403904 rc_eps_batt_1: 3 eps_batt
+BO_ 2457403904 rc_eps_batt_1: 4 eps_batt
  SG_ rc_eps_batt_1_voltage_avg : 16|16@1+ (1,0) [0|65535] "raw voltage" Vector__XXX
  SG_ rc_eps_batt_1_acc_charge_avg : 0|16@1+ (1,0) [0|65535] "22.588 mAh" Vector__XXX
 
