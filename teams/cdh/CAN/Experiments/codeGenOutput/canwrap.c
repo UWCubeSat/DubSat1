@@ -205,6 +205,21 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decoderc_adcs_sp_18(CANPacket *input, rc_adcs_sp_18 *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+}
+
+void encoderc_adcs_sp_18(rc_adcs_sp_18 *input, CANPacket *output){
+    output -> id = 308871797;
+    output -> length = 6;
+    uint64_t fullPacketData = 0x0000000000000000;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decoderc_adcs_bdot_11(CANPacket *input, rc_adcs_bdot_11 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
@@ -2591,7 +2606,7 @@ void decoderc_adcs_sp_7(CANPacket *input, rc_adcs_sp_7 *output){
 
 void encoderc_adcs_sp_7(rc_adcs_sp_7 *input, CANPacket *output){
     output -> id = 307823137;
-    output -> length = 5;
+    output -> length = 6;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_sp_7_mag1_var_z))) & 0xffff) << 16;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_sp_7_mag1_var_y))) & 0xffff) << 32;
@@ -2710,7 +2725,7 @@ void decoderc_adcs_sp_8(CANPacket *input, rc_adcs_sp_8 *output){
 
 void encoderc_adcs_sp_8(rc_adcs_sp_8 *input, CANPacket *output){
     output -> id = 307823138;
-    output -> length = 5;
+    output -> length = 6;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_sp_8_mag2_var_z))) & 0xffff) << 16;
     fullPacketData |= (((uint64_t)((input -> rc_adcs_sp_8_mag2_var_y))) & 0xffff) << 32;
@@ -3274,7 +3289,7 @@ void decoderc_ppt_2(CANPacket *input, rc_ppt_2 *output){
 
 void encoderc_ppt_2(rc_ppt_2 *input, CANPacket *output){
     output -> id = 307823113;
-    output -> length = 7;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_ppt_2_cooldown_time))) & 0xffff);
     fullPacketData |= (((uint64_t)((input -> rc_ppt_2_ign_charge_time))) & 0xffff) << 16;
@@ -3297,7 +3312,7 @@ void decoderc_ppt_1(CANPacket *input, rc_ppt_1 *output){
 
 void encoderc_ppt_1(rc_ppt_1 *input, CANPacket *output){
     output -> id = 307823112;
-    output -> length = 7;
+    output -> length = 8;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_ppt_1_smt_wait_time))) & 0xffff);
     fullPacketData |= (((uint64_t)((input -> rc_ppt_1_last_main_charge))) & 0xffff) << 16;
@@ -3656,7 +3671,7 @@ void decoderc_eps_batt_1(CANPacket *input, rc_eps_batt_1 *output){
 
 void encoderc_eps_batt_1(rc_eps_batt_1 *input, CANPacket *output){
     output -> id = 309920256;
-    output -> length = 3;
+    output -> length = 4;
     uint64_t fullPacketData = 0x0000000000000000;
     fullPacketData |= (((uint64_t)((input -> rc_eps_batt_1_voltage_avg))) & 0xffff) << 32;
     fullPacketData |= (((uint64_t)((input -> rc_eps_batt_1_acc_charge_avg))) & 0xffff) << 48;

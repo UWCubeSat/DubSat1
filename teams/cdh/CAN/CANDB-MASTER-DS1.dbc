@@ -55,6 +55,8 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
+BO_ 2456355445 rc_adcs_sp_18: 6 adcs_sensorproc
+
 BO_ 2456355444 rc_adcs_bdot_11: 6 adcs_bdot
  SG_ rc_adcs_bdot_11_mag_z_var : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ rc_adcs_bdot_11_mag_y_var : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
