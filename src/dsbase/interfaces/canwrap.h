@@ -27,7 +27,6 @@
 
 // BEGIN GENERATOR MACROS
 
-#define CAN_ID_RC_ADCS_SP_18 308871797
 #define CAN_ID_RC_ADCS_BDOT_11 308871796
 #define CAN_ID_COM1_MODE 302252858
 #define CAN_ID_GCMD_COM1_MODE_CAMERA 302252856
@@ -334,12 +333,6 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
-typedef struct rc_adcs_sp_18 {
-    uint16_t rc_adcs_sp_18_mag2_var_z; //  (No Units)
-    uint16_t rc_adcs_sp_18_mag2_var_y; //  (No Units)
-    uint16_t rc_adcs_sp_18_mag2_var_x; //  (No Units)
-} rc_adcs_sp_18;
-
 typedef struct rc_adcs_bdot_11 {
     uint16_t rc_adcs_bdot_11_mag_z_var; //  (No Units)
     uint16_t rc_adcs_bdot_11_mag_y_var; //  (No Units)
@@ -1071,9 +1064,6 @@ typedef struct rc_adcs_sp_2 {
 } rc_adcs_sp_2;
 
 typedef struct rc_adcs_sp_1 {
-    uint16_t rc_adcs_sp_1_mag1_var_z; //  (No Units)
-    uint16_t rc_adcs_sp_1_mag1_var_y; //  (No Units)
-    uint16_t rc_adcs_sp_1_mag1_var_x; //  (No Units)
 } rc_adcs_sp_1;
 
 typedef struct rc_adcs_bdot_4 {
@@ -1418,9 +1408,6 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
-
-void encoderc_adcs_sp_18(rc_adcs_sp_18 *input, CANPacket* output);
-void decoderc_adcs_sp_18(CANPacket *input, rc_adcs_sp_18 *output);
 
 void encoderc_adcs_bdot_11(rc_adcs_bdot_11 *input, CANPacket* output);
 void decoderc_adcs_bdot_11(CANPacket *input, rc_adcs_bdot_11 *output);

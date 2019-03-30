@@ -55,11 +55,6 @@ VAL_TABLE_ agg 5 "sum" 4 "max" 3 "min" 2 "count" 1 "avg" 0 "none" ;
 VAL_TABLE_ bool 1 "true" 0 "false" ;
 
 
-BO_ 2456355445 rc_adcs_sp_18: 6 adcs_sensorproc
- SG_ rc_adcs_sp_18_mag2_var_z : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ rc_adcs_sp_18_mag2_var_y : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ rc_adcs_sp_18_mag2_var_x : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
-
 BO_ 2456355444 rc_adcs_bdot_11: 6 adcs_bdot
  SG_ rc_adcs_bdot_11_mag_z_var : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ rc_adcs_bdot_11_mag_y_var : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
@@ -659,10 +654,7 @@ BO_ 2455306780 rc_adcs_sp_2: 8 adcs_sensorproc
  SG_ rc_adcs_sp_2_imup_x_max : 16|16@1- (1,0) [-32768|32767] "0.004375 deg/s" Vector__XXX
  SG_ rc_adcs_sp_2_imup_x_avg : 32|16@1- (1,0) [-32768|32767] "0.004375 deg/s" Vector__XXX
 
-BO_ 2455306779 rc_adcs_sp_1: 6 Vector__XXX
- SG_ rc_adcs_sp_1_mag1_var_z : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ rc_adcs_sp_1_mag1_var_y : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ rc_adcs_sp_1_mag1_var_x : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+BO_ 2455306779 rc_adcs_sp_1: 8 Vector__XXX
 
 BO_ 2455306778 rc_adcs_bdot_4: 7 adcs_bdot
  SG_ rc_adcs_bdot_4_spam_on_y_mtq_z : 32|16@1- (1,0) [-32768|32767] "1/73 nT" Vector__XXX
