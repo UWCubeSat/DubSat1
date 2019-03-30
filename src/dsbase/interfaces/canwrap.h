@@ -335,6 +335,9 @@ uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
 typedef struct rc_adcs_sp_18 {
+    uint16_t rc_adcs_sp_18_mag2_var_z; //  (No Units)
+    uint16_t rc_adcs_sp_18_mag2_var_y; //  (No Units)
+    uint16_t rc_adcs_sp_18_mag2_var_x; //  (No Units)
 } rc_adcs_sp_18;
 
 typedef struct rc_adcs_bdot_11 {
@@ -1068,6 +1071,9 @@ typedef struct rc_adcs_sp_2 {
 } rc_adcs_sp_2;
 
 typedef struct rc_adcs_sp_1 {
+    uint16_t rc_adcs_sp_1_mag1_var_z; //  (No Units)
+    uint16_t rc_adcs_sp_1_mag1_var_y; //  (No Units)
+    uint16_t rc_adcs_sp_1_mag1_var_x; //  (No Units)
 } rc_adcs_sp_1;
 
 typedef struct rc_adcs_bdot_4 {
