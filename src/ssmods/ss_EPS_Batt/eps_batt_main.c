@@ -40,6 +40,7 @@ FILE_STATIC hDev hTempC;
 
 FILE_STATIC volatile uint8_t heaterIsChecking = 0;
 FILE_STATIC char clearBattV = 0;
+FILE_STATIC char clearAccCharge = 0;
 
 FILE_STATIC float previousTemp;
 
@@ -200,6 +201,7 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_CMD_ROLLCALL:
             rollcallStart();
             clearBattV = 3;
+            clearAccCharge = 3;
             break;
         case CAN_ID_GCMD_RESET_MINMAX:
         {
@@ -262,11 +264,14 @@ void rcPopulate1(CANPacket *out)
     rc.rc_eps_batt_1_acc_charge_avg = aggVec_avg_i_i(&accChargeAg);
     rc.rc_eps_batt_1_voltage_avg = aggVec_avg_i_i(&voltageAg);
     encoderc_eps_batt_1(&rc, out);
-    aggVec_as_reset((aggVec *)&accChargeAg);
 
     clearBattV &= ~BIT0;
-    if(~clearBattV)
+    if(!clearBattV)
         aggVec_as_reset((aggVec *)&voltageAg);
+
+    clearAccCharge &= ~BIT0;
+    if(!clearAccCharge)
+        aggVec_as_reset((aggVec *)&accChargeAg);
 }
 
 void rcPopulate2(CANPacket *out)
@@ -303,8 +308,8 @@ void rcPopulate4(CANPacket *out)
     rc.rc_eps_batt_4_heater_auto_state = heaterIsChecking;
     encoderc_eps_batt_4(&rc, out);
 
-    clearBattV &= ~BIT0;
-    if(~clearBattV)
+    clearBattV &= ~BIT1;
+    if(!clearBattV)
         aggVec_as_reset((aggVec *)&voltageAg);
 }
 
@@ -332,10 +337,14 @@ void rcPopulate6(CANPacket *out)
 void rcPopulate7(CANPacket *out)
 {
     rc_eps_batt_7 rc = {0};
-    rc.rc_eps_batt_7_acc_charge_avg = 0; //aggVec_avg_i_i(&accChargeAg);
+    rc.rc_eps_batt_7_acc_charge_avg = aggVec_avg_i_i(&accChargeAg);
     rc.rc_eps_batt_7_acc_charge_max = aggVec_max_i(&accChargeAg);
     rc.rc_eps_batt_7_acc_charge_min = aggVec_min_i(&accChargeAg);
     encoderc_eps_batt_7(&rc, out);
+
+    clearAccCharge &= ~BIT1;
+    if(!clearAccCharge)
+        aggVec_as_reset((aggVec *)&accChargeAg);
 }
 
 /*

@@ -124,6 +124,7 @@ uint8_t autoSequencerEnabled = 0;
 FILE_STATIC uint16_t rcResponseFlag = 0; //this is zero when no responses are pending
 FILE_STATIC char clearTemp = 0;
 FILE_STATIC char clearBattV = 0;
+FILE_STATIC char clearCom1C = 0;
 sequenceEvent pendingEvent = {0};
 
 CANPacket autoseqMETResponsePkt = {0};
@@ -612,7 +613,6 @@ void rcPopulate1(CANPacket *out)
     rc.rc_eps_dist_1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
     encoderc_eps_dist_1(&rc, out);
     aggVec_as_reset((aggVec *)&battVAg);
-    aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
 
     clearTemp &= ~BIT0;
     if(!clearTemp)
@@ -621,6 +621,11 @@ void rcPopulate1(CANPacket *out)
     clearBattV &= ~BIT0;
     if(!clearBattV)
         aggVec_as_reset((aggVec *)&battVAg);
+
+    clearCom1C &= ~BIT0;
+    if(!clearCom1C) {
+        aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
+    }
 }
 
 void rcPopulate2(CANPacket *out)
@@ -648,11 +653,16 @@ void rcPopulate3(CANPacket *out)
 void rcPopulate4(CANPacket *out)
 {
     rc_eps_dist_4 rc = {0};
-    rc.rc_eps_dist_4_com1_c_avg = 0; //aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
+    rc.rc_eps_dist_4_com1_c_avg = aggVec_avg_i_i(&ssCurrAgs[PD_COM1]);
     rc.rc_eps_dist_4_com1_c_max = aggVec_max_i(&ssCurrAgs[PD_COM1]);
     rc.rc_eps_dist_4_com1_c_min = aggVec_min_i(&ssCurrAgs[PD_COM1]);
     rc.rc_eps_dist_4_com1_state = getPDState(PD_COM1);
     encoderc_eps_dist_4(&rc, out);
+
+    clearCom1C &= ~BIT1;
+    if(!clearCom1C) {
+        aggVec_as_reset((aggVec *)&ssCurrAgs[PD_COM1]);
+    }
 }
 
 void rcPopulate5(CANPacket *out)
@@ -952,6 +962,7 @@ void can_packet_rx_callback(CANPacket *packet)
             autoShutoffSetFlags();
             clearTemp = 3; //flags for clear after field has been sent in rollcall twice
             clearBattV = 3;
+            clearCom1C = 3;
             rollcallWatchdog = 0;
             break;
         case CAN_ID_RC_ADCS_BDOT_H1:
