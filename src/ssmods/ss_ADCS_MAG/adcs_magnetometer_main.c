@@ -15,6 +15,13 @@ FILE_STATIC flag_t triggerState1;
 FILE_STATIC flag_t triggerState2;
 FILE_STATIC flag_t triggerState3;
 
+FILE_STATIC hMag magHandle;
+FILE_STATIC health_segment hseg;
+FILE_STATIC magnetometer_segment mag_data_cosmos;
+FILE_STATIC MagnetometerData *magData;
+
+
+
 /*
  * main.c
  */
@@ -88,11 +95,32 @@ int main(void)
             mod_status.in_unknown_state++;
             break;
         }
+
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
 	return 0;
+}
+
+static void initial_setup()
+{
+    magHandle = magInit(I2CBus2);
+    bcbinPopulateHeader(&hseg.header, TLM_ID_SHARED_HEALTH, sizeof(hseg));
+    bcbinPopulateHeader(&mag_data_cosmos, TLM_ID_MAG, sizeof(mag_data_cosmos));
+}
+
+static void read_mag_data()
+{
+    magData = magReadXYZData(magHandle, ConvertToTeslas);
+    mag_data_cosmos.magX = magData->convertedX;
+    mag_data_cosmos.magY = magData->convertedY;
+    mag_data_cosmos.magZ = magData->convertedZ;
+}
+
+static void send_mag_data()
+{
+    bcbinSendPacket((uint8_t *)&mag_data_cosmos, sizeof(mag_data_cosmos));
 }
 
 // Will be called when PPT firing cycle is starting (sent via CAN by the PPT)

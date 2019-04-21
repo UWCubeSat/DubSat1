@@ -15,6 +15,16 @@
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
 
+#define TLM_ID_MAG 127
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+    float magX;
+    float magY;
+    float magZ;
+
+} magnetometer_segment;
+
 // Most subsystem modules should be implemented at least in part
 // as a state machine (specifically, a FSM).  Here the available states are
 // defined.
@@ -41,6 +51,10 @@ typedef struct _module_status {
     uint16_t state_transition_errors;
     uint16_t in_unknown_state;
 } ModuleStatus;
+
+FILE_STATIC void initial_setup();
+void read_mag_data();
+void send_mag_data();
 
 void handlePPTFiringNotification();
 void handleRollCall();
