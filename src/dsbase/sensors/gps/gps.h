@@ -170,6 +170,18 @@ typedef struct PACKED_STRUCT
     uint8_t sigMaskGPSGLO;
 } GPSBestXYZ;
 
+
+/* TODO: GPSLonLat */
+typedef struct PACKED_STRUCT {
+    double lat;
+    double lon;
+} GPSLonLat;
+
+typedef struct PACKED_STRUCT {
+    double minDotDecimal;
+    double decimalDegrees;
+} SendLoc;
+
 typedef struct PACKED_STRUCT
 {
     gps_enum clockStatus;

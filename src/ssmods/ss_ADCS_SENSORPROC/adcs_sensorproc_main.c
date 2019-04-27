@@ -77,6 +77,7 @@ int main(void)
                 sendMetaSegment();
                 gpsioSendStatus();
             }
+            // sendLonLatToCOM();
 
             LED_OUT ^= LED_BIT;     // blink LED
             startSensorprocTimer(); // reset the timer

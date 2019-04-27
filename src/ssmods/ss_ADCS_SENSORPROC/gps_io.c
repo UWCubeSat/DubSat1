@@ -28,6 +28,8 @@
  */
 #define DELAY_MANUAL_LOG_MS 3000
 
+#define M_PI acos(-1.0)
+
 #include <math.h>
 
 #include "gps_io.h"
@@ -658,6 +660,18 @@ FILE_STATIC void handleBestXYZ(const GPSPackage *package)
     // send CAN packets
     sendBestXYZOverCAN(m, week, ms);
 }
+
+FILE_STATIC void getLonLat(const GPSBestXYZ *m) {
+    GPSLonLat l;
+    double R = m->pos.x*m->pos.x + m->pos.y*m->pos.y + m->pos.z*m->pos.z;
+    l.lat = 180/M_PI*asin(m->pos.z / R);
+    l.lon = 180/M_PI*atan2(m->pos.y, m->pos.x);
+}
+
+// FILE_STATIC void getSendLoc(const GPSLonLat l) {
+//    SendLoc loc;
+    /* TODO: Convert from Lat/Lon to Deg + Min.Decimal format */
+// }
 
 FILE_STATIC void handleHwMonitor(const GPSPackage *package)
 {
