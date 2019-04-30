@@ -661,11 +661,20 @@ FILE_STATIC void handleBestXYZ(const GPSPackage *package)
     sendBestXYZOverCAN(m, week, ms);
 }
 
-void getLonLat(const GPSBestXYZ *m) {
-    GPSLonLat l;
+void getLonLat(GPDLonLat* l) {
     double R = m->pos.x*m->pos.x + m->pos.y*m->pos.y + m->pos.z*m->pos.z;
-    l.lat = 180/M_PI*asin(m->pos.z / R);
-    l.lon = 180/M_PI*atan2(m->pos.y, m->pos.x);
+    l->lat = 180/M_PI*asin(m->pos.z / R);
+    l->lon = 180/M_PI*atan2(m->pos.y, m->pos.x);
+}
+
+void getDM(GPSLonLat *l, GPSDegMin *dm) {
+    double gpsLat = l->lat;
+    dm->degLat = (int)gpsLat;
+    dm->minLat = 60*(gpsLat - dm->degLat);
+
+    double gpsLon = l->lon;
+    dm->degLon = (int)gpsLon;
+    dm->minLon = 60*(gpsLon - dm->degLon);
 }
 
 FILE_STATIC void handleHwMonitor(const GPSPackage *package)

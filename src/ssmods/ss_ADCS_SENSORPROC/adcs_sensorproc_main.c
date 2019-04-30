@@ -20,6 +20,7 @@ FILE_STATIC int timerHandle;
 FILE_STATIC void startSensorprocTimer();
 
 FILE_STATIC GPSLonLat loc;
+FILE_STATIC GPSDegMin dm;
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
@@ -80,7 +81,8 @@ int main(void)
             }
 
             getLonLat(&loc);
-            gpsSendData(&loc, sizeof(loc));
+            getDM(&loc, &dm)
+            gpsSendData(&dm, sizeof(dm));
 
             LED_OUT ^= LED_BIT;     // blink LED
             startSensorprocTimer(); // reset the timer
@@ -92,7 +94,7 @@ int main(void)
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
 
-	return 0;
+    return 0;
 }
 
 void startSensorprocTimer()

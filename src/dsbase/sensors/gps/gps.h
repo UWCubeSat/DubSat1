@@ -178,9 +178,11 @@ typedef struct PACKED_STRUCT {
 } GPSLonLat;
 
 typedef struct PACKED_STRUCT {
-    double minDotDecimal;
-    double decimalDegrees;
-} SendLoc;
+    int degLat;
+    double minLat;
+    int degLon;
+    double minLon;
+} GPSDegMin;
 
 typedef struct PACKED_STRUCT
 {
