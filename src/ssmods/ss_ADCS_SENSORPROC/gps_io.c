@@ -661,17 +661,12 @@ FILE_STATIC void handleBestXYZ(const GPSPackage *package)
     sendBestXYZOverCAN(m, week, ms);
 }
 
-FILE_STATIC void getLonLat(const GPSBestXYZ *m) {
+void getLonLat(const GPSBestXYZ *m) {
     GPSLonLat l;
     double R = m->pos.x*m->pos.x + m->pos.y*m->pos.y + m->pos.z*m->pos.z;
     l.lat = 180/M_PI*asin(m->pos.z / R);
     l.lon = 180/M_PI*atan2(m->pos.y, m->pos.x);
 }
-
-// FILE_STATIC void getSendLoc(const GPSLonLat l) {
-//    SendLoc loc;
-    /* TODO: Convert from Lat/Lon to Deg + Min.Decimal format */
-// }
 
 FILE_STATIC void handleHwMonitor(const GPSPackage *package)
 {

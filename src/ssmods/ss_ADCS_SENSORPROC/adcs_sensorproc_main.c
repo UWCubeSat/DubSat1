@@ -19,6 +19,7 @@ FILE_STATIC health_segment hseg;
 FILE_STATIC int timerHandle;
 FILE_STATIC void startSensorprocTimer();
 
+FILE_STATIC GPSLonLat loc;
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
@@ -77,7 +78,9 @@ int main(void)
                 sendMetaSegment();
                 gpsioSendStatus();
             }
-            // sendLonLatToCOM();
+
+            getLonLat(&loc);
+            gpsSendData(&loc, sizeof(loc));
 
             LED_OUT ^= LED_BIT;     // blink LED
             startSensorprocTimer(); // reset the timer

@@ -250,6 +250,11 @@ GPSPackage *gpsRead()
     return NULL;
 }
 
+
+void gpsSendData(uint8_t *data, uint16_t len) {
+    uartTransmit(uartHandle, data, len);
+}
+
 void gpsSendCommand(uint8_t *command)
 {
 #ifdef __SKIP_GPS_TRAFFIC__

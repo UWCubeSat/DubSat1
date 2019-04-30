@@ -361,6 +361,9 @@ uint8_t gpsIsResetActive();
  */
 GPSPackage *gpsRead();
 
+
+void gpsSendData(uint8_t *data, uint16_t len);
+
 /**
  * Send an ASCII command directly to the GPS
  */
