@@ -27,6 +27,7 @@
 
 // BEGIN GENERATOR MACROS
 
+#define CAN_ID_GCMD_RESET_I2C 302252768
 #define CAN_ID_RC_ADCS_BDOT_11 308871796
 #define CAN_ID_COM1_MODE 302252858
 #define CAN_ID_GCMD_COM1_MODE_CAMERA 302252856
@@ -333,6 +334,9 @@ void (*CANPacketReceived)(CANPacket *);
 uint8_t canSendPacket(CANPacket *packet);
 
 void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet));
+typedef struct gcmd_reset_i2c {
+} gcmd_reset_i2c;
+
 typedef struct rc_adcs_bdot_11 {
     uint16_t rc_adcs_bdot_11_mag_z_var; //  (No Units)
     uint16_t rc_adcs_bdot_11_mag_y_var; //  (No Units)
@@ -1408,6 +1412,9 @@ typedef struct grnd_epoch {
     uint8_t grnd_epoch_val_overflow; //  (No Units)
     uint32_t grnd_epoch_val; // 2^-8 s
 } grnd_epoch;
+
+void encodegcmd_reset_i2c(gcmd_reset_i2c *input, CANPacket* output);
+void decodegcmd_reset_i2c(CANPacket *input, gcmd_reset_i2c *output);
 
 void encoderc_adcs_bdot_11(rc_adcs_bdot_11 *input, CANPacket* output);
 void decoderc_adcs_bdot_11(CANPacket *input, rc_adcs_bdot_11 *output);

@@ -205,6 +205,21 @@ void setCANPacketRxCallback(void (*ReceiveCallbackArg)(CANPacket *packet)) {
 
 // AUTOGEN STUFF HERE
 
+void decodegcmd_reset_i2c(CANPacket *input, gcmd_reset_i2c *output){
+    uint64_t *thePointer = (uint64_t *) input -> data;
+    reverseArray(input -> data, 0, 7);
+    const uint64_t fullData = *thePointer;
+}
+
+void encodegcmd_reset_i2c(gcmd_reset_i2c *input, CANPacket *output){
+    output -> id = 302252768;
+    output -> length = 0;
+    uint64_t fullPacketData = 0x0000000000000000;
+    uint64_t *thePointer = (uint64_t *) (&(output -> data));
+    *thePointer = fullPacketData;
+    reverseArray((output->data), 0, 7);
+}
+
 void decoderc_adcs_bdot_11(CANPacket *input, rc_adcs_bdot_11 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
