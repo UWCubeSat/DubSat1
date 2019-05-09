@@ -95,6 +95,7 @@ hDev i2cInit(bus_instance_i2c bus, uint8_t slaveaddr)
         I2CREG(bus, UCBxBRW) = 12;                                               // Baudrate = SMCLK / 12
         I2CREG(bus, UCBxCTLW1) |= UCASTP_2;                                      // Automatic stop generated after transmission complete
         I2CREG(bus, UCBxCTLW1) |= UCCLTO_3;                                      // clk low timeout @ 34ms
+        i2cEnable(bus);                                             // Software reset disabled
     }
 
     // Now setup the actual individual device
