@@ -81,7 +81,7 @@ int main(void)
             }
 
             getLonLat(&loc);
-            getDM(&loc, &dm)
+            getDM(&loc, &dm);
             gpsSendData(&dm, sizeof(dm));
 
             LED_OUT ^= LED_BIT;     // blink LED
