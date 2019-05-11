@@ -210,7 +210,8 @@ BO_ 2449736398 gcmd_reset_minmax: 2 com_1
  SG_ gcmd_reset_minmax_ppt : 1|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ gcmd_reset_minmax_bdot : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 2456355438 rc_eps_batt_h2: 1 eps_batt
+BO_ 2456355438 rc_eps_batt_h2: 2 eps_batt
+ SG_ rc_eps_batt_h2_last_i2c_res : 8|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ rc_eps_batt_h2_canrxerror : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2456355437 rc_adcs_bdot_h2: 1 adcs_bdot
@@ -1043,6 +1044,7 @@ CM_ SG_ 2449736398 gcmd_reset_minmax_gen "Whether to reset the subsystem";
 CM_ SG_ 2449736398 gcmd_reset_minmax_dist "Whether to reset the subsystem";
 CM_ SG_ 2449736398 gcmd_reset_minmax_ppt "Whether to reset the subsystem";
 CM_ SG_ 2449736398 gcmd_reset_minmax_bdot "Whether to reset the subsystem";
+CM_ SG_ 2456355438 rc_eps_batt_h2_last_i2c_res "the result of the last i2c operation";
 CM_ SG_ 2456355438 rc_eps_batt_h2_canrxerror "the Batt MCP's RX error buffer";
 CM_ SG_ 2456355437 rc_adcs_bdot_h2_canrxerror "the BDOT MCP's RX error buffer";
 CM_ SG_ 2456355436 rc_eps_dist_h2_canrxerror "the Dist MCP's RX error buffer";
