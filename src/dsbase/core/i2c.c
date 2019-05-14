@@ -7,7 +7,6 @@
 
 #include "i2c.h"
 
-FILE_STATIC status_i2c i2c_status;
 FILE_STATIC bus_context_i2c buses[CONFIGM_i2c_maxperipheralinstances];
 FILE_STATIC device_context_i2c devices[CONFIGM_i2c_maxdevices];
 FILE_STATIC uint8_t numDevices = 0;
@@ -36,6 +35,23 @@ i2c_result lastOperation = i2cRes_noerror;
 i2c_result i2cGetLastOperationResult()
 {
     return lastOperation;
+}
+
+void i2cReset()
+{
+    // the I2C bus numbering is 1-indexed
+    uint8_t i;
+    for (i = 1; i < CONFIGM_i2c_maxperipheralinstances; i++)
+    {
+        if (buses[i].initialized)
+        {
+            bus_instance_i2c bus = (bus_instance_i2c)i;
+            i2cDisable(bus);
+            bspI2CInit(bus);
+            i2cEnable(bus);
+        }
+    }
+    busErrorCount = 0;
 }
 
 // Some quasi-unpleasant hackery to make for clean dual-bus support in general
@@ -238,11 +254,8 @@ i2c_result i2cMasterCombinedWriteRead(hDev device, uint8_t * wbuff, uint8_t szTo
         lastOperation = i2cRes_transmitTimeout;
         return i2cRes_transmitTimeout;
     }
-    lastOperation = i2cCoreRead(device, rbuff, szToRead, FALSE);
-    if(lastOperation)
-        return lastOperation;
-
-    return i2cRes_noerror;
+    // CoreRead sets the last operation
+    return i2cCoreRead(device, rbuff, szToRead, FALSE);
 }
 
 i2c_result i2cMasterRegisterRead(hDev device, uint8_t registeraddr, uint8_t * buff, uint8_t szToRead)

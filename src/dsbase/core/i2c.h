@@ -115,6 +115,9 @@ uint16_t i2cGetBytesRead();
 //gets the number of bytes written successfully over i2c
 uint16_t i2cGetBytesWritten();
 
+// reset all previously initialized I2C buses
+void i2cReset();
+
 #endif /* DISABLE_SYNC_I2C_CALLS */
 
 // TODO:  Add "async" interrupt-based alternative to synchronous versions

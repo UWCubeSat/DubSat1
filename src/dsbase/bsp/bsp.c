@@ -237,12 +237,20 @@ void bspI2CInit(bus_instance_i2c instance)
 {
     if (instance == I2CBus2)
     {
+        I2C2_PORTSEL0 &= ~I2C2_SDA_BIT;
+        I2C2_PORTSEL1 &= ~I2C2_SDA_BIT;
+        P7DIR |= I2C2_SDA_BIT;
+        P7OUT |= I2C2_SDA_BIT;
         I2C2_PORTSEL1 &= ~(I2C2_SDA_BIT | I2C2_SCL_BIT);
         I2C2_PORTSEL0 |= (I2C2_SDA_BIT | I2C2_SCL_BIT);
     }
 #if !defined(__BSP_Board_MSP430FR5994LaunchPad__)
     else if (instance == I2CBus1)
     {
+        I2C1_PORTSEL0 &= ~I2C1_SDA_BIT;
+        I2C1_PORTSEL1 &= ~I2C1_SDA_BIT;
+        P5DIR |= I2C1_SDA_BIT;
+        P5OUT |= I2C1_SDA_BIT;
         I2C1_PORTSEL1 &= ~(I2C1_SDA_BIT | I2C1_SCL_BIT);
         I2C1_PORTSEL0 |= (I2C1_SDA_BIT | I2C1_SCL_BIT);
     }
