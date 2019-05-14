@@ -919,13 +919,15 @@ void decoderc_eps_batt_h2(CANPacket *input, rc_eps_batt_h2 *output){
     uint64_t *thePointer = (uint64_t *) input -> data;
     reverseArray(input -> data, 0, 7);
     const uint64_t fullData = *thePointer;
+    output -> rc_eps_batt_h2_last_i2c_res = (uint8_t) (((fullData & ((uint64_t) 0xff << 48)) >> 48));
     output -> rc_eps_batt_h2_canrxerror = (uint8_t) (((fullData & ((uint64_t) 0xff << 56)) >> 56));
 }
 
 void encoderc_eps_batt_h2(rc_eps_batt_h2 *input, CANPacket *output){
     output -> id = 308871790;
-    output -> length = 1;
+    output -> length = 2;
     uint64_t fullPacketData = 0x0000000000000000;
+    fullPacketData |= (((uint64_t)((input -> rc_eps_batt_h2_last_i2c_res))) & 0xff) << 48;
     fullPacketData |= (((uint64_t)((input -> rc_eps_batt_h2_canrxerror))) & 0xff) << 56;
     uint64_t *thePointer = (uint64_t *) (&(output -> data));
     *thePointer = fullPacketData;

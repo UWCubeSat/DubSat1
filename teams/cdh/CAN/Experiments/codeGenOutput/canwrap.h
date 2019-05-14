@@ -526,6 +526,7 @@ typedef struct gcmd_reset_minmax {
 } gcmd_reset_minmax;
 
 typedef struct rc_eps_batt_h2 {
+    uint8_t rc_eps_batt_h2_last_i2c_res; //  (No Units)
     uint8_t rc_eps_batt_h2_canrxerror; //  (No Units)
 } rc_eps_batt_h2;
 

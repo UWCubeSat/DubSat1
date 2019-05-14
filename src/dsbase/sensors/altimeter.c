@@ -186,7 +186,7 @@ static float calculateAltitude()
 
     // need to add eq 2 for when lapse rate is equal to 0
     float exponent = (GAS_CONSTANT * lapseRate) / (G_0 * AIR_MOLAR_MASS);
-    altitude = layerHeight + (standardTemp / lapseRate)(pow((staticPressure / altData.pressure), exponent) - 1);
+    altitude = layerHeight + (standardTemp / lapseRate) * (pow((staticPressure / (altData.pressure * 100)), exponent) - 1);
     lastAltitude = altitude;
     return altitude;
 }
