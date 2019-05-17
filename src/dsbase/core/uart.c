@@ -138,27 +138,27 @@ hBus uartInit(bus_instance_UART instance, uint8_t echoenable, UARTSpeed speed)
     }
     else if (instance == ApplicationUART)
     {
-        UCA1CTLW0 = UCSWRST;
-        UCA1CTLW0 |= UCSSEL__SMCLK;
+        UCA3CTLW0 = UCSWRST;
+        UCA3CTLW0 |= UCSSEL__SMCLK;
 
         switch (speed)
         {
             case Speed_9600:
-                UCA1BRW = UCAxBRW_9600;
-                UCA1MCTLW |= UCAxMCTLW_9600;
+                UCA3BRW = UCAxBRW_9600;
+                UCA3MCTLW |= UCAxMCTLW_9600;
                 break;
             case Speed_38400:
-                UCA1BRW = UCAxBRW_38400;
-                UCA1MCTLW |= UCAxMCTLW_38400;
+                UCA3BRW = UCAxBRW_38400;
+                UCA3MCTLW |= UCAxMCTLW_38400;
                 break;
             case Speed_115200:
-                UCA1BRW = UCAxBRW_115200;
-                UCA1MCTLW |= UCAxMCTLW_115200;
+                UCA3BRW = UCAxBRW_115200;
+                UCA3MCTLW |= UCAxMCTLW_115200;
                 break;
         }
 
-        UCA1CTLW0 &= ~UCSWRST;
-        UCA1IE |= UCRXIE | UCTXIE;
+        UCA3CTLW0 &= ~UCSWRST;
+        UCA3IE |= UCRXIE | UCTXIE;
     }
 
     bus_ctx->health = Bus_Healthy;
@@ -195,7 +195,7 @@ void enableUARTInterrupts(handle)
     }
     else if (handle == ApplicationUART)
     {
-        UCA1IE |= UCRXIE | UCTXIE;
+        UCA3IE |= UCRXIE | UCTXIE;
     }
 }
 
@@ -207,7 +207,7 @@ void disableUARTInterrupts(handle)
     }
     else if (handle == ApplicationUART)
     {
-        UCA1IE &= ~(UCRXIE | UCTXIE);
+        UCA3IE &= ~(UCRXIE | UCTXIE);
     }
 }
 
@@ -268,7 +268,7 @@ void uartTransmit(hBus handle, uint8_t * srcBuff, uint8_t szBuff)
         if (handle == BackchannelUART)
             UCA0TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
         else
-            UCA1TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
+            UCA3TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
 
 
         __bis_SR_register(GIE);     // Make sure interrupts enabled
@@ -298,7 +298,7 @@ void handleUCRXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
     if (instance == BackchannelUART)
         rcvdbyte = UCA0RXBUF;
     else
-        rcvdbyte = UCA1RXBUF;
+        rcvdbyte = UCA3RXBUF;
 
     bus_ctx->rx_bytes_rcvd++;
 
@@ -307,7 +307,7 @@ void handleUCRXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
         if (instance == BackchannelUART)
             UCA0TXBUF = rcvdbyte;
         else
-            UCA1TXBUF = rcvdbyte;
+            UCA3TXBUF = rcvdbyte;
     }
 
     if (bus_ctx->rxCallback == 0)
@@ -336,7 +336,7 @@ void handleUCTXIFG(bus_context_UART *bus_ctx, bus_instance_UART instance)
         if (instance == BackchannelUART)
             UCA0TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
         else
-            UCA1TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
+            UCA3TXBUF = bus_ctx->txBuff[bus_ctx->currentTxIndex++];
         bus_ctx->tx_bytes_sent++;
     }
     else
@@ -370,13 +370,13 @@ __interrupt void USCI_A0_ISR(void)
     }
 }
 
-// Interrupt vector for APPLICATION UART (A1-based)
-#pragma vector=EUSCI_A1_VECTOR
-__interrupt void USCI_A1_ISR(void)
+// Interrupt vector for APPLICATION UART (A3-based)
+#pragma vector=EUSCI_A3_VECTOR
+__interrupt void USCI_A3_ISR(void)
 {
     bus_context_UART *bus_ctx = &buses[ApplicationUART];
 
-    switch(__even_in_range(UCA1IV, USCI_UART_UCTXCPTIFG))
+    switch(__even_in_range(UCA3IV, USCI_UART_UCTXCPTIFG))
     {
         case USCI_NONE: break;
         case USCI_UART_UCRXIFG:
