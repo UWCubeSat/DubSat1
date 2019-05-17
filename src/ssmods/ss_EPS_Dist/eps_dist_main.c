@@ -1122,6 +1122,9 @@ void can_packet_rx_callback(CANPacket *packet)
                 shutoffEnabled.rahs = pktShutoff.gcmd_dist_autoshutoff_rahs;
         }
             break;
+        case CAN_ID_GCMD_RESET_I2C:
+            i2cReset();
+            break;
         default:
             break;
     }

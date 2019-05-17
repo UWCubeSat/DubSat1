@@ -248,6 +248,9 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_GCMD_DIST_RESET_MISSION: //clear persistent flags here
             bspClearResetCount();
             break;
+        case CAN_ID_GCMD_RESET_I2C:
+            i2cReset();
+            break;
         default:
             break;
     }

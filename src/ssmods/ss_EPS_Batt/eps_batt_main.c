@@ -233,6 +233,9 @@ void can_packet_rx_callback(CANPacket *packet)
         case CAN_ID_GCMD_DIST_RESET_MISSION: //clear persistent flags here
             bspClearResetCount();
             break;
+        case CAN_ID_GCMD_RESET_I2C:
+            i2cReset();
+            break;
         default:
             break;
     }
@@ -255,6 +258,7 @@ void rcPopulateH2(CANPacket *out)
 {
     rc_eps_batt_h2 rc = {0};
     rc.rc_eps_batt_h2_canrxerror = canRxErrorCheck();
+    rc.rc_eps_batt_h2_last_i2c_res = i2cGetLastOperationResult();
     encoderc_eps_batt_h2(&rc, out);
 }
 
@@ -353,12 +357,13 @@ void rcPopulate7(CANPacket *out)
 
 int main(void)
 {
-    P3DIR |= BIT4; //this is for Paul's backpower fix
-    P3OUT |= BIT4;
     /* ----- INITIALIZATION -----*/
     bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     asensorInit(Ref_2p5V);
     battInit();
+
+    P3DIR |= BIT4; //this is for Paul's backpower fix
+    P3OUT |= BIT4;
 
     /* ------INA219/PVC SENSOR------ */
     hDev hSensor;
