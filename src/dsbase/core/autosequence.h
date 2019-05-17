@@ -11,6 +11,8 @@ typedef struct {
     uint32_t time; //seconds
 } sequenceEvent;
 
+#define WK_TO_SEC 604800
+
 ////////////////////////////////////////////////////////////////////////
 
 uint8_t seqAddEvent(sequenceEvent e); //returns 0 for successful adding

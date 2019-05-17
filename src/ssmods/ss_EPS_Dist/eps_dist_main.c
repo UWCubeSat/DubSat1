@@ -23,7 +23,6 @@ FILE_STATIC const rollcall_fn rollcallFunctions[] =
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
-FILE_STATIC ModuleStatus mod_status;
 FILE_STATIC volatile SubsystemState ss_state    = State_FirstState;
 FILE_STATIC volatile SubsystemMode ss_mode      = Mode_FirstMode;
 
@@ -36,19 +35,6 @@ FILE_STATIC flag_t triggerState3;
 #pragma PERSISTENT(shutoffEnabled)
 FILE_STATIC AutoshutoffEnabled shutoffEnabled = {1, 1, 1, 1, 0, 0};
 FILE_STATIC AutoshutoffDelay shutoffDelay = {0, 0, 0, 0, 0, 0};
-
-// DO NOT REORDER
-FILE_STATIC uint8_t *powerDomainNames[] =
-                                           {
-                                            "COM1",
-                                            "COM2",
-                                            "RAHS",
-                                            "BDOT",
-                                            "ESTIM",
-                                            "WHEELS",
-                                            "EPS",
-                                            "PPT",
-                                           };
 
 FILE_STATIC PowerDomainInfo powerdomains[NUM_POWER_DOMAINS];
 
@@ -76,12 +62,6 @@ FILE_STATIC sensordat_segment sseg;
 FILE_STATIC health_segment hseg;
 
 FILE_STATIC hDev hBattV;
-
-#define MAX_BUFF_SIZE   0x10
-FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
-
-FILE_STATIC uint16_t startupDelay = 1800; //this will be used for the initial 30min wait
-#pragma PERSISTENT(startupDelay)
 
 //**********Data Stuff**********************
 FILE_STATIC uint8_t rebootCount = 60;
@@ -119,7 +99,7 @@ sequenceEvent persistentEvents[100] = {0};
 #pragma PERSISTENT(eventsInitialized)
 uint8_t eventsInitialized = 0;
 #pragma PERSISTENT(autoSequencerEnabled)
-uint8_t autoSequencerEnabled = 0;
+uint8_t autoSequencerEnabled = 1;
 
 FILE_STATIC uint16_t rcResponseFlag = 0; //this is zero when no responses are pending
 FILE_STATIC char clearTemp = 0;
@@ -1167,51 +1147,36 @@ void initData()
 void initializeEvents()
 {
     CANPacket pkt;
+    gcmd_dist_set_pd_state cmd;
 
-    ////////////////////////////////////////////////////  TODO: this is test code for Con-Ops
-    gcmd_dist_set_pd_state cmd = {0, 0, 0, 0, 1, 0, 0};
+    // turn on EPS at 1 week
+    cmd = (gcmd_dist_set_pd_state){0, 0, 0, 0, 1, 0, 0, 0};
     encodegcmd_dist_set_pd_state(&cmd, &pkt);
     persistentEvents[0].pkt = pkt;
     persistentEvents[0].sendFlag = 0;
-    persistentEvents[0].time = 15;
-    ////////////////////////////////////////////////////
+    persistentEvents[0].time = 1 * WK_TO_SEC;
 
-    /*uint8_t i;
-    for(i = 0; i < NUM_POWER_DOMAINS; i++)
-    {
-        gcmd_dist_set_pd_state cmd = {0};
-        switch(i)
-        {
-            case 0:
-                cmd.gcmd_dist_set_pd_state_bdot = PD_CMD_Enable;
-                break;
-            case 1:
-                cmd.gcmd_dist_set_pd_state_com1 = PD_CMD_Enable;
-                break;
-            case 2:
-                cmd.gcmd_dist_set_pd_state_com2 = PD_CMD_Enable;
-                break;
-            case 3:
-                cmd.gcmd_dist_set_pd_state_eps = PD_CMD_Enable;
-                break;
-            case 4:
-                cmd.gcmd_dist_set_pd_state_estim = PD_CMD_Enable;
-                break;
-            case 5:
-                cmd.gcmd_dist_set_pd_state_ppt = PD_CMD_Enable;
-                break;
-            case 6:
-                cmd.gcmd_dist_set_pd_state_rahs = PD_CMD_Enable;
-                break;
-            case 7:
-                cmd.gcmd_dist_set_pd_state_wheels = PD_CMD_Enable;
-                break;
-        }
-        encodegcmd_dist_set_pd_state(&cmd, &pkt);
-        persistentEvents[i].pkt = pkt;
-        persistentEvents[i].sendFlag = 0;
-        persistentEvents[i].time = i + 1; //sequentially activated
-    }*/
+    // turn on BDot at 2 weeks
+    cmd = (gcmd_dist_set_pd_state){0, 0, 0, 0, 0, 0, 0, 1};
+    encodegcmd_dist_set_pd_state(&cmd, &pkt);
+    persistentEvents[1].pkt = pkt;
+    persistentEvents[1].sendFlag = 0;
+    persistentEvents[1].time = 2 * WK_TO_SEC;
+
+    // turn on Estim at 3 weeks
+    cmd = (gcmd_dist_set_pd_state){0, 0, 0, 1, 0, 0, 0, 0};
+    encodegcmd_dist_set_pd_state(&cmd, &pkt);
+    persistentEvents[2].pkt = pkt;
+    persistentEvents[2].sendFlag = 0;
+    persistentEvents[2].time = 3 * WK_TO_SEC;
+
+    // turn off Estim at 4 weeks
+    cmd = (gcmd_dist_set_pd_state){0, 0, 0, 2, 0, 0, 0, 0};
+    encodegcmd_dist_set_pd_state(&cmd, &pkt);
+    persistentEvents[3].pkt = pkt;
+    persistentEvents[3].sendFlag = 0;
+    persistentEvents[3].time = 4 * WK_TO_SEC;
+
     eventsInitialized = 1;
 }
 
@@ -1235,10 +1200,10 @@ void INAInit()
     INA_OUT |= INA_BIT;
 }
 
-void restartINA() //TODO: send a restart command instead
+void restartINA()
 {
     INA_OUT &= ~INA_BIT;
-    __delay_cycles((uint16_t)(MSEC * 10));
+    __delay_cycles(MSEC * 10);
     INA_OUT |= INA_BIT;
 }
 
@@ -1266,9 +1231,8 @@ void incrementRollcallWatchdog()
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
-    WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1; //TODO: revert this to take watchdog out
-    //WDTCTL = WDTPW | WDTHOLD;
-    bspInit(__SUBSYSTEM_MODULE__);  // This uses the framily of __SS_etc predefined symbols - see bsp.h
+    WDTCTL = WDTPW | WDTCNTCL | WDTTMSEL_0 | WDTSSEL_0 | WDTIS_1;
+    bspInit(__SUBSYSTEM_MODULE__);  // This uses the family of __SS_etc predefined symbols - see bsp.h
     METInitWithTime(persistentTime);
 
     bspBackpowerPulldown();
@@ -1297,12 +1261,6 @@ int main(void)
     debugRegisterEntity(Entity_SUBSYSTEM, NULL, NULL, distActionCallback);
     __delay_cycles(0.5 * SEC);
 
-#else  //  __DEBUG__
-    while(startupDelay)
-    {
-        __delay_cycles(SEC); //wait for 30 minutes
-        startupDelay--;
-    }
 #endif
 
     /* ----- CAN BUS/MESSAGE CONFIG -----*/
@@ -1367,8 +1325,6 @@ int main(void)
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
-
-    return 0;
 }
 
 
