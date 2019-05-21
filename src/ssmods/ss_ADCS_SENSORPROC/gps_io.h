@@ -149,4 +149,7 @@ void gpsioSendHealth();
 bool gpsioHandlePackage(GPSPackage *p);
 bool gpsioHandleCommand(uint8_t * cmdstr);
 
+void getLonLat(GPSLonLat* l);
+void getDM(GPSLonLat *l, GPSDegMin *dm);
+
 #endif /* GPS_IO_H_ */
