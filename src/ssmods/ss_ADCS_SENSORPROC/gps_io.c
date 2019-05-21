@@ -645,9 +645,15 @@ FILE_STATIC void sendBestXYZOverCAN(const GPSBestXYZ *m, uint16_t week, gps_ec m
     canSendPacket(&canPacket);
 }
 
+FILE_STATIC GPSVectorD gps_pos = {0};
+
 FILE_STATIC void handleBestXYZ(const GPSPackage *package)
 {
     const GPSBestXYZ *m = &(package->message.bestXYZ);
+
+    gps_pos.x = m->pos.x;
+    gps_pos.y = m->pos.y;
+    gps_pos.z = m->pos.z;
 
     // adjust reported time with UTC offset and velocity latency
     uint16_t week = package->header.week;
@@ -661,10 +667,10 @@ FILE_STATIC void handleBestXYZ(const GPSPackage *package)
     sendBestXYZOverCAN(m, week, ms);
 }
 
-void getLonLat(GPSLonLat* l, GPSBestXYZ* m) {
-    double R = m->pos.x*m->pos.x + m->pos.y*m->pos.y + m->pos.z*m->pos.z;
-    l->lat = 180/M_PI*asin(m->pos.z / R);
-    l->lon = 180/M_PI*atan2(m->pos.y, m->pos.x);
+void getLonLat(GPSLonLat* l) {
+    double R = gps_pos.x * gps_pos.x + gps_pos.y * gps_pos.y + gps_pos.z * gps_pos.z;
+    l->lat = 180 / M_PI * asin(gps_pos.z / R);
+    l->lon = 180 / M_PI * atan2(gps_pos.y, gps_pos.x);
 }
 
 void getDM(GPSLonLat *l, GPSDegMin *dm) {
@@ -674,7 +680,7 @@ void getDM(GPSLonLat *l, GPSDegMin *dm) {
 
     double gpsLon = l->lon;
     dm->degLon = (int)gpsLon;
-    dm->minLon = 60*(gpsLon - dm->degLon);
+    dm->minLon = 60 * (gpsLon - dm->degLon);
 }
 
 FILE_STATIC void handleHwMonitor(const GPSPackage *package)

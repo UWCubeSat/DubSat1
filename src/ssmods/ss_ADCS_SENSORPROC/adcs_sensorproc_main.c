@@ -61,6 +61,9 @@ int main(void)
 
     // initialize sensors
     gpsioInit();
+    gpsioPowerOn();
+
+    gpsioPowerOn();
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)

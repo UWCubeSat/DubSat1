@@ -378,6 +378,7 @@ void gpsSendBinaryCommand(gps_message_id messageId,
                           uint8_t *message,
                           uint16_t messageLength);
 
+
 /**
  * Populate health struct
  */
