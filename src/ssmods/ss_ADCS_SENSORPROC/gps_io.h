@@ -160,7 +160,6 @@ void gpsioSendHealth();
 bool gpsioHandlePackage(GPSPackage *p);
 bool gpsioHandleCommand(uint8_t * cmdstr);
 
-
 void getGPSDM(GPSDegMin* dst);
 
 #endif /* GPS_IO_H_ */

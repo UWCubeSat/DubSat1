@@ -163,7 +163,6 @@ FILE_STATIC void sendBestXYZOverBackchannel(const GPSBestXYZ *m, uint16_t week, 
 FILE_STATIC void sendBestPosOverBackchannel(const GPSBestPos *m);
 FILE_STATIC void sendBestXYZOverCAN(const GPSBestXYZ *m, uint16_t week, gps_ec ms);
 
-
 FILE_STATIC void getLonLat(GPSLonLat* l, const GPSBestXYZ* m);
 
 void gpsioInit()
@@ -748,15 +747,19 @@ FILE_STATIC void handleBestXYZ(const GPSPackage *package)
     sendBestXYZOverCAN(m, week, ms);
 }
 
-FILE_STATIC void getLonLat(GPSLonLat* l, const GPSBestXYZ* m) {
+FILE_STATIC void getLonLat(GPSLonLat* l, const GPSBestXYZ* m)
+{
 //    double R = m->pos.x * m->pos.x + m->pos.y * m->pos.y + m->pos.z * m->pos.z;
     double R =  6.3781 * 10e6; // m
     l->lat = 180 / M_PI * asin(m->pos.z / R);
     l->lon = 180 / M_PI * atan2(m->pos.y, m->pos.x);
 }
 
-FILE_STATIC void getDM(GPSLonLat *l, GPSDegMin *dm) {
-
+FILE_STATIC void getDM(GPSLonLat *l, GPSDegMin *dm)
+{
+    double gpsLon = l->lon;
+    dm->degLon = (int)gpsLon;
+    dm->minLon = 60 * (gpsLon - dm->degLon);
 }
 
 FILE_STATIC void handleHwMonitor(const GPSPackage *package)
