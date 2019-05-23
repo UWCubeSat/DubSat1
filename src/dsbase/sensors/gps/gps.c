@@ -11,7 +11,8 @@
 
 typedef enum reader_state
 {
-    State_Sync, State_Header, State_Message, State_CRC
+    State_Sync, State_Header, State_Message, State_ArrayLength,
+    State_ArrayMessage, State_CRC
 } reader_state;
 
 FILE_STATIC hBus uartHandle;
@@ -248,11 +249,6 @@ GPSPackage *gpsRead()
     }
 
     return NULL;
-}
-
-
-void gpsSendData(uint8_t *data, uint16_t len) {
-    uartTransmit(uartHandle, data, len);
 }
 
 void gpsSendCommand(uint8_t *command)
