@@ -1,5 +1,5 @@
 // time to wait between LED blink
-#define UPDATE_DELAY_MS 200
+#define UPDATE_DELAY_MS 2000
 
 #include <adcs_sensorproc.h>
 #include <msp430.h> 
@@ -19,8 +19,10 @@ FILE_STATIC health_segment hseg;
 FILE_STATIC int timerHandle;
 FILE_STATIC void startSensorprocTimer();
 
+FILE_STATIC hBus uartHandle;
+FILE_STATIC uint8_t buffer[20];
 
-FILE_STATIC GPSDegMin gpsDM;
+
 int main(void)
 {
     /* ----- INITIALIZATION -----*/
@@ -59,40 +61,15 @@ int main(void)
     initializeTimer();
     startSensorprocTimer();
 
-    // initialize sensors
+    // initialize the reader
     gpsioInit();
-    gpsioPowerOn();
 
-    debugTraceF(1, "Commencing subsystem module execution ...\r\n");
     while (1)
     {
-        static uint8_t i = 0;
-        if (checkTimer(timerHandle)) // 5 Hz
-        {
-            if (i % 4 == 0) // 1.25 Hz
-            {
-                gpsioSendPowerStatus();
-                sendHealthSegment();
-            }
-
-            if (i % 64 == 0) // every 12.8 seconds
-            {
-                sendMetaSegment();
-                gpsioSendStatus();
-            }
-
-            if (i % 150 == 0) // every 30 seconds
-            {
-                getGPSDM(&gpsDM);
-                // send data to main computer.
-            }
-
-            LED_OUT ^= LED_BIT;     // blink LED
-            startSensorprocTimer(); // reset the timer
-            i++;
+        if(checkTimer(timerHandle)) {
+            GPSPackage *p = getGPSData_test();
         }
 
-        gpsioUpdate();
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
@@ -170,3 +147,6 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr)
     }
     return 1;
 }
+
+
+

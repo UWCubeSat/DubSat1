@@ -56,16 +56,6 @@ TLM_SEGMENT {
     BcTlmHeader header; // All COSMOS TLM packets must have this
 
     gps_enum posStatus;
-    double lon;
-    double lat;
-    double hgt;
-    GPSDegMin degmin;
-} bestpos_segment;
-
-TLM_SEGMENT {
-    BcTlmHeader header; // All COSMOS TLM packets must have this
-
-    gps_enum posStatus;
     GPSVectorD pos;
     GPSVectorF posStdDev;
     gps_enum velStatus;
@@ -73,7 +63,6 @@ TLM_SEGMENT {
     GPSVectorF velStdDev;
     uint16_t week;
     int32_t ms;
-    GPSDegMin degmin;
 } bestxyz_segment;
 
 TLM_SEGMENT {
@@ -160,7 +149,10 @@ void gpsioSendHealth();
 bool gpsioHandlePackage(GPSPackage *p);
 bool gpsioHandleCommand(uint8_t * cmdstr);
 
+void getLonLat(GPSLonLat* l);
+void getDM(GPSLonLat *l, GPSDegMin *dm);
 
-void getGPSDM(GPSDegMin* dst);
+GPSPackage *getGPSData_test();
+GPSPackage *gpsioHandlePackage_test(GPSPackage *p);
 
 #endif /* GPS_IO_H_ */

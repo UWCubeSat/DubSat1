@@ -22,7 +22,6 @@
 #define TLM_ID_HWMONITOR  126
 #define TLM_ID_SATVIS2    127
 #define TLM_ID_RANGE      119
-#define TLM_ID_BESTPOS    117
 
 // COSMOS command opcodes
 #define OPCODE_SENDASCII       1
