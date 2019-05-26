@@ -189,6 +189,31 @@ void gpsioInit()
     gpsInit();
 }
 
+
+void gpsioInit_Receiver()
+{
+    setCANPacketRxCallback(canRxCallback);
+
+    gpshealthSeg = (gpshealth_segment) { 0 };
+    gpspowerSeg = (gpspower_segment) { 0 };
+    rxstatusSeg = (rxstatus_segment) { 0 };
+    timeSeg = (time_segment) { 0 };
+
+    bcbinPopulateHeader(&gpshealthSeg.header, TLM_ID_GPSHEALTH, sizeof(gpshealthSeg));
+    bcbinPopulateHeader(&gpspowerSeg.header, TLM_ID_GPSPOWER, sizeof(gpspowerSeg));
+    bcbinPopulateHeader(&rxstatusSeg.header, TLM_ID_RXSTATUS, sizeof(rxstatusSeg));
+    bcbinPopulateHeader(&timeSeg.header, TLM_ID_TIME, sizeof(timeSeg));
+
+    triggerGPSOn = FALSE;
+    triggerGPSOff = FALSE;
+
+    gpsPowerState = State_Off;
+
+    initializeTimer();
+
+    gpsInit_Receiver();
+}
+
 void gpsioConfig()
 {
     // configure to reply in binary only
@@ -939,3 +964,4 @@ FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset)
     }
     *ms = (gps_ec) round(tmp);
 }
+

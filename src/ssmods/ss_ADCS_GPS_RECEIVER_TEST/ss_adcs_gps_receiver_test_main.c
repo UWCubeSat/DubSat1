@@ -1,7 +1,6 @@
 // time to wait between LED blink
 #define UPDATE_DELAY_MS 2000
-
-#include <adcs_sensorproc.h>
+#include <ss_adcs_gps_receiver_test.h>
 #include <msp430.h> 
 
 #include "bsp/bsp.h"
@@ -19,9 +18,7 @@ FILE_STATIC health_segment hseg;
 FILE_STATIC int timerHandle;
 FILE_STATIC void startSensorprocTimer();
 
-FILE_STATIC hBus uartHandle;
-FILE_STATIC uint8_t buffer[20];
-
+FILE_STATIC GPSDegMin gpsDM;
 
 int main(void)
 {
@@ -62,14 +59,22 @@ int main(void)
     startSensorprocTimer();
 
     // initialize the reader
-    gpsioInit();
+    gpsioInit_Receiver();
+
+    P1OUT &= ~BIT0;                         // Clear P1.0 output latch for a defined power-on state
+    P1DIR |= BIT0;
 
     while (1)
     {
-        if(checkTimer(timerHandle)) {
-            GPSPackage *p = getGPSData_test();
-        }
+        if (checkTimer(timerHandle)) {
+            // send data using uart
+            sendGPSDMUart(&gpsDM);
 
+            LED_OUT ^= LED_BIT;     // blink LED
+            P1OUT ^= BIT0;
+            startSensorprocTimer();
+        }
+        getGPSDM(&gpsDM);
     }
 
     // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!

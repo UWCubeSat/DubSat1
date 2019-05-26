@@ -130,6 +130,12 @@ FILE_STATIC int timerHandle;
 FILE_STATIC flag_t triggerGPSOn;
 FILE_STATIC flag_t triggerGPSOff;
 
+FILE_STATIC GPSDegMin gpsDM;
+
+
+
+
+
 FILE_STATIC void canRxCallback(CANPacket *packet);
 
 //------------------------------------------------------------------
@@ -144,6 +150,7 @@ FILE_STATIC void handleHwMonitor(const GPSPackage *package);
 FILE_STATIC void handleSatvis2(const GPSPackage *package);
 FILE_STATIC void handleRange(const GPSPackage *package);
 FILE_STATIC void handleRxStatusEvent(const GPSPackage *package);
+FILE_STATIC void handleBestPos(const GPSPackage *package);
 
 // status event handlers
 FILE_STATIC void handlePositionStatusEvent(const GPSRXStatusEvent *e);
@@ -152,7 +159,10 @@ FILE_STATIC void handleClockStatusEvent(const GPSRXStatusEvent *e);
 // util functions
 FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset);
 FILE_STATIC void sendBestXYZOverBackchannel(const GPSBestXYZ *m, uint16_t week, gps_ec ms);
+FILE_STATIC void sendBestPosOverBackchannel(const GPSBestPos *m);
 FILE_STATIC void sendBestXYZOverCAN(const GPSBestXYZ *m, uint16_t week, gps_ec ms);
+
+FILE_STATIC void getLonLat(GPSLonLat* l, const GPSBestXYZ* m);
 
 void gpsioInit()
 {
@@ -178,6 +188,30 @@ void gpsioInit()
     gpsInit();
 }
 
+void gpsioInit_Receiver()
+{
+    setCANPacketRxCallback(canRxCallback);
+
+    gpshealthSeg = (gpshealth_segment) { 0 };
+    gpspowerSeg = (gpspower_segment) { 0 };
+    rxstatusSeg = (rxstatus_segment) { 0 };
+    timeSeg = (time_segment) { 0 };
+
+    bcbinPopulateHeader(&gpshealthSeg.header, TLM_ID_GPSHEALTH, sizeof(gpshealthSeg));
+    bcbinPopulateHeader(&gpspowerSeg.header, TLM_ID_GPSPOWER, sizeof(gpspowerSeg));
+    bcbinPopulateHeader(&rxstatusSeg.header, TLM_ID_RXSTATUS, sizeof(rxstatusSeg));
+    bcbinPopulateHeader(&timeSeg.header, TLM_ID_TIME, sizeof(timeSeg));
+
+    triggerGPSOn = FALSE;
+    triggerGPSOff = FALSE;
+
+    gpsPowerState = State_Off;
+
+    initializeTimer();
+
+    gpsInit_Receiver();
+}
+
 void gpsioConfig()
 {
     // configure to reply in binary only
@@ -194,6 +228,7 @@ void gpsioConfig()
 
     // monitor position
     gpsSendCommand("log bestxyzb ontime 1\r\n");
+    gpsSendCommand("log bestposb ontime 1\r\n");
 
     // TODO remove before flight
     gpsSendCommand("log satvis2b ontime 3\r\n");
@@ -362,10 +397,6 @@ FILE_STATIC void enterStateOn()
     timerHandle = timerPollInitializer(DELAY_MANUAL_LOG_MS);
 }
 
-GPSPackage *getGPSData_test() {
-    return gpsioHandlePackage_test(gpsRead());
-}
-
 FILE_STATIC gps_power_state_code stateOn(gps_power_cmd cmd)
 {
     if (cmd == PowerCmd_Disable)
@@ -466,54 +497,6 @@ void gpsioSendHealth()
     bcbinSendPacket((uint8_t *) &gpshealthSeg, sizeof(gpshealthSeg));
 }
 
-GPSPackage * gpsioHandlePackage_test(GPSPackage *p) {
-#ifdef __SKIP_GPS_TRAFFIC__
-    return TRUE;
-#endif // __SKIP_GPS_TRAFFIC__
-
-    if (p == NULL)
-    {
-        return false;
-    }
-
-    // process header
-    rxstatusSeg.status = p->header.rxStatus;
-    timeSeg.week = p->header.week;
-    timeSeg.ms = p->header.ms;
-    toUtc(&timeSeg.week, &timeSeg.ms, timeSeg.offset);
-
-    // handle message-specific data
-    switch (p->header.messageId)
-    {
-    case MSGID_RXSTATUS:
-        handleRxStatus(p);
-        break;
-    case MSGID_TIME:
-        handleTime(p);
-        break;
-    case MSGID_BESTXYZ:
-        handleBestXYZ(p);
-        break;
-    case MSGID_HWMONITOR:
-        handleHwMonitor(p);
-        break;
-    case MSGID_SATVIS2:
-        handleSatvis2(p);
-        break;
-    case MSGID_RANGE:
-        handleRange(p);
-        break;
-    case MSGID_RXSTATUSEVENT:
-        handleRxStatusEvent(p);
-        break;
-    default:
-        gpshealthSeg.unknownMsg++;
-        break;
-    }
-
-    return p;
-}
-
 bool gpsioHandlePackage(GPSPackage *p)
 {
 #ifdef __SKIP_GPS_TRAFFIC__
@@ -554,6 +537,9 @@ bool gpsioHandlePackage(GPSPackage *p)
         break;
     case MSGID_RXSTATUSEVENT:
         handleRxStatusEvent(p);
+        break;
+    case MSGID_BESTPOS:
+        handleBestPos(p);
         break;
     default:
         gpshealthSeg.unknownMsg++;
@@ -638,19 +624,69 @@ FILE_STATIC void handleTime(const GPSPackage *package)
     debugTraceF(GPS_TRACE_LEVEL, "TIME offset: %f\r\n", timeSeg.offset);
 }
 
+FILE_STATIC void sendBestPosOverBackchannel(const GPSBestPos *m)
+{
+    bestpos_segment bestposSeg;
+    bestposSeg.lon = m->lon;
+    bestposSeg.lat = m->lat;
+//    bestposSeg.lon = -122.30876411294844;
+//    bestposSeg.lat = 47.65444525;
+    bestposSeg.hgt = m->hgt;
+    bestposSeg.posStatus = m->solStatus;
+
+    bestposSeg.degmin.degLon = (int) bestposSeg.lon;
+    bestposSeg.degmin.minLon = abs(((float)bestposSeg.lon - bestposSeg.degmin.degLon) * 60);
+
+    bestposSeg.degmin.degLat = (int) bestposSeg.lat;
+    bestposSeg.degmin.minLat = abs(((float)bestposSeg.lat - bestposSeg.degmin.degLat) * 60);
+
+    gpsDM.degLat = bestposSeg.degmin.degLat;
+    gpsDM.degLon = bestposSeg.degmin.degLon;
+    gpsDM.minLat = bestposSeg.degmin.minLat;
+    gpsDM.minLon = bestposSeg.degmin.minLon;
+
+    bcbinPopulateHeader(&bestposSeg.header, TLM_ID_BESTPOS, sizeof(bestposSeg));
+    bcbinSendPacket((uint8_t *) &bestposSeg, sizeof(bestposSeg));
+}
+
 FILE_STATIC void sendBestXYZOverBackchannel(const GPSBestXYZ *m, uint16_t week, gps_ec ms)
 {
+
+    GPSVectorD pos_temp;
+    pos_temp.x = -2300528.47108373;
+    pos_temp.y = -3637844.07371191;
+    pos_temp.z = 4691115.59537058;
+    // expected lon/lat = -122.30876411294844/47.65444525
+    // expected lat = 47 degrees 39 minutes
+    // expected lon = -122 degrees 18 minutes
+
     bestxyz_segment bestxyzSeg;
     bestxyzSeg.posStatus = m->pSolStatus;
     bestxyzSeg.pos = m->pos;
+//    bestxyzSeg.pos = pos_temp;
     bestxyzSeg.posStdDev = m->posStdDev;
     bestxyzSeg.velStatus = m->vSolStatus;
     bestxyzSeg.vel = m->vel;
     bestxyzSeg.velStdDev = m->velStdDev;
     bestxyzSeg.week = week;
     bestxyzSeg.ms = ms;
+
+    GPSLonLat lonlat;
+    GPSBestXYZ m_temp;
+    m_temp.pos = pos_temp;
+
+    double R =  6.3781 * 10e6; // m
+    lonlat.lat = 180 / M_PI * asin(pos_temp.z / R);
+    lonlat.lon = 180 / M_PI * atan2(pos_temp.y, pos_temp.x);
+
+    bestxyzSeg.degmin.degLon = (int) lonlat.lon;
+    bestxyzSeg.degmin.minLon = abs(((float)lonlat.lon - bestxyzSeg.degmin.degLon) * 60);
+    bestxyzSeg.degmin.degLat = (int) lonlat.lat;
+    bestxyzSeg.degmin.minLat = abs(((float)lonlat.lat - bestxyzSeg.degmin.degLat) * 60);
+
+
     bcbinPopulateHeader(&bestxyzSeg.header, TLM_ID_BESTXYZ, sizeof(bestxyzSeg));
-    bcbinSendPacket((uint8_t *) &bestxyzSeg, sizeof(bestxyz_segment));
+    bcbinSendPacket((uint8_t *) &bestxyzSeg, sizeof(bestxyzSeg));
 }
 
 // TODO this is kind of a lot to do. Check if the RX buffer doesn't overflow here
@@ -697,20 +733,24 @@ FILE_STATIC void sendBestXYZOverCAN(const GPSBestXYZ *m, uint16_t week, gps_ec m
     canSendPacket(&canPacket);
 }
 
-FILE_STATIC GPSVectorD gps_pos = {0};
+FILE_STATIC void handleBestPos(const GPSPackage *package)
+{
+    const GPSBestPos *m = &(package->message.bestPos);
+
+    // send backchannel telemetry
+    sendBestPosOverBackchannel(m);
+}
 
 FILE_STATIC void handleBestXYZ(const GPSPackage *package)
 {
+//    const GPSBestXYZ *m = &(package->message.bestXYZ);
     const GPSBestXYZ *m = &(package->message.bestXYZ);
-
-    gps_pos.x = m->pos.x;
-    gps_pos.y = m->pos.y;
-    gps_pos.z = m->pos.z;
 
     // adjust reported time with UTC offset and velocity latency
     uint16_t week = package->header.week;
     gps_ec ms = package->header.ms;
     toUtc(&week, &ms, timeSeg.offset - m->velLatency);
+
 
     // send backchannel telemetry
     sendBestXYZOverBackchannel(m, week, ms);
@@ -719,17 +759,16 @@ FILE_STATIC void handleBestXYZ(const GPSPackage *package)
     sendBestXYZOverCAN(m, week, ms);
 }
 
-void getLonLat(GPSLonLat* l) {
-    double R = gps_pos.x * gps_pos.x + gps_pos.y * gps_pos.y + gps_pos.z * gps_pos.z;
-    l->lat = 180 / M_PI * asin(gps_pos.z / R);
-    l->lon = 180 / M_PI * atan2(gps_pos.y, gps_pos.x);
+FILE_STATIC void getLonLat(GPSLonLat* l, const GPSBestXYZ* m)
+{
+//    double R = m->pos.x * m->pos.x + m->pos.y * m->pos.y + m->pos.z * m->pos.z;
+    double R =  6.3781 * 10e6; // m
+    l->lat = 180 / M_PI * asin(m->pos.z / R);
+    l->lon = 180 / M_PI * atan2(m->pos.y, m->pos.x);
 }
 
-void getDM(GPSLonLat *l, GPSDegMin *dm) {
-    double gpsLat = l->lat;
-    dm->degLat = (int)gpsLat;
-    dm->minLat = 60*(gpsLat - dm->degLat);
-
+FILE_STATIC void getDM(GPSLonLat *l, GPSDegMin *dm)
+{
     double gpsLon = l->lon;
     dm->degLon = (int)gpsLon;
     dm->minLon = 60 * (gpsLon - dm->degLon);
@@ -912,3 +951,26 @@ FILE_STATIC void toUtc(uint16_t *week, gps_ec *ms, double offset)
     }
     *ms = (gps_ec) round(tmp);
 }
+
+
+uint8_t getGPSDM(GPSDegMin *dst)
+{
+    if (gpsioHandlePackage(gpsRead())) {
+        dst->degLat = gpsDM.degLat;
+        dst->degLon = gpsDM.degLon;
+        dst->minLat = gpsDM.minLat;
+        dst->minLon = gpsDM.minLon;
+        return 1;
+    }
+    return 0;
+}
+
+void sendGPSDMUart(GPSDegMin *data)
+{
+    gpsSendCommand(data);
+}
+
+
+
+
+

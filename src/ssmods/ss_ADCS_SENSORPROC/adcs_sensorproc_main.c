@@ -131,7 +131,7 @@ void sendHealthSegment()
     // TODO determine overall health based on querying sensors for their health
     hseg.oms = OMS_Unknown;
 
-    hseg.inttemp = asensorReadIntTempC();
+//    hseg.inttemp = asensorReadIntTempC();
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
     debugInvokeStatusHandler(Entity_UART);
 

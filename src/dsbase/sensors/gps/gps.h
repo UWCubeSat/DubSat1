@@ -350,6 +350,9 @@ typedef struct
  */
 void gpsInit();
 
+
+void gpsInit_Receiver();
+
 /**
  * Switch the buck converter on or off
  */
