@@ -6,6 +6,8 @@
 #include "core/uart.h"
 #include "sensors/altimeter.h"
 
+#define SEND_DATA_UART_TIME_MS (45000)
+
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
 FILE_STATIC ModuleStatus mod_status;
@@ -16,6 +18,12 @@ FILE_STATIC hBus uartHandle;
 FILE_STATIC rxDataHolder rxGPSData;
 //TODO:Make a Struct to hold the data sent to coms
 
+FILE_STATIC TIMER_HANDLE send_uart_timer = 0;
+FILE_STATIC UartTXData txData;
+
+FILE_STATIC void init_uart();
+FILE_STATIC void start_uart_timer();
+FILE_STATIC void send_uart_data();
 /*
  * main.c
  */
@@ -26,16 +34,23 @@ int main(void)
 
     /*  Added Code  */
     initLEDs();
+    initializeTimer();
 
     initAltimeter();
 
+    init_uart();
+
     rxGPSData.length = 0;
 
-    uartHandle = uartInit(ApplicationUART, 0, Speed_9600);
-    uartRegisterRxCallback(uartHandle,&rxCallBack);
 
-    while (1) {
-        readAltimeterData();//returns pointer to struct
+    while (1)
+    {
+        if (checkTimer(send_uart_timer)) {
+            readAltimeterData();//returns pointer to struct
+            send_uart_data();
+            start_uart_timer();
+        }
+        getGPSDM(&(txData.gps));
 
     }
 
@@ -44,10 +59,10 @@ int main(void)
     return 0;
 }
 
-void rxCallBack(uint8_t data){
-    rxGPSData.data_set[rxGPSData.length] = data;
-    rxGPSData.length++;
-}
+//void rxCallBack(uint8_t data){
+//    rxGPSData.data_set[rxGPSData.length] = data;
+//    rxGPSData.length++;
+//}
 
 void initAltimeter(){
     baromInit(I2CBus2);
@@ -56,6 +71,9 @@ void initAltimeter(){
 void readAltimeterData()
 {
     altitudeData = readAltitudeData(12);
+    txData.altimeter.altitude = altitudeData->altitude;
+    txData.altimeter.pressure = altitudeData->pressure;
+    txData.altimeter.temperature = altitudeData->temperature;
     i2cLED();
 }
 
@@ -81,7 +99,20 @@ void initLEDs(){
 //UART receiving via GPS
 //I2C for the Sensors (Same line) (look at Eli's code)
 
+FILE_STATIC void init_uart()
+{
+    gpsInit_Receiver();
+}
 
+FILE_STATIC void send_uart_data()
+{
+    gpsSendCommand(&txData);
+}
+
+FILE_STATIC void start_uart_timer()
+{
+    send_uart_timer = timerPollInitializer(SEND_DATA_UART_TIME_MS);
+}
 
 
 

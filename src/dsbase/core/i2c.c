@@ -327,4 +327,3 @@ __interrupt void USCI_B2_ISR(void)
         default: break;
     }
 }
-

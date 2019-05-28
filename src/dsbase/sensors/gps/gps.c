@@ -43,6 +43,14 @@ void gpsInit()
     BUCK_GOOD_DIR &= ~BUCK_GOOD_BIT;    // input
 }
 
+void gpsInit_Receiver()
+{
+    // initialize the reader
+    uartHandle = uartInit(ApplicationUART, 0, Speed_9600);
+    BufferedReaderInit(uartHandle, buffer, GPS_RX_BUFFER_LENGTH);
+
+}
+
 void gpsSetBuck(uint8_t enable)
 {
     if (enable)

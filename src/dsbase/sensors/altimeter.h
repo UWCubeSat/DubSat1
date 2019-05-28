@@ -22,7 +22,7 @@
 #define H_3 32000
 #define H_4 47000
 
-typedef struct {
+typedef struct PACKED_STRUCT {
     float altitude;
     float pressure;
     float temperature;

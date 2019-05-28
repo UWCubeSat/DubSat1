@@ -9,7 +9,7 @@
 #endif
 
 // number of bytes allocated to array members of GPS messages
-#define FLEX_ARRAY_BUFFER_LENGTH 400
+#define FLEX_ARRAY_BUFFER_LENGTH 500
 
 // size of byte buffer for uart interrupt to fill while processing GPS messages
 #define GPS_RX_BUFFER_LENGTH 20
@@ -41,6 +41,7 @@
 #define MSGID_HWMONITOR 963
 #define MSGID_SATVIS2 1043
 #define MSGID_RANGE 43
+#define MSGID_BESTPOS 42
 
 #define EVTID_POSITION 19
 #define EVTID_UTC 18
@@ -143,6 +144,37 @@ typedef struct PACKED_STRUCT
     float z;
 } GPSVectorF;
 
+
+/** BESTPOS log
+ *
+ */
+typedef struct PACKED_STRUCT
+{
+    gps_enum solStatus;
+    gps_enum posType;
+    double lat;
+    double lon;
+    double hgt;
+    float undulation;
+    gps_enum datumID;
+    float latStdDev;
+    float lonStdDev;
+    float hgtStdDev;
+    int8_t stationId[4];
+    float diffAge;
+    float solAge;
+    uint8_t numSVs;
+    uint8_t numSolnSVs;
+    uint8_t numSolnL1SVs;
+    uint8_t numSolnMultiSVs;
+    int8_t reserved;
+    uint8_t extSolStat;
+    uint8_t sigMaskGalBeiDou;
+    uint8_t sigMaskGPSGLO;
+} GPSBestPos;
+
+
+
 /**
  * BESTXYZ log
  */
@@ -169,6 +201,21 @@ typedef struct PACKED_STRUCT
     uint8_t sigMaskGalBeiDou;
     uint8_t sigMaskGPSGLO;
 } GPSBestXYZ;
+
+
+/* TODO: GPSLonLat */
+typedef struct PACKED_STRUCT {
+    double lat;
+    double lon;
+} GPSLonLat;
+
+typedef struct PACKED_STRUCT
+{
+    int degLat;
+    double minLat;
+    int degLon;
+    double minLon;
+} GPSDegMin;
 
 typedef struct PACKED_STRUCT
 {
@@ -273,6 +320,7 @@ typedef struct PACKED_STRUCT
 
 typedef union
 {
+    GPSBestPos bestPos;
     GPSBestXYZ bestXYZ;
     GPSTime time;
     GPSRXStatus rxstatus;
@@ -301,6 +349,9 @@ typedef struct
  * Initializes MSP for IO with GPS. Should be called before powering on.
  */
 void gpsInit();
+
+
+void gpsInit_Receiver();
 
 /**
  * Switch the buck converter on or off
@@ -349,6 +400,9 @@ uint8_t gpsIsResetActive();
  */
 GPSPackage *gpsRead();
 
+
+void gpsSendData(uint8_t *data, uint16_t len);
+
 /**
  * Send an ASCII command directly to the GPS
  */
@@ -360,6 +414,7 @@ void gpsSendCommand(uint8_t *command);
 void gpsSendBinaryCommand(gps_message_id messageId,
                           uint8_t *message,
                           uint16_t messageLength);
+
 
 /**
  * Populate health struct
