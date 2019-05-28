@@ -6,7 +6,7 @@
 #include "core/uart.h"
 #include "sensors/altimeter.h"
 
-#define SEND_DATA_UART_TIME_MS (45000)
+#define SEND_DATA_UART_TIME_MS (2000)
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -41,13 +41,14 @@ int main(void)
     init_uart();
 
     rxGPSData.length = 0;
-
+    start_uart_timer();
 
     while (1)
     {
         if (checkTimer(send_uart_timer)) {
             readAltimeterData();//returns pointer to struct
             send_uart_data();
+            uartLED();
             start_uart_timer();
         }
         getGPSDM(&(txData.gps));
