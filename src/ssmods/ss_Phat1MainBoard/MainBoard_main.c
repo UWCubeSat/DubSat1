@@ -8,7 +8,7 @@
 #include "sensors/magnetometer.h"
 
 #define SEND_DATA_UART_TIME_MS (2000)
-#define PPT_RANGE_ALT (79200) //15 miles
+#define PPT_RANGE_ALT (90) //15 miles
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -26,10 +26,13 @@ FILE_STATIC MagnetometerData *magData;
 FILE_STATIC TIMER_HANDLE send_uart_timer = 0;
 FILE_STATIC UartTXData txData;
 
+FILE_STATIC uint8_t altitudeReached;
+
 FILE_STATIC void init_uart();
 FILE_STATIC void start_uart_timer();
 FILE_STATIC void send_uart_data();
 FILE_STATIC void init_GPIO();
+FILE_STATIC void check_PPT_alt();
 /*
  * main.c
  */
@@ -41,10 +44,11 @@ int main(void)
     /*  Added Code  */
     initLEDs();
     initializeTimer();
+    altitudeReached = 0;
+    initAltimeter();
+    init_GPIO();
 
-//    initAltimeter();
-
-    initMagnetometer();
+//    initMagnetometer();
 
     init_uart();
 
@@ -54,8 +58,8 @@ int main(void)
     while (1)
     {
         if (checkTimer(send_uart_timer)) {
-//            readAltimeterData();//returns pointer to struct
-            readMagnetometerData();
+            readAltimeterData();//returns pointer to struct
+//            readMagnetometerData();
             send_uart_data();
             uartLED();
             start_uart_timer();
@@ -93,12 +97,7 @@ void readAltimeterData()
     txData.altimeter.pressure = altitudeData->pressure;
     txData.altimeter.temperature = altitudeData->temperature;
     i2cLED();
-}
-
-void transmitUART(){
-    //TODO: use backend uart library to send packets to the buffer
-    //also check if there is a built in buffer or if you need to use the
-    //library. And see what they want in packets
+    check_PPT_alt();
 }
 
 void uartLED(){
@@ -132,8 +131,21 @@ FILE_STATIC void start_uart_timer()
 }
 
 FILE_STATIC void init_GPIO(){
-    //TODO: initiate a GPIO
+    //6.2
+    P6DIR |= (0x02);
 }
+
+FILE_STATIC void check_PPT_alt(){
+    if(altitudeReached == 1){
+        P1OUT |= 0x02;
+    }
+    else{
+        if((altitudeData->altitude) >= PPT_RANGE_ALT){
+            altitudeReached = 1;
+        }
+    }
+}
+
 
 
 

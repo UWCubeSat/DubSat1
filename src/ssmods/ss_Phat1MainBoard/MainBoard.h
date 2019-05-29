@@ -45,7 +45,6 @@ typedef struct _module_status {
 //method headers go here
 void initAltimeter();
 void readAltimeterData();
-void transmitUART();
 void i2cLED();
 void uartLED();
 void initLEDs();
