@@ -5,8 +5,10 @@
 #include "core/i2c.h"
 #include "core/uart.h"
 #include "sensors/altimeter.h"
+#include "sensors/magnetometer.h"
 
 #define SEND_DATA_UART_TIME_MS (2000)
+#define PPT_RANGE_ALT (79200) //15 miles
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -16,7 +18,10 @@ FILE_STATIC AltimeterData *altitudeData;
 FILE_STATIC hBus uartHandle;
 //Data stored here
 FILE_STATIC rxDataHolder rxGPSData;
-//TODO:Make a Struct to hold the data sent to coms
+
+//magnetometer handle and structure
+FILE_STATIC hMag magHandle;
+FILE_STATIC MagnetometerData *magData;
 
 FILE_STATIC TIMER_HANDLE send_uart_timer = 0;
 FILE_STATIC UartTXData txData;
@@ -24,6 +29,7 @@ FILE_STATIC UartTXData txData;
 FILE_STATIC void init_uart();
 FILE_STATIC void start_uart_timer();
 FILE_STATIC void send_uart_data();
+FILE_STATIC void init_GPIO();
 /*
  * main.c
  */
@@ -36,7 +42,9 @@ int main(void)
     initLEDs();
     initializeTimer();
 
-    initAltimeter();
+//    initAltimeter();
+
+    initMagnetometer();
 
     init_uart();
 
@@ -46,7 +54,8 @@ int main(void)
     while (1)
     {
         if (checkTimer(send_uart_timer)) {
-            readAltimeterData();//returns pointer to struct
+//            readAltimeterData();//returns pointer to struct
+            readMagnetometerData();
             send_uart_data();
             uartLED();
             start_uart_timer();
@@ -67,6 +76,14 @@ int main(void)
 
 void initAltimeter(){
     baromInit(I2CBus2);
+}
+
+void initMagnetometer(){
+    magHandle = magInit(I2CBus2);
+}
+
+void readMagnetometerData(){
+    magData = magReadXYZData(magHandle, ConvertToTeslas);
 }
 
 void readAltimeterData()
@@ -97,8 +114,7 @@ void initLEDs(){
     PM5CTL0 &= ~LOCKLPM5;
 }
 //UART transmission via backend for COMS
-//UART receiving via GPS
-//I2C for the Sensors (Same line) (look at Eli's code)
+
 
 FILE_STATIC void init_uart()
 {
@@ -113,6 +129,10 @@ FILE_STATIC void send_uart_data()
 FILE_STATIC void start_uart_timer()
 {
     send_uart_timer = timerPollInitializer(SEND_DATA_UART_TIME_MS);
+}
+
+FILE_STATIC void init_GPIO(){
+    //TODO: initiate a GPIO
 }
 
 

@@ -50,6 +50,7 @@ void i2cLED();
 void uartLED();
 void initLEDs();
 void rxCallBack(uint8_t data);
+void initMagnetometer();
 
 uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);
