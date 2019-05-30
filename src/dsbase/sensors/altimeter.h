@@ -16,6 +16,7 @@
 #define GAS_CONSTANT 8.3144598f
 #define G_0 9.80665f
 #define AIR_MOLAR_MASS 0.0289644f
+#define METERS_TO_FEET 3.28084
 
 #define H_1 11000
 #define H_2 20000
