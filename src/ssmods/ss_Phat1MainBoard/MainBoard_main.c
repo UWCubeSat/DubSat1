@@ -8,7 +8,8 @@
 #include "sensors/magnetometer.h"
 
 #define SEND_DATA_UART_TIME_MS (2000)
-#define PPT_RANGE_ALT (90) //15 miles
+#define PPT_HIGH_ALT (65000) //ft
+#define PPT_LOW_ALT (60000) //ft
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -33,6 +34,7 @@ FILE_STATIC void start_uart_timer();
 FILE_STATIC void send_uart_data();
 FILE_STATIC void init_GPIO();
 FILE_STATIC void check_PPT_alt();
+FILE_STATIC char[] convert_to_string();
 /*
  * main.c
  */
@@ -48,7 +50,7 @@ int main(void)
     initAltimeter();
     init_GPIO();
 
-//    initMagnetometer();
+    initMagnetometer();
 
     init_uart();
 
@@ -59,7 +61,7 @@ int main(void)
     {
         if (checkTimer(send_uart_timer)) {
             readAltimeterData();//returns pointer to struct
-//            readMagnetometerData();
+            readMagnetometerData();
             send_uart_data();
             uartLED();
             start_uart_timer();
@@ -92,7 +94,7 @@ void readMagnetometerData(){
 
 void readAltimeterData()
 {
-    altitudeData = readAltitudeData(12);
+    altitudeData = readAltitudeData(MS5611_CONV_OSR4096);
     txData.altimeter.altitude = altitudeData->altitude;
     txData.altimeter.pressure = altitudeData->pressure;
     txData.altimeter.temperature = altitudeData->temperature;
@@ -137,15 +139,19 @@ FILE_STATIC void init_GPIO(){
 
 FILE_STATIC void check_PPT_alt(){
     if(altitudeReached == 1){
-        P1OUT |= 0x02;
+        P6OUT |= 0x02;
     }
     else{
-        if((altitudeData->altitude) >= PPT_RANGE_ALT){
+        if((altitudeData->altitude) >= PPT_HIGH_ALT){
             altitudeReached = 1;
         }
     }
 }
 
+FILE_STATIC char[] convert_to_string(){
+
+    return null;
+}
 
 
 

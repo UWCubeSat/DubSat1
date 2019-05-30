@@ -30,7 +30,7 @@ typedef struct {
 
 void baromInit(bus_instance_i2c bus);
 void reset();
-uint16_t readPROMWord(int8_t reg);
+static uint16_t readPROMWord(int8_t reg);
 void send_conversion(uint8_t cmd);
 static float read_adc(uint8_t conv_cmd, uint8_t osr);
 static float calculateAltitude();
