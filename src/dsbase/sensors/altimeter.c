@@ -188,7 +188,7 @@ static float calculateAltitude()
     float exponent = (GAS_CONSTANT * lapseRate) / (G_0 * AIR_MOLAR_MASS);
     altitude = layerHeight + (standardTemp / lapseRate) * (pow((staticPressure / (altData.pressure * 100)), exponent) - 1);
     lastAltitude = altitude;
-    return altitude;
+    return altitude * METERS_TO_FEET;
 }
 
 AltimeterData *readAltitudeData(int8_t bits)
