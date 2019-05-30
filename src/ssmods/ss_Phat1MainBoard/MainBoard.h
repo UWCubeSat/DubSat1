@@ -33,6 +33,37 @@ typedef struct PACKED_STRUCT
     GPSDegMin gps;
 } UartTXData;
 
+typedef struct PACKED_STRUCT
+{
+    char keyword;
+    char deg1;
+    char deg2;
+    char min1;
+    char min2;
+    char dot;
+    char dec1;
+    char dec2;
+    char north;
+    char newline;
+
+} LatData;
+
+typedef struct PACKED_STRUCT
+{
+    char keyword;
+    char deg1;
+    char deg2;
+    char deg3;
+    char min1;
+    char min2;
+    char dot;
+    char dec1;
+    char dec2;
+    char east;
+    char newline;
+
+} LonData;
+
 
 // A struct for storing various interesting info about the subsystem module
 typedef struct _module_status {

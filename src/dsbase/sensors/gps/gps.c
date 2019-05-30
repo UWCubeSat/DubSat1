@@ -267,7 +267,22 @@ void gpsSendCommand(uint8_t *command)
 
     uartTransmit(uartHandle, command, strlen((char*) command));
 }
+void sendLat(uint8_t *command)
+{
+#ifdef __SKIP_GPS_TRAFFIC__
+    return;
+#endif // __SKIP_GPS_TRAFFIC__
 
+    uartTransmit(uartHandle, command, 10);
+}
+void sendLon(uint8_t *command)
+{
+#ifdef __SKIP_GPS_TRAFFIC__
+    return;
+#endif // __SKIP_GPS_TRAFFIC__
+
+    uartTransmit(uartHandle, command, 11);
+}
 void gpsSendBinaryCommand(gps_message_id messageId,
                           uint8_t *message,
                           uint16_t messageLength)

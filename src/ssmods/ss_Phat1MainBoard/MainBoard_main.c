@@ -7,7 +7,7 @@
 #include "sensors/altimeter.h"
 #include "sensors/magnetometer.h"
 
-#define SEND_DATA_UART_TIME_MS (2000)
+#define SEND_DATA_UART_TIME_MS (30000)
 #define PPT_HIGH_ALT (65000) //ft
 #define PPT_LOW_ALT (60000) //ft
 
@@ -27,6 +27,9 @@ FILE_STATIC MagnetometerData *magData;
 FILE_STATIC TIMER_HANDLE send_uart_timer = 0;
 FILE_STATIC UartTXData txData;
 
+FILE_STATIC LatData latData;//TESTS
+FILE_STATIC LonData lonData;//TESTS
+
 FILE_STATIC uint8_t altitudeReached;
 
 FILE_STATIC void init_uart();
@@ -34,7 +37,7 @@ FILE_STATIC void start_uart_timer();
 FILE_STATIC void send_uart_data();
 FILE_STATIC void init_GPIO();
 FILE_STATIC void check_PPT_alt();
-FILE_STATIC void convert_to_string();
+FILE_STATIC char *convert_to_string();
 /*
  * main.c
  */
@@ -124,7 +127,37 @@ FILE_STATIC void init_uart()
 
 FILE_STATIC void send_uart_data()
 {
-    gpsSendCommand(&txData);
+    latData.keyword='l';
+//    int deg = txData.gps.degLat;
+//    double min =  txData.gps.minLat;
+    int deg = 47;
+    double min = 39.27;
+    latData.deg1 = (deg/10) + '0';
+    latData.deg2 = deg%10 + '0';
+    latData.min1 = ((int)(min))/10 + '0';
+    latData.min2 = ((int)(min))%10 + '0';
+    latData.dot = '.';
+    latData.dec1 = ((int)((min-(int)(min))*100))/10 + '0';
+    latData.dec2 = ((int)((min-(int)(min))*100))%10 + '0';
+    latData.north = 'N';
+    latData.newline = '\n';
+    sendLat(&latData);
+    lonData.keyword='L';
+//    deg = txData.gps.degLon;
+    deg = 122;
+    min = 18.52968;
+//    min =  txData.gps.minLon;
+    lonData.deg1 = (deg/100) + '0';
+    lonData.deg2 = (deg/10)%10 + '0';
+    lonData.deg3 = deg%10 + '0';
+    lonData.min1 = ((int)(min))/10 + '0';
+    lonData.min2 = ((int)(min))%10 + '0';
+    lonData.dot = '.';
+    lonData.dec1 = ((int)((min-(int)(min))*100))/10 + '0';
+    lonData.dec2 = ((int)((min-(int)(min))*100))%10 + '0';
+    lonData.east = 'W';
+    lonData.newline = '\n';
+    sendLon(&lonData);
 }
 
 FILE_STATIC void start_uart_timer()
@@ -138,18 +171,27 @@ FILE_STATIC void init_GPIO(){
 }
 
 FILE_STATIC void check_PPT_alt(){
-    if(altitudeReached == 1){
-        P6OUT |= 0x02;
+    if((altitudeData->altitude) >= PPT_HIGH_ALT){
+        altitudeReached = 1;
     }
-    else{
-        if((altitudeData->altitude) >= PPT_HIGH_ALT){
-            altitudeReached = 1;
+    if(altitudeReached == 1){
+        if((altitudeData->altitude) <= PPT_LOW_ALT){
+            altitudeReached = 0;
+        }
+        else{
+            P6OUT |= 0x02;
         }
     }
 }
 
-FILE_STATIC void convert_to_string(){
-
+FILE_STATIC char *convert_to_string(){
+    static char data[12];//3 digits each alloted
+    //latitude "l<stuff>\n" how many digits?
+    //longitude "L<stuff>\n"
+    //altitude "a<stuff>\n"
+    data[0] = 'l';
+    //round data to nearest whole number
+    return data;
 }
 
 
