@@ -34,7 +34,7 @@ FILE_STATIC void start_uart_timer();
 FILE_STATIC void send_uart_data();
 FILE_STATIC void init_GPIO();
 FILE_STATIC void check_PPT_alt();
-FILE_STATIC char[] convert_to_string();
+FILE_STATIC void convert_to_string();
 /*
  * main.c
  */
@@ -148,9 +148,8 @@ FILE_STATIC void check_PPT_alt(){
     }
 }
 
-FILE_STATIC char[] convert_to_string(){
+FILE_STATIC void convert_to_string(){
 
-    return null;
 }
 
 
