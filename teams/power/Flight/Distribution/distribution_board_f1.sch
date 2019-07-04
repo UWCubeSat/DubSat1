@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="9.0.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -1981,14 +1981,14 @@ P2.6 Rx and P2.5 Tx</text>
 <pin name="BATT_VBATT$34" x="-12.7" y="10.16" length="middle" rot="R180"/>
 <pin name="GEN_VBATT$35" x="12.7" y="10.16" length="middle"/>
 <pin name="GEN_VBATT$36" x="63.5" y="10.16" length="middle" rot="R180"/>
-<pin name="P$37" x="-66.04" y="7.62" length="middle"/>
-<pin name="P$38" x="-12.7" y="7.62" length="middle" rot="R180"/>
-<pin name="P$39" x="12.7" y="7.62" length="middle"/>
-<pin name="P$40" x="63.5" y="7.62" length="middle" rot="R180"/>
-<pin name="P$41" x="-66.04" y="5.08" length="middle"/>
-<pin name="P$42" x="-12.7" y="5.08" length="middle" rot="R180"/>
-<pin name="P$43" x="12.7" y="5.08" length="middle"/>
-<pin name="P$44" x="63.5" y="5.08" length="middle" rot="R180"/>
+<pin name="MT_X_A@1" x="-66.04" y="7.62" length="middle"/>
+<pin name="MT_X_A@2" x="-12.7" y="7.62" length="middle" rot="R180"/>
+<pin name="MT_Y_A@1" x="12.7" y="7.62" length="middle"/>
+<pin name="MT_Y_A@2" x="63.5" y="7.62" length="middle" rot="R180"/>
+<pin name="MT_X_B@1" x="-66.04" y="5.08" length="middle"/>
+<pin name="MT_X_B@2" x="-12.7" y="5.08" length="middle" rot="R180"/>
+<pin name="MT_Y_B@1" x="12.7" y="5.08" length="middle"/>
+<pin name="MT_Y_B@2" x="63.5" y="5.08" length="middle" rot="R180"/>
 <pin name="SYNC1" x="-66.04" y="2.54" length="middle"/>
 <pin name="P$46" x="-12.7" y="2.54" length="middle" rot="R180"/>
 <pin name="P$47" x="12.7" y="2.54" length="middle"/>
@@ -2057,7 +2057,7 @@ P2.6 Rx and P2.5 Tx</text>
 <wire x1="17.78" y1="33.02" x2="58.42" y2="33.02" width="0.254" layer="94"/>
 <wire x1="58.42" y1="33.02" x2="58.42" y2="-35.56" width="0.254" layer="94"/>
 <wire x1="58.42" y1="-35.56" x2="17.78" y2="-35.56" width="0.254" layer="94"/>
-<text x="-48.768" y="-38.862" size="1.778" layer="94">version: V2.3</text>
+<text x="-48.768" y="-38.862" size="1.778" layer="94">version: V2.4</text>
 <wire x1="-59.69" y1="-6.35" x2="57.15" y2="-6.35" width="0" layer="98"/>
 <wire x1="57.15" y1="-6.35" x2="57.15" y2="-29.21" width="0" layer="98"/>
 <wire x1="57.15" y1="-29.21" x2="7.62" y2="-29.21" width="0" layer="98"/>
@@ -2375,14 +2375,14 @@ P2.6 Rx and P2.5 Tx</text>
 <connect gate="G$1" pin="ESTIMAT_VBAT@78" pad="P$78"/>
 <connect gate="G$1" pin="GEN_VBATT$35" pad="P$35"/>
 <connect gate="G$1" pin="GEN_VBATT$36" pad="P$36"/>
-<connect gate="G$1" pin="P$37" pad="P$37"/>
-<connect gate="G$1" pin="P$38" pad="P$38"/>
-<connect gate="G$1" pin="P$39" pad="P$39"/>
-<connect gate="G$1" pin="P$40" pad="P$40"/>
-<connect gate="G$1" pin="P$41" pad="P$41"/>
-<connect gate="G$1" pin="P$42" pad="P$42"/>
-<connect gate="G$1" pin="P$43" pad="P$43"/>
-<connect gate="G$1" pin="P$44" pad="P$44"/>
+<connect gate="G$1" pin="MT_X_A@1" pad="P$37"/>
+<connect gate="G$1" pin="MT_X_A@2" pad="P$38"/>
+<connect gate="G$1" pin="MT_X_B@1" pad="P$41"/>
+<connect gate="G$1" pin="MT_X_B@2" pad="P$42"/>
+<connect gate="G$1" pin="MT_Y_A@1" pad="P$39"/>
+<connect gate="G$1" pin="MT_Y_A@2" pad="P$40"/>
+<connect gate="G$1" pin="MT_Y_B@1" pad="P$43"/>
+<connect gate="G$1" pin="MT_Y_B@2" pad="P$44"/>
 <connect gate="G$1" pin="P$46" pad="P$46"/>
 <connect gate="G$1" pin="P$47" pad="P$47"/>
 <connect gate="G$1" pin="P$48" pad="P$48"/>

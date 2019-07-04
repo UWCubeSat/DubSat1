@@ -1,0 +1,8 @@
+# This is a segment of the main config/tools/cmd_tlm_server/cmd_tlm_server.txt
+# that will be used when that files specifies AUTO_INTERFACE_TARGETS or INTERFACE_TARGET SDM3065X.
+
+# Modify this according to your actual target connection
+# Please see the COSMOS Interface Configuration documentation
+
+INTERFACE SDM3065X_INT tcpip_client_interface.rb 172.28.23.175 5024 5024 10.0 nil TEMPLATE 0x0A 0x0A
+  TARGET SDM3065X
