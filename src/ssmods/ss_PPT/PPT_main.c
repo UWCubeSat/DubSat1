@@ -4,20 +4,7 @@
 #include "bsp/bsp.h"
 #include <core/timers.h>
 #include "interfaces/canwrap.h"
-
-/*
- * Output Pins:
- * 4.3 - Main
- * 4.2 - Igniter
- * 4.1 - Firing Pulse
- *
- * Input Pins:
- * 2.5 - Igniter Done
- * 2.6 - Main Done
- */
-
-
-//NOTE: this build will fire on power-on w/o timeout
+#include "core/agglib.h"
 
 #define OPCODE_COMMON_CMD 0
 #define OPCODE_START_FIRE 2
@@ -25,8 +12,26 @@
 #define OPCODE_GET_TIMING 4
 #define OPCODE_SET_TIMING 5
 
-#define DEFAULT_FIRE_RATE 1
-#define DEFAULT_TIMEOUT 100 //TODO: change these values
+#define LED_DIR P1DIR
+#define LED_OUT P1OUT
+#define LED_BIT_IDLE BIT0
+#define LED_BIT_FIRING BIT1
+#define CHARGE_DIR P4DIR
+#define CHARGE_OUT P4OUT
+#define MAIN_CHARGE_BIT BIT3
+#define IGN_CHARGE_BIT BIT1
+#define SMT_IN P4IN
+#define SMT_IN_BIT BIT0
+#define MAIN_DONE_BIT BIT6
+
+#define BATTERY_CHARGE_SUFFICIENT_STATE 31000 //TODO: verify this value
+
+//Things that determine whether the PPT can fire:
+uint8_t aboveGrndStation = 0;
+uint8_t battChargeOK = 0;
+
+//FLAGS:
+uint8_t sendRcFlag = 0;
 
 // Main status (a structure) and state and mode variables
 // Make sure state and mode variables are declared as volatile
@@ -35,6 +40,7 @@ FILE_STATIC volatile ModuleStatus mod_status;
 FILE_STATIC uint8_t firing;
 FILE_STATIC uint8_t currTimeout;
 FILE_STATIC uint8_t withFiringPulse;
+FILE_STATIC uint8_t smtOverride;
 
 // These are sample "trigger" flags, used to indicate to the main loop
 // that a transition should occur
@@ -49,45 +55,49 @@ FILE_STATIC flag_t triggerState3;
 
 FILE_STATIC uint16_t mainChargeTime = 36045;
 FILE_STATIC uint16_t mainIgniterDelay = 32;
-FILE_STATIC uint16_t igniterChargeTime = 1000;
+FILE_STATIC uint16_t igniterChargeTime = 655;
+FILE_STATIC uint16_t smtWaitTime = 262; //~8ms
 FILE_STATIC uint16_t cooldownTime = 28461;
 
+//MEASURED Values:
+#pragma PERSISTENT(lastMainChargeTime)
+uint16_t lastMainChargeTime = 0;
+
+//firing flag (used to determine state after reset)
+#pragma PERSISTENT(fireAttempt)
+volatile uint8_t fireAttempt = 0;
+
 FILE_STATIC ppt_main_done mainDone;
-FILE_STATIC ppt_igniter_done igniterDone;
-FILE_STATIC ppt_operating pptOp;
 FILE_STATIC meta_segment mseg;
 FILE_STATIC health_segment hseg;
 FILE_STATIC timing currTiming;
+FILE_STATIC fireInfo fireSeg; //ID: 7
 
-const uint32_t ledFreq = 200000;
+aggVec_f mspTempAg;
+#pragma PERSISTENT(fireCount)
+uint16_t fireCount = 0;
+#pragma PERSISTENT(faultCount)
+uint16_t faultCount = 0;
+#pragma PERSISTENT(lastFireResult)
+LastFireResult lastFireResult = 3;//Result_FireSuccessful;
 
-FILE_STATIC void sendIsOp() //TODO: remove before flight, or don't (maybe replace w/ meta packet)
+void initData()
 {
-    bcbinPopulateHeader(&pptOp.header, 2, sizeof(pptOp)); // 2nd param is opcode
-    bcbinPopulateHeader(&mainDone.header, 3, sizeof(mainDone));
-    bcbinPopulateHeader(&igniterDone.header, 4, sizeof(igniterDone));
-
-    bcbinSendPacket((uint8_t *) &pptOp, sizeof(pptOp));
+    aggVec_init_f(&mspTempAg);
 }
 
 FILE_STATIC void sendMainDone()
 {
-    if(mod_status.ss_state == State_Main_Charging)
-        mainDone.timeDone = TB0R - TB0CCR1;
-    else
-        mainDone.timeDone = 0;
-
-    bcbinSendPacket((uint8_t *) &mainDone, sizeof(mainDone));
-}
-FILE_STATIC void sendIgniterDone()
-{
-    if(mod_status.ss_state == State_Igniter_Charging)
-        mainDone.timeDone = TB0R - TB0CCR1;
-    else
-        mainDone.timeDone = 0;
-
-    igniterDone.timeDone = TB0R;
-    bcbinSendPacket((uint8_t *) &igniterDone, sizeof(igniterDone));
+	if(mod_status.ss_state == State_Main_Charging)
+	{
+		mainDone.timeDone = mainChargeTime + TB0R - TB0CCR1;
+		lastMainChargeTime = mainDone.timeDone;
+		bcbinSendPacket((uint8_t *)&mainDone, sizeof(mainDone));
+	}
+	else
+	{
+		mainDone.timeDone = 0;
+	}
 }
 
 FILE_STATIC void sendMeta()
@@ -102,6 +112,8 @@ FILE_STATIC void sendHealth()
     // For now, everythingis always marginal ...
     hseg.oms = OMS_Unknown;
     hseg.reset_count = bspGetResetCount();
+    hseg.inttemp = asensorReadIntTempC();
+    aggVec_push_f(&mspTempAg, hseg.inttemp);
     bcbinSendPacket((uint8_t *) &hseg, sizeof(hseg));
 }
 
@@ -115,13 +127,97 @@ FILE_STATIC void sendTiming()
 }
 
 ///////////////////////////////////////////////////////////////
-FILE_STATIC void sendSync1()
-{
-    CANPacket syncPacket = {0};
-     sync_1 syncPacket_info = {0};
 
-    encodesync_1(&syncPacket_info, &syncPacket);
-    canSendPacket(&syncPacket);
+void initPins()
+{
+    LED_DIR |= (LED_BIT_FIRING | LED_BIT_IDLE);
+    CHARGE_DIR |= (IGN_CHARGE_BIT| MAIN_CHARGE_BIT);
+
+    //main done interrupt
+    P2IFG = 0; //clear the interrupt
+    P2REN |= MAIN_DONE_BIT; //enable pullup/down resistor
+    P2IES |= MAIN_DONE_BIT; //falling edge capture mode
+    P2IE |= MAIN_DONE_BIT; //enable interrupt
+}
+
+void checkFireState()
+{
+    if(fireAttempt)
+    {
+        if(SMT_IN & SMT_IN_BIT)
+        {
+            lastFireResult = Result_MainFailedDischarge;
+            faultCount++;
+        }
+        else
+        {
+            lastFireResult = Result_FireSuccessful;
+            fireCount++;
+        }
+        fireAttempt = 0;
+    }
+}
+
+void sendRC()
+{
+    while(sendRcFlag && canTxCheck() != CAN_TX_BUSY)
+    {
+        CANPacket pkt = {0};
+        if(sendRcFlag == 4)
+        {
+            rc_ppt_h1 rc = {0};
+            rc.rc_ppt_h1_reset_count = bspGetResetCount();
+            rc.rc_ppt_h1_sysrstiv = bspGetResetReason();
+            rc.rc_ppt_h1_temp_avg = compressMSPTemp(aggVec_avg_f(&mspTempAg));
+            rc.rc_ppt_h1_temp_max = compressMSPTemp(aggVec_max_f(&mspTempAg));
+            rc.rc_ppt_h1_temp_min = compressMSPTemp(aggVec_min_f(&mspTempAg));
+            encoderc_ppt_h1(&rc, &pkt);
+            aggVec_as_reset((aggVec *)&mspTempAg);
+        }
+        else if(sendRcFlag == 3)
+        {
+            rc_ppt_h2 rc = {0};
+            rc.rc_ppt_h2_canrxerror = canRxErrorCheck();
+            rc.rc_ppt_h2_last_fire_result = lastFireResult;
+            encoderc_ppt_h2(&rc, &pkt);
+        }
+        if(sendRcFlag == 2)
+        {
+            rc_ppt_1 rc = {0};
+            rc.rc_ppt_1_fault_count = faultCount;
+            rc.rc_ppt_1_fire_count = fireCount;
+            rc.rc_ppt_1_last_main_charge = lastMainChargeTime;
+            rc.rc_ppt_1_smt_wait_time = smtWaitTime;
+            encoderc_ppt_1(&rc, &pkt);
+        }
+        else if(sendRcFlag == 1)
+        {
+            rc_ppt_2 rc = {0};
+            rc.rc_ppt_2_cooldown_time = cooldownTime;
+            rc.rc_ppt_2_ign_charge_time = igniterChargeTime;
+            rc.rc_ppt_2_main_charge_time = mainChargeTime;
+            rc.rc_ppt_2_main_ign_delay = mainIgniterDelay;
+            encoderc_ppt_2(&rc, &pkt);
+        }
+        canSendPacket(&pkt);
+        sendRcFlag--;
+    }
+}
+
+void sendFire()
+{
+    fireSeg.faultCount = faultCount;
+    fireSeg.fireCount = fireCount;
+    fireSeg.lastFireResult = (uint8_t)lastFireResult;
+    bcbinSendPacket((uint8_t *)&fireSeg, sizeof(fireSeg));
+}
+
+void blinkLED()
+{
+    if(firing)
+        LED_OUT ^= LED_BIT_FIRING;
+    else
+        LED_OUT ^= LED_BIT_IDLE;
 }
 
 void startFiring(uint8_t timeout);
@@ -139,40 +235,26 @@ int main(void)
 
     /* ----- INITIALIZATION -----*/
     // ALWAYS START main() with bspInit(<systemname>) as the FIRST line of code, as
-    // it sets up critical hardware settings for board specified by the __BSP_Board... defintion used.
+    // it sets up critical hardware settings for board specified by the __BSP_Board... definition used.
     // If module not yet available in enum, add to SubsystemModule enumeration AND
     // SubsystemModulePaths (a string name) in systeminfo.c/.h
     //bspInit(__SUBSYSTEM_MODULE__);  // <<DO NOT DELETE or MOVE>>
     bspInit(Module_PPT);
-
+    asensorInit(Ref_2p5V);
+    canWrapInitWithFilter();
     // This function sets up critical SOFTWARE, including "rehydrating" the controller as close to the
     // previous running state as possible (e.g. 1st reboot vs. power-up mid-mission).
     // Also hooks up sync pulse handlers.  Note that actual pulse interrupt handlers will update the
     // firing state structures before calling the provided handler function pointers.
-    mod_status.startup_type = coreStartup(handleSyncPulse1, handleSyncPulse2);  // <<DO NOT DELETE or MOVE>>
     mod_status.ss_mode = Mode_Undetermined;
     mod_status.ss_state = State_Uncommissioned;
 
     canWrapInitWithFilter();
     setCANPacketRxCallback(can_packet_rx_callback);
 
-    P1DIR |= (BIT0 | BIT1) & ~BIT5; //1.5 is the firing pin
-    P2DIR &= ~(BIT5 | BIT6);
-    P4DIR |= (BIT1 | BIT2 | BIT3);
-
-    P1OUT = 0;
-    P2OUT = 0;
-    P4OUT = 0;
-
-    P2IFG = 0; //clear the interrupt
-    P2REN |= (BIT5 | BIT6);
-    P2IES |= BIT1; //this represents capture mode (rising/falling/both)
-    P2IE |= (BIT5 | BIT6);
-
-    P1IFG = 0;
-    P1REN |= BIT5;
-    P1IES |= (BIT1 | BIT2);
-    P1IE |= BIT5;
+    initPins();
+    initData();
+    checkFireState();
 
     TB0CTL = TBSSEL__ACLK | MC__CONTINOUS | TBCLR | TBIE;
 
@@ -180,8 +262,8 @@ int main(void)
     // Insert debug-build-only things here, like status/info/command handlers for the debug
     // console, etc.  If an Entity_<module> enum value doesn't exist yet, please add in
     // debugtools.h.  Also, be sure to change the "path char"
-    debugRegisterEntity(Entity_SUBSYSTEM, handleDebugInfoCallback,
-                                          handleDebugStatusCallback,
+    debugRegisterEntity(Entity_SUBSYSTEM, NULL,
+                                          NULL,
                                           handleDebugActionCallback);
 
     //hBus handle = uartInit(BackchannelUART, 1, DEBUG_UART_SPEED);
@@ -201,49 +283,44 @@ int main(void)
 
     debugTraceF(1, "Commencing subsystem module execution ...\r\n");
 
-    uint32_t ledCount = ledFreq;
+    uint32_t counter = 0;
 
-    sendIsOp();
     bcbinPopulateHeader(&currTiming.header, 5, sizeof(currTiming));
     bcbinPopulateHeader(&(hseg.header), TLM_ID_SHARED_HEALTH, sizeof(hseg));
+    bcbinPopulateHeader(&mainDone.header, 3, sizeof(mainDone));
+    bcbinPopulateHeader(&fireSeg.header, 6, sizeof(fireSeg));
 
     withFiringPulse = 1;
+    smtOverride = 0;
 
     while (1)
     {
-        if(ledCount <= 0)
+        __delay_cycles(SEC * 0.1);
+        if (!(counter % 8))
         {
-            //this is the blinky light routine
-            if(firing)
-                P1OUT ^= BIT1;
-            else
-                P1OUT ^= BIT0;
-            ledCount = ledFreq;
+            blinkLED();
+        }
+        if (!(counter % 16))
+        {
             sendMeta();
             sendHealth();
+            sendFire();
         }
-        else
-        {
-            ledCount--;
-        }
+        sendRC();
+        counter++;
     }
-
-    // NO CODE SHOULD BE PLACED AFTER EXIT OF while(1) LOOP!
-
-	return 0;
 }
 
 void startFiring(uint8_t timeout)
 {
     if(!firing && timeout)
     {
-        P1OUT &= ~BIT0;
-
+        LED_OUT &= ~LED_BIT_IDLE;
         currTimeout = timeout - 1;
-        sendSync1();
         mod_status.ss_state = State_Cooldown;
         TB0CCR1 = TB0R + cooldownTime;
         TB0CCTL1 = CCIE;
+        firing = 1;
     }
 }
 
@@ -252,94 +329,18 @@ void stopFiring()
     if(firing)
     {
         TB0CCTL1 &= ~CCIE;
-        P1OUT &= ~BIT1;
+        LED_OUT &= ~LED_BIT_FIRING;
         mod_status.ss_state = State_Uncommissioned;
         firing = 0;
-        //P2IE &= ~(BIT5 | BIT6);
-        P4OUT &= ~(BIT1 | BIT2 | BIT3);
+        CHARGE_OUT &= ~(MAIN_CHARGE_BIT | IGN_CHARGE_BIT);
         withFiringPulse = 1;
+        smtOverride = 0;
     }
-}
-
-/* ----- SYNC PULSE INTERRUPT HANDLERS ----- */
-// Both of these handlers are INTERRUPT HANDLERS, and run as such, which means that all OTHER
-// interrupts are blocked while they are running.  This can cause all sorts of issues, so
-// MAKE SURE TO MINIMIZE THE CODE RUNNING IN THESE FUNCTIONS.
-// Sync pulse 1:  typically raised every 2 seconds while PPT firing, to help each subsystem module
-// do the "correct thing" around the firing sequence.  This timing might
-// not be exact, and may even change - don't rely on it being 2 seconds every time, and it may
-// be shut off entirely during early or late stages of mission, so also do NOT use as a "heartbeat"
-// for other, unrelated functionality.
-//
-// FOR PPT:  Note that sync pulse 1 is SOURCED from the PPT, but for code cleanliness it might still make
-// sense to handle certain other things here.
-void handleSyncPulse1()
-{
-    __no_operation();
-}
-
-// Sync pulse 2:  typically every 1-2 minutes, but again, don't count on any length.
-// General semanatics are that this pulse means all subsystems should share accumulated
-// status data on the CAN bus.  It is also the cue for the PPT to ascertain whether it
-// will use the following period as an active or suspended firing period.  All subsystems
-// will assume active until they are notified that firing has been suspended, but
-// this determination will be reset (back to active) at each sync pulse 2.
-void handleSyncPulse2()
-{
-    __no_operation();
-}
-
-// Optional callback for the debug system.  "Info" is considered static information
-// that doesn't change about the subsystem module code/executable, so this is most
-// often left off.
-uint8_t handleDebugInfoCallback(DebugMode mode)
-{
-    if (mode == Mode_ASCIIInteractive)
-    {
-        // debugPrintF information in a user-friendly, formatted way
-    }
-    else if (mode == Mode_ASCIIHeadless)
-    {
-        // debugPrintF information without field names, as CSV
-    }
-    else if (mode == Mode_BinaryStreaming)
-    {
-        // debugPrintF into a ground segment-friendly "packet" mode
-    }
-    return 1;
-}
-
-// Optional callback for the debug system.  "Status" is considered the
-// current state of dynamic information about the subsystem module, and is the most
-// common to be surfaced, particularly as "streaming telemetry".
-uint8_t handleDebugStatusCallback(DebugMode mode)
-{
-    if (mode == Mode_ASCIIInteractive)
-    {
-        // debugPrintF status in a user-friendly, formatted way
-    }
-    else if (mode == Mode_ASCIIHeadless)
-    {
-        // debugPrintF status without field names, as CSV
-    }
-    else if (mode == Mode_BinaryStreaming)
-    {
-        // debugPrintF status a ground segment-friendly "packet" format
-    }
-    return 1;
 }
 
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr) //this should be the one that gets called when a cmd comes in
 {
-    if (mode == Mode_ASCIIInteractive)
-    {
-        // handle actions in a user-friendly way
-    }
-    else if (mode == Mode_ASCIIHeadless)
-    {
-        // handle actions in a low-output way
-    }
-    else if (mode == Mode_BinaryStreaming)
+    if (mode == Mode_BinaryStreaming)
     {
         //this is the one
         switch(cmdstr[0])
@@ -381,21 +382,78 @@ uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr) //this shoul
 
 void can_packet_rx_callback(CANPacket *packet)
 {
-    if(packet->id == CAN_ID_CMD_PPT_FIRE)
+    gcmd_ppt_halt pktHalt = {0};
+    cmd_ppt_time_upd pktTime = {0};
+    cmd_ppt_single_fire pktFireSingle = {0};
+    rc_adcs_estim_8 pktEstim = {0};
+    rc_eps_batt_7 pktBatt = {0};
+    gcmd_ppt_multiple_fire pktMultFire = {0};
+    switch(packet->id)
     {
-        cmd_ppt_fire pkt = {0};
-        decodecmd_ppt_fire(packet, &pkt);
-
-        withFiringPulse = (pkt.cmd_ppt_fire_fire) ? 1 : 0;
-        startFiring(1);
+        case CAN_ID_CMD_ROLLCALL:
+            sendRcFlag = 5;
+            break;
+        case CAN_ID_GCMD_PPT_HALT:
+            //stop firing, but with a flag
+            decodegcmd_ppt_halt(packet, &pktHalt);
+            if(pktHalt.gcmd_ppt_halt_confirm)
+                stopFiring();
+            break;
+        case CAN_ID_CMD_PPT_SINGLE_FIRE:
+            //fire once, with flags for pulse and override
+            decodecmd_ppt_single_fire(packet, &pktFireSingle);
+            if (pktFireSingle.cmd_ppt_single_fire_override || readyToFire())
+            {
+                withFiringPulse = pktFireSingle.cmd_ppt_single_fire_with_pulse;
+                smtOverride = pktFireSingle.cmd_ppt_single_fire_override_smt;
+                startFiring(1);
+            }
+            break;
+        case CAN_ID_CMD_PPT_TIME_UPD:
+            //updates all times
+            decodecmd_ppt_time_upd(packet, &pktTime);
+            if(pktTime.cmd_ppt_time_upd_charge)
+                mainChargeTime = pktTime.cmd_ppt_time_upd_charge;
+            if(pktTime.cmd_ppt_time_upd_ign_delay)
+                mainIgniterDelay = pktTime.cmd_ppt_time_upd_ign_delay;
+            if(pktTime.cmd_ppt_time_upd_ign_charge)
+                igniterChargeTime = pktTime.cmd_ppt_time_upd_ign_charge;
+            if(pktTime.cmd_ppt_time_upd_cooldown)
+                cooldownTime = pktTime.cmd_ppt_time_upd_cooldown;
+            break;
+        case CAN_ID_RC_ADCS_ESTIM_8:
+            decoderc_adcs_estim_8(packet, &pktEstim);
+            aboveGrndStation = pktEstim.rc_adcs_estim_8_sc_above_gs;
+            break;
+        case CAN_ID_RC_EPS_BATT_7:
+            decoderc_eps_batt_7(packet, &pktBatt);
+            //determine whether the charge is in an acceptable range
+            battChargeOK = pktBatt.rc_eps_batt_7_acc_charge_avg > BATTERY_CHARGE_SUFFICIENT_STATE;
+            break;
+        case CAN_ID_GCMD_RESET_MINMAX:
+        {
+            gcmd_reset_minmax pktRst;
+            decodegcmd_reset_minmax(packet, &pktRst);
+            if(pktRst.gcmd_reset_minmax_ppt)
+            {
+                aggVec_reset((aggVec *)&mspTempAg);
+            }
+        }
+            break;
+        case CAN_ID_GCMD_PPT_MULTIPLE_FIRE:
+            decodegcmd_ppt_multiple_fire(packet, &pktMultFire);
+            if(pktMultFire.gcmd_ppt_multiple_fire_override || readyToFire())
+                startFiring(pktMultFire.gcmd_ppt_multiple_fire_count);
+            break;
+        case CAN_ID_GCMD_DIST_RESET_MISSION: //clear persistent flags here
+            bspClearResetCount();
+            break;
     }
 }
 
-BOOL readyToFire()
+BOOL readyToFire() //okay to fire
 {
-    // TODO:  Walk through all of the data items that are necessary to determine if it's
-    // time to go into a firing sequence
-    return 0;
+    return aboveGrndStation & battChargeOK;
 }
 
 #pragma vector=PORT2_VECTOR
@@ -403,53 +461,19 @@ __interrupt void Port_2(void)
 {
     switch(P2IV)
     {
-        case P2IV__P2IFG5:
-            sendIgniterDone();
-            break;
         case P2IV__P2IFG6:
-            sendMainDone();
-            break;
+        	sendMainDone();
+        	break;
         default:
             break;
     }
     P2IFG = 0; //clear the interrupt flag
 }
 
-#pragma vector=PORT1_VECTOR
-__interrupt void Port_1(void)
-{
-    switch(P1IV)
-    {
-        case P1IV__P1IFG5:
-            if(!firing && P1IN & BIT5) //1.5 is high
-                startFiring(1);
-
-            else if(firing && !(P1IN & BIT5)) //1.5 is low
-                stopFiring();
-
-            break;
-        default:
-            P1OUT ^= BIT0;
-            break;
-    }
-}
-
 void fire()
 {
-    P4OUT &= ~BIT2;
-    mod_status.ss_state = State_Firing;
-    //fire high
-    P4OUT |= BIT1;
-    __delay_cycles(795); //was 7964 for 1 ms (target is 100 us)
-    //fire low
-    P4OUT &= ~BIT1;
-
-    //repeat if not counter
-}
-
-void toggleMain()
-{
-    P4OUT ^= BIT3;
+    fireAttempt = 1;
+    CHARGE_OUT |= IGN_CHARGE_BIT;
 }
 
 #pragma vector = TIMER0_B1_VECTOR
@@ -462,33 +486,56 @@ __interrupt void Timer0_B1_ISR (void)
             switch(mod_status.ss_state)
             {
                 case State_Main_Charging:
-                    P4OUT &= ~BIT3;
-                    //mainLow();
+                    CHARGE_OUT &= ~MAIN_CHARGE_BIT;
                     TB0CCR1 += mainIgniterDelay;
                     mod_status.ss_state = State_Main_Igniter_Cooldown;
                     break;
                 case State_Main_Igniter_Cooldown:
-                    P4OUT |= BIT2;
-                    //igniterHigh();
                     mod_status.ss_state = State_Igniter_Charging;
                     TB0CCR1 += igniterChargeTime;
+                    if(smtOverride || SMT_IN & SMT_IN_BIT) //smt trigger high
+                	{
+                		if(withFiringPulse)
+                			fire();
+                		else
+                            stopFiring();
+                	}
+                	else //fault: main didn't charge
+                	{
+                		faultCount++;
+                		lastFireResult = Result_MainFailedCharge;
+                		stopFiring();
+                	}
                     break;
                 case State_Igniter_Charging:
-                    if(withFiringPulse)
-                        fire();
-                    if(currTimeout)
+                    CHARGE_OUT &= ~IGN_CHARGE_BIT; //set igniter low
+                    fireAttempt = 0;
+                    mod_status.ss_state = State_SMT_Wait;
+                    TB0CCR1 += smtWaitTime;
+                    break;
+                case State_SMT_Wait:
+                    if(smtOverride == 0 && SMT_IN & SMT_IN_BIT) //fault: main didn't discharge
                     {
-                        currTimeout--;
-                        if(currTimeout)
-                            sendSync1();
-                        mod_status.ss_state = State_Cooldown;
-                        TB0CCR1 += cooldownTime;
+                        stopFiring();
+                        lastFireResult = Result_MainFailedDischarge;
+                        faultCount++;
                     }
                     else
-                        stopFiring();
+                    {
+                        lastFireResult = Result_FireSuccessful;
+                        fireCount++;
+                        if(currTimeout)
+                        {
+                            currTimeout--;
+                            mod_status.ss_state = State_Cooldown;
+                            TB0CCR1 += cooldownTime;
+                        }
+                        else
+                            stopFiring();
+                    }
                     break;
                 case State_Cooldown:
-                    P4OUT |= BIT3;
+                    CHARGE_OUT |= MAIN_CHARGE_BIT;
                     mod_status.ss_state = State_Main_Charging;
                     TB0CCR1 += mainChargeTime;
                 default:

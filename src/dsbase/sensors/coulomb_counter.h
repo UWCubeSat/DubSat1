@@ -4,15 +4,16 @@
  *  Created on: Dec 24, 2017
  *      Author: Sean Poulter
  */
-#include <msp430.h>
-
-#include "bsp/bsp.h"
-#include "core/utils.h"
-#include <stdint.h>
-#include "core/i2c.h"
 
 #ifndef COULOMB_COUNTER_H_
 #define COULOMB_COUNTER_H_
+
+#include <msp430.h>
+
+//#include "bsp/bsp.h"
+//#include "core/utils.h"
+#include <stdint.h>
+#include "core/i2c.h"
 
 //ADDRESS
 #define LTC2943_ADDRESS 0X64
@@ -48,6 +49,8 @@ typedef struct _coulombCounterData {
 
     uint8_t controlReg;
     uint8_t statusReg;
+
+    BOOL fullCharge;
 
 } CoulombCounterData;
 
@@ -99,5 +102,14 @@ void readCoulombCounterControl();
 void readCoulombCounterStatus();
 float rawBusVoltageToFloat(int16_t raw);
 float rawCurrentToFloat(int16_t raw);
+
+uint16_t CCReadRawVoltage();
+uint16_t CCReadRawCurrent();
+uint16_t CCReadRawAccumulatedCharge();
+uint8_t CCGetControlReg();
+uint8_t CCGetStatusReg();
+
+void CCSetFullCurrent(float current);
+void CCSetFullVoltage(float voltage);
 
 #endif /* POWER_LTC2943_COULOMBCOUNTER_H_ */

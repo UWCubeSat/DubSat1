@@ -36,6 +36,8 @@ void bspExampleInit(SubsystemModule mod)
 #pragma PERSISTENT(local_reset_count)
 uint32_t local_reset_count = 0;
 
+uint16_t reset_reason = 0;
+
 FILE_STATIC hwsw_match_state hwsw_mstate;
 hwsw_match_state bspGetHWSWMatchState()
 {
@@ -106,16 +108,30 @@ uint32_t bspGetResetCount()
     return local_reset_count;
 }
 
+uint16_t bspGetResetReason()
+{
+    return reset_reason;
+}
+
+void bspClearResetCount()
+{
+    local_reset_count = 0;
+}
+
 FILE_STATIC meta_segment mseg;   // Used if something fails before init complete
 void bspInit(SubsystemModule mod)
 {
     ssModule = mod;
 
+    if(mod != Module_EPS_Dist)
     // Stop watchdog timer
-    WDTCTL = WDTPW | WDTHOLD;
+        WDTCTL = WDTPW | WDTHOLD;
 
     // Keep track of local reset count here for now (should move into ... timers?)
     local_reset_count++;
+
+    //get the reason for the reset
+    reset_reason = SYSRSTIV;
 
     // NOW, CHECK HARDWARE KEY - if it doesn't match, this never returns ...
     chipID = *((uint64_t *)0x1A0A);
@@ -146,7 +162,8 @@ void bspInit(SubsystemModule mod)
       SFRIFG1 &= ~OFIFG;
     } while (SFRIFG1 & OFIFG);              // Test oscillator fault flag
 
-    METInit((mod == Module_EPS_Dist) ? 1 : 0);
+    if(mod != Module_EPS_Dist)
+    	METInit();
  
     CSCTL0_H = 0;                           // Lock CS Registers
 
@@ -164,6 +181,7 @@ void bspInit(SubsystemModule mod)
     // Disable the GPIO power-on default high-impedance mode to activate
     // previously configured port settings
     PM5CTL0 &= ~LOCKLPM5;
+
 
 #if defined(__DEBUG__)
 
@@ -193,6 +211,12 @@ void bspInit(SubsystemModule mod)
 
 }
 
+void bspBackpowerPulldown()
+{
+    P3DIR |= BIT4;
+    P3OUT |= BIT4;
+}
+
 void bspUARTInit(bus_instance_UART instance)
 {
     // LaunchPad for MSP430FR5994
@@ -213,13 +237,19 @@ void bspI2CInit(bus_instance_i2c instance)
 {
     if (instance == I2CBus2)
     {
+        I2C2_PORTSEL0 &= ~(I2C2_SDA_BIT | I2C2_SCL_BIT);
         I2C2_PORTSEL1 &= ~(I2C2_SDA_BIT | I2C2_SCL_BIT);
+        P7DIR |= I2C2_SDA_BIT | I2C2_SCL_BIT;
+        P7OUT |= I2C2_SDA_BIT | I2C2_SCL_BIT;
         I2C2_PORTSEL0 |= (I2C2_SDA_BIT | I2C2_SCL_BIT);
     }
 #if !defined(__BSP_Board_MSP430FR5994LaunchPad__)
     else if (instance == I2CBus1)
     {
+        I2C1_PORTSEL0 &= ~(I2C1_SDA_BIT | I2C2_SCL_BIT);
         I2C1_PORTSEL1 &= ~(I2C1_SDA_BIT | I2C1_SCL_BIT);
+        P5DIR |= I2C1_SDA_BIT | I2C2_SCL_BIT;
+        P5OUT |= I2C1_SDA_BIT | I2C2_SCL_BIT;
         I2C1_PORTSEL0 |= (I2C1_SDA_BIT | I2C1_SCL_BIT);
     }
 #endif

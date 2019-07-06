@@ -23,6 +23,9 @@
 #define MAG_CONVERSION_FACTOR_RAW_TO_NANOTESLAS     HMC5883L_CONVERSION_FACTOR_RAW_TO_NANOTESLAS
 #define MAG_CONVERSION_FACTOR_RAW_TO_TESLAS         HMC5883L_CONVERSION_FACTOR_RAW_TO_TESLAS
 
+#define CALIBRATION_ON  1
+#define CALIBRATION_OFF 0
+
 #elif defined(__BSP_HW_MAGTOM_MAG3110__)  // Freescale MAG3110
 
 #include "MAG3110_Magnetometer.h"
@@ -46,6 +49,7 @@
 typedef enum _unitConversionMode {
     ConvertToNanoTeslas,
     ConvertToTeslas,
+    ConvertToNone, // skip conversions
 } UnitConversionMode;
 
 // Raw values are magnetometer-dependent
@@ -56,19 +60,43 @@ typedef struct  {
     int16_t rawX;
     int16_t rawY;
     int16_t rawZ;
-    int8_t rawTempA;
-    int8_t rawTempB;
-    double convertedX;
-    double convertedY;
-    double convertedZ;
-    double convertedTemp;
+    float convertedX;
+    float convertedY;
+    float convertedZ;
+    uint8_t isValid;
+    float calibration_factor_x;
+    float calibration_factor_y;
+    float calibration_factor_z;
 } MagnetometerData;
 
-// Main entry points
-void magInit();
-MagnetometerData *magReadXYZData(UnitConversionMode);
-void selfTestConfig();
-void normalOperationConfig();
+typedef uint8_t hMag;
+
+/*
+ * Initializes a magnetometer on a specific I2C bus.
+ * Initialize no more than one per bus.
+ *
+ * Returns the magnetometer's handle to be passed to other mag. functions
+ */
+hMag magInit(bus_instance_i2c bus);
+
+MagnetometerData *magReadXYZData(hMag handle, UnitConversionMode mode);
+void mag_self_test_config(hMag handle);
+void mag_normal_reading_operation_config(hMag handle);
+FILE_STATIC uint8_t mag_is_reading_valid(MagnetometerData* data);
+void self_test_add_samples(hMag handle, MagnetometerData* data);
+void start_self_test_calibration(hMag handle);
+uint8_t end_self_test_calibration(hMag handle);
+void enable_calibration(hMag handle);
+void disable_calibration(hMag handle);
+
+/**
+ * Convert a raw mag reading to Teslas
+ */
+float magConvertRawToTeslas(int16_t raw);
+
+/**
+ * Convert Teslas to the same units that the raw readings use
+ */
+int16_t magConvertTeslasToRaw(float teslas);
 
 #endif /* MAGNETOMETER_H_ */
-

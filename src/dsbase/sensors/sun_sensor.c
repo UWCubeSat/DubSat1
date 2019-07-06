@@ -18,6 +18,8 @@
 #define RESPONSE_LENGTH_FILTERED_CELL_VOLTAGES   17
 #define RESPONSE_LENGTH_ANGULAR_POSITION         10
 
+#define GLITCH_FILTER_MAX_VAL 180
+
 FILE_STATIC uint8_t i2cBuff[MAX_BUFF_SIZE];
 FILE_STATIC uint8_t i2cInitialized = 0;
 FILE_STATIC hDev hSensor;
@@ -78,14 +80,37 @@ sun_sensor_voltage *sunSensorReadFiltered()
 
 SunSensorAngle *sunSensorReadAngle()
 {
+#ifdef __I2C_DONT_WRITE_SUN__
+    i2cMasterRead(hSensor, i2cBuff, RESPONSE_LENGTH_ANGULAR_POSITION);
+#else
     i2cMasterRegisterRead(hSensor, CMD_CODE_ANGULAR_POSITION, i2cBuff,
                           RESPONSE_LENGTH_ANGULAR_POSITION);
+#endif /* __I2C_DONT_WRITE_SUN__ */
     if (checkSize(RESPONSE_LENGTH_ANGULAR_POSITION))
     {
         return NULLP;
     }
+
+#if defined(__HIL_AA_GLITCHFILTER__)
+    float prevAlpha = angleData.alpha;
+    float prevBeta = angleData.beta;
+    uint8_t prevError = angleData.error;
+#endif /* __HIL_AA_GLITCHFILTER__ */
+
     memcpy(&angleData.alpha, i2cBuff + 1, 4);
     memcpy(&angleData.beta, i2cBuff + 5, 4);
     angleData.error = i2cBuff[9];
+
+#if defined(__HIL_AA_GLITCHFILTER__)
+    if (abs(angleData.alpha) > GLITCH_FILTER_MAX_VAL
+    		|| abs(angleData.beta) > GLITCH_FILTER_MAX_VAL
+			|| angleData.error > 14)
+    {
+    	angleData.alpha = prevAlpha;
+    	angleData.beta = prevBeta;
+    	angleData.error = prevError;
+    }
+#endif /* __HIL_AA_GLITCHFILTER__ */
+
     return &angleData;
 }

@@ -27,6 +27,7 @@ typedef enum _subsystem_state {
     State_Firing,
     State_Cooldown,
     State_InitializingFire,
+    State_SMT_Wait
 } SubsystemState;
 
 // Additional, it can be helpful if states are grouped into higher level
@@ -40,6 +41,12 @@ typedef enum _subsystem_mode {
     Mode_WaitingToFire,
     Mode_Firing,
 } SubsystemMode;
+
+typedef enum {
+    Result_FireSuccessful,
+    Result_MainFailedCharge,
+    Result_MainFailedDischarge
+} LastFireResult;
 
 // A struct for storing various interesting info about the subsystem module
 typedef struct _module_status {
@@ -93,5 +100,12 @@ TLM_SEGMENT {
     uint16_t igniterChargeTime;
     uint16_t cooldownTime;
 } timing;
+
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint8_t lastFireResult;
+    uint16_t fireCount;
+    uint16_t faultCount;
+} fireInfo;
 
 #endif /* PPT_H_ */

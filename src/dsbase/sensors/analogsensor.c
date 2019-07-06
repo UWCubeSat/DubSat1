@@ -400,6 +400,9 @@ float asensorReadIntTempC()
     asensorReadSingleSensorRaw(TEMPSENSOR_DEV);
     return convertRawToFloat(TEMPSENSOR_DEV);
 }
+uint16_t asensorReadIntTempRawC(){
+    return asensorReadSingleSensorRaw(TEMPSENSOR_DEV);
+}
 
 float asensorReadExtTempC(hDev hSensor)
 {
@@ -423,6 +426,11 @@ void asensorUpdateAllSensors()
     while (capture_complete < num_asense_channels) {}
 
     return;
+}
+
+int16_t compressMSPTemp(float raw)
+{
+    return (int16_t)(raw * 100);
 }
 
 #pragma vector=ADC12_B_VECTOR
@@ -460,6 +468,7 @@ __interrupt void ADC12ISR (void)
             asensors[5].lastrawvalue = ADC12MEM5;               // Move results, IFG is cleared
             capture_complete += 1;
             break;
+        case ADC12IV__ADC12IFG6:
             asensors[6].lastrawvalue = ADC12MEM6;               // Move results, IFG is cleared
             capture_complete += 1;
             break;

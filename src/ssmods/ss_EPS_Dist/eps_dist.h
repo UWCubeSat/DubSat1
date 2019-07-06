@@ -17,6 +17,7 @@
 #include "sensors/pcvsensor.h"
 #include "bsp/bsp.h"
 #include "core/debugtools.h"
+#include "interfaces/canwrap.h"
 
 // Configure power domains
 #define NUM_POWER_DOMAINS  8
@@ -27,6 +28,7 @@
 #define OCP_THRESH_LOW_DRAW_DEVICE  0.300f
 #define OCP_THRESH_MED_DRAW_DEVICE  0.500f
 #define OCP_THRESH_HIGH_DRAW_DEVICE 0.700f
+#define OCP_THRESH_VERY_HIGH_DRAW_DEVICE  1.0f
 
 // Configure power domain control pins
 #define DOMAIN_ENABLE_COM2_DIR  P7DIR
@@ -75,6 +77,10 @@
 #define LED_OUT P3OUT
 #define LED_BIT BIT5
 
+#define INA_DIR P3DIR
+#define INA_OUT P3OUT
+#define INA_BIT BIT7
+
 // Capture power domain info, IDs, addresses, and enable pins
 // DO NOT REORDER
 typedef enum {
@@ -96,6 +102,8 @@ typedef enum {
     PD_CMD_OCLatch,
     PD_CMD_BattVLow,
     PD_CMD_AutoStart,
+    PD_CMD_OffInitial,
+    PD_CMD_Autoshutoff
 } PowerDomainCmd;
 
 typedef enum {
@@ -117,6 +125,24 @@ typedef struct _power_domain_info {
 
     // eventually add other stuff, like handle to the averaging queues, etc.
 } PowerDomainInfo;
+
+typedef struct {
+    uint8_t ppt;
+    uint8_t eps;
+    uint8_t estim;
+    uint8_t bdot;
+    uint8_t rahs;
+    uint8_t com2;
+} AutoshutoffEnabled;
+
+typedef struct {
+    uint8_t ppt;
+    uint8_t eps;
+    uint8_t estim;
+    uint8_t bdot;
+    uint8_t rahs;
+    uint8_t com2;
+} AutoshutoffDelay;
 
 // COSMOS telem and cmd packets
 TLM_SEGMENT {
@@ -142,14 +168,18 @@ TLM_SEGMENT {
     float busV[NUM_POWER_DOMAINS];
 } sensordat_segment;
 
+TLM_SEGMENT {
+    BcTlmHeader header;
+    uint8_t timeSinceRC;
+} rcCount_segment;
+
 CMD_SEGMENT {
     uint8_t pd_cmds[NUM_POWER_DOMAINS];
 } domaincmd_segment;
 
 #define BATTV_CONV_FACTOR    2.8867925f
 
-//#define BATT_DEFAULT_PARTIAL_THRESH   (5.8f)
-#define BATT_DEFAULT_FULL_THRESH      (5.2f)
+#define BATT_DEFAULT_FULL_THRESH      (6.0f)
 #define BATT_HYSTER   (0.25f)
 
 
@@ -205,5 +235,28 @@ uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
 
 void distInitializeOCPThresholds();
+
+void can_packet_rx_callback(CANPacket *packet);
+
+FILE_STATIC void rcPopulateH1(CANPacket *out);
+FILE_STATIC void rcPopulateH2(CANPacket *out);
+FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulate2(CANPacket *out);
+FILE_STATIC void rcPopulate3(CANPacket *out);
+FILE_STATIC void rcPopulate4(CANPacket *out);
+FILE_STATIC void rcPopulate5(CANPacket *out);
+FILE_STATIC void rcPopulate6(CANPacket *out);
+FILE_STATIC void rcPopulate7(CANPacket *out);
+FILE_STATIC void rcPopulate8(CANPacket *out);
+FILE_STATIC void rcPopulate9(CANPacket *out);
+FILE_STATIC void rcPopulate10(CANPacket *out);
+FILE_STATIC void rcPopulate11(CANPacket *out);
+FILE_STATIC void rcPopulate12(CANPacket *out);
+FILE_STATIC void rcPopulate13(CANPacket *out);
+FILE_STATIC void rcPopulate14(CANPacket *out);
+FILE_STATIC void rcPopulate15(CANPacket *out);
+FILE_STATIC void rcPopulate16(CANPacket *out);
+FILE_STATIC void rcPopulate17(CANPacket *out);
+FILE_STATIC void rcPopulate18(CANPacket *out);
 
 #endif /* EPS_DIST_H_ */

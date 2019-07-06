@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="8.4.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -6598,58 +6598,28 @@ chip</description>
 </packages>
 <packages3d>
 <package3d name="0805" urn="urn:adsk.eagle:package:2129148/1" type="box" library_version="1">
-<packageinstances>
-<packageinstance name="0805"/>
-</packageinstances>
 </package3d>
 <package3d name="1206" urn="urn:adsk.eagle:package:2129127/1" type="box" library_version="1">
-<packageinstances>
-<packageinstance name="1206"/>
-</packageinstances>
 </package3d>
 <package3d name="R2010" urn="urn:adsk.eagle:package:2129147/1" type="box" library_version="1">
 <description>&lt;b&gt;RESISTOR&lt;/b&gt;&lt;p&gt;
 chip</description>
-<packageinstances>
-<packageinstance name="R2010"/>
-</packageinstances>
 </package3d>
 <package3d name="0603" urn="urn:adsk.eagle:package:2129149/1" type="box" library_version="1">
-<packageinstances>
-<packageinstance name="0603"/>
-</packageinstances>
 </package3d>
 <package3d name="R2512" urn="urn:adsk.eagle:package:2129150/1" type="box" library_version="1">
-<packageinstances>
-<packageinstance name="R2512"/>
-</packageinstances>
 </package3d>
 <package3d name="0402" urn="urn:adsk.eagle:package:2129151/1" type="box" library_version="1">
 <description>&lt;b&gt;CAPACITOR&lt;/b&gt;&lt;p&gt;
 chip</description>
-<packageinstances>
-<packageinstance name="0402"/>
-</packageinstances>
 </package3d>
 <package3d name="1210" urn="urn:adsk.eagle:package:2129126/1" type="box" library_version="1">
-<packageinstances>
-<packageinstance name="1210"/>
-</packageinstances>
 </package3d>
 <package3d name="EIA7343" urn="urn:adsk.eagle:package:2129187/1" type="box" library_version="1">
-<packageinstances>
-<packageinstance name="EIA7343"/>
-</packageinstances>
 </package3d>
 <package3d name="PANASONIC_SVPG" urn="urn:adsk.eagle:package:2129188/1" type="box" library_version="1">
-<packageinstances>
-<packageinstance name="PANASONIC_SVPG"/>
-</packageinstances>
 </package3d>
 <package3d name="2917" urn="urn:adsk.eagle:package:2129125/1" type="box" library_version="1">
-<packageinstances>
-<packageinstance name="2917"/>
-</packageinstances>
 </package3d>
 </packages3d>
 <symbols>
@@ -6910,8 +6880,8 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <part name="GND5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="+3V34" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="+3V35" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
-<part name="R1" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="2.2k"/>
-<part name="R2" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="2.2k"/>
+<part name="R1" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
+<part name="R2" library="DubSat1 Components" deviceset="RESISTOR" device="0805" value="DNP"/>
 <part name="+3V32" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="+3V33" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="U4" library="DubSat1 Components" deviceset="LTC3624" device=""/>

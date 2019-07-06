@@ -12,21 +12,20 @@ clear all; close all; clc;
 % 7-bit address for 5883/5983 = 0x1E
 slave_addr = '1Eh';
 magtom = i2c('aardvark', 0, slave_addr);
-total_time = 60;   % Seconds
+total_time = 1200;   % Seconds
 period = 0.1;     % Seconds
 num_samps = floor(total_time/period);
-
 fopen(magtom);
 
 % Configure magnetometer, based on datasheet values
-fwrite(magtom, [0 hex2dec('14')]);   % Output rate = 30Hz, no averaging
+fwrite(magtom, [0 hex2dec('F4')]);   % Output rate = 30Hz
 fwrite(magtom, [1 hex2dec('00')]);   % Maximum gain
 fwrite(magtom, [2 hex2dec('00')]);   % Continuous operating mode
 
 %% Collect Data
 % Now collect data from the sensor.
 results = zeros(num_samps, 4);
-
+index = 1;
 tic;
 for r = 1:num_samps
     now = toc;
@@ -36,16 +35,26 @@ for r = 1:num_samps
     yvalstr = [raw(5,:) raw(6,:)];
     zvalstr = [raw(3,:) raw(4,:)];
     
-    xval = twos2decimal(hex2dec(xvalstr), 16);
-    yval = twos2decimal(hex2dec(yvalstr), 16);
-    zval = twos2decimal(hex2dec(zvalstr), 16);
+    xval(index) = twos2decimal(hex2dec(xvalstr), 16);
+    yval(index) = twos2decimal(hex2dec(yvalstr), 16);
+    zval(index) = twos2decimal(hex2dec(zvalstr), 16);
     
     %disp(['Raw:  ' xvalstr ', ' yvalstr ', ' zvalstr]);
-    disp([num2str(xval) ',' num2str(yval) ',' num2str(zval)]);
-    results(r,:) = [now xval yval zval];
-    
+    disp([num2str(xval(index)) ',' num2str(yval(index)) ',' num2str(zval(index))]);
+    results(r,:) = [now xval(index) yval(index) zval(index)];
+    index = index + 1;
+    index;
     pause(period);
 end
+
+save('xval.dat', 'xval', '-ascii');
+save('yval.dat', 'yval', '-ascii');
+save('zval.dat', 'zval', '-ascii');
+
+
+var(xval)
+var(zval)
+var(yval)
 
 fclose(magtom);
 delete(magtom);
@@ -61,21 +70,22 @@ plot(t, results(:,4));
 title('Raw Results');
 legend('X','Y','Z');
 
+
 %% Calculate Allan Variance/Deviation
 % Use the standalone Allan calculation function to generate the Allan
 % variance/deviation, and then plot it.
 
-pts = 100;
-fs = 1/period;
-[Tx, sigmax] = overlapped_allan_dev(results(:,2), fs, pts);
-[Ty, sigmay] = overlapped_allan_dev(results(:,3), fs, pts);
-[Tz, sigmaz] = overlapped_allan_dev(results(:,4), fs, pts);
-figure();
-hold on;
-plot(Tx, sigmax);
-plot(Ty, sigmay);
-plot(Tz, sigmaz);
-title('Allan (Overlapped) Deviation');
-legend('X-axis', 'Y-axis', 'Z-axis');
+% pts = 100;
+% fs = 1/period;
+% [Tx, sigmax] = overlapped_allan_dev(results(:,2), fs, pts);
+% [Ty, sigmay] = overlapped_allan_dev(results(:,3), fs, pts);
+% [Tz, sigmaz] = overlapped_allan_dev(results(:,4), fs, pts);
+% figure();
+% hold on;
+% plot(Tx, sigmax);
+% plot(Ty, sigmay);
+% plot(Tz, sigmaz);
+% title('Allan (Overlapped) Deviation');
+% legend('X-axis', 'Y-axis', 'Z-axis');
 
 

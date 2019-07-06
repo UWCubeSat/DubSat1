@@ -15,6 +15,7 @@
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
 #include "sensors/analogsensor.h"
+#include "interfaces/canwrap.h"
 
 // Configure battery balancer control pins
 #define BATTERY_BALANCER_ENABLE_DIR  P4DIR
@@ -27,9 +28,9 @@
 #define HEATER_ENABLE_BIT       BIT5
 
 // LED pins
-#define LED_DIR  P2DIR
-#define LED_OUT  P2OUT
-#define LED_BIT  BIT2
+#define LED_DIR  P3DIR
+#define LED_OUT  P3OUT
+#define LED_BIT  BIT5
 
 // COSMOS telem and cmd packets
 #define TLM_ID_EPS_BATT_GENERAL    TLM_ID_SHARED_SSGENERAL  // == 0x02  <--- standard message ID
@@ -120,6 +121,16 @@ typedef struct _module_status {
 uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);
 uint8_t handleDebugActionCallback(DebugMode mode, uint8_t * cmdstr);
+
+FILE_STATIC void rcPopulateH1(CANPacket *out);
+FILE_STATIC void rcPopulateH2(CANPacket *out);
+FILE_STATIC void rcPopulate1(CANPacket *out);
+FILE_STATIC void rcPopulate2(CANPacket *out);
+FILE_STATIC void rcPopulate3(CANPacket *out);
+FILE_STATIC void rcPopulate4(CANPacket *out);
+FILE_STATIC void rcPopulate5(CANPacket *out);
+FILE_STATIC void rcPopulate6(CANPacket *out);
+FILE_STATIC void rcPopulate7(CANPacket *out);
 
 #endif /* EPS_BATT_H_ */
 

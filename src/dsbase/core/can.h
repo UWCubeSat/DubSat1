@@ -17,6 +17,8 @@
 #include <inttypes.h>
 #include "spi.h"
 
+
+#define CAN_TX_BUSY 0x07
 // Global function pointer to point to the function
 // when data is received through CAN
 void (*ReceiveCallback0)(uint8_t, uint8_t*, uint32_t);
@@ -30,6 +32,16 @@ uint8_t mcpMode;
  * Output: 0 on success or else error code
  */
 uint8_t canInit(void);
+
+/* Check if one or more packets have been dropped, then resets to 0.
+ * Output: 0 on no packets dropped, non zero if one or more packets have been dropped.
+ */
+uint8_t canRxErrorCheck(void);
+
+/* Check if there are any buffers with a request to send in progress (We shouldn't overwrite these)
+ * Output: 0 if all buffers are empty, otherwise 1 || 2 || 4 if TxB 0 1 and/or 2 are still waiting to send.
+ */
+uint8_t canTxCheck(void);
 
 /* bufNum: TxBuf to write to, from 0 to 2
  * Tech: technical details
@@ -115,12 +127,23 @@ void setReceiveCallback1(void (*ReceiveCallbackArg)(uint8_t, uint8_t*, uint32_t)
  * setReceiveCallback(...) will be replaced with setReceiveZeroCallback(...)
  * and setReceiveOneCallback(...)
  *
- * I recommend configuring these filters ASAP because if it is called
- * during a CAN packet, the packet will be lost.
  *
  */
 
 void setTheFilter(uint8_t address, uint32_t value);
+
+// Some of our register config macros:
+#define HS_CNF1_SJW 0x80
+#define HS_CNF1_BRP 0x07
+
+#define HS_CNF2_BTLMODE 0x80
+#define HS_CNF2_SAM 0x00
+#define HS_CNF2_PHSEG1 0x38
+#define HS_CNF2_PRSEG 0x07
+
+#define HS_CNF3_SOF 0x00
+#define HS_CNF3_WAKFIL 0x00
+#define HS_CNF3_PHSEG2 0x02
 
 // MASK ADDRESSES
 #define CAN_MASK_0       0x20 // RXM0SIDH, RXM0SIDL, RXM0EID8, RXM0EID0
@@ -209,6 +232,8 @@ void setTheFilter(uint8_t address, uint32_t value);
 #define MCP_RXB1DLC     0x75
 #define MCP_RXB1D0      0x76
 
+#define MCP_RXBNDLC_DLC 0x0F
+
 // Transmit Buffer
 #define MCP_TXB0SIDH    0x31
 #define MCP_TXB0D0      0x36
@@ -220,6 +245,7 @@ void setTheFilter(uint8_t address, uint32_t value);
 // CANCTRL Register Values
 #define MCP_NORMAL      0x00
 #define MODE_CONFIG     0x80
+#define MCP_REQOP       0xE0
 
 // BFPCTRL Bits
 #define B1BFS    0x20
@@ -311,6 +337,11 @@ void setTheFilter(uint8_t address, uint32_t value);
 #define CAN_STATUS            0xA0
 #define CAN_RX_STATUS         0xB0
 #define CAN_BITMODIFY         0x05
+
+#define CAN_READ_RXBUF_0      0x02
+#define CAN_READ_RXBUF_1      0x06
+
+
 
 // Clock rates, other macros,
 

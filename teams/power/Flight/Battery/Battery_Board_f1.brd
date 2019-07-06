@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="9.0.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -1049,7 +1049,7 @@ Switch</text>
 <text x="-2.54" y="3.048" size="1.27" layer="25" ratio="10">&gt;NAME</text>
 <text x="-2.54" y="-3.302" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
 </package>
-<package name="PICOLOCK_4" urn="urn:adsk.eagle:footprint:2229834/1">
+<package name="PICOLOCK_4">
 <smd name="P$1" x="0" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$2" x="1.5" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
 <smd name="P$3" x="3" y="0" dx="0.6" dy="1" layer="1" rot="R180"/>
@@ -1064,10 +1064,10 @@ Switch</text>
 <wire x1="5.9" y1="4.3" x2="-1.7" y2="4.3" width="0.127" layer="21"/>
 <wire x1="-1.7" y1="4.3" x2="-1.7" y2="6.4" width="0.127" layer="21"/>
 <wire x1="-1.7" y1="6.4" x2="-3.5" y2="6.4" width="0.127" layer="21"/>
+<text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
 <wire x1="-3.5" y1="6.4" x2="-3.5" y2="8.4" width="0.127" layer="21"/>
 <wire x1="-3.5" y1="8.4" x2="7.7" y2="8.4" width="0.127" layer="21"/>
 <wire x1="7.7" y1="8.4" x2="7.7" y2="6.4" width="0.127" layer="21"/>
-<text x="-1.2" y="4.8" size="0.8128" layer="25" font="vector">&gt;Name</text>
 <polygon width="0.127" layer="39">
 <vertex x="-3.5" y="8.4"/>
 <vertex x="7.7" y="8.4"/>
@@ -1122,7 +1122,7 @@ Switch</text>
 <packageinstance name="PICOLOCK_8"/>
 </packageinstances>
 </package3d>
-<package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2229882/2" type="model">
+<package3d name="PICOLOCK_4" urn="urn:adsk.eagle:package:2229882/2" locally_modified="yes" type="model">
 <packageinstances>
 <packageinstance name="PICOLOCK_4"/>
 </packageinstances>
@@ -1301,21 +1301,16 @@ chip</description>
 </package>
 </packages>
 <packages3d>
-<package3d name="0805" urn="urn:adsk.eagle:package:348281/2" type="box" library_version="23">
+<package3d name="0805" urn="urn:adsk.eagle:package:348281/2" type="box" library_version="23" library_locally_modified="yes">
 <packageinstances>
 <packageinstance name="0805"/>
 </packageinstances>
 </package3d>
-<package3d name="R2010" urn="urn:adsk.eagle:package:348273/1" type="box" library_version="23">
+<package3d name="R2010" urn="urn:adsk.eagle:package:348273/1" type="box" library_version="23" library_locally_modified="yes">
 <description>RESISTOR
 chip</description>
 <packageinstances>
 <packageinstance name="R2010"/>
-</packageinstances>
-</package3d>
-<package3d name="DFN8(3X3)LT" urn="urn:adsk.eagle:package:348248/1" type="box" library_version="23">
-<packageinstances>
-<packageinstance name="DFN8(3X3)LT"/>
 </packageinstances>
 </package3d>
 </packages3d>

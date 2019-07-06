@@ -10,6 +10,13 @@
 
 #include <stdint.h>
 
+// assuming FS = +-125
+#define IMU_RAW_TO_DPS 0.004375
+
+// degrees to radians
+#define DEG_TO_RAD     (3.14159265358979323846 / 180.0)
+
+
 #include "../core/i2c.h"
 #include "../core/utils.h"
 #include "../core/debugtools.h"
@@ -30,6 +37,7 @@
 
 #define IMU_I2C_7BIT_ADDRESS                        IMU_LSM6DSM_I2C_7BIT_ADDRESS
 
+
 #else
 
 #error Unknown - or no - IMU hardware selected.
@@ -45,8 +53,31 @@ typedef struct  {
     // TODO:  add timestamp?
 } IMUData;
 
+typedef enum {
+    IMUUpdateRate_12p5Hz,
+    IMUUpdateRate_26Hz,
+    IMUUpdateRate_52Hz,
+    IMUUpdateRate_104Hz,
+} IMUUpdateRate;
+
 // Main entry points
-void imuInit(bus_instance_i2c i2cbus);
+uint8_t imuInit(bus_instance_i2c i2cbus, IMUUpdateRate rate);
 IMUData *imuReadGyroAccelData();
+
+/**
+ * Returns the IMU slave address
+ */
+uint8_t imuWhoami();
+
+/**
+ * Convert a raw angular rate reading to radians per second
+ */
+float imuConvertRawToRPS(int16_t raw);
+
+/**
+ * Convert angular rate in radians per second to the same units used in raw
+ * readings.
+ */
+int16_t imuConvertRPSToRaw(float rps);
 
 #endif /* SENSORS_IMU_H_ */

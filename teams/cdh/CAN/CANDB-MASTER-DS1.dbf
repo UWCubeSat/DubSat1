@@ -1,0 +1,2273 @@
+//******************************BUSMASTER Messages and signals Database ******************************//
+
+[DATABASE_VERSION] 1.3
+
+[PROTOCOL] CAN
+
+[BUSMASTER_VERSION] [3.2.2]
+[NUMBER_OF_MESSAGES] 186
+
+[START_MSG] gcmd_com1_mode,302252858,1,1,1,X,com_1
+[START_SIGNALS] gcmd_com1_mode_mode,8,1,0,U,4,1,1,0,1,,,
+[VALUE_DESCRIPTION] "camera mode",4
+[VALUE_DESCRIPTION] "real-time mode",3
+[VALUE_DESCRIPTION] "safe mode",2
+[VALUE_DESCRIPTION] "health mode",1
+[END_MSG]
+
+[START_MSG] rahs_camera,303563552,8,1,1,X,rahs
+[START_SIGNALS] rahs_camera_data,64,1,0,U,9223372036854775807,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_eps_gen_10,309920562,6,3,1,X,eps_gen
+[START_SIGNALS] rc_eps_gen_10_pnl_3_power_avg,16,5,0,U,65535,0,1,0,1,raw power gen,,
+[START_SIGNALS] rc_eps_gen_10_pnl_2_power_avg,16,3,0,U,65535,0,1,0,1,raw power gen,,
+[START_SIGNALS] rc_eps_gen_10_pnl_1_power_avg,16,1,0,U,65535,0,1,0,1,raw power gen,,
+[END_MSG]
+
+[START_MSG] gcmd_autoseq_enable,302252849,1,1,1,X,com_1
+[START_SIGNALS] gcmd_autoseq_enable_enable,8,1,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] gcmd_batt_set_bal_auto,302252848,1,1,1,X,com_1
+[START_SIGNALS] gcmd_batt_set_bal_auto_state,2,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] gcmd_dist_autoshutoff,302252847,2,6,1,X,com_1
+[START_SIGNALS] gcmd_dist_autoshutoff_ppt,2,2,2,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_dist_autoshutoff_eps,2,2,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_dist_autoshutoff_estim,2,1,6,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_dist_autoshutoff_bdot,2,1,4,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_dist_autoshutoff_rahs,2,1,2,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_dist_autoshutoff_com2,2,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] gcmd_ppt_halt,285475076,1,1,1,X,com_1
+[START_SIGNALS] gcmd_ppt_halt_confirm,1,1,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] gcmd_dist_reset_mission,302252767,0,0,1,X,com_1
+[END_MSG]
+
+[START_MSG] gcmd_dist_self_restart,302252766,0,0,1,X,com_1
+[END_MSG]
+
+[START_MSG] rc_eps_dist_18,307823323,7,6,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_18_rahs_ocp_thresh,9,6,5,U,511,0,1,0,1,ocpThresh,,
+[START_SIGNALS] rc_eps_dist_18_ppt_ocp_thresh,9,5,4,U,511,0,1,0,1,ocpThresh,,
+[START_SIGNALS] rc_eps_dist_18_estim_ocp_thresh,9,4,3,U,511,0,1,0,1,ocpThresh,,
+[START_SIGNALS] rc_eps_dist_18_eps_ocp_thresh,9,3,2,U,511,0,1,0,1,ocpThresh,,
+[START_SIGNALS] rc_eps_dist_18_com2_ocp_thresh,9,2,1,U,511,0,1,0,1,ocpThresh,,
+[START_SIGNALS] rc_eps_dist_18_bdot_ocp_thresh,9,1,0,U,511,0,1,0,1,ocpThresh,,
+[END_MSG]
+
+[START_MSG] rc_adcs_bdot_10,308871901,6,3,1,X,adcs_bdot
+[START_SIGNALS] rc_adcs_bdot_10_dipole_var_z,16,5,0,U,65535,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_bdot_10_dipole_var_y,16,3,0,U,65535,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_bdot_10_dipole_var_x,16,1,0,U,65535,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_bdot_9,308871795,8,5,1,X,adcs_bdot
+[START_SIGNALS] rc_adcs_bdot_9_dipole_gain_z,8,8,0,U,255,0,1,0,1,bdot gain,,
+[START_SIGNALS] rc_adcs_bdot_9_dipole_gain_y,8,7,0,U,255,0,1,0,1,bdot gain,,
+[START_SIGNALS] rc_adcs_bdot_9_spam_off_z_mtq_z,16,5,0,I,-32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_9_spam_off_z_mtq_y,16,3,0,I,-32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_9_spam_off_z_mtq_x,16,1,0,I,-32767,-32768,1,0,1,1/73 nT,,
+[END_MSG]
+
+[START_MSG] rc_adcs_bdot_8,308871794,8,4,1,X,adcs_bdot
+[START_SIGNALS] rc_adcs_bdot_8_spam_off_y_mtq_z,16,7,0,I,-32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_8_spam_off_y_mtq_y,16,5,0,I,-32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_8_spam_off_y_mtq_x,16,3,0,I,-32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_8_spam_off_x_mtq_z,16,1,0,I,-32767,-32768,1,0,1,1/73 nT,,
+[END_MSG]
+
+[START_MSG] gcmd_batt_set_heater_check,301990618,1,1,1,X,com_1
+[START_SIGNALS] gcmd_batt_set_heater_check_state,2,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] eps_dist_autoseq_get_met_rsp,307233497,4,1,1,X,eps_dist
+[START_SIGNALS] eps_dist_autoseq_get_met_rsp_met,32,1,0,U,4294967295,0,1,0,1,2^-15s,,
+[END_MSG]
+
+[START_MSG] eps_dist_autoseq_get_ind_rsp,307233496,8,1,1,X,eps_dist
+[START_SIGNALS] eps_dist_autoseq_get_ind_rsp_ind,64,1,0,U,9223372036854775807,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] gcmd_autoseq_get_met,302252759,1,1,1,X,com_1
+[START_SIGNALS] gcmd_autoseq_get_met_index,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] gcmd_autoseq_get_indices,302252758,4,1,1,X,com_1
+[START_SIGNALS] gcmd_autoseq_get_indices_id,29,1,0,U,536870911,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] gcmd_autoseq_remove_can_id,302252757,4,1,1,X,com_1
+[START_SIGNALS] gcmd_autoseq_remove_can_id_id,29,1,0,U,536870911,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] gcmd_autoseq_rm_at_index,302252756,1,1,1,X,com_1
+[START_SIGNALS] gcmd_autoseq_rm_at_index_index,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] gcmd_autoseq_add_2,302252755,8,1,1,X,com_1
+[START_SIGNALS] gcmd_autoseq_add_2_data,64,1,0,U,9223372036854775807,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] gcmd_autoseq_add_1,302252754,8,3,1,X,com_1
+[START_SIGNALS] gcmd_autoseq_add_1_sendflg,1,8,5,B,1,0,1,0,1,,,
+[START_SIGNALS] gcmd_autoseq_add_1_met,32,4,5,U,4294967295,0,1,0,1,2^-15s,,
+[START_SIGNALS] gcmd_autoseq_add_1_can_id,29,1,0,U,536870911,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_bdot_7,308871793,8,6,1,X,adcs_bdot
+[START_SIGNALS] rc_adcs_bdot_7_dipole_gain_x,8,8,0,U,255,0,1,0,1,bdot gain,,
+[START_SIGNALS] rc_adcs_bdot_7_spam_off_x_mtq_y,16,6,0,I,-32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_7_spam_off_x_mtq_x,16,4,0,I,-32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_7_spam_magnitude_z,8,3,0,I,127,-127,1,0,1,,,
+[START_SIGNALS] rc_adcs_bdot_7_spam_magnitude_y,8,2,0,I,127,-127,1,0,1,,,
+[START_SIGNALS] rc_adcs_bdot_7_spam_magnitude_x,8,1,0,I,127,-127,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_bdot_6,307823216,8,12,1,X,adcs_bdot
+[START_SIGNALS] rc_adcs_bdot_6_spam_on_time,16,3,0,U,65535,0,1,0,1,minutes,,
+[START_SIGNALS] rc_adcs_bdot_6_spam_off_time,16,1,0,U,65535,0,1,0,1,minutes,,
+[START_SIGNALS] rc_adcs_bdot_6_spam_control,1,5,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_adcs_bdot_6_pop_status_z,1,7,5,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_adcs_bdot_6_pop_status_y,1,7,4,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_adcs_bdot_6_pop_status_x,1,7,3,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_adcs_bdot_6_max_tumble_time,16,5,1,U,65535,0,1,0,1,minutes,,
+[START_SIGNALS] rc_adcs_bdot_6_mag_control,2,8,1,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "sp2 mode",3
+[VALUE_DESCRIPTION] "sp1 mode",2
+[VALUE_DESCRIPTION] "bdot mode",1
+[VALUE_DESCRIPTION] "auto mode",0
+[START_SIGNALS] rc_adcs_bdot_6_gain_ovr_status_z,1,8,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_adcs_bdot_6_gain_ovr_status_y,1,7,7,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_adcs_bdot_6_gain_ovr_status_x,1,7,6,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_adcs_bdot_6_current_state,2,7,1,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "spam",3
+[VALUE_DESCRIPTION] "spam mag self test",2
+[VALUE_DESCRIPTION] "sleep mode",1
+[VALUE_DESCRIPTION] "normal mode",0
+[END_MSG]
+
+[START_MSG] gcmd_ppt_multiple_fire,302252753,2,2,1,X,com_1
+[START_SIGNALS] gcmd_ppt_multiple_fire_override,1,2,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_ppt_multiple_fire_count,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] gcmd_mtq_pwm_time,302252752,2,2,1,X,com_1
+[START_SIGNALS] gcmd_mtq_pwm_time_measurement,8,2,0,U,255,0,1,0,1,seconds,,
+[START_SIGNALS] gcmd_mtq_pwm_time_actuation,8,1,0,U,255,0,1,0,1,seconds,,
+[END_MSG]
+
+[START_MSG] gcmd_eps_batt_fulldef,302252751,8,2,1,X,com_1
+[START_SIGNALS] gcmd_eps_batt_fulldef_const_volt,32,1,0,F,8,0,1,0,1,V,,
+[START_SIGNALS] gcmd_eps_batt_fulldef_chg_curr,32,5,0,F,1,0,1,0,1,Amps,,
+[END_MSG]
+
+[START_MSG] rc_adcs_bdot_5,307823196,6,3,1,X,adcs_bdot
+[START_SIGNALS] rc_adcs_bdot_5_spam_on_z_mtq_z,16,5,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_5_spam_on_z_mtq_y,16,3,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_5_spam_on_z_mtq_x,16,1,0,I,32767,-32768,1,0,1,1/73 nT,,
+[END_MSG]
+
+[START_MSG] gcmd_reset_minmax,302252750,2,9,1,X,com_1
+[START_SIGNALS] gcmd_reset_minmax_mtq,1,2,0,B,1,0,1,0,1,,,
+[START_SIGNALS] gcmd_reset_minmax_sensorproc,1,1,7,B,1,0,1,0,1,,,
+[START_SIGNALS] gcmd_reset_minmax_mpc,1,1,6,B,1,0,1,0,1,,,
+[START_SIGNALS] gcmd_reset_minmax_estim,1,1,5,B,1,0,1,0,1,,,
+[START_SIGNALS] gcmd_reset_minmax_batt,1,1,4,B,1,0,1,0,1,,,
+[START_SIGNALS] gcmd_reset_minmax_gen,1,1,3,B,1,0,1,0,1,,,
+[START_SIGNALS] gcmd_reset_minmax_dist,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] gcmd_reset_minmax_ppt,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] gcmd_reset_minmax_bdot,1,1,0,B,1,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_eps_batt_h2,308871790,1,1,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_h2_canrxerror,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_bdot_h2,308871789,1,1,1,X,adcs_bdot
+[START_SIGNALS] rc_adcs_bdot_h2_canrxerror,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_h2,308871788,1,1,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_h2_canrxerror,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_h2,308871787,8,1,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_h2_canrxerror,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_h2,307823210,1,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_h2_canrxerror,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_h2,308871785,1,1,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_h2_canrxerror,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_eps_gen_h2,308871784,8,1,1,X,eps_gen
+[START_SIGNALS] rc_eps_gen_h2_canrxerror,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mtq_h2,308871783,1,1,1,X,adcs_mtq
+[START_SIGNALS] rc_adcs_mtq_h2_canrxerror,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_ppt_h2,308871782,2,2,1,X,ppt
+[START_SIGNALS] rc_ppt_h2_last_fire_result,2,2,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "no main discharge",2
+[VALUE_DESCRIPTION] "no main charge",1
+[VALUE_DESCRIPTION] "fire successful",0
+[START_SIGNALS] rc_ppt_h2_canrxerror,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_eps_batt_h1,308871781,8,5,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_h1_temp_min,16,1,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_eps_batt_h1_temp_max,16,3,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_eps_batt_h1_temp_avg,16,5,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_eps_batt_h1_sysrstiv,8,7,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "(PUC) MPUSEG3IFG seg 3 mem viol",46
+[VALUE_DESCRIPTION] "(PUC) MPUSEG2IFG seg 2 mem viol",44
+[VALUE_DESCRIPTION] "(PUC) MPUSEG1IFG seg 1 mem viol",42
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIIFGinfoMemSegViol",40
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIPIFGencapIPmemSeg",38
+[VALUE_DESCRIPTION] "(PUC) CSPW CS password violation",36
+[VALUE_DESCRIPTION] "(PUC) MPUPW MPU pwd violation",34
+[VALUE_DESCRIPTION] "(PUC) PMMPW PMM pwd violation",32
+[VALUE_DESCRIPTION] "(PUC) Peripheral area fetch",30
+[VALUE_DESCRIPTION] "(PUC) Uncorrectable FRAM bit err",28
+[VALUE_DESCRIPTION] "(PUC) FRCTLPW password violation",26
+[VALUE_DESCRIPTION] "(PUC) WDTPW password violation",24
+[VALUE_DESCRIPTION] "(PUC) WDTIFG watchdog timeout",22
+[VALUE_DESCRIPTION] "(POR) PMMSWPOR software POR",20
+[VALUE_DESCRIPTION] "(BOR) SVSHIFG SVSH event",14
+[VALUE_DESCRIPTION] "(BOR) Security violation",10
+[VALUE_DESCRIPTION] "(BOR) LPMx.5 wake up",8
+[VALUE_DESCRIPTION] "(BOR) RSTIFG RST/NMI",6
+[VALUE_DESCRIPTION] "(BOR) Brownout",2
+[VALUE_DESCRIPTION] "No interrupt pending",0
+[START_SIGNALS] rc_eps_batt_h1_reset_count,8,8,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_bdot_h1,308871780,8,5,1,X,adcs_bdot
+[START_SIGNALS] rc_adcs_bdot_h1_temp_min,16,1,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_bdot_h1_temp_max,16,3,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_bdot_h1_temp_avg,16,5,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_bdot_h1_sysrstiv,8,7,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "(PUC) MPUSEG3IFG seg 3 mem viol",46
+[VALUE_DESCRIPTION] "(PUC) MPUSEG2IFG seg 2 mem viol",44
+[VALUE_DESCRIPTION] "(PUC) MPUSEG1IFG seg 1 mem viol",42
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIIFGinfoMemSegViol",40
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIPIFGencapIPmemSeg",38
+[VALUE_DESCRIPTION] "(PUC) CSPW CS password violation",36
+[VALUE_DESCRIPTION] "(PUC) MPUPW MPU pwd violation",34
+[VALUE_DESCRIPTION] "(PUC) PMMPW PMM pwd violation",32
+[VALUE_DESCRIPTION] "(PUC) Peripheral area fetch",30
+[VALUE_DESCRIPTION] "(PUC) Uncorrectable FRAM bit err",28
+[VALUE_DESCRIPTION] "(PUC) FRCTLPW password violation",26
+[VALUE_DESCRIPTION] "(PUC) WDTPW password violation",24
+[VALUE_DESCRIPTION] "(PUC) WDTIFG watchdog timeout",22
+[VALUE_DESCRIPTION] "(POR) PMMSWPOR software POR",20
+[VALUE_DESCRIPTION] "(BOR) SVSHIFG SVSH event",14
+[VALUE_DESCRIPTION] "(BOR) Security violation",10
+[VALUE_DESCRIPTION] "(BOR) LPMx.5 wake up",8
+[VALUE_DESCRIPTION] "(BOR) RSTIFG RST/NMI",6
+[VALUE_DESCRIPTION] "(BOR) Brownout",2
+[VALUE_DESCRIPTION] "No interrupt pending",0
+[START_SIGNALS] rc_adcs_bdot_h1_reset_count,8,8,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_h1,308871779,8,5,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_h1_temp_min,16,1,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_eps_dist_h1_temp_max,16,3,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_eps_dist_h1_temp_avg,16,5,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_eps_dist_h1_sysrstiv,8,7,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "(PUC) MPUSEG3IFG seg 3 mem viol",46
+[VALUE_DESCRIPTION] "(PUC) MPUSEG2IFG seg 2 mem viol",44
+[VALUE_DESCRIPTION] "(PUC) MPUSEG1IFG seg 1 mem viol",42
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIIFGinfoMemSegViol",40
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIPIFGencapIPmemSeg",38
+[VALUE_DESCRIPTION] "(PUC) CSPW CS password violation",36
+[VALUE_DESCRIPTION] "(PUC) MPUPW MPU pwd violation",34
+[VALUE_DESCRIPTION] "(PUC) PMMPW PMM pwd violation",32
+[VALUE_DESCRIPTION] "(PUC) Peripheral area fetch",30
+[VALUE_DESCRIPTION] "(PUC) Uncorrectable FRAM bit err",28
+[VALUE_DESCRIPTION] "(PUC) FRCTLPW password violation",26
+[VALUE_DESCRIPTION] "(PUC) WDTPW password violation",24
+[VALUE_DESCRIPTION] "(PUC) WDTIFG watchdog timeout",22
+[VALUE_DESCRIPTION] "(POR) PMMSWPOR software POR",20
+[VALUE_DESCRIPTION] "(BOR) SVSHIFG SVSH event",14
+[VALUE_DESCRIPTION] "(BOR) Security violation",10
+[VALUE_DESCRIPTION] "(BOR) LPMx.5 wake up",8
+[VALUE_DESCRIPTION] "(BOR) RSTIFG RST/NMI",6
+[VALUE_DESCRIPTION] "(BOR) Brownout",2
+[VALUE_DESCRIPTION] "No interrupt pending",0
+[START_SIGNALS] rc_eps_dist_h1_reset_count,8,8,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_h1,308871778,8,5,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_h1_temp_min,16,1,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_mpc_h1_temp_max,16,3,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_mpc_h1_temp_avg,16,5,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_mpc_h1_sysrstiv,8,7,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "(PUC) MPUSEG3IFG seg 3 mem viol",46
+[VALUE_DESCRIPTION] "(PUC) MPUSEG2IFG seg 2 mem viol",44
+[VALUE_DESCRIPTION] "(PUC) MPUSEG1IFG seg 1 mem viol",42
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIIFGinfoMemSegViol",40
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIPIFGencapIPmemSeg",38
+[VALUE_DESCRIPTION] "(PUC) CSPW CS password violation",36
+[VALUE_DESCRIPTION] "(PUC) MPUPW MPU pwd violation",34
+[VALUE_DESCRIPTION] "(PUC) PMMPW PMM pwd violation",32
+[VALUE_DESCRIPTION] "(PUC) Peripheral area fetch",30
+[VALUE_DESCRIPTION] "(PUC) Uncorrectable FRAM bit err",28
+[VALUE_DESCRIPTION] "(PUC) FRCTLPW password violation",26
+[VALUE_DESCRIPTION] "(PUC) WDTPW password violation",24
+[VALUE_DESCRIPTION] "(PUC) WDTIFG watchdog timeout",22
+[VALUE_DESCRIPTION] "(POR) PMMSWPOR software POR",20
+[VALUE_DESCRIPTION] "(BOR) SVSHIFG SVSH event",14
+[VALUE_DESCRIPTION] "(BOR) Security violation",10
+[VALUE_DESCRIPTION] "(BOR) LPMx.5 wake up",8
+[VALUE_DESCRIPTION] "(BOR) RSTIFG RST/NMI",6
+[VALUE_DESCRIPTION] "(BOR) Brownout",2
+[VALUE_DESCRIPTION] "No interrupt pending",0
+[START_SIGNALS] rc_adcs_mpc_h1_reset_count,8,8,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_h1,307823201,8,5,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_h1_temp_min,16,1,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_estim_h1_temp_max,16,3,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_estim_h1_temp_avg,16,5,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_estim_h1_sysrstiv,8,7,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "(PUC) MPUSEG3IFG seg 3 mem viol",46
+[VALUE_DESCRIPTION] "(PUC) MPUSEG2IFG seg 2 mem viol",44
+[VALUE_DESCRIPTION] "(PUC) MPUSEG1IFG seg 1 mem viol",42
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIIFGinfoMemSegViol",40
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIPIFGencapIPmemSeg",38
+[VALUE_DESCRIPTION] "(PUC) CSPW CS password violation",36
+[VALUE_DESCRIPTION] "(PUC) MPUPW MPU pwd violation",34
+[VALUE_DESCRIPTION] "(PUC) PMMPW PMM pwd violation",32
+[VALUE_DESCRIPTION] "(PUC) Peripheral area fetch",30
+[VALUE_DESCRIPTION] "(PUC) Uncorrectable FRAM bit err",28
+[VALUE_DESCRIPTION] "(PUC) FRCTLPW password violation",26
+[VALUE_DESCRIPTION] "(PUC) WDTPW password violation",24
+[VALUE_DESCRIPTION] "(PUC) WDTIFG watchdog timeout",22
+[VALUE_DESCRIPTION] "(POR) PMMSWPOR software POR",20
+[VALUE_DESCRIPTION] "(BOR) SVSHIFG SVSH event",14
+[VALUE_DESCRIPTION] "(BOR) Security violation",10
+[VALUE_DESCRIPTION] "(BOR) LPMx.5 wake up",8
+[VALUE_DESCRIPTION] "(BOR) RSTIFG RST/NMI",6
+[VALUE_DESCRIPTION] "(BOR) Brownout",2
+[VALUE_DESCRIPTION] "No interrupt pending",0
+[START_SIGNALS] rc_adcs_estim_h1_reset_count,8,8,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_h1,308871776,8,5,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_h1_temp_min,16,1,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_sp_h1_temp_max,16,3,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_sp_h1_temp_avg,16,5,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_sp_h1_sysrstiv,8,7,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "(PUC) MPUSEG3IFG seg 3 mem viol",46
+[VALUE_DESCRIPTION] "(PUC) MPUSEG2IFG seg 2 mem viol",44
+[VALUE_DESCRIPTION] "(PUC) MPUSEG1IFG seg 1 mem viol",42
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIIFGinfoMemSegViol",40
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIPIFGencapIPmemSeg",38
+[VALUE_DESCRIPTION] "(PUC) CSPW CS password violation",36
+[VALUE_DESCRIPTION] "(PUC) MPUPW MPU pwd violation",34
+[VALUE_DESCRIPTION] "(PUC) PMMPW PMM pwd violation",32
+[VALUE_DESCRIPTION] "(PUC) Peripheral area fetch",30
+[VALUE_DESCRIPTION] "(PUC) Uncorrectable FRAM bit err",28
+[VALUE_DESCRIPTION] "(PUC) FRCTLPW password violation",26
+[VALUE_DESCRIPTION] "(PUC) WDTPW password violation",24
+[VALUE_DESCRIPTION] "(PUC) WDTIFG watchdog timeout",22
+[VALUE_DESCRIPTION] "(POR) PMMSWPOR software POR",20
+[VALUE_DESCRIPTION] "(BOR) SVSHIFG SVSH event",14
+[VALUE_DESCRIPTION] "(BOR) Security violation",10
+[VALUE_DESCRIPTION] "(BOR) LPMx.5 wake up",8
+[VALUE_DESCRIPTION] "(BOR) RSTIFG RST/NMI",6
+[VALUE_DESCRIPTION] "(BOR) Brownout",2
+[VALUE_DESCRIPTION] "No interrupt pending",0
+[START_SIGNALS] rc_adcs_sp_h1_reset_count,8,8,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_eps_gen_h1,308871775,8,5,1,X,eps_gen
+[START_SIGNALS] rc_eps_gen_h1_temp_min,16,1,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_eps_gen_h1_temp_max,16,3,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_eps_gen_h1_temp_avg,16,5,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_eps_gen_h1_sysrstiv,8,7,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "(PUC) MPUSEG3IFG seg 3 mem viol",46
+[VALUE_DESCRIPTION] "(PUC) MPUSEG2IFG seg 2 mem viol",44
+[VALUE_DESCRIPTION] "(PUC) MPUSEG1IFG seg 1 mem viol",42
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIIFGinfoMemSegViol",40
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIPIFGencapIPmemSeg",38
+[VALUE_DESCRIPTION] "(PUC) CSPW CS password violation",36
+[VALUE_DESCRIPTION] "(PUC) MPUPW MPU pwd violation",34
+[VALUE_DESCRIPTION] "(PUC) PMMPW PMM pwd violation",32
+[VALUE_DESCRIPTION] "(PUC) Peripheral area fetch",30
+[VALUE_DESCRIPTION] "(PUC) Uncorrectable FRAM bit err",28
+[VALUE_DESCRIPTION] "(PUC) FRCTLPW password violation",26
+[VALUE_DESCRIPTION] "(PUC) WDTPW password violation",24
+[VALUE_DESCRIPTION] "(PUC) WDTIFG watchdog timeout",22
+[VALUE_DESCRIPTION] "(POR) PMMSWPOR software POR",20
+[VALUE_DESCRIPTION] "(BOR) SVSHIFG SVSH event",14
+[VALUE_DESCRIPTION] "(BOR) Security violation",10
+[VALUE_DESCRIPTION] "(BOR) LPMx.5 wake up",8
+[VALUE_DESCRIPTION] "(BOR) RSTIFG RST/NMI",6
+[VALUE_DESCRIPTION] "(BOR) Brownout",2
+[VALUE_DESCRIPTION] "No interrupt pending",0
+[START_SIGNALS] rc_eps_gen_h1_reset_count,8,8,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mtq_h1,308871774,8,5,1,X,adcs_mtq
+[START_SIGNALS] rc_adcs_mtq_h1_temp_min,16,1,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_mtq_h1_temp_max,16,3,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_mtq_h1_temp_avg,16,5,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_adcs_mtq_h1_sysrstiv,8,7,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "(PUC) MPUSEG3IFG seg 3 mem viol",46
+[VALUE_DESCRIPTION] "(PUC) MPUSEG2IFG seg 2 mem viol",44
+[VALUE_DESCRIPTION] "(PUC) MPUSEG1IFG seg 1 mem viol",42
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIIFGinfoMemSegViol",40
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIPIFGencapIPmemSeg",38
+[VALUE_DESCRIPTION] "(PUC) CSPW CS password violation",36
+[VALUE_DESCRIPTION] "(PUC) MPUPW MPU pwd violation",34
+[VALUE_DESCRIPTION] "(PUC) PMMPW PMM pwd violation",32
+[VALUE_DESCRIPTION] "(PUC) Peripheral area fetch",30
+[VALUE_DESCRIPTION] "(PUC) Uncorrectable FRAM bit err",28
+[VALUE_DESCRIPTION] "(PUC) FRCTLPW password violation",26
+[VALUE_DESCRIPTION] "(PUC) WDTPW password violation",24
+[VALUE_DESCRIPTION] "(PUC) WDTIFG watchdog timeout",22
+[VALUE_DESCRIPTION] "(POR) PMMSWPOR software POR",20
+[VALUE_DESCRIPTION] "(BOR) SVSHIFG SVSH event",14
+[VALUE_DESCRIPTION] "(BOR) Security violation",10
+[VALUE_DESCRIPTION] "(BOR) LPMx.5 wake up",8
+[VALUE_DESCRIPTION] "(BOR) RSTIFG RST/NMI",6
+[VALUE_DESCRIPTION] "(BOR) Brownout",2
+[VALUE_DESCRIPTION] "No interrupt pending",0
+[START_SIGNALS] rc_adcs_mtq_h1_reset_count,8,8,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_ppt_h1,308871773,8,5,1,X,ppt
+[START_SIGNALS] rc_ppt_h1_temp_min,16,1,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_ppt_h1_temp_max,16,3,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_ppt_h1_temp_avg,16,5,0,I,32767,-32768,1,0,1,cC,,
+[START_SIGNALS] rc_ppt_h1_sysrstiv,8,7,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "(PUC) MPUSEG3IFG seg 3 mem viol",46
+[VALUE_DESCRIPTION] "(PUC) MPUSEG2IFG seg 2 mem viol",44
+[VALUE_DESCRIPTION] "(PUC) MPUSEG1IFG seg 1 mem viol",42
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIIFGinfoMemSegViol",40
+[VALUE_DESCRIPTION] "(PUC) MPUSEGIPIFGencapIPmemSeg",38
+[VALUE_DESCRIPTION] "(PUC) CSPW CS password violation",36
+[VALUE_DESCRIPTION] "(PUC) MPUPW MPU pwd violation",34
+[VALUE_DESCRIPTION] "(PUC) PMMPW PMM pwd violation",32
+[VALUE_DESCRIPTION] "(PUC) Peripheral area fetch",30
+[VALUE_DESCRIPTION] "(PUC) Uncorrectable FRAM bit err",28
+[VALUE_DESCRIPTION] "(PUC) FRCTLPW password violation",26
+[VALUE_DESCRIPTION] "(PUC) WDTPW password violation",24
+[VALUE_DESCRIPTION] "(PUC) WDTIFG watchdog timeout",22
+[VALUE_DESCRIPTION] "(POR) PMMSWPOR software POR",20
+[VALUE_DESCRIPTION] "(BOR) SVSHIFG SVSH event",14
+[VALUE_DESCRIPTION] "(BOR) Security violation",10
+[VALUE_DESCRIPTION] "(BOR) LPMx.5 wake up",8
+[VALUE_DESCRIPTION] "(BOR) RSTIFG RST/NMI",6
+[VALUE_DESCRIPTION] "(BOR) Brownout",2
+[VALUE_DESCRIPTION] "No interrupt pending",0
+[START_SIGNALS] rc_ppt_h1_reset_count,8,8,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] gcmd_mtq_pms,302252749,4,4,1,X,com_1
+[START_SIGNALS] gcmd_mtq_pms_z,8,3,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] gcmd_mtq_pms_y,8,2,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] gcmd_mtq_pms_x,8,1,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] gcmd_mtq_pms_enable,2,4,0,U,2,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] gcmd_bdot_max_tumble,302252748,2,1,1,X,com_1
+[START_SIGNALS] gcmd_bdot_max_tumble_time,16,1,0,U,65535,0,1,0,1,minutes,,
+[END_MSG]
+
+[START_MSG] gcmd_bdot_spam,302252747,8,6,1,X,com_1
+[START_SIGNALS] gcmd_bdot_spam_magnitude_z,8,7,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] gcmd_bdot_spam_magnitude_y,8,6,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] gcmd_bdot_spam_magnitude_x,8,5,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] gcmd_bdot_spam_time_on,16,1,0,U,65535,0,1,0,1,minutes,,
+[START_SIGNALS] gcmd_bdot_spam_time_off,16,3,0,U,65535,0,1,0,1,minutes,,
+[START_SIGNALS] gcmd_bdot_spam_control,2,8,0,U,2,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] gcmd_bdot_control,302252746,1,1,1,X,com_1
+[START_SIGNALS] gcmd_bdot_control_mode,2,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "spam",3
+[VALUE_DESCRIPTION] "spam mag self test",2
+[VALUE_DESCRIPTION] "sleep mode",1
+[VALUE_DESCRIPTION] "normal mode",0
+[END_MSG]
+
+[START_MSG] gcmd_bdot_mag_control,302252745,1,1,1,X,com_1
+[START_SIGNALS] gcmd_bdot_mag_control_mode,2,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "sp2 mode",3
+[VALUE_DESCRIPTION] "sp1 mode",2
+[VALUE_DESCRIPTION] "bdot mode",1
+[VALUE_DESCRIPTION] "auto mode",0
+[END_MSG]
+
+[START_MSG] gcmd_bdot_pole_override,302252744,4,6,1,X,com_1
+[START_SIGNALS] gcmd_bdot_pole_override_gain_z,8,3,0,U,255,0,1,0,1,pct,,
+[START_SIGNALS] gcmd_bdot_pole_override_gain_y,8,2,0,U,255,0,1,0,1,pct,,
+[START_SIGNALS] gcmd_bdot_pole_override_gain_x,8,1,0,U,255,0,1,0,1,pct,,
+[START_SIGNALS] gcmd_bdot_pole_override_z,2,4,4,U,2,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_bdot_pole_override_y,2,4,2,U,2,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_bdot_pole_override_x,2,4,0,U,2,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] gcmd_gen_set_pt_state,302252742,1,3,1,X,com_1
+[START_SIGNALS] gcmd_gen_set_pt_state_3,2,1,4,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_gen_set_pt_state_2,2,1,2,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_gen_set_pt_state_1,2,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] gcmd_sp_set_thresh,302252743,2,1,1,X,com_1
+[START_SIGNALS] gcmd_sp_set_thresh_thresh,16,1,0,U,65535,0,1,0,1,1/73 nanoTeslas,,
+[END_MSG]
+
+[START_MSG] gcmd_dist_set_pd_ovc_ppt,302252741,4,1,1,X,com_1
+[START_SIGNALS] gcmd_dist_set_pd_ovc_ppt_ovc,32,1,0,F,15,0,1,0,1,A,,
+[END_MSG]
+
+[START_MSG] gcmd_dist_set_pd_ovc_eps,302252740,4,1,1,X,com_1
+[START_SIGNALS] gcmd_dist_set_pd_ovc_eps_ovc,32,1,0,F,15,0,1,0,1,A,,
+[END_MSG]
+
+[START_MSG] gcmd_dist_set_pd_ovc_wheels,302252739,4,1,1,X,com_1
+[START_SIGNALS] gcmd_dist_set_pd_ovc_wheels_ovc,32,1,0,F,15,0,1,0,1,A,,
+[END_MSG]
+
+[START_MSG] gcmd_dist_set_pd_ovc_estim,302252738,4,1,1,X,com_1
+[START_SIGNALS] gcmd_dist_set_pd_ovc_estim_ovc,32,1,0,F,15,0,1,0,1,A,,
+[END_MSG]
+
+[START_MSG] gcmd_dist_set_pd_ovc_bdot,302252737,4,1,1,X,com_1
+[START_SIGNALS] gcmd_dist_set_pd_ovc_bdot_ovc,32,1,0,F,15,0,1,0,1,A,,
+[END_MSG]
+
+[START_MSG] gcmd_dist_set_pd_ovc_rahs,302252736,4,1,1,X,com_1
+[START_SIGNALS] gcmd_dist_set_pd_ovc_rahs_ovc,32,1,0,F,15,0,1,0,1,A,,
+[END_MSG]
+
+[START_MSG] gcmd_dist_set_pd_ovc_com2,302252735,4,1,1,X,com_1
+[START_SIGNALS] gcmd_dist_set_pd_ovc_com2_ovc,32,1,0,F,15,0,1,0,1,A,,
+[END_MSG]
+
+[START_MSG] gcmd_dist_set_pd_ovc_com1,302252734,4,1,1,X,
+[START_SIGNALS] gcmd_dist_set_pd_ovc_com1_ovc,32,1,0,F,15,0,1,0,1,A,,
+[END_MSG]
+
+[START_MSG] gcmd_dist_set_pd_state,302252733,2,8,1,X,com_1
+[START_SIGNALS] gcmd_dist_set_pd_state_wheels,2,2,2,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_dist_set_pd_state_rahs,2,1,4,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_dist_set_pd_state_ppt,2,2,6,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_dist_set_pd_state_estim,2,2,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_dist_set_pd_state_eps,2,2,4,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_dist_set_pd_state_com2,2,1,2,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_dist_set_pd_state_com1,2,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_dist_set_pd_state_bdot,2,1,6,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] gcmd_mtq_pop,302449340,6,3,1,X,com_1
+[START_SIGNALS] gcmd_mtq_pop_z,2,1,4,U,2,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_mtq_pop_y,2,1,2,U,2,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_mtq_pop_x,2,1,0,U,2,0,1,0,1,,,
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] rc_eps_batt_7,307823194,6,3,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_7_acc_charge_min,16,1,0,U,65535,0,1,0,1,22.588 mAh,,
+[START_SIGNALS] rc_eps_batt_7_acc_charge_max,16,3,0,U,65535,0,1,0,1,22.588 mAh,,
+[START_SIGNALS] rc_eps_batt_7_acc_charge_avg,16,5,0,U,65535,0,1,0,1,22.588 mAh,,
+[END_MSG]
+
+[START_MSG] sensorproc_mag2,335872068,8,5,1,X,adcs_sensorproc
+[START_SIGNALS] sensorproc_mag2_bdot_valid,1,7,1,B,1,0,1,0,1,,,
+[START_SIGNALS] sensorproc_mag2_z,16,5,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] sensorproc_mag2_y,16,3,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] sensorproc_mag2_x,16,1,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] sensorproc_mag2_valid,1,7,0,B,1,0,1,0,1,bool,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_14,307823193,8,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_14_mag_z,64,1,0,D,1,-1,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_13,307823192,8,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_13_mag_y,64,1,0,D,1,-1,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_12,307823191,8,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_12_mag_x,64,1,0,D,1,-1,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_11,307823190,8,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_11_sun_z,64,1,0,D,1,-1,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_10,307823189,8,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_10_sun_y,64,1,0,D,1,-1,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_9,307823188,8,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_9_sun_x,64,1,0,D,1,-1,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_16,307823186,7,4,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_16_ppt_state,8,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "unknown",6
+[VALUE_DESCRIPTION] "off_autoshutoff",5
+[VALUE_DESCRIPTION] "off_initial",4
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "on",0
+[START_SIGNALS] rc_eps_dist_16_ppt_c_min,16,2,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_16_ppt_c_max,16,4,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_16_ppt_c_avg,16,6,0,I,32767,-32768,1,0,1,raw node current dist,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_9,307823179,6,3,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_9_rahs_v_min,16,1,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_9_rahs_v_max,16,3,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_9_rahs_v_avg,16,5,0,U,65535,0,1,0,1,raw node voltage,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_7,307823177,6,3,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_7_com2_v_min,16,1,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_7_com2_v_max,16,3,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_7_com2_v_avg,16,5,0,U,65535,0,1,0,1,raw node voltage,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_6,307823176,7,4,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_6_com2_state,8,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "unknown",6
+[VALUE_DESCRIPTION] "off_autoshutoff",5
+[VALUE_DESCRIPTION] "off_initial",4
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "on",0
+[START_SIGNALS] rc_eps_dist_6_com2_c_min,16,2,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_6_com2_c_max,16,4,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_6_com2_c_avg,16,6,0,I,32767,-32768,1,0,1,raw node current dist,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_5,307823175,6,3,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_5_com1_v_min,16,1,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_5_com1_v_max,16,3,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_5_com1_v_avg,16,5,0,U,65535,0,1,0,1,raw node voltage,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_3,307823173,6,3,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_3_batt_v_avg,16,5,0,U,65535,0,1,0,1,raw dist battery voltage,,
+[START_SIGNALS] rc_eps_dist_3_batt_v_max,16,3,0,U,65535,0,1,0,1,raw dist battery voltage,,
+[START_SIGNALS] rc_eps_dist_3_batt_v_min,16,1,0,U,65535,0,1,0,1,raw dist battery voltage,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_2,307823172,6,3,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_2_uv_state,8,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "undervoltage",1
+[VALUE_DESCRIPTION] "normal",0
+[START_SIGNALS] rc_eps_dist_2_met_overflow,8,2,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_eps_dist_2_met,32,3,0,U,4294967295,0,1,0,1,2^-8 s,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_17,307823187,6,3,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_17_ppt_v_min,16,1,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_17_ppt_v_max,16,3,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_17_ppt_v_avg,16,5,0,U,65535,0,1,0,1,raw node voltage,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_14,307823184,8,4,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_14_eps_state,8,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "unknown",6
+[VALUE_DESCRIPTION] "off_autoshutoff",5
+[VALUE_DESCRIPTION] "off_initial",4
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "on",0
+[START_SIGNALS] rc_eps_dist_14_eps_c_min,16,2,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_14_eps_c_max,16,4,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_14_eps_c_avg,16,6,0,I,32767,-32768,1,0,1,raw node current dist,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_13,307823183,6,3,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_13_estim_v_min,16,1,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_13_estim_v_max,16,3,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_13_estim_v_avg,16,5,0,U,65535,0,1,0,1,raw node voltage,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_11,307823181,6,3,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_11_bdot_v_min,16,1,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_11_bdot_v_max,16,3,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_11_bdot_v_avg,16,5,0,U,65535,0,1,0,1,raw node voltage,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_12,307823182,7,4,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_12_estim_state,8,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "unknown",6
+[VALUE_DESCRIPTION] "off_autoshutoff",5
+[VALUE_DESCRIPTION] "off_initial",4
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "on",0
+[START_SIGNALS] rc_eps_dist_12_estim_c_min,16,2,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_12_estim_c_max,16,4,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_12_estim_c_avg,16,6,0,I,32767,-32768,1,0,1,raw node current dist,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_15,307823185,6,3,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_15_eps_v_min,16,1,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_15_eps_v_max,16,3,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_dist_15_eps_v_avg,16,5,0,U,65535,0,1,0,1,raw node voltage,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_10,307823180,7,4,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_10_bdot_state,8,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "unknown",6
+[VALUE_DESCRIPTION] "off_autoshutoff",5
+[VALUE_DESCRIPTION] "off_initial",4
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "on",0
+[START_SIGNALS] rc_eps_dist_10_bdot_c_min,16,2,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_10_bdot_c_max,16,4,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_10_bdot_c_avg,16,6,0,I,32767,-32768,1,0,1,raw node current dist,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_8,307823178,7,4,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_8_rahs_state,8,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "unknown",6
+[VALUE_DESCRIPTION] "off_autoshutoff",5
+[VALUE_DESCRIPTION] "off_initial",4
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "on",0
+[START_SIGNALS] rc_eps_dist_8_rahs_c_min,16,2,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_8_rahs_c_max,16,4,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_8_rahs_c_avg,16,6,0,I,32767,-32768,1,0,1,raw node current dist,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_4,308871750,7,4,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_4_com1_state,8,1,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "unknown",5
+[VALUE_DESCRIPTION] "off_initial",4
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "on",0
+[START_SIGNALS] rc_eps_dist_4_com1_c_min,16,2,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_4_com1_c_max,16,4,0,I,32767,-32768,1,0,1,raw node current dist,,
+[START_SIGNALS] rc_eps_dist_4_com1_c_avg,16,6,0,I,32767,-32768,1,0,1,raw node current dist,,
+[END_MSG]
+
+[START_MSG] rc_eps_dist_1,309330499,6,3,1,X,eps_dist
+[START_SIGNALS] rc_eps_dist_1_temp_avg,16,5,0,U,65535,0,1,0,1,cC,,
+[START_SIGNALS] rc_eps_dist_1_com1_c_avg,16,3,0,U,65535,0,1,0,1,raw node current,,
+[START_SIGNALS] rc_eps_dist_1_batt_v_avg,16,1,0,U,65535,0,1,0,1,raw dist battery voltage,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_11,307823166,8,1,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_11_omega_z,64,1,0,D,10,-10,1,0,1,r/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_7,307823162,8,1,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_7_omega_max,64,1,0,D,10,0,1,0,1,r/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_8,307823163,8,1,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_8_omega_avg,64,1,0,D,10,0,1,0,1,r/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_9,307823164,8,1,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_9_omega_x,64,1,0,D,10,-10,1,0,1,r/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_5,307823160,8,1,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_5_sc_quat_4,64,1,0,D,1,-1,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_6,307823161,8,1,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_6_omega_min,64,1,0,D,10,0,1,0,1,r/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_4,307823159,8,1,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_4_sc_quat_3,64,1,0,D,1,-1,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_3,307823158,8,1,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_3_sc_quat_2,64,1,0,D,1,-1,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_15,307823170,2,2,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_15_sc_mode,8,1,0,U,32,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_mpc_15_point_true,8,2,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_12,307823167,8,0,1,X,adcs_mpc
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_13,307823168,8,0,1,X,adcs_mpc
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_14,307823169,8,0,1,X,adcs_mpc
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_10,307823165,8,1,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_10_omega_y,64,1,0,D,10,-10,1,0,1,r/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_2,307823157,8,1,1,X,adcs_mpc
+[START_SIGNALS] rc_adcs_mpc_2_sc_quat_1,64,1,0,D,1,-1,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mpc_1,307823156,8,0,1,X,adcs_mpc
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_8,307823155,7,6,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_8_tle_id,1,7,2,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_adcs_estim_8_sgp4_flag,8,6,0,I,1,-1,1,0,1,,,
+[START_SIGNALS] rc_adcs_estim_8_sc_in_sun,1,7,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_adcs_estim_8_sc_above_gs,1,7,1,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_adcs_estim_8_epoch_overflow,8,5,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_estim_8_epoch,32,1,0,U,4294967295,0,1,0,1,2^-8 s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_7,307823154,8,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_7_vel_z,64,1,0,D,1.7e+308,-1.7e+308,1,0,1,m/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_6,307823153,8,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_6_vel_y,64,1,0,D,1.7e+308,-1.7e+308,1,0,1,m/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_5,307823152,8,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_5_vel_x,64,1,0,D,1.7e+308,-1.7e+308,1,0,1,m/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_4,307823151,8,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_4_pos_z,64,1,0,D,7e+006,-7e+006,1,0,1,m,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_2,307823149,8,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_2_pos_x,64,1,0,D,7e+006,-7e+006,1,0,1,m,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_3,307823150,8,1,1,X,adcs_estim
+[START_SIGNALS] rc_adcs_estim_3_pos_y,64,1,0,D,7e+006,-7e+006,1,0,1,m,,
+[END_MSG]
+
+[START_MSG] rc_adcs_estim_1,307823148,8,0,1,X,adcs_estim
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_12,307823142,8,4,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_12_mag2_z_min,16,5,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_12_mag2_z_max,16,7,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_12_mag2_y_max,16,1,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_12_mag2_y_avg,16,3,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_11,307823141,8,4,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_11_mag2_x_avg,16,5,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_11_mag2_x_max,16,3,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_11_mag2_x_min,16,1,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_11_mag2_y_min,16,7,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_7,307823137,5,3,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_7_mag1_var_z,16,5,0,U,65535,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_sp_7_mag1_var_y,16,3,0,U,65535,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_sp_7_mag1_var_x,16,1,0,U,65535,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_6,307823136,8,5,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_6_mag2_valid,8,6,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_sp_6_mag1_x_min,16,7,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_6_mag1_valid,8,5,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_sp_6_sun_z_max,16,1,0,I,32767,-32768,1,0,1,1/32768 units,,
+[START_SIGNALS] rc_adcs_sp_6_sun_z_avg,16,3,0,I,32767,-32768,1,0,1,1/32768 units,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_17,307823147,8,6,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_17_i2c_result_sun,8,8,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "transmit timeout",4
+[VALUE_DESCRIPTION] "nack",3
+[VALUE_DESCRIPTION] "stop timeout",2
+[VALUE_DESCRIPTION] "start timeout",1
+[VALUE_DESCRIPTION] "no error",0
+[START_SIGNALS] rc_adcs_sp_17_i2c_result_imu,8,7,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "transmit timeout",4
+[VALUE_DESCRIPTION] "nack",3
+[VALUE_DESCRIPTION] "stop timeout",2
+[VALUE_DESCRIPTION] "start timeout",1
+[VALUE_DESCRIPTION] "no error",0
+[START_SIGNALS] rc_adcs_sp_17_i2c_result_mag_2,8,6,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "transmit timeout",4
+[VALUE_DESCRIPTION] "nack",3
+[VALUE_DESCRIPTION] "stop timeout",2
+[VALUE_DESCRIPTION] "start timeout",1
+[VALUE_DESCRIPTION] "no error",0
+[START_SIGNALS] rc_adcs_sp_17_i2c_result_mag_1,8,5,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "transmit timeout",4
+[VALUE_DESCRIPTION] "nack",3
+[VALUE_DESCRIPTION] "stop timeout",2
+[VALUE_DESCRIPTION] "start timeout",1
+[VALUE_DESCRIPTION] "no error",0
+[START_SIGNALS] rc_adcs_sp_17_imu_z_max,16,1,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_17_imu_z_avg,16,3,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_16,307823146,8,4,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_16_imu_z_min,16,7,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_16_imu_y_min,16,1,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_16_imu_y_max,16,3,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_16_imu_y_avg,16,5,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_10,307823140,8,4,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_10_mag1_z_min,16,3,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_10_mag1_z_max,16,5,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_10_mag1_z_avg,16,7,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_10_mag1_y_avg,16,1,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_8,307823138,5,3,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_8_mag2_var_z,16,5,0,U,65535,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_sp_8_mag2_var_y,16,3,0,U,65535,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_sp_8_mag2_var_x,16,1,0,U,65535,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_9,307823139,8,4,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_9_mag1_y_min,16,5,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_9_mag1_y_max,16,7,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_9_mag1_x_max,16,1,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] rc_adcs_sp_9_mag1_x_avg,16,3,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_13,307823143,8,4,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_13_suna_min,16,3,0,I,32767,-32768,1,0,1,60/32767 degrees,,
+[START_SIGNALS] rc_adcs_sp_13_suna_max,16,5,0,I,32767,-32768,1,0,1,60/32767 degrees,,
+[START_SIGNALS] rc_adcs_sp_13_suna_avg,16,7,0,I,32767,-32768,1,0,1,60/32767 degrees,,
+[START_SIGNALS] rc_adcs_sp_13_mag2_z_avg,16,1,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_15,307823145,8,4,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_15_imu_x_min,16,2,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_15_imu_x_max,16,4,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_15_imu_x_avg,16,6,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_15_imu_valid,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_14,307823144,7,4,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_14_sunb_min,16,1,0,I,32767,-32768,1,0,1,60/32767 degrees,,
+[START_SIGNALS] rc_adcs_sp_14_sunb_max,16,3,0,I,32767,-32768,1,0,1,60/32767 degrees,,
+[START_SIGNALS] rc_adcs_sp_14_sunb_avg,16,5,0,I,32767,-32768,1,0,1,60/32767 degrees,,
+[START_SIGNALS] rc_adcs_sp_14_sun_valid,8,7,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_5,307823135,8,4,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_5_sun_z_min,16,7,0,I,32767,-32768,1,0,1,1/32768 units,,
+[START_SIGNALS] rc_adcs_sp_5_sun_y_min,16,1,0,I,32767,-32768,1,0,1,1/32768 units,,
+[START_SIGNALS] rc_adcs_sp_5_sun_y_max,16,3,0,I,32767,-32768,1,0,1,1/32768 units,,
+[START_SIGNALS] rc_adcs_sp_5_sun_y_avg,16,5,0,I,32767,-32768,1,0,1,1/32768 units,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_4,307823134,8,4,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_4_sun_x_min,16,3,0,I,32767,-32768,1,0,1,1/32768 units,,
+[START_SIGNALS] rc_adcs_sp_4_sun_x_max,16,5,0,I,32767,-32768,1,0,1,1/32768 units,,
+[START_SIGNALS] rc_adcs_sp_4_sun_x_avg,16,7,0,I,32767,-32768,1,0,1,1/32768 units,,
+[START_SIGNALS] rc_adcs_sp_4_imup_z_avg,16,1,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_3,307823133,8,4,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_3_imup_z_min,16,5,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_3_imup_z_max,16,7,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_3_imup_y_max,16,1,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_3_imup_y_avg,16,3,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_2,307823132,8,4,1,X,adcs_sensorproc
+[START_SIGNALS] rc_adcs_sp_2_imup_y_min,16,7,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_2_imup_x_min,16,1,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_2_imup_x_max,16,3,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] rc_adcs_sp_2_imup_x_avg,16,5,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[END_MSG]
+
+[START_MSG] rc_adcs_sp_1,307823131,8,0,1,X,
+[END_MSG]
+
+[START_MSG] rc_adcs_bdot_4,307823130,7,4,1,X,adcs_bdot
+[START_SIGNALS] rc_adcs_bdot_4_spam_on_y_mtq_z,16,5,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_4_spam_on_y_mtq_y,16,3,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_4_mag_z_avg,16,1,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_4_tumble,1,7,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] rc_adcs_bdot_3,307823129,8,4,1,X,adcs_bdot
+[START_SIGNALS] rc_adcs_bdot_3_mag_z_min,16,5,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_3_mag_z_max,16,7,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_3_mag_y_max,16,1,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_3_mag_y_avg,16,3,0,I,32767,-32768,1,0,1,1/73 nT,,
+[END_MSG]
+
+[START_MSG] rc_adcs_bdot_2,307823111,8,4,1,X,adcs_bdot
+[START_SIGNALS] rc_adcs_bdot_2_mag_y_min,16,7,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_2_mag_x_avg,16,5,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_2_mag_x_min,16,1,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_2_mag_x_max,16,3,0,I,32767,-32768,1,0,1,1/73 nT,,
+[END_MSG]
+
+[START_MSG] rc_adcs_bdot_1,307823110,8,4,1,X,adcs_bdot
+[START_SIGNALS] rc_adcs_bdot_1_spam_on_y_mtq_x,16,7,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_1_spam_on_x_mtq_z,16,5,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_1_spam_on_x_mtq_y,16,3,0,I,32767,-32768,1,0,1,1/73 nT,,
+[START_SIGNALS] rc_adcs_bdot_1_spam_on_x_mtq_x,16,1,0,I,32767,-32768,1,0,1,1/73 nT,,
+[END_MSG]
+
+[START_MSG] estim_sun_unit_z,302449332,8,1,1,X,adcs_estim
+[START_SIGNALS] estim_sun_unit_z_val,64,1,0,D,1.7e+308,-1.7e+308,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] estim_sun_unit_y,302449331,8,1,1,X,adcs_estim
+[START_SIGNALS] estim_sun_unit_y_val,64,1,0,D,1.7e+308,-1.7e+308,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] estim_sun_unit_x,302449330,8,1,1,X,adcs_estim
+[START_SIGNALS] estim_sun_unit_x_val,64,1,0,D,1.7e+308,-1.7e+308,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] estim_mag_unit_z,302449335,8,1,1,X,adcs_estim
+[START_SIGNALS] estim_mag_unit_z_val,64,1,0,D,1.7e+308,-1.7e+308,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] estim_mag_unit_y,302449334,8,1,1,X,adcs_estim
+[START_SIGNALS] estim_mag_unit_y_val,64,1,0,D,1.7e+308,-1.7e+308,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] estim_mag_unit_x,302449333,8,1,1,X,adcs_estim
+[START_SIGNALS] estim_mag_unit_x_val,64,1,0,D,1.7e+308,-1.7e+308,1,0,1,u,,
+[END_MSG]
+
+[START_MSG] estim_state,302449336,1,2,1,X,adcs_estim
+[START_SIGNALS] estim_state_in_sun,1,1,1,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] estim_state_above_gs,1,1,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] rc_adcs_mtq_5,308871695,8,5,1,X,adcs_mtq
+[START_SIGNALS] rc_adcs_mtq_5_cmds_z_var,16,7,0,U,65535,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_5_cmds_y_var,16,5,0,U,65535,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_5_cmds_x_var,16,3,0,U,65535,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_5_reset_counts,8,2,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_5_fsw_ignore,8,1,0,U,255,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] rc_adcs_mtq_4,308871694,8,8,1,X,adcs_mtq
+[START_SIGNALS] rc_adcs_mtq_4_fsw_z_min,8,2,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_4_fsw_y_max,8,1,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_4_duty_z2_avg,8,8,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_4_duty_z1_avg,8,7,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_4_duty_y2_avg,8,6,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_4_duty_y1_avg,8,5,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_4_duty_x2_avg,8,4,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_4_duty_x1_avg,8,3,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mtq_3,308871693,8,8,1,X,adcs_mtq
+[START_SIGNALS] rc_adcs_mtq_3_fsw_z_avg,8,8,0,I,127,-128,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_3_fsw_y_min,8,7,0,I,127,-128,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_3_fsw_y_max,8,6,0,I,127,-128,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_3_fsw_y_avg,8,5,0,I,127,-128,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_3_fsw_x_min,8,4,0,I,127,-128,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_3_fsw_x_max,8,3,0,I,127,-128,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_3_fsw_x_avg,8,2,0,I,127,-128,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_3_bdot_z_min,8,1,0,I,127,-128,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_adcs_mtq_2,308871692,8,8,1,X,adcs_mtq
+[START_SIGNALS] rc_adcs_mtq_2_bdot_z_max,8,8,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_2_bdot_z_avg,8,7,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_2_bdot_y_min,8,6,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_2_bdot_y_max,8,5,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_2_bdot_y_avg,8,4,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_2_bdot_x_min,8,3,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_2_bdot_x_max,8,2,0,I,100,-100,1,0,1,,,
+[START_SIGNALS] rc_adcs_mtq_2_bdot_x_avg,8,1,0,I,100,-100,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_ppt_3,307823114,6,0,1,X,
+[END_MSG]
+
+[START_MSG] rc_ppt_2,307823113,7,4,1,X,ppt
+[START_SIGNALS] rc_ppt_2_cooldown_time,16,7,0,U,65535,0,1,0,1,2^-15 seconds,,
+[START_SIGNALS] rc_ppt_2_ign_charge_time,16,5,0,U,65535,0,1,0,1,2^-15 seconds,,
+[START_SIGNALS] rc_ppt_2_main_ign_delay,16,3,0,U,65535,0,1,0,1,2^-15 seconds,,
+[START_SIGNALS] rc_ppt_2_main_charge_time,16,1,0,U,65535,0,1,0,1,2^-15 seconds,,
+[END_MSG]
+
+[START_MSG] rc_ppt_1,307823112,7,4,1,X,ppt
+[START_SIGNALS] rc_ppt_1_smt_wait_time,16,7,0,U,65535,0,1,0,1,2^-15 seconds,,
+[START_SIGNALS] rc_ppt_1_last_main_charge,16,5,0,U,32767,0,1,0,1,2^-15 seconds,,
+[START_SIGNALS] rc_ppt_1_fault_count,16,3,0,U,65535,0,1,0,1,,,
+[START_SIGNALS] rc_ppt_1_fire_count,16,1,0,U,65535,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] rc_eps_gen_9,307823128,8,8,1,X,eps_gen
+[START_SIGNALS] rc_eps_gen_9_pnl_3_temp_min,8,6,0,I,127,-128,1,0,1,raw tmp36,,
+[START_SIGNALS] rc_eps_gen_9_pnl_3_temp_max,8,7,0,I,127,-128,1,0,1,raw tmp36,,
+[START_SIGNALS] rc_eps_gen_9_pnl_3_temp_avg,8,8,0,I,127,-128,1,0,1,raw tmp36,,
+[START_SIGNALS] rc_eps_gen_9_pnl_2_temp_min,8,3,0,I,127,-128,1,0,1,raw tmp36,,
+[START_SIGNALS] rc_eps_gen_9_pnl_2_temp_max,8,4,0,I,127,-128,1,0,1,raw tmp36,,
+[START_SIGNALS] rc_eps_gen_9_pnl_2_temp_avg,8,5,0,I,127,-128,1,0,1,raw tmp36,,
+[START_SIGNALS] rc_eps_gen_9_pnl_1_temp_max,8,1,0,I,127,-128,1,0,1,raw tmp36,,
+[START_SIGNALS] rc_eps_gen_9_pnl_1_temp_avg,8,2,0,I,127,-128,1,0,1,raw tmp36,,
+[END_MSG]
+
+[START_MSG] rc_eps_gen_8,307823127,7,4,1,X,eps_gen
+[START_SIGNALS] rc_eps_gen_8_pnl_3_power_min,16,1,0,I,32767,-32768,1,0,1,raw power gen,,
+[START_SIGNALS] rc_eps_gen_8_pnl_3_power_max,16,3,0,I,32767,-32768,1,0,1,raw power gen,,
+[START_SIGNALS] rc_eps_gen_8_pnl_3_power_avg,16,5,0,I,32767,-32768,1,0,1,raw power gen,,
+[START_SIGNALS] rc_eps_gen_8_pnl_1_temp_min,8,7,0,I,127,-128,1,0,1,raw tmp36,,
+[END_MSG]
+
+[START_MSG] rc_eps_gen_7,307823126,8,4,1,X,eps_gen
+[START_SIGNALS] rc_eps_gen_7_pnl_2_power_min,16,3,0,I,32767,-32768,1,0,1,raw power gen,,
+[START_SIGNALS] rc_eps_gen_7_pnl_2_power_max,16,5,0,I,32767,-32768,1,0,1,raw power gen,,
+[START_SIGNALS] rc_eps_gen_7_pnl_2_power_avg,16,7,0,I,32767,-32768,1,0,1,raw power gen,,
+[START_SIGNALS] rc_eps_gen_7_pnl_1_power_avg,16,1,0,I,32767,-32768,1,0,1,raw power gen,,
+[END_MSG]
+
+[START_MSG] rc_eps_gen_6,307823125,8,4,1,X,eps_gen
+[START_SIGNALS] rc_eps_gen_6_pnl_3_current_max,16,1,0,I,32767,-32768,1,0,1,raw node current gen,,
+[START_SIGNALS] rc_eps_gen_6_pnl_3_current_avg,16,3,0,I,32767,-32768,1,0,1,raw node current gen,,
+[START_SIGNALS] rc_eps_gen_6_pnl_1_power_min,16,5,0,I,32767,-32768,1,0,1,raw power gen,,
+[START_SIGNALS] rc_eps_gen_6_pnl_1_power_max,16,7,0,I,32767,-32768,1,0,1,raw power gen,,
+[END_MSG]
+
+[START_MSG] rc_eps_gen_5,307823124,8,4,1,X,eps_gen
+[START_SIGNALS] rc_eps_gen_5_pnl_3_current_min,16,7,0,I,32767,-32768,1,0,1,raw node current gen,,
+[START_SIGNALS] rc_eps_gen_5_pnl_2_current_min,16,1,0,I,32767,-32768,1,0,1,raw node current gen,,
+[START_SIGNALS] rc_eps_gen_5_pnl_2_current_max,16,3,0,I,32767,-32768,1,0,1,raw node current gen,,
+[START_SIGNALS] rc_eps_gen_5_pnl_2_current_avg,16,5,0,I,32767,-32768,1,0,1,raw node current gen,,
+[END_MSG]
+
+[START_MSG] rc_eps_gen_4,307823123,8,4,1,X,eps_gen
+[START_SIGNALS] rc_eps_gen_4_pnl_3_voltage_avg,16,1,0,U,20000,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_gen_4_pnl_1_current_min,16,3,0,I,32767,-32768,1,0,1,raw node current gen,,
+[START_SIGNALS] rc_eps_gen_4_pnl_1_current_max,16,5,0,I,32767,-32768,1,0,1,raw node current gen,,
+[START_SIGNALS] rc_eps_gen_4_pnl_1_current_avg,16,7,0,I,32767,-32768,1,0,1,raw node current gen,,
+[END_MSG]
+
+[START_MSG] rc_eps_gen_3,307823122,8,4,1,X,eps_gen
+[START_SIGNALS] rc_eps_gen_3_pnl_3_voltage_min,16,5,0,U,20000,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_gen_3_pnl_3_voltage_max,16,7,0,U,20000,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_gen_3_pnl_2_voltage_max,16,1,0,U,20000,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_gen_3_pnl_2_voltage_avg,16,3,0,U,20000,0,1,0,1,raw node voltage,,
+[END_MSG]
+
+[START_MSG] rc_eps_gen_2,307823121,8,4,1,X,eps_gen
+[START_SIGNALS] rc_eps_gen_2_pnl_2_voltage_min,16,7,0,U,20000,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_gen_2_pnl_1_voltage_min,16,1,0,U,20000,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_gen_2_pnl_1_voltage_max,16,3,0,U,20000,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_gen_2_pnl_1_voltage_avg,16,5,0,U,20000,0,1,0,1,raw node voltage,,
+[END_MSG]
+
+[START_MSG] rc_eps_gen_1,307823120,6,6,1,X,eps_gen
+[START_SIGNALS] rc_eps_gen_1_pnl_3_charging,1,1,5,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "CHARGING",1
+[VALUE_DESCRIPTION] "NOTCHARGING",0
+[START_SIGNALS] rc_eps_gen_1_pnl_2_charging,1,1,4,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "CHARGING",1
+[VALUE_DESCRIPTION] "NOTCHARGING",0
+[START_SIGNALS] rc_eps_gen_1_pnl_1_charging,1,1,3,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "CHARGING",1
+[VALUE_DESCRIPTION] "NOTCHARGING",0
+[START_SIGNALS] rc_eps_gen_1_pnl_3_enabled,1,1,2,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "ENABLED",1
+[VALUE_DESCRIPTION] "DISABLED",0
+[START_SIGNALS] rc_eps_gen_1_pnl_2_enabled,1,1,1,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "ENABLED",1
+[VALUE_DESCRIPTION] "DISABLED",0
+[START_SIGNALS] rc_eps_gen_1_pnl_1_enabled,1,1,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "ENABLED",1
+[VALUE_DESCRIPTION] "DISABLED",0
+[END_MSG]
+
+[START_MSG] rc_eps_batt_6,308871685,7,3,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_6_status,8,1,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_eps_batt_6_ctrl,8,2,0,U,255,0,1,0,1,,,
+[START_SIGNALS] rc_eps_batt_6_last_charge,40,3,0,U,549755813887,0,1,0,1,2^-8 seconds,,
+[END_MSG]
+
+[START_MSG] rc_eps_batt_5,308871684,8,5,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_5_node_c_min,16,1,0,I,32767,-32768,1,0,1,raw node current batt,,
+[START_SIGNALS] rc_eps_batt_5_node_c_max,16,3,0,I,32767,-32768,1,0,1,raw node current batt,,
+[START_SIGNALS] rc_eps_batt_5_node_c_avg,16,5,0,I,32767,-32768,1,0,1,raw node current batt,,
+[START_SIGNALS] rc_eps_batt_5_batt_temp_min,8,7,0,I,127,-128,1,0,1,raw tmp36,,
+[START_SIGNALS] rc_eps_batt_5_batt_temp_max,8,8,0,I,127,-128,1,0,1,raw tmp36,,
+[END_MSG]
+
+[START_MSG] rc_eps_batt_4,307823107,8,7,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_4_bal_auto_state,1,8,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_eps_batt_4_heater_auto_state,1,7,2,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_eps_batt_4_voltage_min,16,1,0,U,65535,0,1,0,1,raw voltage,,
+[START_SIGNALS] rc_eps_batt_4_voltage_max,16,3,0,U,65535,0,1,0,1,raw voltage,,
+[START_SIGNALS] rc_eps_batt_4_voltage_avg,16,5,0,U,65535,0,1,0,1,raw voltage,,
+[START_SIGNALS] rc_eps_batt_4_heater_state,1,7,1,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] rc_eps_batt_4_balancer_state,1,7,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] rc_eps_batt_3,308871682,7,4,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_3_current_min,16,1,0,U,65535,0,1,0,1,raw current batt,,
+[START_SIGNALS] rc_eps_batt_3_current_max,16,3,0,U,65535,0,1,0,1,raw current batt,,
+[START_SIGNALS] rc_eps_batt_3_current_avg,16,5,0,U,65535,0,1,0,1,raw current batt,,
+[START_SIGNALS] rc_eps_batt_3_batt_temp_avg,8,7,0,I,127,-128,1,0,1,raw tmp36,,
+[END_MSG]
+
+[START_MSG] rc_eps_batt_2,308871681,6,3,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_2_node_v_min,16,1,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_batt_2_node_v_max,16,3,0,U,65535,0,1,0,1,raw node voltage,,
+[START_SIGNALS] rc_eps_batt_2_node_v_avg,16,5,0,U,65535,0,1,0,1,raw node voltage,,
+[END_MSG]
+
+[START_MSG] rc_eps_batt_1,309920256,3,2,1,X,eps_batt
+[START_SIGNALS] rc_eps_batt_1_voltage_avg,16,3,0,U,65535,0,1,0,1,raw voltage,,
+[START_SIGNALS] rc_eps_batt_1_acc_charge_avg,16,1,0,U,65535,0,1,0,1,22.588 mAh,,
+[END_MSG]
+
+[START_MSG] cmd_ppt_time_upd,302252293,8,4,1,X,com_1
+[START_SIGNALS] cmd_ppt_time_upd_ign_charge,16,5,0,U,65535,0,1,0,1,2^-15s,,
+[START_SIGNALS] cmd_ppt_time_upd_cooldown,16,7,0,U,65535,0,1,0,1,2^-15s,,
+[START_SIGNALS] cmd_ppt_time_upd_ign_delay,16,3,0,U,65535,0,1,0,1,2^-15s,,
+[START_SIGNALS] cmd_ppt_time_upd_charge,16,1,0,U,65535,0,1,0,1,2^-15s,,
+[END_MSG]
+
+[START_MSG] tle_5,302448712,8,1,1,X,com_1
+[START_SIGNALS] tle_5_mnm,64,1,0,D,1.7e+308,-1.7e+308,1,0,1,revolutions/day,,
+[END_MSG]
+
+[START_MSG] tle_4,302448711,8,2,1,X,com_1
+[START_SIGNALS] tle_4_aop,32,5,0,F,3.4e+038,-3.4e+038,1,0,1,degrees,,
+[START_SIGNALS] tle_4_raan,32,1,0,F,3.4e+038,-3.4e+038,1,0,1,degrees,,
+[END_MSG]
+
+[START_MSG] tle_3,302448710,8,2,1,X,com_1
+[START_SIGNALS] tle_3_ecc,32,5,0,F,3.4e+038,-3.4e+038,1,0,1,,,
+[START_SIGNALS] tle_3_inc,32,1,0,F,3.4e+038,-3.4e+038,1,0,1,degrees,,
+[END_MSG]
+
+[START_MSG] tle_2,302448709,8,1,1,X,com_1
+[START_SIGNALS] tle_2_day,64,1,0,D,1.7e+308,-1.7e+308,1,0,1,,,
+[END_MSG]
+
+[START_MSG] tle_1,302448708,8,2,1,X,com_1
+[START_SIGNALS] tle_1_mna,32,5,0,F,3.4e+038,-3.4e+038,1,0,1,degrees,,
+[START_SIGNALS] tle_1_bstar,32,1,0,F,3.4e+038,-3.4e+038,1,0,1,,,
+[END_MSG]
+
+[START_MSG] gcmd_com2_run,302514673,2,3,1,X,com_1
+[START_SIGNALS] gcmd_com2_run_clear,1,2,1,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_com2_run_jump,1,2,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] gcmd_com2_run_fileno,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] com2_state,307757552,8,5,1,X,com_2
+[START_SIGNALS] com2_state_health_state,8,8,0,U,255,0,1,0,1,,,
+[START_SIGNALS] com2_state_curr_file,8,7,0,U,255,0,1,0,1,,,
+[START_SIGNALS] com2_state_qfilesize,16,5,0,U,65535,0,1,0,1,kB,,
+[START_SIGNALS] com2_state_qlen,16,3,0,U,65535,0,1,0,1,files,,
+[START_SIGNALS] com2_state_uptime,16,1,0,U,65535,0,1,0,1,s,,
+[END_MSG]
+
+[START_MSG] cmd_batt_rst,302252290,1,1,1,X,com_1
+[START_SIGNALS] cmd_batt_rst_confirm,1,1,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] cmd_batt_bal_enable,302252291,1,1,1,X,com_1
+[START_SIGNALS] cmd_batt_bal_enable_enable,1,1,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] cmd_reboot_request,262152,1,1,1,X,rahs
+[START_SIGNALS] cmd_reboot_request_domain,8,1,0,U,8,0,1,0,1,,,
+[VALUE_DESCRIPTION] "unk",8
+[VALUE_DESCRIPTION] "com1",7
+[VALUE_DESCRIPTION] "com2",6
+[VALUE_DESCRIPTION] "rahs",5
+[VALUE_DESCRIPTION] "bdot",4
+[VALUE_DESCRIPTION] "estim",3
+[VALUE_DESCRIPTION] "wheel",2
+[VALUE_DESCRIPTION] "eps",1
+[VALUE_DESCRIPTION] "ppt",0
+[END_MSG]
+
+[START_MSG] cmd_ignore_fsw,302252068,1,1,1,X,com_1
+[START_SIGNALS] cmd_ignore_fsw_ignore,1,1,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] cmd_mtq_fsw,302252067,4,4,1,X,adcs_estim
+[START_SIGNALS] cmd_mtq_fsw_sc_mode,8,4,0,U,3,0,1,0,1,,,
+[VALUE_DESCRIPTION] "not tumbling charlie",3
+[VALUE_DESCRIPTION] "not tumbling bob",2
+[VALUE_DESCRIPTION] "not tumbling alice",1
+[VALUE_DESCRIPTION] "tumbling",0
+[START_SIGNALS] cmd_mtq_fsw_z,8,3,0,I,100,-100,1,0,1,pct doodie,,
+[START_SIGNALS] cmd_mtq_fsw_y,8,2,0,I,100,-100,1,0,1,pct doodie,,
+[START_SIGNALS] cmd_mtq_fsw_x,8,1,0,I,100,-100,1,0,1,pct doodie,,
+[END_MSG]
+
+[START_MSG] sensorproc_imu,335872066,7,4,1,X,adcs_sensorproc
+[START_SIGNALS] sensorproc_imu_z,16,5,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] sensorproc_imu_y,16,3,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] sensorproc_imu_x,16,1,0,I,32767,-32768,1,0,1,0.004375 deg/s,,
+[START_SIGNALS] sensorproc_imu_valid,1,7,0,B,1,0,1,0,1,bool,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] sensorproc_mag,335872067,8,5,1,X,adcs_sensorproc
+[START_SIGNALS] sensorproc_mag_bdot_valid,1,7,1,B,1,0,1,0,1,,,
+[START_SIGNALS] sensorproc_mag_z,16,5,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] sensorproc_mag_y,16,3,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] sensorproc_mag_x,16,1,0,I,32767,-32768,1,0,1,73 nanoTeslas,,
+[START_SIGNALS] sensorproc_mag_valid,1,7,0,B,1,0,1,0,1,bool,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] cmd_rollcall,5308436,7,4,1,X,com_1
+[START_SIGNALS] cmd_rollcall_type,8,7,0,U,255,0,1,0,1,,,
+[START_SIGNALS] cmd_rollcall_met_overflow,8,6,0,U,255,0,1,0,1,,,
+[START_SIGNALS] cmd_rollcall_met,32,2,0,U,4294967295,0,1,0,1,2^-8 s,,
+[START_SIGNALS] cmd_rollcall_msp,8,1,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] mtq_ack,307691568,8,8,1,X,adcs_mtq
+[START_SIGNALS] mtq_ack_source,8,2,0,I,1,-128,1,0,1,,,
+[START_SIGNALS] mtq_ack_phase,8,1,0,I,3,-128,1,0,1,,,
+[VALUE_DESCRIPTION] "pms_phase",2
+[VALUE_DESCRIPTION] "actuation_phase",1
+[VALUE_DESCRIPTION] "measurement_phase",0
+[START_SIGNALS] mtq_ack_last_fsw_z,8,8,0,I,100,-128,1,0,1,pct,,
+[START_SIGNALS] mtq_ack_last_fsw_y,8,7,0,I,100,-128,1,0,1,pct,,
+[START_SIGNALS] mtq_ack_last_fsw_x,8,6,0,I,100,-128,1,0,1,pct,,
+[START_SIGNALS] mtq_ack_last_bdot_z,8,5,0,I,100,-128,1,0,1,pct,,
+[START_SIGNALS] mtq_ack_last_bdot_y,8,4,0,I,100,-128,1,0,1,pct,,
+[START_SIGNALS] mtq_ack_last_bdot_x,8,3,0,I,100,-128,1,0,1,pct,,
+[END_MSG]
+
+[START_MSG] cmd_ppt_single_fire,302252288,2,3,1,X,com_1
+[START_SIGNALS] cmd_ppt_single_fire_override_smt,1,1,2,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] cmd_ppt_single_fire_override,1,1,1,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] cmd_ppt_single_fire_with_pulse,1,1,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] mpc_vp,302448674,1,1,1,X,adcs_mpc
+[START_SIGNALS] mpc_vp_status,1,1,0,B,1,0,1,0,1,,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] sensorproc_sun,335872065,7,4,1,X,adcs_sensorproc
+[START_SIGNALS] sensorproc_sun_valid,1,7,0,B,1,0,1,0,1,bool,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[START_SIGNALS] sensorproc_sun_z,16,5,0,I,32767,-32768,1,0,1,,,
+[START_SIGNALS] sensorproc_sun_y,16,3,0,I,32767,-32768,1,0,1,,,
+[START_SIGNALS] sensorproc_sun_x,16,1,0,I,32767,-32768,1,0,1,,,
+[END_MSG]
+
+[START_MSG] cmd_mtq_bdot,307691553,3,3,1,X,adcs_bdot
+[START_SIGNALS] cmd_mtq_bdot_z,8,3,0,I,100,-100,1,0,1,pct doodie,,
+[START_SIGNALS] cmd_mtq_bdot_y,8,2,0,I,100,-100,1,0,1,pct doodie,,
+[START_SIGNALS] cmd_mtq_bdot_x,8,1,0,I,100,-100,1,0,1,pct doodie,,
+[END_MSG]
+
+[START_MSG] bdot_tumble_status,308740128,1,1,1,X,adcs_bdot
+[START_SIGNALS] bdot_tumble_status_status,1,1,0,B,1,0,1,0,1,bool,,
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_MSG]
+
+[START_MSG] grnd_epoch,302449337,5,2,1,X,com_1
+[START_SIGNALS] grnd_epoch_val_overflow,8,5,0,U,255,0,1,0,1,,,
+[START_SIGNALS] grnd_epoch_val,32,1,0,U,4294967295,0,1,0,1,2^-8 s,,
+[END_MSG]
+
+[START_VALUE_TABLE]
+[START_TABLE] com1_mode
+[VALUE_DESCRIPTION] "camera mode",4
+[VALUE_DESCRIPTION] "real-time mode",3
+[VALUE_DESCRIPTION] "safe mode",2
+[VALUE_DESCRIPTION] "health mode",1
+[END_TABLE]
+[START_TABLE] pd_state
+[VALUE_DESCRIPTION] "unknown",6
+[VALUE_DESCRIPTION] "off_autoshutoff",5
+[VALUE_DESCRIPTION] "off_initial",4
+[VALUE_DESCRIPTION] "off_batt_undervoltage",3
+[VALUE_DESCRIPTION] "off_overcurrent",2
+[VALUE_DESCRIPTION] "off_manual",1
+[VALUE_DESCRIPTION] "on",0
+[END_TABLE]
+[START_TABLE] i2c_result
+[VALUE_DESCRIPTION] "transmit timeout",4
+[VALUE_DESCRIPTION] "nack",3
+[VALUE_DESCRIPTION] "stop timeout",2
+[VALUE_DESCRIPTION] "start timeout",1
+[VALUE_DESCRIPTION] "no error",0
+[END_TABLE]
+[START_TABLE] sysrstiv
+[VALUE_DESCRIPTION] "RSTIFG RST_NMI BOR",4
+[VALUE_DESCRIPTION] "PUC MPUSEG3IFG seg 3 mem viol",46
+[VALUE_DESCRIPTION] "PUC MPUSEG2IFG seg 2 mem viol",44
+[VALUE_DESCRIPTION] "PUC MPUSEG1IFG seg 1 mem viol",42
+[VALUE_DESCRIPTION] "PUC MPUSEGIIFGinfoMemSegViol",40
+[VALUE_DESCRIPTION] "PUC MPUSEGIPIFGencapIPmemSeg",38
+[VALUE_DESCRIPTION] "PUC CSPW CS password violation",36
+[VALUE_DESCRIPTION] "PUC MPUPW MPU pwd violation",34
+[VALUE_DESCRIPTION] "PUC PMMPW PMM pwd violation",32
+[VALUE_DESCRIPTION] "PUC Peripheral area fetch",30
+[VALUE_DESCRIPTION] "PUC Uncorrectable FRAM bit err",28
+[VALUE_DESCRIPTION] "PUC FRCTLPW password violation",26
+[VALUE_DESCRIPTION] "PUC WDTPW password violation",24
+[VALUE_DESCRIPTION] "PUC WDTIFG watchdog timeout",22
+[VALUE_DESCRIPTION] "POR PMMSWPOR software POR",20
+[VALUE_DESCRIPTION] "BOR SVSHIFG SVSH event",14
+[VALUE_DESCRIPTION] "BOR Security violation",10
+[VALUE_DESCRIPTION] "BOR LPMx_5 wake up",8
+[VALUE_DESCRIPTION] "BOR RSTIFG RSTNMI",6
+[VALUE_DESCRIPTION] "BOR Brownout",2
+[VALUE_DESCRIPTION] "No interrupt pending",0
+[END_TABLE]
+[START_TABLE] gen_pnl_charging
+[VALUE_DESCRIPTION] "CHARGING",1
+[VALUE_DESCRIPTION] "NOTCHARGING",0
+[END_TABLE]
+[START_TABLE] gen_pnl_enabled
+[VALUE_DESCRIPTION] "ENABLED",1
+[VALUE_DESCRIPTION] "DISABLED",0
+[END_TABLE]
+[START_TABLE] fire_result
+[VALUE_DESCRIPTION] "no main discharge",2
+[VALUE_DESCRIPTION] "no main charge",1
+[VALUE_DESCRIPTION] "fire successful",0
+[END_TABLE]
+[START_TABLE] mtq_phase
+[VALUE_DESCRIPTION] "pms_phase",2
+[VALUE_DESCRIPTION] "actuation_phase",1
+[VALUE_DESCRIPTION] "measurement_phase",0
+[END_TABLE]
+[START_TABLE] bdot_mag_mode
+[VALUE_DESCRIPTION] "sp2 mode",2
+[VALUE_DESCRIPTION] "sp1 mode",1
+[VALUE_DESCRIPTION] "bdot mode",0
+[END_TABLE]
+[START_TABLE] bdot_control_mode
+[VALUE_DESCRIPTION] "spam",2
+[VALUE_DESCRIPTION] "sleep mode",1
+[VALUE_DESCRIPTION] "normal mode",0
+[END_TABLE]
+[START_TABLE] nbool
+[VALUE_DESCRIPTION] "null",2
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_TABLE]
+[START_TABLE] fire_state
+[VALUE_DESCRIPTION] "no discharge",3
+[VALUE_DESCRIPTION] "no charge",2
+[VALUE_DESCRIPTION] "fire overridden",1
+[VALUE_DESCRIPTION] "fire successful",0
+[END_TABLE]
+[START_TABLE] uv_state
+[VALUE_DESCRIPTION] "undervoltage",1
+[VALUE_DESCRIPTION] "normal",0
+[END_TABLE]
+[START_TABLE] mode
+[VALUE_DESCRIPTION] "low power",4
+[VALUE_DESCRIPTION] "pointing",3
+[VALUE_DESCRIPTION] "bdot",1
+[VALUE_DESCRIPTION] "fsw off",0
+[END_TABLE]
+[START_TABLE] pwr_domain
+[VALUE_DESCRIPTION] "unk",8
+[VALUE_DESCRIPTION] "com1",7
+[VALUE_DESCRIPTION] "com2",6
+[VALUE_DESCRIPTION] "rahs",5
+[VALUE_DESCRIPTION] "bdot",4
+[VALUE_DESCRIPTION] "estim",3
+[VALUE_DESCRIPTION] "wheel",2
+[VALUE_DESCRIPTION] "eps",1
+[VALUE_DESCRIPTION] "ppt",0
+[END_TABLE]
+[START_TABLE] sat_state
+[VALUE_DESCRIPTION] "good",1
+[VALUE_DESCRIPTION] "bad",0
+[END_TABLE]
+[START_TABLE] node
+[VALUE_DESCRIPTION] "rahs",15
+[VALUE_DESCRIPTION] "com_2",14
+[VALUE_DESCRIPTION] "com_1",13
+[VALUE_DESCRIPTION] "adcs_mtq",12
+[VALUE_DESCRIPTION] "adcs_sensorproc",11
+[VALUE_DESCRIPTION] "adcs_mpc",10
+[VALUE_DESCRIPTION] "adcs_estim",9
+[VALUE_DESCRIPTION] "eps_batt",8
+[VALUE_DESCRIPTION] "eps_gen",7
+[VALUE_DESCRIPTION] "eps_dist",6
+[VALUE_DESCRIPTION] "ppt",5
+[VALUE_DESCRIPTION] "adcs_rwz",4
+[VALUE_DESCRIPTION] "adcs_rwy",3
+[VALUE_DESCRIPTION] "adcs_rwx",2
+[VALUE_DESCRIPTION] "adcs_bdot",1
+[VALUE_DESCRIPTION] "test",0
+[END_TABLE]
+[START_TABLE] agg
+[VALUE_DESCRIPTION] "sum",5
+[VALUE_DESCRIPTION] "max",4
+[VALUE_DESCRIPTION] "min",3
+[VALUE_DESCRIPTION] "count",2
+[VALUE_DESCRIPTION] "avg",1
+[VALUE_DESCRIPTION] "none",0
+[END_TABLE]
+[START_TABLE] bool
+[VALUE_DESCRIPTION] "true",1
+[VALUE_DESCRIPTION] "false",0
+[END_TABLE]
+[END_VALUE_TABLE]
+
+[NODE] ppt,eps_batt,eps_dist,eps_gen,adcs_rwz,adcs_rwy,adcs_rwx,adcs_mtq,rahs,adcs_sensorproc,adcs_mpc,adcs_estim,adcs_bdot,com_1,com_2
+
+[START_DESC]
+[START_DESC_NET]
+[END_DESC_NET]
+
+[START_DESC_NODE]
+[END_DESC_NODE]
+
+[START_DESC_MSG]
+302252858 X "ground command to change the mode of COM1";
+303563552 X "Packet containing camera data from the RAHS board";
+302252848 X "Sets the state of battery balancer automation";
+302252847 X "Set the status of dist autoshutoff for each power domain";
+302252767 X "Resets MET and autosequencer, also sets the autosequencer to be reinitialized on next powerup";
+302252766 X "Causes dist to self-restart";
+307823323 X "Dist Rollcall";
+308871901 X "BDOT RollCall";
+301990618 X "enables/disables battery heater automation";
+307233497 X "the MET of the item";
+307233496 X "the first 8 indices of the specified CAN ID";
+302252759 X "get MET of the item at the specified index of the autosequencer";
+302252758 X "get indices of the specified packet in the autosequencer";
+302252757 X "remove all occurrence of the specified CAN Id in the autosequencer";
+302252756 X "remove the autosequencer entry at the specified index";
+302252755 X "data of CAN packet to be added to the autosequencer";
+302252754 X "propertires of autosequencer entry";
+307823167 X "deprecated";
+307823168 X "deprecated";
+307823169 X "deprecated";
+[END_DESC_MSG]
+
+[START_DESC_SIG]
+302252858 X gcmd_com1_mode_mode "the mode to change to";
+303563552 X rahs_camera_data "The picture data";
+302252848 X gcmd_batt_set_bal_auto_state "What state the battery balancer automation should be set to";
+302252847 X gcmd_dist_autoshutoff_ppt "Whether autoshutoff is enabled on the power domain";
+302252847 X gcmd_dist_autoshutoff_eps "Whether autoshutoff is enabled on the power domain";
+302252847 X gcmd_dist_autoshutoff_estim "Whether autoshutoff is enabled on the power domain";
+302252847 X gcmd_dist_autoshutoff_bdot "Whether autoshutoff is enabled on the power domain";
+302252847 X gcmd_dist_autoshutoff_rahs "Whether autoshutoff is enabled on the power domain";
+302252847 X gcmd_dist_autoshutoff_com2 "Whether autoshutoff is enabled on the power domain";
+285475076 X gcmd_ppt_halt_confirm "Are you sure you want to halt the ppt?";
+307823323 X rc_eps_dist_18_rahs_ocp_thresh "RAHS current threshold";
+307823323 X rc_eps_dist_18_ppt_ocp_thresh "PPT current threshold";
+307823323 X rc_eps_dist_18_estim_ocp_thresh "ESTIM current threshold";
+307823323 X rc_eps_dist_18_eps_ocp_thresh "EPS current threshold";
+307823323 X rc_eps_dist_18_com2_ocp_thresh "COM2 current threshold";
+307823323 X rc_eps_dist_18_bdot_ocp_thresh "BDOT current threshold";
+308871901 X rc_adcs_bdot_10_dipole_var_z "The variance of sent dipole commands";
+308871901 X rc_adcs_bdot_10_dipole_var_y "The variance of sent dipole commands";
+308871901 X rc_adcs_bdot_10_dipole_var_x "The variance of sent dipole commands";
+308871795 X rc_adcs_bdot_9_spam_off_z_mtq_z "Last spam reading with mtq off 1/73 nT";
+308871795 X rc_adcs_bdot_9_spam_off_z_mtq_y "Last spam reading with mtq off 1/73 nT";
+308871795 X rc_adcs_bdot_9_spam_off_z_mtq_x "Last spam reading with mtq off 1/73 nT";
+308871794 X rc_adcs_bdot_8_spam_off_y_mtq_z "Last spam reading with mtq off 1/73 nT";
+308871794 X rc_adcs_bdot_8_spam_off_y_mtq_y "Last spam reading with mtq off 1/73 nT";
+308871794 X rc_adcs_bdot_8_spam_off_y_mtq_x "Last spam reading with mtq off 1/73 nT";
+308871794 X rc_adcs_bdot_8_spam_off_x_mtq_z "Last spam reading with mtq off 1/73 nT";
+301990618 X gcmd_batt_set_heater_check_state "the state of heater automation";
+307233497 X eps_dist_autoseq_get_met_rsp_met "the MET";
+307233496 X eps_dist_autoseq_get_ind_rsp_ind "the indices, as an 8-element array";
+302252759 X gcmd_autoseq_get_met_index "the index";
+302252758 X gcmd_autoseq_get_indices_id "the CAN Id";
+302252757 X gcmd_autoseq_remove_can_id_id "remove all occurrences of the specified CAN Id in the autosequencer";
+302252756 X gcmd_autoseq_rm_at_index_index "the index";
+302252755 X gcmd_autoseq_add_2_data "the data of the CAN packet to be added to the autosequencer";
+302252754 X gcmd_autoseq_add_1_sendflg "whether the CAN packet should send";
+302252754 X gcmd_autoseq_add_1_met "the MET of the entry to add";
+302252754 X gcmd_autoseq_add_1_can_id "the CAN Id of the message to add";
+308871793 X rc_adcs_bdot_7_spam_off_x_mtq_y "Last spam reading with mtq off 1/73 nT";
+308871793 X rc_adcs_bdot_7_spam_off_x_mtq_x "Last spam reading with mtq off 1/73 nT";
+307823216 X rc_adcs_bdot_6_spam_on_time "Current setting for the time in minutes of SPAM being on";
+307823216 X rc_adcs_bdot_6_spam_off_time "Current setting for the time in minutes of SPAM not being on";
+307823216 X rc_adcs_bdot_6_spam_control "Current setting on whether or not spam is enabled";
+307823216 X rc_adcs_bdot_6_pop_status_z "Current status of whether or not POP is enable for specified axis ";
+307823216 X rc_adcs_bdot_6_pop_status_y "Current status of whether or not POP is enable for specified axis ";
+307823216 X rc_adcs_bdot_6_pop_status_x "Current status of whether or not POP is enable for specified axis ";
+307823216 X rc_adcs_bdot_6_max_tumble_time "Current max tumbling time that bdot can be in until it swtiches to SLEEP_MODE automatically";
+307823216 X rc_adcs_bdot_6_mag_control "Shows the current state of magnetometer control on bdot. Choose the best fit magnetometer from ground. 0 = Auto, 1 = MAG_BDOT, 2 = MAG_SP1, 3 = MAG_SP2";
+307823216 X rc_adcs_bdot_6_current_state "State that bdot is in. Chooses mode that bdot is in: 0 = NORMAL_MODE , 1 = SLEEP_MODE, 2 = SPAM_MAG_SELF_TEST, 3 = SPAM";
+302252753 X gcmd_ppt_multiple_fire_override "Ppt fire override";
+302252753 X gcmd_ppt_multiple_fire_count "How many times to fire";
+302252751 X gcmd_eps_batt_fulldef_const_volt "Limits for detecting a full state on the battery (voltage must be greater than this value)";
+302252751 X gcmd_eps_batt_fulldef_chg_curr "Limits for detecting a full state on the battery (current must be less than this value)";
+307823196 X rc_adcs_bdot_5_spam_on_z_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
+307823196 X rc_adcs_bdot_5_spam_on_z_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
+307823196 X rc_adcs_bdot_5_spam_on_z_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
+302252750 X gcmd_reset_minmax_mtq "Whether to reset the subsystem";
+302252750 X gcmd_reset_minmax_sensorproc "Whether to reset the subsystem";
+302252750 X gcmd_reset_minmax_mpc "Whether to reset the subsystem";
+302252750 X gcmd_reset_minmax_estim "Whether to reset the subsystem";
+302252750 X gcmd_reset_minmax_batt "Whether to reset the subsystem";
+302252750 X gcmd_reset_minmax_gen "Whether to reset the subsystem";
+302252750 X gcmd_reset_minmax_dist "Whether to reset the subsystem";
+302252750 X gcmd_reset_minmax_ppt "Whether to reset the subsystem";
+302252750 X gcmd_reset_minmax_bdot "Whether to reset the subsystem";
+308871790 X rc_eps_batt_h2_canrxerror "the Batt MCP's RX error buffer";
+308871789 X rc_adcs_bdot_h2_canrxerror "the BDOT MCP's RX error buffer";
+308871788 X rc_eps_dist_h2_canrxerror "the Dist MCP's RX error buffer";
+308871787 X rc_adcs_mpc_h2_canrxerror "the MPC MCP's RX error buffer";
+307823210 X rc_adcs_estim_h2_canrxerror "Estim MCP's RX error buffer";
+308871785 X rc_adcs_sp_h2_canrxerror "SP MCP's RX error buffer";
+308871784 X rc_eps_gen_h2_canrxerror "GEN MCP's RX error buffer";
+308871783 X rc_adcs_mtq_h2_canrxerror "the MTQ MCP's RX error buffer";
+308871782 X rc_ppt_h2_last_fire_result "The result of the last PPT fire";
+308871782 X rc_ppt_h2_canrxerror "the PPT MCP's RX error buffer";
+308871781 X rc_eps_batt_h1_temp_min "Temperature of MSP";
+308871781 X rc_eps_batt_h1_temp_max "Temperature of MSP";
+308871781 X rc_eps_batt_h1_temp_avg "Temperature of MSP";
+308871781 X rc_eps_batt_h1_sysrstiv "Reason for reset";
+308871781 X rc_eps_batt_h1_reset_count "Reset Count";
+308871780 X rc_adcs_bdot_h1_temp_min "Temperature of MSP";
+308871780 X rc_adcs_bdot_h1_temp_max "Temperature of MSP";
+308871780 X rc_adcs_bdot_h1_temp_avg "Temperature of MSP";
+308871780 X rc_adcs_bdot_h1_sysrstiv "Reason for reset";
+308871780 X rc_adcs_bdot_h1_reset_count "Reset Count";
+308871779 X rc_eps_dist_h1_temp_min "Temperature of MSP";
+308871779 X rc_eps_dist_h1_temp_max "Temperature of MSP";
+308871779 X rc_eps_dist_h1_temp_avg "Temperature of MSP";
+308871779 X rc_eps_dist_h1_sysrstiv "Reason for reset";
+308871779 X rc_eps_dist_h1_reset_count "Reset Count";
+308871778 X rc_adcs_mpc_h1_temp_min "Temperature of MSP";
+308871778 X rc_adcs_mpc_h1_temp_max "Temperature of MSP";
+308871778 X rc_adcs_mpc_h1_temp_avg "Temperature of MSP";
+308871778 X rc_adcs_mpc_h1_sysrstiv "Reason for reset";
+308871778 X rc_adcs_mpc_h1_reset_count "Reset Count";
+307823201 X rc_adcs_estim_h1_temp_min "Temperature of MSP";
+307823201 X rc_adcs_estim_h1_temp_max "Temperature of MSP";
+307823201 X rc_adcs_estim_h1_temp_avg "Temperature of MSP";
+307823201 X rc_adcs_estim_h1_sysrstiv "Reason for reset";
+307823201 X rc_adcs_estim_h1_reset_count "Reset Count";
+308871776 X rc_adcs_sp_h1_temp_min "Temperature of MSP";
+308871776 X rc_adcs_sp_h1_temp_max "Temperature of MSP";
+308871776 X rc_adcs_sp_h1_temp_avg "Temperature of MSP";
+308871776 X rc_adcs_sp_h1_sysrstiv "Reason for reset";
+308871776 X rc_adcs_sp_h1_reset_count "Reset Count";
+308871775 X rc_eps_gen_h1_temp_min "Temperature of MSP";
+308871775 X rc_eps_gen_h1_temp_max "Temperature of MSP";
+308871775 X rc_eps_gen_h1_temp_avg "Temperature of MSP";
+308871775 X rc_eps_gen_h1_sysrstiv "Reason for reset";
+308871775 X rc_eps_gen_h1_reset_count "Reset Count";
+308871774 X rc_adcs_mtq_h1_temp_min "Temperature of MSP";
+308871774 X rc_adcs_mtq_h1_temp_max "Temperature of MSP";
+308871774 X rc_adcs_mtq_h1_temp_avg "Temperature of MSP";
+308871774 X rc_adcs_mtq_h1_sysrstiv "Reason for reset";
+308871774 X rc_adcs_mtq_h1_reset_count "Reset Count";
+308871773 X rc_ppt_h1_temp_min "Temperature of MSP";
+308871773 X rc_ppt_h1_temp_max "Temperature of MSP";
+308871773 X rc_ppt_h1_temp_avg "Temperature of MSP";
+308871773 X rc_ppt_h1_sysrstiv "Reason for reset";
+302252749 X gcmd_mtq_pms_z "Sets permamenent dipole strength";
+302252749 X gcmd_mtq_pms_y "Sets permamenent dipole strength";
+302252749 X gcmd_mtq_pms_x "Sets permamenent dipole strength";
+302252749 X gcmd_mtq_pms_enable "turns on permanent magnet setting";
+302252748 X gcmd_bdot_max_tumble_time "Chooses the maximum time bdot is tumbling continuously. If bdot tumbles for longer than this time, will automatically go into sleep mode. Units: Minutes";
+302252747 X gcmd_bdot_spam_magnitude_z "What magnitude the magnetorquer should spam on z axis";
+302252747 X gcmd_bdot_spam_magnitude_y "What magnitude the magnetorquer should spam on y axis";
+302252747 X gcmd_bdot_spam_magnitude_x "What magnitude the magnetorquer should spam on x axis";
+302252747 X gcmd_bdot_spam_time_on "Chooses the amount of minutes in between SPAM";
+302252747 X gcmd_bdot_spam_time_off "Chooses the amount of time SPAM should be on for";
+302252747 X gcmd_bdot_spam_control "Turn spam on or off";
+302252746 X gcmd_bdot_control_mode "Chooses mode that bdot is in: 0 = NORMAL_MODE , 1 = SLEEP_MODE";
+302252745 X gcmd_bdot_mag_control_mode "Choose the best fit magnetometer from ground. 0 = Auto, 1 = BDOT, 2 = SP1, 3 = SP2";
+302252744 X gcmd_bdot_pole_override_gain_z "Percentage dipole gain on z axis";
+302252744 X gcmd_bdot_pole_override_gain_y "Percentage dipole gain on y axis";
+302252744 X gcmd_bdot_pole_override_gain_x "Percentage dipole gain on x axis";
+302252744 X gcmd_bdot_pole_override_z "Flips the dipole signs on bdot z axis before sending command to mtq";
+302252744 X gcmd_bdot_pole_override_y "Flips the dipole signs on bdot y axis before sending command to mtq";
+302252744 X gcmd_bdot_pole_override_x "Flips the dipole signs on bdot x axis before sending command to mtq";
+302252742 X gcmd_gen_set_pt_state_3 "enables or disables Power Tracker #3";
+302252742 X gcmd_gen_set_pt_state_2 "enables or disables Power Tracker #2";
+302252742 X gcmd_gen_set_pt_state_1 "enables or disables Power Tracker #1";
+302252743 X gcmd_sp_set_thresh_thresh "Any magnetometer reading outside of +/- the set threshold will be discarded as invalid";
+302252741 X gcmd_dist_set_pd_ovc_ppt_ovc "Set PD overcurrent PPT";
+302252740 X gcmd_dist_set_pd_ovc_eps_ovc "Set PD Overcurrent EPS";
+302252739 X gcmd_dist_set_pd_ovc_wheels_ovc "Set PD Overcurrent Weels";
+302252738 X gcmd_dist_set_pd_ovc_estim_ovc "Set PD overcurrent ESTIM";
+302252737 X gcmd_dist_set_pd_ovc_bdot_ovc "Set PD overcurrent BDOT";
+302252736 X gcmd_dist_set_pd_ovc_rahs_ovc "Set PD overcurrent RAHS";
+302252735 X gcmd_dist_set_pd_ovc_com2_ovc "set PD Overcurrent Com2";
+302252734 X gcmd_dist_set_pd_ovc_com1_ovc "Set PD Overcurrent Com1";
+302252733 X gcmd_dist_set_pd_state_wheels "Enables or disables the power switch to the reaction wheels (empty power domain)";
+302252733 X gcmd_dist_set_pd_state_rahs "Enables or disables the power switch to rahs power domain";
+302252733 X gcmd_dist_set_pd_state_ppt "Enables or disables the power switch to the PPT power domain";
+302252733 X gcmd_dist_set_pd_state_estim "Enables or disables the power switch to the estimator power domain";
+302252733 X gcmd_dist_set_pd_state_eps "Enables or disables the power switch to the EPS power domain";
+302252733 X gcmd_dist_set_pd_state_com2 "Enables or disables the power switch to com2 power domain";
+302252733 X gcmd_dist_set_pd_state_com1 "Enables or disables the power switch to com1 power domain";
+302252733 X gcmd_dist_set_pd_state_bdot "Enables or disables the power switch to BDOT power domain";
+302449340 X gcmd_mtq_pop_z "flips the polarity on mtq z axis";
+302449340 X gcmd_mtq_pop_y "flips the polarity on mtq y axis";
+302449340 X gcmd_mtq_pop_x "flips the polarity on mtq x axis ";
+307823194 X rc_eps_batt_7_acc_charge_min "Acumulated charge minimum";
+307823194 X rc_eps_batt_7_acc_charge_max "Accumulated charge maximum";
+307823194 X rc_eps_batt_7_acc_charge_avg "Accumulated charge avg";
+335872068 X sensorproc_mag2_bdot_valid "Whether the reading is valid for bdot";
+307823193 X rc_adcs_estim_14_mag_z "z component of unit vector of the direction of the magnetic field ";
+307823192 X rc_adcs_estim_13_mag_y "y component of unit vector of the direction of the magnetic field ";
+307823191 X rc_adcs_estim_12_mag_x "x component of unit vector of the direction of the magnetic field ";
+307823190 X rc_adcs_estim_11_sun_z "z component of unit vector from spacecraft to sun";
+307823189 X rc_adcs_estim_10_sun_y "y component of unit vector from spacecraft to sun";
+307823188 X rc_adcs_estim_9_sun_x "x component of unit vector from spacecraft to sun";
+307823186 X rc_eps_dist_16_ppt_state "PPT domain state";
+307823186 X rc_eps_dist_16_ppt_c_min "PPT domain current minimum";
+307823186 X rc_eps_dist_16_ppt_c_max "PPT domain current maximum";
+307823186 X rc_eps_dist_16_ppt_c_avg "PPT domain current average";
+307823179 X rc_eps_dist_9_rahs_v_min "RAHS domain voltage minimum";
+307823179 X rc_eps_dist_9_rahs_v_max "RAHS domain voltage maximum";
+307823179 X rc_eps_dist_9_rahs_v_avg "RAHS domain voltage average";
+307823177 X rc_eps_dist_7_com2_v_min "COM2 domain voltage minimum";
+307823177 X rc_eps_dist_7_com2_v_max "COM2 domain voltage maximum";
+307823177 X rc_eps_dist_7_com2_v_avg "COM2 domain voltage average";
+307823176 X rc_eps_dist_6_com2_state "COM2 domain state";
+307823176 X rc_eps_dist_6_com2_c_min "COM2 domain current minimum";
+307823176 X rc_eps_dist_6_com2_c_max "COM2 domain current maximum";
+307823176 X rc_eps_dist_6_com2_c_avg "COM2 domain current average";
+307823175 X rc_eps_dist_5_com1_v_min "COM1 domain voltage minimum";
+307823175 X rc_eps_dist_5_com1_v_max "COM1 domain voltage maximum";
+307823175 X rc_eps_dist_5_com1_v_avg "COM1 domain voltage average";
+307823173 X rc_eps_dist_3_batt_v_avg "Battery voltage average";
+307823173 X rc_eps_dist_3_batt_v_max "Battery voltage maximum";
+307823173 X rc_eps_dist_3_batt_v_min "Battery voltage minimum";
+307823172 X rc_eps_dist_2_uv_state "Undervoltage State";
+307823172 X rc_eps_dist_2_met_overflow "Mission elapsed time last byte";
+307823172 X rc_eps_dist_2_met "Mission elapsed time first 4 bytes";
+307823187 X rc_eps_dist_17_ppt_v_min "PPT domain voltage minimum";
+307823187 X rc_eps_dist_17_ppt_v_max "PPT domain voltage maximum";
+307823187 X rc_eps_dist_17_ppt_v_avg "PPT domain voltage average";
+307823184 X rc_eps_dist_14_eps_state "EPS domain state";
+307823184 X rc_eps_dist_14_eps_c_min "EPS domain current minimum";
+307823184 X rc_eps_dist_14_eps_c_max "EPS domain current maximum";
+307823184 X rc_eps_dist_14_eps_c_avg "EPS domain current average";
+307823183 X rc_eps_dist_13_estim_v_min "ESTIM domain voltage minimum";
+307823183 X rc_eps_dist_13_estim_v_max "ESTIM domain voltage maximum";
+307823183 X rc_eps_dist_13_estim_v_avg "ESTIM domain voltage average";
+307823181 X rc_eps_dist_11_bdot_v_min "BDOT domain voltage minimum";
+307823181 X rc_eps_dist_11_bdot_v_max "BDOT domain voltage maximum";
+307823181 X rc_eps_dist_11_bdot_v_avg "BDOT domain voltage average";
+307823182 X rc_eps_dist_12_estim_state "ESTIM domain state";
+307823182 X rc_eps_dist_12_estim_c_min "ESTIM domain current minimum";
+307823182 X rc_eps_dist_12_estim_c_max "ESTIM domain current maximum";
+307823182 X rc_eps_dist_12_estim_c_avg "ESTIM domain current average";
+307823185 X rc_eps_dist_15_eps_v_min "EPS domain voltage minimum";
+307823185 X rc_eps_dist_15_eps_v_max "EPS domain voltage maximum";
+307823185 X rc_eps_dist_15_eps_v_avg "EPS domain voltage average";
+307823180 X rc_eps_dist_10_bdot_state "BDOT domain state";
+307823180 X rc_eps_dist_10_bdot_c_min "BDOT domain current minimum";
+307823180 X rc_eps_dist_10_bdot_c_max "BDOT domain current maximum";
+307823180 X rc_eps_dist_10_bdot_c_avg "BDOT domain current average";
+307823178 X rc_eps_dist_8_rahs_state "RAHS domain state";
+307823178 X rc_eps_dist_8_rahs_c_min "RAHS domain current minimum";
+307823178 X rc_eps_dist_8_rahs_c_max "RAHS domain current maximum";
+307823178 X rc_eps_dist_8_rahs_c_avg "RAHS domain current average";
+308871750 X rc_eps_dist_4_com1_state "COM1 domain state";
+308871750 X rc_eps_dist_4_com1_c_min "COM1 domain current minimum";
+308871750 X rc_eps_dist_4_com1_c_max "COM1 domain current maximum";
+308871750 X rc_eps_dist_4_com1_c_avg "COM1 domain current average";
+307823160 X rc_adcs_mpc_5_sc_quat_4 "The fourth element of the attitude quaternion of the spacecraft";
+307823159 X rc_adcs_mpc_4_sc_quat_3 "The third element of the attitude quaternion of the spacecraft";
+307823158 X rc_adcs_mpc_3_sc_quat_2 "The second element of the attitude quaternion of the spacecraft";
+307823170 X rc_adcs_mpc_15_sc_mode "The current operating mode of the ADCS system";
+307823170 X rc_adcs_mpc_15_point_true "Proportion of samples where attitude is within 20 degrees of commanded vector";
+307823157 X rc_adcs_mpc_2_sc_quat_1 "The first element of the attitude quaternion of the spacecraft";
+307823155 X rc_adcs_estim_8_tle_id "TLE ID valid bit";
+307823155 X rc_adcs_estim_8_sgp4_flag "Flag telling what mode ESTIM is propagating the orbit in";
+307823155 X rc_adcs_estim_8_sc_in_sun "Boolean indicating whether the s/c thinks it is in the sun or not.";
+307823155 X rc_adcs_estim_8_sc_above_gs "Boolean indicating whether the s/c thinks it is above the UW ground station or not.";
+307823155 X rc_adcs_estim_8_epoch_overflow "Epoch used in position and velocity calculation";
+307823155 X rc_adcs_estim_8_epoch "Epoch used in position and velocity calculation";
+307823154 X rc_adcs_estim_7_vel_z "The inertial velocity the satellite thinks we have";
+307823153 X rc_adcs_estim_6_vel_y "The inertial velocity the satellite thinks we have";
+307823152 X rc_adcs_estim_5_vel_x "The inertial velocity the satellite thinks we have";
+307823151 X rc_adcs_estim_4_pos_z "Inertial position that the ADCS system thinks the satellite is at";
+307823149 X rc_adcs_estim_2_pos_x "Inertial position that the ADCS system thinks the satellite is at";
+307823150 X rc_adcs_estim_3_pos_y "Inertial position that the ADCS system thinks the satellite is at";
+307823142 X rc_adcs_sp_12_mag2_z_min "Magnetometer 2 Z axis min";
+307823142 X rc_adcs_sp_12_mag2_z_max "Magnetometer 2 Z axis max";
+307823142 X rc_adcs_sp_12_mag2_y_max "Magnetometer 2 Y axis max";
+307823142 X rc_adcs_sp_12_mag2_y_avg "Magnetometer 2 Y axis avg";
+307823141 X rc_adcs_sp_11_mag2_x_avg "Magnetometer 2 X axis avg";
+307823141 X rc_adcs_sp_11_mag2_x_max "Magnetometer 2 X axis max";
+307823141 X rc_adcs_sp_11_mag2_x_min "Magnetometer 2 X axis min";
+307823141 X rc_adcs_sp_11_mag2_y_min "Magnetometer 2 Y axis min";
+307823136 X rc_adcs_sp_6_mag2_valid "Sum of last 255 processed mag valid bits";
+307823136 X rc_adcs_sp_6_mag1_x_min "Magnetometer 1 X axis min";
+307823136 X rc_adcs_sp_6_mag1_valid "Sum of last 255 processed mag valid bits";
+307823136 X rc_adcs_sp_6_sun_z_max " Sun Sensor Z axis max";
+307823136 X rc_adcs_sp_6_sun_z_avg " Sun Sensor Z axis avg";
+307823147 X rc_adcs_sp_17_imu_z_max "IMU Z axis max";
+307823147 X rc_adcs_sp_17_imu_z_avg "IMU Z axis avg";
+307823146 X rc_adcs_sp_16_imu_z_min "IMU Z axis min";
+307823146 X rc_adcs_sp_16_imu_y_min "IMU Y axis min";
+307823146 X rc_adcs_sp_16_imu_y_max "IMU Y axis max";
+307823146 X rc_adcs_sp_16_imu_y_avg "IMU Y axis avg";
+307823140 X rc_adcs_sp_10_mag1_z_min "Magnetometer 1 Z axis min";
+307823140 X rc_adcs_sp_10_mag1_z_max "Magnetometer 1 Z axis max";
+307823140 X rc_adcs_sp_10_mag1_z_avg "Magnetometer 1 Z axis avg";
+307823140 X rc_adcs_sp_10_mag1_y_avg "Magnetometer 1 Y axis avg";
+307823139 X rc_adcs_sp_9_mag1_y_min "Magnetometer 1 Y axis min";
+307823139 X rc_adcs_sp_9_mag1_y_max "Magnetometer 1 Y axis max";
+307823139 X rc_adcs_sp_9_mag1_x_max "Magnetometer 1 X axis max";
+307823139 X rc_adcs_sp_9_mag1_x_avg "Magnetometer 1 X axis avg";
+307823143 X rc_adcs_sp_13_suna_min "Minimum alpha value from the sun sensor";
+307823143 X rc_adcs_sp_13_suna_max "Maximum alpha value from the sun sensor";
+307823143 X rc_adcs_sp_13_suna_avg "Average alpha value from the sun sensor";
+307823143 X rc_adcs_sp_13_mag2_z_avg "Magnetometer 2 Z axis avg";
+307823145 X rc_adcs_sp_15_imu_x_min "IMU X axis min";
+307823145 X rc_adcs_sp_15_imu_x_max "IMU X axis max";
+307823145 X rc_adcs_sp_15_imu_x_avg "IMU X axis avg";
+307823145 X rc_adcs_sp_15_imu_valid "Sum of last 255 processed imu valid bits";
+307823144 X rc_adcs_sp_14_sunb_min "Minimum beta value from the sun sensor";
+307823144 X rc_adcs_sp_14_sunb_max "Maximum beta value from the sun sensor";
+307823144 X rc_adcs_sp_14_sunb_avg "Average beta value from the sun sensor";
+307823144 X rc_adcs_sp_14_sun_valid "Sum of last 255 processed sun sensor valid bits";
+307823135 X rc_adcs_sp_5_sun_z_min " Sun Sensor Z axis min";
+307823135 X rc_adcs_sp_5_sun_y_min " Sun Sensor Y axis min";
+307823135 X rc_adcs_sp_5_sun_y_max " Sun Sensor Y axis max";
+307823135 X rc_adcs_sp_5_sun_y_avg " Sun Sensor Y axis avg";
+307823134 X rc_adcs_sp_4_sun_x_min " Sun Sensor X axis min";
+307823134 X rc_adcs_sp_4_sun_x_max " Sun Sensor X axis max";
+307823134 X rc_adcs_sp_4_sun_x_avg " Sun Sensor X axis avg";
+307823134 X rc_adcs_sp_4_imup_z_avg "Processed IMU Z axis avg";
+307823133 X rc_adcs_sp_3_imup_z_min "Processed IMU Z axis min";
+307823133 X rc_adcs_sp_3_imup_z_max "Processed IMU Z axis max";
+307823133 X rc_adcs_sp_3_imup_y_max "Processed IMU Y axis max";
+307823133 X rc_adcs_sp_3_imup_y_avg "Processed IMU Y axis avg";
+307823132 X rc_adcs_sp_2_imup_y_min "Processed IMU Y axis min";
+307823132 X rc_adcs_sp_2_imup_x_min "Processed IMU X axis min";
+307823132 X rc_adcs_sp_2_imup_x_max "Processed IMU X axis max";
+307823132 X rc_adcs_sp_2_imup_x_avg "Processed IMU X axis avg";
+307823130 X rc_adcs_bdot_4_spam_on_y_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
+307823130 X rc_adcs_bdot_4_spam_on_y_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
+307823130 X rc_adcs_bdot_4_mag_z_avg "Z Average reading in nT";
+307823130 X rc_adcs_bdot_4_tumble "Tumble Status";
+307823129 X rc_adcs_bdot_3_mag_z_min "Z Minium reading in nT";
+307823129 X rc_adcs_bdot_3_mag_z_max "Z Maximum reading in nT";
+307823129 X rc_adcs_bdot_3_mag_y_max "Y Maximum reading in nT";
+307823129 X rc_adcs_bdot_3_mag_y_avg "Y Average reading in nT";
+307823111 X rc_adcs_bdot_2_mag_y_min "Y Minium reading in nT";
+307823111 X rc_adcs_bdot_2_mag_x_avg "X Average reading in nT";
+307823111 X rc_adcs_bdot_2_mag_x_min "X Minium reading in nT";
+307823111 X rc_adcs_bdot_2_mag_x_max "X Maximum reading in nT ";
+307823110 X rc_adcs_bdot_1_spam_on_y_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
+307823110 X rc_adcs_bdot_1_spam_on_x_mtq_z "the averages of one axis of magnetometer readings during one axis of the last spam";
+307823110 X rc_adcs_bdot_1_spam_on_x_mtq_y "the averages of one axis of magnetometer readings during one axis of the last spam";
+307823110 X rc_adcs_bdot_1_spam_on_x_mtq_x "the averages of one axis of magnetometer readings during one axis of the last spam";
+302449332 X estim_sun_unit_z_val "Unit vector of where the sun is at x";
+302449331 X estim_sun_unit_y_val "Unit vector of where the sun is at y";
+302449330 X estim_sun_unit_x_val "Unit vector of where the sun is at z";
+302449335 X estim_mag_unit_z_val "Unit vector of direction of magnetic field x";
+302449334 X estim_mag_unit_y_val "Unit vector of direction of magnetic field y";
+302449333 X estim_mag_unit_x_val "Unit vector of direction of magnetic field z";
+302449336 X estim_state_in_sun "Are we in the sun?";
+302449336 X estim_state_above_gs "Are we above the ground stn?";
+308871695 X rc_adcs_mtq_5_cmds_z_var "Variance in BDot's dipole commands";
+308871695 X rc_adcs_mtq_5_cmds_y_var "Variance in BDot's dipole commands";
+308871695 X rc_adcs_mtq_5_cmds_x_var "Variance in BDot's dipole commands";
+308871695 X rc_adcs_mtq_5_reset_counts "Number of resets";
+308871695 X rc_adcs_mtq_5_fsw_ignore "Flight Software Ignore";
+308871694 X rc_adcs_mtq_4_fsw_z_min "Min Z FSW command";
+308871694 X rc_adcs_mtq_4_fsw_y_max "Max Z FSW command";
+308871694 X rc_adcs_mtq_4_duty_z2_avg "Average Z Duty";
+308871694 X rc_adcs_mtq_4_duty_z1_avg "Average Z Duty";
+308871694 X rc_adcs_mtq_4_duty_y2_avg "Average Y Duty";
+308871694 X rc_adcs_mtq_4_duty_y1_avg "Average Y Duty";
+308871694 X rc_adcs_mtq_4_duty_x2_avg "Average X Duty ";
+308871694 X rc_adcs_mtq_4_duty_x1_avg "Average X Duty ";
+308871693 X rc_adcs_mtq_3_fsw_z_avg "Average Z FSW command";
+308871693 X rc_adcs_mtq_3_fsw_y_min "Min Y FSW command";
+308871693 X rc_adcs_mtq_3_fsw_y_max "Max Y FSW command";
+308871693 X rc_adcs_mtq_3_fsw_y_avg "Average Y FSW command";
+308871693 X rc_adcs_mtq_3_fsw_x_min "Min X FSW command";
+308871693 X rc_adcs_mtq_3_fsw_x_max "Max X FSW command";
+308871693 X rc_adcs_mtq_3_fsw_x_avg "Average X FSW command";
+308871693 X rc_adcs_mtq_3_bdot_z_min "MinZ BDOT command";
+308871692 X rc_adcs_mtq_2_bdot_z_max "Max Z BDOT command";
+308871692 X rc_adcs_mtq_2_bdot_z_avg "Average Z BDOT command";
+308871692 X rc_adcs_mtq_2_bdot_y_min "Min Y BDOT command";
+308871692 X rc_adcs_mtq_2_bdot_y_max "Max Y BDOT command";
+308871692 X rc_adcs_mtq_2_bdot_y_avg "Average Y BDOT command";
+308871692 X rc_adcs_mtq_2_bdot_x_min "Min X BDOT command";
+308871692 X rc_adcs_mtq_2_bdot_x_max "Max X BDOT command";
+308871692 X rc_adcs_mtq_2_bdot_x_avg "Average X BDOT command";
+307823112 X rc_ppt_1_last_main_charge "Main Charge Time Average";
+307823112 X rc_ppt_1_fault_count "PPT fault count";
+307823112 X rc_ppt_1_fire_count "Total number of times the PPT has fired";
+307823128 X rc_eps_gen_9_pnl_3_temp_min "Panel 3 Temp min";
+307823128 X rc_eps_gen_9_pnl_3_temp_max "Panel 3 Temp max";
+307823128 X rc_eps_gen_9_pnl_3_temp_avg "Panel 3 Temp avg";
+307823128 X rc_eps_gen_9_pnl_2_temp_min "Panel 2 Temp min";
+307823128 X rc_eps_gen_9_pnl_2_temp_max "Panel 2 Temp max";
+307823128 X rc_eps_gen_9_pnl_2_temp_avg "Panel 2 Temp avg";
+307823128 X rc_eps_gen_9_pnl_1_temp_max "Panel 1 Temp max";
+307823128 X rc_eps_gen_9_pnl_1_temp_avg "Panel 1 Temp avg";
+307823127 X rc_eps_gen_8_pnl_3_power_min "Panel 3 Current min";
+307823127 X rc_eps_gen_8_pnl_3_power_max "Panel 3 Current max";
+307823127 X rc_eps_gen_8_pnl_3_power_avg "Panel 3 Current avg";
+307823127 X rc_eps_gen_8_pnl_1_temp_min "Panel 1 Temp min";
+307823126 X rc_eps_gen_7_pnl_2_power_min "Panel 2 Current min";
+307823126 X rc_eps_gen_7_pnl_2_power_max "Panel 2 Current max";
+307823126 X rc_eps_gen_7_pnl_2_power_avg "Panel 2 Current avg";
+307823126 X rc_eps_gen_7_pnl_1_power_avg "Panel 1 Current avg";
+307823125 X rc_eps_gen_6_pnl_3_current_max "Panel 3 Current max";
+307823125 X rc_eps_gen_6_pnl_3_current_avg "Panel 3 Current avg";
+307823125 X rc_eps_gen_6_pnl_1_power_min "Panel 1 Current min";
+307823125 X rc_eps_gen_6_pnl_1_power_max "Panel 1 Current max";
+307823124 X rc_eps_gen_5_pnl_3_current_min "Panel 3 Current min";
+307823124 X rc_eps_gen_5_pnl_2_current_min "Panel 2 Current min";
+307823124 X rc_eps_gen_5_pnl_2_current_max "Panel 2 Current max";
+307823124 X rc_eps_gen_5_pnl_2_current_avg "Panel 2 Current avg";
+307823123 X rc_eps_gen_4_pnl_3_voltage_avg "Panel 3 Voltage avg";
+307823123 X rc_eps_gen_4_pnl_1_current_min "Panel 1 Current min";
+307823123 X rc_eps_gen_4_pnl_1_current_max "Panel 1 Current max";
+307823123 X rc_eps_gen_4_pnl_1_current_avg "Panel 1 Current avg";
+307823122 X rc_eps_gen_3_pnl_3_voltage_min "Panel 3 Voltage min";
+307823122 X rc_eps_gen_3_pnl_3_voltage_max "Panel 3 Voltage max";
+307823122 X rc_eps_gen_3_pnl_2_voltage_max "Panel 2 Voltage max";
+307823122 X rc_eps_gen_3_pnl_2_voltage_avg "Panel 2 Voltage avg";
+307823121 X rc_eps_gen_2_pnl_2_voltage_min "Panel 2 Voltage min";
+307823121 X rc_eps_gen_2_pnl_1_voltage_min "Panel 1 Voltage min";
+307823121 X rc_eps_gen_2_pnl_1_voltage_max "Panel 1 Voltage max";
+307823121 X rc_eps_gen_2_pnl_1_voltage_avg "Panel 1 Voltage avg";
+307823120 X rc_eps_gen_1_pnl_3_charging "whether gen panel 3 is charing";
+307823120 X rc_eps_gen_1_pnl_2_charging "whether gen panel 2 is charing";
+307823120 X rc_eps_gen_1_pnl_1_charging "whether gen panel 1 is charing";
+307823120 X rc_eps_gen_1_pnl_3_enabled "whether gen panel 3 is enabled";
+307823120 X rc_eps_gen_1_pnl_2_enabled "whether gen panel 2 is enabled";
+307823120 X rc_eps_gen_1_pnl_1_enabled "whether gen panel 1 is enabled";
+308871685 X rc_eps_batt_6_status "State of charge status register";
+308871685 X rc_eps_batt_6_ctrl "State of charge from coulomb counter on battery board";
+308871685 X rc_eps_batt_6_last_charge "The MET of last full battery charge";
+308871684 X rc_eps_batt_5_node_c_min "Current into the node between batteries. Indicates battery ballancing state.";
+308871684 X rc_eps_batt_5_node_c_max "Current into the node between batteries. Indicates battery ballancing state.";
+308871684 X rc_eps_batt_5_node_c_avg "Current into the node between batteries. Indicates battery ballancing state.";
+308871684 X rc_eps_batt_5_batt_temp_min "Battery temperature indicated by TMP36 mounted to the batteries.";
+308871684 X rc_eps_batt_5_batt_temp_max "Battery temperature indicated by TMP36 mounted to the batteries.";
+307823107 X rc_eps_batt_4_voltage_min "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
+307823107 X rc_eps_batt_4_voltage_max "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
+307823107 X rc_eps_batt_4_voltage_avg "Battery voltage from the coulomb counter on the battery board. Most accurate but only on when the EPS power domain is on.";
+307823107 X rc_eps_batt_4_heater_state "State of the battery heater switch";
+307823107 X rc_eps_batt_4_balancer_state "State of the battery balancer. enabeling the battery balancer only gives it permission to ballance. ";
+308871682 X rc_eps_batt_3_current_min "Minimum battery current seen since last min/max reset";
+308871682 X rc_eps_batt_3_current_max "Maximum battery current seen since last min/max reset";
+308871682 X rc_eps_batt_3_current_avg "Average current into or out of the battery";
+308871682 X rc_eps_batt_3_batt_temp_avg "Battery temperature indicated by TMP36 mounted to the batteries.";
+308871681 X rc_eps_batt_2_node_v_min "Voltage at the node between batteries";
+308871681 X rc_eps_batt_2_node_v_max "Voltage at the node between batteries";
+308871681 X rc_eps_batt_2_node_v_avg "Voltage at the node between batteries";
+302252293 X cmd_ppt_time_upd_ign_charge "PPT Igniter Charge Time";
+302252293 X cmd_ppt_time_upd_cooldown "PPT Cooldown Time";
+302252293 X cmd_ppt_time_upd_ign_delay "PPT Main Igniter Delay";
+302252293 X cmd_ppt_time_upd_charge "PPT Main Capacitor Charge Time";
+302448712 X tle_5_mnm "TLE ID and mean motion";
+302448711 X tle_4_aop "TLE ID and Argument of perigee";
+302448711 X tle_4_raan "TLE Rt ascension of the asc. node";
+302448710 X tle_3_ecc "TLE ID and Eccentricity";
+302448710 X tle_3_inc "TLE Orbital inclination";
+302448709 X tle_2_day "TLE ID and Days since J2000 TT";
+302448708 X tle_1_mna "TLE ID and Mean anomaly";
+302448708 X tle_1_bstar "TLE BSTAR drag term";
+302514673 X gcmd_com2_run_clear "Do you want to clear the queue and run? ";
+302514673 X gcmd_com2_run_jump "Do you want to jump the queue?";
+302514673 X gcmd_com2_run_fileno "Which file to run";
+307757552 X com2_state_health_state "health state codes";
+307757552 X com2_state_curr_file "which fille is comm2 running rn";
+307757552 X com2_state_qfilesize "size of most recent queue file";
+307757552 X com2_state_qlen "length of the queue of py files to run";
+307757552 X com2_state_uptime "time since least mcu reboot";
+302252290 X cmd_batt_rst_confirm "Do we really want to reset all stastics?";
+302252291 X cmd_batt_bal_enable_enable "enable? (or disable if false)";
+262152 X cmd_reboot_request_domain "domain to reboot";
+302252068 X cmd_ignore_fsw_ignore "ignore the bdot commands from fsw";
+302252067 X cmd_mtq_fsw_sc_mode "overall satellite state";
+302252067 X cmd_mtq_fsw_z "bdot command for z direction";
+302252067 X cmd_mtq_fsw_y "bdot command for y direction";
+302252067 X cmd_mtq_fsw_x "bdot command for x direction";
+335872066 X sensorproc_imu_z "Sun Angle z";
+335872066 X sensorproc_imu_y "Sun Angle y";
+335872066 X sensorproc_imu_x "Sun Angle x";
+335872066 X sensorproc_imu_valid "Sun Angle Validity";
+335872067 X sensorproc_mag_bdot_valid "Whether the reading is valid for bdot";
+335872067 X sensorproc_mag_z "Sun Angle z";
+335872067 X sensorproc_mag_y "Sun Angle y";
+335872067 X sensorproc_mag_x "Sun Angle x";
+335872067 X sensorproc_mag_valid "Sun Angle Validity";
+5308436 X cmd_rollcall_type "Rollcall Type (Unused for now)";
+5308436 X cmd_rollcall_met_overflow "MET Overflow Count";
+5308436 X cmd_rollcall_met "Mission Elapsed Time";
+307691568 X mtq_ack_source "who the mtq last listened to - bdot or fsw ";
+307691568 X mtq_ack_phase "specifies what state the coils are in - measurement or actuation phase ";
+307691568 X mtq_ack_last_fsw_z "last fsw z command received ";
+307691568 X mtq_ack_last_fsw_y "last fsw y command received ";
+307691568 X mtq_ack_last_fsw_x "last fsw x command received ";
+307691568 X mtq_ack_last_bdot_z "last bdot z command received ";
+307691568 X mtq_ack_last_bdot_y "last bdot y command received ";
+307691568 X mtq_ack_last_bdot_x "last bdot x command received ";
+302252288 X cmd_ppt_single_fire_override_smt "Whether the Schmidt Trigger is checked";
+302252288 X cmd_ppt_single_fire_override "Do we fire or just charge?";
+302252288 X cmd_ppt_single_fire_with_pulse "Do we fire or just charge?";
+335872065 X sensorproc_sun_valid "Sun Angle Validity";
+335872065 X sensorproc_sun_z "Sun Angle z";
+335872065 X sensorproc_sun_y "Sun Angle y";
+335872065 X sensorproc_sun_x "Sun Angle x";
+307691553 X cmd_mtq_bdot_z "bdot command for z direction";
+307691553 X cmd_mtq_bdot_y "bdot command for y direction";
+307691553 X cmd_mtq_bdot_x "bdot command for x direction";
+308740128 X bdot_tumble_status_status "bdot tumble status boolean";
+302449337 X grnd_epoch_val_overflow "Overflow of epoch (time between millenium and when we launched)";
+[END_DESC_SIG]
+[END_DESC]
+
+[START_PARAM]
+[START_PARAM_NET]
+"BusType",STRING,"CAN"
+[END_PARAM_NET]
+
+[START_PARAM_NODE]
+[END_PARAM_NODE]
+
+[START_PARAM_MSG]
+[END_PARAM_MSG]
+
+[START_PARAM_SIG]
+[END_PARAM_SIG]
+
+[START_PARAM_NODE_RX_SIG]
+[END_PARAM_NODE_RX_SIG]
+
+[START_PARAM_NODE_TX_MSG]
+[END_PARAM_NODE_TX_MSG]
+[END_PARAM]
+
+[START_PARAM_VAL]
+[START_PARAM_NET_VAL]
+[END_PARAM_NET_VAL]
+
+[START_PARAM_NODE_VAL]
+[END_PARAM_NODE_VAL]
+
+[START_PARAM_MSG_VAL]
+[END_PARAM_MSG_VAL]
+
+[START_PARAM_SIG_VAL]
+[END_PARAM_SIG_VAL]
+
+[END_PARAM_VAL]
+
+
+[START_NOT_SUPPORTED]
+[END_NOT_SUPPORTED]
+
+[START_NOT_PROCESSED]
+	PZ_
+	ON_QRS_
+	ON_
+	INY_
+	PNG_QRS_
+	PNG_
+	SVYGRE
+	ON_QRS_QRS_
+	RI_QNGN_
+	RAIINE_QNGN_
+	FTGLCR_
+	FTGLCR_INY_
+	ON_QRS_FTGLCR_
+	ON_FTGLCR_
+	FVT_GLCR_ERS_
+	INY_GNOYR_
+	FVT_TEBHC_
+	FVT_INYGLCR_
+	FVTGLCR_INYGLCR_
+	OB_GK_OH_
+	ON_QRS_ERY_
+	ON_ERY_
+	ON_QRS_QRS_ERY_
+	OH_FT_ERY_
+	OH_RI_ERY_
+	OH_OB_ERY_
+	FT_ZHY_INY_
+OF_:
+OB_GK_OH_ 2147745800 : nqpf_oqbg,nqpf_rfgvz,nqpf_zcp,nqpf_zgd,nqpf_ejk,nqpf_ejl,nqpf_ejm,nqpf_frafbecebp,pbz_2,rcf_ongg,rcf_qvfg,rcf_tra,ccg,enuf;
+
+[END_NOT_PROCESSED]
