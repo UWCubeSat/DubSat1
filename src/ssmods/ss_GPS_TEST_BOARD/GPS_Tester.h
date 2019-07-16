@@ -14,6 +14,9 @@
 #include "core/timers.h"
 #include "interfaces/systeminfo.h"
 #include "core/debugtools.h"
+#include "gps_io.h"
+#include "adcs_sensorproc_ids.h"
+#include "core/timer.h"
 
 // Most subsystem modules should be implemented at least in part
 // as a state machine (specifically, a FSM).  Here the available states are
@@ -42,17 +45,15 @@ typedef struct _module_status {
     uint16_t in_unknown_state;
 } ModuleStatus;
 
-typedef struct rx_data_holder{
-    uint8_t data_set[16];
-    uint16_t length;
+typedef struct PACKED_STRUCT{
+    GPSDegMin gpsData;
+    uint8_t length;
 
 } rxDataHolder;
 
-void handlePPTFiringNotification();
-void handleRollCall();
-void rxCallBack(uint8_t);
-void ledTest();
-void ledInit();
+FILE_STATIC void ledTest();
+FILE_STATIC void ledInit();
+
 
 uint8_t handleDebugInfoCallback(DebugMode mode);
 uint8_t handleDebugStatusCallback(DebugMode mode);
